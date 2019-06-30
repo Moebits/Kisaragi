@@ -7,9 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tenpi/Gab.git"
+  },
   "author": "Tenpi",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.16.4",
     "@discordjs/uws": "^11.149.1",
     "better-sqlite-pool": "^0.2.2",
     "bufferutil": "^4.0.1",
@@ -30,5 +35,8 @@
     "rebuild": "^0.1.2",
     "recursive-readdir": "^2.2.2",
     "through2": "^3.0.1"
+  },
+  "engines": {
+    "node": "8.x"
   }
 }
