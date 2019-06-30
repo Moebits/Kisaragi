@@ -1,0 +1,21 @@
+{
+    "clientId": 593838271650332672,
+    "clientSecret": "XCryDA8nsEb0QLJi1Ydq8Gw3DxMFwh5r",
+    "ownerID": "174261874362155010",
+    "prefix": "=>",
+    "GoogleApiKey": "AIzaSyBCK6IrdOP8P3oFq0LFdGxZ26AwvO7YSOs",
+    "OsuApiKey": "47fe6122bca6b36473df9066eea38edfaea19a05",
+    "SoundCloudClientId": "",
+    "colors": [
+        "0xFE65FF", 
+        "0xFF3F95", 
+        "0xDA50FF", 
+        "0x60E7FF", 
+        "0xFF3EFE", 
+        "0xEC69FF"  
+    ],
+    "emojis": [
+        {"name": "gabTired", "id": "589586629753044995"}
+
+    ]
+  }

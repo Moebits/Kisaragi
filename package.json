@@ -1,0 +1,34 @@
+{
+  "name": "Gab",
+  "version": "1.0.0",
+  "description": "Gab is the best girl",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Tenpi",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/uws": "^11.149.1",
+    "better-sqlite-pool": "^0.2.2",
+    "bufferutil": "^4.0.1",
+    "chalk": "^2.4.2",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.0.0",
+    "enmap": "^5.0.0",
+    "erlpack": "github:hammerandchisel/erlpack",
+    "ffmpeg-binaries": "^4.0.0",
+    "glob": "^7.1.4",
+    "klaw": "^3.0.0",
+    "libsodium-wrappers": "^0.7.4",
+    "moment": "^2.24.0",
+    "node-gyp": "^5.0.1",
+    "node-opus": "^0.3.2",
+    "nodemon": "^1.19.1",
+    "opusscript": "0.0.6",
+    "rebuild": "^0.1.2",
+    "recursive-readdir": "^2.2.2",
+    "through2": "^3.0.1"
+  }
+}
