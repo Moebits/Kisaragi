@@ -1,6 +1,8 @@
 const config = require("../config.json");
 const prefix = config.prefix;
 
+const talkedRecently = new Set();
+
 const responseObject = {
     "gab": "Gab is the best girl"
 }

@@ -25,8 +25,6 @@ const config = require("./config.json")
 require('dotenv').config();
 const token = process.env.TOKEN;
 
-const talkedRecently = new Set();
-
 const subDirectory = [
     "administrator",
     "anime",
