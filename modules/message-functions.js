@@ -4,6 +4,9 @@ const config = require("../config.json");
 const prefix = config.prefix;
 const colors = config.colors;
 
+require('dotenv').config();
+const ownerID = process.env.OWNER_ID;
+
 var botOwner = false;
 var administrator = false;
 var moderator = false;
@@ -45,7 +48,7 @@ module.exports = (client, message) => {
 
     //Check for Bot Owner
     client.checkBotOwner = () => {
-        if (message.author.id === config.ownerID) {
+        if (message.author.id === ownerID) {
             return true;
         } else {
             return false;
