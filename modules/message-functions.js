@@ -1,10 +1,10 @@
-const Discord = require("discord.js");
+require('dotenv').config();
 const config = require("../config.json");
+const Discord = require("discord.js");
+
 
 const prefix = config.prefix;
 const colors = config.colors;
-
-require('dotenv').config();
 const ownerID = process.env.OWNER_ID;
 
 var botOwner = false;

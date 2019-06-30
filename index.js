@@ -1,39 +1,19 @@
-if (Number(process.version.slice(1).split(".")[0]) < 8) 
-throw new Error("Node 8.0.0 or higher is required. Update Node.js on your system.");
-
-//Ping Glitch Servers
-const http = require('http');
-const express = require('express');
-const app = express();
-app.get("/", (request, response) => {
-  console.log(Date.now() + " Ping Received");
-  response.sendStatus(200);
-});
-app.listen(process.env.PORT);
-setInterval(() => {
-  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
-}, 280000);
-
-var version = "1.0.0";
-
+require('dotenv').config();
+const config = require("./config.json")
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
+var version = "1.0.0";
+
 const { promisify } = require("util");
 const readdir = promisify(require("fs").readdir);
-
-
 client.logger = require("./modules/logger.js");
 require("./modules/misc-functions.js")(client);
-
 const Enmap = require("enmap");
 client.commands = new Enmap();
 client.aliases = new Enmap();
 client.settings = new Enmap({name: "settings"});
 
-const config = require("./config.json")
-
-require('dotenv').config();
 const token = process.env.TOKEN;
 
 const subDirectory = [
