@@ -1,7 +1,18 @@
 if (Number(process.version.slice(1).split(".")[0]) < 8) 
 throw new Error("Node 8.0.0 or higher is required. Update Node.js on your system.");
 
-//change 
+//Ping Glitch Servers
+const http = require('http');
+const express = require('express');
+const app = express();
+app.get("/", (request, response) => {
+  console.log(Date.now() + " Ping Received");
+  response.sendStatus(200);
+});
+app.listen(process.env.PORT);
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
 
 var version = "1.0.0";
 
