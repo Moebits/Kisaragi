@@ -1,0 +1,4 @@
+module.exports = (client, message) => {
+    //Being rate limited
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmF0ZUxpbWl0LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vZXZlbnRzL3JhdGVMaW1pdC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxNQUFNLENBQUMsT0FBTyxHQUFHLENBQUMsTUFBTSxFQUFFLE9BQU8sRUFBRSxFQUFFO0lBRWpDLG9CQUFvQjtBQUN4QixDQUFDLENBQUEifQ==

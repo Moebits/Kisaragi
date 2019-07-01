@@ -1,0 +1,13 @@
+declare const token: string;
+declare const ownerID: string;
+declare const Discord: any;
+declare const client: any;
+declare const config: any;
+declare const prefix: any;
+declare const colors: any;
+declare var version: string;
+declare const promisify: any;
+declare const readdir: any;
+declare const Enmap: any;
+declare const subDirectory: string[];
+declare const init: () => Promise<void>;

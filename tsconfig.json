@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"outDir": "bin",
+		"declaration": true,
+		"declarationDir": "declarations",
+		"noEmitOnError": true,
+		"inlineSourceMap": true,
+		"target": "es6",
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"noUnusedLocals": true,
+	},
+	"exclude": [
+		"node_modules",
+		"bin",
+		"declarations",
+		"data"
+	]
+}
