@@ -75,7 +75,6 @@ const init = async () => {
     client.logger.log(`Loaded a total of ${cmdFiles.length} commands.`);
     client.logger.log(`Loaded a total of ${evtFiles.length} events.`);
 
-  
     client.login(token);
   
 }

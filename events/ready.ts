@@ -1,5 +1,8 @@
 module.exports = (client) => {
 
+    let chalk = require("chalk");
+    let moment = require("moment");
+
     const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
 
     var logString = `${timestamp} Logged in as ${client.user.tag}!`;

@@ -1,7 +1,6 @@
-const chalk = require("chalk");
-const moment = require("moment");
-
 function returnLog (content, type, color) {
+  let chalk = require("chalk");
+  let moment = require("moment");
   const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
   var logString = `${timestamp} ${type} ${content}`;
   return console.log(chalk`{${color} ${logString}}`);
