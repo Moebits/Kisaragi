@@ -7,6 +7,12 @@ var modPermissions = ["BAN_MEMBERS", "KICK_MEMBERS", "MANAGE_GUILD", "MANAGE_CHA
 
 module.exports = (client, message) => {
 
+    let ownerID = process.env.OWNER_ID;
+    let Discord = require("discord.js");
+    let config = require("../../config.json");
+    let prefix = config.prefix;
+    let colors = config.colors;
+
     //Response Time
     client.responseTime = () => {
         return `${Date.now() - message.createdTimestamp} ms`;

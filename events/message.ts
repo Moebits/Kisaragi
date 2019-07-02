@@ -4,7 +4,10 @@ const responseObject = {
 
 module.exports = (client, message) => {
 
-    require("../modules/message-functions.ts")(client, message);
+    require("../modules/message-functions.js")(client, message);
+
+    let config = require("../../config.json");
+    let prefix = config.prefix;
 
     if (client.checkPrefixUser(message) === true) {
         return;

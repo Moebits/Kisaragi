@@ -1,6 +1,8 @@
 exports.run = (client, message, newPrefix) => {
 
-    newPrefix = config.prefix;
+    let config = require("../../../config.json");
+
+    config.prefix = newPrefix;
 
     const prefixEmbed = client.createEmbed();
     prefixEmbed
