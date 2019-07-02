@@ -9,16 +9,19 @@ module.exports = (client, message) => {
     let config = require("../../config.json");
     let prefix = config.prefix;
 
-    if (client.checkPrefixUser(message) === true) {
-        return;
+    if (client.checkBotMention(message)) {
+        const prefixHelpEmbed = client.createEmbed();
+        prefixHelpEmbed
+        .setDescription(`My prefix is set to "${prefix}"!\nType ${prefix}help if you need help.`)
+        message.channel.send(prefixHelpEmbed);
     }
-    
-    if (client.checkBotMention(message) === true) {
-        return message.channel.send(client.prefixHelpEmbed());
+
+    if (client.checkPrefixUser(message)) {
+        return;
     }
 
     if(responseObject[message.content]) {
-        message.channel.send(responseObject[message.content]);
+        return message.channel.send(responseObject[message.content]);
     }
     
     //Load Commands

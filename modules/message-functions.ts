@@ -61,9 +61,6 @@ module.exports = (client, message) => {
     //Check for Bot Mention
     client.checkBotMention = (message) => {
         if (message.content.includes("<@!593838271650332672>")) {
-            const prefixHelpEmbed = client.createEmbed();
-            prefixHelpEmbed
-            .setDescription("My prefix is set to " + prefix + "\n" + `For help, please type ${prefix}help!`);
             return true;
         }
     }

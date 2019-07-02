@@ -7,7 +7,7 @@
     "build": "tsc -p ./",
     "compile": "cd bin && node ./index.js",
     "types": "npm i @types/node",
-    "start": "npm run types && npm run build && npm run compile",
+    "start": "npm run build && npm run compile",
     "watch": "tsc -w -p ./"
   },
   "engines": {
@@ -26,6 +26,7 @@
     "better-sqlite-pool": "^0.2.2",
     "bufferutil": "^4.0.1",
     "chalk": "^2.4.2",
+    "discord-akairo": "^7.5.6",
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
     "enmap": "^5.0.0",
@@ -42,6 +43,9 @@
     "opusscript": "0.0.6",
     "rebuild": "^0.1.2",
     "recursive-readdir": "^2.2.2",
+    "sequelize": "^5.9.1",
+    "sharp": "^0.22.1",
+    "sqlite3": "^4.0.9",
     "through2": "^3.0.1",
     "typescript": "^3.5.2"
   }
