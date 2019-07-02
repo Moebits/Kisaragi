@@ -21,8 +21,8 @@
   "author": "Tenpi",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.16.4",
     "@discordjs/uws": "^11.149.1",
+    "@types/node": "^12.0.10",
     "better-sqlite-pool": "^0.2.2",
     "bufferutil": "^4.0.1",
     "chalk": "^2.4.2",
@@ -30,6 +30,7 @@
     "dotenv": "^8.0.0",
     "enmap": "^5.0.0",
     "erlpack": "github:hammerandchisel/erlpack",
+    "express": "^4.16.4",
     "ffmpeg-binaries": "^4.0.0",
     "glob": "^7.1.4",
     "klaw": "^3.0.0",
@@ -41,7 +42,7 @@
     "opusscript": "0.0.6",
     "rebuild": "^0.1.2",
     "recursive-readdir": "^2.2.2",
-    "through2": "^3.0.1"
+    "through2": "^3.0.1",
+    "typescript": "^3.5.2"
   }
 }
-
