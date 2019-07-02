@@ -1,11 +1,12 @@
 {
-  "name": "Gab",
+  "name": "gab",
   "version": "1.0.0",
   "description": "Gab is the best girl",
   "main": "bin/index.js",
   "scripts": {
     "build": "tsc -p ./",
-    "start": "cd bin && node ./index.js",
+    "compile": "cd bin && node ./index.js",
+    "start": "npm run build && npm run compile",
     "watch": "tsc -w -p ./"
   },
   "engines": {
