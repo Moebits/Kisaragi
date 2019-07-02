@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('../dotenv').config();
 const token = process.env.TOKEN;
 const ownerID = process.env.OWNER_ID;
 const Discord = require("discord.js");

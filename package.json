@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -p ./",
     "compile": "cd bin && node ./index.js",
-    "start": "npm run build && npm run compile",
+    "types": "npm i @types/node",
+    "start": "npm run types && npm run build && npm run compile",
     "watch": "tsc -w -p ./"
   },
   "engines": {
