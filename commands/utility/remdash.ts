@@ -1,7 +1,7 @@
-exports.run = (client, message, args) => {
+exports.run = (client: any, message: any, args: string[]) => {
 
-    const remEmbed = client.createEmbed();
-    const perm = client.createPermission("MANAGE_CHANNELS");
+    const remEmbed: any = client.createEmbed();
+    const perm: any = client.createPermission("MANAGE_CHANNELS");
 
     if (message.member.hasPermission(perm)) {
         

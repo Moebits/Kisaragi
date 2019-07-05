@@ -1,8 +1,8 @@
-exports.run = (client, message, args) => {
+exports.run = (client: any, message: any, args: string[]) => {
 
-  const reloadEmbed = client.createEmbed();
-  const commandName = args[0];
-  const commandDir = args[1];
+  const reloadEmbed: any = client.createEmbed();
+  const commandName: string = args[0];
+  const commandDir: string = args[1];
 
   if(!args[1]) {
     return message.channel.send(reloadEmbed

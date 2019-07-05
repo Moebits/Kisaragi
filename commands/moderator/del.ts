@@ -1,8 +1,8 @@
-exports.run = (client, message, args) => {
+exports.run = (client: any, message: any, args: string[]) => {
 
-    const delEmbed = client.createEmbed();
-    const perm = client.createPermission("MANAGE_MESSAGES");
-    const num = parseInt(args[0]) + 1;
+    const delEmbed: any = client.createEmbed();
+    const perm: any = client.createPermission("MANAGE_MESSAGES");
+    const num: number = parseInt(args[0]) + 1;
 
     if (message.member.hasPermission(perm)) {
         if (!num) {
@@ -26,8 +26,8 @@ exports.run = (client, message, args) => {
         delEmbed
         .setDescription(`Deleted ${args[0]} messages in this channel!`);
         message.channel.send(delEmbed)
-        .then(msg => msg.delete(5000))
-        .catch(error => console.log("Caught", error.message));
+        .then((msg: any) => msg.delete(5000))
+        .catch((error: any) => console.log(error.message));
         return;
 
     } else {
@@ -36,5 +36,4 @@ exports.run = (client, message, args) => {
         message.channel.send(delEmbed);
         return;
     }
-    
 }

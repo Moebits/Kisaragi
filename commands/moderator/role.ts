@@ -1,7 +1,7 @@
-exports.run = async (client, message, args) => {
+exports.run = async (client: any, message: any, args: string[]) => {
 
-  const roleEmbed = client.createEmbed();
-  const perm = client.createPermission("MANAGE_ROLES");
+  const roleEmbed: any = client.createEmbed();
+  const perm: any = client.createPermission("MANAGE_ROLES");
 
   if (message.member.hasPermission(perm)) {
 
@@ -11,12 +11,12 @@ exports.run = async (client, message, args) => {
         
     } else {
 
-        const member = message.mentions.members.first();
-        const roleName = args[2]
-        let snowflake = /\d+/;
-        let roleID = roleName.substring(roleName.search(snowflake));
+        const member: any = message.mentions.members.first();
+        const roleName: string = args[2]
+        let snowflake: RegExp = /\d+/;
+        let roleID: string = roleName.substring(roleName.search(snowflake));
         if (roleID.includes(">")) roleID = roleID.slice(0, -1);
-        let role = message.guild.roles.get(roleID);
+        let role: any = message.guild.roles.get(roleID);
 
         switch (args[0]) {
 
@@ -25,8 +25,8 @@ exports.run = async (client, message, args) => {
                 await member.addRole(role);
                 await message.channel.send(roleEmbed
                   .setDescription(`${member.displayName} now has the ${role} role!`));
-              } catch (e) {
-                console.log(e);
+              } catch (error) {
+                console.log(error);
                 message.channel.send(roleEmbed
                   .setDescription(`The role **${roleName}** could not be found.`));
               }
@@ -38,8 +38,8 @@ exports.run = async (client, message, args) => {
               await member.removeRole(role);
               await message.channel.send(roleEmbed
                 .setDescription(`${member.displayName} no longer has the ${role} role!`));
-            } catch (e) {
-              console.log(e);
+            } catch (error) {
+              console.log(error);
               message.channel.send(roleEmbed
                 .setDescription(`The role **${roleName}** could not be found.`));
             }

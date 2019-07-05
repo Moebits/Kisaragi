@@ -1,17 +1,16 @@
-exports.run = (client, message, args) => {
+exports.run = (client: any, message: any, args: string[]) => {
 
-    let activityType = args[0];
-    let activityName = client.combineArgs(args, 1);
+    let activityType: string = args[0];
+    let activityName: string = client.combineArgs(args, 1);
 
-    const activityTypes = ["playing", "watching", "listening", "streaming"];
-    const setEmbed = client.createEmbed();
+    const activityTypes: string[] = ["playing", "watching", "listening", "streaming"];
+    const setEmbed: any = client.createEmbed();
 
     if (client.checkBotOwner()) {
 
         if (!activityName || (!activityTypes.includes(activityType))) {
             message.channel.send(setEmbed
             .setDescription("Correct usage is =>set (type) (activity), where (type) is playing, watching, listening, or streaming."));
-
         }
 
         if (activityType === "streaming") {

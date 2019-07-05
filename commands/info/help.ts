@@ -1,6 +1,6 @@
-exports.run = (client, message, args) => {
+exports.run = (client: any, message: any, args: string[]) => {
 
-    const helpEmbedInfo = client.createEmbed();
+    const helpEmbedInfo: any = client.createEmbed();
         helpEmbedInfo
         .setImage("https://i.imgur.com/Av9RN7x.png")
         .setThumbnail(message.author.avatarURL)
@@ -12,6 +12,5 @@ exports.run = (client, message, args) => {
         .addField("=>set (activity) (type)", "Sets the bot's activity. Required -> Bot Owner");
 
     message.channel.send(helpEmbedInfo)
-    .catch(error => console.log("Caught", error.message));
     
 }

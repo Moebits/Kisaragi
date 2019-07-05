@@ -1,6 +1,6 @@
-exports.run = async (client, message, args) => {
+exports.run = async (client: any, message: any, args: string[]) => {
 
-    const emojiEmbed = client.createEmbed();
+    const emojiEmbed: any = client.createEmbed();
 
     if (args[0] === "list") {
         const emojiList = message.guild.emojis.map(e=>e.toString()).join(" ");
@@ -10,7 +10,7 @@ exports.run = async (client, message, args) => {
         return;
     } 
 
-    const emojiName = args[0];
+    const emojiName: string = args[0];
     
     if (!emojiName.includes("<" || ">")) {
 
@@ -27,19 +27,17 @@ exports.run = async (client, message, args) => {
 
         }
 
-    let snowflake = /\d+/;
-    let emojiID = emojiName.substring(emojiName.search(snowflake));
+    let snowflake: RegExp = /\d+/;
+    let emojiID: string = emojiName.substring(emojiName.search(snowflake));
     if (emojiID.includes(">")) {emojiID = emojiID.slice(0, -1);}
 
     if (typeof parseInt(emojiID) === "number") {
-        let emojiGet = client.emojis.get(emojiID);
+        let emojiGet: any = client.emojis.get(emojiID);
         message.channel.send(emojiEmbed
             .setDescription(`**${emojiGet.name} Emoji**`)
             .setImage(emojiGet.url))
             return;
     } 
-
-    
 }
 
 

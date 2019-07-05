@@ -1,8 +1,8 @@
-exports.run = (client, message, args) => {
+exports.run = (client: any, message: any, args: string[]) => {
     
-const top10 = client.scores.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;").all(message.guild.id);
+const top10: any = client.scores.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;").all(message.guild.id);
 
-  const topEmbed = client.createEmbed();
+  const topEmbed: any = client.createEmbed();
   topEmbed
     .setTitle(`**${message.guild.name}'s Leaderboard**`)
     .setAuthor(client.user.username, client.user.avatarURL);

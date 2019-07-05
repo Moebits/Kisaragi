@@ -1,8 +1,7 @@
-exports.run = async (client, message, args) => {
+exports.run = async (client: any, message: any, args: string[]) => {
 
     if(args[0] = "icon") {
-
-        const guildIconEmbed = client.createEmbed();
+        const guildIconEmbed: any = client.createEmbed();
         
         if (message.guild.available) {
 
@@ -15,6 +14,5 @@ exports.run = async (client, message, args) => {
                 .setDescription(`Could not retrieve this guild's icon.`));
         }
     }
-    
 }
 	

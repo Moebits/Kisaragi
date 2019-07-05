@@ -1,6 +1,6 @@
-exports.run = (client, message, score, args) => {
+exports.run = (client: any, message: any, score: any, args: string[]) => {
 
-    const rankEmbed = client.createEmbed();
+    const rankEmbed: any = client.createEmbed();
     if (score === (null || undefined)) {
     return message.channel.send(rankEmbed
         .setDescription("Could not find a score for you!"));

@@ -1,16 +1,17 @@
-const unloadCommand = async (commandName) => {
-  let command;
+const unloadCommand: any = async (commandName: string) => {
+  let command: any;
   if (client.commands.has(commandName)) {
     command = client.commands.get(commandName);
   } else if (client.aliases.has(commandName)) {
     command = client.commands.get(client.aliases.get(commandName));
   }
-  if (!command) return `The command \`${commandName}\` doesn't seem to exist, nor is it an alias. Try again!`;
+  if (!command) return `The command \`${commandName}\` could not be found.`;
 
   if (command.shutdown) {
     await command.shutdown(client);
   }
-  const mod = require.cache[require.resolve(`../commands/$${commandName}`)];
+
+  const mod: any = require.cache[require.resolve(`../commands/$${commandName}`)];
   delete require.cache[require.resolve(`../commands/${commandName}.js`)];
   for (let i = 0; i < mod.parent.children.length; i++) {
     if (mod.parent.children[i] === mod) {
@@ -21,9 +22,9 @@ const unloadCommand = async (commandName) => {
   return false;
 };
 
-exports.run = async (client, message, args, level) => {
+exports.run = async (client: any, message: any, args: string[]) => {
 
-    const rebootEmbed = client.createEmbed();
+    const rebootEmbed: any = client.createEmbed();
 
     await message.channel.send(rebootEmbed
     .setDescription("Bot is shutting down."));
@@ -32,5 +33,4 @@ exports.run = async (client, message, args, level) => {
       client.unloadCommand(cmd)
     ));
     process.exit(0);
-
   };
