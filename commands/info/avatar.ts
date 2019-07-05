@@ -14,7 +14,7 @@ exports.run = async (client, message, args) => {
 		}
 	}
 	
-	for (var [, user] of message.mentions.users) {
+	for (let [, user] of message.mentions.users) {
 		if (user.displayAvatarURL.includes("gif" || "jpg")) {
 			await message.channel.send(avatarEmbed
 				.setDescription(`**${user.username}'s Profile Picture**`)

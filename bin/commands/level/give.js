@@ -1,0 +1,25 @@
+exports.run = (client, message, args) => {
+    const giveEmbed = client.createEmbed();
+    if (!message.author.id === message.guild.owner)
+        return message.send(giveEmbed
+            .setDescription("Only the guild owner can use this command!"));
+    const user = message.mentions.users.first() || client.users.get(args[0]);
+    if (!user)
+        return message.channel.send(giveEmbed
+            .setDescription("You must mention a user or provide their user ID!"));
+    const pointsToAdd = parseInt(args[1]);
+    if (!pointsToAdd)
+        return message.channel.send(giveEmbed
+            .setDescription("Correct usage is =>give (user) (points)"));
+    let userscore = client.getScore.get(user.id, message.guild.id);
+    if (!userscore) {
+        userscore = { id: `${message.guild.id}-${user.id}`, user: user.id, guild: message.guild.id, points: 0, level: 0 };
+    }
+    userscore.points += pointsToAdd;
+    let userLevel = Math.floor(0.01 * client.score.points);
+    userscore.level = userLevel;
+    client.setScore.run(userscore);
+    return message.channel.send(giveEmbed
+        .setDescription(`${user.tag} has received ${pointsToAdd} points and now stands at ${userscore.points} points.`));
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZ2l2ZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL2NvbW1hbmRzL2xldmVsL2dpdmUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsT0FBTyxDQUFDLEdBQUcsR0FBRyxDQUFDLE1BQU0sRUFBRSxPQUFPLEVBQUUsSUFBSSxFQUFFLEVBQUU7SUFFcEMsTUFBTSxTQUFTLEdBQUcsTUFBTSxDQUFDLFdBQVcsRUFBRSxDQUFDO0lBRXZDLElBQUcsQ0FBQyxPQUFPLENBQUMsTUFBTSxDQUFDLEVBQUUsS0FBSyxPQUFPLENBQUMsS0FBSyxDQUFDLEtBQUs7UUFBRSxPQUFPLE9BQU8sQ0FBQyxJQUFJLENBQUMsU0FBUzthQUN2RSxjQUFjLENBQUMsNENBQTRDLENBQUMsQ0FBQyxDQUFDO0lBRW5FLE1BQU0sSUFBSSxHQUFHLE9BQU8sQ0FBQyxRQUFRLENBQUMsS0FBSyxDQUFDLEtBQUssRUFBRSxJQUFJLE1BQU0sQ0FBQyxLQUFLLENBQUMsR0FBRyxDQUFDLElBQUksQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDO0lBQ3pFLElBQUcsQ0FBQyxJQUFJO1FBQUUsT0FBTyxPQUFPLENBQUMsT0FBTyxDQUFDLElBQUksQ0FBQyxTQUFTO2FBQzFDLGNBQWMsQ0FBQyxtREFBbUQsQ0FBQyxDQUFDLENBQUM7SUFFMUUsTUFBTSxXQUFXLEdBQUcsUUFBUSxDQUFDLElBQUksQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDO0lBQ3RDLElBQUcsQ0FBQyxXQUFXO1FBQUUsT0FBTyxPQUFPLENBQUMsT0FBTyxDQUFDLElBQUksQ0FBQyxTQUFTO2FBQ2pELGNBQWMsQ0FBQyx5Q0FBeUMsQ0FBQyxDQUFDLENBQUM7SUFFaEUsSUFBSSxTQUFTLEdBQUcsTUFBTSxDQUFDLFFBQVEsQ0FBQyxHQUFHLENBQUMsSUFBSSxDQUFDLEVBQUUsRUFBRSxPQUFPLENBQUMsS0FBSyxDQUFDLEVBQUUsQ0FBQyxDQUFDO0lBQy9ELElBQUksQ0FBQyxTQUFTLEVBQUU7UUFDWixTQUFTLEdBQUcsRUFBRSxFQUFFLEVBQUUsR0FBRyxPQUFPLENBQUMsS0FBSyxDQUFDLEVBQUUsSUFBSSxJQUFJLENBQUMsRUFBRSxFQUFFLEVBQUUsSUFBSSxFQUFFLElBQUksQ0FBQyxFQUFFLEVBQUUsS0FBSyxFQUFFLE9BQU8sQ0FBQyxLQUFLLENBQUMsRUFBRSxFQUFFLE1BQU0sRUFBRSxDQUFDLEVBQUUsS0FBSyxFQUFFLENBQUMsRUFBQyxDQUFBO0tBQ25IO0lBQ0QsU0FBUyxDQUFDLE1BQU0sSUFBSSxXQUFXLENBQUM7SUFFaEMsSUFBSSxTQUFTLEdBQUcsSUFBSSxDQUFDLEtBQUssQ0FBQyxJQUFJLEdBQUcsTUFBTSxDQUFDLEtBQUssQ0FBQyxNQUFNLENBQUMsQ0FBQztJQUN2RCxTQUFTLENBQUMsS0FBSyxHQUFHLFNBQVMsQ0FBQztJQUU1QixNQUFNLENBQUMsUUFBUSxDQUFDLEdBQUcsQ0FBQyxTQUFTLENBQUMsQ0FBQztJQUUvQixPQUFPLE9BQU8sQ0FBQyxPQUFPLENBQUMsSUFBSSxDQUFDLFNBQVM7U0FDaEMsY0FBYyxDQUFDLEdBQUcsSUFBSSxDQUFDLEdBQUcsaUJBQWlCLFdBQVcsNkJBQTZCLFNBQVMsQ0FBQyxNQUFNLFVBQVUsQ0FBQyxDQUFDLENBQUM7QUFHekgsQ0FBQyxDQUFBIn0=

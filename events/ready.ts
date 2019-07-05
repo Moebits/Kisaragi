@@ -1,12 +1,12 @@
-module.exports = (client) => {
+module.exports = (client: any) => {
 
-    let chalk = require("chalk");
-    let moment = require("moment");
+    let chalk: any = require("chalk");
+    let moment: any = require("moment");
 
-    const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
+    const timestamp: string = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
 
-    var logString = `${timestamp} Logged in as ${client.user.tag}!`;
-    var readyString = `${timestamp} Ready in ${client.guilds.size} guilds on ${client.channels.size} channels, for a total of ${client.users.size} users.`;
+    let logString: string = `${timestamp} Logged in as ${client.user.tag}!`;
+    let readyString: string = `${timestamp} Ready in ${client.guilds.size} guilds on ${client.channels.size} channels, for a total of ${client.users.size} users.`;
 
     console.log(chalk`{magentaBright ${logString}}`);
     console.log(chalk`{magentaBright ${readyString}}`);

@@ -3,26 +3,36 @@ const token = process.env.TOKEN;
 const ownerID = process.env.OWNER_ID;
 const Discord = require("discord.js");
 const client = new Discord.Client(); 
+const {promisify} = require("util");
+const readdir = promisify(require("fs").readdir);
+client.logger = require("./modules/logger.js");
 const config = require("../config.json");
 const prefix = config.prefix;
 const colors = config.colors;
 
-var version = "1.0.0";
+let version: string = "1.0.0";
 
-const {promisify} = require("util");
-const readdir = promisify(require("fs").readdir);
+const defaultSettings: object = {
+    prefix: "=>",
+    modLogChannel: "mod-log",
+    messageLogChannel: "message-log",
+    userLogChannel: "user-log",
+    guildLogChannel: "guild-log",
+    clientLogChannel: "client-log",
+    welcomeChannel: "welcome",
+    welcomeMessage: "Welcome to {{guild}}, {{user}}!",
+    leaveChannel: "leave",
+    leaveMessage: "{{user}} has left {{guild}}!",
+    starboardChannel: "starboard",
+    pinboardChannel: "pinboard",
+    muteRole: "muted",
+    verifyRole: "verified",
+    restrictRole: "restricted",
+    timezone: "GMT -4",
+    levelToggle: "true"
+  }
 
-client.logger = require("./modules/logger.js");
-require("./modules/misc-functions.js")(client);
-
-const Enmap = require("enmap");
-client.commands = new Enmap();
-client.aliases = new Enmap();
-client.settings = new Enmap({name: "settings"});
-
-
-
-const subDirectory = [
+const subDirectory: string[] = [
     "administrator",
     "anime",
     "bot owner",
@@ -40,43 +50,44 @@ const subDirectory = [
     "utility"
 ];
 
-const init = async () => {
+const start = async () => {
 
+    try {
+        let cmdFiles: string[] = [];
 
-    var cmdFiles = new Array();
-    var addFiles = new Array();
-    client.commands = new Enmap();
-
-    for (var i in subDirectory) {
-        var currDir = subDirectory[i];
-            addFiles = await readdir(`./commands/${currDir}`);
+        for (let i in subDirectory) {
+            let currDir = subDirectory[i];
+            let addFiles = await readdir(`./commands/${currDir}`);
             if (addFiles !== null) {
                 cmdFiles.push(addFiles);
             }
             addFiles.forEach(file => {
                 if (!file.endsWith(".js")) return;
-                let props = require(`./commands/${currDir}/${file}`);
+                let findFile = require(`./commands/${currDir}/${file}`);
                 let commandName = file.split(".")[0];
                 client.logger.log(`Loading Command: ${commandName}`);
-                client.commands.set(commandName, props);
-            })      
+                client.commands.set(commandName, findFile);
+            });      
         }
 
-    var evtFiles = await readdir("./events/");
+        let evtFiles = await readdir("./events/");
 
-    evtFiles.forEach(file => {
-        if (!file.endsWith(".js")) return;
-        const eventName = file.split(".")[0];
-        client.logger.log(`Loading Event: ${eventName}`);
-        const event = require(`./events/${file}`);
-        client.on(eventName, event.bind(null, client));
-    });
+        evtFiles.forEach(file => {
+            if (!file.endsWith(".js")) return;
+            const eventName = file.split(".")[0];
+            client.logger.log(`Loading Event: ${eventName}`);
+            const event = require(`./events/${file}`);
+            client.on(eventName, event.bind(null, client));
+        });
 
-    client.logger.log(`Loaded a total of ${cmdFiles.length} commands.`);
-    client.logger.log(`Loaded a total of ${evtFiles.length} events.`);
+        client.logger.log(`Loaded a total of ${cmdFiles.length} commands.`);
+        client.logger.log(`Loaded a total of ${evtFiles.length} events.`);
 
-    client.login(token);
-  
+        client.login(token);
+
+        } catch (error) {
+            console.log(error);
+        }
 }
 
-init();
+start();

@@ -1,8 +1,5 @@
-module.exports = (member) => {
+module.exports = (member: any) => {
 
-    /*
-    const guild = member.guild;
-    if (newUsers[guild.id].has(member.id)) newUsers.delete(member.id);
-    */
+    //null
     
 }

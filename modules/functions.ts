@@ -1,17 +1,15 @@
-var botOwner = false;
-var administrator = false;
-var moderator = false;
+module.exports = (client: any, message: any) => {
 
-var adminPermissions = ["ADMINISTRATOR"];
-var modPermissions = ["BAN_MEMBERS", "KICK_MEMBERS", "MANAGE_GUILD", "MANAGE_CHANNELS", "MANAGE_ROLES", "MANAGE_MESSAGES"];
-
-module.exports = (client, message) => {
-
-    let ownerID = process.env.OWNER_ID;
-    let Discord = require("discord.js");
-    let config = require("../../config.json");
-    let prefix = config.prefix;
-    let colors = config.colors;
+    let ownerID: string = process.env.OWNER_ID;
+    let Discord: any = require("discord.js");
+    let config: any = require("../../config.json");
+    let prefix: string = config.prefix;
+    let colors: string[] = config.colors;
+    
+    //Random Number
+    client.getRandomNum = (min: number, max: number) => {
+        return Math.random() * (max - min) + min;
+    }
 
     //Response Time
     client.responseTime = () => {
@@ -19,14 +17,13 @@ module.exports = (client, message) => {
     }
 
     //Get Emoji
-    client.getEmoji = (name) => {
-        for (var i in config.emojis) {
+    client.getEmoji = (name: string) => {
+        for (let i in config.emojis) {
             if (name === config.emojis[i].name) {
-                return client.emojis.find(emoji => emoji.id === config.emojis[i].id);
+                return client.emojis.find((emoji: any) => emoji.id === config.emojis[i].id);
             }
         }
     }
-    
 
     //Random Color
     client.randomColor = () => {
@@ -35,7 +32,7 @@ module.exports = (client, message) => {
 
     //Create Embed
     client.createEmbed = () => {
-        var embed = new Discord.RichEmbed();
+        let embed: any = new Discord.RichEmbed();
             embed
             .setColor(client.randomColor())
             .setTimestamp(embed.timestamp)
@@ -53,29 +50,29 @@ module.exports = (client, message) => {
     }
 
     //Create Permission
-    client.createPermission = (permission) => {
-        var perm = new Discord.Permissions(permission);
+    client.createPermission = (permission: string) => {
+        let perm: any = new Discord.Permissions(permission);
         return perm;
     }
 
     //Check for Bot Mention
-    client.checkBotMention = (message) => {
-        if (message.content.includes("<@!593838271650332672>")) {
+    client.checkBotMention = (message: any) => {
+        if (message.content.startsWith("<@!593838271650332672>")) {
             return true;
         }
     }
 
     //Check for Prefix and User
-    client.checkPrefixUser = (message) => {
+    client.checkPrefixUser = (message: any) => {
         if(!message.content.startsWith(prefix) || message.author.bot) {
             return true;
         }
     }
 
     //Combine args after an index
-    client.combineArgs = (args, num) => {
-        var combined = "";
-        for (var i = num; i < args.length; i++) {
+    client.combineArgs = (args: string[], num: number) => {
+        let combined: string = "";
+        for (let i = num; i < args.length; i++) {
             combined += args[i] + " ";
         }
         return combined;

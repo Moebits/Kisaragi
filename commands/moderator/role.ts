@@ -13,10 +13,10 @@ exports.run = async (client, message, args) => {
 
         const member = message.mentions.members.first();
         const roleName = args[2]
-        var snowflake = /\d+/;
-        var roleID = roleName.substring(roleName.search(snowflake));
+        let snowflake = /\d+/;
+        let roleID = roleName.substring(roleName.search(snowflake));
         if (roleID.includes(">")) roleID = roleID.slice(0, -1);
-        var role = message.guild.roles.get(roleID);
+        let role = message.guild.roles.get(roleID);
 
         switch (args[0]) {
 

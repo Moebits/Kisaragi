@@ -17,8 +17,8 @@ exports.run = (client, message, args) => {
   delete require.cache[require.resolve(`../${commandDir}/${commandName}.js`)];
     
   client.commands.delete(commandName);
-  const props = require(`../${commandDir}/${commandName}.js`);
-  client.commands.set(commandName, props);
+  const fileName = require(`../${commandDir}/${commandName}.js`);
+  client.commands.set(commandName, fileName);
   message.channel.send(reloadEmbed
   .setDescription(`The command **${commandName}** has been reloaded!`));
 }

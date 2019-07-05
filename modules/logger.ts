@@ -1,12 +1,12 @@
-function returnLog (content, type, color) {
+const returnLog = (content: string, type: string, color: string) => {
   let chalk = require("chalk");
   let moment = require("moment");
   const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
-  var logString = `${timestamp} ${type} ${content}`;
+  let logString = `${timestamp} ${type} ${content}`;
   return console.log(chalk`{${color} ${logString}}`);
 }
 
-function getlogColor (logType) {
+const getLogColor = (logType: string) => {
   switch (logType) {
     case "log": return "magentaBright";
     case "warn": return "yellowBright";
@@ -17,13 +17,14 @@ function getlogColor (logType) {
   }
 }
 
-exports.log = (content, type = "log") => {
-
-  returnLog(content, type, getlogColor(type));
-
+const switchType = (logType: string) => {
+  exports[`${logType}`] = (content: string, type: string = logType) => {
+    returnLog(content, type, getLogColor(type));
+  }
 }
 
-exports.error = (...args) => this.log(...args, "error");
-exports.warn = (...args) => this.log(...args, "warn");
-exports.debug = (...args) => this.log(...args, "debug");
-exports.cmd = (...args) => this.log(...args, "cmd");
+switchType("log");
+switchType("error");
+switchType("warn");
+switchType("debug");
+switchType("cmd");

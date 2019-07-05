@@ -15,6 +15,5 @@
 		"node_modules",
 		"bin",
 		"declarations",
-		"data"
 	]
 }

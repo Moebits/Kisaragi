@@ -1,6 +1,6 @@
 exports.run = async (client, message, args) => { 
 
-    var pingEmbed = client.createEmbed(); 
+    let pingEmbed = client.createEmbed(); 
     
     const msg = await message.channel.send(pingEmbed
     .setDescription("Ping?"));

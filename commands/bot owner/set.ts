@@ -1,7 +1,7 @@
 exports.run = (client, message, args) => {
 
-    var activityType = args[0];
-    var activityName = client.combineArgs(args, 1);
+    let activityType = args[0];
+    let activityName = client.combineArgs(args, 1);
 
     const activityTypes = ["playing", "watching", "listening", "streaming"];
     const setEmbed = client.createEmbed();

@@ -27,12 +27,12 @@ exports.run = async (client, message, args) => {
 
         }
 
-    var snowflake = /\d+/;
-    var emojiID = emojiName.substring(emojiName.search(snowflake));
+    let snowflake = /\d+/;
+    let emojiID = emojiName.substring(emojiName.search(snowflake));
     if (emojiID.includes(">")) {emojiID = emojiID.slice(0, -1);}
 
     if (typeof parseInt(emojiID) === "number") {
-        var emojiGet = client.emojis.get(emojiID);
+        let emojiGet = client.emojis.get(emojiID);
         message.channel.send(emojiEmbed
             .setDescription(`**${emojiGet.name} Emoji**`)
             .setImage(emojiGet.url))
