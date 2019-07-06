@@ -1,5 +1,0 @@
-"use strict";
-module.exports = (member) => {
-    //null
-};
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZ3VpbGRNZW1iZXJSZW1vdmUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi9ldmVudHMvZ3VpbGRNZW1iZXJSZW1vdmUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBLE1BQU0sQ0FBQyxPQUFPLEdBQUcsQ0FBQyxNQUFXLEVBQUUsRUFBRTtJQUU3QixNQUFNO0FBRVYsQ0FBQyxDQUFBIn0=
