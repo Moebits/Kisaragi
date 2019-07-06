@@ -25,7 +25,7 @@ module.exports = (client: any, message: any) => {
         "region": message.guild.region,
         "owner": message.guild.owner,
         "owner id": message.guild.ownerID,
-        "games": message.guild.presences.map((presence: any) => presence.game.name)
+        "games": message.guild.presences.map((presence: any) => presence.game.name || null)
     }
 
     const userSettings: object = {
@@ -128,7 +128,7 @@ module.exports = (client: any, message: any) => {
         try {
           await pgClient.query(`BEGIN`);
           for (const [column, value] of entries) {
-            await pgClient.query(client.insertInto(`${table}, ${column}, ${value}`));
+            await pgClient.query(client.insertInto(table, column, value));
           }
           await pgClient.query(`COMMIT`);
         } catch (error) {

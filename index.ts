@@ -42,11 +42,11 @@ const start = async () => {
             }
             addFiles.forEach((file: any) => {
                 if (!file.endsWith(".js")) return;
-                //let findFile = require(`./commands/${currDir}/${file}`);
+                let path = `./commands/${currDir}/${file}`;
                 let commandName = file.split(".")[0];
                 client.logger.log(`Loading Command: ${commandName}`);
-                if (client.fetchCommand(commandName) !== commandName) {
-                    client.insertInto(`"commands", "command", ${commandName}`);
+                if (client.fetchCommand(commandName) === (null || undefined)) {
+                    client.insertCommand(commandName, path);
                 }
             });      
         }
