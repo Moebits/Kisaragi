@@ -4,7 +4,7 @@ module.exports = (client: any, packet: any) => {
     const channel: any = client.channels.get(packet.d.channel_id);
     if (channel.messages.has(packet.d.message_id)) return;
     
-    channel.fetchMessage(packet.d.message_id).then(message => {
+    channel.fetchMessage(packet.d.message_id).then((message: any) => {
         const emoji: any = packet.d.emoji.id ? `${packet.d.emoji.name}:${packet.d.emoji.id}` : packet.d.emoji.name;
         const reaction: any = message.reactions.get(emoji);
         if (reaction) reaction.users.set(packet.d.user_id, client.users.get(packet.d.user_id));

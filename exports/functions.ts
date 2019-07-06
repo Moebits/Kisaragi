@@ -1,6 +1,6 @@
 module.exports = (client: any, message: any) => {
 
-    let ownerID: string = process.env.OWNER_ID;
+    let ownerID: any = process.env.OWNER_ID;
     let Discord: any = require("discord.js");
     let config: any = require("../../config.json");
     let prefix: string = config.prefix;

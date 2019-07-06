@@ -5,32 +5,8 @@ const Discord = require("discord.js");
 const client = new Discord.Client(); 
 const {promisify} = require("util");
 const readdir = promisify(require("fs").readdir);
-client.logger = require("./modules/logger.js");
-const config = require("../config.json");
-const prefix = config.prefix;
-const colors = config.colors;
 
 let version: string = "1.0.0";
-
-const defaultSettings: object = {
-    prefix: "=>",
-    modLogChannel: "mod-log",
-    messageLogChannel: "message-log",
-    userLogChannel: "user-log",
-    guildLogChannel: "guild-log",
-    clientLogChannel: "client-log",
-    welcomeChannel: "welcome",
-    welcomeMessage: "Welcome to {{guild}}, {{user}}!",
-    leaveChannel: "leave",
-    leaveMessage: "{{user}} has left {{guild}}!",
-    starboardChannel: "starboard",
-    pinboardChannel: "pinboard",
-    muteRole: "muted",
-    verifyRole: "verified",
-    restrictRole: "restricted",
-    timezone: "GMT -4",
-    levelToggle: "true"
-  }
 
 const subDirectory: string[] = [
     "administrator",
@@ -52,6 +28,9 @@ const subDirectory: string[] = [
 
 const start = async () => {
 
+    client.logger = require("./exports/logger.js");
+    require('./exports/queries.js')(client);
+
     try {
         let cmdFiles: string[] = [];
 
@@ -61,18 +40,20 @@ const start = async () => {
             if (addFiles !== null) {
                 cmdFiles.push(addFiles);
             }
-            addFiles.forEach(file => {
+            addFiles.forEach((file: any) => {
                 if (!file.endsWith(".js")) return;
-                let findFile = require(`./commands/${currDir}/${file}`);
+                //let findFile = require(`./commands/${currDir}/${file}`);
                 let commandName = file.split(".")[0];
                 client.logger.log(`Loading Command: ${commandName}`);
-                client.commands.set(commandName, findFile);
+                if (client.fetchCommand(commandName) !== commandName) {
+                    client.insertInto(`"commands", "command", ${commandName}`);
+                }
             });      
         }
 
         let evtFiles = await readdir("./events/");
 
-        evtFiles.forEach(file => {
+        evtFiles.forEach((file: any) => {
             if (!file.endsWith(".js")) return;
             const eventName = file.split(".")[0];
             client.logger.log(`Loading Event: ${eventName}`);

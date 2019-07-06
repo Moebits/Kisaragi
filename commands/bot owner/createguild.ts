@@ -2,7 +2,7 @@ const createGuild = async (client: any, message: any, guildName: string, guildRe
 
     try {
         const guild: any = await client.user.createGuild(guildName, guildRegion);
-        const defaultChannel: any = guild.channels.find(channel => channel.permissionsFor(guild.me).has("SEND_MESSAGES"));
+        const defaultChannel: any = guild.channels.find((channel: any) => channel.permissionsFor(guild.me).has("SEND_MESSAGES"));
         const invite: any = await defaultChannel.createInvite();
         await message.author.send(invite.url);
         await message.channel.send(`I made a guild! The invite it ${invite.url}`);

@@ -1,14 +1,20 @@
-const responseObject: object = {
-    "gab": "Gab is the best girl"
-}
-
 module.exports = (client: any, message: any) => {
 
-    require("../modules/functions.js")(client, message);
+    require("../exports/functions.js")(client, message);
+    require("../exports/settings.js")(client, message);
     let config: any = require("../../config.json");
     let prefix: string = config.prefix;
 
+    //const database = require('../database.js');
+
+    //Add guild to database
     if (message.guild) {
+      if (!client.fetchGuild()) {
+        client.initAll();
+      } 
+    }
+
+    /*if (message.guild) {
         let score: any = client.getScore.get(message.author.id, message.guild.id);
         if (!score) {
             score = {
@@ -32,8 +38,11 @@ module.exports = (client: any, message: any) => {
         message.reply(`You've leveled up to level **${curLevel}**!`);
         }
         //Log score to database here
-      }
+      }*/
 
+    const responseObject: any = {
+        "gab": "Gab is the best girl"
+    }  
     if (responseObject[message.content]) {
       return message.channel.send(responseObject[message.content]);
     }
@@ -51,7 +60,8 @@ module.exports = (client: any, message: any) => {
     
     //Load Commands
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/g);
-    const command: string = args.shift().toLowerCase();
+    if (args.shift() === undefined) return;
+    const command: string = args.shift()!.toLowerCase();
     const cmd: any = client.commands.get(command); //Find command from database
     if (!cmd) return;
 

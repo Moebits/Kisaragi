@@ -1,3 +1,17 @@
-#Logs
+#Sensitive data
 .env
+
+#Node modules
 node_modules
+
+#Compiled folder
+bin
+
+#Linter settings
+eslintrc.json
+
+#VS Code settings
+.vscode
+
+#Typescript declarations
+declarations

@@ -1,1 +1,1 @@
-declare const clean: (text: any) => any;
+declare const clean: (text: string) => string;

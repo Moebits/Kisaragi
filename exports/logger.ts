@@ -1,4 +1,4 @@
-const returnLog = (content: string, type: string, color: string) => {
+const returnLog = (content: string, type: string, color: any) => {
   let chalk = require("chalk");
   let moment = require("moment");
   const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
@@ -28,3 +28,4 @@ switchType("error");
 switchType("warn");
 switchType("debug");
 switchType("cmd");
+switchType("ready");

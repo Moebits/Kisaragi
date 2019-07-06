@@ -17,7 +17,7 @@ exports.run = (client: any, message: any, args: string[]) => {
             message.channel.send(delEmbed);
         }
         
-        message.channel.bulkDelete(num, true).catch(error => {
+        message.channel.bulkDelete(num, true).catch((error: any) => {
             console.error(error);
             delEmbed
             .setDescription("You can't delete messages older than 2 weeks!");

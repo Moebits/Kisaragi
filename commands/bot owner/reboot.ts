@@ -29,7 +29,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     await message.channel.send(rebootEmbed
     .setDescription("Bot is shutting down."));
 
-    await Promise.all(client.commands.map(cmd =>
+    await Promise.all(client.commands.map((cmd: any) =>
       client.unloadCommand(cmd)
     ));
     process.exit(0);
