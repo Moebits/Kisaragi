@@ -178,7 +178,7 @@ module.exports = (client: any, message: any) => {
           rowMode: 'array'
         }
         const result = await client.runQuery(query);
-        const found = result.map((id: any) => id[0] === message.guild.id.toString());
+        const found = result.find((id: any) => id[0] === message.guild.id.toString());
         if (found === undefined || null) {
           await client.insertInto("guilds", "guild id", message.guild.id);
           await client.initAll();
