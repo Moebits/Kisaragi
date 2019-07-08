@@ -2,17 +2,11 @@ module.exports = (client: any, message: any) => {
 
     require("../exports/functions.js")(client, message);
     require("../exports/settings.js")(client, message);
-    let config: any = require("../../config.json");
-    let prefix: string = config.prefix;
-
-    //const database = require('../database.js');
+    require("../exports/queries")(client, message);
+    let prefix: string = client.fetchPrefix();
 
     //Add guild to database
-    if (message.guild) {
-      if (!client.fetchGuild()) {
-        client.initAll();
-      } 
-    }
+    client.initGuild();
 
     /*if (message.guild) {
         let score: any = client.getScore.get(message.author.id, message.guild.id);
@@ -62,9 +56,9 @@ module.exports = (client: any, message: any) => {
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/g);
     if (args.shift() === undefined) return;
     const command: string = args.shift()!.toLowerCase();
-    const cmd: any = client.commands.get(command); //Find command from database
-    if (!cmd) return;
+    const rawCommand: any = client.fetchCommand(command, "command"); 
+    if (rawCommand[0] === null || undefined) return;
 
-    cmd.run(client, message, args);
+    rawCommand[0].run(client, message, args);
 }
 

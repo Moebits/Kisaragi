@@ -26,6 +26,26 @@ const subDirectory: string[] = [
     "utility"
 ];
 
+const commandAliases: any = {
+    "create guild": [],
+    "eval": [],
+    "reboot": [],
+    "reload": [],
+    "set": [],
+    "avatar": [],
+    "emoji": [],
+    "guild": [],
+    "help": [],
+    "ping": [],
+    "prefix": [],
+    "give": [],
+    "rank": [],
+    "top": [],
+    "del": [],
+    "role": [],
+    "remdash": []
+}
+
 const start = async () => {
 
     client.logger = require("./exports/logger.js");
@@ -45,9 +65,10 @@ const start = async () => {
                 let path = `./commands/${currDir}/${file}`;
                 let commandName = file.split(".")[0];
                 client.logger.log(`Loading Command: ${commandName}`);
-                if (client.fetchCommand(commandName) === (null || undefined)) {
-                    client.insertCommand(commandName, path);
+                if (client.fetchCommand(commandName, "command") === null || undefined) {
+                    client.insertCommand(commandName, commandAliases[commandName], path);
                 }
+                client.updateAliases(commandName, commandAliases[commandName]);
             });      
         }
 

@@ -1,7 +1,12 @@
 module.exports = (client: any, message: any) => {
 
-    const database = require('../database.js');
     require('./queries.js')(client, message);
+
+    const guildSettings: object = {
+        "name": message.guild.name,
+        "guild id": message.guild.id,
+        "members": message.guild.memberCount,
+    }
 
     const prefixSetting: object = {
         "prefix": "=>",
@@ -11,12 +16,6 @@ module.exports = (client: any, message: any) => {
         "timezone": "GMT -4"
     }
     
-    const guildSettings: object = {
-        "name": message.guild.name,
-        "guild id": message.guild.id,
-        "members": message.guild.memberCount,
-    }
-
     const guildInfoSettings: object = {
         "created": message.guild.createdTimestamp,
         "joined": message.guild.joinedTimestamp,
@@ -25,7 +24,7 @@ module.exports = (client: any, message: any) => {
         "region": message.guild.region,
         "owner": message.guild.owner,
         "owner id": message.guild.ownerID,
-        "games": message.guild.presences.map((presence: any) => presence.game.name || null)
+        "games": message.guild.presences.map((presence: any) => presence.game !== null ? presence.game.name : presence.game === null)
     }
 
     const userSettings: object = {
@@ -38,8 +37,8 @@ module.exports = (client: any, message: any) => {
         "channel list": message.guild.channels.map((channel: any) => channel.name),
         "channel id list": message.guild.channels.map((channel: any) => channel.id),
         "channel created list": message.guild.channels.map((channel: any) => channel.createdTimestamp),
-        "category list": message.guild.channels.map((channel: any) => channel.parent.name),
-        "category id list": message.guild.channels.map((channel: any) => channel.parentID)
+        "category list": message.guild.channels.map((channel: any) => channel.parent !== null ? channel.parent.name : channel.parent === null),
+        "category id list": message.guild.channels.map((channel: any) => channel.parent !== null ? channel.parent.id : channel.parent === null)
     }
 
     const roleSettings: object = {
@@ -122,41 +121,46 @@ module.exports = (client: any, message: any) => {
     }
 
     //Initialize a table
-    client.initTable = async (table: string, object: object) => {
+    client.initTable = async (table: string, object: object) => {       
         const entries = Object.entries(object);
-        const pgClient = await database.connect();
         try {
-          await pgClient.query(`BEGIN`);
-          for (const [column, value] of entries) {
-            await pgClient.query(client.insertInto(table, column, value));
+          for (let [key, value] of entries) {
+            await client.updateColumn(table, key, value);
           }
-          await pgClient.query(`COMMIT`);
         } catch (error) {
-          await pgClient.query(`ROLLBACK`);
           throw error
-        } finally {
-          pgClient.release();
-        }
+        } 
+    }
+
+    const tableMap: object = {
+        "prefixes": prefixSetting,
+        "timezones": timezoneSetting,
+        "guilds": guildSettings,
+        "guild info": guildInfoSettings,
+        "users": userSettings,
+        "channels": channelSettings,
+        "roles": roleSettings,
+        "emojis": emojiSettings,
+        "logs": logSettings,
+        "special channels": specialChannelSettings,
+        "special roles": specialRoleSettings,
+        "points": pointSettings,
+        "welcome leaves": welcomeLeaveSettings,
+        "birthdays": birthdaySettings,
+        "images": imageSettings,
+        "warns": warnSettings,
+        "blocks": blockSettings
     }
 
     //Initialize all tables
     client.initAll = async () => {
-        await client.initTable("prefixes", prefixSetting);
-        await client.initTable("timezones", timezoneSetting);
-        await client.initTable("guilds", guildSettings);
-        await client.initTable("guild info", guildInfoSettings);
-        await client.initTable("users", userSettings);
-        await client.initTable("channels", channelSettings);
-        await client.initTable("roles", roleSettings);
-        await client.initTable("emojis", emojiSettings);
-        await client.initTable("logs", logSettings);
-        await client.initTable("special channels", specialChannelSettings);
-        await client.initTable("special roles", specialRoleSettings);
-        await client.initTable("points", pointSettings);
-        await client.initTable("welcome leaves", welcomeLeaveSettings);
-        await client.initTable("birthdays", birthdaySettings);
-        await client.initTable("images", imageSettings);
-        await client.initTable("warns", warnSettings);
-        await client.initTable("blocks", blockSettings);
+        const entries = Object.entries(tableMap);
+        try {
+          for (let [key, value] of entries) {
+            await client.initTable(key, value);
+          }
+        } catch (error) {
+          throw error
+        } 
     }
 }
