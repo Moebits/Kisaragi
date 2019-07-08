@@ -33,13 +33,16 @@ module.exports = (client: any, message: any) => {
 
     //Run Query
     client.runQuery = async (query: any) => {
-
+        const pgClient = await pgPool.connect();
         let start: number = Date.now();
         try {
-          await pgPool.query(query).then((result: any) => result.rows);
+          const result = await pgClient.query(query);
           client.logQuery(Object.values(query)[0], start);
+          return result.rows;
         } catch(error) {
           console.log(error.stack); 
+        } finally {
+          pgClient.release();
         }
     }
 
@@ -171,17 +174,14 @@ module.exports = (client: any, message: any) => {
     //Init guild
     client.initGuild = async () => {
         let query: object = {
-          text: `SELECT "guild id" FROM guilds WHERE "guild id" = $1`,
-          values: [message.guild.id],
+          text: `SELECT "guild id" FROM guilds`,
           rowMode: 'array'
         }
-        const result: any = await client.runQuery(query);
-        if (result === undefined || null) {
+        const result = await client.runQuery(query);
+        const found = result.map((id: any) => id[0] === message.guild.id.toString());
+        if (found === undefined || null) {
           await client.insertInto("guilds", "guild id", message.guild.id);
           await client.initAll();
-          return;
-        } else {
-          return;
         }
     }
 }
