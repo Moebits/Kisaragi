@@ -10,17 +10,17 @@ module.exports = async (client: Client, message: Message) => {
     let colors: string[] = config.colors;
     
     //Random Number
-    exports.getRandomNum = (min: number, max: number) => {
+    getRandomNum: (min: number, max: number) => {
         return Math.random() * (max - min) + min;
     }
 
     //Response Time
-    exports.responseTime = () => {
+    responseTime: () => {
         return `${Date.now() - message.createdTimestamp} ms`;
     }
 
     //Get Emoji
-    exports.getEmoji = (name: string) => {
+    getEmoji: (name: string) => {
         for (let i in config.emojis) {
             if (name === config.emojis[i].name) {
                 return client.emojis.find((emoji: any) => emoji.id === config.emojis[i].id);
@@ -29,12 +29,12 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Random Color
-    exports.randomColor = () => {
+    randomColor: () => {
         return parseInt(colors[Math.floor(Math.random() * colors.length)]);
     }
 
     //Create Embed
-    exports.createEmbed = () => {
+    createEmbed: () => {
         let embed: any = new Discord.RichEmbed();
             embed
             .setColor(exports.randomColor())
@@ -44,7 +44,7 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Check for Bot Owner
-    exports.checkBotOwner = () => {
+    checkBotOwner: () => {
         if (message.author.id === ownerID) {
             return true;
         } else {
@@ -53,27 +53,27 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Create Permission
-    exports.createPermission = (permission: string) => {
+    createPermission: (permission: string) => {
         let perm: any = new Discord.Permissions(permission);
         return perm;
     }
 
     //Check for Bot Mention
-    exports.checkBotMention = (message: any) => {
+    checkBotMention: (message: any) => {
         if (message.content.startsWith("<@!593838271650332672>")) {
             return true;
         }
     }
 
     //Check for Prefix and User
-    exports.checkPrefixUser = (message: any) => {
+    checkPrefixUser: (message: any) => {
         if(!message.content.startsWith(prefix) || message.author.bot) {
             return true;
         }
     }
 
     //Combine args after an index
-    exports.combineArgs = (args: string[], num: number) => {
+    combineArgs: (args: string[], num: number) => {
         let combined: string = "";
         for (let i = num; i < args.length; i++) {
             combined += args[i] + " ";
@@ -82,7 +82,7 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Check args
-    exports.checkArgs = (args: string[], num: string) => {
+    checkArgs: (args: string[], num: string) => {
         switch (num) {
             case "single": {
                 if (!args[0]) {
@@ -103,7 +103,7 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Calculate Score
-    exports.calcScore = async () => {
+    calcScore: async () => {
         let rawScoreList: string[] = await queries.fetchColumn("points", "score list");
         let rawLevelList: string[] = await queries.fetchColumn("points", "level list");
         let rawPointRange: string[] = await queries.fetchColumn("points", "point range");

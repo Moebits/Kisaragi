@@ -124,7 +124,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Initialize a table
-    exports.initTable = async (table: string, object: object) => {       
+    initTable: async (table: string, object: object) => {       
         const entries = Object.entries(object);
         try {
           for (let [key, value] of entries) {
@@ -156,7 +156,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Initialize all tables
-    exports.initAll = async () => {
+    initAll: async () => {
         const entries = Object.entries(tableMap);
         try {
           for (let [key, value] of entries) {

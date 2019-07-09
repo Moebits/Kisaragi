@@ -7,18 +7,6 @@ import {Client} from "discord.js";
 
 const client = new Client(); 
 
-const Pool: any = require('pg').Pool;
-
-    exports.pgPool = new Pool({
-      user: process.env.PGUSER,
-      host: process.env.PGHOST,
-      database: process.env.PGDATABASE,
-      password: process.env.PGPASSWORD,
-      port: process.env.PGPORT,
-      sslmode: process.env.PGSSLMODE,
-      max: 15
-    });
-
 //let version: string = "1.0.0";
 
 const subDirectory: string[] = [

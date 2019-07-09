@@ -4,6 +4,18 @@ module.exports = (client: Client, message: Message) => {
 
     const settings: any = require("./settings.js")(client, message);
 
+    const Pool: any = require('pg').Pool;
+
+    pgPool: new Pool({
+      user: process.env.PGUSER,
+      host: process.env.PGHOST,
+      database: process.env.PGDATABASE,
+      password: process.env.PGPASSWORD,
+      port: process.env.PGPORT,
+      sslmode: process.env.PGSSLMODE,
+      max: 15
+    });
+
     const tableList: string[] = [
         "birthdays",
         "blocks",
@@ -25,7 +37,7 @@ module.exports = (client: Client, message: Message) => {
     ];
 
     //Run Query
-    exports.runQuery = async (query: any) => {
+    runQuery: async (query: any) => {
       const pgClient = await exports.pgPool.connect();
         let start: number = Date.now();
         try {
@@ -40,7 +52,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Log Query
-    exports.logQuery = (text: string, start: number) => {
+    logQuery: (text: string, start: number) => {
       let chalk: any = require("chalk");
       let moment: any = require("moment");
       const timestamp: string = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
@@ -50,7 +62,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Fetch a row 
-    exports.fetchRow = async (table: string) => {
+    fetchRow: async (table: string) => {
         let query: object = {
           text: `SELECT * FROM "${table}" WHERE "guild id" = ${message.guild.id}`,
           rowMode:'array'
@@ -60,7 +72,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Fetch commands
-    exports.fetchCommand = async (command: string, column: string) => {
+    fetchCommand: async (command: string, column: string) => {
         let query: object = {
           text: `SELECT "${column}" FROM commands WHERE command IN ($1)`,
           values: [command],
@@ -71,7 +83,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Fetch aliases
-    exports.fetchAliases = async (command: string) => {
+    fetchAliases: async (command: string) => {
         let query: object = {
           text: `SELECT aliases FROM commands WHERE command IN ($1)`,
           values: [command],
@@ -82,7 +94,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Fetch Prefix
-    exports.fetchPrefix = async () => {
+    fetchPrefix: async () => {
         let query: object = {
           text: `SELECT prefix FROM prefixes WHERE "guild id" = ${message.guild.id}`,
           rowMode: 'array'
@@ -92,7 +104,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Fetch a column
-    exports.fetchColumn = async (table: string, column: string) => {
+    fetchColumn: async (table: string, column: string) => {
         let query: object = {
           text: `SELECT "${column}" FROM "${table}" WHERE "guild id" = ${message.guild.id}`,
           rowMode: 'array'
@@ -102,7 +114,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Insert row into a table
-    exports.insertInto = async (table: string, column: string, value: any) => {
+    insertInto: async (table: string, column: string, value: any) => {
         let query: object = {
           text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
           values: [value]
@@ -111,7 +123,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Insert command
-    exports.insertCommand = async (command: string, aliases: string[], path: string) => {
+    insertCommand: async (command: string, aliases: string[], path: string) => {
       let query: object = {
         text: `INSERT INTO commands (command, aliases, path) VALUES ($1, $2, $3)`,
         values: [command, aliases, path]
@@ -120,7 +132,7 @@ module.exports = (client: Client, message: Message) => {
   }
 
     //Update a row in a table
-    exports.updateColumn = async (table: string, column: string, value: any) => {
+    updateColumn: async (table: string, column: string, value: any) => {
         let query: object = {
           text: `UPDATE "${table}" SET "${column}" = $1 WHERE "guild id" = ${message.guild.id}`,
           values: [value]
@@ -129,7 +141,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Update Aliases
-    exports.updateAliases = async (command: string, aliases: any) => {
+    updateAliases: async (command: string, aliases: any) => {
       let query: object = {
         text: `UPDATE commands SET aliases = $1 WHERE "command" = $2`,
         values: [aliases, command]
@@ -138,7 +150,7 @@ module.exports = (client: Client, message: Message) => {
   }
 
     //Remove a guild from all tables
-    exports.deleteGuild = async (guild: number) => {
+    deleteGuild: async (guild: number) => {
         for (let i = 0; i < tableList.length; i++) {
             let query: object = {
               text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
@@ -149,7 +161,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Order tables by guild member count
-    exports.orderTables = async () => {
+    orderTables: async () => {
         for (let table in tableList) {
             let query: object = {
               text: `SELECT members FROM "${tableList[table]}" ORDER BY 
@@ -160,7 +172,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Init guild
-    exports.initGuild = async () => {
+    initGuild: async () => {
         let query: object = {
           text: `SELECT "guild id" FROM guilds`,
           rowMode: 'array'
