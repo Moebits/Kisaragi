@@ -1,10 +1,11 @@
 require('dotenv').config();
 const token = process.env.TOKEN;
-const ownerID = process.env.OWNER_ID;
-const Discord = require("discord.js");
-const client = new Discord.Client(); 
 const {promisify} = require("util");
 const readdir = promisify(require("fs").readdir);
+
+import {Client} from "discord.js";
+
+const client = new Client(); 
 
 const Pool: any = require('pg').Pool;
 
@@ -18,7 +19,7 @@ const Pool: any = require('pg').Pool;
       max: 15
     });
 
-let version: string = "1.0.0";
+//let version: string = "1.0.0";
 
 const subDirectory: string[] = [
     "administrator",
@@ -60,8 +61,8 @@ const commandAliases: any = {
 
 const start = async () => {
 
-    client.logger = require("./exports/logger.js");
-    require('./exports/queries.js')(client);
+    const logger = require("./exports/logger.js");
+    const queries = require('./exports/queries.js')(client);
 
     let cmdFiles: string[] = [];
 
@@ -75,13 +76,13 @@ const start = async () => {
             if (!file.endsWith(".js")) return;
             let path = `./commands/${currDir}/${file}`;
             let commandName = file.split(".")[0];
-            let cmdFind = await client.fetchCommand(commandName, "command");
+            let cmdFind = await queries.fetchCommand(commandName, "command");
             if (cmdFind === undefined || null) {
-                await client.insertCommand(commandName, commandAliases[commandName], path);
+                await queries.insertCommand(commandName, commandAliases[commandName], path);
             } else {
-                await client.updateAliases(commandName, commandAliases[commandName]);
+                await queries.updateAliases(commandName, commandAliases[commandName]);
             }
-            client.logger.log(`Loading Command: ${commandName}`);
+            logger.log(`Loading Command: ${commandName}`);
         });      
     }
 
@@ -92,13 +93,13 @@ const start = async () => {
         evtFiles.forEach((file: any) => {
             if (!file.endsWith(".js")) return;
             const eventName = file.split(".")[0];
-            client.logger.log(`Loading Event: ${eventName}`);
+            logger.log(`Loading Event: ${eventName}`);
             const event = require(`./events/${file}`);
             client.on(eventName, event.bind(null, client));
         });
     
-        client.logger.log(`Loaded a total of ${cmdFiles.length} commands.`);
-        client.logger.log(`Loaded a total of ${evtFiles.length} events.`);
+        logger.log(`Loaded a total of ${cmdFiles.length} commands.`);
+        logger.log(`Loaded a total of ${evtFiles.length} events.`);
     
         client.login(token);
 
@@ -106,3 +107,5 @@ const start = async () => {
 }
 
 start();
+
+
