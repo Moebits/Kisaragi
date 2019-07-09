@@ -4,8 +4,9 @@ const {promisify} = require("util");
 const readdir = promisify(require("fs").readdir);
 
 import {Client} from "discord.js";
-
 const client = new Client(); 
+
+const commands = require("./commands.json");
 
 //let version: string = "1.0.0";
 
@@ -27,26 +28,6 @@ const subDirectory: string[] = [
     "utility"
 ];
 
-const commandAliases: any = {
-    "createguild": [],
-    "eval": [],
-    "reboot": [],
-    "reload": [],
-    "set": [],
-    "avatar": [],
-    "emoji": [],
-    "guild": [],
-    "help": [],
-    "ping": [],
-    "prefix": [],
-    "give": [],
-    "rank": [],
-    "top": [],
-    "del": ["prune", "purge", "d"],
-    "role": [],
-    "remdash": []
-}
-
 const start = async () => {
 
     const logger = require("./exports/logger.js");
@@ -62,13 +43,13 @@ const start = async () => {
         }
         addFiles.forEach(async (file: any) => {
             if (!file.endsWith(".js")) return;
-            let path = `./commands/${currDir}/${file}`;
+            let path = `../commands/${currDir}/${file}`;
             let commandName = file.split(".")[0];
             let cmdFind = await queries.fetchCommand(commandName, "command");
             if (cmdFind === undefined || null) {
-                await queries.insertCommand(commandName, commandAliases[commandName], path);
+                await queries.insertCommand(commandName, commands.aliases[commandName], path);
             } else {
-                await queries.updateAliases(commandName, commandAliases[commandName]);
+                await queries.updateAliases(commandName, commands.aliases[commandName]);
             }
             logger.log(`Loading Command: ${commandName}`);
         });      

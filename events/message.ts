@@ -4,6 +4,7 @@ module.exports = async (client: Client, message: Message) => {
 
     const functions = await require("../exports/functions.js")(client, message);
     const queries = await require("../exports/queries.js")(client, message);
+    const commands = await require("../commands.json");
     let prefix: string = await queries.fetchPrefix();
 
     if (message.guild) {
@@ -28,14 +29,12 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Load Commands
-    const args: any = message.content.slice(prefix.length).trim().split(/ +/g);
+    const args: string[] = message.content.slice(prefix.length).trim().split(/ +/g);
     if (args[0] === undefined) return;
     const command: string = args[0].toLowerCase();
-    const rawCommand: any = await queries.fetchCommand(command, "command"); 
-    const rawPath: any = await queries.fetchCommand(command, "path")
-    const cmd = rawCommand[0].toString();
-    if (cmd === null || undefined) return;
-    const cp = require(`.${rawPath[0]}`);
+    const path: string = commands.path[command];
+    if (path === null || undefined) return;
+    const cp = require(path);
 
     message.channel.send("Loading")
     .then(async (msg: any) => {
