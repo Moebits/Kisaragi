@@ -22,9 +22,9 @@ module.exports = (client: any, message: any) => {
         "icon": message.guild.iconURL,
         "splash": message.guild.splashURL,
         "region": message.guild.region,
-        "owner": message.guild.owner,
+        "owner": message.guild.owner.user.tag,
         "owner id": message.guild.ownerID,
-        "games": message.guild.presences.map((presence: any) => presence.game !== null ? presence.game.name : presence.game === null)
+        "games": message.guild.presences.map((presence: any) => presence.game !== null ? presence.game.name : null)
     }
 
     const userSettings: object = {
@@ -37,8 +37,8 @@ module.exports = (client: any, message: any) => {
         "channel list": message.guild.channels.map((channel: any) => channel.name),
         "channel id list": message.guild.channels.map((channel: any) => channel.id),
         "channel created list": message.guild.channels.map((channel: any) => channel.createdTimestamp),
-        "category list": message.guild.channels.map((channel: any) => channel.parent !== null ? channel.parent.name : channel.parent === null),
-        "category id list": message.guild.channels.map((channel: any) => channel.parent !== null ? channel.parent.id : channel.parent === null)
+        "category list": message.guild.channels.map((channel: any) => channel.parent !== null ? channel.parent.name : null),
+        "category id list": message.guild.channels.map((channel: any) => channel.parent !== null ? channel.parentID : null)
     }
 
     const roleSettings: object = {
@@ -79,7 +79,8 @@ module.exports = (client: any, message: any) => {
         "score list": null,
         "level list": null,
         "point range": [10, 20],
-        "point threshold": 1000
+        "point threshold": 1000,
+        "level message": "Congrats user, you are now level newlevel!"
     }
 
     const welcomeLeaveSettings: object = {

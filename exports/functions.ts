@@ -1,9 +1,9 @@
-module.exports = (client: any, message: any) => {
+module.exports = async (client: any, message: any) => {
 
     let ownerID: any = process.env.OWNER_ID;
     let Discord: any = require("discord.js");
     let config: any = require("../../config.json");
-    let prefix: string = config.prefix;
+    let prefix: string = await client.fetchPrefix();
     let colors: string[] = config.colors;
     
     //Random Number
@@ -77,4 +77,43 @@ module.exports = (client: any, message: any) => {
         }
         return combined;
     }
+
+    //Calculate Score
+    client.calcScore = async () => {
+        let rawScoreList: any = await client.fetchColumn("points", "score list");
+        let rawLevelList: any = await client.fetchColumn("points", "level list");
+        let rawPointRange: any = await client.fetchColumn("points", "point range");
+        let rawPointThreshold: any = await client.fetchColumn("points", "point threshold");
+        let rawUserList: any = await client.fetchColumn("points", "user id list");
+        let levelUpMessage: any = await client.fetchColumn("points", "level message");
+
+        let scoreList: number[] = rawScoreList.map((num: any) => parseInt(num));
+        let levelList: number[] = rawLevelList.map((num: any) => parseInt(num));
+        let pointRange: number[] = rawPointRange.map((num: any) => parseInt(num));
+        let pointThreshold: number = parseInt(rawPointThreshold);
+        let userList: number[] = rawUserList.map((num: any) => parseInt(num));
+        let userStr: string = levelUpMessage.toString().replace("user", `<@${message.author.id}>`)
+        
+
+        for (let i in userList) {
+            if (userList[i] === message.author.id) {
+                let userScore: number = scoreList[i];
+                let userLevel: number = levelList[i];
+                let newPoints: number = Math.floor(userScore + client.getRandomNum(pointRange[0], pointRange[1]));
+                let newLevel: number = Math.floor(userScore / pointThreshold);
+                let lvlStr: string = userStr.replace("newlevel", newLevel.toString());
+
+                if (newLevel > userLevel) {
+                    levelList[i] = newLevel;
+                    await client.updateColumn("points", "level list", levelList);
+                    const levelEmbed = client.createEmbed();
+                    levelEmbed
+                    .setDescription(lvlStr);
+                    client.message.channel.send(levelEmbed);
+                }
+                scoreList[i] = newPoints;
+                await client.updateColumn("points", "score list", scoreList);
+            }
+        }
+      }
 }

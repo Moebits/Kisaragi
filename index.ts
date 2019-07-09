@@ -6,6 +6,18 @@ const client = new Discord.Client();
 const {promisify} = require("util");
 const readdir = promisify(require("fs").readdir);
 
+const Pool: any = require('pg').Pool;
+
+    client.pgPool = new Pool({
+      user: process.env.PGUSER,
+      host: process.env.PGHOST,
+      database: process.env.PGDATABASE,
+      password: process.env.PGPASSWORD,
+      port: process.env.PGPORT,
+      sslmode: process.env.PGSSLMODE,
+      max: 15
+    });
+
 let version: string = "1.0.0";
 
 const subDirectory: string[] = [
@@ -27,7 +39,7 @@ const subDirectory: string[] = [
 ];
 
 const commandAliases: any = {
-    "create guild": [],
+    "createguild": [],
     "eval": [],
     "reboot": [],
     "reload": [],
@@ -41,7 +53,7 @@ const commandAliases: any = {
     "give": [],
     "rank": [],
     "top": [],
-    "del": [],
+    "del": ["prune", "purge", "d"],
     "role": [],
     "remdash": []
 }
@@ -51,29 +63,32 @@ const start = async () => {
     client.logger = require("./exports/logger.js");
     require('./exports/queries.js')(client);
 
-    try {
-        let cmdFiles: string[] = [];
+    let cmdFiles: string[] = [];
 
-        for (let i in subDirectory) {
-            let currDir = subDirectory[i];
-            let addFiles = await readdir(`./commands/${currDir}`);
-            if (addFiles !== null) {
-                cmdFiles.push(addFiles);
-            }
-            addFiles.forEach((file: any) => {
-                if (!file.endsWith(".js")) return;
-                let path = `./commands/${currDir}/${file}`;
-                let commandName = file.split(".")[0];
-                client.logger.log(`Loading Command: ${commandName}`);
-                if (client.fetchCommand(commandName, "command") === null || undefined) {
-                    client.insertCommand(commandName, commandAliases[commandName], path);
-                }
-                client.updateAliases(commandName, commandAliases[commandName]);
-            });      
+    for (let i in subDirectory) {
+        let currDir = subDirectory[i];
+        let addFiles = await readdir(`./commands/${currDir}`);
+        if (addFiles !== null) {
+            cmdFiles.push(addFiles);
         }
+        addFiles.forEach(async (file: any) => {
+            if (!file.endsWith(".js")) return;
+            let path = `./commands/${currDir}/${file}`;
+            let commandName = file.split(".")[0];
+            let cmdFind = await client.fetchCommand(commandName, "command");
+            if (cmdFind === undefined || null) {
+                await client.insertCommand(commandName, commandAliases[commandName], path);
+            } else {
+                await client.updateAliases(commandName, commandAliases[commandName]);
+            }
+            client.logger.log(`Loading Command: ${commandName}`);
+        });      
+    }
 
+    setTimeout(async () => {
+    
         let evtFiles = await readdir("./events/");
-
+    
         evtFiles.forEach((file: any) => {
             if (!file.endsWith(".js")) return;
             const eventName = file.split(".")[0];
@@ -81,15 +96,13 @@ const start = async () => {
             const event = require(`./events/${file}`);
             client.on(eventName, event.bind(null, client));
         });
-
+    
         client.logger.log(`Loaded a total of ${cmdFiles.length} commands.`);
         client.logger.log(`Loaded a total of ${evtFiles.length} events.`);
-
+    
         client.login(token);
 
-        } catch (error) {
-            console.log(error);
-        }
+    }, 1000);
 }
 
 start();
