@@ -1,44 +1,46 @@
-module.exports = async (client: any, message: any) => {
+import {Client, Message} from "discord.js";
 
-    require("../exports/functions.js")(client, message);
-    require("../exports/settings.js")(client, message);
-    require("../exports/queries")(client, message);
-    let prefix: string = await client.fetchPrefix();
+module.exports = async (client: Client, message: Message) => {
 
-    //Add guild to database
-    await client.initGuild();
+    const functions = await require("../exports/functions.js")(client, message);
+    const queries = await require("../exports/queries.js")(client, message);
+    let prefix: string = await queries.fetchPrefix();
 
     if (message.guild) {
-      await client.calcScore();
+      functions.calcScore();
+
+        const responseObject: any = {
+          "gab": "Gab is the best girl"
+      }
+      if (responseObject[message.content]) {
+        return message.channel.send(responseObject[message.content]);
+      }
+      if (functions.checkBotMention(message)) {
+          const prefixHelpEmbed: any = functions.createEmbed();
+          prefixHelpEmbed
+          .setDescription(`My prefix is set to "${prefix}"!\nType ${prefix}help if you need help.`)
+          message.channel.send(prefixHelpEmbed);
+      }
+      if (functions.checkPrefixUser(message)) {
+          return;
+      }
+
     }
 
-    const responseObject: any = {
-        "gab": "Gab is the best girl"
-    } 
-    if (responseObject[message.content]) {
-      return message.channel.send(responseObject[message.content]);
-    }
-    if (client.checkBotMention(message)) {
-        const prefixHelpEmbed: any = client.createEmbed();
-        prefixHelpEmbed
-        .setDescription(`My prefix is set to "${prefix}"!\nType ${prefix}help if you need help.`)
-        message.channel.send(prefixHelpEmbed);
-    }
-    if (client.checkPrefixUser(message)) {
-        return;
-    }
-
-    console.log(prefix);
- 
     //Load Commands
     const args: any = message.content.slice(prefix.length).trim().split(/ +/g);
     if (args[0] === undefined) return;
     const command: string = args[0].toLowerCase();
-    const rawCommand: any = await client.fetchCommand(command, "command"); 
-    const rawPath: any = await client.fetchCommand(command, "path")
+    const rawCommand: any = await queries.fetchCommand(command, "command"); 
+    const rawPath: any = await queries.fetchCommand(command, "path")
     const cmd = rawCommand[0].toString();
     if (cmd === null || undefined) return;
     const cp = require(`.${rawPath[0]}`);
-    cp.run(client, message, args);
+
+    message.channel.send("Loading")
+    .then(async (msg: any) => {
+      await cp.run(client, message, args);
+      msg.delete(1000);
+    });
 }
 

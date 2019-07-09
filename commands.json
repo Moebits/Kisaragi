@@ -1,0 +1,41 @@
+{
+    "aliases": {
+        "createguild": [],
+        "eval": [],
+        "reboot": [],
+        "reload": [],
+        "set": [],
+        "avatar": [],
+        "emoji": [],
+        "guild": [],
+        "help": [],
+        "ping": [],
+        "prefix": [],
+        "give": [],
+        "rank": [],
+        "top": [],
+        "del": ["prune", "purge", "d"],
+        "role": [],
+        "remdash": []
+    },
+
+    "paths": {
+        "createguild": "../commands/bot owner/createguild.js",
+        "eval": "../commands/bot owner/eval.js",
+        "reboot": "../commands/bot owner/reboot.js",
+        "reload": "../commands/bot owner/reload.js",
+        "set": "../commands/bot owner/set.js",
+        "avatar": "../commands/info/avatar.js",
+        "emoji": "../commands/info/emoji.js",
+        "guild": "../commands/info/guild.js",
+        "help": "../commands/info/help.js",
+        "ping": "../commands/info/ping.js",
+        "prefix": "../commands/info/prefix.js",
+        "give": "../commands/level/give.js",
+        "rank": "../commands/level/rank.js",
+        "top": "../commands/level/top.js",
+        "del": "../commands/moderator/del.js",
+        "role": "../commands/moderator/role.js",
+        "remdash": "../commands/utility/remdash.js"
+    }
+}

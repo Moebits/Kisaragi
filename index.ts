@@ -8,7 +8,7 @@ const readdir = promisify(require("fs").readdir);
 
 const Pool: any = require('pg').Pool;
 
-    client.pgPool = new Pool({
+    exports.pgPool = new Pool({
       user: process.env.PGUSER,
       host: process.env.PGHOST,
       database: process.env.PGDATABASE,

@@ -1,4 +1,6 @@
-module.exports = (client: any) => {
+import {Client, Message} from "discord.js";
+
+module.exports = (client: Client, message: Message) => {
 
     let chalk: any = require("chalk");
     let moment: any = require("moment");

@@ -1,4 +1,4 @@
-const returnLog = (content: string, type: string, color: any) => {
+const returnLog = (content: string, type: string, color: string) => {
   let chalk = require("chalk");
   let moment = require("moment");
   const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
@@ -14,6 +14,7 @@ const getLogColor = (logType: string) => {
     case "debug": return "greenBright";
     case "cmd": return "blueBright";
     case "ready": return "cyanBright";
+    default: return "magentaBright";
   }
 }
 

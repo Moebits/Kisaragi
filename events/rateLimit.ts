@@ -1,4 +1,6 @@
-module.exports = (client: any, message: any) => {
+import {Client, Message} from "discord.js";
+
+module.exports = (client: Client, message: Message) => {
 
     //Being rate limited
 }
