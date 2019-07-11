@@ -1,14 +1,12 @@
-import {Client, Message} from "discord.js";
+module.exports = async (client: any, message: any) => {
 
-module.exports = async (client: Client, message: Message) => {
-
-    const functions = await require("../exports/functions.js")(client, message);
-    const queries = await require("../exports/queries.js")(client, message);
-    const commands = await require("../commands.json");
-    let prefix: string = await queries.fetchPrefix();
+    await require("../exports/functions.js")(client, message);
+    await require("../exports/queries.js")(client, message);
+    const commands = await require("../../commands.json");
+    let prefix: string = await client.fetchPrefix();
 
     if (message.guild) {
-      functions.calcScore();
+      client.calcScore();
 
         const responseObject: any = {
           "gab": "Gab is the best girl"
@@ -16,13 +14,13 @@ module.exports = async (client: Client, message: Message) => {
       if (responseObject[message.content]) {
         return message.channel.send(responseObject[message.content]);
       }
-      if (functions.checkBotMention(message)) {
-          const prefixHelpEmbed: any = functions.createEmbed();
+      if (client.checkBotMention(message)) {
+          const prefixHelpEmbed: any = client.createEmbed();
           prefixHelpEmbed
           .setDescription(`My prefix is set to "${prefix}"!\nType ${prefix}help if you need help.`)
           message.channel.send(prefixHelpEmbed);
       }
-      if (functions.checkPrefixUser(message)) {
+      if (client.checkPrefixUser(message)) {
           return;
       }
 

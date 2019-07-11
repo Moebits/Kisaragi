@@ -1,6 +1,4 @@
-import {GuildMember} from "discord.js";
-
-module.exports = (member: GuildMember) => {
+module.exports = (member: any) => {
 
     //null
 }

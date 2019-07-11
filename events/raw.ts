@@ -1,6 +1,4 @@
-import {Client} from "discord.js";
-
-module.exports = (client: Client, packet: any) => {
+module.exports = (client: any, packet: any) => {
   
     if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t)) return;
     const channel: any = client.channels.get(packet.d.channel_id);

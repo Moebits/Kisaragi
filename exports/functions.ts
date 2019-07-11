@@ -1,26 +1,23 @@
-import {Client, Message} from "discord.js";
-
-module.exports = async (client: Client, message: Message) => {
+module.exports = async (client: any, message: any) => {
 
     let ownerID: any = process.env.OWNER_ID;
     let Discord: any = require("discord.js");
     let config: any = require("../../config.json");
-    let queries: any = await require("./queries.js"); 
-    let prefix: string = await queries.fetchPrefix();
+    let prefix: string = await client.fetchPrefix();
     let colors: string[] = config.colors;
     
     //Random Number
-    getRandomNum: (min: number, max: number) => {
+    client.getRandomNum = (min: number, max: number) => {
         return Math.random() * (max - min) + min;
     }
 
     //Response Time
-    responseTime: () => {
+    client.responseTime = () => {
         return `${Date.now() - message.createdTimestamp} ms`;
     }
 
     //Get Emoji
-    getEmoji: (name: string) => {
+    client.getEmoji = (name: string) => {
         for (let i in config.emojis) {
             if (name === config.emojis[i].name) {
                 return client.emojis.find((emoji: any) => emoji.id === config.emojis[i].id);
@@ -29,22 +26,22 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Random Color
-    randomColor: () => {
+    client.randomColor = () => {
         return parseInt(colors[Math.floor(Math.random() * colors.length)]);
     }
 
     //Create Embed
-    createEmbed: () => {
+    client.createEmbed = () => {
         let embed: any = new Discord.RichEmbed();
             embed
             .setColor(exports.randomColor())
             .setTimestamp(embed.timestamp)
-            .setFooter(`Responded in ${exports.responseTime()}`, message.author.avatarURL);
+            .setFooter(`Responded in ${client.responseTime()}`, message.author.avatarURL);
             return embed;
     }
 
     //Check for Bot Owner
-    checkBotOwner: () => {
+    client.checkBotOwner = () => {
         if (message.author.id === ownerID) {
             return true;
         } else {
@@ -53,27 +50,27 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Create Permission
-    createPermission: (permission: string) => {
+    client.createPermission = (permission: string) => {
         let perm: any = new Discord.Permissions(permission);
         return perm;
     }
 
     //Check for Bot Mention
-    checkBotMention: (message: any) => {
+    client.checkBotMention = (message: any) => {
         if (message.content.startsWith("<@!593838271650332672>")) {
             return true;
         }
     }
 
     //Check for Prefix and User
-    checkPrefixUser: (message: any) => {
+    client.checkPrefixUser = (message: any) => {
         if(!message.content.startsWith(prefix) || message.author.bot) {
             return true;
         }
     }
 
     //Combine args after an index
-    combineArgs: (args: string[], num: number) => {
+    client.combineArgs = (args: string[], num: number) => {
         let combined: string = "";
         for (let i = num; i < args.length; i++) {
             combined += args[i] + " ";
@@ -82,7 +79,7 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Check args
-    checkArgs: (args: string[], num: string) => {
+    client.checkArgs = (args: string[], num: string) => {
         switch (num) {
             case "single": {
                 if (!args[0]) {
@@ -93,7 +90,7 @@ module.exports = async (client: Client, message: Message) => {
 
             }
             case "multi": {
-                if (!args[0] || !exports.combineArgs(args, 1)) {
+                if (!args[0] || !client.combineArgs(args, 1)) {
                     return false;
                 } else {
                     return true;
@@ -103,13 +100,13 @@ module.exports = async (client: Client, message: Message) => {
     }
 
     //Calculate Score
-    calcScore: async () => {
-        let rawScoreList: string[] = await queries.fetchColumn("points", "score list");
-        let rawLevelList: string[] = await queries.fetchColumn("points", "level list");
-        let rawPointRange: string[] = await queries.fetchColumn("points", "point range");
-        let rawPointThreshold: string[] = await queries.fetchColumn("points", "point threshold");
-        let rawUserList: string[] = await queries.fetchColumn("points", "user id list");
-        let levelUpMessage: string = await queries.fetchColumn("points", "level message");
+    client.calcScore = async () => {
+        let rawScoreList: string[] = await client.fetchColumn("points", "score list");
+        let rawLevelList: string[] = await client.fetchColumn("points", "level list");
+        let rawPointRange: string[] = await client.fetchColumn("points", "point range");
+        let rawPointThreshold: string[] = await client.fetchColumn("points", "point threshold");
+        let rawUserList: string[] = await client.fetchColumn("points", "user id list");
+        let levelUpMessage: string = await client.fetchColumn("points", "level message");
 
         let scoreList: number[] = rawScoreList.map((num: string) => Number(num));
         let levelList: number[] = rawLevelList.map((num: string) => Number(num));
@@ -123,20 +120,20 @@ module.exports = async (client: Client, message: Message) => {
             if (userList[i] === Number(message.author.id)) {
                 let userScore: number = scoreList[i];
                 let userLevel: number = levelList[i];
-                let newPoints: number = Math.floor(userScore + exports.getRandomNum(pointRange[0], pointRange[1]));
+                let newPoints: number = Math.floor(userScore + client.getRandomNum(pointRange[0], pointRange[1]));
                 let newLevel: number = Math.floor(userScore / pointThreshold);
                 let lvlStr: string = userStr.replace("newlevel", newLevel.toString());
 
                 if (newLevel > userLevel) {
                     levelList[i] = newLevel;
-                    await queries.updateColumn("points", "level list", levelList);
-                    const levelEmbed = exports.createEmbed();
+                    await client.updateColumn("points", "level list", levelList);
+                    const levelEmbed = client.createEmbed();
                     levelEmbed
                     .setDescription(lvlStr);
-                    queries.message.channel.send(levelEmbed);
+                    client.message.channel.send(levelEmbed);
                 }
                 scoreList[i] = newPoints;
-                await queries.updateColumn("points", "score list", scoreList);
+                await client.updateColumn("points", "score list", scoreList);
             }
         }
       }

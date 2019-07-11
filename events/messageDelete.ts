@@ -1,6 +1,4 @@
-import {Client, Message} from "discord.js";
-
-module.exports = (client: Client, message: Message) => {
+module.exports = (client: any, message: any) => {
 
     //Log deleted messages
 }

@@ -3,10 +3,10 @@ const token = process.env.TOKEN;
 const {promisify} = require("util");
 const readdir = promisify(require("fs").readdir);
 
-import {Client} from "discord.js";
-const client = new Client(); 
+const Discord = require("discord.js");
+const client = new Discord.Client();
 
-const commands = require("./commands.json");
+const commands = require("../commands.json");
 
 //let version: string = "1.0.0";
 
@@ -31,7 +31,7 @@ const subDirectory: string[] = [
 const start = async () => {
 
     const logger = require("./exports/logger.js");
-    const queries = require('./exports/queries.js')(client);
+    require('./exports/queries.js')(client);
 
     let cmdFiles: string[] = [];
 
@@ -45,11 +45,11 @@ const start = async () => {
             if (!file.endsWith(".js")) return;
             let path = `../commands/${currDir}/${file}`;
             let commandName = file.split(".")[0];
-            let cmdFind = await queries.fetchCommand(commandName, "command");
+            let cmdFind = await client.fetchCommand(commandName, "command");
             if (cmdFind === undefined || null) {
-                await queries.insertCommand(commandName, commands.aliases[commandName], path);
+                await client.insertCommand(commandName, commands.aliases[commandName], path);
             } else {
-                await queries.updateAliases(commandName, commands.aliases[commandName]);
+                await client.updateAliases(commandName, commands.aliases[commandName]);
             }
             logger.log(`Loading Command: ${commandName}`);
         });      

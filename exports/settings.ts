@@ -1,8 +1,4 @@
-import {Client, Message, Presence, GuildMember, GuildChannel, Role, Emoji} from "discord.js";
-
-module.exports = (client: Client, message: Message) => {
-
-    const queries = require('./queries.js')(client, message);
+module.exports = (client: any, message: any) => {
 
     const guildSettings: object = {
         "name": message.guild.name,
@@ -26,35 +22,35 @@ module.exports = (client: Client, message: Message) => {
         "region": message.guild.region,
         "owner": message.guild.owner.user.tag,
         "owner id": message.guild.ownerID,
-        "games": message.guild.presences.map((presence: Presence) => presence.game !== null ? presence.game.name : null)
+        "games": message.guild.presences.map((presence: any) => presence.game !== null ? presence.game.name : null)
     }
 
     const userSettings: object = {
-        "user list": message.guild.members.map((member: GuildMember) => member.displayName),
-        "user id list": message.guild.members.map((member: GuildMember) => member.id),
-        "user join list": message.guild.members.map((member: GuildMember) => member.joinedTimestamp)
+        "user list": message.guild.members.map((member: any) => member.displayName),
+        "user id list": message.guild.members.map((member: any) => member.id),
+        "user join list": message.guild.members.map((member: any) => member.joinedTimestamp)
     }
 
     const channelSettings: object = {
-        "channel list": message.guild.channels.map((channel: GuildChannel) => channel.name),
-        "channel id list": message.guild.channels.map((channel: GuildChannel) => channel.id),
-        "channel created list": message.guild.channels.map((channel: GuildChannel) => channel.createdTimestamp),
-        "category list": message.guild.channels.map((channel: GuildChannel) => channel.parent !== null ? channel.parent.name : null),
-        "category id list": message.guild.channels.map((channel: GuildChannel) => channel.parent !== null ? channel.parentID : null)
+        "channel list": message.guild.channels.map((channel: any) => channel.name),
+        "channel id list": message.guild.channels.map((channel: any) => channel.id),
+        "channel created list": message.guild.channels.map((channel: any) => channel.createdTimestamp),
+        "category list": message.guild.channels.map((channel: any) => channel.parent !== null ? channel.parent.name : null),
+        "category id list": message.guild.channels.map((channel: any) => channel.parent !== null ? channel.parentID : null)
     }
 
     const roleSettings: object = {
-        "role list": message.guild.roles.map((role: Role) => role.name),
-        "role id list": message.guild.roles.map((role: Role) => role.id),
-        "role created list": message.guild.roles.map((role: Role) => role.createdTimestamp),
-        "role color list": message.guild.roles.map((role: Role) => role.hexColor),
+        "role list": message.guild.roles.map((role: any) => role.name),
+        "role id list": message.guild.roles.map((role: any) => role.id),
+        "role created list": message.guild.roles.map((role: any) => role.createdTimestamp),
+        "role color list": message.guild.roles.map((role: any) => role.hexColor),
     }
 
     const emojiSettings: object = {
-        "emoji list": message.guild.emojis.map((emoji: Emoji) => emoji.name),
-        "emoji id list": message.guild.emojis.map((emoji: Emoji) => emoji.id),
-        "emoji created list": message.guild.emojis.map((emoji: Emoji) => emoji.createdTimestamp),
-        "emoji identifier list": message.guild.emojis.map((emoji: Emoji) => emoji.identifier)
+        "emoji list": message.guild.emojis.map((emoji: any) => emoji.name),
+        "emoji id list": message.guild.emojis.map((emoji: any) => emoji.id),
+        "emoji created list": message.guild.emojis.map((emoji: any) => emoji.createdTimestamp),
+        "emoji identifier list": message.guild.emojis.map((emoji: any) => emoji.identifier)
     }
     
     const logSettings: object = {
@@ -124,11 +120,11 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Initialize a table
-    initTable: async (table: string, object: object) => {       
+    client.initTable = async (table: string, object: object) => {       
         const entries = Object.entries(object);
         try {
           for (let [key, value] of entries) {
-            await queries.updateColumn(table, key, value);
+            await client.updateColumn(table, key, value);
           }
         } catch (error) {
           throw error
@@ -156,11 +152,11 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Initialize all tables
-    initAll: async () => {
+    client.initAll = async () => {
         const entries = Object.entries(tableMap);
         try {
           for (let [key, value] of entries) {
-            await exports.initTable(key, value);
+            await client.initTable(key, value);
           }
         } catch (error) {
           throw error

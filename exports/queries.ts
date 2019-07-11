@@ -1,12 +1,8 @@
-import {Client, Message} from "discord.js";
-
-module.exports = (client: Client, message: Message) => {
-
-    const settings: any = require("./settings.js")(client, message);
+module.exports = (client: any, message: any) => {
 
     const Pool: any = require('pg').Pool;
 
-    pgPool: new Pool({
+    client.pgPool = new Pool({
       user: process.env.PGUSER,
       host: process.env.PGHOST,
       database: process.env.PGDATABASE,
@@ -37,12 +33,12 @@ module.exports = (client: Client, message: Message) => {
     ];
 
     //Run Query
-    runQuery: async (query: any) => {
-      const pgClient = await exports.pgPool.connect();
+    client.runQuery = async (query: any) => {
+      const pgClient = await client.pgPool.connect();
         let start: number = Date.now();
         try {
           const result = await pgClient.query(query);
-          exports.logQuery(Object.values(query)[0], start);
+          client.logQuery(Object.values(query)[0], start);
           return result.rows;
         } catch(error) {
           console.log(error.stack); 
@@ -52,7 +48,7 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Log Query
-    logQuery: (text: string, start: number) => {
+    client.logQuery = (text: string, start: number) => {
       let chalk: any = require("chalk");
       let moment: any = require("moment");
       const timestamp: string = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
@@ -62,129 +58,129 @@ module.exports = (client: Client, message: Message) => {
     }
 
     //Fetch a row 
-    fetchRow: async (table: string) => {
+    client.fetchRow = async (table: string) => {
         let query: object = {
           text: `SELECT * FROM "${table}" WHERE "guild id" = ${message.guild.id}`,
           rowMode:'array'
         }
-        const result: any = await exports.runQuery(query);
+        const result: any = await client.runQuery(query);
         return result[0];
     }
 
     //Fetch commands
-    fetchCommand: async (command: string, column: string) => {
+    client.fetchCommand = async (command: string, column: string) => {
         let query: object = {
           text: `SELECT "${column}" FROM commands WHERE command IN ($1)`,
           values: [command],
           rowMode: 'array'
         };
-        const result: any = await exports.runQuery(query);
+        const result: any = await client.runQuery(query);
         return result[0];
     }
 
     //Fetch aliases
-    fetchAliases: async (command: string) => {
+    client.fetchAliases = async (command: string) => {
         let query: object = {
           text: `SELECT aliases FROM commands WHERE command IN ($1)`,
           values: [command],
           rowMode: 'array'
         }
-        const result: any = await exports.runQuery(query);
+        const result: any = await client.runQuery(query);
         return result[0][0];
     }
 
     //Fetch Prefix
-    fetchPrefix: async () => {
+    client.fetchPrefix = async () => {
         let query: object = {
           text: `SELECT prefix FROM prefixes WHERE "guild id" = ${message.guild.id}`,
           rowMode: 'array'
         }
-        const result: any = await exports.runQuery(query);
+        const result: any = await client.runQuery(query);
         return result[0][0];
     }
 
     //Fetch a column
-    fetchColumn: async (table: string, column: string) => {
+    client.fetchColumn = async (table: string, column: string) => {
         let query: object = {
           text: `SELECT "${column}" FROM "${table}" WHERE "guild id" = ${message.guild.id}`,
           rowMode: 'array'
         }
-        const result: any = await exports.runQuery(query);
+        const result: any = await client.runQuery(query);
         return result[0];
     }
 
     //Insert row into a table
-    insertInto: async (table: string, column: string, value: any) => {
+    client.insertInto = async (table: string, column: string, value: any) => {
         let query: object = {
           text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
           values: [value]
         }
-        await exports.runQuery(query);
+        await client.runQuery(query);
     }
 
     //Insert command
-    insertCommand: async (command: string, aliases: string[], path: string) => {
+    client.insertCommand = async (command: string, aliases: string[], path: string) => {
       let query: object = {
         text: `INSERT INTO commands (command, aliases, path) VALUES ($1, $2, $3)`,
         values: [command, aliases, path]
       }
-      await exports.runQuery(query);
+      await client.runQuery(query);
   }
 
     //Update a row in a table
-    updateColumn: async (table: string, column: string, value: any) => {
+    client.updateColumn = async (table: string, column: string, value: any) => {
         let query: object = {
           text: `UPDATE "${table}" SET "${column}" = $1 WHERE "guild id" = ${message.guild.id}`,
           values: [value]
         }
-        await exports.runQuery(query);
+        await client.runQuery(query);
     }
 
     //Update Aliases
-    updateAliases: async (command: string, aliases: any) => {
+    client.updateAliases = async (command: string, aliases: any) => {
       let query: object = {
         text: `UPDATE commands SET aliases = $1 WHERE "command" = $2`,
         values: [aliases, command]
       }
-      await exports.runQuery(query);
+      await client.runQuery(query);
   }
 
     //Remove a guild from all tables
-    deleteGuild: async (guild: number) => {
+    client.deleteGuild = async (guild: number) => {
         for (let i = 0; i < tableList.length; i++) {
             let query: object = {
               text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
               values: [guild]
             }
-            await exports.runQuery(query);
+            await client.runQuery(query);
         }
     }
 
     //Order tables by guild member count
-    orderTables: async () => {
+    client.orderTables = async () => {
         for (let table in tableList) {
             let query: object = {
               text: `SELECT members FROM "${tableList[table]}" ORDER BY 
               CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members DESC`
             }
-            await exports.runQuery(query);
+            await client.runQuery(query);
         }
     }
 
     //Init guild
-    initGuild: async () => {
+    client.initGuild = async () => {
         let query: object = {
           text: `SELECT "guild id" FROM guilds`,
           rowMode: 'array'
         }
-        const result = await exports.runQuery(query);
+        const result = await client.runQuery(query);
         const found = result.find((id: any) => id[0] === message.guild.id.toString());
         if (found === undefined || null) {
           for (let i in tableList) {
-            await exports.insertInto(tableList[i], "guild id", message.guild.id);
+            await client.insertInto(tableList[i], "guild id", message.guild.id);
           }
-          await settings.initAll();
-          await exports.orderTables();
+          await client.initAll();
+          await client.orderTables();
         }
     }
 }
