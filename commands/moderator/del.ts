@@ -2,7 +2,7 @@ exports.run = (client: any, message: any, args: string[]) => {
 
     const delEmbed: any = client.createEmbed();
     const perm: any = client.createPermission("MANAGE_MESSAGES");
-    const num: number = parseInt(args[0]) + 1;
+    const num: number = parseInt(args[1]) + 1;
 
     if (message.member.hasPermission(perm)) {
         if (!num) {

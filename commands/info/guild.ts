@@ -1,6 +1,6 @@
 exports.run = async (client: any, message: any, args: string[]) => {
 
-    if(args[0] = "icon") {
+    if(args[1] = "icon") {
         const guildIconEmbed: any = client.createEmbed();
         
         if (message.guild.available) {

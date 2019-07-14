@@ -2,7 +2,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
     const emojiEmbed: any = client.createEmbed();
 
-    if (args[0] === "list") {
+    if (args[1] === "list") {
         const emojiList = message.guild.emojis.map((e: any)=>e.toString()).join(" ");
         message.channel.send(emojiEmbed
             .setTitle("**Only shows the first 2000 characters.**")
@@ -10,7 +10,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         return;
     } 
 
-    const emojiName: string = args[0];
+    const emojiName: string = args[1];
     
     if (!emojiName.includes("<" || ">")) {
 

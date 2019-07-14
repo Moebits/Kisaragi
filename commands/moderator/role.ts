@@ -5,20 +5,20 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
   if (message.member.hasPermission(perm)) {
 
-    if ((!args[2]) || (message.mentions.members.size === 0)) {
+    if ((!args[3]) || (message.mentions.members.size === 0)) {
       return message.channel.send(roleEmbed
         .setDescription("You must type =>role <add or del> [user] [role]"));
         
     } else {
 
         const member: any = message.mentions.members.first();
-        const roleName: string = args[2]
+        const roleName: string = args[3]
         let snowflake: RegExp = /\d+/;
         let roleID: string = roleName.substring(roleName.search(snowflake));
         if (roleID.includes(">")) roleID = roleID.slice(0, -1);
         let role: any = message.guild.roles.get(roleID);
 
-        switch (args[0]) {
+        switch (args[1]) {
 
           case 'add': {
               try {
