@@ -1,5 +1,11 @@
 module.exports = async (client: any, message: any) => {
 
+    /*client.emojis.map((emoji: any) => {
+      if (emoji.name === "gabCircle") {
+        console.log(emoji.id);
+      }
+    });*/
+
     require("../exports/functions.js")(client, message);
     require("../exports/queries.js")(client, message);
     const commands = await require("../../commands.json");
@@ -38,10 +44,11 @@ module.exports = async (client: any, message: any) => {
     if (path === null || undefined) return;
     const cp = require(path);
 
-    message.channel.send("Loading")
+    message.channel.send(`**Loading** ${client.getEmoji("gabCircle")}`)
     .then(async (msg: any) => {
       await cp.run(client, message, args);
       msg.delete(1000);
-    });
+    })
+    .catch((error: any) => console.log(error));
 }
 
