@@ -41,18 +41,18 @@ const start = async () => {
         if (addFiles !== null) {
             cmdFiles.push(addFiles);
         }
-        addFiles.forEach(async (file: any) => {
+        await Promise.all(addFiles.map((file: any) => {
             if (!file.endsWith(".js")) return;
             let path = `../commands/${currDir}/${file}`;
             let commandName = file.split(".")[0];
-            let cmdFind = await client.fetchCommand(commandName, "command");
+            let cmdFind = client.fetchCommand(commandName, "command");
             if (cmdFind === undefined || null) {
-                await client.insertCommand(commandName, commands.aliases[commandName], path);
+                client.insertCommand(commandName, commands.aliases[commandName], path);
             } else {
-                await client.updateAliases(commandName, commands.aliases[commandName]);
+                client.updateAliases(commandName, commands.aliases[commandName]);
             }
             logger.log(`Loading Command: ${commandName}`);
-        });      
+        }));      
     }
 
     setTimeout(async () => {

@@ -34,7 +34,7 @@ module.exports = async (client: any, message: any) => {
     client.createEmbed = () => {
         let embed: any = new Discord.RichEmbed();
             embed
-            .setColor(exports.randomColor())
+            .setColor(client.randomColor())
             .setTimestamp(embed.timestamp)
             .setFooter(`Responded in ${client.responseTime()}`, message.author.avatarURL);
             return embed;
