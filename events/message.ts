@@ -6,14 +6,15 @@ module.exports = async (client: any, message: any) => {
       }
     });*/
 
-    require("../exports/functions.js")(client, message);
-    require("../exports/queries.js")(client, message);
+    await require("../exports/functions.js")(client, message);
+    await require("../exports/queries.js")(client, message);
     const commands = await require("../../commands.json");
     let prefix: string = await client.fetchPrefix();
 
-    if (message.guild) {
+    if (message.guild && typeof message != undefined) {
       setTimeout(() => {
-        client.calcScore();
+        client.calcScore()
+        .catch((error: any) => console.log(error));
       }, 100000);
     }
 

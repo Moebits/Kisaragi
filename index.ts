@@ -31,7 +31,7 @@ const subDirectory: string[] = [
 const start = async () => {
 
     const logger = require("./exports/logger.js");
-    require('./exports/queries.js')(client);
+    require('./exports/queries.js')(client, null);
 
     let cmdFiles: string[] = [];
 

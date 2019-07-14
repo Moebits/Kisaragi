@@ -1,5 +1,7 @@
 module.exports = (client: any, message: any) => {
 
+    console.log(message);
+
     const Pool: any = require('pg').Pool;
 
     client.pgPool = new Pool({
@@ -59,6 +61,7 @@ module.exports = (client: any, message: any) => {
 
     //Fetch a row 
     client.fetchRow = async (table: string) => {
+        if (message === null) return;
         let query: object = {
           text: `SELECT * FROM "${table}" WHERE "guild id" = ${message.guild.id}`,
           rowMode:'array'
@@ -91,6 +94,7 @@ module.exports = (client: any, message: any) => {
 
     //Fetch Prefix
     client.fetchPrefix = async () => {
+      if (message === null) return;
         let query: object = {
           text: `SELECT prefix FROM prefixes WHERE "guild id" = ${message.guild.id}`,
           rowMode: 'array'
@@ -101,6 +105,7 @@ module.exports = (client: any, message: any) => {
 
     //Fetch a column
     client.fetchColumn = async (table: string, column: string) => {
+      if (message === null) return;
         let query: object = {
           text: `SELECT "${column}" FROM "${table}" WHERE "guild id" = ${message.guild.id}`,
           rowMode: 'array'
@@ -129,6 +134,7 @@ module.exports = (client: any, message: any) => {
 
     //Update a row in a table
     client.updateColumn = async (table: string, column: string, value: any) => {
+      if (message === null) return;
         let query: object = {
           text: `UPDATE "${table}" SET "${column}" = $1 WHERE "guild id" = ${message.guild.id}`,
           values: [value]
@@ -169,6 +175,7 @@ module.exports = (client: any, message: any) => {
 
     //Init guild
     client.initGuild = async () => {
+      if (message === null) return;
         let query: object = {
           text: `SELECT "guild id" FROM guilds`,
           rowMode: 'array'
