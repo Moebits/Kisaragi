@@ -1,7 +1,5 @@
 module.exports = (client: any, message: any) => {
 
-    console.log(message);
-
     const Pool: any = require('pg').Pool;
 
     client.pgPool = new Pool({

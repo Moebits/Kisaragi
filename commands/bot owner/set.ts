@@ -1,12 +1,13 @@
 exports.run = (client: any, message: any, args: string[]) => {
 
-    let activityType: string = args[0];
-    let activityName: string = client.combineArgs(args, 1);
+    let ownerID: any = process.env.OWNER_ID;
+    let activityType: string = args[1];
+    let activityName: string = client.combineArgs(args, 2);
 
     const activityTypes: string[] = ["playing", "watching", "listening", "streaming"];
     const setEmbed: any = client.createEmbed();
 
-    if (client.checkBotOwner()) {
+    if (message.author.id === ownerID) {
 
         if (!activityName || (!activityTypes.includes(activityType))) {
             message.channel.send(setEmbed

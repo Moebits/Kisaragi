@@ -8,7 +8,7 @@ exports.run = (client: any, message: any, args: string[]) => {
 
     if (client.checkBotOwner()) {
         try {
-            const code: string = args.join(" ");
+            const code: string = client.combineArgs(args, 2);
             let evaled: string = eval(code);
        
             if (typeof evaled !== "string") {

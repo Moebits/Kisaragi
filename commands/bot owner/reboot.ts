@@ -1,5 +1,8 @@
 exports.run = async (client: any, message: any, args: string[]) => {
 
+  let ownerID: any = process.env.OWNER_ID;
+  const rebootEmbed: any = client.createEmbed();
+
   const unloadCommand: any = async (commandName: string) => {
     let command: any;
     if (client.commands.has(commandName)) {
@@ -24,13 +27,18 @@ exports.run = async (client: any, message: any, args: string[]) => {
     return false;
   };
 
-    const rebootEmbed: any = client.createEmbed();
+    if (message.author.id === ownerID) {
 
-    await message.channel.send(rebootEmbed
-    .setDescription("Bot is shutting down."));
+      await message.channel.send(rebootEmbed
+      .setDescription("Bot is shutting down."));
 
-    await Promise.all(client.commands.map((cmd: any) =>
-      unloadCommand(cmd)
-    ));
-    process.exit(0);
+      await Promise.all(client.commands.map((cmd: any) =>
+        unloadCommand(cmd)
+      ));
+      process.exit(0);
+    } else {
+      message.channel.send(rebootEmbed
+          .setDescription("In order to use this command, you must be a bot owner."))
+          return;
+    }
   };

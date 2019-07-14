@@ -1,6 +1,5 @@
 module.exports = async (client: any, message: any) => {
 
-    let ownerID: any = process.env.OWNER_ID;
     let Discord: any = require("discord.js");
     let config: any = require("../../config.json");
     let prefix: string = await client.fetchPrefix();
@@ -38,15 +37,6 @@ module.exports = async (client: any, message: any) => {
             .setTimestamp(embed.timestamp)
             .setFooter(`Responded in ${client.responseTime()}`, message.author.avatarURL);
             return embed;
-    }
-
-    //Check for Bot Owner
-    client.checkBotOwner = () => {
-        if (message.author.id === ownerID) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     //Create Permission

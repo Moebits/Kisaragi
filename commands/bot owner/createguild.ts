@@ -16,11 +16,13 @@ const createGuild = async (client: any, message: any, guildName: string, guildRe
 
 exports.run = (client: any, message: any, args: string[]) => {
 
-    const evalEmbed: any = client.createEmbed();
-    const guildName: string = args[0];
-    const guildRegion: string = args[1];
+    let ownerID: any = process.env.OWNER_ID;
 
-    if (client.checkBotOwner()) {
+    const evalEmbed: any = client.createEmbed();
+    const guildName: string = args[1];
+    const guildRegion: string = args[2];
+
+    if (message.author.id === ownerID) {
 
         client.createGuild(client, message, guildName, guildRegion);
 
