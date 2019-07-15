@@ -101,6 +101,34 @@ module.exports = async (client: any, message: any) => {
         message.channel.send(messageErrorEmbed);
     }
 
+    //Fetch Score
+    client.fetchScore = async () => {
+        let rawScoreList: string[] = await client.fetchColumn("points", "score list");
+        let rawUserList: string[] = await client.fetchColumn("points", "user id list");
+        let scoreList: number[] = rawScoreList.map((num: string) => Number(num));
+        let userList: number[] = rawUserList.map((num: string) => Number(num));
+        for (let i: number = 0; i < userList.length; i++) {
+            if (userList[i] === Number(message.author.id)) {
+                let userScore: number = scoreList[i];
+                return userScore; 
+            }
+        }
+    }
+
+    //Fetch Level
+    client.fetchLevel = async () => {
+        let rawLevelList: string[] = await client.fetchColumn("points", "level list");
+        let rawUserList: string[] = await client.fetchColumn("points", "user id list");
+        let levelList: number[] = rawLevelList.map((num: string) => Number(num));
+        let userList: number[] = rawUserList.map((num: string) => Number(num));
+        for (let i: number = 0; i < userList.length; i++) {
+            if (userList[i] === Number(message.author.id)) {
+                let userLevel: number = levelList[i];
+                return userLevel; 
+            }
+        }
+    }
+
     //Calculate Score
     client.calcScore = async () => {
         let rawScoreList: string[] = await client.fetchColumn("points", "score list");
@@ -122,6 +150,11 @@ module.exports = async (client: any, message: any) => {
             if (userList[i] === Number(message.author.id)) {
                 let userScore: number = scoreList[i];
                 let userLevel: number = levelList[i];
+                if (userScore === null) {
+                    scoreList[i] = 0;
+                    await client.updateColumn("points", "score list", scoreList);
+                    return;
+                }
                 let newPoints: number = Math.floor(userScore + client.getRandomNum(pointRange[0], pointRange[1]));
                 let newLevel: number = Math.floor(userScore / pointThreshold);
                 let lvlStr: string = userStr.replace("newlevel", newLevel.toString());

@@ -19,11 +19,17 @@ module.exports = async (client: any, message: any) => {
     }
 
     const responseObject: any = {
-      "gab": "Gab is the best girl"
+      "gab": "Gab is the best girl",
+      "I love you": `I love you more, <@${message.author.id}>!`,
+      "F": "F",
+      "owo": "uwu",
+      "uwu": "owo"
     }
 
     if (responseObject[message.content]) {
-      return message.channel.send(responseObject[message.content]);
+      if (!message.author.bot) {
+        return message.channel.send(responseObject[message.content]);
+      }
     }
 
     if (client.checkBotMention(message)) {
