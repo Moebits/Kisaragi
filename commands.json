@@ -1,5 +1,6 @@
 {
     "aliases": {
+        "ban": [],
         "createguild": [],
         "eval": [],
         "reboot": [],
@@ -9,17 +10,20 @@
         "emoji": [],
         "guild": [],
         "help": [],
+        "kick": [],
         "ping": [],
         "prefix": [],
         "give": [],
         "rank": [],
         "top": [],
+        "unban": [],
         "del": ["prune", "purge", "d"],
         "role": [],
         "remdash": []
     },
 
     "paths": {
+        "ban": "../commands/moderator/ban.js",
         "createguild": "../commands/bot owner/createguild.js",
         "eval": "../commands/bot owner/eval.js",
         "reboot": "../commands/bot owner/reboot.js",
@@ -29,11 +33,13 @@
         "emoji": "../commands/info/emoji.js",
         "guild": "../commands/info/guild.js",
         "help": "../commands/info/help.js",
+        "kick": "../commands/moderator/kick.js",
         "ping": "../commands/info/ping.js",
         "prefix": "../commands/info/prefix.js",
         "give": "../commands/level/give.js",
         "rank": "../commands/level/rank.js",
         "top": "../commands/level/top.js",
+        "unban": "../commands/moderator/unban.js",
         "del": "../commands/moderator/del.js",
         "role": "../commands/moderator/role.js",
         "remdash": "../commands/utility/remdash.js"

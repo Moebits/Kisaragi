@@ -89,6 +89,18 @@ module.exports = async (client: any, message: any) => {
         }
     }
 
+    //Errors
+    client.cmdError = (error: any) => {
+        console.log(error);
+        let messageErrorEmbed = client.createEmbed();
+        messageErrorEmbed
+        .setTitle(`**Command Error** ${client.getEmoji("maikaWut")}`)
+        .setDescription(`There was an error executing this command:\n` + 
+        `**${error.name}: ${error.message}**\n` + `Please report this through the following links:\n` +
+        `[Official Server](https://discord.gg/77yGmWM), [Github Repo](https://github.com/Tenpi/Gab)`);
+        message.channel.send(messageErrorEmbed);
+    }
+
     //Calculate Score
     client.calcScore = async () => {
         let rawScoreList: string[] = await client.fetchColumn("points", "score list");

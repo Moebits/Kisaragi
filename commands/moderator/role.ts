@@ -26,7 +26,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 await message.channel.send(roleEmbed
                   .setDescription(`${member.displayName} now has the ${role} role!`));
               } catch (error) {
-                console.log(error);
+                client.cmdError(error);
                 message.channel.send(roleEmbed
                   .setDescription(`The role **${roleName}** could not be found.`));
               }
@@ -39,7 +39,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
               await message.channel.send(roleEmbed
                 .setDescription(`${member.displayName} no longer has the ${role} role!`));
             } catch (error) {
-              console.log(error);
+              client.cmdError(error);
               message.channel.send(roleEmbed
                 .setDescription(`The role **${roleName}** could not be found.`));
             }

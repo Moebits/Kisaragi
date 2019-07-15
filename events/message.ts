@@ -49,7 +49,6 @@ module.exports = async (client: any, message: any) => {
     .then(async (msg: any) => {
       await cp.run(client, message, args);
       msg.delete(1000);
-    })
-    .catch((error: any) => console.log(error));
+    });
 }
 

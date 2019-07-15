@@ -10,7 +10,7 @@ const createGuild = async (client: any, message: any, guildName: string, guildRe
         await message.author.send(role.id);
 
     } catch (error) {
-    console.error(error);
+        client.cmdError();
     }
 }
 
