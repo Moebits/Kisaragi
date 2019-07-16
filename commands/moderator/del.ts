@@ -24,7 +24,7 @@ exports.run = (client: any, message: any, args: string[]) => {
             message.channel.send(delEmbed)});
 
         delEmbed
-        .setDescription(`Deleted ${args[0]} messages in this channel!`);
+        .setDescription(`Deleted ${args[1]} messages in this channel!`);
         message.channel.send(delEmbed)
         .then((msg: any) => msg.delete(5000))
         .catch((error: any) => console.log(error.message));

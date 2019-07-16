@@ -18,24 +18,18 @@ exports.run = async (client: any, message: any, score: any, args: string[]) => {
         message.channel.send(rankEmbed
             .setDescription("Could not find a score for you!"));
     } else {
-        try {
-            let percent: number = (100 / pointThreshold) * (score.points % pointThreshold);
-            let width: number = (percent / 100) * 400 
-            ctx.fillRect(0, 0, width, 10);
-            let dataUrl = await canvas.toDataURL('image/png')
-                message.channel.send(rankEmbed
-                    .setTitle(`**${message.author.username}'s Rank**`)
-                    .addField("**Level**", userLevel)
-                    .addField("**Total Points**", userScore)
-                    .addField("**Points To Next Level**", ())
-                    .setDescription(`Level -> **${userLevel}** ` + 
-                    `| Points -> **${userScore}** ` + 
-                    `| Progress -> ${userScore % pointThreshold}/${pointThreshold} ` +
-                    `| ${percent}% of the way there!`)
-                    .setImage(dataUrl)
-                    .setThumbnail(message.author.displayAvatarURL))
-        } catch (error) {
-            client.cmdError(error);
-        }
+        let percent: number = (100 / pointThreshold) * (score.points % pointThreshold);
+        let width: number = (percent / 100) * 400 
+        ctx.fillRect(0, 0, width, 10);
+        let dataUrl = await canvas.toDataURL('image/png')
+            message.channel.send(rankEmbed
+                .setTitle(`**${message.author.username}'s Rank**`)
+                .setDescription(`Level -> **${userLevel}** ` + 
+                `| Points -> **${userScore}** ` + 
+                `| Progress -> ${userScore % pointThreshold}/${pointThreshold} ` +
+                `| ${percent}% of the way there!`)
+                .setImage(dataUrl)
+                .setThumbnail(message.author.displayAvatarURL))
+        
     }
 }

@@ -8,6 +8,7 @@ module.exports = async (client: any, message: any) => {
 
     await require("../exports/functions.js")(client, message);
     await require("../exports/queries.js")(client, message);
+    await require("../exports/images.js")(client, message);
     const commands = await require("../../commands.json");
     let prefix: string = await client.fetchPrefix();
 
@@ -53,7 +54,11 @@ module.exports = async (client: any, message: any) => {
 
     message.channel.send(`**Loading** ${client.getEmoji("gabCircle")}`)
     .then(async (msg: any) => {
+      try {
       await cp.run(client, message, args);
+      } catch (error) {
+        client.cmdError(error);
+    }
       msg.delete(1000);
     });
 }

@@ -1,5 +1,6 @@
 {
     "aliases": {
+        "animequote": [],
         "ban": [],
         "createguild": [],
         "eval": [],
@@ -23,6 +24,7 @@
     },
 
     "paths": {
+        "animequote": "../commands/anime/animequote.js",
         "ban": "../commands/moderator/ban.js",
         "createguild": "../commands/bot owner/createguild.js",
         "eval": "../commands/bot owner/eval.js",

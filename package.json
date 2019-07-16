@@ -23,9 +23,12 @@
   "dependencies": {
     "@discordjs/uws": "^11.149.1",
     "@types/node": "^12.0.10",
+    "anifetch": "^3.0.0",
+    "animequotes": "^1.0.0",
     "bufferutil": "^4.0.1",
     "canvas": "^2.5.0",
     "chalk": "^2.4.2",
+    "danbooru": "^3.1.0",
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
