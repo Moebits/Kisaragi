@@ -15,6 +15,22 @@ module.exports = async (client: any, message: any) => {
         return `${Date.now() - message.createdTimestamp} ms`;
     }
 
+    //Format Date
+    client.formatDate = (inputDate: Date) => {
+        let monthNames = [
+          "January", "February", "March",
+          "April", "May", "June", "July",
+          "August", "September", "October",
+          "November", "December"
+        ];
+        let date = new Date(inputDate);
+        let day = date.getDate();
+        let monthIndex = date.getMonth();
+        let year = date.getFullYear();
+      
+        return day + ' ' + monthNames[monthIndex] + ' ' + year;
+      }
+
     //Get Emoji
     client.getEmoji = (name: string) => {
         for (let i in config.emojis) {

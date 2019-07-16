@@ -56,10 +56,10 @@ module.exports = async (client: any, message: any) => {
     .then(async (msg: any) => {
       try {
       await cp.run(client, message, args);
+      msg.delete(5000);
       } catch (error) {
         client.cmdError(error);
     }
-      msg.delete(1000);
     });
 }
 

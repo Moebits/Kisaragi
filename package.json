@@ -23,6 +23,7 @@
   "dependencies": {
     "@discordjs/uws": "^11.149.1",
     "@types/node": "^12.0.10",
+    "@vitalets/google-translate-api": "^2.8.0",
     "anifetch": "^3.0.0",
     "animequotes": "^1.0.0",
     "bufferutil": "^4.0.1",
@@ -41,6 +42,9 @@
     "node-opus": "^0.3.2",
     "nodemon": "^1.19.1",
     "pg": "^7.11.0",
+    "pixichan": "^1.2.1",
+    "pixiv-app-api": "^0.12.1",
+    "pixiv-img": "^1.0.0",
     "rebuild": "^0.1.2",
     "reflect-metadata": "^0.1.13",
     "typescript": "^3.5.2"
