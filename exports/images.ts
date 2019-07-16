@@ -48,6 +48,7 @@ module.exports = async (client: any, message: any) => {
         const authorUrl = await pixivImg(image.user.profileImageUrls.medium);
         const imageAttachment = new Attachment(url);
         const authorAttachment = new Attachment(authorUrl);
+        let cleanText = image.caption.replace(/<\/?[^>]+(>|$)/g, "");
         pixivEmbed
         .setTitle(`**Pixiv Image** ${client.getEmoji("chinoSmug")}`)
         .addField("**Title**", image.title)
@@ -56,7 +57,7 @@ module.exports = async (client: any, message: any) => {
         .addField("**Create Date**", client.formatDate(image.createDate))
         .addField("**Views**", image.totalView)
         .addField("**Bookmarks**", image.totalBookmarks)
-        .addField("**Description**", image.caption ? image.caption : "None")
+        .addField("**Description**", cleanText ? cleanText : "None")
         .addField("**Comments**", commentArray.join() ? commentArray.join() : "None")
         .attachFiles([authorAttachment, imageAttachment])
         .setThumbnail(`attachment://${authorAttachment.file}`)
@@ -89,6 +90,7 @@ module.exports = async (client: any, message: any) => {
         const authorUrl = await pixivImg(image.user.profileImageUrls.medium);
         const imageAttachment = new Attachment(url);
         const authorAttachment = new Attachment(authorUrl);
+        let cleanText = image.caption.replace(/<\/?[^>]+(>|$)/g, "");
         pixivEmbed
         .setTitle(`**Pixiv R-18 Image** ${client.getEmoji("chinoSmug")}`)
         .addField("**Title**", image.title)
@@ -97,7 +99,7 @@ module.exports = async (client: any, message: any) => {
         .addField("**Create Date**", client.formatDate(image.createDate))
         .addField("**Views**", image.totalView)
         .addField("**Bookmarks**", image.totalBookmarks)
-        .addField("**Description**", image.caption ? image.caption : "None")
+        .addField("**Description**", cleanText ? cleanText : "None")
         .addField("**Comments**", commentArray.join() ? commentArray.join() : "None")
         .attachFiles([authorAttachment, imageAttachment])
         .setThumbnail(`attachment://${authorAttachment.file}`)
@@ -122,6 +124,7 @@ module.exports = async (client: any, message: any) => {
         const authorUrl = await pixivImg(image.user.profileImageUrls.medium);
         const imageAttachment = new Attachment(url);
         const authorAttachment = new Attachment(authorUrl);
+        let cleanText = image.caption.replace(/<\/?[^>]+(>|$)/g, "");
         pixivEmbed
         .setTitle(`**Pixiv Image** ${client.getEmoji("chinoSmug")}`)
         .addField("**Title**", image.title)
@@ -130,7 +133,7 @@ module.exports = async (client: any, message: any) => {
         .addField("**Create Date**", client.formatDate(image.createDate))
         .addField("**Views**", image.totalView)
         .addField("**Bookmarks**", image.totalBookmarks)
-        .addField("**Description**", image.caption ? image.caption : "None")
+        .addField("**Description**", cleanText ? cleanText : "None")
         .addField("**Comments**", commentArray.join() ? commentArray.join() : "None")
         .attachFiles([authorAttachment, imageAttachment])
         .setThumbnail(`attachment://${authorAttachment.file}`)
