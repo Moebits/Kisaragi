@@ -6,11 +6,12 @@ exports.run = async (client: any, message: any, args: string[]) => {
     const axios = require('axios');
 
     if (args[1].toLowerCase() === "channel") {
-        let channelLink = args[2];
-        let channel = await youtube.getChannelByUrl(channelLink);
-        if (!channel) {
-            channel = await youtube.getChannel(channelLink);
+        let channelLink = client.combineArgs(args, 2);
+        if (!channelLink.startsWith("https")) {
+            let channelResult = await youtube.searchChannels(channelLink);
+            channelLink = channelResult[0].url;
         }
+        let channel = await youtube.getChannelByUrl(channelLink);
         let channelBanner = await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=brandingSettings&id=${channel.id}&key=${process.env.GOOGLE_API_KEY}`);
         let keywords = channelBanner.data.items[0].brandingSettings.channel.keywords;
         let channelBannerUrl = channelBanner.data.items[0].brandingSettings.image.bannerImageUrl;
@@ -32,7 +33,11 @@ exports.run = async (client: any, message: any, args: string[]) => {
     }
 
     if (args[1].toLowerCase() === "playlist") {
-        let playLink = args[2];
+        let playLink = client.combineArgs(args, 2);
+        if (!playLink.startsWith("https")) {
+            let playlistResult = await youtube.searchPlaylists(playLink);
+            playLink = `https://www.youtube.com/playlist?list=${playlistResult[0].id}`;
+        }
         let playlist = await youtube.getPlaylistByUrl(playLink);
         let ytChannel = await youtube.getChannel(playlist.creatorId);
         let videos = await playlist.fetchVideos(5);
@@ -50,16 +55,21 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .addField("**Date Created**", client.formatDate(playlist.dateCreated))
         .addField("**Tags**", playlist.tags ? playlist.tags : "None")
         .addField("**Video Count**", playlist.length)
-        .addField("**Description**", playlist.data.snippet.description)
+        .addField("**Description**", playlist.data.snippet.description ? playlist.data.snippet.description : "None")
         .addField("**Videos**", videoArray.join(" ") ? videoArray.join(" ") : "None")
-        .setThumbnail(ytChannel.profilePictures.high.url)
-        .setImage(playlist.thumbnails.maxres.url);
+        .setThumbnail(ytChannel.profilePictures.high ? ytChannel.profilePictures.high.url : ytChannel.profilePictures.medium.url)
+        .setImage(playlist.thumbnails.maxres ? playlist.thumbnails.maxres.url : playlist.thumbnails.high.url);
         message.channel.send(youtubeEmbed);
         return;
     }
 
     if (args[1].toLowerCase() === "video") {
-        const video = await youtube.getVideoByUrl(args[2])
+        let videoLink = client.combineArgs(args, 2);
+        if (!videoLink.startsWith("https")) {
+            let videoResult = await youtube.searchVideos(videoLink);
+            videoLink = videoResult[0].shortUrl;
+        }
+        const video = await youtube.getVideoByUrl(videoLink)
         let comments = await video.fetchComments(5);
         let commentArray = [];
         for (let i = 0; i <= 5; i++) {
