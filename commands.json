@@ -22,7 +22,8 @@
         "unban": [],
         "del": ["prune", "purge", "d"],
         "role": [],
-        "remdash": []
+        "remdash": [],
+        "youtube": []
     },
 
     "paths": {
@@ -48,6 +49,7 @@
         "unban": "../commands/moderator/unban.js",
         "del": "../commands/moderator/del.js",
         "role": "../commands/moderator/role.js",
-        "remdash": "../commands/utility/remdash.js"
+        "remdash": "../commands/utility/remdash.js",
+        "youtube": "../commands/utility/youtube.js"
     }
 }

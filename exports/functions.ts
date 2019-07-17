@@ -28,7 +28,7 @@ module.exports = async (client: any, message: any) => {
         let monthIndex = date.getMonth();
         let year = date.getFullYear();
       
-        return day + ' ' + monthNames[monthIndex] + ' ' + year;
+        return `${monthNames[monthIndex]} ${day}, ${year}`;
       }
 
     //Get Emoji
