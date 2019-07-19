@@ -4,7 +4,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let nasaEmbed = client.createEmbed();
 
     let data = await nasa.APOD.fetch();
-    let checkedMessage = client.checkChar(data.explanation);
+    let checkedMessage = client.checkChar(data.explanation, 1900, ".");
     nasaEmbed
     .setAuthor("nasa", "https://cdn.mos.cms.futurecdn.net/baYs9AuHxx9QXeYBiMvSLU.jpg")
     .setTitle(`**Nasa Picture** ${client.getEmoji("cute")}`)

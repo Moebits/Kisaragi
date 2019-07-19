@@ -27,7 +27,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         `${client.getEmoji("star")}_Country:_ ${channel.country}\n` +
         `${client.getEmoji("star")}_Subscribers:_ **${channel.subCount}** _Views:_ **${channel.views}**\n` +
         `${client.getEmoji("star")}_Videos:_ **${channel.data.statistics.videoCount}**\n` +
-        `${client.getEmoji("star")}_About:_ ${channel.about}\n` 
+        `${client.getEmoji("star")}_About:_ ${client.checkChar(channel.about, 1800, ".")}\n` 
         )
         .setThumbnail(channel.profilePictures.high.url)
         .setImage(channelBannerUrl)
@@ -92,7 +92,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         `${client.getEmoji("star")}_Views:_ **${video.views}**\n` +
         `${client.getEmoji("star")} ${client.getEmoji("up")} **${video.likes}** ${client.getEmoji("down")} **${video.dislikes}**\n` +
         `${client.getEmoji("star")}_Date Published:_ **${client.formatDate(video.datePublished)}**\n` +
-        `${client.getEmoji("star")}_Description:_ ${video.description ? client.checkChar(video.description, 1500, ".") : "None"}\n` +
+        `${client.getEmoji("star")}_Description:_ ${video.description ? client.checkChar(video.description, 1700, ".") : "None"}\n` +
         `${client.getEmoji("star")}_Comments:_ ${commentArray.join(" ") ? commentArray.join(" ") : "None"}\n` 
         )
         .setThumbnail(ytChannel.profilePictures.high.url)

@@ -8,7 +8,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let result = await urban(word);
         let cleanDef = result.definition.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm,"");
         let cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm,"");
-        let checkedExample = client.checkChar(cleanExample);
+        let checkedExample = client.checkChar(cleanExample, 1700, ".");
         urbanEmbed
         .setAuthor("Urban Dictionary", "https://firebounty.com/image/635-urban-dictionary")
         .setURL(result.URL)
@@ -28,7 +28,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let result = await urban.random()
         let cleanDef = result.definition.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm,"");
         let cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm,"");
-        let checkedExample = client.checkChar(cleanExample);
+        let checkedExample = client.checkChar(cleanExample, 1700, ".");
         urbanEmbed
         .setAuthor("Urban Dictionary", "https://firebounty.com/image/635-urban-dictionary")
         .setURL(result.URL)
