@@ -1,10 +1,20 @@
 module.exports = async (client: any, message: any) => {
 
-    /*client.emojis.map((emoji: any) => {
-      if (emoji.name === "gabCircle") {
-        console.log(emoji.id);
+  /*let letterNames = [
+    "up", "down",
+  ]
+
+  for (let i = 0; i < letterNames.length; i++) {
+    client.emojis.map((emoji: any) => {
+      if (emoji.name === letterNames[i]) {
+        console.log(`{"name": "${letterNames[i]}", "id": "${emoji.id}"},`);
       }
-    });*/
+    });
+  } */
+
+    /*let tc = await client.channels.get("580542336560398367");
+    let ms = await tc.fetchMessage('600715814420873216');
+    console.log(ms.attachments.map((a:any) => a.url))*/
 
     await require("../exports/functions.js")(client, message);
     await require("../exports/queries.js")(client, message);
@@ -20,16 +30,17 @@ module.exports = async (client: any, message: any) => {
     }
 
     const responseObject: any = {
-      "gab": "Gab is the best girl",
-      "I love you": `I love you more, <@${message.author.id}>!`,
-      "F": "F",
-      "owo": "uwu",
-      "uwu": "owo"
+      "kisaragi": "Kisaragi is the best girl!",
+      "i love you": `I love you more, <@${message.author.id}>!`,
+      "f": "F",
+      "owo": "owo",
+      "uwu": "uwu",
+      "e": "E"
     }
 
-    if (responseObject[message.content]) {
+    if (responseObject[message.content.toLowerCase()]) {
       if (!message.author.bot) {
-        return message.channel.send(responseObject[message.content]);
+        return message.channel.send(client.letters(responseObject[message.content.toLowerCase()]));
       }
     }
 
@@ -52,7 +63,7 @@ module.exports = async (client: any, message: any) => {
     if (path === null || undefined) return;
     const cp = require(path);
 
-    message.channel.send(`**Loading** ${client.getEmoji("gabCircle")}`)
+    message.channel.send(`**Loading** ${client.getEmoji("kisaragiCircle")}`)
     .then(async (msg: any) => {
       try {
       await cp.run(client, message, args);

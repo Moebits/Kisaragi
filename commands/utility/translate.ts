@@ -9,12 +9,12 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let newResult = await translate(translateText, {to: 'en'});
         translateEmbed
         .setTitle(`**Translated Text** ${client.getEmoji("kannaCurious")}`)
-        .setDescription(newResult.text)
+        .setDescription(`${client.getEmoji("star")} ${newResult.text}`)
         message.channel.send(translateEmbed)
         return;
     }
     translateEmbed
     .setTitle(`**Translated Text** ${client.getEmoji("kannaCurious")}`)
-    .setDescription(result.text)
+    .setDescription(`${client.getEmoji("star")} ${result.text}`)
     message.channel.send(translateEmbed)
 }

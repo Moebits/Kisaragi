@@ -1,8 +1,8 @@
-exports.run = (client: any, message: any, args: string[]) => {
+exports.run = async (client: any, message: any, args: string[]) => {
 
     const delEmbed: any = client.createEmbed();
     const perm: any = client.createPermission("MANAGE_MESSAGES");
-    const num: number = parseInt(args[1]) + 1;
+    const num: number = Number(args[1]) + 2;
 
     if (message.member.hasPermission(perm)) {
         if (!num) {
@@ -11,23 +11,26 @@ exports.run = (client: any, message: any, args: string[]) => {
             message.channel.send(delEmbed);
         }
 
-        if (num <= 1 || num > 100) {
+        if (num < 2 || num > 1002) {
             delEmbed
-            .setDescription("You must type a number between 1 and 99!");
+            .setDescription("You must type a number between 0 and 1000!");
             message.channel.send(delEmbed);
         }
-        
-        message.channel.bulkDelete(num, true).catch((error: any) => {
-            client.cmdError(error);
-            delEmbed
-            .setDescription("You can't delete messages older than 2 weeks!");
-            message.channel.send(delEmbed)});
+
+        if (num <= 100) {
+            await message.channel.bulkDelete(num, true)
+        } else {
+            let iterations = Math.floor(num / 100);
+            for (let i = 0; i <= iterations; i++) {
+                await message.channel.bulkDelete(100, true)
+            }
+            await message.channel.bulkDelete((num % 100), true)
+        }
 
         delEmbed
         .setDescription(`Deleted ${args[1]} messages in this channel!`);
         message.channel.send(delEmbed)
         .then((msg: any) => msg.delete(5000))
-        .catch((error: any) => console.log(error.message));
         return;
 
     } else {

@@ -15,6 +15,7 @@ const subDirectory: string[] = [
     "anime",
     "bot owner",
     "configuration",
+    "fun",
     "geometry dash",
     "heart",
     "hentai",

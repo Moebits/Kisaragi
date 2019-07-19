@@ -16,8 +16,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
         try {
             await member.kick(reason);
             kickEmbed
+            .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
             .setTitle(`**Member Kicked** ${client.getEmoji("kannaFU")}`)
-            .setDescription(`Successfully kicked ${user} for reason: **${reason}**`);
+            .setDescription(`${client.getEmoji("star")}_Successfully kicked ${user} for reason:_ **${reason}**`);
             message.channel.send(kickEmbed);
         } catch (error) {
             client.cmdError(error);

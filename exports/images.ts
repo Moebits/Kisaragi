@@ -50,15 +50,18 @@ module.exports = async (client: any, message: any) => {
         const authorAttachment = new Attachment(authorUrl);
         let cleanText = image.caption.replace(/<\/?[^>]+(>|$)/g, "");
         pixivEmbed
+        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
         .setTitle(`**Pixiv Image** ${client.getEmoji("chinoSmug")}`)
-        .addField("**Title**", image.title)
-        .addField("**Artist**", image.user.name)
-        .addField("**Link**", `https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
-        .addField("**Create Date**", client.formatDate(image.createDate))
-        .addField("**Views**", image.totalView)
-        .addField("**Bookmarks**", image.totalBookmarks)
-        .addField("**Description**", cleanText ? cleanText : "None")
-        .addField("**Comments**", commentArray.join() ? commentArray.join() : "None")
+        .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
+        .setDescription(
+        `${client.getEmoji("star")}_Title:_ **${image.title}**\n` + 
+        `${client.getEmoji("star")}_Artist:_ **${image.user.name}**\n` + 
+        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(image.createDate)}**\n` + 
+        `${client.getEmoji("star")}_Views:_ **${image.totalView}**\n` + 
+        `${client.getEmoji("star")}_Bookmarks:_ **${image.totalBookmarks}**\n` + 
+        `${client.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` + 
+        `${client.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n` 
+        )
         .attachFiles([authorAttachment, imageAttachment])
         .setThumbnail(`attachment://${authorAttachment.file}`)
         .setImage(`attachment://${imageAttachment.file}`);
@@ -92,15 +95,18 @@ module.exports = async (client: any, message: any) => {
         const authorAttachment = new Attachment(authorUrl);
         let cleanText = image.caption.replace(/<\/?[^>]+(>|$)/g, "");
         pixivEmbed
-        .setTitle(`**Pixiv R-18 Image** ${client.getEmoji("chinoSmug")}`)
-        .addField("**Title**", image.title)
-        .addField("**Artist**", image.user.name)
-        .addField("**Link**", `https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
-        .addField("**Create Date**", client.formatDate(image.createDate))
-        .addField("**Views**", image.totalView)
-        .addField("**Bookmarks**", image.totalBookmarks)
-        .addField("**Description**", cleanText ? cleanText : "None")
-        .addField("**Comments**", commentArray.join() ? commentArray.join() : "None")
+        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
+        .setTitle(`**Pixiv Image** ${client.getEmoji("chinoSmug")}`)
+        .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
+        .setDescription(
+        `${client.getEmoji("star")}_Title:_ **${image.title}**\n` + 
+        `${client.getEmoji("star")}_Artist:_ **${image.user.name}**\n` + 
+        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(image.createDate)}**\n` + 
+        `${client.getEmoji("star")}_Views:_ **${image.totalView}**\n` + 
+        `${client.getEmoji("star")}_Bookmarks:_ **${image.totalBookmarks}**\n` + 
+        `${client.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` + 
+        `${client.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n` 
+        )
         .attachFiles([authorAttachment, imageAttachment])
         .setThumbnail(`attachment://${authorAttachment.file}`)
         .setImage(`attachment://${imageAttachment.file}`);
@@ -126,19 +132,39 @@ module.exports = async (client: any, message: any) => {
         const authorAttachment = new Attachment(authorUrl);
         let cleanText = image.caption.replace(/<\/?[^>]+(>|$)/g, "");
         pixivEmbed
+        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
         .setTitle(`**Pixiv Image** ${client.getEmoji("chinoSmug")}`)
-        .addField("**Title**", image.title)
-        .addField("**Artist**", image.user.name)
-        .addField("**Link**", `https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
-        .addField("**Create Date**", client.formatDate(image.createDate))
-        .addField("**Views**", image.totalView)
-        .addField("**Bookmarks**", image.totalBookmarks)
-        .addField("**Description**", cleanText ? cleanText : "None")
-        .addField("**Comments**", commentArray.join() ? commentArray.join() : "None")
+        .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
+        .setDescription(
+        `${client.getEmoji("star")}_Title:_ **${image.title}**\n` + 
+        `${client.getEmoji("star")}_Artist:_ **${image.user.name}**\n` + 
+        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(image.createDate)}**\n` + 
+        `${client.getEmoji("star")}_Views:_ **${image.totalView}**\n` + 
+        `${client.getEmoji("star")}_Bookmarks:_ **${image.totalBookmarks}**\n` + 
+        `${client.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` + 
+        `${client.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n` 
+        )
         .attachFiles([authorAttachment, imageAttachment])
         .setThumbnail(`attachment://${authorAttachment.file}`)
         .setImage(`attachment://${imageAttachment.file}`);
         message.channel.send(pixivEmbed);
     }
 
+    //Fetch Channel Attachments
+    client.fetchChannelAttachments = async (channel: any) => {
+        let beforeID = channel.lastMessageID;
+        let attachmentArray: any[] = [];
+        while (beforeID !== undefined || null) {
+            setTimeout(async () => {
+                let messages = await channel.fetchMessages({limit: 100, before: beforeID});
+                beforeID = messages.lastKey();
+                let filteredMessages = await messages.filter((msg:any) => msg.attachments.firstKey() !== undefined || null);
+                let filteredArray = await filteredMessages.attachments.map((attachment: any) => attachment.url);
+                for (let i = 0; i < filteredArray.length; i++) {
+                    attachmentArray.push(filteredArray[i]);
+                }
+            }, 120000);
+        }
+        return attachmentArray; 
+    }
 }

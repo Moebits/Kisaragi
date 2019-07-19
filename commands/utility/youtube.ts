@@ -16,16 +16,19 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let keywords = channelBanner.data.items[0].brandingSettings.channel.keywords;
         let channelBannerUrl = channelBanner.data.items[0].brandingSettings.image.bannerImageUrl;
         youtubeEmbed
+        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
         .setTitle(`**Youtube Channel** ${client.getEmoji("kannaWave")}`)
-        .addField("**Channel**", channel.name)
-        .addField("**Link**", channel.data.snippet.customUrl ? `https://youtube.com/c/${channel.data.snippet.customUrl}` : channel.url)
-        .addField("**Keywords**", keywords ? keywords : "None")
-        .addField("**Date Created**", client.formatDate(channel.dateCreated), true)
-        .addField("**Country**", channel.country, true)
-        .addField("**Subscribers**", channel.subCount)
-        .addField("**Views**", channel.views)
-        .addField("**Videos**", channel.data.statistics.videoCount)
-        .addField("**About**", channel.about)
+        .setURL(``)
+        .setDescription(
+        `${client.getEmoji("star")}_Channel:_ **${channel.name}**\n` +
+        `${client.getEmoji("star")}_Custom URL:_ **${channel.data.snippet.customUrl ? `https://youtube.com/c/${channel.data.snippet.customUrl}` : "None"}**\n` +
+        `${client.getEmoji("star")}_Keywords:_ ${keywords ? keywords : "None"}\n` +
+        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(channel.dateCreated)}**\n` +
+        `${client.getEmoji("star")}_Country:_ ${channel.country}\n` +
+        `${client.getEmoji("star")}_Subscribers:_ **${channel.subCount}** _Views:_ **${channel.views}**\n` +
+        `${client.getEmoji("star")}_Videos:_ **${channel.data.statistics.videoCount}**\n` +
+        `${client.getEmoji("star")}_About:_ ${channel.about}\n` 
+        )
         .setThumbnail(channel.profilePictures.high.url)
         .setImage(channelBannerUrl)
         message.channel.send(youtubeEmbed);
@@ -47,16 +50,18 @@ exports.run = async (client: any, message: any, args: string[]) => {
             videoArray.push(`**${videos[i].title}**\n`)
         }
         youtubeEmbed
+        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
         .setTitle(`**Youtube Playlist** ${client.getEmoji("kannaWave")}`)
-        .addField("**Title**", playlist.title)
-        .addField("**Channel**", ytChannel.name)
-        .addField("**Link**", `https://www.youtube.com/playlist?list=${playlist.id}`)
-        .addField("**HTML Embed**", playlist.embedHtml)
-        .addField("**Date Created**", client.formatDate(playlist.dateCreated))
-        .addField("**Tags**", playlist.tags ? playlist.tags : "None")
-        .addField("**Video Count**", playlist.length)
-        .addField("**Description**", playlist.data.snippet.description ? playlist.data.snippet.description : "None")
-        .addField("**Videos**", videoArray.join(" ") ? videoArray.join(" ") : "None")
+        .setURL(`https://www.youtube.com/playlist?list=${playlist.id}`)
+        .setDescription(
+        `${client.getEmoji("star")}_Title_: **${playlist.title}**\n` +
+        `${client.getEmoji("star")}_Channel:_ **${ytChannel.name}**\n` +
+        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(playlist.dateCreated)}**\n` +
+        `${client.getEmoji("star")}_Tags:_ ${playlist.tags ? playlist.tags : "None"}\n` +
+        `${client.getEmoji("star")}_Video Count:_ **${playlist.length}**\n` +
+        `${client.getEmoji("star")}_Description:_ ${playlist.data.snippet.description ? playlist.data.snippet.description : "None"}\n` +
+        `${client.getEmoji("star")}_Videos:_ ${videoArray.join(" ") ? videoArray.join(" ") : "None"}\n`
+        )
         .setThumbnail(ytChannel.profilePictures.high ? ytChannel.profilePictures.high.url : ytChannel.profilePictures.medium.url)
         .setImage(playlist.thumbnails.maxres ? playlist.thumbnails.maxres.url : playlist.thumbnails.high.url);
         message.channel.send(youtubeEmbed);
@@ -78,16 +83,18 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
         let ytChannel = await youtube.getChannel(video.channelId)
         youtubeEmbed
+        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
         .setTitle(`**Youtube Video** ${client.getEmoji("kannaWave")}`)
-        .addField("**Title**", video.title)
-        .addField("**Channel**", ytChannel.name)
-        .addField("**Link**", video.shortUrl)
-        .addField("**Views**", video.views)
-        .addField("**Likes**", video.likes, true)
-        .addField("**Dislikes**", video.dislikes, true)
-        .addField("**Date Published**", client.formatDate(video.datePublished))
-        .addField("**Description**", video.description ? video.description : "None")
-        .addField("**Comments**", commentArray.join(" ") ? commentArray.join(" ") : "None")
+        .setURL(video.shortUrl)
+        .setDescription(
+        `${client.getEmoji("star")}_Title:_ **${video.title}**\n` +
+        `${client.getEmoji("star")}_Channel:_ **${ytChannel.name}**\n` +
+        `${client.getEmoji("star")}_Views:_ **${video.views}**\n` +
+        `${client.getEmoji("star")} ${client.getEmoji("up")} **${video.likes}** ${client.getEmoji("down")} **${video.dislikes}**\n` +
+        `${client.getEmoji("star")}_Date Published:_ **${client.formatDate(video.datePublished)}**\n` +
+        `${client.getEmoji("star")}_Description:_ ${video.description ? client.checkChar(video.description, 1500, ".") : "None"}\n` +
+        `${client.getEmoji("star")}_Comments:_ ${commentArray.join(" ") ? commentArray.join(" ") : "None"}\n` 
+        )
         .setThumbnail(ytChannel.profilePictures.high.url)
         .setImage(video.thumbnails.maxres.url);
         message.channel.send(youtubeEmbed);
@@ -104,6 +111,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                     .addField("**Link**", channelResults[i].data.snippet.customUrl ? `https://youtube.com/c/${channelResults[i].data.snippet.customUrl}` : channelResults[i].url)
                 }
                 youtubeEmbed
+                .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
                 .setTitle(`**Search Results** ${client.getEmoji("kannaWave")}`)
                 .setThumbnail(message.author.displayAvatarURL);
                 message.channel.send(youtubeEmbed);
@@ -117,6 +125,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                     .addField("**Link**", `https://www.youtube.com/playlist?list=${playlistResults[i].id}`)        
                 }
                 youtubeEmbed
+                .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
                 .setTitle(`**Search Results** ${client.getEmoji("kannaWave")}`)
                 .setThumbnail(message.author.displayAvatarURL);
                 message.channel.send(youtubeEmbed);
@@ -130,6 +139,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                     .addField("**Link**", videoResults[i].shortUrl)
                 }
                 youtubeEmbed
+                .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
                 .setTitle(`**Search Results** ${client.getEmoji("kannaWave")}`)
                 .setThumbnail(message.author.displayAvatarURL);
                 message.channel.send(youtubeEmbed);
@@ -145,6 +155,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .addField("**Link**", videoResults[i].shortUrl)
     }
     youtubeEmbed
+    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
     .setTitle(`**Search Results** ${client.getEmoji("kannaWave")}`)
     .setThumbnail(message.author.displayAvatarURL);
     message.channel.send(youtubeEmbed);

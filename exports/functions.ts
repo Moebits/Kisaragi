@@ -4,6 +4,8 @@ module.exports = async (client: any, message: any) => {
     let config: any = require("../../config.json");
     let prefix: string = await client.fetchPrefix();
     let colors: string[] = config.colors;
+    let letters: any = require("../../letters.json");
+
     
     //Random Number
     client.getRandomNum = (min: number, max: number) => {
@@ -31,11 +33,72 @@ module.exports = async (client: any, message: any) => {
         return `${monthNames[monthIndex]} ${day}, ${year}`;
       }
 
+    //Check Message Characters
+    client.checkChar = (message: any, num: number, char: string) => {
+        let splitText;
+        if (message.length > 1024) {
+            splitText = Discord.Util.splitMessage(message, {"maxLength": num, "char": char})
+        }
+        if (splitText) {
+            return splitText[0];
+        } else {
+            return message;
+        }
+    }
+
+    //Parse Letters
+    client.letters = (text: string) => {
+        let fullText = [];
+        for (let i = 0; i < text.length; i++) {
+            fullText.push(client.getLetter(text[i]));
+        }
+        let fullString = fullText.join("");
+        return client.checkChar(fullString, 1999, "<");
+    }
+
+
+    //Parse Emoji Letters
+    client.getLetter = (letter: string) => {
+        if (letter === " ") return "     ";
+        if (letter === letter.toUpperCase()) {
+            for (let i in letters.letters) {
+                if (letters.letters[i].name === `${letter}U`) {
+                    let found = client.emojis.find((emoji: any) => emoji.id === letters.letters[i].id)
+                    return `<:${found.identifier}>`
+                }
+            }
+            return letter;
+        }
+        if (letter === letter.toLowerCase()) {
+            for (let i in letters.letters) {
+                if (letters.letters[i].name === `${letter}l`) {
+                    let found = client.emojis.find((emoji: any) => emoji.id === letters.letters[i].id)
+                    return `<:${found.identifier}>`
+                }
+            }
+            return letter;
+        }
+        if (typeof Number(letter) === "number") {
+            for (let i in letters.letters) {
+                if (letters.letters[i].name === `${letter}n`) {
+                    let found = client.emojis.find((emoji: any) => emoji.id === letters.letters[i].id)
+                    return `<:${found.identifier}>`
+                }
+            }
+            return letter;
+        }
+    }
+
     //Get Emoji
     client.getEmoji = (name: string) => {
         for (let i in config.emojis) {
             if (name === config.emojis[i].name) {
-                return client.emojis.find((emoji: any) => emoji.id === config.emojis[i].id);
+                let found = client.emojis.find((emoji: any) => emoji.id === config.emojis[i].id);
+                if (found.animated) {
+                    return `<a:${found.identifier}>`;
+                } else {
+                    return `<:${found.identifier}>`
+                }
             }
         }
     }

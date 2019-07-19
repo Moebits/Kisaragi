@@ -4,9 +4,10 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
     if (args[1] === "list") {
         const emojiList = message.guild.emojis.map((e: any)=>e.toString()).join(" ");
-        message.channel.send(emojiEmbed
+            emojiEmbed
             .setTitle("**Only shows the first 2000 characters.**")
-            .setDescription(emojiList.slice(0,2000)));
+            .setDescription(client.checkChar(emojiList, 2000, "<"));
+            message.channel.send(emojiEmbed);
         return;
     } 
 

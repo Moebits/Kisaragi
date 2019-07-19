@@ -6,10 +6,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
     if (!args[1]) {
         let quote = animeQuotes.randomQuote();
         animeQuoteEmbed
+        .setAuthor("animequotes", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnI2SHuhdw8zEPc3xG0gfJyT4y2f8n4b_UKZCdjLQxnoI-2JEP")
         .setTitle(`**Anime Quote** ${client.getEmoji("raphi")}`)
-        .addField("**Anime**", quote.anime)
-        .addField("**Character**", quote.name)
-        .setDescription(quote.quote)
+        .setDescription(
+        `${client.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
+        `${client.getEmoji("star")}_Character:_ **${quote.name}**\n` +
+        `${client.getEmoji("star")}_Quote:_ ${quote.quote}`
+        )
         message.channel.send(animeQuoteEmbed);
         return;
     } else {
@@ -24,19 +27,25 @@ exports.run = async (client: any, message: any, args: string[]) => {
                     return;
                 }
                 animeQuoteEmbed
+                .setAuthor("animequotes", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnI2SHuhdw8zEPc3xG0gfJyT4y2f8n4b_UKZCdjLQxnoI-2JEP")
                 .setTitle(`**Anime Quote** ${client.getEmoji("raphi")}`)
-                .addField("**Anime**", quote.anime)
-                .addField("**Character**", quote.name)
-                .setDescription(quote.quote)
+                .setDescription(
+                `${client.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
+                `${client.getEmoji("star")}_Character:_ **${quote.name}**\n` +
+                `${client.getEmoji("star")}_Quote:_ ${quote.quote}`
+                )
                 message.channel.send(animeQuoteEmbed);
                 return;
             }
-        animeQuoteEmbed
-        .setTitle(`**Anime Quote** ${client.getEmoji("raphi")}`)
-        .addField("**Anime**", quote.anime)
-        .addField("**Character**", quote.name)
-        .setDescription(quote.quote)
-        message.channel.send(animeQuoteEmbed);
+            animeQuoteEmbed
+            .setAuthor("animequotes", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnI2SHuhdw8zEPc3xG0gfJyT4y2f8n4b_UKZCdjLQxnoI-2JEP")
+            .setTitle(`**Anime Quote** ${client.getEmoji("raphi")}`)
+            .setDescription(
+            `${client.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
+            `${client.getEmoji("star")}_Character:_ **${quote.name}**\n` +
+            `${client.getEmoji("star")}_Quote:_ ${quote.quote}`
+            )
+            message.channel.send(animeQuoteEmbed);
         }
 }
 
