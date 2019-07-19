@@ -1,4 +1,4 @@
-# Gab Discord Bot
+# Kisaragi Discord Bot
 This is my first programming project, a simple discord bot with chat moderation and fun commands. 
 
 # To Do
