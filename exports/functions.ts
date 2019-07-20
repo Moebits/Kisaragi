@@ -48,7 +48,7 @@ module.exports = async (client: any, message: any) => {
 
     //Parse Letters
     client.letters = (text: string) => {
-        let fullText = [];
+        let fullText: string[] = [];
         for (let i = 0; i < text.length; i++) {
             fullText.push(client.getLetter(text[i]));
         }
@@ -93,12 +93,7 @@ module.exports = async (client: any, message: any) => {
     client.getEmoji = (name: string) => {
         for (let i in config.emojis) {
             if (name === config.emojis[i].name) {
-                let found = client.emojis.find((emoji: any) => emoji.id === config.emojis[i].id);
-                if (found.animated) {
-                    return `<a:${found.identifier}>`;
-                } else {
-                    return `<:${found.identifier}>`
-                }
+                return client.emojis.find((emoji: any) => emoji.id === config.emojis[i].id);
             }
         }
     }
@@ -116,6 +111,41 @@ module.exports = async (client: any, message: any) => {
             .setTimestamp(embed.timestamp)
             .setFooter(`Responded in ${client.responseTime()}`, message.author.avatarURL);
             return embed;
+    }
+
+    //Create Reaction Embed
+    client.createReactionEmbed = (embeds: any) => {
+        console.log(embeds)
+
+        let page = 0;
+        message.channel.send(embeds[page]).then((msg: any) =>{
+            msg.react(client.getEmoji("left")).then(r => {
+                msg.react(client.getEmoji("right"));
+                const backwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("left") && user.id !== message.author.id;
+                const forwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("right") && user.id !== message.author.id;
+
+                const backward = msg.createReactionCollector(backwardCheck, {time: 100000});
+                const forward = msg.createReactionCollector(forwardCheck, {time: 100000});
+
+                backward.on("collect", r => {
+                    if (page === 0) {
+                        page = embeds.length - 1; }
+                    else {
+                        page--; }
+                    msg.edit(embeds[page]);
+                    r.remove(backward.users.find((u: any) => u.id !== config.clientId));
+                })
+
+                forward.on("collect", r => {
+                    if (page === embeds.length) {
+                        page = 0; }
+                    else { 
+                        page++; }
+                    msg.edit(embeds[page]);
+                    r.remove(forward.users.find((u: any) => u.id !== config.clientId));
+                })
+            }) 
+        })
     }
 
     //Create Permission

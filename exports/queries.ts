@@ -9,7 +9,7 @@ module.exports = (client: any, message: any) => {
       password: process.env.PGPASSWORD,
       port: process.env.PGPORT,
       sslmode: process.env.PGSSLMODE,
-      max: 15
+      max: 10
     });
 
     const tableList: string[] = [

@@ -44,7 +44,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let playlist = await youtube.getPlaylistByUrl(playLink);
         let ytChannel = await youtube.getChannel(playlist.creatorId);
         let videos = await playlist.fetchVideos(5);
-        let videoArray = [];
+        let videoArray: string[] = [];
         for (let i = 0; i <= 5; i++) {
             if (!videos[i]) break;
             videoArray.push(`**${videos[i].title}**\n`)
@@ -76,7 +76,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
         const video = await youtube.getVideoByUrl(videoLink)
         let comments = await video.fetchComments(5);
-        let commentArray = [];
+        let commentArray: string[] = [];
         for (let i = 0; i <= 5; i++) {
             if (!comments[i]) break;
             commentArray.push(`**${comments[i].author.username}:** ${comments[i].text.displayed}\n`)

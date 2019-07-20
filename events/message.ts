@@ -1,6 +1,6 @@
 module.exports = async (client: any, message: any) => {
 
-  let letterNames = [
+  /*let letterNames = [
     "300hit", "100hit",
     "50hit"
   ]
@@ -11,8 +11,8 @@ module.exports = async (client: any, message: any) => {
         console.log(`{"name": "${letterNames[i]}", "id": "${emoji.id}"},`);
       }
     });
-  } 
-
+  } */
+  
     /*let tc = await client.channels.get("580542336560398367");
     let ms = await tc.fetchMessage('600715814420873216');
     console.log(ms.attachments.map((a:any) => a.url))*/

@@ -20,6 +20,7 @@ const subDirectory: string[] = [
     "heart",
     "hentai",
     "info",
+    "japanese",
     "level",
     "logging",
     "moderator",
