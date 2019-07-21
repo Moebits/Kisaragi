@@ -17,7 +17,7 @@ module.exports = async (client: any, message: any) => {
     client.compressGif = async (input) => {
         let file = await imagemin(input, 
         {destination: "../assets/gifs",
-        plugins: [imageminGifsicle({interlaced: true, optimizationLevel: 3, colors: 256, optimize: 3, lossy: 80})]
+        plugins: [imageminGifsicle({interlaced: true, optimizationLevel: 2, colors: 128,})]
         });
         return file;
     }
@@ -121,10 +121,11 @@ module.exports = async (client: any, message: any) => {
     //Pixiv Image ID
     client.getPixivImageID = async (tags: any) => {
         await pixiv.login(process.env.PIXIVR18_NAME, process.env.PIXIVR18_PASSWORD);
-        let image = pixiv.illustDetail(Number(tags));
+        let image = await pixiv.illustDetail(tags.toString());
+        console.log(image)
         if (!image) client.pixivErrorEmbed;
         let refreshToken = await pixiv.refreshAccessToken();
-        let pixivEmbed = await client.createPixivEmbed(image, refreshToken.refresh_token);
+        let pixivEmbed = await client.createPixivEmbed(image.illust, refreshToken.refresh_token);
         return message.channel.send(pixivEmbed);
     }
 

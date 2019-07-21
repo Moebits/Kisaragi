@@ -96,15 +96,15 @@ exports.run = async (client: any, message: any, args: string[]) => {
     if (fileNames.length > 40) {
         if (fileNames.length > 80) {
             if (fileNames.length > 150) {
-                for (let i = 0; i < fileNames.length; i+=8) {
+                for (let i = 0; i < fileNames.length; i+=9) {
                     pics.push(fileNames[i]);
                 }
             }
-            for (let i = 0; i < fileNames.length; i+=4) {
+            for (let i = 0; i < fileNames.length; i+=6) {
                 pics.push(fileNames[i]);
             }
         }
-        for (let i = 0; i < fileNames.length; i+=2) {
+        for (let i = 0; i < fileNames.length; i+=3) {
             pics.push(fileNames[i]);
         }
     } else {
