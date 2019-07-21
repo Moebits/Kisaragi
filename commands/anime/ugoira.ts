@@ -13,7 +13,6 @@ exports.run = async (client: any, message: any, args: string[]) => {
     } else {
         input = client.combineArgs(args, 1);
     }
-    const fs = require('fs');
     let pixivID;
 
     if (input.match(/\d+/g) !== null) {
@@ -51,44 +50,84 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 }
         }
     }
+    
+    //const webp = require('webp-converter');
     await pixiv.login(process.env.PIXIVR18_NAME, process.env.PIXIVR18_PASSWORD);
     let details = await pixiv.illustDetail(pixivID)
     console.log(details)
+    let ugoiraInfo = await pixiv.ugoiraMetaData(pixivID);
+    let fileNames: any = []; 
+    let frameDelays: any = [];
+    let frameNames: any = [];
+    let inputArray: any = [];
+    for (let i in ugoiraInfo.ugoira_metadata.frames) {
+        frameDelays.push(ugoiraInfo.ugoira_metadata.frames[i].delay);
+        fileNames.push(ugoiraInfo.ugoira_metadata.frames[i].file);
+    }
+    for (let i in fileNames) {
+        frameNames.push(fileNames[i].slice(0, -4));
+    }
+    for (let i in frameNames) {
+        inputArray.push(`ugoira/${pixivID}/${frameNames[i]}.webp +${frameDelays[i]}`);
+    }
+    
     let refreshToken = await pixiv.refreshAccessToken();
     const ugoira = new Ugoira(pixivID);
     const out = await ugoira.initUgoira(refreshToken.refresh_token);
+    console.log(out)
+    /*
+    for (let i in fileNames) {
+        webp.cwebp(`ugoira/${pixivID}/${fileNames[i]}`,`ugoira/${pixivID}/${frameNames[i]}.webp`, "-q 80", function (status,error) {
+                return console.log(status,error);	
+            });
+    }
+    webp.webpmux_animate(inputArray,`ugoira/${pixivID}.webp`,"10","255,255,255,255",function (status,error) {
+            return console.log(status,error);	
+        });
 
+    
+    for (let i in savedFrames) {
+        webp.dwebp(`ugoira/${pixivID}/${savedFrames[i]}.webp`,`ugoira/${pixivID}/${savedFrames[i]}.png`,"-o", function(status,error) {
+            return console.log(status,error);	
+        });
+    }*/    
+    console.log(fileNames)
+    
+    let pics: any = [];
+    const fs = require('fs');
+    if (fileNames.length > 40) {
+        if (fileNames.length > 80) {
+            if (fileNames.length > 150) {
+                for (let i = 0; i < fileNames.length; i+=15) {
+                    pics.push(fileNames[i]);
+                }
+            }
+            for (let i = 0; i < fileNames.length; i+=10) {
+                pics.push(fileNames[i]);
+            }
+        }
+        for (let i = 0; i < fileNames.length; i+=2) {
+            pics.push(fileNames[i]);
+        }
+    } else {
+        for (let i = 0; i < fileNames.length; i++) {
+            pics.push(fileNames[i]);
+        }
+    }
+
+    const sizeOf = require('image-size');
+    let dimensions = sizeOf(`ugoira/${pixivID}/${pics[0]}`);
+    console.log(details.illust.width)
+    console.log(dimensions.width)
+    console.log(details.illust.height)
+    console.log(dimensions.height)
     let getPixels = require('get-pixels')
     let GifEncoder = require('gif-encoder');
-    let gif = new GifEncoder(details.illust.width, details.illust.height);
+    let gif = new GifEncoder(dimensions.width, dimensions.height);
     let file = fs.createWriteStream(`ugoira/${pixivID}/${pixivID}.gif`, (err) => console.log(err));
-    let pics = fs.readdirSync(out.extractedPath, (err) => console.log(err));
-
-    //let frames: any = []
-
-    /*switch (pics.length) {
-        case pics.length > 40: 
-            for (var i = 0; i < pics.length; i = i+2) {
-                frames.push(pics[i]);
-            }; 
-            break;
-        case pics.length > 80: 
-            for (var i = 0; i < pics.length; i = i+4) {
-                frames.push(pics[i]);
-            };
-            break;
-        case pics.length > 160:
-                for (var i = 0; i < pics.length; i = i+8) {
-                    frames.push(pics[i]);
-                };
-                break;
-        default:
-            for (var i = 0; i < pics.length; i++) {
-                frames.push(pics[i]);
-            };
-            break;
-    }*/
     
+    console.log(pics);
+
     gif.pipe(file);
     gif.setQuality(20);
     gif.setDelay(0);
@@ -112,7 +151,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     
     message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${client.getEmoji("gabCircle")}`)
     .then(async(msg: any) => {
-        await addToGif(pics);
+        addToGif(pics);
         msg.delete(10000);
     });
     
@@ -123,11 +162,11 @@ exports.run = async (client: any, message: any, args: string[]) => {
             let compressed = await client.compressGif([`ugoira/${pixivID}/${pixivID}.gif`]);
             console.log(compressed)
             msg.delete(3000);
-        
+
             const pixivImg = require('pixiv-img');
             let ugoiraEmbed = client.createEmbed();
             const {Attachment} = require("discord.js");
-            let outGif = new Attachment(`../assets/gifs/${pixivID}.gif`)
+            let outGif = new Attachment(`../assets/gifs/${pixivID}.gif`);
             let comments = await pixiv.illustComments(pixivID);
             let cleanText = details.illust.caption.replace(/<\/?[^>]+(>|$)/g, "");
             let authorUrl = await pixivImg(details.illust.user.profile_image_urls.medium);
@@ -154,6 +193,6 @@ exports.run = async (client: any, message: any, args: string[]) => {
             .setImage(`attachment://${pixivID}.gif`)
             message.channel.send(ugoiraEmbed);
             console.log(ugoiraEmbed)
-        });
-    })
+            });
+        });   
 }

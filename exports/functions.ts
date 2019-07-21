@@ -5,7 +5,13 @@ module.exports = async (client: any, message: any) => {
     let prefix: string = await client.fetchPrefix();
     let colors: string[] = config.colors;
     let letters: any = require("../../letters.json");
+    const child_process = require('child_process');
 
+    //Execute File
+    client.execFile = async (file: string, args?: string[]) => {
+        await child_process.execFile(`../assets/tools/${file}`, args);
+        return console.log("finished");
+    }
     
     //Random Number
     client.getRandomNum = (min: number, max: number) => {
@@ -124,8 +130,8 @@ module.exports = async (client: any, message: any) => {
                 const backwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("left") && user.id !== message.author.id;
                 const forwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("right") && user.id !== message.author.id;
 
-                const backward = msg.createReactionCollector(backwardCheck, {time: 100000});
-                const forward = msg.createReactionCollector(forwardCheck, {time: 100000});
+                const backward = msg.createReactionCollector(backwardCheck);
+                const forward = msg.createReactionCollector(forwardCheck);
 
                 backward.on("collect", r => {
                     if (page === 0) {
