@@ -118,10 +118,32 @@ module.exports = async (client: any, message: any) => {
         return message.channel.send(pixivEmbed);
     }
 
+    //Pixiv Image ID
+    client.getPixivImageID = async (tags: any) => {
+        await pixiv.login(process.env.PIXIVR18_NAME, process.env.PIXIVR18_PASSWORD);
+        let image = pixiv.illustDetail(Number(tags));
+        if (!image) client.pixivErrorEmbed;
+        let refreshToken = await pixiv.refreshAccessToken();
+        let pixivEmbed = await client.createPixivEmbed(image, refreshToken.refresh_token);
+        return message.channel.send(pixivEmbed);
+    }
+
     //Pixiv Popular Image
     client.getPopularPixivImage = async () => {
         await pixiv.login(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD);
         const json = await pixiv.illustRanking();
+        await [].sort.call(json.illusts, ((a: any, b: any) => (a.total_bookmarks - b.total_bookmarks)*-1));
+        let index = Math.floor(Math.random() * (10));
+        let image = json.illusts[index]; 
+    
+        let pixivEmbed = await client.createPixivEmbed(image);
+        return message.channel.send(pixivEmbed);
+    }
+
+    //Pixiv Popular R18 Image
+    client.getPopularPixivR18Image = async () => {
+        await pixiv.login(process.env.PIXIVR18_NAME, process.env.PIXIVR18_PASSWORD);
+        const json = await pixiv.illustRanking({mode: "day_male_r18"});
         await [].sort.call(json.illusts, ((a: any, b: any) => (a.total_bookmarks - b.total_bookmarks)*-1));
         let index = Math.floor(Math.random() * (10));
         let image = json.illusts[index]; 
