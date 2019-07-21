@@ -73,7 +73,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     
     let refreshToken = await pixiv.refreshAccessToken();
     const ugoira = new Ugoira(pixivID);
-    const out = await ugoira.initUgoira(refreshToken.refresh_token);
+    await ugoira.initUgoira(refreshToken.refresh_token);
     /*
     for (let i in fileNames) {
         webp.cwebp(`ugoira/${pixivID}/${fileNames[i]}`,`ugoira/${pixivID}/${frameNames[i]}.webp`, "-q 80", function (status,error) {
