@@ -16,7 +16,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     const fs = require('fs');
     let pixivID;
 
-    if (input.match(/\d+/g)) {
+    if (input.match(/\d+/g) !== null) {
         pixivID = input.match(/\d+/g).join("");
     } else {
         if (args[1].toLowerCase() === "r18") {

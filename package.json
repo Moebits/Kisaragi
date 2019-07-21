@@ -64,6 +64,7 @@
     "linkifyjs": "^2.1.8",
     "moment": "^2.24.0",
     "nasa-sdk": "^1.1.10",
+    "nhentai-js": "^3.2.0",
     "node-gyp": "^5.0.1",
     "node-html-parser": "^1.1.16",
     "node-opus": "^0.3.2",
