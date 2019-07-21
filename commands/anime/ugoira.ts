@@ -74,7 +74,6 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let refreshToken = await pixiv.refreshAccessToken();
     const ugoira = new Ugoira(pixivID);
     const out = await ugoira.initUgoira(refreshToken.refresh_token);
-    console.log(out)
     /*
     for (let i in fileNames) {
         webp.cwebp(`ugoira/${pixivID}/${fileNames[i]}`,`ugoira/${pixivID}/${frameNames[i]}.webp`, "-q 80", function (status,error) {
@@ -91,18 +90,17 @@ exports.run = async (client: any, message: any, args: string[]) => {
             return console.log(status,error);	
         });
     }*/    
-    console.log(fileNames)
     
     let pics: any = [];
     const fs = require('fs');
     if (fileNames.length > 40) {
         if (fileNames.length > 80) {
             if (fileNames.length > 150) {
-                for (let i = 0; i < fileNames.length; i+=15) {
+                for (let i = 0; i < fileNames.length; i+=8) {
                     pics.push(fileNames[i]);
                 }
             }
-            for (let i = 0; i < fileNames.length; i+=10) {
+            for (let i = 0; i < fileNames.length; i+=4) {
                 pics.push(fileNames[i]);
             }
         }
@@ -117,16 +115,10 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
     const sizeOf = require('image-size');
     let dimensions = sizeOf(`ugoira/${pixivID}/${pics[0]}`);
-    console.log(details.illust.width)
-    console.log(dimensions.width)
-    console.log(details.illust.height)
-    console.log(dimensions.height)
     let getPixels = require('get-pixels')
     let GifEncoder = require('gif-encoder');
     let gif = new GifEncoder(dimensions.width, dimensions.height);
     let file = fs.createWriteStream(`ugoira/${pixivID}/${pixivID}.gif`, (err) => console.log(err));
-    
-    console.log(pics);
 
     gif.pipe(file);
     gif.setQuality(20);
@@ -159,8 +151,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         
         message.channel.send(`**Compressing Gif** ${client.getEmoji("gabCircle")}`)
         .then(async (msg: any) => {
-            let compressed = await client.compressGif([`ugoira/${pixivID}/${pixivID}.gif`]);
-            console.log(compressed)
+            await client.compressGif([`ugoira/${pixivID}/${pixivID}.gif`]);
             msg.delete(3000);
 
             const pixivImg = require('pixiv-img');
@@ -192,7 +183,6 @@ exports.run = async (client: any, message: any, args: string[]) => {
             .setThumbnail(`attachment://${authorAttachment.file}`)
             .setImage(`attachment://${pixivID}.gif`)
             message.channel.send(ugoiraEmbed);
-            console.log(ugoiraEmbed)
             });
         });   
 }
