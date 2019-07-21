@@ -8,27 +8,7 @@ const client = new Discord.Client();
 
 const commands = require("../commands.json");
 
-//let version: string = "1.0.0";
-
-const subDirectory: string[] = [
-    "administrator",
-    "anime",
-    "bot owner",
-    "configuration",
-    "fun",
-    "geometry dash",
-    "heart",
-    "hentai",
-    "info",
-    "japanese",
-    "level",
-    "logging",
-    "moderator",
-    "music",
-    "osu",
-    "role",
-    "utility"
-];
+//let version: string = "1.0.0"
 
 const start = async () => {
 
@@ -36,6 +16,7 @@ const start = async () => {
     require('./exports/queries.js')(client, null);
 
     let cmdFiles: string[] = [];
+    const subDirectory = await readdir("./commands/");
 
     for (let i in subDirectory) {
         let currDir = subDirectory[i];

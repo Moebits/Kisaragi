@@ -15,3 +15,6 @@ eslintrc.json
 
 #Typescript declarations
 declarations
+
+#Downloaded Files
+assets/gifs/*
