@@ -180,6 +180,5 @@ exports.run = async (client: any, message: any, args: string[]) => {
             .setThumbnail(`attachment://${authorAttachment.file}`)
             .setImage(`attachment://${pixivID}.gif`)
             message.channel.send(ugoiraEmbed);
-            });
-        });   
+            });   
 }
