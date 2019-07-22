@@ -67,7 +67,7 @@ module.exports = async (client: any, message: any) => {
             imgInput = input;
             imgOutput = output;
             compress_images(imgInput, imgOutput, {compress_force: true, statistic: true, autoupdate: true}, false,
-                {jpg: {engine: 'mozjpeg', command: ['-quality', '100']}},
+                {jpg: {engine: 'mozjpeg', command: ['-quality', '10']}},
                 {png: {engine: 'pngquant', command: ['--quality=20-50']}},
                 {svg: {engine: 'svgo', command: '--multipass'}},
                 {gif: {engine: 'gifsicle', command: ['--colors', '64', '--use-col=web']}}, function(error, completed, statistic) {
@@ -240,11 +240,9 @@ module.exports = async (client: any, message: any) => {
         let doujinPages: any = [];
         fs.mkdirSync(`../assets/pages/${tag}/`);
         fs.mkdirSync(`../assets/pages compressed/${tag}/`);
-        await client.downloadPages(doujin.pages.length, doujin.pages, `../assets/pages/${tag}/`)
-        let timeOut = 20 * doujin.pages.length + 500;
-        setTimeout(async() => { 
-        await client.compressImages(`../assets/pages/${tag}/*.jpg`, `../assets/pages compressed/${tag}/`);
-        setTimeout(async() => { 
+        //await client.downloadPages(doujin.pages.length, doujin.pages, `../assets/pages/${tag}/`)
+        //let timeOut = 20 * doujin.pages.length + 500;
+        //await client.compressImages(`../assets/pages/${tag}/*.jpg`, `../assets/pages compressed/${tag}/`);
         for (let i = 0; i < doujin.pages.length; i++) {
             let image = new Attachment(`../assets/pages compressed/${tag}/page${i}.jpg`);
             console.log(image)
@@ -264,12 +262,10 @@ module.exports = async (client: any, message: any) => {
             )
             .attachFiles([image.file])
             .setThumbnail(doujin.thumbnails[0])
-            .setImage(`attachment://page${i}.jpg`);
+            .setImage(doujin.pages[i]);
             doujinPages.push(nhentaiEmbed);
         }
         client.createReactionEmbed(doujinPages);
-            }, timeOut + 500)
-        }, timeOut)
     }
 
     //Fetch Channel Attachments
