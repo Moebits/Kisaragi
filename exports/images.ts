@@ -13,6 +13,7 @@ module.exports = async (client: any, message: any) => {
     const imagemin = require("imagemin");
     const imageminGifsicle = require("imagemin-gifsicle");
     const download = require('image-downloader');
+    let config: any = require("../../config.json");
     let compress_images = require('compress-images'), imgInput, imgOutput;
     const fs = require("fs");
 
