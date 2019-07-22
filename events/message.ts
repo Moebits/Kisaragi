@@ -61,16 +61,13 @@ module.exports = async (client: any, message: any) => {
     const path: string = commands.paths[cmd];
     if (path === null || undefined) return;
     const cp = require(path);
+
     
     await require("../exports/images.js")(client, message);
 
-    let msg = message.channel.send(`${client.getEmoji("kisaragiCircle")} **Loading** ${client.getEmoji("gabCircle")}`)
-    try {
-      cp.run(client, message, args);
-    } catch (err) {
-      message.channel.send(client.cmdError(err));
-    }
-    msg.delete(1000)
-     
+    let msg = await message.channel.send(`${client.getEmoji("kisaragiCircle")} **Loading** ${client.getEmoji("gabCircle")}`);
+    cp.run(client, message, args).catch((err) => message.channel.send(client.cmdError(err)));
+    msg.delete(1000);
+    
 }
 

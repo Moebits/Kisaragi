@@ -18,38 +18,46 @@ module.exports = async (client: any, message: any) => {
     const fs = require("fs");
 
     //Create Reaction Embed
-    client.createReactionEmbed = (embeds: any, message: any) => {
+    client.createReactionEmbed = (embeds: any) => {
         let page = 0;
         message.channel.send(embeds[page]).then((msg: any) =>{
             msg.react(client.getEmoji("left")).then(r => {
-                msg.react(client.getEmoji("right"));
-                const backwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("left") && user.id !== message.author.id;
-                const forwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("right") && user.id !== message.author.id;
+                msg.react(client.getEmoji("right")).then(r => {
 
-                const backward = msg.createReactionCollector(backwardCheck);
-                const forward = msg.createReactionCollector(forwardCheck);
+                    const backwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("left") && user.bot === false;
+                    const forwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("right") && user.bot === false;
 
-                backward.on("collect", r => {
-                    if (page === 0) {
-                        page = embeds.length - 1; }
-                    else {
-                        page--; }
-                    if (msg.reactions.length >= 2) {
-                        r.remove(backward.users.find((u: any) => u.id !== config.clientId));
-                    }
-                    msg.edit(embeds[page]);
-                })
+                    const backward = msg.createReactionCollector(backwardCheck);
+                    const forward = msg.createReactionCollector(forwardCheck);
 
-                forward.on("collect", r => {
-                    if (page === embeds.length) {
-                        page = 0; }
-                    else { 
-                        page++; }
-                    if (msg.reactions.length >= 2) {
-                        r.remove(forward.users.find((u: any) => u.id !== config.clientId));
-                    }
-                    msg.edit(embeds[page]);
-                })
+                    backward.on("collect", r => {
+                        if (page === 0) {
+                            page = embeds.length - 1; }
+                        else {
+                            page--; }
+                            msg.edit(embeds[page]);
+                            let user = backward.users.find((u: any) => u.id !== config.clientId);
+                            if (user) {
+                                r.remove(user);
+                            }
+                            
+                    });
+
+                    forward.on("collect", r => {
+                        if (page === embeds.length - 1) {
+                            page = 0; }
+                        else { 
+                            page++; }
+                            msg.edit(embeds[page]);
+                            let user = forward.users.find((u: any) => u.id !== config.clientId);
+                            if (user) {
+                                r.remove(user);
+                            } 
+                            
+                    });
+
+                });
+                
             }) 
         })
     }
