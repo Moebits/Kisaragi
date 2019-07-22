@@ -12,6 +12,46 @@ module.exports = async (client: any, message: any) => {
     const {Attachment} = require("discord.js");
     const imagemin = require("imagemin");
     const imageminGifsicle = require("imagemin-gifsicle");
+    const download = require('image-downloader');
+    let compress_images = require('compress-images'), imgInput, imgOutput;
+    const fs = require("fs");
+
+    //Create Reaction Embed
+    client.createReactionEmbed = (embeds: any, message: any) => {
+        let page = 0;
+        message.channel.send(embeds[page]).then((msg: any) =>{
+            msg.react(client.getEmoji("left")).then(r => {
+                msg.react(client.getEmoji("right"));
+                const backwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("left") && user.id !== message.author.id;
+                const forwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("right") && user.id !== message.author.id;
+
+                const backward = msg.createReactionCollector(backwardCheck);
+                const forward = msg.createReactionCollector(forwardCheck);
+
+                backward.on("collect", r => {
+                    if (page === 0) {
+                        page = embeds.length - 1; }
+                    else {
+                        page--; }
+                    if (msg.reactions.length >= 2) {
+                        r.remove(backward.users.find((u: any) => u.id !== config.clientId));
+                    }
+                    msg.edit(embeds[page]);
+                })
+
+                forward.on("collect", r => {
+                    if (page === embeds.length) {
+                        page = 0; }
+                    else { 
+                        page++; }
+                    if (msg.reactions.length >= 2) {
+                        r.remove(forward.users.find((u: any) => u.id !== config.clientId));
+                    }
+                    msg.edit(embeds[page]);
+                })
+            }) 
+        })
+    }
 
     //Compress Gif
     client.compressGif = async (input) => {
@@ -20,6 +60,22 @@ module.exports = async (client: any, message: any) => {
         plugins: [imageminGifsicle({interlaced: true, optimizationLevel: 2, colors: 128,})]
         });
         return file;
+    }
+
+    //Compress Images
+    client.compressImages = (input, output) => {
+            imgInput = input;
+            imgOutput = output;
+            compress_images(imgInput, imgOutput, {compress_force: true, statistic: true, autoupdate: true}, false,
+                {jpg: {engine: 'mozjpeg', command: ['-quality', '100']}},
+                {png: {engine: 'pngquant', command: ['--quality=20-50']}},
+                {svg: {engine: 'svgo', command: '--multipass'}},
+                {gif: {engine: 'gifsicle', command: ['--colors', '64', '--use-col=web']}}, function(error, completed, statistic) {
+                    console.log(statistic);
+                    if(completed === true){
+                        return;
+                    }          
+                });
     }
 
     //Danbooru image
@@ -153,6 +209,25 @@ module.exports = async (client: any, message: any) => {
         return message.channel.send(pixivEmbed);
     }
 
+    //Download Pages
+    client.downloadPages = async (length, url, dest) => {
+            for (let i = 0; i < length; i++) {
+                const options = {
+                    url: url[i],
+                    dest: `${dest}/page${i}.jpg`          
+                  }
+                  async function downloadIMG() {
+                    try {
+                      const {filename} = await download.image(options)
+                      console.log(filename)
+                    } catch (e) {
+                      console.error(e)
+                    }
+                  }
+                downloadIMG();
+            }
+    }
+
     //nhentai Doujin
     client.getNhentaiDoujin = async (doujin: any, tag: any) => {
         let checkArtists = doujin.details.artists ? client.checkChar(doujin.details.artists.join(" "), 10, ")") : "None";
@@ -163,7 +238,16 @@ module.exports = async (client: any, message: any) => {
         let checkLanguages = doujin.details.languages ? client.checkChar(doujin.details.languages.join(" "), 10, ")") : "None";
         let checkCategories = doujin.details.categories ? client.checkChar(doujin.details.categories.join(" "), 10, ")") : "None";
         let doujinPages: any = [];
+        fs.mkdirSync(`../assets/pages/${tag}/`);
+        fs.mkdirSync(`../assets/pages compressed/${tag}/`);
+        await client.downloadPages(doujin.pages.length, doujin.pages, `../assets/pages/${tag}/`)
+        let timeOut = 20 * doujin.pages.length + 500;
+        setTimeout(async() => { 
+        await client.compressImages(`../assets/pages/${tag}/*.jpg`, `../assets/pages compressed/${tag}/`);
+        setTimeout(async() => { 
         for (let i = 0; i < doujin.pages.length; i++) {
+            let image = new Attachment(`../assets/pages compressed/${tag}/page${i}.jpg`);
+            console.log(image)
             let nhentaiEmbed = client.createEmbed();
             nhentaiEmbed
             .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
@@ -178,11 +262,14 @@ module.exports = async (client: any, message: any) => {
             `${client.getEmoji("star")}_Tags:_ ${checkTags} ${checkParodies}` +
             `${checkGroups} ${checkLanguages} ${checkCategories}\n` 
             )
+            .attachFiles([image.file])
             .setThumbnail(doujin.thumbnails[0])
-            .setImage(doujin.pages[i]);
+            .setImage(`attachment://page${i}.jpg`);
             doujinPages.push(nhentaiEmbed);
         }
         client.createReactionEmbed(doujinPages);
+            }, timeOut + 500)
+        }, timeOut)
     }
 
     //Fetch Channel Attachments

@@ -1,12 +1,12 @@
 exports.run = async (client: any, message: any, args: string[]) => {
     const nhentai = require('nhentai-js');
     if (args[1].toLowerCase() === "random") {
-        let random = 0;
-        while (!nhentai.exists(random)) {
-            random = Math.floor(Math.random() * 1000000);
+        let random = "0";
+        while (!await nhentai.exists(random)) {
+            random = Math.floor(Math.random() * 1000000).toString();
         }
-        let doujin = await nhentai.getDoujin(random.toString());
-        client.getNhentaiDoujin(doujin, random.toString());
+        let doujin = await nhentai.getDoujin(random);
+        client.getNhentaiDoujin(doujin, random);
         return;
     }
     let tag = client.combineArgs(args, 1);

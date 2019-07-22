@@ -119,41 +119,6 @@ module.exports = async (client: any, message: any) => {
             return embed;
     }
 
-    //Create Reaction Embed
-    client.createReactionEmbed = (embeds: any) => {
-        console.log(embeds)
-
-        let page = 0;
-        message.channel.send(embeds[page]).then((msg: any) =>{
-            msg.react(client.getEmoji("left")).then(r => {
-                msg.react(client.getEmoji("right"));
-                const backwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("left") && user.id !== message.author.id;
-                const forwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("right") && user.id !== message.author.id;
-
-                const backward = msg.createReactionCollector(backwardCheck);
-                const forward = msg.createReactionCollector(forwardCheck);
-
-                backward.on("collect", r => {
-                    if (page === 0) {
-                        page = embeds.length - 1; }
-                    else {
-                        page--; }
-                    msg.edit(embeds[page]);
-                    r.remove(backward.users.find((u: any) => u.id !== config.clientId));
-                })
-
-                forward.on("collect", r => {
-                    if (page === embeds.length) {
-                        page = 0; }
-                    else { 
-                        page++; }
-                    msg.edit(embeds[page]);
-                    r.remove(forward.users.find((u: any) => u.id !== config.clientId));
-                })
-            }) 
-        })
-    }
-
     //Create Permission
     client.createPermission = (permission: string) => {
         let perm: any = new Discord.Permissions(permission);
@@ -213,7 +178,7 @@ module.exports = async (client: any, message: any) => {
         .setDescription(`There was an error executing this command:\n` + 
         `**${error.name}: ${error.message}**\n` + `Please report this through the following links:\n` +
         `[Official Server](https://discord.gg/77yGmWM), [Github Repo](https://github.com/Tenpi/Gab)`);
-        message.channel.send(messageErrorEmbed);
+        return messageErrorEmbed;
     }
 
     //Fetch Score

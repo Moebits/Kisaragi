@@ -141,18 +141,15 @@ exports.run = async (client: any, message: any, args: string[]) => {
         })
     }
     
-    message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${client.getEmoji("gabCircle")}`)
-    .then(async(msg: any) => {
-        addToGif(pics);
-        msg.delete(10000);
-    });
+    let msg = message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${client.getEmoji("gabCircle")}`)
+    addToGif(pics);
+    msg.delete(1000);
     
     gif.on("end", async () => {
         
-        message.channel.send(`**Compressing Gif** ${client.getEmoji("gabCircle")}`)
-        .then(async (msg: any) => {
-            await client.compressGif([`ugoira/${pixivID}/${pixivID}.gif`]);
-            msg.delete(3000);
+        let msg = message.channel.send(`**Compressing Gif** ${client.getEmoji("gabCircle")}`)
+        await client.compressGif([`ugoira/${pixivID}/${pixivID}.gif`]);
+        msg.delete(1000);
 
             const pixivImg = require('pixiv-img');
             let ugoiraEmbed = client.createEmbed();
