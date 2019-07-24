@@ -17,6 +17,7 @@ module.exports = async (client: any, message: any) => {
     let ms = await tc.fetchMessage('600715814420873216');
     console.log(ms.attachments.map((a:any) => a.url))*/
 
+
     await require("../exports/functions.js")(client, message);
     await require("../exports/queries.js")(client, message);
     const commands = await require("../../commands.json");
@@ -51,9 +52,9 @@ module.exports = async (client: any, message: any) => {
         message.channel.send(prefixHelpEmbed);
     }
 
-    if (client.checkPrefixUser(message)) {
-        return;
-    }
+    if(!message.content.startsWith(prefix) || message.author.bot) return;
+
+    console.log(message);
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/g);
     if (args[0] === undefined) return;
@@ -65,7 +66,7 @@ module.exports = async (client: any, message: any) => {
     
     await require("../exports/images.js")(client, message);
 
-    let msg = await message.channel.send(`${client.getEmoji("kisaragiCircle")} **Loading** ${client.getEmoji("gabCircle")}`);
+    let msg = await message.channel.send(`**Loading** ${client.getEmoji("gabCircle")}`);
     cp.run(client, message, args).catch((err) => message.channel.send(client.cmdError(err)));
     msg.delete(1000);
     

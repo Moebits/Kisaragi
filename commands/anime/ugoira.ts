@@ -3,6 +3,7 @@ import Ugoira from 'node-ugoira';
 exports.run = async (client: any, message: any, args: string[]) => {
     const PixivApi = require('pixiv-api-client');
     const pixiv = new PixivApi();
+    let refreshToken = client.pixivLogin();
     let input;
     if (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en") {
         if (args[2] === "en") {
@@ -51,15 +52,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
     }
     
-    //const webp = require('webp-converter');
-    await pixiv.login(process.env.PIXIVR18_NAME, process.env.PIXIVR18_PASSWORD);
+    await pixiv.refreshAccessToken(refreshToken);
     let details = await pixiv.illustDetail(pixivID)
     console.log(details)
     let ugoiraInfo = await pixiv.ugoiraMetaData(pixivID);
     let fileNames: any = []; 
     let frameDelays: any = [];
     let frameNames: any = [];
-    let inputArray: any = [];
     for (let i in ugoiraInfo.ugoira_metadata.frames) {
         frameDelays.push(ugoiraInfo.ugoira_metadata.frames[i].delay);
         fileNames.push(ugoiraInfo.ugoira_metadata.frames[i].file);
@@ -67,29 +66,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
     for (let i in fileNames) {
         frameNames.push(fileNames[i].slice(0, -4));
     }
-    for (let i in frameNames) {
-        inputArray.push(`ugoira/${pixivID}/${frameNames[i]}.webp +${frameDelays[i]}`);
-    }
     
-    let refreshToken = await pixiv.refreshAccessToken();
     const ugoira = new Ugoira(pixivID);
     await ugoira.initUgoira(refreshToken.refresh_token);
-    /*
-    for (let i in fileNames) {
-        webp.cwebp(`ugoira/${pixivID}/${fileNames[i]}`,`ugoira/${pixivID}/${frameNames[i]}.webp`, "-q 80", function (status,error) {
-                return console.log(status,error);	
-            });
-    }
-    webp.webpmux_animate(inputArray,`ugoira/${pixivID}.webp`,"10","255,255,255,255",function (status,error) {
-            return console.log(status,error);	
-        });
-
-    
-    for (let i in savedFrames) {
-        webp.dwebp(`ugoira/${pixivID}/${savedFrames[i]}.webp`,`ugoira/${pixivID}/${savedFrames[i]}.png`,"-o", function(status,error) {
-            return console.log(status,error);	
-        });
-    }*/    
     
     let pics: any = [];
     const fs = require('fs');

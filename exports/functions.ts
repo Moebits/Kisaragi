@@ -2,7 +2,6 @@ module.exports = async (client: any, message: any) => {
 
     let Discord: any = require("discord.js");
     let config: any = require("../../config.json");
-    let prefix: string = await client.fetchPrefix();
     let colors: string[] = config.colors;
     let letters: any = require("../../letters.json");
     const child_process = require('child_process');
@@ -128,13 +127,6 @@ module.exports = async (client: any, message: any) => {
     //Check for Bot Mention
     client.checkBotMention = (message: any) => {
         if (message.content.startsWith("<@!593838271650332672>")) {
-            return true;
-        }
-    }
-
-    //Check for Prefix and User
-    client.checkPrefixUser = (message: any) => {
-        if(!message.content.startsWith(prefix) || message.author.bot) {
             return true;
         }
     }

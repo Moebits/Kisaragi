@@ -99,8 +99,22 @@ module.exports = async (client: any, message: any) => {
         return https.get(url.href);
     }
 
+    //Pixiv Login
+    client.pixivLogin = async () => {
+        try {
+            await pixiv.refreshAccessToken(process.env.PIXIV_REFRESH_TOKEN);
+        } catch (err) {
+            await pixiv.login(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD, true);
+            let refresh = await pixiv.refreshAccessToken();
+            console.log("Refresh token expired. New one:");
+            console.log(refresh.refresh_token);
+        }
+        let token = await pixiv.refreshAccessToken();
+        return token.refresh_token;
+    }
+
     //Create Pixiv Embed
-    client.createPixivEmbed = async (image: any, refreshToken: string) => {
+    client.createPixivEmbed = async (refreshToken: string, image: any) => {
         await pixiv.refreshAccessToken(refreshToken);
         const pixivEmbed = client.createEmbed();
         if (!image) client.pixivErrorEmbed;
@@ -150,7 +164,9 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Pixiv Image
-    client.getPixivImage = async (tag: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
+    client.getPixivImage = async (refresh: string, tag: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
+        let refreshToken = refresh;
+        await pixiv.refreshAccessToken(refreshToken);
         let newTag;
         if (en) {
             newTag = tag;
@@ -159,7 +175,7 @@ module.exports = async (client: any, message: any) => {
         }
         let json;
         if (r18) {
-            await pixiv.login(process.env.PIXIVR18_NAME, process.env.PIXIVR18_PASSWORD);
+            await pixiv.login(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD);
             if (ugoira) {
                 json = await pixiv.searchIllust(`うごイラ R-18 ${newTag}`);
             } else {
@@ -173,48 +189,49 @@ module.exports = async (client: any, message: any) => {
                 json = await pixiv.searchIllust(newTag);
             }
         }
-        let refreshToken = await pixiv.refreshAccessToken();
         await [].sort.call(json.illusts, ((a: any, b: any) => (a.total_bookmarks - b.total_bookmarks)*-1));
         let index = Math.floor(Math.random() * (10));
         let image = json.illusts[index]; 
         if (noEmbed) return image;
 
-        let pixivEmbed = await client.createPixivEmbed(image, refreshToken.refresh_token);
+        let pixivEmbed = await client.createPixivEmbed(refreshToken, image);
         return message.channel.send(pixivEmbed);
     }
 
     //Pixiv Image ID
-    client.getPixivImageID = async (tags: any) => {
-        await pixiv.login(process.env.PIXIVR18_NAME, process.env.PIXIVR18_PASSWORD);
+    client.getPixivImageID = async (refresh: string, tags: any) => {
+        let refreshToken = refresh;
+        await pixiv.refreshAccessToken(refreshToken);
         let image = await pixiv.illustDetail(tags.toString());
         console.log(image)
         if (!image) client.pixivErrorEmbed;
-        let refreshToken = await pixiv.refreshAccessToken();
-        let pixivEmbed = await client.createPixivEmbed(image.illust, refreshToken.refresh_token);
+        let pixivEmbed = await client.createPixivEmbed(refreshToken, image.illust);
         return message.channel.send(pixivEmbed);
     }
 
     //Pixiv Popular Image
-    client.getPopularPixivImage = async () => {
-        await pixiv.login(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD);
+    client.getPopularPixivImage = async (refresh: string) => {
+        let refreshToken = refresh;
+        await pixiv.refreshAccessToken(refreshToken);
         const json = await pixiv.illustRanking();
         await [].sort.call(json.illusts, ((a: any, b: any) => (a.total_bookmarks - b.total_bookmarks)*-1));
         let index = Math.floor(Math.random() * (10));
         let image = json.illusts[index]; 
     
-        let pixivEmbed = await client.createPixivEmbed(image);
+        let pixivEmbed = await client.createPixivEmbed(refreshToken, image);
         return message.channel.send(pixivEmbed);
     }
 
     //Pixiv Popular R18 Image
-    client.getPopularPixivR18Image = async () => {
-        await pixiv.login(process.env.PIXIVR18_NAME, process.env.PIXIVR18_PASSWORD);
+    client.getPopularPixivR18Image = async (refresh: string) => {
+        let refreshToken = refresh;
+        await pixiv.refreshAccessToken(refreshToken);
         const json = await pixiv.illustRanking({mode: "day_male_r18"});
         await [].sort.call(json.illusts, ((a: any, b: any) => (a.total_bookmarks - b.total_bookmarks)*-1));
         let index = Math.floor(Math.random() * (10));
         let image = json.illusts[index]; 
     
-        let pixivEmbed = await client.createPixivEmbed(image);
+        let pixivEmbed = await client.createPixivEmbed(refreshToken, image);
         return message.channel.send(pixivEmbed);
     }
 
