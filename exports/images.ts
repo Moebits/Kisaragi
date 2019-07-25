@@ -38,8 +38,6 @@ module.exports = async (client: any, message: any) => {
             if (collapse) {
                 let description = embeds[0].description;
                 let thumbnail = embeds[0].thumbnail;
-                let title = embeds[0].title;
-                let url = embeds[0].url;
                 for (const reaction of reactionsCollapse) await msg.react(reaction);
                 const collapseCheck = (reaction, user) => reaction.emoji === client.getEmoji("collapse") && user.bot === false;
                 const expandCheck = (reaction, user) => reaction.emoji === client.getEmoji("expand") && user.bot === false;
@@ -127,7 +125,7 @@ module.exports = async (client: any, message: any) => {
     client.compressGif = async (input) => {
         let file = await imagemin(input, 
         {destination: "../assets/gifs",
-        plugins: [imageminGifsicle({interlaced: true, optimizationLevel: 2, colors: 128,})]
+        plugins: [imageminGifsicle({interlaced: true, optimizationLevel: 3, colors: 256,})]
         });
         return file;
     }
@@ -265,7 +263,6 @@ module.exports = async (client: any, message: any) => {
         let refreshToken = refresh;
         await pixiv.refreshAccessToken(refreshToken);
         let image = await pixiv.illustDetail(tags.toString());
-        console.log(image)
         if (!image) client.pixivErrorEmbed;
         let pixivEmbed = await client.createPixivEmbed(refreshToken, image.illust);
         return message.channel.send(pixivEmbed);

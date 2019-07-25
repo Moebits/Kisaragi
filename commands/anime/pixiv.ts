@@ -1,16 +1,17 @@
 exports.run = async (client: any, message: any, args: string[]) => {
     const tags = client.combineArgs(args, 1);
-    let refreshToken = client.pixivLogin();
+    let refreshToken = await client.pixivLogin();
+    console.log(refreshToken)
 
     if (tags.match(/\d+/g) !== null) {
-        client.getPixivImageID(tags.match(/\d+/g))
+        client.getPixivImageID(refreshToken, tags.match(/\d+/g))
         return;
     }
 
     if (args[1].toLowerCase() === "r18") {
         if (args[2].toLowerCase() === "en") {
             const tags = client.combineArgs(args, 2);
-            client.getPixivImage(tags, true, true);
+            client.getPixivImage(refreshToken, tags, true, true);
             return;
         } else {
             const tags = client.combineArgs(args, 2);
@@ -36,5 +37,5 @@ exports.run = async (client: any, message: any, args: string[]) => {
     }
     
    
-    client.getPixivImage(tags);
+    client.getPixivImage(refreshToken, tags);
 }

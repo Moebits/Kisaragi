@@ -3,7 +3,7 @@ import Ugoira from 'node-ugoira';
 exports.run = async (client: any, message: any, args: string[]) => {
     const PixivApi = require('pixiv-api-client');
     const pixiv = new PixivApi();
-    let refreshToken = client.pixivLogin();
+    let refreshToken = await client.pixivLogin();
     let input;
     if (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en") {
         if (args[2] === "en") {
@@ -14,8 +14,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
     } else {
         input = client.combineArgs(args, 1);
     }
+    let msg1 = await message.channel.send(`**Fetching Ugoira** ${client.getEmoji("gabCircle")}`)
     let pixivID;
-
     if (input.match(/\d+/g) !== null) {
         pixivID = input.match(/\d+/g).join("");
     } else {
@@ -54,7 +54,6 @@ exports.run = async (client: any, message: any, args: string[]) => {
     
     await pixiv.refreshAccessToken(refreshToken);
     let details = await pixiv.illustDetail(pixivID)
-    console.log(details)
     let ugoiraInfo = await pixiv.ugoiraMetaData(pixivID);
     let fileNames: any = []; 
     let frameDelays: any = [];
@@ -68,22 +67,20 @@ exports.run = async (client: any, message: any, args: string[]) => {
     }
     
     const ugoira = new Ugoira(pixivID);
-    await ugoira.initUgoira(refreshToken.refresh_token);
+    await ugoira.initUgoira(refreshToken);
     
     let pics: any = [];
     const fs = require('fs');
-    if (fileNames.length > 40) {
-        if (fileNames.length > 80) {
-            if (fileNames.length > 150) {
-                for (let i = 0; i < fileNames.length; i+=9) {
-                    pics.push(fileNames[i]);
-                }
-            }
-            for (let i = 0; i < fileNames.length; i+=6) {
-                pics.push(fileNames[i]);
-            }
+    if (fileNames.length > 150) {
+        for (let i = 0; i < fileNames.length; i+=5) {
+            pics.push(fileNames[i]);
         }
+    } else if (fileNames.length > 80) {
         for (let i = 0; i < fileNames.length; i+=3) {
+            pics.push(fileNames[i]);
+        }
+    } else if (fileNames.length > 40) {
+        for (let i = 0; i < fileNames.length; i+=2) {
             pics.push(fileNames[i]);
         }
     } else {
@@ -119,16 +116,17 @@ exports.run = async (client: any, message: any, args: string[]) => {
                     }
         })
     }
-    
-    let msg = await message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${client.getEmoji("gabCircle")}`)
+
+    msg1.delete(1000);
+    let msg2 = await message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${client.getEmoji("gabCircle")}`)
     addToGif(pics);
-    msg.delete(1000);
     
     gif.on("end", async () => {
         
-        let msg = await message.channel.send(`**Compressing Gif** ${client.getEmoji("gabCircle")}`)
+        msg2.delete(1000);
+        let msg3 = await message.channel.send(`**Compressing Gif** ${client.getEmoji("gabCircle")}`)
         await client.compressGif([`ugoira/${pixivID}/${pixivID}.gif`]);
-        msg.delete(1000);
+        msg3.delete(1000);
 
             const pixivImg = require('pixiv-img');
             let ugoiraEmbed = client.createEmbed();
