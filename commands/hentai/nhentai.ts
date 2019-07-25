@@ -1,14 +1,37 @@
 exports.run = async (client: any, message: any, args: string[]) => {
     const nhentai = require('nhentai-js');
-    if (args[1].toLowerCase() === "random") {
+    const blacklist = require("../../../blacklist.json");
+
+    client.nhentaiRandom = async (filter?: boolean) => {
         let random = "0";
         while (!await nhentai.exists(random)) {
             random = Math.floor(Math.random() * 1000000).toString();
         }
         let doujin = await nhentai.getDoujin(random);
-        client.getNhentaiDoujin(doujin, random);
+        if (filter) {
+            for (let i in doujin.details.tags) {
+                for (let j in blacklist.nhentai) {
+                    if (doujin.details.tags[i] === blacklist.nhentai[j]) {
+                        await client.nhentaiRandom(true);
+                    }
+                }
+            }
+        }
+        return doujin;
+    }
+
+    if (args[1].toLowerCase() === "random") {
+        let doujin = await client.nhentaiRandom(true);
+        console.log(doujin)
+        client.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
         return;
     }
+    if (args[1].toLowerCase() === "nsfl") {
+        let doujin = await client.nhentaiRandom(false);
+        client.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
+        return;
+    }
+
     let tag = client.combineArgs(args, 1);
     if (tag.match(/\d+/g) !== null) {
         let doujin = await nhentai.getDoujin(tag.match(/\d+/g).toString());

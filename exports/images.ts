@@ -8,6 +8,7 @@ module.exports = async (client: any, message: any) => {
     const pixiv = new PixivApi();
     const pixivImg = require('pixiv-img');
     const translate = require('@vitalets/google-translate-api');
+    //let blacklist = require("../blacklist.json");
     
     const {Attachment} = require("discord.js");
     const imagemin = require("imagemin");
@@ -15,7 +16,7 @@ module.exports = async (client: any, message: any) => {
     const download = require('image-downloader');
     let config: any = require("../../config.json");
     let compress_images = require('compress-images'), imgInput, imgOutput;
-    const fs = require("fs");
+    //const fs = require("fs");
 
     //Create Reaction Embed
     client.createReactionEmbed = (embeds: any, collapse?: boolean, startPage?: number) => {
@@ -99,7 +100,6 @@ module.exports = async (client: any, message: any) => {
                     if (user) {
                         r.remove(user);
                     } 
-                    
             });
 
             tripleBackward.on("collect", r => {
@@ -107,6 +107,7 @@ module.exports = async (client: any, message: any) => {
                     page = (embeds.length - 1) - Math.floor(embeds.length/5); }
                 else {
                     page -= Math.floor(embeds.length/5); }
+                    if (page < 0) page *= -1;
                     msg.edit(embeds[page]);
                     let user = tripleBackward.users.find((u: any) => u.id !== config.clientId);
                     if (user) {
@@ -119,6 +120,7 @@ module.exports = async (client: any, message: any) => {
                     page = 0 + Math.floor(embeds.length/5); }
                 else {
                     page += Math.floor(embeds.length/5); }
+                    if (page > embeds.length - 1) page -= embeds.length - 1;
                     msg.edit(embeds[page]);
                     let user = tripleForward.users.find((u: any) => u.id !== config.clientId);
                     if (user) {
