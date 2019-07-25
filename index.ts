@@ -4,7 +4,12 @@ const {promisify} = require("util");
 const readdir = promisify(require("fs").readdir);
 
 const Discord = require("discord.js");
-const client = new Discord.Client();
+const client = new Discord.Client({
+    apiRequestMethod: "burst",
+    disableEveryone: true,
+    restTimeOffset: 0,
+    disabledEvents: ["TYPING_START", "TYPING_STOP"]
+});
 
 const commands = require("../commands.json");
 

@@ -1,8 +1,9 @@
 module.exports = async (client: any, message: any) => {
 
   /*let letterNames = [
-    "300hit", "100hit",
-    "50hit"
+    "right", "left",
+    "tripleRight", "tripleLeft",
+    "collapse", "expand"
   ]
 
   for (let i = 0; i < letterNames.length; i++) {
@@ -53,8 +54,6 @@ module.exports = async (client: any, message: any) => {
     }
 
     if(!message.content.startsWith(prefix) || message.author.bot) return;
-
-    console.log(message);
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/g);
     if (args[0] === undefined) return;

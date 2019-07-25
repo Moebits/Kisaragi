@@ -18,48 +18,109 @@ module.exports = async (client: any, message: any) => {
     const fs = require("fs");
 
     //Create Reaction Embed
-    client.createReactionEmbed = (embeds: any) => {
+    client.createReactionEmbed = (embeds: any, collapse?: boolean) => {
         let page = 0;
-        message.channel.send(embeds[page]).then((msg: any) =>{
-            msg.react(client.getEmoji("left")).then(r => {
-                msg.react(client.getEmoji("right")).then(r => {
+        let reactions: any = [client.getEmoji("right"), client.getEmoji("left"), client.getEmoji("tripleRight"), client.getEmoji("tripleLeft")];
+        let reactionsCollapse: any = [client.getEmoji("collapse"), client.getEmoji("expand")]
+        message.channel.send(embeds[page]).then(async (msg: any) => {
+            for (const reaction of reactions) await msg.react(reaction);
+                  
+            const forwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("right") && user.bot === false;
+            const backwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("left") && user.bot === false;
+            const tripleForwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("tripleRight") && user.bot === false;
+            const tripleBackwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("tripleLeft") && user.bot === false;
+            
+            const forward = msg.createReactionCollector(forwardCheck);
+            const backward = msg.createReactionCollector(backwardCheck);
+            const tripleForward = msg.createReactionCollector(tripleForwardCheck);
+            const tripleBackward = msg.createReactionCollector(tripleBackwardCheck);
 
-                    const backwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("left") && user.bot === false;
-                    const forwardCheck = (reaction, user) => reaction.emoji === client.getEmoji("right") && user.bot === false;
+            if (collapse) {
+                let description = embeds[0].description;
+                let thumbnail = embeds[0].thumbnail;
+                let title = embeds[0].title;
+                let url = embeds[0].url;
+                for (const reaction of reactionsCollapse) await msg.react(reaction);
+                const collapseCheck = (reaction, user) => reaction.emoji === client.getEmoji("collapse") && user.bot === false;
+                const expandCheck = (reaction, user) => reaction.emoji === client.getEmoji("expand") && user.bot === false;
+                const collapse = msg.createReactionCollector(collapseCheck);
+                const expand = msg.createReactionCollector(expandCheck);
 
-                    const backward = msg.createReactionCollector(backwardCheck);
-                    const forward = msg.createReactionCollector(forwardCheck);
-
-                    backward.on("collect", r => {
-                        if (page === 0) {
-                            page = embeds.length - 1; }
-                        else {
-                            page--; }
-                            msg.edit(embeds[page]);
-                            let user = backward.users.find((u: any) => u.id !== config.clientId);
-                            if (user) {
-                                r.remove(user);
-                            }
-                            
-                    });
-
-                    forward.on("collect", r => {
-                        if (page === embeds.length - 1) {
-                            page = 0; }
-                        else { 
-                            page++; }
-                            msg.edit(embeds[page]);
-                            let user = forward.users.find((u: any) => u.id !== config.clientId);
-                            if (user) {
-                                r.remove(user);
-                            } 
-                            
-                    });
-
+                collapse.on("collect", r => {
+                        for (let i = 0; i < embeds.length; i++) {
+                            embeds[i].setDescription("");
+                            embeds[i].setThumbnail("");
+                        }
+                        msg.edit(embeds[page]);
+                        let user = collapse.users.find((u: any) => u.id !== config.clientId);
+                        if (user) {
+                            r.remove(user);
+                        }     
                 });
-                
-            }) 
-        })
+
+                expand.on("collect", r => {
+                    for (let i = 0; i < embeds.length; i++) {
+                        embeds[i].setDescription(description);
+                        embeds[i].setThumbnail(thumbnail.url);
+                    }
+                    msg.edit(embeds[page]);
+                    let user = expand.users.find((u: any) => u.id !== config.clientId);
+                    if (user) {
+                        r.remove(user);
+                    }     
+                });
+            }
+
+            backward.on("collect", r => {
+                if (page === 0) {
+                    page = embeds.length - 1; }
+                else {
+                    page--; }
+                    msg.edit(embeds[page]);
+                    let user = backward.users.find((u: any) => u.id !== config.clientId);
+                    if (user) {
+                        r.remove(user);
+                    }     
+            });
+
+            forward.on("collect", r => {
+                if (page === embeds.length - 1) {
+                    page = 0; }
+                else { 
+                    page++; }
+                    msg.edit(embeds[page]);
+                    let user = forward.users.find((u: any) => u.id !== config.clientId);
+                    if (user) {
+                        r.remove(user);
+                    } 
+                    
+            });
+
+            tripleBackward.on("collect", r => {
+                if (page === 0) {
+                    page = (embeds.length - 1) - Math.floor(embeds.length/5); }
+                else {
+                    page -= Math.floor(embeds.length/5); }
+                    msg.edit(embeds[page]);
+                    let user = tripleBackward.users.find((u: any) => u.id !== config.clientId);
+                    if (user) {
+                        r.remove(user);
+                    }     
+            });
+
+            tripleForward.on("collect", r => {
+                if (page === embeds.length - 1) {
+                    page = 0 + Math.floor(embeds.length/5); }
+                else {
+                    page += Math.floor(embeds.length/5); }
+                    msg.edit(embeds[page]);
+                    let user = tripleForward.users.find((u: any) => u.id !== config.clientId);
+                    if (user) {
+                        r.remove(user);
+                    }     
+            });
+
+        });
     }
 
     //Compress Gif
@@ -72,19 +133,20 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Compress Images
-    client.compressImages = (input, output) => {
-            imgInput = input;
-            imgOutput = output;
-            compress_images(imgInput, imgOutput, {compress_force: true, statistic: true, autoupdate: true}, false,
+    client.compressImages = (src, dest) => {
+        return new Promise(resolve => {
+            imgInput = src;
+            imgOutput = dest;
+                compress_images(imgInput, imgOutput, {compress_force: true, statistic: false, autoupdate: true}, false,
                 {jpg: {engine: 'mozjpeg', command: ['-quality', '10']}},
                 {png: {engine: 'pngquant', command: ['--quality=20-50']}},
                 {svg: {engine: 'svgo', command: '--multipass'}},
-                {gif: {engine: 'gifsicle', command: ['--colors', '64', '--use-col=web']}}, function(error, completed, statistic) {
-                    console.log(statistic);
-                    if(completed === true){
-                        return;
+                {gif: {engine: 'gifsicle', command: ['--colors', '64', '--use-col=web']}}, function (error, completed) {
+                    if(completed === true) {
+                        resolve();
                     }          
                 });
+        });
     }
 
     //Danbooru image
@@ -236,22 +298,20 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Download Pages
-    client.downloadPages = async (length, url, dest) => {
-            for (let i = 0; i < length; i++) {
-                const options = {
-                    url: url[i],
-                    dest: `${dest}/page${i}.jpg`          
-                  }
-                  async function downloadIMG() {
-                    try {
-                      const {filename} = await download.image(options)
-                      console.log(filename)
-                    } catch (e) {
-                      console.error(e)
-                    }
-                  }
-                downloadIMG();
+    client.downloadPages = async (array, dest) => {
+        await Promise.all(array.map(async (url, i) => {
+            const options = {
+                url,
+                dest: `${dest}page${i}.jpg`
+            };
+            
+            try {
+                const {filename} = await download.image(options);
+                console.log(filename);
+            } catch(e) {
+                console.log(e);
             }
+        }));
     }
 
     //nhentai Doujin
@@ -265,13 +325,14 @@ module.exports = async (client: any, message: any) => {
         let checkCategories = doujin.details.categories ? client.checkChar(doujin.details.categories.join(" "), 10, ")") : "None";
         let doujinPages: any = [];
         fs.mkdirSync(`../assets/pages/${tag}/`);
-        fs.mkdirSync(`../assets/pages compressed/${tag}/`);
-        //await client.downloadPages(doujin.pages.length, doujin.pages, `../assets/pages/${tag}/`)
-        //let timeOut = 20 * doujin.pages.length + 500;
-        //await client.compressImages(`../assets/pages/${tag}/*.jpg`, `../assets/pages compressed/${tag}/`);
+        fs.mkdirSync(`../assets/pagesCompressed/${tag}/`);
+        /*let msg1 = await message.channel.send(`**Downloading images** ${client.getEmoji("gabCircle")}`);
+        await client.downloadPages(doujin.pages, `../assets/pages/${tag}/`);
+        msg1.delete(1000);
+        let msg2 = await message.channel.send(`**Compressing images** ${client.getEmoji("gabCircle")}`);
+        await client.compressImages(`../assets/pages/${tag}/*.jpg`, `../assets/pagesCompressed/${tag}/`);
+        msg2.delete(1000);*/
         for (let i = 0; i < doujin.pages.length; i++) {
-            let image = new Attachment(`../assets/pages compressed/${tag}/page${i}.jpg`);
-            console.log(image)
             let nhentaiEmbed = client.createEmbed();
             nhentaiEmbed
             .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
@@ -286,12 +347,12 @@ module.exports = async (client: any, message: any) => {
             `${client.getEmoji("star")}_Tags:_ ${checkTags} ${checkParodies}` +
             `${checkGroups} ${checkLanguages} ${checkCategories}\n` 
             )
-            .attachFiles([image.file])
             .setThumbnail(doujin.thumbnails[0])
-            .setImage(doujin.pages[i]);
-            doujinPages.push(nhentaiEmbed);
+            .setImage(doujin.pages[i])
+            .setFooter(`Page ${i}/${doujin.pages.length}`);
+            await doujinPages.push(nhentaiEmbed);
         }
-        client.createReactionEmbed(doujinPages);
+        await client.createReactionEmbed(doujinPages, true);
     }
 
     //Fetch Channel Attachments
