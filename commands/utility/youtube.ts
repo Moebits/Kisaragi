@@ -15,10 +15,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let youtubeEmbed = client.createEmbed();
         youtubeEmbed
         .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
-        .setTitle(`**Youtube Channel** ${client.getEmoji("kannaWave")}`)
+        .setTitle(`**${channel.name}** ${client.getEmoji("kannaWave")}`)
         .setURL(channel.url)
         .setDescription(
-        `${client.getEmoji("star")}_Channel:_ **${channel.name}**\n` +
         `${client.getEmoji("star")}_Custom URL:_ **${channel.data.snippet.customUrl ? `https://youtube.com/c/${channel.data.snippet.customUrl}` : "None"}**\n` +
         `${client.getEmoji("star")}_Keywords:_ ${keywords ? keywords : "None"}\n` +
         `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(channel.dateCreated)}**\n` +
@@ -44,10 +43,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let youtubeEmbed = client.createEmbed();
         youtubeEmbed
         .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
-        .setTitle(`**Youtube Playlist** ${client.getEmoji("kannaWave")}`)
+        .setTitle(`**${playlist.title}** ${client.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/playlist?list=${playlist.id}`)
         .setDescription(
-        `${client.getEmoji("star")}_Title_: **${playlist.title}**\n` +
         `${client.getEmoji("star")}_Channel:_ **${ytChannel.name}**\n` +
         `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(playlist.dateCreated)}**\n` +
         `${client.getEmoji("star")}_Tags:_ ${playlist.tags ? playlist.tags : "None"}\n` +
@@ -72,10 +70,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let youtubeEmbed = client.createEmbed();
         youtubeEmbed
         .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
-        .setTitle(`**Youtube Video** ${client.getEmoji("kannaWave")}`)
+        .setTitle(`**${video.title}** ${client.getEmoji("kannaWave")}`)
         .setURL(video.shortUrl)
         .setDescription(
-        `${client.getEmoji("star")}_Title:_ **${video.title}**\n` +
         `${client.getEmoji("star")}_Channel:_ **${ytChannel.name}**\n` +
         `${client.getEmoji("star")}_Views:_ **${video.views}**\n` +
         `${client.getEmoji("star")} ${client.getEmoji("up")} **${video.likes}** ${client.getEmoji("down")} **${video.dislikes}**\n` +
@@ -99,7 +96,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 channelLink = channelResult[i].url;
                 await client.ytChannelEmbed(channelLink);
             }
-            client.createReactionEmbed(ytEmbeds, true);
+            client.createReactionEmbed(ytEmbeds);
             msg.delete(1000);
             return;
         }
@@ -120,7 +117,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 playLink = `https://www.youtube.com/playlist?list=${playlistResult[i].id}`;
                 await client.ytPlaylistEmbed(playLink);
             }
-            client.createReactionEmbed(ytEmbeds, true);
+            client.createReactionEmbed(ytEmbeds);
             msg.delete(1000);
             return;
         }
@@ -140,7 +137,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 videoLink = videoResult[i].url;
                 await client.ytVideoEmbed(videoLink);
             }
-            client.createReactionEmbed(ytEmbeds, true);
+            client.createReactionEmbed(ytEmbeds);
             msg.delete(1000);
             return;
         }

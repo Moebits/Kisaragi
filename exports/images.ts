@@ -40,8 +40,12 @@ module.exports = async (client: any, message: any) => {
             const tripleBackward = msg.createReactionCollector(tripleBackwardCheck);
 
             if (collapse) {
-                let description = embeds[0].description;
-                //let thumbnail = embeds[0].thumbnail;
+                let description: any = [];
+                let thumbnail: any = [];
+                for (let i in embeds) {
+                    description.push(embeds[i].description);
+                    thumbnail.push(embeds[i].thumbnail);
+                }
                 for (const reaction of reactionsCollapse) await msg.react(reaction);
                 const collapseCheck = (reaction, user) => reaction.emoji === client.getEmoji("collapse") && user.bot === false;
                 const expandCheck = (reaction, user) => reaction.emoji === client.getEmoji("expand") && user.bot === false;
@@ -51,7 +55,7 @@ module.exports = async (client: any, message: any) => {
                 collapse.on("collect", r => {
                         for (let i = 0; i < embeds.length; i++) {
                             embeds[i].setDescription("");
-                            //embeds[i].setThumbnail("");
+                            embeds[i].setThumbnail("");
                         }
                         msg.edit(embeds[page]);
                         let user = collapse.users.find((u: any) => u.id !== config.clientId);
@@ -62,8 +66,8 @@ module.exports = async (client: any, message: any) => {
 
                 expand.on("collect", r => {
                     for (let i = 0; i < embeds.length; i++) {
-                        embeds[i].setDescription(description);
-                        //embeds[i].setThumbnail(thumbnail.url);
+                        embeds[i].setDescription(description[i]);
+                        embeds[i].setThumbnail(thumbnail[i].url);
                     }
                     msg.edit(embeds[page]);
                     let user = expand.users.find((u: any) => u.id !== config.clientId);
@@ -325,9 +329,9 @@ module.exports = async (client: any, message: any) => {
         let checkLanguages = doujin.details.languages ? client.checkChar(doujin.details.languages.join(" "), 10, ")") : "None";
         let checkCategories = doujin.details.categories ? client.checkChar(doujin.details.categories.join(" "), 10, ")") : "None";
         let doujinPages: any = [];
-        fs.mkdirSync(`../assets/pages/${tag}/`);
+        /*fs.mkdirSync(`../assets/pages/${tag}/`);
         fs.mkdirSync(`../assets/pagesCompressed/${tag}/`);
-        /*let msg1 = await message.channel.send(`**Downloading images** ${client.getEmoji("gabCircle")}`);
+        let msg1 = await message.channel.send(`**Downloading images** ${client.getEmoji("gabCircle")}`);
         await client.downloadPages(doujin.pages, `../assets/pages/${tag}/`);
         msg1.delete(1000);
         let msg2 = await message.channel.send(`**Compressing images** ${client.getEmoji("gabCircle")}`);
@@ -337,10 +341,9 @@ module.exports = async (client: any, message: any) => {
             let nhentaiEmbed = client.createEmbed();
             nhentaiEmbed
             .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
-            .setTitle(`**Hentai Doujinshi** ${client.getEmoji("madokaLewd")}`)
+            .setTitle(`**${doujin.title}** ${client.getEmoji("madokaLewd")}`)
             .setURL(doujin.link)
             .setDescription(
-            `${client.getEmoji("star")}_English Title:_ **${doujin.title}**\n` +
             `${client.getEmoji("star")}_Japanese Title:_ **${doujin.nativeTitle}**\n` +
             `${client.getEmoji("star")}_ID:_ **${tag}**\n` +
             `${client.getEmoji("star")}_Artists:_ ${checkArtists}\n` +
