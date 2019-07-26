@@ -8,6 +8,7 @@ module.exports = async (client: any, message: any) => {
     const pixiv = new PixivApi();
     const pixivImg = require('pixiv-img');
     const translate = require('@vitalets/google-translate-api');
+    //let blacklist = require("../blacklist.json");
     
     const {Attachment} = require("discord.js");
     const imagemin = require("imagemin");
@@ -15,11 +16,15 @@ module.exports = async (client: any, message: any) => {
     const download = require('image-downloader');
     let config: any = require("../../config.json");
     let compress_images = require('compress-images'), imgInput, imgOutput;
-    const fs = require("fs");
+    //const fs = require("fs");
 
     //Create Reaction Embed
-    client.createReactionEmbed = (embeds: any, collapse?: boolean) => {
+    client.createReactionEmbed = (embeds: any, collapse?: boolean, startPage?: number) => {
         let page = 0;
+        if (startPage) page = startPage;
+        for (let i = 0; i < embeds.length; i++) {
+            embeds[i].setFooter(`Page ${i + 1}/${embeds.length}`);
+        }
         let reactions: any = [client.getEmoji("right"), client.getEmoji("left"), client.getEmoji("tripleRight"), client.getEmoji("tripleLeft")];
         let reactionsCollapse: any = [client.getEmoji("collapse"), client.getEmoji("expand")]
         message.channel.send(embeds[page]).then(async (msg: any) => {
@@ -36,8 +41,12 @@ module.exports = async (client: any, message: any) => {
             const tripleBackward = msg.createReactionCollector(tripleBackwardCheck);
 
             if (collapse) {
-                let description = embeds[0].description;
-                let thumbnail = embeds[0].thumbnail;
+                let description: any = [];
+                let thumbnail: any = [];
+                for (let i in embeds) {
+                    description.push(embeds[i].description);
+                    thumbnail.push(embeds[i].thumbnail);
+                }
                 for (const reaction of reactionsCollapse) await msg.react(reaction);
                 const collapseCheck = (reaction, user) => reaction.emoji === client.getEmoji("collapse") && user.bot === false;
                 const expandCheck = (reaction, user) => reaction.emoji === client.getEmoji("expand") && user.bot === false;
@@ -58,8 +67,8 @@ module.exports = async (client: any, message: any) => {
 
                 expand.on("collect", r => {
                     for (let i = 0; i < embeds.length; i++) {
-                        embeds[i].setDescription(description);
-                        embeds[i].setThumbnail(thumbnail.url);
+                        embeds[i].setDescription(description[i]);
+                        embeds[i].setThumbnail(thumbnail[i].url);
                     }
                     msg.edit(embeds[page]);
                     let user = expand.users.find((u: any) => u.id !== config.clientId);
@@ -91,7 +100,6 @@ module.exports = async (client: any, message: any) => {
                     if (user) {
                         r.remove(user);
                     } 
-                    
             });
 
             tripleBackward.on("collect", r => {
@@ -99,6 +107,7 @@ module.exports = async (client: any, message: any) => {
                     page = (embeds.length - 1) - Math.floor(embeds.length/5); }
                 else {
                     page -= Math.floor(embeds.length/5); }
+                    if (page < 0) page *= -1;
                     msg.edit(embeds[page]);
                     let user = tripleBackward.users.find((u: any) => u.id !== config.clientId);
                     if (user) {
@@ -111,6 +120,7 @@ module.exports = async (client: any, message: any) => {
                     page = 0 + Math.floor(embeds.length/5); }
                 else {
                     page += Math.floor(embeds.length/5); }
+                    if (page > embeds.length - 1) page -= embeds.length - 1;
                     msg.edit(embeds[page]);
                     let user = tripleForward.users.find((u: any) => u.id !== config.clientId);
                     if (user) {
@@ -321,9 +331,9 @@ module.exports = async (client: any, message: any) => {
         let checkLanguages = doujin.details.languages ? client.checkChar(doujin.details.languages.join(" "), 10, ")") : "None";
         let checkCategories = doujin.details.categories ? client.checkChar(doujin.details.categories.join(" "), 10, ")") : "None";
         let doujinPages: any = [];
-        fs.mkdirSync(`../assets/pages/${tag}/`);
+        /*fs.mkdirSync(`../assets/pages/${tag}/`);
         fs.mkdirSync(`../assets/pagesCompressed/${tag}/`);
-        /*let msg1 = await message.channel.send(`**Downloading images** ${client.getEmoji("gabCircle")}`);
+        let msg1 = await message.channel.send(`**Downloading images** ${client.getEmoji("gabCircle")}`);
         await client.downloadPages(doujin.pages, `../assets/pages/${tag}/`);
         msg1.delete(1000);
         let msg2 = await message.channel.send(`**Compressing images** ${client.getEmoji("gabCircle")}`);
@@ -333,10 +343,9 @@ module.exports = async (client: any, message: any) => {
             let nhentaiEmbed = client.createEmbed();
             nhentaiEmbed
             .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
-            .setTitle(`**Hentai Doujinshi** ${client.getEmoji("madokaLewd")}`)
+            .setTitle(`**${doujin.title}** ${client.getEmoji("madokaLewd")}`)
             .setURL(doujin.link)
             .setDescription(
-            `${client.getEmoji("star")}_English Title:_ **${doujin.title}**\n` +
             `${client.getEmoji("star")}_Japanese Title:_ **${doujin.nativeTitle}**\n` +
             `${client.getEmoji("star")}_ID:_ **${tag}**\n` +
             `${client.getEmoji("star")}_Artists:_ ${checkArtists}\n` +
@@ -344,9 +353,10 @@ module.exports = async (client: any, message: any) => {
             `${client.getEmoji("star")}_Tags:_ ${checkTags} ${checkParodies}` +
             `${checkGroups} ${checkLanguages} ${checkCategories}\n` 
             )
+            //.attachFiles([`../assets/pagesCompressed/${tag}/page${i}.jpg`])
+            //.setImage(`attachment://page${i}.jpg`)
             .setThumbnail(doujin.thumbnails[0])
             .setImage(doujin.pages[i])
-            .setFooter(`Page ${i}/${doujin.pages.length}`);
             await doujinPages.push(nhentaiEmbed);
         }
         await client.createReactionEmbed(doujinPages, true);
