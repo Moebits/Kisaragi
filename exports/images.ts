@@ -1,9 +1,5 @@
 module.exports = async (client: any, message: any) => {
-
-    const https = require("https");
-    const Danbooru = require("danbooru");
-    //const danbooruKey = process.env.DANBOORU_API_KEY;
-    const danbooru = new Danbooru();
+    
     const PixivApi = require('pixiv-api-client');
     const pixiv = new PixivApi();
     const pixivImg = require('pixiv-img');
@@ -14,7 +10,6 @@ module.exports = async (client: any, message: any) => {
     const imagemin = require("imagemin");
     const imageminGifsicle = require("imagemin-gifsicle");
     const download = require('image-downloader');
-    let config: any = require("../../config.json");
     let compress_images = require('compress-images'), imgInput, imgOutput;
     //const fs = require("fs");
 
@@ -59,10 +54,7 @@ module.exports = async (client: any, message: any) => {
                             embeds[i].setThumbnail("");
                         }
                         msg.edit(embeds[page]);
-                        let user = collapse.users.find((u: any) => u.id !== config.clientId);
-                        if (user) {
-                            r.remove(user);
-                        }     
+                        r.remove(r.users.find((u: any) => u.id !== client.user.id));     
                 });
 
                 expand.on("collect", r => {
@@ -71,10 +63,7 @@ module.exports = async (client: any, message: any) => {
                         embeds[i].setThumbnail(thumbnail[i].url);
                     }
                     msg.edit(embeds[page]);
-                    let user = expand.users.find((u: any) => u.id !== config.clientId);
-                    if (user) {
-                        r.remove(user);
-                    }     
+                    r.remove(r.users.find((u: any) => u.id !== client.user.id));    
                 });
             }
 
@@ -84,10 +73,7 @@ module.exports = async (client: any, message: any) => {
                 else {
                     page--; }
                     msg.edit(embeds[page]);
-                    let user = backward.users.find((u: any) => u.id !== config.clientId);
-                    if (user) {
-                        r.remove(user);
-                    }     
+                    r.remove(r.users.find((u: any) => u.id !== client.user.id)); 
             });
 
             forward.on("collect", r => {
@@ -96,10 +82,7 @@ module.exports = async (client: any, message: any) => {
                 else { 
                     page++; }
                     msg.edit(embeds[page]);
-                    let user = forward.users.find((u: any) => u.id !== config.clientId);
-                    if (user) {
-                        r.remove(user);
-                    } 
+                    r.remove(r.users.find((u: any) => u.id !== client.user.id));
             });
 
             tripleBackward.on("collect", r => {
@@ -109,10 +92,7 @@ module.exports = async (client: any, message: any) => {
                     page -= Math.floor(embeds.length/5); }
                     if (page < 0) page *= -1;
                     msg.edit(embeds[page]);
-                    let user = tripleBackward.users.find((u: any) => u.id !== config.clientId);
-                    if (user) {
-                        r.remove(user);
-                    }     
+                    r.remove(r.users.find((u: any) => u.id !== client.user.id));
             });
 
             tripleForward.on("collect", r => {
@@ -122,12 +102,8 @@ module.exports = async (client: any, message: any) => {
                     page += Math.floor(embeds.length/5); }
                     if (page > embeds.length - 1) page -= embeds.length - 1;
                     msg.edit(embeds[page]);
-                    let user = tripleForward.users.find((u: any) => u.id !== config.clientId);
-                    if (user) {
-                        r.remove(user);
-                    }     
+                    r.remove(r.users.find((u: any) => u.id !== client.user.id));    
             });
-
         });
     }
 
@@ -155,18 +131,6 @@ module.exports = async (client: any, message: any) => {
                     }          
                 });
         });
-    }
-
-    //Danbooru image
-    client.getSafeDanbooruImage = async (name: string) => {
-        const searchTerm = name.replace(/ /g,"_");
-        console.log(searchTerm);
-        const posts = await danbooru.posts({tags: `${searchTerm} rating:safe order:rank`, limit: 100});
-        const index = Math.floor(Math.random() * posts.length);
-        console.log(posts)
-        const post = posts[index];
-        const url = danbooru.url(post.file_url);
-        return https.get(url.href);
     }
 
     //Pixiv Login

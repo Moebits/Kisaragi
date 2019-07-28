@@ -41,7 +41,7 @@ module.exports = async (client: any, message: any) => {
     //Check Message Characters
     client.checkChar = (message: any, num: number, char: string) => {
         let splitText;
-        if (message.length > 1024) {
+        if (message.length > num) {
             splitText = Discord.Util.splitMessage(message, {"maxLength": num, "char": char})
         }
         if (splitText) {

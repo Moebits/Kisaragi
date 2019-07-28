@@ -1,9 +1,7 @@
 module.exports = async (client: any, message: any) => {
 
   /*let letterNames = [
-    "right", "left",
-    "tripleRight", "tripleLeft",
-    "collapse", "expand"
+    "kisaragibawls", "gabLewd"
   ]
 
   for (let i = 0; i < letterNames.length; i++) {
@@ -21,7 +19,7 @@ module.exports = async (client: any, message: any) => {
 
     await require("../exports/functions.js")(client, message);
     await require("../exports/queries.js")(client, message);
-    const commands = await require("../../commands.json");
+    //const commands = await require("../../commands.json");
     let prefix: string = await client.fetchPrefix();
 
     if (message.guild && typeof message != undefined) {
@@ -58,15 +56,16 @@ module.exports = async (client: any, message: any) => {
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/g);
     if (args[0] === undefined) return;
     const cmd: string = args[0].toLowerCase();
-    const path: string = commands.paths[cmd];
+    //const path: string = commands.paths[cmd];
+    const path: string = await client.fetchCommand(cmd, "path");
     if (path === null || undefined) return;
-    const cp = require(path);
+    const cp = require(path[0]);
 
     
     await require("../exports/images.js")(client, message);
 
     let msg = await message.channel.send(`**Loading** ${client.getEmoji("gabCircle")}`);
-    cp.run(client, message, args).catch((err) => message.channel.send(client.cmdError(err)));
+    await cp.run(client, message, args).catch((err) => message.channel.send(client.cmdError(err)));
     msg.delete(1000);
     
 }
