@@ -13,12 +13,16 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**avatar** _mentions_\n` +
             `Posts the avatar image of the user(s).\n` +
+            `\n` +
             `${client.getEmoji("star")}**emoji** name/id/emoji\n` +
             `Posts the emoji image of an emoji.\n` +
+            `\n` +
             `${client.getEmoji("star")}**guild icon**\n` +
             `Posts your guild's icon image.\n` +
+            `\n` +
             `${client.getEmoji("star")}**ping**\n` +
             `Posts the response time and API latency.\n` +
+            `\n` +
             `${client.getEmoji("star")}**prefix**\n` +
             `Does not work yet\n` 
         )
@@ -30,8 +34,10 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**give** mention/id\n` +
             `Does not work yet\n` +
+            `\n` +
             `${client.getEmoji("star")}**rank** _mention_\n` +
             `Does not work yet\n` +
+            `\n` +
             `${client.getEmoji("star")}**top**\n` +
             `Does not work yet\n`
         )
@@ -43,20 +49,28 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**baka** _mention_\n` +
             `Call someone a baka.\n` +
+            `\n` +
             `${client.getEmoji("star")}**cuddle** _mention_\n` +
             `Cuddle someone.\n` +
+            `\n` +
             `${client.getEmoji("star")}**hug** _mention_\n` +
             `Hug someone.\n` +
+            `\n` +
             `${client.getEmoji("star")}**kiss** _mention_\n` +
             `Kiss someone.\n` +
+            `\n` +
             `${client.getEmoji("star")}**pat** _mention_\n` +
             `Pat someone.\n` +
+            `\n` +
             `${client.getEmoji("star")}**poke** _mention_\n` +
             `Poke someone.\n` +
+            `\n` +
             `${client.getEmoji("star")}**slap** _mention_\n` +
             `Slap someone.\n` +
+            `\n` +
             `${client.getEmoji("star")}**smug** _mention_\n` +
             `Post a smug image/gif.\n` +
+            `\n` +
             `${client.getEmoji("star")}**tickle** _mention_\n` +
             `Tickle someone.\n`
         )
@@ -68,28 +82,40 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**anime** anime\n` +
             `Gets an anime's description.\n` +
+            `\n` +
             `${client.getEmoji("star")}**animequote** _anime/character_\n` +
             `Posts an anime quote.\n` +
+            `\n` +
             `${client.getEmoji("star")}**danbooru** <r18> _tag_\n` +
             `Searches danbooru.\n` +
+            `\n` +
             `${client.getEmoji("star")}**gelbooru** <r18> _tag_\n` +
             `Searches gelbooru.\n` +
+            `\n` +
             `${client.getEmoji("star")}**kitsune** <lewd>\n` +
             `Posts a kitsune girl image.\n` +
+            `\n` +
             `${client.getEmoji("star")}**konachan** <r18> _tag_\n` +
             `Searches konachan.\n` +
+            `\n` +
             `${client.getEmoji("star")}**loli** <hentai>\n` +
             `Does not work yet.\n` +
+            `\n` +
             `${client.getEmoji("star")}**lolibooru** <r18> _tag_\n` +
             `Searches lolibooru.\n` +
+            `\n` +
             `${client.getEmoji("star")}**manga** manga\n` +
             `Gets a manga's description.\n` +
+            `\n` +
             `${client.getEmoji("star")}**neko** <lewd>\n` +
             `Posts a neko girl image.\n` +
+            `\n` +
             `${client.getEmoji("star")}**pixiv** <r18> <en> _tag/id_\n` +
             `Searches for a pixiv image.\n` +
+            `\n` +
             `${client.getEmoji("star")}**ugoira** <r18> <en> _tag/id_\n` +
             `Searches for a pixiv ugoira.\n` +
+            `\n` +
             `${client.getEmoji("star")}**yandere** <r18> _tag_\n` +
             `Searches yandere.\n` 
         )
@@ -101,10 +127,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**fakku**\n` +
             `Does not work yet.\n` +
+            `\n` +
             `${client.getEmoji("star")}**lewdme**\n` +
             `Why do you want to lewd me?\n` +
+            `\n` +
             `${client.getEmoji("star")}**nhentai** <random> _tag/id_\n` +
             `Gets a doujin from nhentai.\n` +
+            `\n` +
             `${client.getEmoji("star")}**rule34** <r18>\n` +
             `Searches rule34.\n` 
         )
@@ -134,12 +163,16 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**furigana** text\n` +
             `Adds furigana to the input text.\n` +
+            `\n` +
             `${client.getEmoji("star")}**hiragana** text\n` +
             `Converts input text to hiragana.\n` +
+            `\n` +
             `${client.getEmoji("star")}**japanese** text\n` +
             `Translates from japanese to english and vice versa.\n` +
+            `\n` +
             `${client.getEmoji("star")}**katakana** text\n` +
             `Converts input text to katakana\n` +
+            `\n` +
             `${client.getEmoji("star")}**romaji** text\n` +
             `Converts input text to romaji.\n` 
         )
@@ -151,20 +184,28 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**giphy** _tag_\n` +
             `Searches giphy.\n` +
+            `\n` +
             `${client.getEmoji("star")}**google** text\n` +
             `Searches google.\n` +
+            `\n` +
             `${client.getEmoji("star")}**images** text\n` +
             `Searches google images.\n` +
+            `\n` +
             `${client.getEmoji("star")}**imgur** _tag_\n` +
             `Searches imgur.\n` +
+            `\n` +
             `${client.getEmoji("star")}**soundcloud** _tag_\n` +
             `Does not work yet.\n` +
+            `\n` +
             `${client.getEmoji("star")}**tenor** _tag_\n` +
             `Searches tenor.\n` +
+            `\n` +
             `${client.getEmoji("star")}**urban** _text_\n` +
             `Searches urban dictionary.\n` +
+            `\n` +
             `${client.getEmoji("star")}**xkcd** _id_\n` +
             `Gets an xkcd comic.\n` +
+            `\n` +
             `${client.getEmoji("star")}**youtube** <video/channel/playlist> text\n` +
             `Searches youtube.\n` 
         )
@@ -176,8 +217,10 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**ascii** text\n` +
             `Posts ascii art of the input text.\n` +
+            `\n` +
             `${client.getEmoji("star")}**emojify** text\n` +
             `Posts input text in emoji letters.\n` +
+            `\n` +
             `${client.getEmoji("star")}**say** text\n` +
             `Posts the input text.\n` 
         )
@@ -189,10 +232,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**holiday**\n` +
             `Does not work yet.\n` +
+            `\n` +
             `${client.getEmoji("star")}**nasa**\n` +
             `Posts the astronomy picture of the day.\n` +
+            `\n` +
             `${client.getEmoji("star")}**photos**\n` +
             `Does not work yet.\n` +
+            `\n` +
             `${client.getEmoji("star")}**remdash**\n` +
             `Does not work yet.\n` 
         )
@@ -222,10 +268,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**ban** user/id\n` +
             `Bans the specified user.\n` +
+            `\n` +
             `${client.getEmoji("star")}**del** number\n` +
             `Deletes an amount of messages (1-1000).\n` +
+            `\n` +
             `${client.getEmoji("star")}**kick** _user/id_\n` +
             `Kicks the specified user.\n` +
+            `\n` +
             `${client.getEmoji("star")}**unban** _user/id_\n` +
             `Unbans the specified user.\n` 
         )
@@ -264,12 +313,16 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setDescription(
             `${client.getEmoji("star")}**createguild** name region\n` +
             `Does not work yet.\n` +
+            `\n` +
             `${client.getEmoji("star")}**eval** code\n` +
             `Evaluates javascript code.\n` +
+            `\n` +
             `${client.getEmoji("star")}**reboot**\n` +
             `Does not work yet.\n` +
+            `\n` +
             `${client.getEmoji("star")}**reload** command\n` +
             `Reloads a command.\n` +
+            `\n` +
             `${client.getEmoji("star")}**set** status text\n` +
             `Set's the bots activity.\n`
         )
