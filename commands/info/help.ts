@@ -93,6 +93,21 @@ exports.run = async (client: any, message: any, args: string[]) => {
             `${client.getEmoji("star")}**yandere** <r18> _tag_\n` +
             `Searches yandere.\n` 
         )
+    const helpHentai: any = client.createEmbed();
+        helpHentai
+        .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
+        .setThumbnail(message.author.avatarURL)
+        .setTitle(`Hentai Commands ${client.getEmoji("gabTired")}`)
+        .setDescription(
+            `${client.getEmoji("star")}**fakku**\n` +
+            `Does not work yet.\n` +
+            `${client.getEmoji("star")}**lewdme**\n` +
+            `Why do you want to lewd me?\n` +
+            `${client.getEmoji("star")}**nhentai** <random> _tag/id_\n` +
+            `Gets a doujin from nhentai.\n` +
+            `${client.getEmoji("star")}**rule34** <r18>\n` +
+            `Searches rule34.\n` 
+        )
     const helpOsu: any = client.createEmbed();
         helpOsu
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
@@ -128,6 +143,31 @@ exports.run = async (client: any, message: any, args: string[]) => {
             `${client.getEmoji("star")}**romaji** text\n` +
             `Converts input text to romaji.\n` 
         )
+    const helpWeb: any = client.createEmbed();
+        helpWeb
+        .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
+        .setThumbnail(message.author.avatarURL)
+        .setTitle(`Website Commands ${client.getEmoji("gabTired")}`)
+        .setDescription(
+            `${client.getEmoji("star")}**giphy** _tag_\n` +
+            `Searches giphy.\n` +
+            `${client.getEmoji("star")}**google** text\n` +
+            `Searches google.\n` +
+            `${client.getEmoji("star")}**images** text\n` +
+            `Searches google images.\n` +
+            `${client.getEmoji("star")}**imgur** _tag_\n` +
+            `Searches imgur.\n` +
+            `${client.getEmoji("star")}**soundcloud** _tag_\n` +
+            `Does not work yet.\n` +
+            `${client.getEmoji("star")}**tenor** _tag_\n` +
+            `Searches tenor.\n` +
+            `${client.getEmoji("star")}**urban** _text_\n` +
+            `Searches urban dictionary.\n` +
+            `${client.getEmoji("star")}**xkcd** _id_\n` +
+            `Gets an xkcd comic.\n` +
+            `${client.getEmoji("star")}**youtube** <video/channel/playlist> text\n` +
+            `Searches youtube.\n` 
+        )
     const helpFun: any = client.createEmbed();
         helpFun
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
@@ -155,21 +195,6 @@ exports.run = async (client: any, message: any, args: string[]) => {
             `Does not work yet.\n` +
             `${client.getEmoji("star")}**remdash**\n` +
             `Does not work yet.\n` 
-        )
-    const helpHentai: any = client.createEmbed();
-        helpHentai
-        .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
-        .setThumbnail(message.author.avatarURL)
-        .setTitle(`Hentai Commands ${client.getEmoji("gabTired")}`)
-        .setDescription(
-            `${client.getEmoji("star")}**fakku**\n` +
-            `Does not work yet.\n` +
-            `${client.getEmoji("star")}**lewdme**\n` +
-            `Why do you want to lewd me?\n` +
-            `${client.getEmoji("star")}**nhentai** <random> _tag/id_\n` +
-            `Gets a doujin from nhentai.\n` +
-            `${client.getEmoji("star")}**rule34** <r18>\n` +
-            `Searches rule34.\n` 
         )
     const helpMusic: any = client.createEmbed();
         helpMusic
@@ -249,7 +274,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             `Set's the bots activity.\n`
         )
 
-    client.createReactionEmbed([helpInfo, helpLevel, helpHeart, helpAnime, helpOsu, helpGeometry, helpJapanese,
-    helpFun, helpUtil, helpHentai, helpMusic, helpRole, helpMod, helpAdmin, helpLogging, helpConfig, helpBotOwner]);
+    client.createReactionEmbed([helpInfo, helpLevel, helpHeart, helpAnime, helpHentai, helpOsu, helpGeometry, helpJapanese,
+    helpFun, helpWeb, helpUtil, helpMusic, helpRole, helpMod, helpAdmin, helpLogging, helpConfig, helpBotOwner]);
     
 }
