@@ -102,6 +102,7 @@
     "snoowrap": "^1.18.0",
     "soundcloud-api-client": "0.0.9",
     "tenorjs": "^1.0.7",
+    "twitter": "^1.7.1",
     "typescript": "^3.5.3",
     "upload-gphotos": "^3.1.0",
     "urban.js": "^2.4.3",
