@@ -25,7 +25,7 @@ exports.run = (client: any, message: any, args: string[]) => {
 
     } else {
         message.channel.send(evalEmbed
-            .setDescription("In order to use this command, you must be a bot owner."))
+            .setDescription("In order to use this command, you must be the bot developer."))
             return;
     }
 }

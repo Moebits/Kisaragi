@@ -287,13 +287,13 @@ module.exports = async (client: any, message: any) => {
 
     //nhentai Doujin
     client.getNhentaiDoujin = async (doujin: any, tag: any) => {
-        let checkArtists = doujin.details.artists ? client.checkChar(doujin.details.artists.join(" "), 10, ")") : "None";
-        let checkCharacters = doujin.details.characters ? client.checkChar(doujin.details.characters.join(" "), 20, ")") : "None";
-        let checkTags = doujin.details.tags ? client.checkChar(doujin.details.tags.join(" "), 20, ")") : "None";
-        let checkParodies = doujin.details.parodies ? client.checkChar(doujin.details.parodies.join(" "), 10, ")") : "None";
+        let checkArtists = doujin.details.artists ? client.checkChar(doujin.details.artists.join(" "), 50, ")") : "None";
+        let checkCharacters = doujin.details.characters ? client.checkChar(doujin.details.characters.join(" "), 50, ")") : "None";
+        let checkTags = doujin.details.tags ? client.checkChar(doujin.details.tags.join(" "), 50, ")") : "None";
+        let checkParodies = doujin.details.parodies ? client.checkChar(doujin.details.parodies.join(" "), 50, ")") : "None";
         let checkGroups = doujin.details.groups ? client.checkChar(doujin.details.groups.join(" "), 50, ")") : "None";
-        let checkLanguages = doujin.details.languages ? client.checkChar(doujin.details.languages.join(" "), 10, ")") : "None";
-        let checkCategories = doujin.details.categories ? client.checkChar(doujin.details.categories.join(" "), 10, ")") : "None";
+        let checkLanguages = doujin.details.languages ? client.checkChar(doujin.details.languages.join(" "), 50, ")") : "None";
+        let checkCategories = doujin.details.categories ? client.checkChar(doujin.details.categories.join(" "), 50, ")") : "None";
         let doujinPages: any = [];
         /*fs.mkdirSync(`../assets/pages/${tag}/`);
         fs.mkdirSync(`../assets/pagesCompressed/${tag}/`);
