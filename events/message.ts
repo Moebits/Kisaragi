@@ -1,7 +1,7 @@
 module.exports = async (client: any, message: any) => {
 
-  /*let letterNames = [
-    "kisaragibawls", "gabLewd"
+  let letterNames = [
+    "VigneDead"
   ]
 
   for (let i = 0; i < letterNames.length; i++) {
@@ -10,7 +10,7 @@ module.exports = async (client: any, message: any) => {
         console.log(`{"name": "${letterNames[i]}", "id": "${emoji.id}"},`);
       }
     });
-  } */
+  } 
   
     /*let tc = await client.channels.get("580542336560398367");
     let ms = await tc.fetchMessage('600715814420873216');
