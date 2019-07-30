@@ -22,25 +22,26 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
     if (!args[1]) {
         let doujin = await client.nhentaiRandom(false);
-        console.log(doujin)
         client.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
         return;
-    }
-    if (args[1].toLowerCase() === "random") {
-        let doujin = await client.nhentaiRandom(true);
-        client.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
-        return;
-    }
-
-    let tag = client.combineArgs(args, 1);
-    if (tag.match(/\d+/g) !== null) {
-        let doujin = await nhentai.getDoujin(tag.match(/\d+/g).toString());
-        client.getNhentaiDoujin(doujin, tag.match(/\d+/g).toString())
     } else {
-        let result = await nhentai.search(tag)
-        let index = Math.floor(Math.random() * 10);
-        let book = result.results[index]
-        let doujin = await nhentai.getDoujin(book.bookId);
-        client.getNhentaiDoujin(doujin, book.bookId)
+        
+        if (args[1].toLowerCase() === "random") {
+            let doujin = await client.nhentaiRandom(true);
+            client.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
+            return;
+        }
+
+        let tag = client.combineArgs(args, 1);
+        if (tag.match(/\d+/g) !== null) {
+            let doujin = await nhentai.getDoujin(tag.match(/\d+/g).toString());
+            client.getNhentaiDoujin(doujin, tag.match(/\d+/g).toString())
+        } else {
+            let result = await nhentai.search(tag)
+            let index = Math.floor(Math.random() * 10);
+            let book = result.results[index]
+            let doujin = await nhentai.getDoujin(book.bookId);
+            client.getNhentaiDoujin(doujin, book.bookId)
+        }
     }
 }
