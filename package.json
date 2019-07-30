@@ -99,6 +99,7 @@
     "reflect-metadata": "^0.1.13",
     "romaji": "^0.2.21",
     "simple-soundcloud": "^1.4.0",
+    "snoowrap": "^1.18.0",
     "soundcloud-api-client": "0.0.9",
     "tenorjs": "^1.0.7",
     "typescript": "^3.5.3",
