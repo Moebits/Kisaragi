@@ -20,14 +20,14 @@ exports.run = async (client: any, message: any, args: string[]) => {
         return doujin;
     }
 
-    if (args[1].toLowerCase() === "random") {
-        let doujin = await client.nhentaiRandom(true);
+    if (!args[1]) {
+        let doujin = await client.nhentaiRandom(false);
         console.log(doujin)
         client.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
         return;
     }
-    if (args[1].toLowerCase() === "nsfl") {
-        let doujin = await client.nhentaiRandom(false);
+    if (args[1].toLowerCase() === "random") {
+        let doujin = await client.nhentaiRandom(true);
         client.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
         return;
     }
