@@ -1,7 +1,7 @@
 module.exports = async (client: any, message: any) => {
 
   let letterNames = [
-    "AquaThumbsUp"
+    "sagiriBleh"
   ]
 
   for (let i = 0; i < letterNames.length; i++) {

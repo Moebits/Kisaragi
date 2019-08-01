@@ -10,6 +10,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     if (input.match(/\d+/g).join("") === input.trim()) {
         let snowflake = SnowflakeUtil.deconstruct(input.trim());
         snowflakeEmbed
+        .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
         .setTitle(`**Snowflake** ${client.getEmoji("gabTired")}`)
         .setDescription(
             `${client.getEmoji("star")}_Date:_ **${snowflake.date}**\n` +
@@ -24,6 +25,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         if (!input) input = Date.now();
         let snowflake = SnowflakeUtil.generate(new Date(input));
         snowflakeEmbed
+        .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
         .setTitle(`**Snowflake** ${client.getEmoji("gabTired")}`)
         .setDescription(
             `${client.getEmoji("star")}_Snowflake:_ **${snowflake}**\n` 
