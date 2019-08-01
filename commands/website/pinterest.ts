@@ -60,7 +60,6 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let query = client.combineArgs(args, 2);
         let json = await axios.get(`https://api.pinterest.com/v1/me/search/pins/?access_token=${accessToken}&query=${query.replace(/ /g, "-")}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`);
         let response = json.data;
-        let pinArray: any = [];
         for (let i in response) {
             client.pinterestPin(response[i]);
         }
