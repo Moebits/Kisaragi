@@ -18,7 +18,7 @@ module.exports = async (client: any, message: any) => {
         let page = 0;
         if (startPage) page = startPage;
         for (let i = 0; i < embeds.length; i++) {
-            embeds[i].setFooter(`Page ${i + 1}/${embeds.length}`);
+            embeds[i].setFooter(`Page ${i + 1}/${embeds.length}`, message.author.displayAvatarURL);
         }
         let reactions: any = [client.getEmoji("right"), client.getEmoji("left"), client.getEmoji("tripleRight"), client.getEmoji("tripleLeft")];
         let reactionsCollapse: any = [client.getEmoji("collapse"), client.getEmoji("expand")]
