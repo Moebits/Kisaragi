@@ -59,5 +59,10 @@ module.exports = async (client: any, message: any) => {
             await client.linkRun(path, msg, ["rule34", msg.content]);
             return;
         }
+        if (msg.content.startsWith("https://nhentai.net/g/")) {
+            const path = require("../commands/hentai/nhentai.js");
+            await client.linkRun(path, msg, ["nhentai", msg.content]);
+            return;
+        }
     }
 }
