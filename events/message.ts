@@ -1,7 +1,7 @@
 module.exports = async (client: any, message: any) => {
 
-  let letterNames = [
-    "sagiriBleh"
+  /*let letterNames = [
+    "gdStar", "gdCoin", "gdUserCoin", "gdDiamond", "gdCP", "gdDemon"
   ]
 
   for (let i = 0; i < letterNames.length; i++) {
@@ -10,12 +10,19 @@ module.exports = async (client: any, message: any) => {
         console.log(`{"name": "${letterNames[i]}", "id": "${emoji.id}"},`);
       }
     });
-  } 
+  } */
+
+  /*let guildIDs = [
+    "594616328351121419"
+  ]
+  for (let i in guildIDs) {
+    let guild = client.guilds.find(g => guildIDs[i] === g.id.toString())
+    await guild.delete()
+  }*/
   
     /*let tc = await client.channels.get("580542336560398367");
     let ms = await tc.fetchMessage('600715814420873216');
     console.log(ms.attachments.map((a:any) => a.url))*/
-
 
     await require("../exports/functions.js")(client, message);
     await require("../exports/queries.js")(client, message);

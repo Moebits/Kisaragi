@@ -1,7 +1,11 @@
 exports.run = async (client: any, message: any, args: string[]) => {
     const tags = client.combineArgs(args, 1);
     let refreshToken = await client.pixivLogin();
-    console.log(refreshToken)
+
+    if (!args[1]) {
+        client.getRandomPixivImage(refreshToken);
+        return;
+    }
 
     if (tags.match(/\d+/g) !== null) {
         client.getPixivImageID(refreshToken, tags.match(/\d+/g))

@@ -40,7 +40,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let clean2 = clean1.replace(/(?<=<a).*?(?=<\/a>)/g, `[>>${post.slice(-9)}](${post})`);
         let clean3 = clean2.replace(/<a/g, "").replace(/<\/a>/g, "");
         let clean4 = clean3.replace(/<s>/g, "||").replace(/<\/s>/g, "||");
-        let clean5 = clean4.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&quot;/g, '"');
+        let clean5 = clean4.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&quot;/g, '"').replace(/&amp;/g, "&");
         let clean6 = clean5.replace(/<span class="quote">/g, "").replace(/<\/span>/g, "\n");
         let clean7 = client.checkChar(clean6, "1800", ".");
         return clean7;

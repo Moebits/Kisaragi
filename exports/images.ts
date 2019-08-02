@@ -242,6 +242,20 @@ module.exports = async (client: any, message: any) => {
         return message.channel.send(pixivEmbed);
     }
 
+    //Pixiv Random Image
+    client.getRandomPixivImage = async (refresh: string) => {
+        let refreshToken = refresh;
+        await pixiv.refreshAccessToken(refreshToken);
+        let image;
+        let random = 0;
+        while (!image) {
+            random = Math.floor(Math.random() * 100000000);
+            image = await pixiv.illustDetail(random.toString());
+        }
+        let pixivEmbed = await client.createPixivEmbed(refreshToken, image.illust);
+        return message.channel.send(pixivEmbed);
+    }
+
     //Pixiv Popular Image
     client.getPopularPixivImage = async (refresh: string) => {
         let refreshToken = refresh;
