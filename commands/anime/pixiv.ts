@@ -1,4 +1,6 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+import {Message} from "discord.js";
+
+exports.run = async (client: any, message: Message, args: string[]) => {
     const tags = client.combineArgs(args, 1);
     let refreshToken = await client.pixivLogin();
 

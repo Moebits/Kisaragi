@@ -104,7 +104,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let counter = 0;
     
     let addToGif = (images) => {
-        console.log(`ugoira/${pixivID}/${images[counter]}`)
+        //console.log(`ugoira/${pixivID}/${images[counter]}`)
         getPixels(`ugoira/${pixivID}/${images[counter]}`, function(err, pixels) {
             gif.addFrame(pixels.data);
             gif.read();

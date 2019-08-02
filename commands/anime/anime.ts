@@ -1,4 +1,6 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+import {Message} from "discord.js";
+
+exports.run = async (client: any, message: Message, args: string[]) => {
     const weeb = require('node-weeb');
     let query = client.combineArgs(args, 1);
     const animeEmbed = client.createEmbed();

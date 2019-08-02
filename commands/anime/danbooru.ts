@@ -1,8 +1,10 @@
 import Booru from "booru";
+import {Message} from "discord.js";
 
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (client: any, message: Message, args: string[]) => {
     const danbooru = Booru("danbooru", process.env.DANBOORU_API_KEY);
     const danbooruEmbed = client.createEmbed();
+    let axios = require("axios");
 
     let tags; 
     if (!args[1]) {
@@ -31,15 +33,28 @@ exports.run = async (client: any, message: any, args: string[]) => {
         tagArray.push(tags[i].trim().replace(/ /g, "_"));
     }
 
-    let img = await danbooru.search(tagArray, {limit: 1, random: true})
-    let url = await danbooru.postView(img[0].id)
+    let url;
+    if (tags.join("").match(/\d+/g)) {
+        url = `https://danbooru.donmai.us/posts/${tags.join("").match(/\d+/g)}`
+    } else {
+        let img = await danbooru.search(tagArray, {limit: 1, random: true})
+        url = await danbooru.postView(img[0].id)
+    }
+
+    let result = await axios.get(`${url}.json`)
+    let img = result.data;
     danbooruEmbed
     .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")
     .setURL(url)
-    .setTitle(`**Danbooru Search** ${client.getEmoji("gabLewd")}`)
+    .setTitle(`**Danbooru Image** ${client.getEmoji("gabLewd")}`)
     .setDescription(
-        `${client.getEmoji("star")}_Tags:_ ${client.checkChar(img[0].tags.join(" "), 2048, " ")}`
+        `${client.getEmoji("star")}_Character:_ **${img.tag_string_character ? client.toProperCase(img.tag_string_character.replace(/ /g, "\n").replace(/_/g, " ")) : "Original"}**\n` +
+        `${client.getEmoji("star")}_Artist:_ **${client.toProperCase(img.tag_string_artist.replace(/_/g, " "))}**\n` +
+        `${client.getEmoji("star")}_Source:_ ${img.source}\n` +
+        `${client.getEmoji("star")}_Uploader:_ **${img.uploader_name}**\n` +
+        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(img.created_at)}**\n` +
+        `${client.getEmoji("star")}_Tags:_ ${client.checkChar(img.tag_string_general, 2048, " ")}\n` 
     )
-    .setImage(img[0].fileUrl)
+    .setImage(img.file_url)
     message.channel.send(danbooruEmbed);
 }

@@ -1,8 +1,10 @@
 import Booru from "booru";
+import {Message} from "discord.js";
 
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (client: any, message: Message, args: string[]) => {
     const gelbooru = Booru("gelbooru", process.env.GELBOORU_API_KEY);
     const gelbooruEmbed = client.createEmbed();
+    let axios = require("axios");
 
     let tags; 
     if (!args[1]) {
@@ -31,15 +33,27 @@ exports.run = async (client: any, message: any, args: string[]) => {
         tagArray.push(tags[i].trim().replace(/ /g, "_"));
     }
 
-    let img = await gelbooru.search(tagArray, {limit: 1, random: true})
-    let url = await gelbooru.postView(img[0].id)
+    let url;
+    if (tags.join("").match(/\d+/g)) {
+        url = `https://gelbooru.com/index.php?page=post&s=view&id=${tags.join("").match(/\d+/g)}`
+    } else {
+        let img = await gelbooru.search(tagArray, {limit: 1, random: true})
+        url = await gelbooru.postView(img[0].id)
+    }
+
+    let id = url.match(/\d+/g).join("");
+    let result = await axios.get(`https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&id=${id}${process.env.GELBOORU_API_KEY}`)
+    let img = result.data[0];
     gelbooruEmbed
     .setAuthor("gelbooru", "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png")
     .setURL(url)
-    .setTitle(`**Gelbooru Search** ${client.getEmoji("gabLewd")}`)
+    .setTitle(`**Gelbooru Image** ${client.getEmoji("gabLewd")}`)
     .setDescription(
-        `${client.getEmoji("star")}_Tags:_ ${client.checkChar(img[0].tags.join(" "), 2048, " ")}`
+        `${client.getEmoji("star")}_Source:_ ${img.source}\n` +
+        `${client.getEmoji("star")}_Uploader:_ **${img.owner}**\n` +
+        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(img.created_at)}**\n` +
+        `${client.getEmoji("star")}_Tags:_ ${client.checkChar(img.tags, 1900, " ")}\n` 
     )
-    .setImage(img[0].fileUrl)
+    .setImage(`https://img2.gelbooru.com/samples/${img.directory}/sample_${img.hash}.jpg`)
     message.channel.send(gelbooruEmbed);
 }

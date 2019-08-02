@@ -19,8 +19,8 @@ exports.run = (client: any, message: any, args: string[]) => {
             .setDescription(clean(evaled), {code:"xl"});
             message.channel.send(evalEmbed);
 
-          } catch (err) {
-            message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+          } catch (error) {
+            message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(error)}\n\`\`\``);
           }
 
     } else {

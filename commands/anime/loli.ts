@@ -1,4 +1,6 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+import {Message} from "discord.js";
+
+exports.run = async (client: any, message: Message, args: string[]) => {
     const Loli = require('lolis.life');
     const loli = new Loli();
     const loliEmbed = client.createEmbed();

@@ -38,6 +38,16 @@ module.exports = async (client: any, message: any) => {
         return `${monthNames[monthIndex]} ${day}, ${year}`;
       }
 
+    //Proper Case
+    client.toProperCase = (str) => {
+        return str.replace(
+            /\w\S*/g,
+            function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            }
+        );
+    }
+
     //Check Message Characters
     client.checkChar = (message: any, num: number, char: string) => {
         let splitText;

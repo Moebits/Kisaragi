@@ -1,8 +1,10 @@
 import Booru from "booru";
+import {Message} from "discord.js";
 
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (client: any, message: Message, args: string[]) => {
     const lolibooru = Booru("lolibooru");
     const lolibooruEmbed = client.createEmbed();
+    let axios = require("axios");
 
     let tags; 
     if (!args[1]) {
@@ -31,15 +33,28 @@ exports.run = async (client: any, message: any, args: string[]) => {
         tagArray.push(tags[i].trim().replace(/ /g, "_"));
     }
 
-    let img = await lolibooru.search(tagArray, {limit: 1, random: true})
-    let url = await lolibooru.postView(img[0].id)
+    let url;
+    if (tags.join("").match(/\d+/g)) {
+        url = `https://lolibooru.net/post/show/${tags.join("").match(/\d+/g)}/`
+    } else {
+        let img = await lolibooru.search(tagArray, {limit: 1, random: true})
+        url = await lolibooru.postView(img[0].id)
+    }
+
+    let id = url.match(/\d+/g).join("");
+    let result = await axios.get(`https://lolibooru.moe/post/index.json?tags=id:${id}`)
+    let img = result.data[0];
+    console.log(img)
     lolibooruEmbed
     .setAuthor("lolibooru", "https://i.imgur.com/vayyvC4.png")
     .setURL(url)
-    .setTitle(`**Lolibooru Search** ${client.getEmoji("gabLewd")}`)
+    .setTitle(`**Lolibooru Image** ${client.getEmoji("gabLewd")}`)
     .setDescription(
-        `${client.getEmoji("star")}_Tags:_ ${client.checkChar(img[0].tags.join(" "), 2048, " ")}`
+        `${client.getEmoji("star")}_Source:_ ${img.source}\n` +
+        `${client.getEmoji("star")}_Uploader:_ **${img.author}**\n` +
+        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(img.created_at*1000)}**\n` +
+        `${client.getEmoji("star")}_Tags:_ ${client.checkChar(img.tags, 1900, " ")}\n` 
     )
-    .setImage(img[0].fileUrl)
+    .setImage(img.sample_url.replace(/ /g, ""))
     message.channel.send(lolibooruEmbed);
 }

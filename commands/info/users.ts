@@ -1,13 +1,10 @@
-import {SnowflakeUtil, Message, GuildMember, Collection, RichEmbed} from "discord.js";
+import {Message, GuildMember, Collection, RichEmbed} from "discord.js";
 
 exports.run = async (client: any, message: Message, args: string[]) => { 
     let members: Collection<string, GuildMember> = message.guild.members
     let userArray: string[] = members.map((m: GuildMember) => `${m.user.username}#${m.user.discriminator}`);
     let idArray: string[] = members.map((m: GuildMember) => m.user.id);
-    let joinArray: Date[] = members.map((m: GuildMember) => {
-        let snowflake = SnowflakeUtil.deconstruct(m.joinedTimestamp.toString());
-        return snowflake.date;
-    });
+    let joinArray: Date[] = members.map((m: GuildMember) => m.joinedAt);
     let step: number = 7.0;
     let increment = Math.ceil(members.size / step);
     let userEmbedArray: RichEmbed[] = [];

@@ -26,10 +26,10 @@ module.exports = async (client: any, message: any) => {
 
     await require("../exports/functions.js")(client, message);
     await require("../exports/queries.js")(client, message);
-    //const commands = await require("../../commands.json");
+    await require("../exports/links.js")(client, message);
     let prefix: string = await client.fetchPrefix();
 
-    if (message.guild && typeof message != undefined) {
+    if (message.guild) {
       setTimeout(() => {
         client.calcScore()
         .catch((error: any) => console.log(error));
@@ -56,6 +56,11 @@ module.exports = async (client: any, message: any) => {
         prefixHelpEmbed
         .setDescription(`My prefix is set to "${prefix}"!\nType ${prefix}help if you need help.`)
         message.channel.send(prefixHelpEmbed);
+    }
+
+    if (message.content.startsWith("https")) {
+      await client.postLink(message);
+      return;
     }
 
     if(!message.content.startsWith(prefix) || message.author.bot) return;

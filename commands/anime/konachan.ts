@@ -1,8 +1,10 @@
 import Booru from "booru";
+import {Message} from "discord.js";
 
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (client: any, message: Message, args: string[]) => {
     const konachan = Booru("konachan.com", process.env.KONACHAN_API_KEY);
     const konachanEmbed = client.createEmbed();
+    let axios = require("axios");
 
     let tags; 
     if (!args[1]) {
@@ -31,15 +33,27 @@ exports.run = async (client: any, message: any, args: string[]) => {
         tagArray.push(tags[i].trim().replace(/ /g, "_"));
     }
 
-    let img = await konachan.search(tagArray, {limit: 1, random: true})
-    let url = await konachan.postView(img[0].id)
+    let url;
+    if (tags.join("").match(/\d+/g)) {
+        url = `https://konachan.net/post/show/${tags.join("").match(/\d+/g)}/`
+    } else {
+        let img = await konachan.search(tagArray, {limit: 1, random: true})
+        url = await konachan.postView(img[0].id)
+    }
+
+    let id = url.match(/\d+/g).join("");
+    let result = await axios.get(`https://konachan.com/post.json?tags=id:${id}`)
+    let img = result.data[0];
     konachanEmbed
     .setAuthor("konachan", "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE")
     .setURL(url)
-    .setTitle(`**Konachan Search** ${client.getEmoji("gabLewd")}`)
+    .setTitle(`**Konachan Image** ${client.getEmoji("gabLewd")}`)
     .setDescription(
-        `${client.getEmoji("star")}_Tags:_ ${client.checkChar(img[0].tags.join(" "), 2048, " ")}`
+        `${client.getEmoji("star")}_Source:_ ${img.source}\n` +
+        `${client.getEmoji("star")}_Uploader:_ **${img.author}**\n` +
+        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(img.created_at*1000)}**\n` +
+        `${client.getEmoji("star")}_Tags:_ ${client.checkChar(img.tags, 1900, " ")}\n` 
     )
-    .setImage(img[0].fileUrl)
+    .setImage(img.sample_url)
     message.channel.send(konachanEmbed);
 }

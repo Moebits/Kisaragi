@@ -237,6 +237,14 @@ module.exports = async (client: any, message: any) => {
         let refreshToken = refresh;
         await pixiv.refreshAccessToken(refreshToken);
         let image = await pixiv.illustDetail(tags.toString());
+        for (let i in image.illust.tags) {
+            if (image.illust.tags[i].name === "うごイラ") {
+                console.log("here!");
+                const path = require("../commands/anime/ugoira.js");
+                await client.linkRun(path, message, ["ugoira", tags.toString()]);
+                return;
+            }
+        }
         if (!image) client.pixivErrorEmbed;
         let pixivEmbed = await client.createPixivEmbed(refreshToken, image.illust);
         return message.channel.send(pixivEmbed);
