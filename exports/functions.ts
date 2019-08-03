@@ -32,14 +32,10 @@ module.exports = async (client: any, message: any) => {
         const timestamps = cooldowns.get(cmd);
         const cooldownAmount = (Number(cooldown) || 3) * 1000;
 
-        console.log(timestamps)
-
         if (timestamps.has(msg.guild.id)) {
             const expirationTime = timestamps.get(msg.guild.id) + cooldownAmount;
-            console.log(expirationTime)
         
             if (now < expirationTime) {
-                console.log("cooldown triggered!")
                 let cooldownEmbed = client.createEmbed();
                 const timeLeft = (expirationTime - now) / 1000;
                 cooldownEmbed
@@ -48,11 +44,8 @@ module.exports = async (client: any, message: any) => {
                 return cooldownEmbed;
             }
         }
-        console.log("here?")
         timestamps.set(msg.guild.id, now);
         setTimeout(() => {timestamps.delete(msg.guild.id)}, cooldownAmount)
-        console.log(cooldowns)
-        console.log(timestamps)
         return null;
     }
 
