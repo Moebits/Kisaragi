@@ -80,14 +80,13 @@ module.exports = (client: any, message: any) => {
     }
 
     //Fetch aliases
-    client.fetchAliases = async (command: string) => {
+    client.fetchAliases = async () => {
         let query: object = {
-          text: `SELECT aliases FROM commands WHERE command IN ($1)`,
-          values: [command],
+          text: `SELECT aliases FROM commands`,
           rowMode: 'array'
         }
         const result: any = await client.runQuery(query);
-        return result[0][0];
+        return result[0];
     }
 
     //Fetch Prefix
@@ -122,10 +121,10 @@ module.exports = (client: any, message: any) => {
     }
 
     //Insert command
-    client.insertCommand = async (command: string, aliases: string[], path: string) => {
+    client.insertCommand = async (command: string, aliases: string[], path: string, cooldown: string) => {
       let query: object = {
-        text: `INSERT INTO commands (command, aliases, path) VALUES ($1, $2, $3)`,
-        values: [command, aliases, path]
+        text: `INSERT INTO commands (command, aliases, path, cooldown) VALUES ($1, $2, $3, $4)`,
+        values: [command, aliases, path, cooldown]
       }
       await client.runQuery(query);
   }
@@ -140,11 +139,11 @@ module.exports = (client: any, message: any) => {
         await client.runQuery(query);
     }
 
-    //Update Aliases
-    client.updateAliases = async (command: string, aliases: any) => {
+    //Update Command
+    client.updateCommand = async (command: string, aliases: any, cooldown: string) => {
       let query: object = {
-        text: `UPDATE commands SET aliases = $1 WHERE "command" = $2`,
-        values: [aliases, command]
+        text: `UPDATE commands SET aliases = $1, cooldown = $2 WHERE "command" = $3`,
+        values: [aliases, cooldown, command]
       }
       await client.runQuery(query);
   }

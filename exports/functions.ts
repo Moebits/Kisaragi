@@ -22,6 +22,40 @@ module.exports = async (client: any, message: any) => {
         return `${Date.now() - message.createdTimestamp} ms`;
     }
 
+    //Command Cooldown
+    client.cmdCooldown = (cmd: string, cooldown: string, msg: any, cooldowns: any) => {
+        if (!cooldowns.has(cmd)) {
+            cooldowns.set(cmd, new Discord.Collection());
+        }
+
+        const now = Date.now();
+        const timestamps = cooldowns.get(cmd);
+        const cooldownAmount = (Number(cooldown) || 3) * 1000;
+
+        console.log(timestamps)
+
+        if (timestamps.has(msg.guild.id)) {
+            const expirationTime = timestamps.get(msg.guild.id) + cooldownAmount;
+            console.log(expirationTime)
+        
+            if (now < expirationTime) {
+                console.log("cooldown triggered!")
+                let cooldownEmbed = client.createEmbed();
+                const timeLeft = (expirationTime - now) / 1000;
+                cooldownEmbed
+                .setTitle(`**Command Cooldown!** ${client.getEmoji("kannaHungry")}`)
+                .setDescription(`${client.getEmoji("star")}**${cmd}** is on cooldown! Wait **${timeLeft.toFixed(2)}** more seconds before trying again.`);
+                return cooldownEmbed;
+            }
+        }
+        console.log("here?")
+        timestamps.set(msg.guild.id, now);
+        setTimeout(() => {timestamps.delete(msg.guild.id)}, cooldownAmount)
+        console.log(cooldowns)
+        console.log(timestamps)
+        return null;
+    }
+
     //Format Date
     client.formatDate = (inputDate: Date) => {
         let monthNames = [
@@ -254,4 +288,34 @@ module.exports = async (client: any, message: any) => {
             }
         }
       }
+
+    //Generate Commands for commands.json
+    client.generateCommands = (cmdFiles: any) => {
+        let newFiles = cmdFiles.flat()
+        console.log(newFiles)
+        let addedFiles: any = [];
+        loop1:
+        for (let i in newFiles) {
+            let commandName = newFiles[i].split(".")[0];
+            loop2:
+            for (let j in addedFiles) {
+                if (addedFiles[j] === commandName) {
+                    continue loop1;
+                }
+            }
+            addedFiles.push(commandName)
+            console.log(`"${commandName}": {"name": "${commandName}", "aliases": [], "cooldown": ""},`);
+        }
+    }
+
+    //Generate Emojis for config.json
+    client.generateEmojis = (letterNames: string[]) => {
+        for (let i = 0; i < letterNames.length; i++) {
+            client.emojis.map((emoji: any) => {
+                if (emoji.name === letterNames[i]) {
+                    console.log(`{"name": "${letterNames[i]}", "id": "${emoji.id}"},`);
+                }
+            });
+        } 
+    }
 }

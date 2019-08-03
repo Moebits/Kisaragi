@@ -1,16 +1,7 @@
+import {Collection} from "discord.js"
+const cooldowns = new Collection();
+
 module.exports = async (client: any, message: any) => {
-
-  /*let letterNames = [
-    "gdStar", "gdCoin", "gdUserCoin", "gdDiamond", "gdCP", "gdDemon"
-  ]
-
-  for (let i = 0; i < letterNames.length; i++) {
-    client.emojis.map((emoji: any) => {
-      if (emoji.name === letterNames[i]) {
-        console.log(`{"name": "${letterNames[i]}", "id": "${emoji.id}"},`);
-      }
-    });
-  } */
 
   /*let guildIDs = [
     "594616328351121419"
@@ -27,7 +18,16 @@ module.exports = async (client: any, message: any) => {
     await require("../exports/functions.js")(client, message);
     await require("../exports/queries.js")(client, message);
     await require("../exports/links.js")(client, message);
+    let commands = require("../../commands.json");
     let prefix: string = await client.fetchPrefix();
+
+    /*let letterNames = [
+      "kannaHungry", "kannaXD", "vignexd", "kobaDisgust", "KarenAnger", "sagiriBleh",
+      "kannaAngry", "KannaFacepalm", "EmiSMH", "think", "HanaDesires", "GabuChrist",
+      "GabSip", "KarenSugoi"
+    ]
+  
+    client.generateEmojis(letterNames)*/
 
     if (message.guild) {
       setTimeout(() => {
@@ -47,7 +47,7 @@ module.exports = async (client: any, message: any) => {
 
     if (responseObject[message.content.toLowerCase()]) {
       if (!message.author.bot) {
-        return message.channel.send(client.letters(responseObject[message.content.toLowerCase()]));
+        return message.channel.send(responseObject[message.content.toLowerCase()]);
       }
     }
 
@@ -67,18 +67,35 @@ module.exports = async (client: any, message: any) => {
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/g);
     if (args[0] === undefined) return;
-    const cmd: string = args[0].toLowerCase();
-    //const path: string = commands.paths[cmd];
-    const path: string = await client.fetchCommand(cmd, "path");
-    if (path === null || undefined) return;
-    const cp = require(path[0]);
+    let cmd: string = args[0].toLowerCase();
+    let path: string = await client.fetchCommand(cmd, "path");
+    if1:
+    if (!path) {
+      for (let i in commands) {
+        for (let j in commands[i].aliases) {
+          if (commands[i].aliases[j] === cmd) {
+            cmd = commands[i].name;
+            path = await client.fetchCommand(cmd, "path");
+            break if1;
+          } 
+        }
+      }
+    }
+    if (!path) return;
+    let cooldown: string[] = await client.fetchCommand(cmd, "cooldown");
+    const cmdPath = require(path[0]);
 
-    
     await require("../exports/images.js")(client, message);
 
+    let onCooldown = client.cmdCooldown(cmd, cooldown.join(""), message, cooldowns);
+    if (onCooldown) {
+      message.channel.send(onCooldown);
+      return;
+    }
+    
     let msg = await message.channel.send(`**Loading** ${client.getEmoji("gabCircle")}`);
-    await cp.run(client, message, args).catch((err) => message.channel.send(client.cmdError(err)));
-    msg.delete(1000);
+    await cmdPath.run(client, message, args).then(() => msg.delete(1000))
+    .catch((err: any) => message.channel.send(client.cmdError(err)));
     
 }
 

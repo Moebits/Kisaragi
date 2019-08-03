@@ -19,8 +19,9 @@ const start = async () => {
 
     const logger = require("./exports/logger.js");
     require('./exports/queries.js')(client, null);
+    require('./exports/functions.js')(client, null);
 
-    let cmdFiles: string[] = [];
+    let cmdFiles: any = [];
     const subDirectory = await readdir("./commands/");
 
     for (let i in subDirectory) {
@@ -34,10 +35,21 @@ const start = async () => {
             let path = `../commands/${currDir}/${file}`;
             let commandName = file.split(".")[0];
             let cmdFind = await client.fetchCommand(commandName, "command");
+            if1:
             if (cmdFind === undefined || null) {
-                await client.insertCommand(commandName, commands.aliases[commandName], path);
+                if (commandName === "empty" || commandName === "tempCodeRunnerFile") break if1;
+                if (!commands[commandName]) {
+                    console.log(`${commandName} not found`); 
+                    break if1;
+                }
+                await client.insertCommand(commandName, commands[commandName].aliases, path, commands[commandName].cooldown);
             } else {
-                await client.updateAliases(commandName, commands.aliases[commandName]);
+                if (commandName === "empty" || commandName === "tempCodeRunnerFile") break if1;
+                if (!commands[commandName]) {
+                    console.log(`${commandName} not found`); 
+                    break if1;
+                }
+                await client.updateCommand(commandName, commands[commandName].aliases, commands[commandName].cooldown);
             }
             logger.log(`Loading Command: ${commandName}`);
         }));      
@@ -59,6 +71,8 @@ const start = async () => {
         logger.log(`Loaded a total of ${evtFiles.length} events.`);
     
         client.login(token);
+ 
+        //client.generateCommands(cmdFiles)
 
     }, 1000);
 }
