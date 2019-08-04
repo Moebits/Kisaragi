@@ -1,4 +1,5 @@
 exports.run = async (client: any, message: any, args: string[]) => {
+    const axios = require('axios');
     let input = client.combineArgs(args, 1);
     if (input.trim()) {
         message.content = input.trim();
@@ -12,9 +13,14 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let welcomeImage = await client.fetchColumn("welcome leaves", "welcome bg image");
     let welcomeText = await client.fetchColumn("welcome leaves", "welcome bg text");
     let welcomeColor = await client.fetchColumn("welcome leaves", "welcome bg color");
+    let attachment = await client.createCanvas(message.member, welcomeImage, welcomeText, welcomeColor);
+    let json = await axios.get(`https://is.gd/create.php?format=json&url=${welcomeImage.join("")}`)
+    let newImg = json.data.shorturl;
     welcomeEmbed
     .setTitle(`**Welcome Messages** ${client.getEmoji("karenSugoi")}`)
     .setThumbnail(message.guild.iconURL)
+    .attachFiles([attachment])
+    .setImage(`attachment://${attachment.file.name}`)
     .setDescription(
         "Welcome to the welcome messages prompt!\n" +
         "\n" +
@@ -29,7 +35,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         `${client.getEmoji("star")}_Welcome Message:_ **${welcomeMsg}**\n` +
         `${client.getEmoji("star")}_Welcome Channel:_ **${welcomeChannel.join("") ? `<#${welcomeChannel}>` : "None"}**\n` +
         `${client.getEmoji("star")}_Welcome Toggle:_ **${welcomeToggle}**\n` +
-        `${client.getEmoji("star")}_Background Image:_ **${welcomeImage}**\n` +
+        `${client.getEmoji("star")}_Background Image:_ **${newImg}**\n` +
         `${client.getEmoji("star")}_Background Text:_ **${welcomeText}**\n` +
         `${client.getEmoji("star")}_Background Text Color:_ **${welcomeColor}**\n` +
         "\n" +
@@ -65,9 +71,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
             await client.updateColumn("welcome leaves", "welcome message", "Welcome to guild, user!");
             await client.updateColumn("welcome leaves", "welcome channel", null);
             await client.updateColumn("welcome leaves", "welcome toggle", "off");
-            await client.updateColumn("welcome leaves", "welcome bg image", "../assets/images/welcomeBG.gif");
-            await client.updateColumn("welcome leaves", "welcome bg text", "New member joined! There are now count members.");
-            await client.updateColumn("welcome leaves", "welcome bg color", "#FF0D51");
+            await client.updateColumn("welcome leaves", "welcome bg image", "../assets/images/welcomeBG.png");
+            await client.updateColumn("welcome leaves", "welcome bg text", "Welcome tag! There are now count members.");
+            await client.updateColumn("welcome leaves", "welcome bg color", "#FF52CE");
             responseEmbed
             .setDescription(`${client.getEmoji("star")}Welcome settings were reset!`)
             msg.channel.send(responseEmbed);

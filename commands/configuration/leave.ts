@@ -1,4 +1,5 @@
 exports.run = async (client: any, message: any, args: string[]) => {
+    const axios = require('axios');
     let input = client.combineArgs(args, 1);
     if (input.trim()) {
         message.content = input.trim();
@@ -12,9 +13,14 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let leaveImage = await client.fetchColumn("welcome leaves", "leave bg image");
     let leaveText = await client.fetchColumn("welcome leaves", "leave bg text");
     let leaveColor = await client.fetchColumn("welcome leaves", "leave bg color");
+    let attachment = await client.createCanvas(message.member, leaveImage, leaveText, leaveColor);
+    let json = await axios.get(`https://is.gd/create.php?format=json&url=${leaveImage.join("")}`)
+    let newImg = json.data.shorturl;
     leaveEmbed
     .setTitle(`**Leave Messages** ${client.getEmoji("sagiriBleh")}`)
     .setThumbnail(message.guild.iconURL)
+    .attachFiles([attachment])
+    .setImage(`attachment://${attachment.file.name}`)
     .setDescription(
         "Welcome to the Leave Messages prompt!\n" +
         "\n" +
@@ -29,7 +35,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         `${client.getEmoji("star")}_Leave Message:_ **${leaveMsg}**\n` +
         `${client.getEmoji("star")}_Leave Channel:_ **${leaveChannel.join("") ? `<#${leaveChannel}>` : "None"}**\n` +
         `${client.getEmoji("star")}_Leave Toggle:_ **${leaveToggle}**\n` +
-        `${client.getEmoji("star")}_Background Image:_ **${leaveImage}**\n` +
+        `${client.getEmoji("star")}_Background Image:_ **${newImg}**\n` +
         `${client.getEmoji("star")}_Background Text:_ **${leaveText}**\n` +
         `${client.getEmoji("star")}_Background Text Color:_ **${leaveColor}**\n` +
         "\n" +
@@ -66,8 +72,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
             await client.updateColumn("welcome leaves", "leave channel", null);
             await client.updateColumn("welcome leaves", "leave toggle", "off");
             await client.updateColumn("welcome leaves", "leave bg image", "../assets/images/leaveBG.gif");
-            await client.updateColumn("welcome leaves", "leave bg text", "Member left! There are now count members.");
-            await client.updateColumn("welcome leaves", "leave bg color", "#FF0D51");
+            await client.updateColumn("welcome leaves", "leave bg text", "tag left! There are now count members.");
+            await client.updateColumn("welcome leaves", "leave bg color", "#FF52CE");
             responseEmbed
             .setDescription(`${client.getEmoji("star")}leave settings were reset!`)
             msg.channel.send(responseEmbed);

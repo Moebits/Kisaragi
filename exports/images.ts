@@ -12,6 +12,9 @@ module.exports = async (client: any, message: any) => {
     const download = require('image-downloader');
     let compress_images = require('compress-images'), imgInput, imgOutput;
     //const fs = require("fs");
+    
+    const Canvas = require("canvas");
+    const GifCanvas = require("gif-canvas");
 
     //Compress Gif
     client.compressGif = async (input) => {
@@ -270,5 +273,82 @@ module.exports = async (client: any, message: any) => {
             }, 120000);
         }
         return attachmentArray; 
+    }
+
+    client.createCanvas = async (member: any, image: any, text: any, color: any) => {
+        let newText = text.join("").replace(/user/g, `@${member.user.tag}`).replace(/guild/g, member.guild.name)
+        .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount)
+
+        function wrapText(context, text, x, y, maxWidth, lineHeight) {
+            var cars = text.split("\n");
+
+            for (var ii = 0; ii < cars.length; ii++) {
+
+                var line = "";
+                var words = cars[ii].split(" ");
+
+                for (var n = 0; n < words.length; n++) {
+                    var testLine = line + words[n] + " ";
+                    var metrics = context.measureText(testLine);
+                    var testWidth = metrics.width;
+
+                    if (testWidth > maxWidth) {
+                        context.strokeText(line, x, y);
+                        context.fillText(line, x, y);
+                        line = words[n] + " ";
+                        y += lineHeight;
+                    }
+                    else {
+                        line = testLine;
+                    }
+                }
+                
+                context.strokeText(line, x, y);
+                context.fillText(line, x, y);
+                y += lineHeight;
+            }
+        }
+
+        function applyText(canvas, text) {
+            const ctx = canvas.getContext('2d');
+            let fontSize = 70;
+            do {
+                ctx.font = `${fontSize -= 1}px 07nikumarufont`;
+            } while (ctx.measureText(text).width > (canvas.width*2.5) - 300);
+            return ctx.font;
+        };
+        
+        const canvas = Canvas.createCanvas(700, 250);
+        const ctx = canvas.getContext('2d');
+
+        let background: any;
+        if (image.join("").slice(-3) === "gif") {
+            let gc = GifCanvas(image.join(""), {
+                fps: 30
+            });
+            console.log(gc)
+            background = gc.canvas;
+        } else {
+            background = await Canvas.loadImage(image.join(""));
+        }
+
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+        ctx.font = applyText(canvas, newText);
+        ctx.strokeStyle= "black";
+        ctx.lineWidth = 4;
+        ctx.fillStyle = color.join("");
+        wrapText(ctx, newText, canvas.width / 2.8, canvas.height / 4, 450, 55);
+
+        ctx.beginPath();
+        ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
+
+        const avatar = await Canvas.loadImage(member.user.displayAvatarURL);
+        ctx.drawImage(avatar, 25, 25, 200, 200);
+
+        const attachment = new Attachment(canvas.toBuffer(), 'welcome-image.png');
+        return attachment;
     }
 }
