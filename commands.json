@@ -92,6 +92,9 @@
     "soundcloud": {"name": "soundcloud", "aliases": [], "cooldown": ""},
     "tenor": {"name": "tenor", "aliases": [], "cooldown": ""},
     "twitch": {"name": "twitch", "aliases": [], "cooldown": ""},
-    "twitter": {"name": "twitter", "aliases": [], "cooldown": ""}
+    "twitter": {"name": "twitter", "aliases": [], "cooldown": ""},
+    "welcome": {"name": "welcome", "aliases": [], "cooldown": ""},
+    "leave": {"name": "leave", "aliases": [], "cooldown": ""},
+    "reset": {"name": "reset", "aliases": [], "cooldown": ""}
     
 }

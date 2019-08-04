@@ -52,6 +52,7 @@
     "gdprofiles": "^1.0.2-rc.2",
     "geometry-dash-api": "^2.0.0",
     "get-pixels": "^3.3.2",
+    "gif-canvas": "^1.0.0",
     "gif-encoder": "^0.7.2",
     "gifencoder": "^2.0.1",
     "giphy-api": "^2.0.1",

@@ -1,8 +1,9 @@
 exports.run = async (client: any, message: any, args: string[]) => {
     const ip = require("ip");
     let ipEmbed = client.createEmbed();
+    let ownerID: any = process.env.OWNER_ID;
 
-    if (client.checkBotOwner()) {
+    if (message.author.id === ownerID) {
         let result = ip.address();
         ipEmbed
         .setTitle(`**IP Address** ${client.getEmoji("vigneDead")}`)

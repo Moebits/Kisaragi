@@ -3,6 +3,10 @@ const cooldowns = new Collection();
 
 module.exports = async (client: any, message: any) => {
 
+  if (message.content === '=>join') {
+		client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
+	}
+
   /*let guildIDs = [
     "594616328351121419"
   ]
@@ -86,6 +90,7 @@ module.exports = async (client: any, message: any) => {
     const cmdPath = require(path[0]);
 
     await require("../exports/images.js")(client, message);
+    await require("../exports/collectors.js")(client, message);
 
     let onCooldown = client.cmdCooldown(cmd, cooldown.join(""), message, cooldowns);
     if (onCooldown) {

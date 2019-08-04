@@ -1,4 +1,4 @@
-module.exports = (client: any, message: any) => {
+module.exports = async (client: any, message: any) => {
 
     const Pool: any = require('pg').Pool;
     const redis = require("async-redis");
@@ -99,7 +99,7 @@ module.exports = (client: any, message: any) => {
           values: [command],
           rowMode: 'array'
         };
-        const result: any = await client.runQuery(query, true);
+        const result: any = await client.runQuery(query);
         return result[0];
     }
 
@@ -120,6 +120,7 @@ module.exports = (client: any, message: any) => {
           rowMode: 'array'
         }
         const result: any = await client.runQuery(query, true);
+        if(!result.join("")) return "=>";
         return result[0][0];
     }
 
@@ -137,7 +138,7 @@ module.exports = (client: any, message: any) => {
           rowMode: 'array'
         }
       }
-      const result: any = await client.runQuery(query, true);
+      const result: any = await client.runQuery(query);
       return result[0];
     }
 
@@ -171,14 +172,16 @@ module.exports = (client: any, message: any) => {
 
     //Update a row in a table
     client.updateColumn = async (table: string, column: string, value: any, key?: string, keyVal?: string) => {
-        let query: object = {
-          text: `UPDATE "${table}" SET "${column}" = $1 WHERE "guild id" = ${message.guild.id}`,
-          values: [value]
-        }
+        let query: object;
         if (key) {
           query = {
             text: `UPDATE "${table}" SET "${column}" = $1 WHERE "${key}" = $2`,
             values: [value, keyVal]
+          }
+        } else {
+          query = {
+            text: `UPDATE "${table}" SET "${column}" = $1 WHERE "guild id" = ${message.guild.id}`,
+            values: [value]
           }
         }
         await client.runQuery(query);
@@ -217,13 +220,14 @@ module.exports = (client: any, message: any) => {
 
     //Init guild
     client.initGuild = async () => {
+    await require("./settings.js")(client, message);
         let query: object = {
           text: `SELECT "guild id" FROM guilds`,
           rowMode: 'array'
         }
-        const result = await client.runQuery(query, true);
+        const result = await client.runQuery(query);
         const found = result.find((id: any) => id[0] === message.guild.id.toString());
-        if (found === undefined || null) {
+        if (!found) {
           for (let i in tableList) {
             await client.insertInto(tableList[i], "guild id", message.guild.id);
           }

@@ -36,7 +36,7 @@ const start = async () => {
             let commandName = file.split(".")[0];
             let cmdFind = await client.fetchCommand(commandName, "command");
             if1:
-            if (cmdFind === undefined || null) {
+            if (!cmdFind) {
                 if (commandName === "empty" || commandName === "tempCodeRunnerFile") break if1;
                 if (!commands[commandName]) {
                     console.log(`${commandName} not found`); 

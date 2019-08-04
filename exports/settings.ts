@@ -83,11 +83,17 @@ module.exports = (client: any, message: any) => {
 
     const welcomeLeaveSettings: object = {
         "welcome channel": null,
-        "welcome message": "Welcome to {{guild}}, {{user}}!",
+        "welcome message": "Welcome to guild, user!",
         "welcome toggle": "off",
         "leave channel": null,
-        "leave message": "{{user}} has left {{guild}}!",
+        "leave message": "user has left guild!",
         "leave toggle": "off",
+        "welcome bg image": "../assets/images/welcomeBG.gif",
+        "welcome bg text": "New member joined! There are now count members.",
+        "welcome bg color": "#FF0D51",
+        "leave bg image": "../assets/images/leaveBG.gif",
+        "leave bg text": "Member left! There are now count members.",
+        "leave bg color": "#FF0D51"
     }
 
     const birthdaySettings: object = {

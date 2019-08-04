@@ -5,8 +5,9 @@ const clean = (text: string) => {
 exports.run = (client: any, message: any, args: string[]) => {
 
     const evalEmbed: any = client.createEmbed();
+    let ownerID: any = process.env.OWNER_ID;
 
-    if (client.checkBotOwner()) {
+    if (message.author.id === ownerID) {
         try {
             const code: string = client.combineArgs(args, 2);
             let evaled: string = eval(code);

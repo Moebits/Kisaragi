@@ -2,7 +2,7 @@ import {RichEmbed} from "discord.js";
 const active = new Set();
 
 module.exports = async (client: any, reaction: any, user: any) => {
-    await require("../exports/images.js")(client, reaction.message);
+    await require("../exports/collectors.js")(client, reaction.message);
     if (reaction.message.author.id === client.user.id) {
         if (active.has(reaction.message.id)) return;
         let ignored = await client.selectColumn("ignore", "message");
