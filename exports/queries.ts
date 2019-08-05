@@ -3,7 +3,9 @@ module.exports = async (client: any, message: any) => {
     const Pool: any = require('pg').Pool;
     const redis = require("async-redis");
     const {PostgresRedisAsync} = require("postgres-redis");
-    client.redis = redis.createClient();
+    client.redis = redis.createClient({
+      url: process.env.REDIS_URL
+    });
 
     client.pgPool = new Pool({
       user: process.env.PGUSER,
