@@ -20,7 +20,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     .setTitle(`**Welcome Messages** ${client.getEmoji("karenSugoi")}`)
     .setThumbnail(message.guild.iconURL)
     .attachFiles([attachment])
-    .setImage(`attachment://${attachment.file.name}`)
+    .setImage(`attachment://${attachment.file.name ? attachment.file.name : "animated.gif"}`)
     .setDescription(
         "Welcome to the welcome messages prompt!\n" +
         "\n" +

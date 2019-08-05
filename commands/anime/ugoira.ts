@@ -2,6 +2,7 @@ import Ugoira from 'node-ugoira';
 
 exports.run = async (client: any, message: any, args: string[]) => {
     const PixivApi = require('pixiv-api-client');
+    const fs = require('fs');
     const pixiv = new PixivApi();
     let refreshToken = await client.pixivLogin();
     let input;
@@ -69,30 +70,11 @@ exports.run = async (client: any, message: any, args: string[]) => {
     const ugoira = new Ugoira(pixivID);
     await ugoira.initUgoira(refreshToken);
     
-    let pics: any = [];
-    const fs = require('fs');
-    if (fileNames.length > 150) {
-        for (let i = 0; i < fileNames.length; i+=5) {
-            pics.push(fileNames[i]);
-        }
-    } else if (fileNames.length > 80) {
-        for (let i = 0; i < fileNames.length; i+=3) {
-            pics.push(fileNames[i]);
-        }
-    } else if (fileNames.length > 40) {
-        for (let i = 0; i < fileNames.length; i+=2) {
-            pics.push(fileNames[i]);
-        }
-    } else {
-        for (let i = 0; i < fileNames.length; i++) {
-            pics.push(fileNames[i]);
-        }
-    }
     let file = fs.createWriteStream(`ugoira/${pixivID}/${pixivID}.gif`, (err) => console.log(err));
 
     msg1.delete(1000);
     let msg2 = await message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${client.getEmoji("gabCircle")}`)
-    await client.encodeGif(pics, `ugoira/${pixivID}/`, file);
+    await client.encodeGif(fileNames, `ugoira/${pixivID}/`, file);
     msg2.delete(1000);
 
     let msg3 = await message.channel.send(`**Compressing Gif** ${client.getEmoji("gabCircle")}`)

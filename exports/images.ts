@@ -30,7 +30,33 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Encode Gif
-    client.encodeGif = async (images, path, file) => {
+    client.encodeGif = async (fileNames, path, file) => {
+        let images: any = [];
+        if (fileNames.length > 500) {
+            for (let i = 0; i < fileNames.length; i+=15) {
+                images.push(fileNames[i]);
+            }
+        } else if (fileNames.length > 300) {
+            for (let i = 0; i < fileNames.length; i+=10) {
+                images.push(fileNames[i]);
+            }
+        } else if (fileNames.length > 150) {
+            for (let i = 0; i < fileNames.length; i+=5) {
+                images.push(fileNames[i]);
+            }
+        } else if (fileNames.length > 80) {
+            for (let i = 0; i < fileNames.length; i+=3) {
+                images.push(fileNames[i]);
+            }
+        } else if (fileNames.length > 40) {
+            for (let i = 0; i < fileNames.length; i+=2) {
+                images.push(fileNames[i]);
+            }
+        } else {
+            for (let i = 0; i < fileNames.length; i++) {
+                images.push(fileNames[i]);
+            }
+        }
         return new Promise(resolve => {
 
         let dimensions = sizeOf(`${path}${images[0]}`);
@@ -395,9 +421,9 @@ module.exports = async (client: any, message: any) => {
             }
 
             await client.timeout(500);
-
             let rIterator = 0;
-            for (let i = 0; i < files.length; i++) {
+            let msg2 = await message.channel.send(`**Encoding Gif. This might take awhile** ${client.getEmoji("gabCircle")}`)
+            for (let i = 0; i < 6; i++) {
                 if (rIterator === colorStops.length - 1) {
                     rIterator = 0;
                 }
@@ -409,6 +435,7 @@ module.exports = async (client: any, message: any) => {
             
             let file = fs.createWriteStream(`../assets/images/${random}/animated.gif`, (err) => console.log(err));
             await client.encodeGif(attachmentArray, `../assets/images/${random}/`, file);
+            msg2.delete();
             let attachment = new Attachment(`../assets/images/${random}/animated.gif`);
             return attachment;
                 

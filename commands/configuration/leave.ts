@@ -16,11 +16,12 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let attachment = await client.createCanvas(message.member, leaveImage, leaveText, leaveColor);
     let json = await axios.get(`https://is.gd/create.php?format=json&url=${leaveImage.join("")}`)
     let newImg = json.data.shorturl;
+    console.log(attachment)
     leaveEmbed
     .setTitle(`**Leave Messages** ${client.getEmoji("sagiriBleh")}`)
     .setThumbnail(message.guild.iconURL)
     .attachFiles([attachment])
-    .setImage(`attachment://${attachment.file.name}`)
+    .setImage(`attachment://${attachment.file.name ? attachment.file.name : "animated.gif"}`)
     .setDescription(
         "Welcome to the Leave Messages prompt!\n" +
         "\n" +
@@ -75,7 +76,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             await client.updateColumn("welcome leaves", "leave bg text", "tag left! There are now count members.");
             await client.updateColumn("welcome leaves", "leave bg color", "rainbow");
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}leave settings were reset!`)
+            .setDescription(`${client.getEmoji("star")}Leave settings were reset!`)
             msg.channel.send(responseEmbed);
             return;
         }
