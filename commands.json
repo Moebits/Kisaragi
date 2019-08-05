@@ -95,6 +95,7 @@
     "twitter": {"name": "twitter", "aliases": [], "cooldown": ""},
     "welcome": {"name": "welcome", "aliases": [], "cooldown": ""},
     "leave": {"name": "leave", "aliases": [], "cooldown": ""},
-    "reset": {"name": "reset", "aliases": [], "cooldown": ""}
-    
+    "reset": {"name": "reset", "aliases": [], "cooldown": ""},
+    "flush": {"name": "flush", "aliases": [], "cooldown": ""},
+    "shorten": {"name": "shorten", "aliases": [], "cooldown": ""}
 }

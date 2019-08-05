@@ -6,7 +6,8 @@ module.exports = async (client: any, reaction: any, user: any) => {
     if (reaction.message.author.id === client.user.id) {
         if (active.has(reaction.message.id)) return;
         let ignored = await client.selectColumn("ignore", "message");
-        let newArray = ignored.flat();
+        let newArray = ignored;
+        console.log(ignored)
         let cached = false;
         for (let i in newArray) {
             if (newArray[i] === reaction.message.id.toString()) {
