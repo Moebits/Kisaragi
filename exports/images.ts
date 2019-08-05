@@ -11,10 +11,14 @@ module.exports = async (client: any, message: any) => {
     const imageminGifsicle = require("imagemin-gifsicle");
     const download = require('image-downloader');
     let compress_images = require('compress-images'), imgInput, imgOutput;
-    //const fs = require("fs");
+    const fs = require("fs");
     
     const Canvas = require("canvas");
-    const GifCanvas = require("gif-canvas");
+    let getPixels = require('get-pixels')
+    let GifEncoder = require('gif-encoder');
+    let gifFrames = require('gif-frames');
+    const sizeOf = require('image-size');
+    let imageDataURI = require("image-data-uri");
 
     //Compress Gif
     client.compressGif = async (input) => {
@@ -23,6 +27,39 @@ module.exports = async (client: any, message: any) => {
         plugins: [imageminGifsicle({interlaced: true, optimizationLevel: 3, colors: 256,})]
         });
         return file;
+    }
+
+    //Encode Gif
+    client.encodeGif = async (images, path, file) => {
+        return new Promise(resolve => {
+
+        let dimensions = sizeOf(`${path}${images[0]}`);
+        let gif = new GifEncoder(dimensions.width, dimensions.height);
+        gif.pipe(file);
+        gif.setQuality(20);
+        gif.setDelay(0);
+        gif.setRepeat(0);
+        gif.writeHeader();
+        let counter = 0;
+
+        const addToGif = (images) => {
+                getPixels(`${path}${images[counter]}`, function(err, pixels) {
+                    gif.addFrame(pixels.data);
+                    gif.read();
+                        if (counter >= images.length - 1) {
+                            gif.finish();
+                        } else {
+                                counter++;
+                                addToGif(images);
+                            }
+                });
+            }
+        
+            addToGif(images);
+            gif.on("end", async () => {
+                resolve();
+            });
+        });
     }
 
     //Compress Images
@@ -275,7 +312,25 @@ module.exports = async (client: any, message: any) => {
         return attachmentArray; 
     }
 
-    client.createCanvas = async (member: any, image: any, text: any, color: any) => {
+    let colorStops = [
+        "#FF8AD8",
+        "#FF8ABB",
+        "#F9FF8A",
+        "#8AFFB3",
+        "#8AE4FF",
+        "#FF8AD8"
+    ];
+
+    client.createCanvas = async (member: any, rawImage: any, text: any, color: any, uri?: boolean, iterator?: number) => {
+        let image = "";
+        if (rawImage.constructor === Array) {
+            image = rawImage.join("");
+        } else {
+            image = rawImage;
+        }
+
+        console.log(image)
+        
         let newText = text.join("").replace(/user/g, `@${member.user.tag}`).replace(/guild/g, member.guild.name)
         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount)
 
@@ -314,7 +369,7 @@ module.exports = async (client: any, message: any) => {
             let fontSize = 70;
             do {
                 ctx.font = `${fontSize -= 1}px 07nikumarufont`;
-            } while (ctx.measureText(text).width > (canvas.width*2.5) - 300);
+            } while (ctx.measureText(text).width > (canvas.width*2.2) - 300);
             return ctx.font;
         };
         
@@ -322,33 +377,86 @@ module.exports = async (client: any, message: any) => {
         const ctx = canvas.getContext('2d');
 
         let background: any;
-        if (image.join("").slice(-3) === "gif") {
-            let gc = GifCanvas(image.join(""), {
-                fps: 30
-            });
-            console.log(gc)
-            background = gc.canvas;
+        let random  = Math.floor(Math.random() * 1000000)
+        if (image.includes("gif")) {
+            if (!fs.existsSync(`../assets/images/${random}/`)) {  
+                fs.mkdirSync(`../assets/images/${random}/`)  
+            }
+            
+            let files: string[] = [];
+            let attachmentArray: any = [];
+            let frames = await gifFrames({url: image, frames: "all", cumulative: true});
+            
+            for (let i in frames) {
+                let readStream = frames[i].getImage()
+                let writeStream = fs.createWriteStream(`../assets/images/${random}/image${frames[i].frameIndex}.jpg`);
+                await client.awaitPipe(readStream, writeStream)
+                files.push(`../assets/images/${random}/image${frames[i].frameIndex}.jpg`); 
+            }
+
+            await client.timeout(500);
+
+            let rIterator = 0;
+            for (let i = 0; i < files.length; i++) {
+                if (rIterator === colorStops.length - 1) {
+                    rIterator = 0;
+                }
+                let dataURI = await client.createCanvas(member, files[i], text, color, true, rIterator);
+                await imageDataURI.outputFile(dataURI, `../assets/images/${random}/image${i}`);
+                attachmentArray.push(`image${i}.jpeg`);
+                rIterator++;
+            }
+            
+            let file = fs.createWriteStream(`../assets/images/${random}/animated.gif`, (err) => console.log(err));
+            await client.encodeGif(attachmentArray, `../assets/images/${random}/`, file);
+            let attachment = new Attachment(`../assets/images/${random}/animated.gif`);
+            return attachment;
+                
         } else {
-            background = await Canvas.loadImage(image.join(""));
+            background = await Canvas.loadImage(image);
+
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+            ctx.font = applyText(canvas, newText);
+            ctx.strokeStyle= "black";
+            ctx.lineWidth = 4;
+            if (color.join("") === "rainbow") {
+                let rainbowIterator;
+                if (iterator) {
+                    rainbowIterator = iterator;
+                } else {
+                    rainbowIterator = 0;
+                }
+                let gradient = ctx.createLinearGradient(0, 0, canvas.width + 200, 0);
+                for (let i = 0; i < colorStops.length; i++) {
+                    let currColor = colorStops[rainbowIterator + i];
+                    let position = (1/colorStops.length)*i;
+                    if (currColor === colorStops[colorStops.length]) {
+                        currColor = colorStops[0];
+                        rainbowIterator = 0;
+                    }
+                    gradient.addColorStop(position, currColor) 
+                }
+                ctx.fillStyle = gradient;
+            } else {
+                ctx.fillStyle = color.join("");
+            }
+            wrapText(ctx, newText, canvas.width / 2.8, canvas.height / 4, 450, 55);
+
+            ctx.beginPath();
+            ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.clip();
+
+            const avatar = await Canvas.loadImage(member.user.displayAvatarURL);
+            ctx.drawImage(avatar, 25, 25, 200, 200);
+
+            if (uri) {
+                return canvas.toDataURL("image/jpeg");
+            }
+
+            const attachment = new Attachment(canvas.toBuffer(), `welcome.jpg`);
+            return attachment;
         }
-
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-        ctx.font = applyText(canvas, newText);
-        ctx.strokeStyle= "black";
-        ctx.lineWidth = 4;
-        ctx.fillStyle = color.join("");
-        wrapText(ctx, newText, canvas.width / 2.8, canvas.height / 4, 450, 55);
-
-        ctx.beginPath();
-        ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.clip();
-
-        const avatar = await Canvas.loadImage(member.user.displayAvatarURL);
-        ctx.drawImage(avatar, 25, 25, 200, 200);
-
-        const attachment = new Attachment(canvas.toBuffer(), 'welcome-image.png');
-        return attachment;
     }
 }

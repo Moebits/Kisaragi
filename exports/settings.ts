@@ -88,12 +88,12 @@ module.exports = (client: any, message: any) => {
         "leave channel": null,
         "leave message": "user has left guild!",
         "leave toggle": "off",
-        "welcome bg image": "../assets/images/welcomeBG.png",
+        "welcome bg image": "https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif",
         "welcome bg text": "Welcome tag! There are now count members.",
-        "welcome bg color": "#FF52CE",
-        "leave bg image": "../assets/images/leaveBG.png",
+        "welcome bg color": "rainbow",
+        "leave bg image": "https://user-images.githubusercontent.com/565124/32411599-a5fcba72-c1df-11e7-8730-a570470a4eee.gif",
         "leave bg text": "tag left! There are now count members.",
-        "leave bg color": "#FF52CE"
+        "leave bg color": "rainbow"
     }
 
     const birthdaySettings: object = {

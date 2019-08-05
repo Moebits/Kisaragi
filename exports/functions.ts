@@ -6,6 +6,21 @@ module.exports = async (client: any, message: any) => {
     let letters: any = require("../../letters.json");
     const child_process = require('child_process');
 
+    //Timeout
+    client.timeout = (ms: number) => {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    //Await Pipe
+    client.awaitPipe = async (readStream, writeStream) => {
+        return new Promise(resolve => {
+            readStream.pipe(writeStream);
+            readStream.on("end", async () => {
+                resolve();
+            });
+        });
+    }
+
     //Execute File
     client.execFile = async (file: string, args?: string[]) => {
         await child_process.execFile(`../assets/tools/${file}`, args);

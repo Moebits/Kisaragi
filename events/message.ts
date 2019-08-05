@@ -65,13 +65,13 @@ module.exports = async (client: any, message: any) => {
 
     if(!message.content.startsWith(prefix) || message.author.bot) return;
 
-    /*if (message.content === '=>join') {
+    if (message.content === '=>join') {
       client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
     }
 
     if (message.content === '=>bye') {
       client.emit('guildMemberRemove', message.member || await message.guild.fetchMember(message.author));
-    }*/
+    }
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/g);
     if (args[0] === undefined) return;

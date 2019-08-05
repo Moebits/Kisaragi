@@ -45,7 +45,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         `${client.getEmoji("star")}_**Mention a channel** to set it as the welcome channel._\n` +
         `${client.getEmoji("star")}_Post an **image URL** (jpg, png, gif) to set the background image._\n` +
         `${client.getEmoji("star")}_Add brackets **[text]** to set the background text._\n` +
-        `${client.getEmoji("star")}_Type a **hex color** to set the background text color._\n` +
+        `${client.getEmoji("star")}_Type **rainbow** or a **hex color** to set the background text color._\n` +
         `${client.getEmoji("star")}_**You can type multiple options** to set them at once._\n` +
         `${client.getEmoji("star")}_Type **reset** to reset settings._\n` +
         `${client.getEmoji("star")}_Type **cancel** to exit._\n` 
@@ -56,11 +56,11 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let responseEmbed = client.createEmbed();
         let setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor;
         responseEmbed.setTitle(`**Welcome Messages** ${client.getEmoji("karenSugoi")}`);
-        let newMsg = msg.content.replace(/<#\d+>/g, "").replace(/\[(.*)\]/g, "").replace(/enable/g, "")
+        let newMsg = msg.content.replace(/<#\d+>/g, "").replace(/\[(.*)\]/g, "").replace(/enable/g, "").replace(/rainbow/g, "")
         .replace(/disable/g, "").replace(/#[0-9a-f]{3,6}/ig, "").replace(/(https?:\/\/[^\s]+)/g, "");
         let newImg = msg.content.match(/(https?:\/\/[^\s]+)/g);
         let newBGText = msg.content.match(/\[(.*)\]/g);
-        let newBGColor = msg.content.match(/(\s|^)#[0-9a-f]{3,6}/ig);
+        let newBGColor = (msg.content.match(/rainbow/g) || msg.content.match(/(\s|^)#[0-9a-f]{3,6}/ig));
         if (msg.content === "cancel") {
             responseEmbed
             .setDescription(`${client.getEmoji("star")}Canceled the prompt!`)
@@ -71,9 +71,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
             await client.updateColumn("welcome leaves", "welcome message", "Welcome to guild, user!");
             await client.updateColumn("welcome leaves", "welcome channel", null);
             await client.updateColumn("welcome leaves", "welcome toggle", "off");
-            await client.updateColumn("welcome leaves", "welcome bg image", "../assets/images/welcomeBG.png");
+            await client.updateColumn("welcome leaves", "welcome bg image", "https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif");
             await client.updateColumn("welcome leaves", "welcome bg text", "Welcome tag! There are now count members.");
-            await client.updateColumn("welcome leaves", "welcome bg color", "#FF52CE");
+            await client.updateColumn("welcome leaves", "welcome bg color", "rainbow");
             responseEmbed
             .setDescription(`${client.getEmoji("star")}Welcome settings were reset!`)
             msg.channel.send(responseEmbed);
