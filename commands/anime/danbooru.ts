@@ -34,7 +34,7 @@ exports.run = async (client: any, message: Message, args: string[]) => {
     }
 
     let url;
-    if (tags.join("").match(/\d+/g)) {
+    if (tags.join("").match(/\d\d+/g)) {
         url = `https://danbooru.donmai.us/posts/${tags.join("").match(/\d+/g)}`
     } else {
         let img = await danbooru.search(tagArray, {limit: 1, random: true})

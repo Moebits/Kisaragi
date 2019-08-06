@@ -34,17 +34,18 @@ exports.run = async (client: any, message: Message, args: string[]) => {
     }
 
     let url;
-    if (tags.join("").match(/\d+/g)) {
+    if (tags.join("").match(/\d\d+/g)) {
         url = `https://lolibooru.net/post/show/${tags.join("").match(/\d+/g)}/`
     } else {
         let img = await lolibooru.search(tagArray, {limit: 1, random: true})
+        console.log(img)
         url = await lolibooru.postView(img[0].id)
     }
 
     let id = url.match(/\d+/g).join("");
+    
     let result = await axios.get(`https://lolibooru.moe/post/index.json?tags=id:${id}`)
     let img = result.data[0];
-    console.log(img)
     lolibooruEmbed
     .setAuthor("lolibooru", "https://i.imgur.com/vayyvC4.png")
     .setURL(url)

@@ -41,7 +41,7 @@ exports.run = async (client: any, message: Message, args: string[]) => {
         url = await konachan.postView(img[0].id)
     }
 
-    let id = url.match(/\d+/g).join("");
+    let id = url.match(/\d\d+/g).join("");
     let result = await axios.get(`https://konachan.com/post.json?tags=id:${id}`)
     let img = result.data[0];
     konachanEmbed
