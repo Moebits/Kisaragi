@@ -11,20 +11,20 @@ const redis = Redis.createClient({
   url: process.env.REDIS_URL
 });
 
+const Pool: any = require('pg').Pool;
 
-module.exports = async (client: any, message: any) => {
-
-    const Pool: any = require('pg').Pool;
-
-    client.pgPool = new Pool({
+    const pgPool = new Pool({
       user: process.env.PGUSER,
       host: process.env.PGHOST,
       database: process.env.PGDATABASE,
       password: process.env.PGPASSWORD,
       port: process.env.PGPORT,
       sslmode: process.env.PGSSLMODE,
-      max: 15
+      max: 10
     });
+
+
+module.exports = async (client: any, message: any) => {
 
     const tableList: string[] = [
         "birthdays",
@@ -48,23 +48,23 @@ module.exports = async (client: any, message: any) => {
 
     //Run Query
     client.runQuery = async (query: any, newData?: boolean) => {
-      let start: number = Date.now();
+      //let start: number = Date.now();
       let redisResult = await redis.getAsync(JSON.stringify(query));
       if (newData) redisResult = null;
       if (redisResult) {
-        client.logQuery(Object.values(query)[0], start, true);
+        //client.logQuery(Object.values(query)[0], start, true);
         return (JSON.parse(redisResult))[0]
       } else {
-        const pgClient = await client.pgPool.connect();
+        const pgClient = await pgPool.connect();
           try {
             const result = await pgClient.query(query);
-            client.logQuery(Object.values(query)[0], start);
+            //client.logQuery(Object.values(query)[0], start);
             await redis.setAsync(JSON.stringify(query), JSON.stringify(result.rows))
             return result.rows[0]
           } catch(error) {
             console.log(error.stack); 
           } finally {
-            await pgClient.release();
+            pgClient.release(true);
           }
       }
     }
@@ -203,7 +203,7 @@ module.exports = async (client: any, message: any) => {
           values: [value]
         }
         changedColumn.add(table);
-        await client.runQuery(query);
+        await client.runQuery(query, true);
     }
 
     //Insert command
@@ -213,7 +213,7 @@ module.exports = async (client: any, message: any) => {
         values: [command, aliases, path, cooldown]
       }
       changedCommand.add(command);
-      await client.runQuery(query);
+      await client.runQuery(query, true);
   }
 
     //Update a row in a table
@@ -231,7 +231,7 @@ module.exports = async (client: any, message: any) => {
           }
         }
         changedColumn.add(table);
-        await client.runQuery(query);
+        await client.runQuery(query, true);
     }
 
     //Update Command
@@ -241,7 +241,7 @@ module.exports = async (client: any, message: any) => {
         values: [aliases, cooldown, command]
       }
       changedCommand.add(command);
-      await client.runQuery(query);
+      await client.runQuery(query, true);
   }
 
     //Remove a guild from all tables

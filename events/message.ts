@@ -22,14 +22,13 @@ module.exports = async (client: any, message: any) => {
     let prefix: string = await client.fetchPrefix();
 
     /*let letterNames = [
-      "mexShrug"
+      "PadoruPadoru"
     ]
   
     client.generateEmojis(letterNames)*/
 
     if (message.guild) {
-      //await client.timeout(100000);
-      //await client.calcScore()
+      await client.calcScore()
     }
 
     const responseObject: any = {
