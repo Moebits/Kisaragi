@@ -166,7 +166,7 @@ module.exports = async (client: any, message: any) => {
             embed
             .setColor(client.randomColor())
             .setTimestamp(embed.timestamp)
-            .setFooter(`Responded in ${client.responseTime()}`, message.author.avatarURL);
+            .setFooter(`Responded in ${client.responseTime()}`, client.user.displayAvatarURL);
             return embed;
     }
 
@@ -227,10 +227,10 @@ module.exports = async (client: any, message: any) => {
 
     //Fetch Score
     client.fetchScore = async () => {
-        let rawScoreList: string[] = await client.fetchColumn("points", "score list");
-        let rawUserList: string[] = await client.fetchColumn("points", "user id list");
-        let scoreList: number[] = rawScoreList.map((num: string) => Number(num));
-        let userList: number[] = rawUserList.map((num: string) => Number(num));
+        let rawScoreList: string[][] = await client.fetchColumn("points", "score list");
+        let rawUserList: string[][] = await client.fetchColumn("points", "user id list");
+        let scoreList: number[] = rawScoreList[0].map((num: string) => Number(num));
+        let userList: number[] = rawUserList[0].map((num: string) => Number(num));
         for (let i: number = 0; i < userList.length; i++) {
             if (userList[i] === Number(message.author.id)) {
                 let userScore: number = scoreList[i];
@@ -241,10 +241,10 @@ module.exports = async (client: any, message: any) => {
 
     //Fetch Level
     client.fetchLevel = async () => {
-        let rawLevelList: string[] = await client.fetchColumn("points", "level list");
-        let rawUserList: string[] = await client.fetchColumn("points", "user id list");
-        let levelList: number[] = rawLevelList.map((num: string) => Number(num));
-        let userList: number[] = rawUserList.map((num: string) => Number(num));
+        let rawLevelList: string[][] = await client.fetchColumn("points", "level list");
+        let rawUserList: string[][] = await client.fetchColumn("points", "user id list");
+        let levelList: number[] = rawLevelList[0].map((num: string) => Number(num));
+        let userList: number[] = rawUserList[0].map((num: string) => Number(num));
         for (let i: number = 0; i < userList.length; i++) {
             if (userList[i] === Number(message.author.id)) {
                 let userLevel: number = levelList[i];
@@ -273,7 +273,7 @@ module.exports = async (client: any, message: any) => {
             await client.updateColumn("points", "level list", initList);
         }
 
-        let scoreList: number[] = rawScoreList[0].map((num: string) => Number(num));
+        let scoreList: number[] = rawScoreList[0].map((num: string) => Number(num))
         let levelList: number[] = rawLevelList[0].map((num: string) => Number(num));
         let pointRange: number[] = rawPointRange[0].map((num: string) => Number(num));
         let pointThreshold: number = Number(rawPointThreshold);
@@ -289,13 +289,9 @@ module.exports = async (client: any, message: any) => {
                     await client.updateColumn("points", "score list", scoreList);
                     await client.updateColumn("points", "score list", levelList);
                 }
-                let newPoints: number = Math.floor(client.getRandomNum(pointRange[0], pointRange[1]));
+                let newPoints: number = Math.floor(userScore + client.getRandomNum(pointRange[0], pointRange[1]));
                 let newLevel: number = Math.floor(userScore / pointThreshold);
                 let lvlStr: string = userStr.replace("newlevel", newLevel.toString());
-
-                console.log(userScore)
-                console.log(scoreList[i])
-                console.log(newPoints)
 
                 if (newLevel > userLevel) {
                     levelList[i] = newLevel;
@@ -306,7 +302,8 @@ module.exports = async (client: any, message: any) => {
                     .setDescription(lvlStr);
                     client.message.channel.send(levelEmbed);
                 }
-                scoreList[i] += newPoints;
+
+                scoreList[i] = newPoints;
                 await client.updateColumn("points", "score list", scoreList);
                 return;
             }

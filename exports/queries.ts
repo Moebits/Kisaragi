@@ -170,13 +170,7 @@ module.exports = async (client: any, message: any) => {
           rowMode: 'array'
         }
       }
-      let result;
-        if (changedColumn.has(tableList)) {
-          result = await client.runQuery(query, true);
-          changedColumn.delete(table);
-        } else {
-          result = await client.runQuery(query);
-        }
+      let result = await client.runQuery(query, true);
       return result;
     }
 

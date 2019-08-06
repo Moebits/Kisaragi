@@ -78,10 +78,10 @@ exports.run = async (client: any, message: any, args: string[]) => {
         `${client.getEmoji("star")} ${client.getEmoji("up")} **${video.likes}** ${client.getEmoji("down")} **${video.dislikes}**\n` +
         `${client.getEmoji("star")}_Date Published:_ **${client.formatDate(video.datePublished)}**\n` +
         `${client.getEmoji("star")}_Description:_ ${video.description ? client.checkChar(video.description, 1500, ".") : "None"}\n` +
-        `${client.getEmoji("star")}_Comments:_ ${commentArray.join(" ") ? client.checkChar(commentArray.join(" "), 200, ".") : "None"}\n` 
+        `${client.getEmoji("star")}_Comments:_ ${commentArray.join(" ") ? client.checkChar(commentArray.join(" "), 200, " ") : "None"}\n` 
         )
         .setThumbnail(ytChannel.profilePictures.high.url)
-        .setImage(video.thumbnails.maxres.url);
+        .setImage(video.thumbnails.maxres ? video.thumbnails.maxres.url : video.thumbnails.high.url);
         ytEmbeds.push(youtubeEmbed);
     }
 
