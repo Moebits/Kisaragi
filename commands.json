@@ -97,5 +97,6 @@
     "leave": {"name": "leave", "aliases": [], "cooldown": ""},
     "reset": {"name": "reset", "aliases": [], "cooldown": ""},
     "flush": {"name": "flush", "aliases": [], "cooldown": ""},
-    "shorten": {"name": "shorten", "aliases": [], "cooldown": ""}
+    "shorten": {"name": "shorten", "aliases": [], "cooldown": ""},
+    "instantban": {"name": "instantban", "aliases": [], "cooldown": ""}
 }

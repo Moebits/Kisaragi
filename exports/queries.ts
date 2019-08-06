@@ -23,7 +23,7 @@ module.exports = async (client: any, message: any) => {
       password: process.env.PGPASSWORD,
       port: process.env.PGPORT,
       sslmode: process.env.PGSSLMODE,
-      max: 20
+      max: 15
     });
 
     const tableList: string[] = [
@@ -47,27 +47,10 @@ module.exports = async (client: any, message: any) => {
     ];
 
     //Run Query
-    client.runQuery = async (query: any, column?: boolean, command?: boolean, prefix?: boolean) => {
+    client.runQuery = async (query: any, newData?: boolean) => {
       let start: number = Date.now();
       let redisResult = await redis.getAsync(JSON.stringify(query));
-      if (prefix) {
-        if (changedPrefix.has(message.guild.id)) {
-          redisResult = null;
-          changedPrefix.delete(message.guild.id);
-        }
-      }
-      if (command) {
-        if (changedCommand.size > 0) {
-          redisResult = null;
-          changedCommand.clear();
-        }
-      }
-      if (column) {
-        if (changedColumn.has(message.guild.id)) {
-          redisResult = null;
-          changedColumn.delete(message.guild.id);
-        }
-      }
+      if (newData) redisResult = null;
       if (redisResult) {
         client.logQuery(Object.values(query)[0], start, true);
         return (JSON.parse(redisResult))[0]
@@ -114,7 +97,13 @@ module.exports = async (client: any, message: any) => {
           text: `SELECT * FROM "${table}" WHERE "guild id" = ${message.guild.id}`,
           rowMode:'array'
         }
-        const result: any = await client.runQuery(query, true);
+        let result;
+        if (changedColumn.has(table)) {
+          result = await client.runQuery(query, true);
+          changedColumn.delete(table);
+        } else {
+          result = await client.runQuery(query);
+        }
         return result;
     }
 
@@ -125,7 +114,13 @@ module.exports = async (client: any, message: any) => {
           values: [command],
           rowMode: 'array'
         };
-        const result: any = await client.runQuery(query, false, true);
+        let result;
+        if (changedCommand.has(command)) {
+          result = await client.runQuery(query, true);
+          changedCommand.delete(command);
+        } else {
+          result = await client.runQuery(query);
+        }
         return result;
     }
 
@@ -135,7 +130,12 @@ module.exports = async (client: any, message: any) => {
           text: `SELECT aliases FROM commands`,
           rowMode: 'array'
         }
-        const result: any = await client.runQuery(query, false, true);
+        let result;
+        if (changedCommand.size > 0) {
+          result = await client.runQuery(query, true);
+        } else {
+          result = await client.runQuery(query);
+        }
         return result;
     }
 
@@ -145,7 +145,13 @@ module.exports = async (client: any, message: any) => {
           text: `SELECT prefix FROM prefixes WHERE "guild id" = ${message.guild.id}`,
           rowMode: 'array'
         }
-        const result: any = await client.runQuery(query, false, false, true);
+        let result;
+        if (changedPrefix.has(message.guild.id)) {
+          result = await client.runQuery(query, true);
+          changedPrefix.delete(message.guild.id);
+        } else {
+          result = await client.runQuery(query);
+        }
         if(!result.join("")) return "=>";
         return result[0];
     }
@@ -164,7 +170,13 @@ module.exports = async (client: any, message: any) => {
           rowMode: 'array'
         }
       }
-      const result: any = await client.runQuery(query, true);
+      let result;
+        if (changedColumn.has(tableList)) {
+          result = await client.runQuery(query, true);
+          changedColumn.delete(table);
+        } else {
+          result = await client.runQuery(query);
+        }
       return result;
     }
 
@@ -174,7 +186,13 @@ module.exports = async (client: any, message: any) => {
         text: `SELECT "${column}" FROM "${table}"`,
         rowMode: 'array'
       }
-      const result: any = await client.runQuery(query, true);
+      let result;
+        if (changedColumn.has(table)) {
+          result = await client.runQuery(query, true);
+          changedColumn.delete(table);
+        } else {
+          result = await client.runQuery(query);
+        }
       return result;
     }
 
@@ -184,8 +202,8 @@ module.exports = async (client: any, message: any) => {
           text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
           values: [value]
         }
-        changedColumn.add(message.guild.id);
-        await client.runQuery(query, true);
+        changedColumn.add(table);
+        await client.runQuery(query);
     }
 
     //Insert command
@@ -194,8 +212,8 @@ module.exports = async (client: any, message: any) => {
         text: `INSERT INTO commands (command, aliases, path, cooldown) VALUES ($1, $2, $3, $4)`,
         values: [command, aliases, path, cooldown]
       }
-      changedCommand.add("updated");
-      await client.runQuery(query, false, true);
+      changedCommand.add(command);
+      await client.runQuery(query);
   }
 
     //Update a row in a table
@@ -212,8 +230,8 @@ module.exports = async (client: any, message: any) => {
             values: [value]
           }
         }
-        changedColumn.add(message.guild.id);
-        await client.runQuery(query, true);
+        changedColumn.add(table);
+        await client.runQuery(query);
     }
 
     //Update Command
@@ -222,8 +240,8 @@ module.exports = async (client: any, message: any) => {
         text: `UPDATE commands SET aliases = $1, cooldown = $2 WHERE "command" = $3`,
         values: [aliases, cooldown, command]
       }
-      changedCommand.add("updated");
-      await client.runQuery(query, false, true);
+      changedCommand.add(command);
+      await client.runQuery(query);
   }
 
     //Remove a guild from all tables
@@ -233,7 +251,6 @@ module.exports = async (client: any, message: any) => {
               text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
               values: [guild]
             }
-            changedColumn.add(message.guild.id);
             await client.runQuery(query, true);
         }
     }
@@ -245,7 +262,6 @@ module.exports = async (client: any, message: any) => {
               text: `SELECT members FROM "${tableList[table]}" ORDER BY 
               CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members DESC`
             }
-            changedColumn.add(message.guild.id);
             await client.runQuery(query, true);
         }
     }
@@ -257,7 +273,6 @@ module.exports = async (client: any, message: any) => {
           text: `SELECT "guild id" FROM guilds`,
           rowMode: 'array'
         }
-        changedColumn.add(message.guild.id);
         const result = await client.runQuery(query, true);
         const found = result.find((id: any) => id[0] === message.guild.id.toString());
         if (!found) {

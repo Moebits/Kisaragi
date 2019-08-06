@@ -122,7 +122,8 @@ module.exports = (client: any, message: any) => {
         "disabled commands": null,
         "pfp ban toggle": "off",
         "leaver ban toggle": "off",
-        "ascii name toggle": "off"
+        "ascii name toggle": "off",
+        "default channel": null
     }
 
     //Initialize a table

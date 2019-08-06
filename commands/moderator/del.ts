@@ -9,29 +9,31 @@ exports.run = async (client: any, message: any, args: string[]) => {
             delEmbed
             .setDescription("Correct usage is =>del (number).");
             message.channel.send(delEmbed);
+            return;
         }
 
         if (num < 2 || num > 1002) {
             delEmbed
             .setDescription("You must type a number between 0 and 1000!");
             message.channel.send(delEmbed);
+            return;
         }
 
-        if (num <= 100) {
-            await message.channel.bulkDelete(num, true)
-        } else {
-            let iterations = Math.floor(num / 100);
-            for (let i = 0; i <= iterations; i++) {
-                await message.channel.bulkDelete(100, true)
+            if (num <= 100) {
+                await message.channel.bulkDelete(num, true)
+            } else {
+                let iterations = Math.floor(num / 100);
+                for (let i = 0; i <= iterations; i++) {
+                    await message.channel.bulkDelete(100, true);
+                }
+                await message.channel.bulkDelete((num % 100), true);
             }
-            await message.channel.bulkDelete((num % 100), true)
-        }
 
-        delEmbed
-        .setDescription(`Deleted ${args[1]} messages in this channel!`);
-        message.channel.send(delEmbed)
-        .then((msg: any) => msg.delete(5000))
-        return;
+            delEmbed
+            .setDescription(`Deleted ${args[1]} messages in this channel!`);
+            let msg = await message.channel.send(delEmbed)
+            msg.delete(5000);
+            return;
 
     } else {
         delEmbed

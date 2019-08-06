@@ -22,18 +22,14 @@ module.exports = async (client: any, message: any) => {
     let prefix: string = await client.fetchPrefix();
 
     /*let letterNames = [
-      "kannaHungry", "kannaXD", "vignexd", "kobaDisgust", "KarenAnger", "sagiriBleh",
-      "kannaAngry", "KannaFacepalm", "EmiSMH", "think", "HanaDesires", "GabuChrist",
-      "GabSip", "KarenSugoi"
+      "mexShrug"
     ]
   
     client.generateEmojis(letterNames)*/
 
     if (message.guild) {
-      setTimeout(() => {
-        client.calcScore()
-        .catch((error: any) => console.log(error));
-      }, 100000);
+      //await client.timeout(100000);
+      //await client.calcScore()
     }
 
     const responseObject: any = {
@@ -103,7 +99,9 @@ module.exports = async (client: any, message: any) => {
     }
     
     let msg = await message.channel.send(`**Loading** ${client.getEmoji("gabCircle")}`);
-    await cmdPath.run(client, message, args).then(() => msg.delete(1000))
+    await cmdPath.run(client, message, args).then(() => {
+    let msgCheck = message.channel.messages;
+    if(msgCheck.has(msg.id)) msg.delete(1000)})
     .catch((err: any) => message.channel.send(client.cmdError(err)));
     
 }

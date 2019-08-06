@@ -23,7 +23,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     .attachFiles([attachment])
     .setImage(`attachment://${attachment.file.name ? attachment.file.name : "animated.gif"}`)
     .setDescription(
-        "Welcome to the Leave Messages prompt!\n" +
+        "View and edit the settings for leave messages!\n" +
         "\n" +
         "__Text Replacements:__\n" +
         "**user** = member mention\n" +
@@ -62,7 +62,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let newImg = msg.content.match(/(https?:\/\/[^\s]+)/g);
         let newBGText = msg.content.match(/\[(.*)\]/g);
         let newBGColor = (msg.content.match(/rainbow/g) || msg.content.match(/(\s|^)#[0-9a-f]{3,6}/ig));
-        if (msg.content === "cancel") {
+        if (msg.content.toLowerCase() === "cancel") {
             responseEmbed
             .setDescription(`${client.getEmoji("star")}Canceled the prompt!`)
             msg.channel.send(responseEmbed);
@@ -104,7 +104,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             let channel = msg.guild.channels.find((c: any) => c === msg.mentions.channels.first());
             await client.updateColumn("welcome leaves", "leave channel", channel.id);
             setOn = true;
-            description += `${client.getEmoji("star")}leave channel set to <#${channel.id}>!\n`;
+            description += `${client.getEmoji("star")}Leave channel set to <#${channel.id}>!\n`;
         }
         if (setOn) {
             await client.updateColumn("welcome leaves", "leave toggle", "on");
@@ -120,7 +120,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
         if (setBGText) {
             await client.updateColumn("welcome leaves", "leave bg text", newBGText[0].replace(/\[/g, "").replace(/\]/g, ""));
-            description += `${client.getEmoji("star")}Background text set to **${newBGText[0].replace(/\[/g, "").replace(/\]/g, "")}**!\n`;
+            description += `${client.getEmoji("star")}Background text set to **${newBGText[0].replace(/\[/g, "").replace(/\]/g, "")}**\n`;
         }
         if (setBGColor) {
             await client.updateColumn("welcome leaves", "leave bg color", newBGColor[0]);

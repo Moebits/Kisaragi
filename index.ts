@@ -19,7 +19,7 @@ const start = async () => {
     const logger = require("./exports/logger.js");
     require('./exports/queries.js')(client, null);
     require('./exports/functions.js')(client, null);
-
+    
     let cmdFiles: any = [];
     const subDirectory = await readdir("./commands/");
 

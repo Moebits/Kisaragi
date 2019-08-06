@@ -15,7 +15,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         try {
             await message.guild.ban(user, reason);
             banEmbed
-            .setAuthor("ban", "https://discordemoji.com/assets/emoji/9163_Chika_Ban_Fan.png")
+            .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
             .setTitle(`**Member Banned** ${client.getEmoji("kannaFU")}`)
             .setDescription(`${client.getEmoji("star")}_Successfully banned ${user} for reason:_ **${reason}**`);
             message.channel.send(banEmbed);

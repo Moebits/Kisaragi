@@ -22,7 +22,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     .attachFiles([attachment])
     .setImage(`attachment://${attachment.file.name ? attachment.file.name : "animated.gif"}`)
     .setDescription(
-        "Welcome to the welcome messages prompt!\n" +
+        "View and edit the settings for welcome messages!\n" +
         "\n" +
         "__Text Replacements:__\n" +
         "**user** = member mention\n" +
@@ -61,7 +61,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let newImg = msg.content.match(/(https?:\/\/[^\s]+)/g);
         let newBGText = msg.content.match(/\[(.*)\]/g);
         let newBGColor = (msg.content.match(/rainbow/g) || msg.content.match(/(\s|^)#[0-9a-f]{3,6}/ig));
-        if (msg.content === "cancel") {
+        if (msg.content.toLowerCase() === "cancel") {
             responseEmbed
             .setDescription(`${client.getEmoji("star")}Canceled the prompt!`)
             msg.channel.send(responseEmbed);
@@ -119,7 +119,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
         if (setBGText) {
             await client.updateColumn("welcome leaves", "welcome bg text", newBGText[0].replace(/\[/g, "").replace(/\]/g, ""));
-            description += `${client.getEmoji("star")}Background text set to **${newBGText[0].replace(/\[/g, "").replace(/\]/g, "")}**!\n`;
+            description += `${client.getEmoji("star")}Background text set to **${newBGText[0].replace(/\[/g, "").replace(/\]/g, "")}**\n`;
         }
         if (setBGColor) {
             await client.updateColumn("welcome leaves", "welcome bg color", newBGColor[0].trim());
