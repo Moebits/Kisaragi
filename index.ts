@@ -1,4 +1,3 @@
-require('dotenv').config();
 const token = process.env.TOKEN;
 const {promisify} = require("util");
 const readdir = promisify(require("fs").readdir);
