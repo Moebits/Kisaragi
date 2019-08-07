@@ -47,12 +47,13 @@ module.exports = async (client: any, message: any) => {
     ];
 
     //Run Query
-    client.runQuery = async (query: any, newData?: boolean) => {
+    client.runQuery = async (query: any, newData?: boolean, raw?: boolean) => {
       //let start: number = Date.now();
       let redisResult = await redis.getAsync(JSON.stringify(query));
       if (newData) redisResult = null;
       if (redisResult) {
         //client.logQuery(Object.values(query)[0], start, true);
+        if (raw) return JSON.parse(redisResult);
         return (JSON.parse(redisResult))[0]
       } else {
         const pgClient = await pgPool.connect();
@@ -60,6 +61,7 @@ module.exports = async (client: any, message: any) => {
             const result = await pgClient.query(query);
             //client.logQuery(Object.values(query)[0], start);
             await redis.setAsync(JSON.stringify(query), JSON.stringify(result.rows))
+            if (raw) return result.rows;
             return result.rows[0]
           } catch(error) {
             console.log(error.stack); 
@@ -185,7 +187,7 @@ module.exports = async (client: any, message: any) => {
           result = await client.runQuery(query, true);
           changedColumn.delete(table);
         } else {
-          result = await client.runQuery(query);
+          result = await client.runQuery(query, true, true);
         }
       return result;
     }

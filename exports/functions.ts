@@ -226,13 +226,13 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Fetch Score
-    client.fetchScore = async () => {
+    client.fetchScore = async (msg: any) => {
         let rawScoreList: string[][] = await client.fetchColumn("points", "score list");
         let rawUserList: string[][] = await client.fetchColumn("points", "user id list");
         let scoreList: number[] = rawScoreList[0].map((num: string) => Number(num));
         let userList: number[] = rawUserList[0].map((num: string) => Number(num));
         for (let i: number = 0; i < userList.length; i++) {
-            if (userList[i] === Number(message.author.id)) {
+            if (userList[i] === Number(msg.author.id)) {
                 let userScore: number = scoreList[i];
                 return userScore; 
             }
@@ -240,13 +240,13 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Fetch Level
-    client.fetchLevel = async () => {
+    client.fetchLevel = async (msg: any) => {
         let rawLevelList: string[][] = await client.fetchColumn("points", "level list");
         let rawUserList: string[][] = await client.fetchColumn("points", "user id list");
         let levelList: number[] = rawLevelList[0].map((num: string) => Number(num));
         let userList: number[] = rawUserList[0].map((num: string) => Number(num));
         for (let i: number = 0; i < userList.length; i++) {
-            if (userList[i] === Number(message.author.id)) {
+            if (userList[i] === Number(msg.author.id)) {
                 let userLevel: number = levelList[i];
                 return userLevel; 
             }
@@ -254,7 +254,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Calculate Score
-    client.calcScore = async () => {
+    client.calcScore = async (msg: any) => {
         if (message.author.bot) return;
         let rawScoreList: string[][] = await client.fetchColumn("points", "score list");
         let rawLevelList: string[][] = await client.fetchColumn("points", "level list");
@@ -264,13 +264,14 @@ module.exports = async (client: any, message: any) => {
         let levelUpMessage: string[] = await client.fetchColumn("points", "level message");
         let userList: number[] = rawUserList[0].map((num: string) => Number(num));
 
-        if (rawScoreList.length <= 1) {
+        if (!rawScoreList[0]) {
             let initList: number[] = [];
             for (let i = 0; i < userList.length; i++) {
                 initList[i] = 0;
             }
             await client.updateColumn("points", "score list", initList);
             await client.updateColumn("points", "level list", initList);
+            return;
         }
 
         let scoreList: number[] = rawScoreList[0].map((num: string) => Number(num))
@@ -280,7 +281,7 @@ module.exports = async (client: any, message: any) => {
         let userStr: string = levelUpMessage.join("").replace("user", `<@${message.author.id}>`)
 
         for (let i: number = 0; i < userList.length; i++) {
-            if (userList[i] === Number(message.author.id)) {
+            if (userList[i] === Number(msg.author.id)) {
                 let userScore: number = scoreList[i];
                 let userLevel: number = levelList[i];
                 if (userScore === undefined || userScore === null) {
@@ -288,6 +289,7 @@ module.exports = async (client: any, message: any) => {
                     levelList[i] = 0;
                     await client.updateColumn("points", "score list", scoreList);
                     await client.updateColumn("points", "score list", levelList);
+                    return;
                 }
                 let newPoints: number = Math.floor(userScore + client.getRandomNum(pointRange[0], pointRange[1]));
                 let newLevel: number = Math.floor(userScore / pointThreshold);
@@ -300,7 +302,7 @@ module.exports = async (client: any, message: any) => {
                     levelEmbed
                     .setTitle(`**Level Up!** ${client.getEmoji("vigneXD")}`)
                     .setDescription(lvlStr);
-                    client.message.channel.send(levelEmbed);
+                    msg.channel.send(levelEmbed);
                 }
 
                 scoreList[i] = newPoints;

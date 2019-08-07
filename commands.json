@@ -99,5 +99,8 @@
     "flush": {"name": "flush", "aliases": [], "cooldown": ""},
     "shorten": {"name": "shorten", "aliases": [], "cooldown": ""},
     "instantban": {"name": "instantban", "aliases": [], "cooldown": ""},
-    "mention": {"name": "mention", "aliases": [], "cooldown": ""}
+    "mention": {"name": "mention", "aliases": [], "cooldown": ""},
+    "deleteguild": {"name": "deleteguild", "aliases": [], "cooldown": ""},
+    "level": {"name": "level", "aliases": [], "cooldown": ""},
+    "chain": {"name": "chain", "aliases": [], "cooldown": ""}
 }

@@ -89,6 +89,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
         if (newImg) setImage = true;
         if (newBGText) setBGText = true;
 
+        if (setOn && setOff) {
+            responseEmbed
+                .setDescription(`${client.getEmoji("star")}You cannot disable/enable at the same time.`)
+                msg.channel.send(responseEmbed);
+                return;
+        }
+
         if (!setChannel && setOn) {
                 responseEmbed
                 .setDescription(`${client.getEmoji("star")}In order to enable leave messages, you must specify a leave channel!`)

@@ -28,7 +28,18 @@ module.exports = async (client: any, message: any) => {
     client.generateEmojis(letterNames)*/
 
     if (message.guild) {
-      await client.calcScore()
+      /*let blockedWords = await client.fetchColumn("blocks", "blocked words");
+      if (blockedWords[0]) {
+        if (blockedWords[0].some(word => message.content.includes(word))) {
+          let badMsg = message.reply("Your message contains a blocked word!");
+          message.delete();
+          badMsg.delete(3000);
+        }
+      }*/
+      let pointTimeout = await client.fetchColumn("points", "point timeout");
+      setTimeout(() => {
+        client.calcScore(message)
+      }, pointTimeout[0]);
     }
 
     const responseObject: any = {

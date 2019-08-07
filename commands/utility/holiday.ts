@@ -32,7 +32,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let url = `https://www.daysoftheyear.com/days/${matchArray[0]}`;
     let holidayData = await axios.get(url);
     let rawDescription = holidayData.data.match(pg2Regex)[0];
-    let description = rawDescription.replace(/&hellip;/g, "...").replace(/&#8217;/g, "'").trim();
+    let description = rawDescription.replace(/&hellip;/g, "...").replace(/&#8217;/g, "'").replace(/&#8211;/g, "-").trim();
     let image = holidayData.data.match(imageRegex)[0].replace(/"/g, "");
 
     let holidayEmbed = client.createEmbed();

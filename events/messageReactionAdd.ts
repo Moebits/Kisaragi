@@ -5,12 +5,10 @@ module.exports = async (client: any, reaction: any, user: any) => {
     await require("../exports/collectors.js")(client, reaction.message);
     if (reaction.message.author.id === client.user.id) {
         if (active.has(reaction.message.id)) return;
-        let ignored = await client.selectColumn("ignore", "message");
-        let newArray = ignored;
-        console.log(ignored)
+        let newArray = await client.selectColumn("ignore", "message");
         let cached = false;
         for (let i in newArray) {
-            if (newArray[i] === reaction.message.id.toString()) {
+            if (newArray[i][0] === reaction.message.id.toString()) {
                 cached = true;
             }
         }

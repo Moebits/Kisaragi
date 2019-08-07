@@ -78,7 +78,9 @@ module.exports = (client: any, message: any) => {
         "level list": null,
         "point range": [10, 20],
         "point threshold": 1000,
-        "level message": "Congrats user, you are now level newlevel!"
+        "level message": "Congrats user, you are now level newlevel!",
+        "point timeout": 60000,
+        "point toggle": "off"
     }
 
     const welcomeLeaveSettings: object = {
