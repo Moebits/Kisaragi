@@ -15,6 +15,15 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let svgCaptcha = require('svg-captcha');
     const {convert} = require('convert-svg-to-png');
     const {Attachment} = require("discord.js");
+    const puppeteer = require("puppeteer");
+    await puppeteer.launch({
+        headless: true,
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbo",
+          "--disable-dev-shm-usage"
+        ],
+      });
 
     async function createCaptcha() {
         let captcha;
