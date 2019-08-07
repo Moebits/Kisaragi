@@ -5,7 +5,7 @@ const readdir = promisify(require("fs").readdir);
 const Discord = require("discord.js");
 const client = new Discord.Client({
     apiRequestMethod: "sequential",
-    disableEveryone: false,
+    disableEveryone: true,
     restTimeOffset: 0,
     disabledEvents: ["TYPING_START", "TYPING_STOP"]
 });

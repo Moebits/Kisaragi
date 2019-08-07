@@ -7,7 +7,11 @@ module.exports = async (client: any, member: any) => {
         defaultChannel = allChannels.find((c) => c.id.toString() === defChannel.join(""));
     }
 
-    let defMessage = await defaultChannel.fetchMessages({limit: 1});
+    let defMessage;
+    if (defaultChannel) {
+        defMessage = await defaultChannel.fetchMessages({limit: 1});
+    }
+
 
     await require("../exports/images.js")(client, defMessage ? defMessage.first() : null);
 

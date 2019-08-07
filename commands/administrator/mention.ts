@@ -11,7 +11,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             return;
         }
         await role.setMentionable(true, `Requested by ${message.author.tag}`);
-        message.channel.send(`<@&${role.id}>`);
+        await message.channel.send(`<@&${role.id}>`);
         await role.setMentionable(false);
 
     } else {
