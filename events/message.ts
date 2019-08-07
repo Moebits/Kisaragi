@@ -37,7 +37,6 @@ module.exports = async (client: any, message: any) => {
         }
       }*/
       let pointTimeout = await client.fetchColumn("points", "point timeout");
-      console.log(pointTimeout)
       setTimeout(() => {
         client.calcScore(message)
       }, pointTimeout[0] ? pointTimeout[0] : 60000);

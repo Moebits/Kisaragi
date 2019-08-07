@@ -13,17 +13,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let type = cType.join("");
 
     let svgCaptcha = require('svg-captcha');
-    const {convert} = require('convert-svg-to-png');
     const {Attachment} = require("discord.js");
-    const puppeteer = require("puppeteer");
-    await puppeteer.launch({
-        headless: true,
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbo",
-          "--disable-dev-shm-usage"
-        ],
-      });
+    const svg2img = require("svg2img");
+    const fs = require("fs");
 
     async function createCaptcha() {
         let captcha;
@@ -43,9 +35,12 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 mathOperator: "+-"
             });
         }
-        let img = await convert(captcha.data);
 
-        let attachment = new Attachment(img, "captcha.png");
+        await svg2img(captcha.data, function(error, buffer) {
+            fs.writeFileSync("../assets/images/captcha.png", buffer);
+        });
+
+        let attachment = new Attachment("../assets/images/captcha.png");
 
         let captchaEmbed = client.createEmbed();
         captchaEmbed
