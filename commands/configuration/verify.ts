@@ -35,7 +35,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 mathOperator: "+-"
             });
         }
-
+        
         await svg2img(captcha.data, function(error, buffer) {
             fs.writeFileSync("../assets/images/captcha.png", buffer);
         });
@@ -64,7 +64,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     
     function sendCaptcha(captcha, text) {
         message.channel.send(captcha).then(() => {
-            message.channel.awaitMessages(filter, {maxMatches: 1, time: 100000, errors: ['time']})
+            message.channel.awaitMessages(filter, {maxMatches: 1, time: 30000, errors: ['time']})
                 .then(async collected => {
                     let msg = collected.first();
                     let responseEmbed = client.createEmbed();
