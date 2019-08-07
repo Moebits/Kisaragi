@@ -1,6 +1,6 @@
-let changedCommand = new Set();
-let changedPrefix = new Set();
-let changedColumn = new Set();
+let changedCommand: any = [];
+let changedPrefix: any = [];
+let changedColumn: any = [];
 
 
 const Redis = require("redis");
@@ -43,23 +43,24 @@ module.exports = async (client: any, message: any) => {
         "timezones",
         "users",
         "warns",
-        "welcome leaves"
+        "welcome leaves",
+        "captcha"
     ];
 
     //Run Query
     client.runQuery = async (query: any, newData?: boolean, raw?: boolean) => {
-      //let start: number = Date.now();
+      let start: number = Date.now();
       let redisResult = await redis.getAsync(JSON.stringify(query));
       if (newData) redisResult = null;
       if (redisResult) {
-        //client.logQuery(Object.values(query)[0], start, true);
+        client.logQuery(Object.values(query)[0], start, true);
         if (raw) return JSON.parse(redisResult);
         return (JSON.parse(redisResult))[0]
       } else {
         const pgClient = await pgPool.connect();
           try {
             const result = await pgClient.query(query);
-            //client.logQuery(Object.values(query)[0], start);
+            client.logQuery(Object.values(query)[0], start);
             await redis.setAsync(JSON.stringify(query), JSON.stringify(result.rows))
             if (raw) return result.rows;
             return result.rows[0]
@@ -73,6 +74,7 @@ module.exports = async (client: any, message: any) => {
 
     //Log Query
     client.logQuery = (text: string, start: number, blue?: boolean) => {
+      const duration: number = Date.now() - start;
       let color: string = "";
       if (blue) {
         color = "cyanBright";
@@ -82,7 +84,7 @@ module.exports = async (client: any, message: any) => {
       let chalk: any = require("chalk");
       let moment: any = require("moment");
       const timestamp: string = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
-      const duration: number = Date.now() - start;
+      
       let queryString: string = `${timestamp} Executed query ${text} in ${duration} ms`;
       console.log(chalk`{${color} ${queryString}}`);
     }
@@ -100,9 +102,9 @@ module.exports = async (client: any, message: any) => {
           rowMode:'array'
         }
         let result;
-        if (changedColumn.has(table)) {
+        if (changedColumn.includes(table)) {
           result = await client.runQuery(query, true);
-          changedColumn.delete(table);
+          client.arrayRemove(changedColumn, table);
         } else {
           result = await client.runQuery(query);
         }
@@ -117,9 +119,9 @@ module.exports = async (client: any, message: any) => {
           rowMode: 'array'
         };
         let result;
-        if (changedCommand.has(command)) {
+        if (changedCommand.includes(command)) {
           result = await client.runQuery(query, true);
-          changedCommand.delete(command);
+          client.arrayRemove(changedCommand, command);
         } else {
           result = await client.runQuery(query);
         }
@@ -133,7 +135,7 @@ module.exports = async (client: any, message: any) => {
           rowMode: 'array'
         }
         let result;
-        if (changedCommand.size > 0) {
+        if (changedCommand.length > 0) {
           result = await client.runQuery(query, true);
         } else {
           result = await client.runQuery(query);
@@ -148,9 +150,9 @@ module.exports = async (client: any, message: any) => {
           rowMode: 'array'
         }
         let result;
-        if (changedPrefix.has(message.guild.id)) {
+        if (changedPrefix.includes(message.guild.id)) {
           result = await client.runQuery(query, true);
-          changedPrefix.delete(message.guild.id);
+          client.arrayRemove(changedPrefix, message.guild.id);
         } else {
           result = await client.runQuery(query);
         }
@@ -172,7 +174,13 @@ module.exports = async (client: any, message: any) => {
           rowMode: 'array'
         }
       }
-      let result = await client.runQuery(query, true);
+      let result;
+        if (changedColumn.includes(table)) {
+          result = await client.runQuery(query, true);
+          client.arrayRemove(changedColumn, table);
+        } else {
+          result = await client.runQuery(query);
+        }
       return result;
     }
 
@@ -183,11 +191,11 @@ module.exports = async (client: any, message: any) => {
         rowMode: 'array'
       }
       let result;
-        if (changedColumn.has(table)) {
+        if (changedColumn.includes(table)) {
           result = await client.runQuery(query, true);
-          changedColumn.delete(table);
+          client.arrayRemove(changedColumn, table);
         } else {
-          result = await client.runQuery(query, true, true);
+          result = await client.runQuery(query);
         }
       return result;
     }
@@ -198,7 +206,7 @@ module.exports = async (client: any, message: any) => {
           text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
           values: [value]
         }
-        changedColumn.add(table);
+        changedColumn.push(table);
         await client.runQuery(query, true);
     }
 
@@ -208,9 +216,19 @@ module.exports = async (client: any, message: any) => {
         text: `INSERT INTO commands (command, aliases, path, cooldown) VALUES ($1, $2, $3, $4)`,
         values: [command, aliases, path, cooldown]
       }
-      changedCommand.add(command);
+      changedCommand.push(command);
       await client.runQuery(query, true);
   }
+
+  //Update Prefix
+  client.updatePrefix = async (prefix: string) => {
+    let query = {
+        text: `UPDATE "prefixes" SET "prefix" = $1 WHERE "guild id" = ${message.guild.id}`,
+        values: [prefix]
+      }
+    changedPrefix.push(message.guild.id);
+    await client.runQuery(query, true);
+}
 
     //Update a row in a table
     client.updateColumn = async (table: string, column: string, value: any, key?: string, keyVal?: string) => {
@@ -226,7 +244,7 @@ module.exports = async (client: any, message: any) => {
             values: [value]
           }
         }
-        changedColumn.add(table);
+        changedColumn.push(table);
         await client.runQuery(query, true);
     }
 
@@ -236,7 +254,7 @@ module.exports = async (client: any, message: any) => {
         text: `UPDATE commands SET aliases = $1, cooldown = $2 WHERE "command" = $3`,
         values: [aliases, cooldown, command]
       }
-      changedCommand.add(command);
+      changedCommand.push(command);
       await client.runQuery(query, true);
   }
 

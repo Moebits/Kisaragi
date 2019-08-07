@@ -155,6 +155,16 @@ module.exports = async (client: any, message: any) => {
         }
     }
 
+    //Remove from Array
+    client.arrayRemove = (arr: any, val: any) => {
+        for (let i = 0; i < arr.length; i++) { 
+            if (arr[i] === val) {
+              arr.splice(i, 1); 
+              i--;
+            }
+         }
+    }
+
     //Random Color
     client.randomColor = () => {
         return parseInt(colors[Math.floor(Math.random() * colors.length)]);

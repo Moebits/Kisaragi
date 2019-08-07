@@ -102,5 +102,8 @@
     "mention": {"name": "mention", "aliases": [], "cooldown": ""},
     "deleteguild": {"name": "deleteguild", "aliases": [], "cooldown": ""},
     "level": {"name": "level", "aliases": [], "cooldown": ""},
-    "chain": {"name": "chain", "aliases": [], "cooldown": ""}
+    "chain": {"name": "chain", "aliases": [], "cooldown": ""},
+    "test": {"name": "test", "aliases": [], "cooldown": ""},
+    "captcha": {"name": "captcha", "aliases": [], "cooldown": ""},
+    "verify": {"name": "verify", "aliases": [], "cooldown": ""}
 }

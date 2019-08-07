@@ -22,7 +22,7 @@ module.exports = async (client: any, message: any) => {
     let prefix: string = await client.fetchPrefix();
 
     /*let letterNames = [
-      "PadoruPadoru"
+      "pinkCheck"
     ]
   
     client.generateEmojis(letterNames)*/
@@ -48,7 +48,8 @@ module.exports = async (client: any, message: any) => {
       "f": "F",
       "owo": "owo",
       "uwu": "uwu",
-      "e": "E"
+      "e": "E",
+      "rip": `${client.getEmoji("rip")}`
     }
 
     if (responseObject[message.content.toLowerCase()]) {

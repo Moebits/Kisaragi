@@ -69,8 +69,7 @@ module.exports = (client: any, message: any) => {
 
     const specialRoleSettings: object = {
         "mute role": null,
-        "restricted role": null,
-        "verified role": null
+        "restricted role": null
     }
 
     const pointSettings: object = {
@@ -128,6 +127,12 @@ module.exports = (client: any, message: any) => {
         "default channel": null
     }
 
+    const captchaSettings: object = {
+        "verify toggle": "off",
+        "verify role": null,
+        "captcha type": "text"
+    }
+
     //Initialize a table
     client.initTable = async (table: string, object: object) => {       
         const entries = Object.entries(object);
@@ -157,7 +162,8 @@ module.exports = (client: any, message: any) => {
         "birthdays": birthdaySettings,
         "images": imageSettings,
         "warns": warnSettings,
-        "blocks": blockSettings
+        "blocks": blockSettings,
+        "captcha": captchaSettings
     }
 
     //Initialize all tables
