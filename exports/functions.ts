@@ -6,6 +6,14 @@ module.exports = async (client: any, message: any) => {
     let letters: any = require("../../letters.json");
     const child_process = require('child_process');
 
+    //Run Command 
+    client.runCommand = async (msg: any, args: string[]) => {
+        args = args.filter(Boolean);
+        let path = await client.fetchCommand(args[0], "path");
+        let cp = require(`${path[0]}`);
+        await cp.run(client, msg, args).catch((err) => msg.channel.send(client.cmdError(err)));
+    }
+    
     //Timeout
     client.timeout = (ms: number) => {
         return new Promise(resolve => setTimeout(resolve, ms));
