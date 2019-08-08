@@ -44,7 +44,8 @@ module.exports = async (client: any, message: any) => {
         "users",
         "warns",
         "welcome leaves",
-        "captcha"
+        "captcha",
+        "auto"
     ];
 
     //Run Query

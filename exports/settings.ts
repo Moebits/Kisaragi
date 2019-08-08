@@ -135,6 +135,12 @@ module.exports = (client: any, message: any) => {
         "difficulty": "medium"
     }
 
+    const autoSettings: object = {
+        "command": null,
+        "channel": null,
+        "frequency": null
+    }
+
     //Initialize a table
     client.initTable = async (table: string, object: object) => {       
         const entries = Object.entries(object);
@@ -165,7 +171,8 @@ module.exports = (client: any, message: any) => {
         "images": imageSettings,
         "warns": warnSettings,
         "blocks": blockSettings,
-        "captcha": captchaSettings
+        "captcha": captchaSettings,
+        "auto": autoSettings
     }
 
     //Initialize all tables

@@ -105,5 +105,6 @@
     "chain": {"name": "chain", "aliases": [], "cooldown": ""},
     "test": {"name": "test", "aliases": [], "cooldown": ""},
     "captcha": {"name": "captcha", "aliases": [], "cooldown": ""},
-    "screenshot": {"name": "screenshot", "aliases": [], "cooldown": ""}
+    "screenshot": {"name": "screenshot", "aliases": [], "cooldown": ""},
+    "auto": {"name": "auto", "aliases": [], "cooldown": ""}
 }
