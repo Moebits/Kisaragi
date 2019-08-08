@@ -32,7 +32,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
             captcha = svgCaptcha.createMathExpr({
                 mathMin: 1,
                 mathMax: 100,
-                mathOperator: "+-"
+                mathOperator: "+-",
+                color: true,
+                background: "#ffffff"
             });
         }
         
