@@ -3,6 +3,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
     if (vToggle.join("") === "off") return;
     let vRole = await client.fetchColumn("captcha", "verify role");
     let cType = await client.fetchColumn("captcha", "captcha type");
+    let color = await client.fetchColumn("captcha", "captcha color");
+    let difficulty = await client.fetchColumn("captcha", "difficulty");
 
     let role = message.guild.roles.find((r: any) => r.id === vRole.join(""));
     if (!role) {
@@ -12,53 +14,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     }
     let type = cType.join("");
 
-    let svgCaptcha = require('svg-captcha');
-    const {Attachment} = require("discord.js");
-    const svg2img = require("svg2img");
-    const fs = require("fs");
-
-    async function createCaptcha() {
-        let captcha;
-        if (type === "text") {
-            captcha = svgCaptcha.create({
-                size: 4,
-                ignoreChars: "0oli",
-                noise: 1,
-                color: true,
-                background: "#ffffff"
-            });
-            
-        } else {
-            captcha = svgCaptcha.createMathExpr({
-                mathMin: 1,
-                mathMax: 100,
-                mathOperator: "+-",
-                color: true,
-                background: "#ffffff"
-            });
-        }
-        
-        await svg2img(captcha.data, function(error, buffer) {
-            fs.writeFileSync("../assets/images/captcha.png", buffer);
-        });
-
-        let attachment = new Attachment("../assets/images/captcha.png");
-
-        let captchaEmbed = client.createEmbed();
-        captchaEmbed
-        .setTitle(`Captcha ${client.getEmoji("kannaAngry")}`)
-        .attachFiles([attachment.file])
-        .setImage(`attachment://captcha.png`)
-        .setDescription(
-            `${client.getEmoji("star")}_Solve the captcha below. Type **cancel** to quit, or **skip** to get another captcha._`
-        )
-        return {
-            captcha: captchaEmbed,
-            text: captcha.text
-        }
-    }
-
-    let {captcha, text} = await createCaptcha();
+    let {captcha, text} = await client.createCaptcha(type, color, difficulty);
 
     const filter = response => {
         return (response.author === message.author);
@@ -78,7 +34,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                         return msg.channel.send(responseEmbed);
                     } else if (msg.content.trim() === "skip") {
                         message.reply("Skipped this captcha!")
-                        let {captcha, text} = await createCaptcha();
+                        let {captcha, text} = await client.createCaptcha(type, color, difficulty);
                         return sendCaptcha(captcha, text);
                     } else if (msg.content.trim() === text) {
                         if (msg.member.roles.has(role)) {
@@ -92,7 +48,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                         return msg.channel.send(responseEmbed);
                     } else {
                         msg.reply("Wrong answer! Please try again.")
-                        let {captcha, text} = await createCaptcha();
+                        let {captcha, text} = await client.createCaptcha(type, color, difficulty);
                         return sendCaptcha(captcha, text);
                     }
                 })

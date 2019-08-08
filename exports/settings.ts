@@ -130,7 +130,9 @@ module.exports = (client: any, message: any) => {
     const captchaSettings: object = {
         "verify toggle": "off",
         "verify role": null,
-        "captcha type": "text"
+        "captcha type": "text",
+        "captcha color": "#ffffff",
+        "difficulty": "medium"
     }
 
     //Initialize a table
