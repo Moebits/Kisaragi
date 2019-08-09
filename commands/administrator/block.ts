@@ -26,16 +26,59 @@ exports.run = async (client: any, message: any, args: string[]) => {
     "\n" +
     "__Edit Settings__" +
     "\n" +
-    `${client.getEmoji("star")}**Type any word** to add a blocked word.\n` +
-    `${client.getEmoji("star")}Type **enable** or **disable** to enable/disable filtering.\n` +
-    `${client.getEmoji("star")}Type **exact** or **partial** to set the matching algorithm.\n` +
-    `${client.getEmoji("star")}Type **delete (word number)** to delete a word.\n` +
-    `${client.getEmoji("star")}Type **reset** to delete all words.\n` +
-    `${client.getEmoji("star")}Type **cancel** to exit.\n`
+    `${client.getEmoji("star")}_**Type any words**, separated by a space, to add blocked words._\n` +
+    `${client.getEmoji("star")}_Type **enable** or **disable** to enable/disable filtering._\n` +
+    `${client.getEmoji("star")}_Type **exact** or **partial** to set the matching algorithm._\n` +
+    `${client.getEmoji("star")}_Type **delete (word number)** to delete a word._\n` +
+    `${client.getEmoji("star")}_Type **reset** to delete all words._\n` +
+    `${client.getEmoji("star")}_Type **cancel** to exit._\n`
     )
-    message.channel.send(blockEmbed);
+    //message.channel.send(blockEmbed);
 
     async function blockPrompt(msg: any) {
+        let responseEmbed = client.createEmbed();
+        let setOn, setOff, setExact, setPartial//, setWord;
+        if (msg.content.toLowerCase() === "cancel") {
+            responseEmbed
+            .setDescription(`${client.getEmoji("star")}Canceled the prompt!`)
+            msg.channel.send(responseEmbed);
+            return;
+        } 
+        if (msg.content.toLowerCase() === "reset") {
+            await client.updateColumn("blocks", "blocked words", null);
+            responseEmbed
+            .setDescription(`${client.getEmoji("star")}All blocked words were deleted!`)
+            msg.channel.send(responseEmbed);
+            return;
+        }
+        
+        let newMsg = msg.content.replace(/enable/g, "").replace(/disable/g, "").replace(/exact/g, "").replace(/partial/g, "").replace(/\s+/g, "");
+        if (msg.content.match(/enable/g)) setOn = true;
+        if (msg.content.match(/disable/g)) setOff = true;
+        if (msg.content.match(/exact/g)) setExact = true;
+        if (msg.content.match(/partial/g)) setPartial = true;
+        //if (newMsg) setWord = true;
+
+        let wordArray = newMsg.split(",");
+        console.log(wordArray)
+
+        if (setOn && setOff) {
+            responseEmbed
+                .setDescription(`${client.getEmoji("star")}You cannot disable/enable at the same time.`)
+                msg.channel.send(responseEmbed);
+                return;
+        }
+
+        if (setExact && setPartial) {
+            responseEmbed
+                .setDescription(`${client.getEmoji("star")}You can only choose one matching algorithm.`)
+                msg.channel.send(responseEmbed);
+                return;
+        }
+
+        /*if (setWord) {
+            await client.updateColumn("blocks", "blocked words", wordArray);
+        }*/
 
     }
 

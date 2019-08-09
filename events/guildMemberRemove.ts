@@ -1,5 +1,8 @@
 module.exports = async (client: any, member: any) => {
 
+    let bans = await member.guild.fetchBans();
+    if (bans.has(member.id)) return;
+
     await require("../exports/images.js")(client, member.lastMessage);
 
     async function leaveMessages() {
@@ -30,11 +33,8 @@ module.exports = async (client: any, member: any) => {
 
         let now = Math.ceil(Date.now());
         let joinDate = member.joinedTimestamp;
-
         if ((now - joinDate) <= 300000) {
             let channel = member.lastMessage ? member.lastMessage.channel : (member.guild.systemChannel || member.guild.defaultChannel);
-            let bans = await member.guild.fetchBans();
-            if (bans.has(member.id)) return;
             let reason = "Joining and leaving in under 5 minutes."
             await member.guild.ban(member, reason);
             banEmbed
@@ -42,6 +42,10 @@ module.exports = async (client: any, member: any) => {
             .setTitle(`**Member Banned** ${client.getEmoji("kannaFU")}`)
             .setDescription(`${client.getEmoji("star")}_Successfully banned <@${member.user.id}> for reason:_ **${reason}**`);
             channel.send(banEmbed);
+            banEmbed
+            .setTitle(`**You Were Banned** ${client.getEmoji("kannaFU")}`)
+            .setDescription(`${client.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`);
+            await member.user.send(banEmbed);
         }
     }
 

@@ -124,7 +124,9 @@ module.exports = (client: any, message: any) => {
         "pfp ban toggle": "off",
         "leaver ban toggle": "off",
         "ascii name toggle": "off",
-        "default channel": null
+        "default channel": null,
+        "block match": "partial",
+        "block toggle": "off"
     }
 
     const captchaSettings: object = {
@@ -139,6 +141,12 @@ module.exports = (client: any, message: any) => {
         "command": null,
         "channel": null,
         "frequency": null
+    }
+
+    const linkSettings: object = {
+        "text": null,
+        "voice": null,
+        "toggle": "off"
     }
 
     //Initialize a table
@@ -172,7 +180,8 @@ module.exports = (client: any, message: any) => {
         "warns": warnSettings,
         "blocks": blockSettings,
         "captcha": captchaSettings,
-        "auto": autoSettings
+        "auto": autoSettings,
+        "links": linkSettings
     }
 
     //Initialize all tables
