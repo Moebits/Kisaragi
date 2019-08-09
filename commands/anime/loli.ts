@@ -13,9 +13,8 @@ exports.run = async (client: any, message: Message, args: string[]) => {
     }
 
     loliEmbed
-    .setAuthor("lolis.life")
     .setTitle(`**Loli** ${client.getEmoji("madokaLewd")}`)
-    .setImage(result)
+    .setImage(result.url)
     message.channel.send(loliEmbed);
     console.log(result)
 }
