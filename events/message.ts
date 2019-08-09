@@ -40,6 +40,7 @@ module.exports = async (client: any, message: any) => {
       setTimeout(() => {
         client.calcScore(message)
       }, pointTimeout[0] ? pointTimeout[0] : 60000);
+      client.autoCommand(message);
     }
 
     const responseObject: any = {

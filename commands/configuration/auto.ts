@@ -100,14 +100,11 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
         if (msg.content.toLowerCase().startsWith("edit")) {
             let newMsg = msg.content.replace(/edit/g, "").trim().split(" ");
-            console.log(newMsg)
             let tempMsg = newMsg.slice(1).join(" ");
-            console.log(tempMsg)
             let num = Number(newMsg[0]) - 1;
-            console.log(num)
-            if (num) {
-                let newCmd = tempMsg.match(/\D+/gi).join("").replace(/<#/g, "").replace(/>/g, "").trim();
-                let newChan = tempMsg.match(/<#\d+>/g).join("").replace(/<#/g, "").replace(/>/g, "");
+            if (tempMsg) {
+                let newCmd = tempMsg.match(/\D+/gi) ? tempMsg.match(/\D+/gi).join("").replace(/<#/g, "").replace(/>/g, "").trim() : null;
+                let newChan = tempMsg.match(/<#\d+>/g) ? tempMsg.match(/<#\d+>/g).join("").replace(/<#/g, "").replace(/>/g, "") : null;
                 let reChan = new RegExp(newChan,"g");
                 let newFreq = tempMsg.replace(/\D+/gi, "").replace(reChan, "").replace(/\s+/g, "");
                 let editDesc = "";
@@ -140,7 +137,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 }
                 return msg.channel.send(responseEmbed.setDescription(editDesc));
             } else {
-                return msg.channel.send(responseEmbed.setDescription("Setting not found!"));
+                return msg.channel.send(responseEmbed.setDescription("No edits specified!"));
             }
         }
         if (msg.content.toLowerCase() === "cancel") {

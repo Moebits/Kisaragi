@@ -13,6 +13,26 @@ module.exports = async (client: any, message: any) => {
         let cp = require(`${path[0]}`);
         await cp.run(client, msg, args).catch((err) => msg.channel.send(client.cmdError(err)));
     }
+
+    //Auto Command
+    client.autoCommand = async (msg: any) => {
+        let command = await client.fetchColumn("auto", "command");
+        let channel = await client.fetchColumn("auto", "channel");
+        let frequency = await client.fetchColumn("auto", "frequency");
+        let toggle = await client.fetchColumn("auto", "toggle");
+        if (!command[0]) return;
+        for (let i = 0; i < command[0].length; i++) {
+            if (toggle[0][i] === "inactive") continue;
+            let guildChannel = msg.guild.channels.find((c: any) => c.id === channel[0][i]);
+            let cmd = command[0][i].split(" ");
+            let timeout = Number(frequency[0][i]) * 3600000;
+            let last = await guildChannel.fetchMessages({limit: 1});
+            let guildMsg = await last.first();
+            setInterval(async () => {
+                client.runCommand(guildMsg, cmd);
+            }, timeout)
+        }
+    }
     
     //Timeout
     client.timeout = (ms: number) => {
