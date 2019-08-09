@@ -47,7 +47,6 @@ module.exports = async (client: any, member: any) => {
         if (!member.user.avatarURL) {
             let channel = defaultChannel;
             let reason = "Has the default discord avatar."
-            await member.guild.ban(member, reason);
             banEmbed
             .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
             .setTitle(`**Member Banned** ${client.getEmoji("kannaFU")}`)
@@ -57,6 +56,7 @@ module.exports = async (client: any, member: any) => {
             .setTitle(`**You Were Banned** ${client.getEmoji("kannaFU")}`)
             .setDescription(`${client.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`);
             await member.user.send(banEmbed);
+            await member.guild.ban(member, reason);
         }
         
     }
