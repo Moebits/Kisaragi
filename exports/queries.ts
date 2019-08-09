@@ -1,8 +1,3 @@
-let changedCommand: any = [];
-let changedPrefix: any = [];
-let changedColumn: any = [];
-
-
 const Redis = require("redis");
 const bluebird = require("bluebird");
 bluebird.promisifyAll(Redis.RedisClient.prototype);
@@ -50,18 +45,18 @@ module.exports = async (client: any, message: any) => {
 
     //Run Query
     client.runQuery = async (query: any, newData?: boolean, raw?: boolean) => {
-      let start: number = Date.now();
+      //let start: number = Date.now();
       let redisResult = await redis.getAsync(JSON.stringify(query));
       if (newData) redisResult = null;
       if (redisResult) {
-        client.logQuery(Object.values(query)[0], start, true);
+        //client.logQuery(Object.values(query)[0], start, true);
         if (raw) return JSON.parse(redisResult);
         return (JSON.parse(redisResult))[0]
       } else {
         const pgClient = await pgPool.connect();
           try {
             const result = await pgClient.query(query);
-            client.logQuery(Object.values(query)[0], start);
+            //client.logQuery(Object.values(query)[0], start);
             await redis.setAsync(JSON.stringify(query), JSON.stringify(result.rows))
             if (raw) return result.rows;
             return result.rows[0]
@@ -96,16 +91,15 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Fetch a row 
-    client.fetchRow = async (table: string) => {
+    client.fetchRow = async (table: string, update?: boolean) => {
         if (message === null) return;
         let query: object = {
           text: `SELECT * FROM "${table}" WHERE "guild id" = ${message.guild.id}`,
           rowMode:'array'
         }
         let result;
-        if (changedColumn.includes(table)) {
+        if (update) {
           result = await client.runQuery(query, true);
-          client.arrayRemove(changedColumn, table);
         } else {
           result = await client.runQuery(query);
         }
@@ -113,16 +107,15 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Fetch commands
-    client.fetchCommand = async (command: string, column: string) => {
+    client.fetchCommand = async (command: string, column: string, update?: boolean) => {
         let query: object = {
           text: `SELECT "${column}" FROM commands WHERE command IN ($1)`,
           values: [command],
           rowMode: 'array'
         };
         let result;
-        if (changedCommand.includes(command)) {
+        if (update) {
           result = await client.runQuery(query, true);
-          client.arrayRemove(changedCommand, command);
         } else {
           result = await client.runQuery(query);
         }
@@ -130,13 +123,13 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Fetch aliases
-    client.fetchAliases = async () => {
+    client.fetchAliases = async (update?: boolean) => {
         let query: object = {
           text: `SELECT aliases FROM commands`,
           rowMode: 'array'
         }
         let result;
-        if (changedCommand.length > 0) {
+        if (update) {
           result = await client.runQuery(query, true);
         } else {
           result = await client.runQuery(query);
@@ -145,15 +138,14 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Fetch Prefix
-    client.fetchPrefix = async () => {
+    client.fetchPrefix = async (update?: boolean) => {
         let query: object = {
           text: `SELECT prefix FROM prefixes WHERE "guild id" = ${message.guild.id}`,
           rowMode: 'array'
         }
         let result;
-        if (changedPrefix.includes(message.guild.id)) {
+        if (update) {
           result = await client.runQuery(query, true);
-          client.arrayRemove(changedPrefix, message.guild.id);
         } else {
           result = await client.runQuery(query);
         }
@@ -162,7 +154,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Fetch a column
-    client.fetchColumn = async (table: string, column: string, key?: string, value?: string) => {
+    client.fetchColumn = async (table: string, column: string, key?: string, value?: string, update?: boolean) => {
       let query: object;
       if (key) {
         query = {
@@ -176,9 +168,8 @@ module.exports = async (client: any, message: any) => {
         }
       }
       let result;
-        if (changedColumn.includes(table)) {
+        if (update) {
           result = await client.runQuery(query, true);
-          client.arrayRemove(changedColumn, table);
         } else {
           result = await client.runQuery(query);
         }
@@ -186,15 +177,14 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Select whole column
-    client.selectColumn = async (table: string, column: string) => {
+    client.selectColumn = async (table: string, column: string, update?: boolean) => {
       let query = {
         text: `SELECT "${column}" FROM "${table}"`,
         rowMode: 'array'
       }
       let result;
-        if (changedColumn.includes(table)) {
+        if (update) {
           result = await client.runQuery(query, true);
-          client.arrayRemove(changedColumn, table);
         } else {
           result = await client.runQuery(query);
         }
@@ -207,8 +197,10 @@ module.exports = async (client: any, message: any) => {
           text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
           values: [value]
         }
-        changedColumn.push(table);
         await client.runQuery(query, true);
+        await client.fetchColumn(table, column, false, false, true);
+        await client.selectColumn(table, column, true);
+        await client.fetchRow(table, true);
     }
 
     //Insert command
@@ -217,8 +209,11 @@ module.exports = async (client: any, message: any) => {
         text: `INSERT INTO commands (command, aliases, path, cooldown) VALUES ($1, $2, $3, $4)`,
         values: [command, aliases, path, cooldown]
       }
-      changedCommand.push(command);
       await client.runQuery(query, true);
+      await client.fetchCommand(command, "aliases", true);
+      await client.fetchCommand(command, "path", true);
+      await client.fetchCommand(command, "cooldown", true);
+      await client.fetchAliases(true);
   }
 
   //Update Prefix
@@ -227,8 +222,8 @@ module.exports = async (client: any, message: any) => {
         text: `UPDATE "prefixes" SET "prefix" = $1 WHERE "guild id" = ${message.guild.id}`,
         values: [prefix]
       }
-    changedPrefix.push(message.guild.id);
     await client.runQuery(query, true);
+    await client.fetchPrefix(true);
 }
 
     //Update a row in a table
@@ -245,8 +240,11 @@ module.exports = async (client: any, message: any) => {
             values: [value]
           }
         }
-        changedColumn.push(table);
         await client.runQuery(query, true);
+        await client.fetchColumn(table, column, false, false, true);
+        await client.selectColumn(table, column, true);
+        await client.fetchRow(table, true);
+        if (key) await client.fetchColumn(table, column, key, keyVal);
     }
 
     //Update Command
@@ -255,8 +253,10 @@ module.exports = async (client: any, message: any) => {
         text: `UPDATE commands SET aliases = $1, cooldown = $2 WHERE "command" = $3`,
         values: [aliases, cooldown, command]
       }
-      changedCommand.push(command);
       await client.runQuery(query, true);
+      await client.fetchCommand(command, "aliases", true);
+      await client.fetchCommand(command, "cooldown", true);
+      await client.fetchAliases(true);
   }
 
     //Remove a guild from all tables

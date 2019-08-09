@@ -1,8 +1,6 @@
 exports.run = async (client: any, message: any, args: string[]) => {
 
     let accessToken = (process.env.PINTEREST_ACCESS_TOKEN);
-    const GoogleImages = require('google-images');
-    const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID, process.env.GOOGLE_API_KEY);
     const axios = require("axios");
 
     client.pinterestError = () => {
@@ -74,29 +72,4 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
         return;
     }
-
-    let query = client.combineArgs(args, 1);
-    let imageResult = await images.search(query);
-    let random = 0;
-    let pin;
-    for (let i = 0; i < imageResult.length; i++) {
-        if (pin) break;
-        random = Math.floor(Math.random() * imageResult.length)
-        pin = (imageResult[random].parentPage.match(/\d{18}/g))
-    }
-    if (!pin) { 
-        client.pinterestError();
-        return;
-    }
-    let json = await axios.get(`https://api.pinterest.com/v1/pins/${pin}/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`);
-    let response = json.data.data;
-    let board = response.board.url.slice(25);
-    let response2 = await axios.get(`https://api.pinterest.com/v1/boards/${board}/pins/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`);
-    let random2 = Math.floor(Math.random() * response2.data.length)
-    client.pinterestPin(response2.data[random2]);
-    if (!pinArray.join("")) {
-        client.pinterestError(); 
-        return; 
-    }
-    message.channel.send(pinArray[0]);
 }
