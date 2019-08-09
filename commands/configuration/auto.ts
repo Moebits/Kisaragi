@@ -86,7 +86,10 @@ exports.run = async (client: any, message: any, args: string[]) => {
         if (msg.content.toLowerCase().startsWith("toggle")) {
             let newMsg = Number(msg.content.replace(/toggle/g, "").trim());
             let num = newMsg - 1;
-            if (newMsg) {
+            let testCmd = await client.fetchColumn("auto", "command");
+            let testChan = await client.fetchColumn("auto", "channel");
+            let testFreq = await client.fetchColumn("auto", "frequency");
+            if (newMsg && testCmd && testChan && testFreq) {
                     if (tog[0][num] === "inactive") {
                         await client.updateColumn("auto", "toggle", "active");
                         return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **active**!`));
@@ -95,7 +98,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                         return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **inactive**!`));
                     }  
             } else {
-                return msg.channel.send(responseEmbed.setDescription("Setting not found!"));
+                return msg.channel.send(responseEmbed.setDescription("You cannot use the toggle command on an unfinished setting!"));
             }
         }
         if (msg.content.toLowerCase().startsWith("edit")) {

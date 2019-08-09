@@ -56,7 +56,7 @@ module.exports = async (client: any, message: any) => {
         const pgClient = await pgPool.connect();
           try {
             const result = await pgClient.query(query);
-            client.logQuery(Object.values(query)[0], start);
+            //client.logQuery(Object.values(query)[0], start);
             await redis.setAsync(JSON.stringify(query), JSON.stringify(result.rows))
             if (raw) return result.rows;
             return result.rows[0]
@@ -184,9 +184,9 @@ module.exports = async (client: any, message: any) => {
       }
       let result;
         if (update) {
-          result = await client.runQuery(query, true);
+          result = await client.runQuery(query, true, true);
         } else {
-          result = await client.runQuery(query);
+          result = await client.runQuery(query, false, true);
         }
       return result;
     }
@@ -198,9 +198,6 @@ module.exports = async (client: any, message: any) => {
           values: [value]
         }
         await client.runQuery(query, true);
-        await client.fetchColumn(table, column, false, false, true);
-        await client.selectColumn(table, column, true);
-        await client.fetchRow(table, true);
     }
 
     //Insert command
@@ -210,10 +207,6 @@ module.exports = async (client: any, message: any) => {
         values: [command, aliases, path, cooldown]
       }
       await client.runQuery(query, true);
-      await client.fetchCommand(command, "aliases", true);
-      await client.fetchCommand(command, "path", true);
-      await client.fetchCommand(command, "cooldown", true);
-      await client.fetchAliases(true);
   }
 
   //Update Prefix
@@ -223,7 +216,7 @@ module.exports = async (client: any, message: any) => {
         values: [prefix]
       }
     await client.runQuery(query, true);
-    await client.fetchPrefix(true);
+    client.fetchPrefix(true);
 }
 
     //Update a row in a table
@@ -241,12 +234,12 @@ module.exports = async (client: any, message: any) => {
           }
         }
         await client.runQuery(query, true);
-        await client.selectColumn(table, column, true);
-        await client.fetchRow(table, true);
+        client.selectColumn(table, column, true);
         if (key) { 
           await client.fetchColumn(table, column, key, keyVal, true);
         } else {
           await client.fetchColumn(table, column, false, false, true);
+          client.fetchRow(table, true);
         }
     }
 
@@ -257,9 +250,9 @@ module.exports = async (client: any, message: any) => {
         values: [aliases, cooldown, command]
       }
       await client.runQuery(query, true);
-      await client.fetchCommand(command, "aliases", true);
-      await client.fetchCommand(command, "cooldown", true);
-      await client.fetchAliases(true);
+      client.fetchCommand(command, "aliases", true);
+      client.fetchCommand(command, "cooldown", true);
+      client.fetchAliases(true);
   }
 
     //Remove a guild from all tables
