@@ -106,5 +106,6 @@
     "test": {"name": "test", "aliases": [], "cooldown": ""},
     "captcha": {"name": "captcha", "aliases": [], "cooldown": ""},
     "screenshot": {"name": "screenshot", "aliases": [], "cooldown": ""},
-    "auto": {"name": "auto", "aliases": [], "cooldown": ""}
+    "auto": {"name": "auto", "aliases": [], "cooldown": ""},
+    "block": {"name": "block", "aliases": [], "cooldown": ""}
 }

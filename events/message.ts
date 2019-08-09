@@ -41,6 +41,7 @@ module.exports = async (client: any, message: any) => {
         client.calcScore(message)
       }, pointTimeout[0] ? pointTimeout[0] : 60000);
       client.autoCommand(message);
+      client.haiku(message);
     }
 
     const responseObject: any = {
