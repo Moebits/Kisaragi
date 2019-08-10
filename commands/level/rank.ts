@@ -14,9 +14,6 @@ exports.run = async (client: any, message: any, score: any, args: string[]) => {
     let userScore = await client.fetchScore(message);
     let userLevel = await client.fetchLevel(message);
 
-    console.log(userScore)
-    console.log(userLevel)
-
     const rankEmbed: any = client.createEmbed();
 
     if (userScore === (null || undefined)) {
@@ -27,12 +24,11 @@ exports.run = async (client: any, message: any, score: any, args: string[]) => {
         let width: number = (percent / 100) * 200 
         ctx.fillStyle = "#ff3d9b";
         ctx.fillRect(0, 0, width, 5);
-        console.log(width)
         let dataUrl = await canvas.toDataURL();
-        await imageDataURI.outputFile(dataUrl, `../../assets/images/rankBar.jpg`);
-        let attachment = new Attachment(`../../assets/images/rankBar.jpg`)
+        await imageDataURI.outputFile(dataUrl, `../assets/images/rankBar.jpg`);
+        let attachment = await new Attachment(`../assets/images/rankBar.jpg`)
         message.channel.send(rankEmbed
-            .setTitle(`**${message.author.username}'s Rank ${client.getEmoji("kisaragiCircle")}**`)
+            .setTitle(`**${message.author.username}'s Rank ${client.getEmoji("kannaXD")}**`)
             .setDescription(
             `${client.getEmoji("star")}_Level_: **${userLevel}**\n` + 
             `${client.getEmoji("star")}_Points_: **${userScore}**\n` + 
