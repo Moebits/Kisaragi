@@ -412,11 +412,12 @@ module.exports = async (client: any, message: any) => {
                 if (newLevel > userLevel) {
                     levelList[i] = newLevel;
                     await client.updateColumn("points", "level list", levelList);
+                    let channel = msg.member.lastMessage.channel;
                     const levelEmbed = client.createEmbed();
                     levelEmbed
                     .setTitle(`**Level Up!** ${client.getEmoji("vigneXD")}`)
                     .setDescription(lvlStr);
-                    msg.channel.send(levelEmbed);
+                    channel.send(levelEmbed);
                 }
 
                 scoreList[i] = newPoints;
