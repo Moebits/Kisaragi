@@ -108,5 +108,6 @@
     "screenshot": {"name": "screenshot", "aliases": [], "cooldown": ""},
     "auto": {"name": "auto", "aliases": [], "cooldown": ""},
     "block": {"name": "block", "aliases": [], "cooldown": ""},
-    "link": {"name": "block", "aliases": [], "cooldown": ""}
+    "link": {"name": "block", "aliases": [], "cooldown": ""},
+    "waifu2x": {"name": "waifu2x", "aliases": [], "cooldown": ""}
 }

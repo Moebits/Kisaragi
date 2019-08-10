@@ -1,7 +1,6 @@
 module.exports = async (client: any, message: any) => {
 
     const deepai = require('deepai');
-
     deepai.setApiKey(process.env.DEEP_API_KEY);
 
     client.detectFace = async (msg: any) => {
@@ -13,7 +12,6 @@ module.exports = async (client: any, message: any) => {
                     image: urls[i]
                 });
                 let confidenceArray = response.output.faces.map((f: any) => f.confidence);
-                console.log(confidenceArray)
                 for (let i = 0; i < confidenceArray.length; i++) {
                     if (confidenceArray[i] === "1.0") {
                         msg.reply("Your post was removed because a 3D human was detected.")
