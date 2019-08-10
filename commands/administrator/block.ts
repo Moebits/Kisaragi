@@ -6,6 +6,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
         return;
     }
     let words = await client.fetchColumn("blocks", "blocked words");
+    let match = await client.fetchColumn("blocks", "block match");
+    let toggle = await client.fetchColumn("blocks", "block toggle");
     let wordList = "";
     if (words[0]) {
         for (let i = 0; i < words[0].length; i++) {
@@ -21,8 +23,15 @@ exports.run = async (client: any, message: any, args: string[]) => {
     .setDescription(
     "Add or remove blocked words.\n" +
     "\n" +
+    "**Exact** = Only matches the exact word.\n" + 
+    "**Partial** = Also matches if the word is partially in another word.\n" +
+    "\n" +
     "__Word List__\n" +
     wordList + "\n" +
+    "\n" +
+    "__Current Settings__" +
+    `${client.getEmoji("star")}_Filtering is **${toggle[0]}**._\n` +
+    `${client.getEmoji("star")}_Matching algorithm set to **${match[0]}**._\n` +
     "\n" +
     "__Edit Settings__" +
     "\n" +

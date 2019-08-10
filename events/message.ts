@@ -18,6 +18,7 @@ module.exports = async (client: any, message: any) => {
     await require("../exports/functions.js")(client, message);
     await require("../exports/queries.js")(client, message);
     await require("../exports/links.js")(client, message);
+    await require("../exports/detection.js")(client, message);
     let commands = require("../../commands.json");
     let prefix: string = await client.fetchPrefix();
 
@@ -33,6 +34,7 @@ module.exports = async (client: any, message: any) => {
         client.calcScore(message)
       }, pointTimeout[0] ? pointTimeout[0] : 60000);
       client.block(message);
+      client.detectFace(message);
     }
 
     const responseObject: any = {
