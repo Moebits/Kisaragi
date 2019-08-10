@@ -21,7 +21,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             message.channel.send(banEmbed);
             banEmbed
             .setTitle(`**You Were Banned** ${client.getEmoji("kannaFU")}`)
-            .setDescription(`${client.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`);
+            .setDescription(`${client.getEmoji("star")}_You were banned from ${message.guild.name} for reason:_ **${reason}**`);
             await user.send(banEmbed);
         } catch (error) {
             client.cmdError(error);

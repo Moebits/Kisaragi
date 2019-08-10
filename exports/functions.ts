@@ -78,6 +78,37 @@ module.exports = async (client: any, message: any) => {
         }
 
     }
+
+    //Blocked Word
+    client.block = async (msg: any) => {
+        if (msg.author.id === client.user.id) return;
+        let words = await client.fetchColumn("blocks", "blocked words");
+        if (!words[0]) return;
+        let wordList = words[0];
+        wordList.forEach((w: any) => w.replace(/0/gi, "o").replace(/1/gi, "l").replace(/!/gi, "l").replace(/\*/gi, "u"));
+        let match = await client.fetchColumn("blocks", "block match");
+        if (match[0] === "exact") {
+            if (wordList.some((w: any) => w.includes(msg.content))) {
+                let badWordEmbed = client.createEmbed();
+                badWordEmbed
+                .setDescription(`<@${msg.author.id}>, watch your language!`)
+                let bMsg = await msg.channel.send(badWordEmbed)
+                await msg.delete();
+                await bMsg.delete(5000);
+            }
+        } else {
+            for (let i = 0; i < wordList.length; i++) {
+                if (msg.content.match(/wordList[i]/gi)) {
+                    let badWordEmbed = client.createEmbed();
+                    badWordEmbed
+                    .setDescription(`<@${msg.author.id}>, watch your language!`)
+                    let bMsg = await msg.channel.send(badWordEmbed)
+                    await msg.delete();
+                    await bMsg.delete(5000);
+                }
+            }
+        }
+    }
     
     //Timeout
     client.timeout = (ms: number) => {
