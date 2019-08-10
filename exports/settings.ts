@@ -146,7 +146,7 @@ module.exports = (client: any, message: any) => {
     const linkSettings: object = {
         "text": null,
         "voice": null,
-        "toggle": "off"
+        "toggle": null
     }
 
     //Initialize a table

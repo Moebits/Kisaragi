@@ -10,7 +10,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             .setDescription("Could not find that role!"))
             return;
         }
-        await role.setMentionable(true, `Requested by ${message.author.tag}`);
+        await role.setMentionable(true);
         await message.channel.send(`<@&${role.id}>`);
         await role.setMentionable(false);
 

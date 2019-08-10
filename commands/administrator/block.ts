@@ -57,7 +57,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
             if (num) {
                 if (words[0]) {
                     words[0][num - 1] = "";
-                    words[0] = words[0].filter(Boolean);
+                    words[0] = words[0].filter(Boolean);      
+                    await client.updateColumn("blocks", "blocked words", words[0]);
                     responseEmbed
                     .setDescription(`${client.getEmoji("star")}Setting ${num} was deleted!`)
                     msg.channel.send(responseEmbed);
