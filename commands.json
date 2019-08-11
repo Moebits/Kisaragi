@@ -113,5 +113,6 @@
     "wikipedia": {"name": "wikipedia", "aliases": [], "cooldown": ""},
     "spotify": {"name": "spotify", "aliases": [], "cooldown": ""},
     "verify": {"name": "verify", "aliases": [], "cooldown": ""},
-    "deviantart": {"name": "deviantart", "aliases": [], "cooldown": ""}
+    "deviantart": {"name": "deviantart", "aliases": [], "cooldown": ""},
+    "mal": {"name": "mal", "aliases": [], "cooldown": ""}
 }

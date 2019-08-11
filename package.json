@@ -85,6 +85,7 @@
     "imgur": "^0.3.1",
     "inversify": "^5.0.1",
     "ip": "^1.1.5",
+    "jikan-node": "^1.2.0",
     "jpg-stream": "^1.1.2",
     "jsdom": "^15.1.1",
     "kaomojilib": "^1.1.4",
