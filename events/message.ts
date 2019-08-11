@@ -35,6 +35,8 @@ module.exports = async (client: any, message: any) => {
       }, pointTimeout[0] ? pointTimeout[0] : 60000);
       client.block(message);
       client.detectFace(message);
+      client.haiku(message);
+      client.autoCommand(message);
     }
 
     const responseObject: any = {

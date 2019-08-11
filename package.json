@@ -40,6 +40,7 @@
     "canvas": "^2.5.0",
     "canvas-text-wrapper": "^0.10.2",
     "chalk": "^2.4.2",
+    "check-word": "^1.1.0",
     "compress-images": "^1.5.8",
     "concat-frames": "^1.0.3",
     "convert-svg-to-png": "^0.5.0",
