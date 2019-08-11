@@ -112,5 +112,6 @@
     "waifu2x": {"name": "waifu2x", "aliases": [], "cooldown": ""},
     "wikipedia": {"name": "wikipedia", "aliases": [], "cooldown": ""},
     "spotify": {"name": "spotify", "aliases": [], "cooldown": ""},
-    "verify": {"name": "verify", "aliases": [], "cooldown": ""}
+    "verify": {"name": "verify", "aliases": [], "cooldown": ""},
+    "deviantart": {"name": "deviantart", "aliases": [], "cooldown": ""}
 }
