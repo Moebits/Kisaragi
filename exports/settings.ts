@@ -140,7 +140,9 @@ module.exports = (client: any, message: any) => {
     const autoSettings: object = {
         "command": null,
         "channel": null,
-        "frequency": null
+        "frequency": null,
+        "toggle": null, 
+        "timeout": null
     }
 
     const linkSettings: object = {

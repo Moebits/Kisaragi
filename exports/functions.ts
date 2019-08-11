@@ -26,11 +26,32 @@ module.exports = async (client: any, message: any) => {
             let guildChannel = msg.guild.channels.find((c: any) => c.id === channel[0][i]);
             let cmd = command[0][i].split(" ");
             let timeout = Number(frequency[0][i]) * 3600000;
+            let rawTimeLeft = await client.fetchColumn("auto", "timeout");
+            let timeLeft;
+            if (rawTimeLeft[0]) {
+                timeLeft = Number(rawTimeLeft[0][i]) || 0;
+            } else {
+                timeLeft = 0;
+            }
             let last = await guildChannel.fetchMessages({limit: 1});
             let guildMsg = await last.first();
-            setInterval(async () => {
+            let interval = setInterval(async () => {
                 client.runCommand(guildMsg, cmd);
-            }, timeout)
+            }, timeout - (timeLeft * 1000));
+            client.timeLeft(interval, i);
+        }
+    }
+
+    //Time left
+    client.timeLeft = async (timeout, i) => {
+        setInterval(async function() {
+            let times = await client.fetchColumn("auto", "timeout");
+            if (!times[0]) times[0] = [[0]];
+            times[0][i] = getTimeLeft(timeout);
+            await client.updateColumn("auto", "timeout", times[0]);
+        }, 10000);
+        function getTimeLeft(timeout) {
+            return Math.ceil((timeout._idleStart + timeout._idleTimeout - Date.now()) / 1000);
         }
     }
 

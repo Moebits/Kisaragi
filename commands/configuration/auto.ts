@@ -58,6 +58,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let chan = await client.fetchColumn("auto", "channel");
         let freq = await client.fetchColumn("auto", "frequency");
         let tog = await client.fetchColumn("auto", "toggle");
+        let tim = await client.fetchColumn("auto", "timeout");
         if (!cmd[0]) cmd = [[0]]; setInit = true;
         if (!chan[0]) chan = [[0]]; setInit = true;
         if (!freq[0]) freq = [[0]]; setInit = true;
@@ -70,14 +71,17 @@ exports.run = async (client: any, message: any, args: string[]) => {
                     chan[0][num] = 0;
                     freq[0][num] = 0;
                     tog[0][num] = 0;
+                    tim[0][num] = 0;
                     let arrCmd = cmd[0].filter(Boolean);
                     let arrChan = chan[0].filter(Boolean);
                     let arrFreq = freq[0].filter(Boolean);
                     let arrTog = tog[0].filter(Boolean);
+                    let arrTim = tim[0].filter(Boolean);
                     await client.updateColumn("auto", "command", arrCmd);
                     await client.updateColumn("auto", "channel", arrChan);
                     await client.updateColumn("auto", "frequency", arrFreq); 
                     await client.updateColumn("auto", "toggle", arrTog);   
+                    await client.updateColumn("auto", "timeout", arrTim);   
                     return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`));
             } else {
                 return msg.channel.send(responseEmbed.setDescription("Command not found!"));
@@ -154,6 +158,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             await client.updateColumn("auto", "channel", null);
             await client.updateColumn("auto", "frequency", null);
             await client.updateColumn("auto", "toggle", null);
+            await client.updateColumn("auto", "timeout", null);
             responseEmbed
             .setDescription(`${client.getEmoji("star")}Auto settings were wiped!`)
             msg.channel.send(responseEmbed);
