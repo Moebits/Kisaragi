@@ -47,7 +47,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             `${client.getEmoji("star")}_User:_ **${result.username}**\n` +
             `${client.getEmoji("star")}_Last Online:_ **${client.formatDate(result.last_online)}**\n` +
             `${client.getEmoji("star")}_Join Date:_ **${client.formatDate(result.joined)}**\n` +
-            `${client.getEmoji("star")}_Birthday:_ **${client.formatDate(result.birthday.slice(0, 10))}**\n` +
+            `${client.getEmoji("star")}_Birthday:_ **${client.formatDate(result.birthday)}**\n` +
             `${client.getEmoji("star")}_Location:_ **${result.location}**\n` +
             `${client.getEmoji("star")}_Days Watched:_ **${result.anime_stats.days_watched}**\n` +
             `${client.getEmoji("star")}_Episodes Watched:_ **${result.anime_stats.episodes_watched}**\n` +
