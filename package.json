@@ -115,6 +115,7 @@
     "node-weeb": "^1.0.4",
     "nodemon": "^1.19.1",
     "opencv": "^6.2.0",
+    "opencv4nodejs": "^5.1.0",
     "opusscript": "0.0.6",
     "osunext-sig": "^1.0.3",
     "pg": "^7.11.0",
