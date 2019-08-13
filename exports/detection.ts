@@ -1,23 +1,23 @@
 module.exports = async (client: any, message: any) => {
 
-    const deepai = require('deepai');
-    deepai.setApiKey(process.env.DEEP_API_KEY);
+    let cv = require("opencv");
+    const download = require('image-downloader')
 
-    client.detectFace = async (msg: any) => {
-
-        if (msg.attachments) {
-            let urls = msg.attachments.map((a: any) => a.url);
+    client.detectAnime = async (msg: any) => {
+        if (msg.author.id === client.user.id) return;
+        if (msg.attachments.size) {
+            let urls = msg.attachments.map((a) => a.url);
             for (let i = 0; i < urls.length; i++) {
-                let response = await deepai.callStandardApi("facial-recognition", {
-                    image: urls[i]
-                });
-                let confidenceArray = response.output.faces.map((f: any) => f.confidence);
-                for (let i = 0; i < confidenceArray.length; i++) {
-                    if (confidenceArray[i] === "1.0") {
-                        msg.reply("Your post was removed because a 3D human was detected.")
-                        await msg.delete();
-                    }
-                }
+                console.log(urls)
+                await download.image({url: urls[i], dest: `../assets/detection/image${i}.jpg`});
+                cv.readImage(`../assets/detection/image${i}.jpg`, function(err, im){
+                    im.detectObject("../assets/cascades/animeface.xml", {}, async function(err, faces) {
+                        if (!faces.join("")) {
+                            await msg.reply("You can only post anime pictures!");
+                            await msg.delete();
+                        }
+                    });
+                  });
             }
         }
     }

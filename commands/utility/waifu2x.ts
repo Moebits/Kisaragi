@@ -1,4 +1,5 @@
 exports.run = async (client: any, message: any, args: string[]) => {
+
     let imgUrl;
     if (!args[1]) {
         let messages = await message.channel.fetchMessages({limit: 10});
