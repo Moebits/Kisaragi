@@ -23,7 +23,7 @@ module.exports = async (client: any, message: any) => {
     let prefix: string = await client.fetchPrefix();
 
     /*let letterNames = [
-      ""
+      " "
     ]
   
     client.generateEmojis(letterNames)*/
