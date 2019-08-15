@@ -30,8 +30,8 @@ module.exports = async (client: any, message: any) => {
         client.calcScore(message)
       }, pointTimeout[0] ? pointTimeout[0] : 60000);
       client.block(message);
-      //client.detectAnime(message);
-      //client.swapRoles(message);
+      client.detectAnime(message);
+      client.swapRoles(message);
       client.haiku(message);
       client.autoCommand(message);
     }
