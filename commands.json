@@ -114,5 +114,14 @@
     "spotify": {"name": "spotify", "aliases": [], "cooldown": ""},
     "verify": {"name": "verify", "aliases": [], "cooldown": ""},
     "deviantart": {"name": "deviantart", "aliases": [], "cooldown": ""},
-    "mal": {"name": "mal", "aliases": [], "cooldown": ""}
+    "mal": {"name": "mal", "aliases": [], "cooldown": ""},
+    "mod": {"name": "mod", "aliases": [], "cooldown": ""},
+    "detect": {"name": "detect", "aliases": [], "cooldown": ""},
+    "swap": {"name": "swap", "aliases": [], "cooldown": ""},
+    "mute": {"name": "mute", "aliases": [], "cooldown": ""},
+    "unmute": {"name": "unmute", "aliases": [], "cooldown": ""},
+    "restrict": {"name": "restrict", "aliases": [], "cooldown": ""},
+    "unrestrict": {"name": "unrestrict", "aliases": [], "cooldown": ""},
+    "upload": {"name": "upload", "aliases": [], "cooldown": ""}
+
 }

@@ -92,7 +92,7 @@ module.exports = (client: any, message: any) => {
         "welcome bg image": "https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif",
         "welcome bg text": "Welcome tag! There are now count members.",
         "welcome bg color": "rainbow",
-        "leave bg image": "https://user-images.githubusercontent.com/565124/32411599-a5fcba72-c1df-11e7-8730-a570470a4eee.gif",
+        "leave bg image": "https://data.whicdn.com/images/210153523/original.gif",
         "leave bg text": "tag left! There are now count members.",
         "leave bg color": "rainbow"
     }
@@ -109,7 +109,7 @@ module.exports = (client: any, message: any) => {
         "image channels": null,
         "dropbox folders": null,
         "google albums": null,
-        "notify toggle": "off"
+        "notify toggle": "on"
     }
 
     const warnSettings: object = {
@@ -151,6 +151,14 @@ module.exports = (client: any, message: any) => {
         "toggle": null
     }
 
+    const detectionSettings: object = {
+        "links": "on",
+        "anime": "off",
+        "pfp": "off",
+        "weeb": null,
+        "normie": null
+    }
+
     //Initialize a table
     client.initTable = async (table: string, object: object) => {       
         const entries = Object.entries(object);
@@ -183,7 +191,8 @@ module.exports = (client: any, message: any) => {
         "blocks": blockSettings,
         "captcha": captchaSettings,
         "auto": autoSettings,
-        "links": linkSettings
+        "links": linkSettings,
+        "detection": detectionSettings
     }
 
     //Initialize all tables

@@ -84,7 +84,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                     await client.updateColumn("auto", "timeout", arrTim);   
                     return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`));
             } else {
-                return msg.channel.send(responseEmbed.setDescription("Command not found!"));
+                return msg.channel.send(responseEmbed.setDescription("Setting not found!"));
             }
         }
         if (msg.content.toLowerCase().startsWith("toggle")) {

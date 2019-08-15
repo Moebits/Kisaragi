@@ -1,0 +1,46 @@
+exports.run = async (client: any, message: any, args: string[]) => {
+
+    const muteEmbed: any = client.createEmbed();
+    const perm: any = client.createPermission("MANAGE_ROLES");
+    let mute = await client.fetchColumn("special roles", "mute role");
+    if (!mute) return message.reply("You need to set a mute role first!");
+    let reasonArray: any = [];
+    let userArray: any = [];
+
+    for (let i = 1; i < args.length; i++) {
+        if (args[i].match(/\d+/g)) {
+            userArray.push(args[i].match(/\d+/g))[0];
+        } else {
+            reasonArray.push(args[i]);
+        }
+    }
+
+    let reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
+
+    if (message.member.hasPermission(perm)) {
+        let members: any = [];
+        for (let i = 0; i < userArray.length; i++) {
+            let member = message.guild.members.find((m: any) => m.id === userArray[i].join(""));
+            await member.addRole(mute.join(""));
+            members.push(`<@${member.id}>`);
+            let dm = await member.createDM();
+            muteEmbed
+            .setAuthor("mute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
+            .setTitle(`**You Were Muted** ${client.getEmoji("kannaFU")}`)
+            .setDescription(`${client.getEmoji("star")}_You were muted in ${message.guild.name} for reason:_ **${reason}**`);
+            await dm.send(muteEmbed);
+        }
+        muteEmbed
+        .setAuthor("mute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
+        .setTitle(`**Member Muted** ${client.getEmoji("kannaFU")}`)
+        .setDescription(`${client.getEmoji("star")}_Successfully muted ${members.join(", ")} for reason:_ **${reason}**`);
+        message.channel.send(muteEmbed);
+        return;
+        
+    } else {
+        muteEmbed
+        .setDescription("You do not have the manage roles permission!");
+        message.channel.send(muteEmbed);
+        return;
+    }
+}

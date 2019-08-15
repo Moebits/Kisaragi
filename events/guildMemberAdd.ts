@@ -55,8 +55,13 @@ module.exports = async (client: any, member: any) => {
             banEmbed
             .setTitle(`**You Were Banned** ${client.getEmoji("kannaFU")}`)
             .setDescription(`${client.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`);
-            await member.user.send(banEmbed);
-            await member.guild.ban(member, reason);
+            let dm = await member.user.createDM();
+            try { 
+                await dm.send(banEmbed);
+            } catch (err) {
+                console.log(err)
+            }
+            await member.ban(reason);
         }
         
     }

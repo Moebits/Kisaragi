@@ -241,8 +241,8 @@ module.exports = async (client: any, message: any) => {
 
     //Create Prompt
     client.createPrompt = (func: any) => {
-        const filter = m => m.author.id === message.author.id;
-            const collector = message.channel.createMessageCollector(filter);
+        const filter = m => m.author.id === message.author.id && m.channel === message.channel;
+            const collector = message.channel.createMessageCollector(filter, {time: 60000});
 
             collector.on('collect', m => {
                 func(m, collector);

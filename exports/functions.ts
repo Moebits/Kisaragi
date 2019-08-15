@@ -109,14 +109,16 @@ module.exports = async (client: any, message: any) => {
         let match = await client.fetchColumn("blocks", "block match");
         if (match[0] === "exact") {
             if (wordList.some((w: any) => w.includes(msg.content))) {
-                await msg.reply("Your post was removed because it contained a blocked word.")
+                let reply = await msg.reply("Your post was removed because it contained a blocked word.")
                 await msg.delete();
+                reply.delete(10000);
             }
         } else {
             for (let i = 0; i < wordList.length; i++) {
                 if (msg.content.includes(wordList[i])) {
-                    await msg.reply("Your post was removed because it contained a blocked word.")
+                    let reply = await msg.reply("Your post was removed because it contained a blocked word.")
                     await msg.delete();
+                    reply.delete(10000);
                 }
             }
         }

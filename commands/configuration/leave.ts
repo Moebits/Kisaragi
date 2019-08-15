@@ -72,7 +72,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             await client.updateColumn("welcome leaves", "leave message", "user has left guild!");
             await client.updateColumn("welcome leaves", "leave channel", null);
             await client.updateColumn("welcome leaves", "leave toggle", "off");
-            await client.updateColumn("welcome leaves", "leave bg image", "https://user-images.githubusercontent.com/565124/32411599-a5fcba72-c1df-11e7-8730-a570470a4eee.gif");
+            await client.updateColumn("welcome leaves", "leave bg image", "https://data.whicdn.com/images/210153523/original.gif");
             await client.updateColumn("welcome leaves", "leave bg text", "tag left! There are now count members.");
             await client.updateColumn("welcome leaves", "leave bg color", "rainbow");
             responseEmbed
