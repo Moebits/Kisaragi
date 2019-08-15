@@ -1,8 +1,8 @@
 exports.run = async (client: any, message: any, args: string[]) => {
     let channels = await client.fetchColumn("images", "image channels");
-    let folders = await client.fetchColumn("images", "dropbox folders");
-    let albums = await client.fetchColumn("images", "google albums");
-    let notify = await client.fetchColumn("images", "notify toggle");
+    //let folders = await client.fetchColumn("images", "dropbox folders");
+    //let albums = await client.fetchColumn("images", "google albums");
+    //let notify = await client.fetchColumn("images", "notify toggle");
 
     if (!channels[0]) return;
 
