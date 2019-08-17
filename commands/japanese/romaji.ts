@@ -1,4 +1,4 @@
-/*import Kuroshiro from "kuroshiro";
+import Kuroshiro from "kuroshiro";
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
 
 exports.run = async (client: any, message: any, args: string[]) => {
@@ -15,4 +15,4 @@ exports.run = async (client: any, message: any, args: string[]) => {
     .setTitle(`**Romaji Conversion** ${client.getEmoji("kannaSip")}`)
     .setDescription(`${client.getEmoji("star")}${cleanResult}`);
     message.channel.send(romajiEmbed);
-}*/
+}
