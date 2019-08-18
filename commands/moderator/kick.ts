@@ -21,6 +21,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             let member = message.guild.members.find((m: any) => m.id === userArray[i].join(""));
             members.push(`<@${member.id}>`);
             kickEmbed
+            .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
             .setTitle(`**You Were Kicked** ${client.getEmoji("kannaFU")}`)
             .setDescription(`${client.getEmoji("star")}_You were kicked from ${message.guild.name} for reason:_ **${reason}**`);
             let dm = await member.createDM();

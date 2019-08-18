@@ -17,6 +17,26 @@ module.exports = async (client: any, member: any) => {
 
 
     await require("../exports/images.js")(client, defMessage ? defMessage.first() : null);
+    await require("../exports/detection.js")(client, defMessage ? defMessage.first() : null);
+
+    async function animePfp() {
+        let result = await client.swapRoles(defMessage ? defMessage.first() : null, member, true);
+        if (result === false) {
+            let channel = defaultChannel;
+            let reason = "Doesn't have an anime profile picture!";
+            let dm = await member.user.createDM();
+            let kickEmbed = client.createEmbed();
+            kickEmbed
+            .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
+            .setTitle(`**You Were Kicked** ${client.getEmoji("kannaFU")}`)
+            .setDescription(`${client.getEmoji("star")}_You were kicked from ${member.guild.name} for reason:_ **${reason}**`);
+            await dm.send(kickEmbed);
+            if (channel) await channel.send(kickEmbed);
+            await member.kick(reason);
+        }
+    }
+
+    animePfp();
 
     async function welcomeMessages() {
         let welcomeToggle = await client.fetchColumn("welcome leaves", "welcome toggle");
