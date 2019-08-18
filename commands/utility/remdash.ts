@@ -1,7 +1,7 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    const remEmbed: any = client.createEmbed();
-    const perm: any = client.createPermission("MANAGE_CHANNELS");
+    const remEmbed: any = discord.createEmbed();
+    const perm: any = discord.createPermission("MANAGE_CHANNELS");
 
     if (message.member.hasPermission(perm)) {
         let nameArray = message.guild.channels.map((c: any) => c.name);

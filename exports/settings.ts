@@ -1,4 +1,4 @@
-module.exports = (client: any, message: any) => {
+module.exports = (discord: any, message: any) => {
 
     const guildSettings: object = {
         "name": message.guild.name,
@@ -58,7 +58,7 @@ module.exports = (client: any, message: any) => {
         "message log": null,
         "user log": null,
         "guild log": null,
-        "client log": null
+        "discord log": null
     }
 
     const specialChannelSettings: object = {
@@ -160,11 +160,11 @@ module.exports = (client: any, message: any) => {
     }
 
     //Initialize a table
-    client.initTable = async (table: string, object: object) => {       
+    discord.initTable = async (table: string, object: object) => {       
         const entries = Object.entries(object);
         try {
           for (let [key, value] of entries) {
-            await client.updateColumn(table, key, value);
+            await discord.updateColumn(table, key, value);
           }
         } catch (error) {
           throw error
@@ -196,11 +196,11 @@ module.exports = (client: any, message: any) => {
     }
 
     //Initialize all tables
-    client.initAll = async () => {
+    discord.initAll = async () => {
         const entries = Object.entries(tableMap);
         try {
           for (let [key, value] of entries) {
-            await client.initTable(key, value);
+            await discord.initTable(key, value);
           }
         } catch (error) {
           throw error

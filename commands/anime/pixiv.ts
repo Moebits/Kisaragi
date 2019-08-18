@@ -1,47 +1,47 @@
 import {Message} from "discord.js";
 
-exports.run = async (client: any, message: Message, args: string[]) => {
-    const tags = client.combineArgs(args, 1);
-    let refreshToken = await client.pixivLogin();
+exports.run = async (discord: any, message: Message, args: string[]) => {
+    const tags = discord.combineArgs(args, 1);
+    let refreshToken = await discord.pixivLogin();
 
     if (!args[1]) {
-        client.getRandomPixivImage(refreshToken);
+        discord.getRandomPixivImage(refreshToken);
         return;
     }
 
     if (tags.match(/\d+/g) !== null) {
-        client.getPixivImageID(refreshToken, tags.match(/\d+/g))
+        discord.getPixivImageID(refreshToken, tags.match(/\d+/g))
         return;
     }
 
     if (args[1].toLowerCase() === "r18") {
         if (args[2].toLowerCase() === "en") {
-            const tags = client.combineArgs(args, 2);
-            client.getPixivImage(refreshToken, tags, true, true);
+            const tags = discord.combineArgs(args, 2);
+            discord.getPixivImage(refreshToken, tags, true, true);
             return;
         } else {
-            const tags = client.combineArgs(args, 2);
-            client.getPixivImage(refreshToken, tags, true);
+            const tags = discord.combineArgs(args, 2);
+            discord.getPixivImage(refreshToken, tags, true);
             return;
         }
     }
 
     if (args[1].toLowerCase() === "en") {
-        const tags = client.combineArgs(args, 2);
-        client.getPixivImage(refreshToken, tags, false, true);
+        const tags = discord.combineArgs(args, 2);
+        discord.getPixivImage(refreshToken, tags, false, true);
         return;
     }
 
     if (args[1].toLowerCase() === "popular") {
         if (args[2].toLowerCase() === "r18") {
-            client.getPopularR18PixivImage(refreshToken);
+            discord.getPopularR18PixivImage(refreshToken);
             return;
         }
-        client.getPopularPixivImage(refreshToken);
+        discord.getPopularPixivImage(refreshToken);
         return;
 
     }
     
    
-    client.getPixivImage(refreshToken, tags);
+    discord.getPixivImage(refreshToken, tags);
 }

@@ -1,333 +1,333 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     if (args[1]) {
         let helpDir = require("./help commands.js");
-        await helpDir.run(client, message, args);
+        await helpDir.run(discord, message, args);
         return;
     }
-    const helpInfo: any = client.createEmbed();
+    const helpInfo: any = discord.createEmbed();
         helpInfo
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         //.setImage("https://i.imgur.com/Av9RN7x.png")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Info Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Info Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**avatar** _mentions_\n` +
+            `${discord.getEmoji("star")}**avatar** _mentions_\n` +
             `Posts the avatar image of the user(s).\n` +
             `\n` +
-            `${client.getEmoji("star")}**emoji** name/id/emoji\n` +
+            `${discord.getEmoji("star")}**emoji** name/id/emoji\n` +
             `Posts the emoji image of an emoji.\n` +
             `\n` +
-            `${client.getEmoji("star")}**guild icon**\n` +
+            `${discord.getEmoji("star")}**guild icon**\n` +
             `Posts your guild's icon image.\n` +
             `\n` +
-            `${client.getEmoji("star")}**ping**\n` +
+            `${discord.getEmoji("star")}**ping**\n` +
             `Posts the response time and API latency.\n` +
             `\n` +
-            `${client.getEmoji("star")}**prefix**\n` +
+            `${discord.getEmoji("star")}**prefix**\n` +
             `Does not work yet\n` 
         )
-    const helpLevel: any = client.createEmbed();
+    const helpLevel: any = discord.createEmbed();
         helpLevel
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Level Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Level Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**give** mention/id\n` +
+            `${discord.getEmoji("star")}**give** mention/id\n` +
             `Does not work yet\n` +
             `\n` +
-            `${client.getEmoji("star")}**rank** _mention_\n` +
+            `${discord.getEmoji("star")}**rank** _mention_\n` +
             `Does not work yet\n` +
             `\n` +
-            `${client.getEmoji("star")}**top**\n` +
+            `${discord.getEmoji("star")}**top**\n` +
             `Does not work yet\n`
         )
-    const helpHeart: any = client.createEmbed();
+    const helpHeart: any = discord.createEmbed();
         helpHeart
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Heart Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Heart Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**baka** _mention_\n` +
+            `${discord.getEmoji("star")}**baka** _mention_\n` +
             `Call someone a baka.\n` +
             `\n` +
-            `${client.getEmoji("star")}**cuddle** _mention_\n` +
+            `${discord.getEmoji("star")}**cuddle** _mention_\n` +
             `Cuddle someone.\n` +
             `\n` +
-            `${client.getEmoji("star")}**hug** _mention_\n` +
+            `${discord.getEmoji("star")}**hug** _mention_\n` +
             `Hug someone.\n` +
             `\n` +
-            `${client.getEmoji("star")}**kiss** _mention_\n` +
+            `${discord.getEmoji("star")}**kiss** _mention_\n` +
             `Kiss someone.\n` +
             `\n` +
-            `${client.getEmoji("star")}**pat** _mention_\n` +
+            `${discord.getEmoji("star")}**pat** _mention_\n` +
             `Pat someone.\n` +
             `\n` +
-            `${client.getEmoji("star")}**poke** _mention_\n` +
+            `${discord.getEmoji("star")}**poke** _mention_\n` +
             `Poke someone.\n` +
             `\n` +
-            `${client.getEmoji("star")}**slap** _mention_\n` +
+            `${discord.getEmoji("star")}**slap** _mention_\n` +
             `Slap someone.\n` +
             `\n` +
-            `${client.getEmoji("star")}**smug** _mention_\n` +
+            `${discord.getEmoji("star")}**smug** _mention_\n` +
             `Post a smug image/gif.\n` +
             `\n` +
-            `${client.getEmoji("star")}**tickle** _mention_\n` +
+            `${discord.getEmoji("star")}**tickle** _mention_\n` +
             `Tickle someone.\n`
         )
-    const helpAnime: any = client.createEmbed();
+    const helpAnime: any = discord.createEmbed();
         helpAnime
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Anime Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Anime Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**anime** anime\n` +
+            `${discord.getEmoji("star")}**anime** anime\n` +
             `Gets an anime's description.\n` +
             `\n` +
-            `${client.getEmoji("star")}**animequote** _anime/character_\n` +
+            `${discord.getEmoji("star")}**animequote** _anime/character_\n` +
             `Posts an anime quote.\n` +
             `\n` +
-            `${client.getEmoji("star")}**danbooru** <r18> _tag_\n` +
+            `${discord.getEmoji("star")}**danbooru** <r18> _tag_\n` +
             `Searches danbooru.\n` +
             `\n` +
-            `${client.getEmoji("star")}**gelbooru** <r18> _tag_\n` +
+            `${discord.getEmoji("star")}**gelbooru** <r18> _tag_\n` +
             `Searches gelbooru.\n` +
             `\n` +
-            `${client.getEmoji("star")}**kitsune** <lewd>\n` +
+            `${discord.getEmoji("star")}**kitsune** <lewd>\n` +
             `Posts a kitsune girl image.\n` +
             `\n` +
-            `${client.getEmoji("star")}**konachan** <r18> _tag_\n` +
+            `${discord.getEmoji("star")}**konachan** <r18> _tag_\n` +
             `Searches konachan.\n` +
             `\n` +
-            `${client.getEmoji("star")}**loli** <hentai>\n` +
+            `${discord.getEmoji("star")}**loli** <hentai>\n` +
             `Does not work yet.\n` +
             `\n` +
-            `${client.getEmoji("star")}**lolibooru** <r18> _tag_\n` +
+            `${discord.getEmoji("star")}**lolibooru** <r18> _tag_\n` +
             `Searches lolibooru.\n` +
             `\n` +
-            `${client.getEmoji("star")}**manga** manga\n` +
+            `${discord.getEmoji("star")}**manga** manga\n` +
             `Gets a manga's description.\n` +
             `\n` +
-            `${client.getEmoji("star")}**neko** <lewd>\n` +
+            `${discord.getEmoji("star")}**neko** <lewd>\n` +
             `Posts a neko girl image.\n` +
             `\n` +
-            `${client.getEmoji("star")}**pixiv** <r18> <en> _tag/id_\n` +
+            `${discord.getEmoji("star")}**pixiv** <r18> <en> _tag/id_\n` +
             `Searches for a pixiv image.\n` +
             `\n` +
-            `${client.getEmoji("star")}**ugoira** <r18> <en> _tag/id_\n` +
+            `${discord.getEmoji("star")}**ugoira** <r18> <en> _tag/id_\n` +
             `Searches for a pixiv ugoira.\n` +
             `\n` +
-            `${client.getEmoji("star")}**yandere** <r18> _tag_\n` +
+            `${discord.getEmoji("star")}**yandere** <r18> _tag_\n` +
             `Searches yandere.\n` 
         )
-    const helpHentai: any = client.createEmbed();
+    const helpHentai: any = discord.createEmbed();
         helpHentai
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Hentai Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Hentai Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**fakku**\n` +
+            `${discord.getEmoji("star")}**fakku**\n` +
             `Does not work yet.\n` +
             `\n` +
-            `${client.getEmoji("star")}**lewdme**\n` +
+            `${discord.getEmoji("star")}**lewdme**\n` +
             `Why do you want to lewd me?\n` +
             `\n` +
-            `${client.getEmoji("star")}**nhentai** <random> _tag/id_\n` +
+            `${discord.getEmoji("star")}**nhentai** <random> _tag/id_\n` +
             `Gets a doujin from nhentai.\n` +
             `\n` +
-            `${client.getEmoji("star")}**rule34** <r18>\n` +
+            `${discord.getEmoji("star")}**rule34** <r18>\n` +
             `Searches rule34.\n` 
         )
-    const helpOsu: any = client.createEmbed();
+    const helpOsu: any = discord.createEmbed();
         helpOsu
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Osu Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Osu Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**osu** player\n` +
+            `${discord.getEmoji("star")}**osu** player\n` +
             `Gets an osu player's profile.\n`
         )
-    const helpGeometry: any = client.createEmbed();
+    const helpGeometry: any = discord.createEmbed();
         helpGeometry
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Geometry Dash Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Geometry Dash Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**level** name/id\n` +
+            `${discord.getEmoji("star")}**level** name/id\n` +
             `Does not work yet.\n`
         )
-    const helpJapanese: any = client.createEmbed();
+    const helpJapanese: any = discord.createEmbed();
         helpJapanese
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Japanese Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Japanese Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**furigana** text\n` +
+            `${discord.getEmoji("star")}**furigana** text\n` +
             `Adds furigana to the input text.\n` +
             `\n` +
-            `${client.getEmoji("star")}**hiragana** text\n` +
+            `${discord.getEmoji("star")}**hiragana** text\n` +
             `Converts input text to hiragana.\n` +
             `\n` +
-            `${client.getEmoji("star")}**japanese** text\n` +
+            `${discord.getEmoji("star")}**japanese** text\n` +
             `Translates from japanese to english and vice versa.\n` +
             `\n` +
-            `${client.getEmoji("star")}**katakana** text\n` +
+            `${discord.getEmoji("star")}**katakana** text\n` +
             `Converts input text to katakana\n` +
             `\n` +
-            `${client.getEmoji("star")}**romaji** text\n` +
+            `${discord.getEmoji("star")}**romaji** text\n` +
             `Converts input text to romaji.\n` 
         )
-    const helpWeb: any = client.createEmbed();
+    const helpWeb: any = discord.createEmbed();
         helpWeb
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Website Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Website Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**giphy** _tag_\n` +
+            `${discord.getEmoji("star")}**giphy** _tag_\n` +
             `Searches giphy.\n` +
             `\n` +
-            `${client.getEmoji("star")}**google** text\n` +
+            `${discord.getEmoji("star")}**google** text\n` +
             `Searches google.\n` +
             `\n` +
-            `${client.getEmoji("star")}**images** text\n` +
+            `${discord.getEmoji("star")}**images** text\n` +
             `Searches google images.\n` +
             `\n` +
-            `${client.getEmoji("star")}**imgur** _tag_\n` +
+            `${discord.getEmoji("star")}**imgur** _tag_\n` +
             `Searches imgur.\n` +
             `\n` +
-            `${client.getEmoji("star")}**soundcloud** _tag_\n` +
+            `${discord.getEmoji("star")}**soundcloud** _tag_\n` +
             `Does not work yet.\n` +
             `\n` +
-            `${client.getEmoji("star")}**tenor** _tag_\n` +
+            `${discord.getEmoji("star")}**tenor** _tag_\n` +
             `Searches tenor.\n` +
             `\n` +
-            `${client.getEmoji("star")}**urban** _text_\n` +
+            `${discord.getEmoji("star")}**urban** _text_\n` +
             `Searches urban dictionary.\n` +
             `\n` +
-            `${client.getEmoji("star")}**xkcd** _id_\n` +
+            `${discord.getEmoji("star")}**xkcd** _id_\n` +
             `Gets an xkcd comic.\n` +
             `\n` +
-            `${client.getEmoji("star")}**youtube** <video/channel/playlist> text\n` +
+            `${discord.getEmoji("star")}**youtube** <video/channel/playlist> text\n` +
             `Searches youtube.\n` 
         )
-    const helpFun: any = client.createEmbed();
+    const helpFun: any = discord.createEmbed();
         helpFun
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Fun Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Fun Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**ascii** text\n` +
+            `${discord.getEmoji("star")}**ascii** text\n` +
             `Posts ascii art of the input text.\n` +
             `\n` +
-            `${client.getEmoji("star")}**emojify** text\n` +
+            `${discord.getEmoji("star")}**emojify** text\n` +
             `Posts input text in emoji letters.\n` +
             `\n` +
-            `${client.getEmoji("star")}**say** text\n` +
+            `${discord.getEmoji("star")}**say** text\n` +
             `Posts the input text.\n` 
         )
-    const helpUtil: any = client.createEmbed();
+    const helpUtil: any = discord.createEmbed();
         helpUtil
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Utility Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Utility Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**holiday**\n` +
+            `${discord.getEmoji("star")}**holiday**\n` +
             `Does not work yet.\n` +
             `\n` +
-            `${client.getEmoji("star")}**nasa**\n` +
+            `${discord.getEmoji("star")}**nasa**\n` +
             `Posts the astronomy picture of the day.\n` +
             `\n` +
-            `${client.getEmoji("star")}**photos**\n` +
+            `${discord.getEmoji("star")}**photos**\n` +
             `Does not work yet.\n` +
             `\n` +
-            `${client.getEmoji("star")}**remdash**\n` +
+            `${discord.getEmoji("star")}**remdash**\n` +
             `Does not work yet.\n` 
         )
-    const helpMusic: any = client.createEmbed();
+    const helpMusic: any = discord.createEmbed();
         helpMusic
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Music Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Music Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**play**\n` +
+            `${discord.getEmoji("star")}**play**\n` +
             `Does not work yet.\n` 
         )
-    const helpRole: any = client.createEmbed();
+    const helpRole: any = discord.createEmbed();
         helpRole
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Role Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Role Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**role add/del** _user/id_\n` +
+            `${discord.getEmoji("star")}**role add/del** _user/id_\n` +
             `Adds or removes a role from the specified user.\n`  
         )
-    const helpMod: any = client.createEmbed();
+    const helpMod: any = discord.createEmbed();
         helpMod
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Moderator Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Moderator Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**ban** user/id\n` +
+            `${discord.getEmoji("star")}**ban** user/id\n` +
             `Bans the specified user.\n` +
             `\n` +
-            `${client.getEmoji("star")}**del** number\n` +
+            `${discord.getEmoji("star")}**del** number\n` +
             `Deletes an amount of messages (1-1000).\n` +
             `\n` +
-            `${client.getEmoji("star")}**kick** _user/id_\n` +
+            `${discord.getEmoji("star")}**kick** _user/id_\n` +
             `Kicks the specified user.\n` +
             `\n` +
-            `${client.getEmoji("star")}**unban** _user/id_\n` +
+            `${discord.getEmoji("star")}**unban** _user/id_\n` +
             `Unbans the specified user.\n` 
         )
-    const helpAdmin: any = client.createEmbed();
+    const helpAdmin: any = discord.createEmbed();
         helpAdmin
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Administrator Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Administrator Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**n/a**\n` +
+            `${discord.getEmoji("star")}**n/a**\n` +
             `N/A\n`  
         )
-    const helpLogging: any = client.createEmbed();
+    const helpLogging: any = discord.createEmbed();
         helpLogging
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Logging Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Logging Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**n/a**\n` +
+            `${discord.getEmoji("star")}**n/a**\n` +
             `N/A\n`  
         )
-    const helpConfig: any = client.createEmbed();
+    const helpConfig: any = discord.createEmbed();
         helpConfig
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Configuration Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Configuration Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**n/a**\n` +
+            `${discord.getEmoji("star")}**n/a**\n` +
             `N/A\n`  
         )
-    const helpBotOwner: any = client.createEmbed();
+    const helpBotOwner: any = discord.createEmbed();
         helpBotOwner
         .setAuthor("help","https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author.avatarURL)
-        .setTitle(`Bot Developer Commands ${client.getEmoji("gabTired")}`)
+        .setTitle(`Bot Developer Commands ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}**createguild** name region\n` +
+            `${discord.getEmoji("star")}**createguild** name region\n` +
             `Does not work yet.\n` +
             `\n` +
-            `${client.getEmoji("star")}**eval** code\n` +
+            `${discord.getEmoji("star")}**eval** code\n` +
             `Evaluates javascript code.\n` +
             `\n` +
-            `${client.getEmoji("star")}**reboot**\n` +
+            `${discord.getEmoji("star")}**reboot**\n` +
             `Does not work yet.\n` +
             `\n` +
-            `${client.getEmoji("star")}**reload** command\n` +
+            `${discord.getEmoji("star")}**reload** command\n` +
             `Reloads a command.\n` +
             `\n` +
-            `${client.getEmoji("star")}**set** status text\n` +
+            `${discord.getEmoji("star")}**set** status text\n` +
             `Set's the bots activity.\n`
         )
 
-    client.createReactionEmbed([helpInfo, helpLevel, helpHeart, helpAnime, helpHentai, helpOsu, helpGeometry, helpJapanese,
+    discord.createReactionEmbed([helpInfo, helpLevel, helpHeart, helpAnime, helpHentai, helpOsu, helpGeometry, helpJapanese,
     helpFun, helpWeb, helpUtil, helpMusic, helpRole, helpMod, helpAdmin, helpLogging, helpConfig, helpBotOwner]);
     
 }

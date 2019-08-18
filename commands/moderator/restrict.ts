@@ -1,8 +1,8 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    const restrictEmbed: any = client.createEmbed();
-    const perm: any = client.createPermission("MANAGE_ROLES");
-    let restrict = await client.fetchColumn("special roles", "restricted role");
+    const restrictEmbed: any = discord.createEmbed();
+    const perm: any = discord.createPermission("MANAGE_ROLES");
+    let restrict = await discord.fetchColumn("special roles", "restricted role");
     if (!restrict) return message.reply("You need to set a restricted role first!");
     let reasonArray: any = [];
     let userArray: any = [];
@@ -26,14 +26,14 @@ exports.run = async (client: any, message: any, args: string[]) => {
             let dm = await member.createDM();
             restrictEmbed
             .setAuthor("restrict", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png")
-            .setTitle(`**You Were Restricted** ${client.getEmoji("kannaFU")}`)
-            .setDescription(`${client.getEmoji("star")}_You were restricted in ${message.guild.name} for reason:_ **${reason}**`);
+            .setTitle(`**You Were Restricted** ${discord.getEmoji("kannaFU")}`)
+            .setDescription(`${discord.getEmoji("star")}_You were restricted in ${message.guild.name} for reason:_ **${reason}**`);
             await dm.send(restrictEmbed);
         }
         restrictEmbed
         .setAuthor("restrict", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png")
-        .setTitle(`**Member Restricted** ${client.getEmoji("kannaFU")}`)
-        .setDescription(`${client.getEmoji("star")}_Successfully restricted ${members.join(", ")} for reason:_ **${reason}**`);
+        .setTitle(`**Member Restricted** ${discord.getEmoji("kannaFU")}`)
+        .setDescription(`${discord.getEmoji("star")}_Successfully restricted ${members.join(", ")} for reason:_ **${reason}**`);
         message.channel.send(restrictEmbed);
         return;
         

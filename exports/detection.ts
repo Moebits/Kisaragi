@@ -1,16 +1,16 @@
-module.exports = async (client: any, message: any) => {
+module.exports = async (discord: any, message: any) => {
 
     const cv = require('opencv4nodejs');
     const download = require('image-downloader')
     const classifier = new cv.CascadeClassifier("../assets/cascades/animeface.xml");
-    let anime = await client.fetchColumn("detection", "anime");
-    let pfp = await client.fetchColumn("detection", "pfp");
+    let anime = await discord.fetchColumn("detection", "anime");
+    let pfp = await discord.fetchColumn("detection", "pfp");
     let gifFrames = require('gif-frames');
     let fs = require('fs');
 
-    client.detectAnime = async (msg: any) => {
+    discord.detectAnime = async (msg: any) => {
         if (anime.join("") === "off") return;
-        if (msg.author.id === client.user.id) return;
+        if (msg.author.id === discord.user.id) return;
         if (msg.attachments.size) {
             let urls = msg.attachments.map((a) => a.url);
             for (let i = 0; i < urls.length; i++) {
@@ -27,20 +27,20 @@ module.exports = async (client: any, message: any) => {
         }
     }
 
-    client.swapRoles = async (msg: any, member?: any, counter?: boolean) => {
+    discord.swapRoles = async (msg: any, member?: any, counter?: boolean) => {
         if (pfp.join("") === "off") return;
-        if (msg.author.id === client.user.id) return;
+        if (msg.author.id === discord.user.id) return;
         if (!member) member = msg.member;
         if (!member.user.displayAvatarURL) return;
-        let weeb = await client.fetchColumn("detection", "weeb");
-        let normie = await client.fetchColumn("detection", "normie");
+        let weeb = await discord.fetchColumn("detection", "weeb");
+        let normie = await discord.fetchColumn("detection", "normie");
         let weebRole = msg.guild.roles.find((r: any) => r.id === weeb.join(""));
         let normieRole = msg.guild.roles.find((r: any) => r.id === normie.join(""));
         if (member.user.displayAvatarURL.slice(-3) === "gif") {
             gifFrames({url: member.user.displayAvatarURL, frames: 1}).then((frameData) => {
                 frameData[0].getImage().pipe(fs.createWriteStream('../assets/detection/user.jpg'));
             });
-            await client.timeout(500);
+            await discord.timeout(500);
         } else {
             await download.image({url: member.user.displayAvatarURL, dest: `../assets/detection/user.jpg`});
         } 

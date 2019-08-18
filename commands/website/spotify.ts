@@ -1,4 +1,4 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     let Spotify = require('node-spotify-api');
     let ms = require("pretty-ms");
  
@@ -8,26 +8,26 @@ exports.run = async (client: any, message: any, args: string[]) => {
     });
 
     if (args[1] === "artist") {
-        let query = client.combineArgs(args, 2);
+        let query = discord.combineArgs(args, 2);
         let response = await spotify.search({type: "artist", query: query.trim()});
         let artist = response.artists.items[0];
-        let spotifyEmbed = client.createEmbed();
+        let spotifyEmbed = discord.createEmbed();
         spotifyEmbed
         .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
-        .setTitle(`**Spotify Artist** ${client.getEmoji("aquaUp")}`)
+        .setTitle(`**Spotify Artist** ${discord.getEmoji("aquaUp")}`)
         .setURL(artist.external_urls.spotify)
         .setImage(artist.images[0].url)
         .setDescription(
-            `${client.getEmoji("star")}_Artist:_ **${artist.name}**\n` +
-            `${client.getEmoji("star")}_Genres:_ **${artist.genres.join(", ")}**\n` +
-            `${client.getEmoji("star")}_Followers:_ **${artist.followers.total}**\n` +
-            `${client.getEmoji("star")}_Popularity:_ **${artist.popularity}**\n`
+            `${discord.getEmoji("star")}_Artist:_ **${artist.name}**\n` +
+            `${discord.getEmoji("star")}_Genres:_ **${artist.genres.join(", ")}**\n` +
+            `${discord.getEmoji("star")}_Followers:_ **${artist.followers.total}**\n` +
+            `${discord.getEmoji("star")}_Popularity:_ **${artist.popularity}**\n`
         )
         message.channel.send(spotifyEmbed);
         return;
     }
 
-    let query = client.combineArgs(args, 1);
+    let query = discord.combineArgs(args, 1);
     let response = await spotify.search({type: "track", query: query.trim()});
     let spotifyArray: any = [];
     for (let i = 0; i < response.tracks.items.length; i++) {
@@ -35,23 +35,23 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let artists = track.artists.map((a: any) => a.name);
         let artistResponse = await spotify.search({type: "artist", query: artists[0]});
         let image = artistResponse.artists.items[0].images[0].url;
-        let spotifyEmbed = client.createEmbed();
+        let spotifyEmbed = discord.createEmbed();
         spotifyEmbed
         .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
-        .setTitle(`**Spotify Search** ${client.getEmoji("aquaUp")}`)
+        .setTitle(`**Spotify Search** ${discord.getEmoji("aquaUp")}`)
         .setImage(track.album.images[0].url)
         .setThumbnail(image)
         .setURL(track.external_urls.spotify)
         .setDescription(
-            `${client.getEmoji("star")}_Track:_ **${track.name}**\n` +
-            `${client.getEmoji("star")}_Artists:_ **${artists.join(", ")}**\n` +
-            `${client.getEmoji("star")}_Album:_ **${track.album.name}**\n` +
-            `${client.getEmoji("star")}_Tracks:_ **${track.album.total_tracks}**\n` +
-            `${client.getEmoji("star")}_Release Date:_ **${client.formatDate(track.album.release_date)}**\n` +
-            `${client.getEmoji("star")}_Duration:_ **${ms(track.duration_ms, {secondsDecimalDigits: 0})}**\n` +
-            `${client.getEmoji("star")}_Popularity:_ **${track.popularity}**\n`
+            `${discord.getEmoji("star")}_Track:_ **${track.name}**\n` +
+            `${discord.getEmoji("star")}_Artists:_ **${artists.join(", ")}**\n` +
+            `${discord.getEmoji("star")}_Album:_ **${track.album.name}**\n` +
+            `${discord.getEmoji("star")}_Tracks:_ **${track.album.total_tracks}**\n` +
+            `${discord.getEmoji("star")}_Release Date:_ **${discord.formatDate(track.album.release_date)}**\n` +
+            `${discord.getEmoji("star")}_Duration:_ **${ms(track.duration_ms, {secondsDecimalDigits: 0})}**\n` +
+            `${discord.getEmoji("star")}_Popularity:_ **${track.popularity}**\n`
         )
         spotifyArray.push(spotifyEmbed);
     }
-    client.createReactionEmbed(spotifyArray);
+    discord.createReactionEmbed(spotifyArray);
 }

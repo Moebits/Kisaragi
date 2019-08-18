@@ -1,6 +1,6 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    const guildIconEmbed: any = client.createEmbed();
+    const guildIconEmbed: any = discord.createEmbed();
     if (message.guild.available) {
 
         await message.channel.send(guildIconEmbed

@@ -1,4 +1,4 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
     let imgUrl;
     if (!args[1]) {
@@ -16,10 +16,10 @@ exports.run = async (client: any, message: any, args: string[]) => {
         image: imgUrl
     });
     
-    let waifuEmbed = client.createEmbed();
+    let waifuEmbed = discord.createEmbed();
     waifuEmbed
     .setAuthor("waifu2x", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9hWZ1ptE9IrNWOUqHzcf9OFD7RMMQEXeUwqpE3zCMB8PWD8Caeg")
-    .setTitle(`**Waifu 2x Image Resizing** ${client.getEmoji("gabYes")}`)
+    .setTitle(`**Waifu 2x Image Resizing** ${discord.getEmoji("gabYes")}`)
     .setURL(response.output_url)
     .setImage(response.output_url)
     message.channel.send(waifuEmbed)

@@ -1,9 +1,9 @@
 import {SnowflakeUtil} from "discord.js";
 
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    let input = client.combineArgs(args, 1);
-    let snowflakeEmbed = client.createEmbed();
+    let input = discord.combineArgs(args, 1);
+    let snowflakeEmbed = discord.createEmbed();
     console.log(input.match(/\d+/g).join(""))
     console.log(input)
 
@@ -11,13 +11,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let snowflake = SnowflakeUtil.deconstruct(input.trim());
         snowflakeEmbed
         .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
-        .setTitle(`**Snowflake** ${client.getEmoji("gabTired")}`)
+        .setTitle(`**Snowflake** ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}_Date:_ **${snowflake.date}**\n` +
-            `${client.getEmoji("star")}_Worker ID:_ **${snowflake.workerID}**\n` +
-            `${client.getEmoji("star")}_Process ID:_ **${snowflake.processID}**\n` +
-            `${client.getEmoji("star")}_Increment:_ **${snowflake.increment}**\n` +
-            `${client.getEmoji("star")}_Binary:_ **${snowflake.binary}**\n` 
+            `${discord.getEmoji("star")}_Date:_ **${snowflake.date}**\n` +
+            `${discord.getEmoji("star")}_Worker ID:_ **${snowflake.workerID}**\n` +
+            `${discord.getEmoji("star")}_Process ID:_ **${snowflake.processID}**\n` +
+            `${discord.getEmoji("star")}_Increment:_ **${snowflake.increment}**\n` +
+            `${discord.getEmoji("star")}_Binary:_ **${snowflake.binary}**\n` 
         )
         message.channel.send(snowflakeEmbed);
 
@@ -26,9 +26,9 @@ exports.run = async (client: any, message: any, args: string[]) => {
         let snowflake = SnowflakeUtil.generate(new Date(input));
         snowflakeEmbed
         .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
-        .setTitle(`**Snowflake** ${client.getEmoji("gabTired")}`)
+        .setTitle(`**Snowflake** ${discord.getEmoji("gabTired")}`)
         .setDescription(
-            `${client.getEmoji("star")}_Snowflake:_ **${snowflake}**\n` 
+            `${discord.getEmoji("star")}_Snowflake:_ **${snowflake}**\n` 
         )
         message.channel.send(snowflakeEmbed);
     }

@@ -1,12 +1,12 @@
-module.exports = async (client: any, member: any) => {
+module.exports = async (discord: any, member: any) => {
 
     let bans = await member.guild.fetchBans();
     if (bans.has(member.id)) return;
 
     let defaultChannel;
-    let defChannel = await client.fetchColumn("blocks", "default channel");
+    let defChannel = await discord.fetchColumn("blocks", "default channel");
     if (defChannel.join("")) {
-        let allChannels = await client.channels;
+        let allChannels = await discord.channels;
         defaultChannel = allChannels.find((c) => c.id.toString() === defChannel.join(""));
     }
 
@@ -16,20 +16,20 @@ module.exports = async (client: any, member: any) => {
     }
 
 
-    await require("../exports/images.js")(client, defMessage ? defMessage.first() : null);
-    await require("../exports/detection.js")(client, defMessage ? defMessage.first() : null);
+    await require("../exports/images.js")(discord, defMessage ? defMessage.first() : null);
+    await require("../exports/detection.js")(discord, defMessage ? defMessage.first() : null);
 
     async function animePfp() {
-        let result = await client.swapRoles(defMessage ? defMessage.first() : null, member, true);
+        let result = await discord.swapRoles(defMessage ? defMessage.first() : null, member, true);
         if (result === false) {
             let channel = defaultChannel;
             let reason = "Doesn't have an anime profile picture!";
             let dm = await member.user.createDM();
-            let kickEmbed = client.createEmbed();
+            let kickEmbed = discord.createEmbed();
             kickEmbed
             .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
-            .setTitle(`**You Were Kicked** ${client.getEmoji("kannaFU")}`)
-            .setDescription(`${client.getEmoji("star")}_You were kicked from ${member.guild.name} for reason:_ **${reason}**`);
+            .setTitle(`**You Were Kicked** ${discord.getEmoji("kannaFU")}`)
+            .setDescription(`${discord.getEmoji("star")}_You were kicked from ${member.guild.name} for reason:_ **${reason}**`);
             await dm.send(kickEmbed);
             if (channel) await channel.send(kickEmbed);
             await member.kick(reason);
@@ -39,17 +39,17 @@ module.exports = async (client: any, member: any) => {
     animePfp();
 
     async function welcomeMessages() {
-        let welcomeToggle = await client.fetchColumn("welcome leaves", "welcome toggle");
+        let welcomeToggle = await discord.fetchColumn("welcome leaves", "welcome toggle");
         if (welcomeToggle.join("") === "off") return;
 
-        let welcomeMsg = await client.fetchColumn("welcome leaves", "welcome message");
-        let welcomeChannel = await client.fetchColumn("welcome leaves", "welcome channel");
-        let welcomeImage = await client.fetchColumn("welcome leaves", "welcome bg image");
-        let welcomeText = await client.fetchColumn("welcome leaves", "welcome bg text");
-        let welcomeColor = await client.fetchColumn("welcome leaves", "welcome bg color");
+        let welcomeMsg = await discord.fetchColumn("welcome leaves", "welcome message");
+        let welcomeChannel = await discord.fetchColumn("welcome leaves", "welcome channel");
+        let welcomeImage = await discord.fetchColumn("welcome leaves", "welcome bg image");
+        let welcomeText = await discord.fetchColumn("welcome leaves", "welcome bg text");
+        let welcomeColor = await discord.fetchColumn("welcome leaves", "welcome bg color");
         const channel = member.guild.channels.find(c => c.id.toString() === welcomeChannel.join(""));
 
-        let attachment = await client.createCanvas(member, welcomeImage, welcomeText, welcomeColor);
+        let attachment = await discord.createCanvas(member, welcomeImage, welcomeText, welcomeColor);
 
         let newMsg = welcomeMsg.join("").replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount)
@@ -60,8 +60,8 @@ module.exports = async (client: any, member: any) => {
     welcomeMessages();
 
     async function avatarBan() {
-        let banToggle = await client.fetchColumn("blocks", "leaver ban toggle");
-        const banEmbed: any = client.createEmbed();
+        let banToggle = await discord.fetchColumn("blocks", "leaver ban toggle");
+        const banEmbed: any = discord.createEmbed();
         if (banToggle.join("") === "off") return;
 
         if (!member.user.avatarURL) {
@@ -69,12 +69,12 @@ module.exports = async (client: any, member: any) => {
             let reason = "Has the default discord avatar."
             banEmbed
             .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
-            .setTitle(`**Member Banned** ${client.getEmoji("kannaFU")}`)
-            .setDescription(`${client.getEmoji("star")}_Successfully banned <@${member.user.id}> for reason:_ **${reason}**`);
+            .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
+            .setDescription(`${discord.getEmoji("star")}_Successfully banned <@${member.user.id}> for reason:_ **${reason}**`);
             if (channel) channel.send(banEmbed);
             banEmbed
-            .setTitle(`**You Were Banned** ${client.getEmoji("kannaFU")}`)
-            .setDescription(`${client.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`);
+            .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
+            .setDescription(`${discord.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`);
             let dm = await member.user.createDM();
             try { 
                 await dm.send(banEmbed);

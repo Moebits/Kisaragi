@@ -1,18 +1,18 @@
-exports.run = async (client: any, message: any, args: string[]) => {
-    let input = client.combineArgs(args, 1);
+exports.run = async (discord: any, message: any, args: string[]) => {
+    let input = discord.combineArgs(args, 1);
     if (input.trim()) {
         message.content = input.trim();
         modPrompt(message);
         return;
     }
 
-    let ascii = await client.fetchColumn("blocks", "ascii name toggle");
-    let mute = await client.fetchColumn("special roles", "mute role");
-    let restrict = await client.fetchColumn("special roles", "restricted role");
+    let ascii = await discord.fetchColumn("blocks", "ascii name toggle");
+    let mute = await discord.fetchColumn("special roles", "mute role");
+    let restrict = await discord.fetchColumn("special roles", "restricted role");
 
-    let modEmbed = client.createEmbed();
+    let modEmbed = discord.createEmbed();
     modEmbed
-    .setTitle(`**Moderator Settings** ${client.getEmoji("karenAnger")}`)
+    .setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)
     .setThumbnail(message.guild.iconURL)
     .setDescription(
         "Edit moderation settings for the server.\n" +
@@ -21,37 +21,37 @@ exports.run = async (client: any, message: any, args: string[]) => {
         "**Ascii Names** = Removes all non-ascii characters in usernames.\n" +
         "\n" +
         "__Current Settings__\n" +
-        `${client.getEmoji("star")}Mute role: ${mute.join("") ? `<@&${mute.join("")}>` : "None"}\n` +
-        `${client.getEmoji("star")}Restricted role: ${restrict.join("") ? `<@&${restrict.join("")}>` : "None"}\n` +
-        `${client.getEmoji("star")}Ascii names are **${ascii.join("")}**.\n` +
+        `${discord.getEmoji("star")}Mute role: ${mute.join("") ? `<@&${mute.join("")}>` : "None"}\n` +
+        `${discord.getEmoji("star")}Restricted role: ${restrict.join("") ? `<@&${restrict.join("")}>` : "None"}\n` +
+        `${discord.getEmoji("star")}Ascii names are **${ascii.join("")}**.\n` +
         "\n" +
         "__Edit Settings__\n" +
-        `${client.getEmoji("star")}Type **ascii** to toggle ascii names on/off.\n` +
-        `${client.getEmoji("star")}**Mention a role or type a role id** to set the mute role.\n` +
-        `${client.getEmoji("star")}Mention a role or type a role id **between brackets [role]** to set the restricted role.\n` +
-        `${client.getEmoji("star")}Type **reset** to reset settings.\n` +
-        `${client.getEmoji("star")}Type **cancel** to exit.\n`
+        `${discord.getEmoji("star")}Type **ascii** to toggle ascii names on/off.\n` +
+        `${discord.getEmoji("star")}**Mention a role or type a role id** to set the mute role.\n` +
+        `${discord.getEmoji("star")}Mention a role or type a role id **between brackets [role]** to set the restricted role.\n` +
+        `${discord.getEmoji("star")}Type **reset** to reset settings.\n` +
+        `${discord.getEmoji("star")}Type **cancel** to exit.\n`
     )
 
     message.channel.send(modEmbed);
 
     async function modPrompt(msg: any) {
-        let responseEmbed = client.createEmbed();
-        responseEmbed.setTitle(`**Moderator Settings** ${client.getEmoji("karenAnger")}`)
-        let ascii = await client.fetchColumn("blocks", "ascii name toggle");
+        let responseEmbed = discord.createEmbed();
+        responseEmbed.setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)
+        let ascii = await discord.fetchColumn("blocks", "ascii name toggle");
         let setAscii, setMute, setRestrict;
         if (msg.content.toLowerCase() === "cancel") {
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}Canceled the prompt!`)
+            .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
             msg.channel.send(responseEmbed);
             return;
         } 
         if (msg.content.toLowerCase() === "reset") {
-            await client.updateColumn("blocks", "ascii name toggle", "off");
-            await client.updateColumn("special roles", "mute role", null);
-            await client.updateColumn("special roles", "restricted role", null);
+            await discord.updateColumn("blocks", "ascii name toggle", "off");
+            await discord.updateColumn("special roles", "mute role", null);
+            await discord.updateColumn("special roles", "restricted role", null);
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}All settings were reset!`)
+            .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
             msg.channel.send(responseEmbed);
             return;
         }
@@ -66,22 +66,22 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
         if (setAscii) {
             if (ascii.join("") === "off") {
-                await client.updateColumn("blocks", "ascii name toggle", "on");
-                description += `${client.getEmoji("star")}Ascii names are **on**!\n`
+                await discord.updateColumn("blocks", "ascii name toggle", "on");
+                description += `${discord.getEmoji("star")}Ascii names are **on**!\n`
             } else {
-                await client.updateColumn("blocks", "ascii name toggle", "off");
-                description += `${client.getEmoji("star")}Ascii names are **off**!\n`
+                await discord.updateColumn("blocks", "ascii name toggle", "off");
+                description += `${discord.getEmoji("star")}Ascii names are **off**!\n`
             }
         }
 
         if (setMute) {
-            await client.updateColumn("special roles", "mute role", muteRole.join(""));
-            description += `${client.getEmoji("star")}Mute role set to <@&${muteRole.join("")}>!\n`
+            await discord.updateColumn("special roles", "mute role", muteRole.join(""));
+            description += `${discord.getEmoji("star")}Mute role set to <@&${muteRole.join("")}>!\n`
         }
 
         if (setRestrict) {
-            await client.updateColumn("special roles", "restricted role", restrictRole.join(""));
-            description += `${client.getEmoji("star")}Restricted role set to <@&${restrictRole.join("")}>!\n`
+            await discord.updateColumn("special roles", "restricted role", restrictRole.join(""));
+            description += `${discord.getEmoji("star")}Restricted role set to <@&${restrictRole.join("")}>!\n`
         }
 
         responseEmbed
@@ -91,5 +91,5 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
     }
 
-    client.createPrompt(modPrompt);
+    discord.createPrompt(modPrompt);
 }

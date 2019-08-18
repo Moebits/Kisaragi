@@ -1,19 +1,19 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
   let ownerID: any = process.env.OWNER_ID;
-  const rebootEmbed: any = client.createEmbed();
+  const rebootEmbed: any = discord.createEmbed();
 
   const unloadCommand: any = async (commandName: string) => {
     let command: any;
-    if (client.commands.has(commandName)) {
-      command = client.commands.get(commandName);
-    } else if (client.aliases.has(commandName)) {
-      command = client.commands.get(client.aliases.get(commandName));
+    if (discord.commands.has(commandName)) {
+      command = discord.commands.get(commandName);
+    } else if (discord.aliases.has(commandName)) {
+      command = discord.commands.get(discord.aliases.get(commandName));
     }
     if (!command) return `The command \`${commandName}\` could not be found.`;
   
     if (command.shutdown) {
-      await command.shutdown(client);
+      await command.shutdown(discord);
     }
   
     const mod: any = require.cache[require.resolve(`../commands/$${commandName}`)];
@@ -32,7 +32,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
       await message.channel.send(rebootEmbed
       .setDescription("Bot is shutting down."));
 
-      await Promise.all(client.commands.map((cmd: any) =>
+      await Promise.all(discord.commands.map((cmd: any) =>
         unloadCommand(cmd)
       ));
       process.exit(0);

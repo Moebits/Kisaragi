@@ -1,19 +1,19 @@
-exports.run = async (client: any, message: any, args: string[]) => {
-    let input = client.combineArgs(args, 1);
+exports.run = async (discord: any, message: any, args: string[]) => {
+    let input = discord.combineArgs(args, 1);
     if (input.trim()) {
         message.content = input.trim();
         detectPrompt(message);
         return;
     }
 
-    let links = await client.fetchColumn("detection", "links");
-    let anime = await client.fetchColumn("detection", "anime");
-    let pfp = await client.fetchColumn("detection", "pfp");
-    let weeb = await client.fetchColumn("detection", "weeb");
-    let normie = await client.fetchColumn("detection", "normie");
-    let detectEmbed = client.createEmbed();
+    let links = await discord.fetchColumn("detection", "links");
+    let anime = await discord.fetchColumn("detection", "anime");
+    let pfp = await discord.fetchColumn("detection", "pfp");
+    let weeb = await discord.fetchColumn("detection", "weeb");
+    let normie = await discord.fetchColumn("detection", "normie");
+    let detectEmbed = discord.createEmbed();
     detectEmbed
-    .setTitle(`**Detection Settings** ${client.getEmoji("sagiriBleh")}`)
+    .setTitle(`**Detection Settings** ${discord.getEmoji("sagiriBleh")}`)
     .setThumbnail(message.guild.iconURL)
     .setDescription(
         "Configure settings for automatic detection.\n" +
@@ -23,48 +23,48 @@ exports.run = async (client: any, message: any, args: string[]) => {
         "**Pfp Detection** = Actively swaps members between the weeb role (anime pfp) and normie role (non anime pfp).\n" +
         "\n" +
         "__Current Settings__\n" +
-        `${client.getEmoji("star")}Link detection is **${links.join("")}**\n` + 
-        `${client.getEmoji("star")}Anime detection is **${anime.join("")}**\n` + 
-        `${client.getEmoji("star")}Pfp detection is **${pfp.join("")}**\n` + 
-        `${client.getEmoji("star")}Weeb role set to: ${weeb.join("") ? `<@&${weeb.join("")}>` : "None"}\n` + 
-        `${client.getEmoji("star")}Normie role set to: ${normie.join("") ? `<@&${normie.join("")}>` : "None"}\n` + 
+        `${discord.getEmoji("star")}Link detection is **${links.join("")}**\n` + 
+        `${discord.getEmoji("star")}Anime detection is **${anime.join("")}**\n` + 
+        `${discord.getEmoji("star")}Pfp detection is **${pfp.join("")}**\n` + 
+        `${discord.getEmoji("star")}Weeb role set to: ${weeb.join("") ? `<@&${weeb.join("")}>` : "None"}\n` + 
+        `${discord.getEmoji("star")}Normie role set to: ${normie.join("") ? `<@&${normie.join("")}>` : "None"}\n` + 
         "\n" +
         "__Edit Settings__\n" +
-        `${client.getEmoji("star")}Type **link** to toggle link detection on/off.\n` + 
-        `${client.getEmoji("star")}Type **anime** to toggle anime detection on/off.\n` + 
-        `${client.getEmoji("star")}Type **pfp** to toggle pfp detection on/off.\n` + 
-        `${client.getEmoji("star")}**Mention a role or type a role id** to set the weeb role.\n` + 
-        `${client.getEmoji("star")}Mention a role or type a role id **between brackets [role]** to set the normie role.\n` + 
-        `${client.getEmoji("star")}You can set **multiple options at the same time**.\n` + 
-        `${client.getEmoji("star")}Type **reset** to reset settings.\n` + 
-        `${client.getEmoji("star")}Type **cancel** to exit.\n` 
+        `${discord.getEmoji("star")}Type **link** to toggle link detection on/off.\n` + 
+        `${discord.getEmoji("star")}Type **anime** to toggle anime detection on/off.\n` + 
+        `${discord.getEmoji("star")}Type **pfp** to toggle pfp detection on/off.\n` + 
+        `${discord.getEmoji("star")}**Mention a role or type a role id** to set the weeb role.\n` + 
+        `${discord.getEmoji("star")}Mention a role or type a role id **between brackets [role]** to set the normie role.\n` + 
+        `${discord.getEmoji("star")}You can set **multiple options at the same time**.\n` + 
+        `${discord.getEmoji("star")}Type **reset** to reset settings.\n` + 
+        `${discord.getEmoji("star")}Type **cancel** to exit.\n` 
     )
     message.channel.send(detectEmbed);
 
     async function detectPrompt(msg: any) {
-        let responseEmbed = client.createEmbed();
-        responseEmbed.setTitle(`**Detection Settings** ${client.getEmoji("sagiriBleh")}`);
-        let links = await client.fetchColumn("detection", "links");
-        let anime = await client.fetchColumn("detection", "anime");
-        let pfp = await client.fetchColumn("detection", "pfp");
-        let weeb = await client.fetchColumn("detection", "weeb");
-        let normie = await client.fetchColumn("detection", "normie");
+        let responseEmbed = discord.createEmbed();
+        responseEmbed.setTitle(`**Detection Settings** ${discord.getEmoji("sagiriBleh")}`);
+        let links = await discord.fetchColumn("detection", "links");
+        let anime = await discord.fetchColumn("detection", "anime");
+        let pfp = await discord.fetchColumn("detection", "pfp");
+        let weeb = await discord.fetchColumn("detection", "weeb");
+        let normie = await discord.fetchColumn("detection", "normie");
         let setLink, setAnime, setPfp, setWeeb, setNormie;
 
         if (msg.content.toLowerCase() === "cancel") {
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}Canceled the prompt!`)
+            .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
             msg.channel.send(responseEmbed);
             return;
         } 
         if (msg.content.toLowerCase() === "reset") {
-            await client.updateColumn("detection", "links", "on");
-            await client.updateColumn("detection", "anime", "off");
-            await client.updateColumn("detection", "pfp", "off");
-            await client.updateColumn("detection", "weeb", null);
-            await client.updateColumn("detection", "normie", null);
+            await discord.updateColumn("detection", "links", "on");
+            await discord.updateColumn("detection", "anime", "off");
+            await discord.updateColumn("detection", "pfp", "off");
+            await discord.updateColumn("detection", "weeb", null);
+            await discord.updateColumn("detection", "normie", null);
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}All settings were reset!`)
+            .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
             msg.channel.send(responseEmbed);
             return;
         }
@@ -82,21 +82,21 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
         if (setLink) {
             if (links.join("") === "off") {
-                await client.updateColumn("detection", "links", "on");
-                description += `${client.getEmoji("star")}Link detection is **on**!\n`
+                await discord.updateColumn("detection", "links", "on");
+                description += `${discord.getEmoji("star")}Link detection is **on**!\n`
             } else {
-                await client.updateColumn("detection", "links", "off");
-                description += `${client.getEmoji("star")}Link detection is **off**!\n`
+                await discord.updateColumn("detection", "links", "off");
+                description += `${discord.getEmoji("star")}Link detection is **off**!\n`
             }
         }
 
         if (setAnime) {
             if (anime.join("") === "off") {
-                await client.updateColumn("detection", "anime", "on");
-                description += `${client.getEmoji("star")}Anime detection is **on**!\n`
+                await discord.updateColumn("detection", "anime", "on");
+                description += `${discord.getEmoji("star")}Anime detection is **on**!\n`
             } else {
-                await client.updateColumn("detection", "anime", "off");
-                description += `${client.getEmoji("star")}Anime detection is **off**!\n`
+                await discord.updateColumn("detection", "anime", "off");
+                description += `${discord.getEmoji("star")}Anime detection is **off**!\n`
             }
         }
 
@@ -115,22 +115,22 @@ exports.run = async (client: any, message: any, args: string[]) => {
                         return;
                     }
                 }
-                await client.updateColumn("detection", "pfp", "on");
-                description += `${client.getEmoji("star")}Pfp detection is **on**!\n`
+                await discord.updateColumn("detection", "pfp", "on");
+                description += `${discord.getEmoji("star")}Pfp detection is **on**!\n`
             } else {
-                await client.updateColumn("detection", "pfp", "off");
-                description += `${client.getEmoji("star")}Pfp detection is **off**!\n`
+                await discord.updateColumn("detection", "pfp", "off");
+                description += `${discord.getEmoji("star")}Pfp detection is **off**!\n`
             }
         }
 
         if (setWeeb) {
-            await client.updateColumn("detection", "weeb", weebRole.join(""));
-            description += `${client.getEmoji("star")}Weeb role set to **<@&${weebRole.join("")}>**!\n`
+            await discord.updateColumn("detection", "weeb", weebRole.join(""));
+            description += `${discord.getEmoji("star")}Weeb role set to **<@&${weebRole.join("")}>**!\n`
         }
 
         if (setNormie) {
-            await client.updateColumn("detection", "normie", normieRole.join(""));
-            description += `${client.getEmoji("star")}Normie role set to **<@&${normieRole.join("")}>**!\n`
+            await discord.updateColumn("detection", "normie", normieRole.join(""));
+            description += `${discord.getEmoji("star")}Normie role set to **<@&${normieRole.join("")}>**!\n`
         }
 
         responseEmbed
@@ -139,5 +139,5 @@ exports.run = async (client: any, message: any, args: string[]) => {
         return;
     }
 
-    client.createPrompt(detectPrompt)
+    discord.createPrompt(detectPrompt)
 }

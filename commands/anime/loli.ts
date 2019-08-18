@@ -1,9 +1,9 @@
 import {Message} from "discord.js";
 
-exports.run = async (client: any, message: Message, args: string[]) => {
+exports.run = async (discord: any, message: Message, args: string[]) => {
     const Loli = require('lolis.life');
     const loli = new Loli();
-    const loliEmbed = client.createEmbed();
+    const loliEmbed = discord.createEmbed();
     let result;
 
     if (args[1] === "hentai") {
@@ -13,7 +13,7 @@ exports.run = async (client: any, message: Message, args: string[]) => {
     }
 
     loliEmbed
-    .setTitle(`**Loli** ${client.getEmoji("madokaLewd")}`)
+    .setTitle(`**Loli** ${discord.getEmoji("madokaLewd")}`)
     .setImage(result.url)
     message.channel.send(loliEmbed);
     console.log(result)

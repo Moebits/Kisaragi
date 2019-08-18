@@ -19,7 +19,7 @@ const Pool: any = require('pg').Pool;
     });
 
 
-module.exports = async (client: any, message: any) => {
+module.exports = async (discord: any, message: any) => {
 
     const tableList: string[] = [
         "birthdays",
@@ -46,19 +46,19 @@ module.exports = async (client: any, message: any) => {
     ];
 
     //Run Query
-    client.runQuery = async (query: any, newData?: boolean, raw?: boolean) => {
+    discord.runQuery = async (query: any, newData?: boolean, raw?: boolean) => {
       let start: number = Date.now();
       let redisResult = await redis.getAsync(JSON.stringify(query));
       if (newData) redisResult = null;
       if (redisResult) {
-        client.logQuery(Object.values(query)[0], start, true);
+        discord.logQuery(Object.values(query)[0], start, true);
         if (raw) return JSON.parse(redisResult);
         return (JSON.parse(redisResult))[0]
       } else {
         const pgClient = await pgPool.connect();
           try {
             const result = await pgClient.query(query);
-            //client.logQuery(Object.values(query)[0], start);
+            //discord.logQuery(Object.values(query)[0], start);
             await redis.setAsync(JSON.stringify(query), JSON.stringify(result.rows))
             if (raw) return result.rows;
             return result.rows[0]
@@ -71,7 +71,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Log Query
-    client.logQuery = (text: string, start: number, blue?: boolean) => {
+    discord.logQuery = (text: string, start: number, blue?: boolean) => {
       const duration: number = Date.now() - start;
       let color: string = "";
       if (blue) {
@@ -88,12 +88,12 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Flush Redis DB
-    client.flushDB = async () => {
+    discord.flushDB = async () => {
       await redis.flushdbAsync();
     }
 
     //Fetch a row 
-    client.fetchRow = async (table: string, update?: boolean) => {
+    discord.fetchRow = async (table: string, update?: boolean) => {
         if (message === null) return;
         let query: object = {
           text: `SELECT * FROM "${table}" WHERE "guild id" = ${message.guild.id}`,
@@ -101,15 +101,15 @@ module.exports = async (client: any, message: any) => {
         }
         let result;
         if (update) {
-          result = await client.runQuery(query, true);
+          result = await discord.runQuery(query, true);
         } else {
-          result = await client.runQuery(query);
+          result = await discord.runQuery(query);
         }
         return result;
     }
 
     //Fetch commands
-    client.fetchCommand = async (command: string, column: string, update?: boolean) => {
+    discord.fetchCommand = async (command: string, column: string, update?: boolean) => {
         let query: object = {
           text: `SELECT "${column}" FROM commands WHERE command IN ($1)`,
           values: [command],
@@ -117,46 +117,46 @@ module.exports = async (client: any, message: any) => {
         };
         let result;
         if (update) {
-          result = await client.runQuery(query, true);
+          result = await discord.runQuery(query, true);
         } else {
-          result = await client.runQuery(query);
+          result = await discord.runQuery(query);
         }
         return result;
     }
 
     //Fetch aliases
-    client.fetchAliases = async (update?: boolean) => {
+    discord.fetchAliases = async (update?: boolean) => {
         let query: object = {
           text: `SELECT aliases FROM commands`,
           rowMode: 'array'
         }
         let result;
         if (update) {
-          result = await client.runQuery(query, true);
+          result = await discord.runQuery(query, true);
         } else {
-          result = await client.runQuery(query);
+          result = await discord.runQuery(query);
         }
         return result;
     }
 
     //Fetch Prefix
-    client.fetchPrefix = async (update?: boolean) => {
+    discord.fetchPrefix = async (update?: boolean) => {
         let query: object = {
           text: `SELECT prefix FROM prefixes WHERE "guild id" = ${message.guild.id}`,
           rowMode: 'array'
         }
         let result;
         if (update) {
-          result = await client.runQuery(query, true);
+          result = await discord.runQuery(query, true);
         } else {
-          result = await client.runQuery(query);
+          result = await discord.runQuery(query);
         }
         if(!result.join("")) return "=>";
         return result[0];
     }
 
     //Fetch a column
-    client.fetchColumn = async (table: string, column: string, key?: any, value?: any, update?: boolean) => {
+    discord.fetchColumn = async (table: string, column: string, key?: any, value?: any, update?: boolean) => {
       let query: object;
       if (key) {
         query = {
@@ -171,58 +171,58 @@ module.exports = async (client: any, message: any) => {
       }
       let result;
         if (update) {
-          result = await client.runQuery(query, true);
+          result = await discord.runQuery(query, true);
         } else {
-          result = await client.runQuery(query);
+          result = await discord.runQuery(query);
         }
       return result;
     }
 
     //Select whole column
-    client.selectColumn = async (table: string, column: string, update?: boolean) => {
+    discord.selectColumn = async (table: string, column: string, update?: boolean) => {
       let query = {
         text: `SELECT "${column}" FROM "${table}"`,
         rowMode: 'array'
       }
       let result;
         if (update) {
-          result = await client.runQuery(query, true, true);
+          result = await discord.runQuery(query, true, true);
         } else {
-          result = await client.runQuery(query, false, true);
+          result = await discord.runQuery(query, false, true);
         }
       return result;
     }
 
     //Insert row into a table
-    client.insertInto = async (table: string, column: string, value: any) => {
+    discord.insertInto = async (table: string, column: string, value: any) => {
         let query: object = {
           text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
           values: [value]
         }
-        await client.runQuery(query, true);
+        await discord.runQuery(query, true);
     }
 
     //Insert command
-    client.insertCommand = async (command: string, aliases: string[], path: string, cooldown: string) => {
+    discord.insertCommand = async (command: string, aliases: string[], path: string, cooldown: string) => {
       let query: object = {
         text: `INSERT INTO commands (command, aliases, path, cooldown) VALUES ($1, $2, $3, $4)`,
         values: [command, aliases, path, cooldown]
       }
-      await client.runQuery(query, true);
+      await discord.runQuery(query, true);
   }
 
   //Update Prefix
-  client.updatePrefix = async (prefix: string) => {
+  discord.updatePrefix = async (prefix: string) => {
     let query = {
         text: `UPDATE "prefixes" SET "prefix" = $1 WHERE "guild id" = ${message.guild.id}`,
         values: [prefix]
       }
-    await client.runQuery(query, true);
-    client.fetchPrefix(true);
+    await discord.runQuery(query, true);
+    discord.fetchPrefix(true);
 }
 
     //Update a row in a table
-    client.updateColumn = async (table: string, column: string, value: any, key?: string, keyVal?: string) => {
+    discord.updateColumn = async (table: string, column: string, value: any, key?: string, keyVal?: string) => {
         let query: object;
         if (key) {
           query = {
@@ -235,65 +235,65 @@ module.exports = async (client: any, message: any) => {
             values: [value]
           }
         }
-        await client.runQuery(query, true);
-        client.selectColumn(table, column, true);
+        await discord.runQuery(query, true);
+        discord.selectColumn(table, column, true);
         if (key) { 
-          await client.fetchColumn(table, column, key, keyVal, true);
+          await discord.fetchColumn(table, column, key, keyVal, true);
         } else {
-          await client.fetchColumn(table, column, false, false, true);
-          client.fetchRow(table, true);
+          await discord.fetchColumn(table, column, false, false, true);
+          discord.fetchRow(table, true);
         }
     }
 
     //Update Command
-    client.updateCommand = async (command: string, aliases: any, cooldown: string) => {
+    discord.updateCommand = async (command: string, aliases: any, cooldown: string) => {
       let query: object = {
         text: `UPDATE commands SET aliases = $1, cooldown = $2 WHERE "command" = $3`,
         values: [aliases, cooldown, command]
       }
-      await client.runQuery(query, true);
-      client.fetchCommand(command, "aliases", true);
-      client.fetchCommand(command, "cooldown", true);
-      client.fetchAliases(true);
+      await discord.runQuery(query, true);
+      discord.fetchCommand(command, "aliases", true);
+      discord.fetchCommand(command, "cooldown", true);
+      discord.fetchAliases(true);
   }
 
     //Remove a guild from all tables
-    client.deleteGuild = async (guild: number) => {
+    discord.deleteGuild = async (guild: number) => {
         for (let i = 0; i < tableList.length; i++) {
             let query: object = {
               text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
               values: [guild]
             }
-            await client.runQuery(query, true);
+            await discord.runQuery(query, true);
         }
     }
 
     //Order tables by guild member count
-    client.orderTables = async () => {
+    discord.orderTables = async () => {
         for (let table in tableList) {
             let query: object = {
               text: `SELECT members FROM "${tableList[table]}" ORDER BY 
               CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members DESC`
             }
-            await client.runQuery(query, true);
+            await discord.runQuery(query, true);
         }
     }
 
     //Init guild
-    client.initGuild = async () => {
-    await require("./settings.js")(client, message);
+    discord.initGuild = async () => {
+    await require("./settings.js")(discord, message);
         let query: object = {
           text: `SELECT "guild id" FROM guilds`,
           rowMode: 'array'
         }
-        const result = await client.runQuery(query, true);
+        const result = await discord.runQuery(query, true);
         const found = result.find((id: any) => id[0] === message.guild.id.toString());
         if (!found) {
           for (let i in tableList) {
-            await client.insertInto(tableList[i], "guild id", message.guild.id);
+            await discord.insertInto(tableList[i], "guild id", message.guild.id);
           }
-          await client.initAll();
-          await client.orderTables();
+          await discord.initAll();
+          await discord.orderTables();
         }
     }
 }

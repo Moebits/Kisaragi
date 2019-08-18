@@ -1,6 +1,6 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-	const avatarEmbed: any = client.createEmbed();
+	const avatarEmbed: any = discord.createEmbed();
     
     if (!message.mentions.users.size) {
 		if (message.author.displayAvatarURL.includes("gif" || "jpg")) {

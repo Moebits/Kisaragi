@@ -1,7 +1,7 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    const delEmbed: any = client.createEmbed();
-    const perm: any = client.createPermission("MANAGE_MESSAGES");
+    const delEmbed: any = discord.createEmbed();
+    const perm: any = discord.createPermission("MANAGE_MESSAGES");
     const num: number = Number(args[1]) + 2;
 
     if (message.member.hasPermission(perm)) {

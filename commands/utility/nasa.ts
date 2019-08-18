@@ -1,18 +1,18 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     const nasa = require('nasa-sdk');
     nasa.setNasaApiKey(process.env.NASA_API_KEY);
-    let nasaEmbed = client.createEmbed();
+    let nasaEmbed = discord.createEmbed();
 
     let data = await nasa.APOD.fetch();
-    let checkedMessage = client.checkChar(data.explanation, 1900, ".");
+    let checkedMessage = discord.checkChar(data.explanation, 1900, ".");
     nasaEmbed
     .setAuthor("nasa", "https://cdn.mos.cms.futurecdn.net/baYs9AuHxx9QXeYBiMvSLU.jpg")
-    .setTitle(`**Nasa Picture** ${client.getEmoji("cute")}`)
+    .setTitle(`**Nasa Picture** ${discord.getEmoji("cute")}`)
     if (data.media_type === 'video') nasaEmbed.setURL("**Link**", data.url)
     .setDescription(
-    `${client.getEmoji("star")}_Title:_ **${data.title}**\n` +
-    `${client.getEmoji("star")}_Date:_ **${client.formatDate(data.date)}**\n` +
-    `${client.getEmoji("star")}_Explanation:_ **${checkedMessage}**\n` 
+    `${discord.getEmoji("star")}_Title:_ **${data.title}**\n` +
+    `${discord.getEmoji("star")}_Date:_ **${discord.formatDate(data.date)}**\n` +
+    `${discord.getEmoji("star")}_Explanation:_ **${checkedMessage}**\n` 
     )
     .setImage(data.url)
     .setThumbnail(message.author.displayAvatarURL)

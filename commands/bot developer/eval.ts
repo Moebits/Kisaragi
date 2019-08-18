@@ -2,14 +2,14 @@ const clean = (text: string) => {
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
 }
 
-exports.run = (client: any, message: any, args: string[]) => {
+exports.run = (discord: any, message: any, args: string[]) => {
 
-    const evalEmbed: any = client.createEmbed();
+    const evalEmbed: any = discord.createEmbed();
     let ownerID: any = process.env.OWNER_ID;
 
     if (message.author.id === ownerID) {
         try {
-            const code: string = client.combineArgs(args, 2);
+            const code: string = discord.combineArgs(args, 2);
             let evaled: string = eval(code);
        
             if (typeof evaled !== "string") {

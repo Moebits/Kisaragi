@@ -1,4 +1,4 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
     ];
@@ -27,7 +27,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     var year = now.getUTCFullYear();
     let data = await axios.get(`https://www.daysoftheyear.com/days/${year}/${month < 10 ? `0${month}` : month}/${day < 10 ? `0${day}` : day}/`);
     let matchArray = data.data.match(pg1Regex);
-    let holidayName = client.toProperCase(matchArray[0].replace(/-/g, " ").replace(/\//g, ""));
+    let holidayName = discord.toProperCase(matchArray[0].replace(/-/g, " ").replace(/\//g, ""));
     let date = `${monthNames[month - 1]} ${day}`
     let url = `https://www.daysoftheyear.com/days/${matchArray[0]}`;
     let holidayData = await axios.get(url);
@@ -35,15 +35,15 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let description = rawDescription.replace(/&hellip;/g, "...").replace(/&#8217;/g, "'").replace(/&#8211;/g, "-").trim();
     let image = holidayData.data.match(imageRegex)[0].replace(/"/g, "");
 
-    let holidayEmbed = client.createEmbed();
+    let holidayEmbed = discord.createEmbed();
     holidayEmbed
     .setAuthor("days of the year", "https://media.daysoftheyear.com/20181228141243/logo.jpg")
-    .setTitle(`**Daily Holiday** ${client.getEmoji("padoruPadoru")}`)
+    .setTitle(`**Daily Holiday** ${discord.getEmoji("padoruPadoru")}`)
     .setURL(url)
     .setThumbnail(image.trim())
     .setDescription(
-        `${client.getEmoji("star")}_Holiday:_ **${date} - ${holidayName}**\n` +
-        `${client.getEmoji("star")}_Description:_ ${client.checkChar(description, 2000, ".")}`
+        `${discord.getEmoji("star")}_Holiday:_ **${date} - ${holidayName}**\n` +
+        `${discord.getEmoji("star")}_Description:_ ${discord.checkChar(description, 2000, ".")}`
         )
     message.channel.send(holidayEmbed)
 }

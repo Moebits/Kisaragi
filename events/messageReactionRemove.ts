@@ -1,3 +1,3 @@
-module.exports = async (client: any, reaction: any, user: any) => {
+module.exports = async (discord: any, reaction: any, user: any) => {
     //nothing here lol
 }

@@ -1,11 +1,11 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    const emojiEmbed: any = client.createEmbed();
+    const emojiEmbed: any = discord.createEmbed();
     const emojiName: string = args[1];
     
     if (!emojiName.includes("<" || ">")) {
 
-        const emojiFound = client.emojis.find((emoji: any) => emoji.identifier === emojiName);
+        const emojiFound = discord.emojis.find((emoji: any) => emoji.identifier === emojiName);
         if (emojiFound === null) {
             message.channel.send(emojiEmbed
                 .setDescription("Could not find that emoji!"));
@@ -23,7 +23,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     if (emojiID.includes(">")) {emojiID = emojiID.slice(0, -1);}
 
     if (typeof parseInt(emojiID) === "number") {
-        let emojiGet: any = client.emojis.get(emojiID);
+        let emojiGet: any = discord.emojis.get(emojiID);
         message.channel.send(emojiEmbed
             .setDescription(`**${emojiGet.name} Emoji**`)
             .setImage(emojiGet.url))

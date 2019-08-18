@@ -1,4 +1,4 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     const snoowrap = require('snoowrap');
 
     const reddit = new snoowrap({
@@ -10,27 +10,27 @@ exports.run = async (client: any, message: any, args: string[]) => {
       });
 
     let redditArray: any = [];
-    client.getSubmissions = async (postIDS: string) => {
+    discord.getSubmissions = async (postIDS: string) => {
         for (let i = 0; i < 10; i++) {
             if (!postIDS[i]) break;
             let post = await reddit.getSubmission(postIDS[i]).fetch();
             let commentArray: any = [];
             for (let j = 0; j < 3; j++) {
                 if (!post.comments[j]) break;
-                commentArray.push(`**${post.comments[j].author ? post.comments[j].author.name : "Deleted"}**: ${client.checkChar(post.comments[j].body, 150, " ").replace(/(\r\n|\n|\r)/gm," ")}`);
+                commentArray.push(`**${post.comments[j].author ? post.comments[j].author.name : "Deleted"}**: ${discord.checkChar(post.comments[j].body, 150, " ").replace(/(\r\n|\n|\r)/gm," ")}`);
             }
-            let redditEmbed = client.createEmbed();
+            let redditEmbed = discord.createEmbed();
             redditEmbed
             .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
-            .setTitle(`**${post.title}** ${client.getEmoji("aquaUp")}`)
+            .setTitle(`**${post.title}** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://www.reddit.com/${post.permalink}`)
             .setDescription(
-                `${client.getEmoji("star")}_Subreddit:_ **${post.subreddit.display_name}**\n` +
-                `${client.getEmoji("star")}_Subscribers:_ **${post.subreddit_subscribers}**\n` +
-                `${client.getEmoji("star")}_Author:_ **${post.author ? post.author.name : "Deleted"}**\n` +
-                `${client.getEmoji("star")}${client.getEmoji("up")} **${Math.ceil(post.ups / post.upvote_ratio)}** ${client.getEmoji("down")} **${Math.ceil(post.ups / post.upvote_ratio) - post.ups}**\n` +
-                `${client.getEmoji("star")}_Selftext:_ ${post.selftext ? client.checkChar(post.selftext, 800, ".").replace(/(\r\n|\n|\r)/gm," ") : "None"}\n` +
-                `${client.getEmoji("star")}_Comments:_ ${commentArray.join("") ? commentArray.join("\n") : "None"}\n`
+                `${discord.getEmoji("star")}_Subreddit:_ **${post.subreddit.display_name}**\n` +
+                `${discord.getEmoji("star")}_Subscribers:_ **${post.subreddit_subscribers}**\n` +
+                `${discord.getEmoji("star")}_Author:_ **${post.author ? post.author.name : "Deleted"}**\n` +
+                `${discord.getEmoji("star")}${discord.getEmoji("up")} **${Math.ceil(post.ups / post.upvote_ratio)}** ${discord.getEmoji("down")} **${Math.ceil(post.ups / post.upvote_ratio) - post.ups}**\n` +
+                `${discord.getEmoji("star")}_Selftext:_ ${post.selftext ? discord.checkChar(post.selftext, 800, ".").replace(/(\r\n|\n|\r)/gm," ") : "None"}\n` +
+                `${discord.getEmoji("star")}_Comments:_ ${commentArray.join("") ? commentArray.join("\n") : "None"}\n`
             )
             .setImage(post.url)
             .setThumbnail(post.thumbnail.startsWith("https") ? post.thumbnail : post.url)
@@ -39,21 +39,21 @@ exports.run = async (client: any, message: any, args: string[]) => {
     }
        
     if (args[1] === "user") {
-        let query = client.combineArgs(args, 2);
+        let query = discord.combineArgs(args, 2);
         let user = await reddit.getUser(query.trim()).fetch();
         console.log(user)
-        let redditEmbed = client.createEmbed();
+        let redditEmbed = discord.createEmbed();
         redditEmbed
         .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
-        .setTitle(`**${user.name}** ${client.getEmoji("aquaUp")}`)
+        .setTitle(`**${user.name}** ${discord.getEmoji("aquaUp")}`)
         .setURL(`https://www.reddit.com${user.subreddit.display_name.url}`)
         .setImage(user.subreddit.display_name.banner_img)
         .setThumbnail(user.subreddit.display_name.icon_img)
         .setDescription(
-            `${client.getEmoji("star")}_Link Karma:_ **${user.link_karma}**\n` +
-            `${client.getEmoji("star")}_Comment Karma:_ **${user.comment_karma}**\n` +
-            `${client.getEmoji("star")}_Friends:_ **${user.num_friends}**\n` +
-            `${client.getEmoji("star")}_Description:_ ${user.subreddit.display_name.public_description}\n`
+            `${discord.getEmoji("star")}_Link Karma:_ **${user.link_karma}**\n` +
+            `${discord.getEmoji("star")}_Comment Karma:_ **${user.comment_karma}**\n` +
+            `${discord.getEmoji("star")}_Friends:_ **${user.num_friends}**\n` +
+            `${discord.getEmoji("star")}_Description:_ ${user.subreddit.display_name.public_description}\n`
         )
         message.channel.send(redditEmbed);
         return;
@@ -68,7 +68,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
     }
     if (subreddit) {
         if (args[2]) {
-            let query = client.combineArgs(args, 2);
+            let query = discord.combineArgs(args, 2);
             if (args[2].toLowerCase() === "hot") {
                 posts = await reddit.getSubreddit(subreddit).getHot();
             } else if (args[2].toLowerCase() === "new") {
@@ -93,19 +93,19 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
     }
     if (!postIDS.join("")) {
-        let redditEmbed = client.createEmbed();
+        let redditEmbed = discord.createEmbed();
             redditEmbed
             .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
-            .setTitle(`**Reddit Search** ${client.getEmoji("aquaUp")}`)
+            .setTitle(`**Reddit Search** ${discord.getEmoji("aquaUp")}`)
             .setDescription("No results were found. Try searching on the reddit website: " +
             "[Reddit Website](https://www.reddit.com)")
             message.channel.send(redditEmbed);
             return;
     }
-    await client.getSubmissions(postIDS);
+    await discord.getSubmissions(postIDS);
     if (redditArray.length === 1) {
         message.channel.send(redditArray[0]);
     } else {
-        client.createReactionEmbed(redditArray);
+        discord.createReactionEmbed(redditArray);
     }
 }

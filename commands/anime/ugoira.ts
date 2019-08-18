@@ -1,54 +1,54 @@
 import Ugoira from 'node-ugoira';
 
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     const PixivApi = require('pixiv-api-client');
     const fs = require('fs');
     const pixiv = new PixivApi();
-    let refreshToken = await client.pixivLogin();
+    let refreshToken = await discord.pixivLogin();
     let input;
     if (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en") {
         if (args[2] === "en") {
-            input = client.combineArgs(args, 3);
+            input = discord.combineArgs(args, 3);
         } else {
-            input = client.combineArgs(args, 2);
+            input = discord.combineArgs(args, 2);
         }
     } else {
-        input = client.combineArgs(args, 1);
+        input = discord.combineArgs(args, 1);
     }
-    let msg1 = await message.channel.send(`**Fetching Ugoira** ${client.getEmoji("gabCircle")}`)
+    let msg1 = await message.channel.send(`**Fetching Ugoira** ${discord.getEmoji("gabCircle")}`)
     let pixivID;
     if (input.match(/\d+/g) !== null) {
         pixivID = input.match(/\d+/g).join("");
     } else {
         if (args[1].toLowerCase() === "r18") {
             if (args[2].toLowerCase() === "en") {
-                let image = await client.getPixivImage(refreshToken, input, true, true, true, true);
+                let image = await discord.getPixivImage(refreshToken, input, true, true, true, true);
                     try {
                         pixivID = image.id;
                     } catch (err) {
-                        if (err) client.pixivErrorEmbed();
+                        if (err) discord.pixivErrorEmbed();
                     }
             } else {
-                let image = await client.getPixivImage(refreshToken, input, true, false, true, true);
+                let image = await discord.getPixivImage(refreshToken, input, true, false, true, true);
                     try {
                         pixivID = image.id;
                     } catch (err) {
-                        if (err) client.pixivErrorEmbed();
+                        if (err) discord.pixivErrorEmbed();
                     }
             }
         } else if (args[1].toLowerCase() === "en") {
-            let image = await client.getPixivImage(refreshToken, input, false, true, true, true);
+            let image = await discord.getPixivImage(refreshToken, input, false, true, true, true);
                 try {
                     pixivID = image.id;
                 } catch (err) {
-                    if (err) client.pixivErrorEmbed();
+                    if (err) discord.pixivErrorEmbed();
                 }
         } else {
-            let image = await client.getPixivImage(refreshToken, input, false, false, true, true);
+            let image = await discord.getPixivImage(refreshToken, input, false, false, true, true);
                 try {
                     pixivID = image.id;
                 } catch (err) {
-                    if (err) client.pixivErrorEmbed();
+                    if (err) discord.pixivErrorEmbed();
                 }
         }
     }
@@ -73,16 +73,16 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let file = fs.createWriteStream(`ugoira/${pixivID}/${pixivID}.gif`, (err) => console.log(err));
 
     msg1.delete(1000);
-    let msg2 = await message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${client.getEmoji("gabCircle")}`)
-    await client.encodeGif(fileNames, `ugoira/${pixivID}/`, file);
+    let msg2 = await message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${discord.getEmoji("gabCircle")}`)
+    await discord.encodeGif(fileNames, `ugoira/${pixivID}/`, file);
     msg2.delete(1000);
 
-    let msg3 = await message.channel.send(`**Compressing Gif** ${client.getEmoji("gabCircle")}`)
-    await client.compressGif([`ugoira/${pixivID}/${pixivID}.gif`]);
+    let msg3 = await message.channel.send(`**Compressing Gif** ${discord.getEmoji("gabCircle")}`)
+    await discord.compressGif([`ugoira/${pixivID}/${pixivID}.gif`]);
     msg3.delete(1000);
 
         const pixivImg = require('pixiv-img');
-        let ugoiraEmbed = client.createEmbed();
+        let ugoiraEmbed = discord.createEmbed();
         const {Attachment} = require("discord.js");
         let outGif = new Attachment(`../assets/gifs/${pixivID}.gif`);
         let comments = await pixiv.illustComments(pixivID);
@@ -95,16 +95,16 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 commentArray.push(comments.comments[i].comment);
             }
         ugoiraEmbed
-        .setTitle(`**Pixiv Ugoira** ${client.getEmoji("kannaSip")}`)
+        .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("kannaSip")}`)
         .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${pixivID}`)
         .setDescription(
-            `${client.getEmoji("star")}_Title:_ **${details.illust.title}**\n` + 
-            `${client.getEmoji("star")}_Artist:_ **${details.illust.user.name}**\n` + 
-            `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(details.illust.create_date)}**\n` + 
-            `${client.getEmoji("star")}_Views:_ **${details.illust.total_view}**\n` + 
-            `${client.getEmoji("star")}_Bookmarks:_ **${details.illust.total_bookmarks}**\n` + 
-            `${client.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` + 
-            `${client.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n` 
+            `${discord.getEmoji("star")}_Title:_ **${details.illust.title}**\n` + 
+            `${discord.getEmoji("star")}_Artist:_ **${details.illust.user.name}**\n` + 
+            `${discord.getEmoji("star")}_Creation Date:_ **${discord.formatDate(details.illust.create_date)}**\n` + 
+            `${discord.getEmoji("star")}_Views:_ **${details.illust.total_view}**\n` + 
+            `${discord.getEmoji("star")}_Bookmarks:_ **${details.illust.total_bookmarks}**\n` + 
+            `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` + 
+            `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n` 
             )
         .attachFiles([outGif.file, authorAttachment])
         .setThumbnail(`attachment://${authorAttachment.file}`)

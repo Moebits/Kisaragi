@@ -1,10 +1,10 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    const mentionEmbed: any = client.createEmbed();
-    const perm: any = client.createPermission("ADMINISTRATOR");
+    const mentionEmbed: any = discord.createEmbed();
+    const perm: any = discord.createPermission("ADMINISTRATOR");
 
     if (message.member.hasPermission(perm)) {
-        let input = client.combineArgs(args, 1);
+        let input = discord.combineArgs(args, 1);
         let role = message.guild.roles.find((r: any) => r.name.toLowerCase().includes(input.toLowerCase().trim()));
         if (!role) {message.channel.send(mentionEmbed
             .setDescription("Could not find that role!"))

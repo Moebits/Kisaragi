@@ -1,8 +1,8 @@
 import {Message, Emoji, Collection, RichEmbed} from "discord.js";
 
-exports.run = async (client: any, message: Message, args: string[]) => { 
+exports.run = async (discord: any, message: Message, args: string[]) => { 
     let emojis: Collection<string, Emoji> = message.guild.emojis;
-    let emojiArray: string[] = emojis.map((e: Emoji) => client.emojis.find((emoji: Emoji) => e.id === emoji.id));
+    let emojiArray: string[] = emojis.map((e: Emoji) => discord.emojis.find((emoji: Emoji) => e.id === emoji.id));
     let nameArray: string[] = emojis.map((e: Emoji) => e.name);
     let idArray: string[] = emojis.map((e: Emoji) => e.id);
     let createdArray: Date[] = emojis.map((e: Emoji) => e.createdAt);
@@ -10,22 +10,22 @@ exports.run = async (client: any, message: Message, args: string[]) => {
     let increment = Math.ceil(emojis.size / step);
     let userEmbedArray: RichEmbed[] = [];
     for (let i = 0; i < increment; i++) {
-        let userEmbed = client.createEmbed();
+        let userEmbed = discord.createEmbed();
         let description = "";
         for (let j = 0; j < step; j++) {
             let value = (i*step)+j;
             if (!emojiArray[value]) break;
-            description += `${client.getEmoji("star")}_Emoji:_ **${emojiArray[value]}**\n` +
-            `${client.getEmoji("star")}_Emoji Name:_ ${nameArray[value]}\n` +
-            `${client.getEmoji("star")}_Emoji ID:_ ${idArray[value]}\n` +
-            `${client.getEmoji("star")}_Creation Date:_ ${createdArray[value]}\n`
+            description += `${discord.getEmoji("star")}_Emoji:_ **${emojiArray[value]}**\n` +
+            `${discord.getEmoji("star")}_Emoji Name:_ ${nameArray[value]}\n` +
+            `${discord.getEmoji("star")}_Emoji ID:_ ${idArray[value]}\n` +
+            `${discord.getEmoji("star")}_Creation Date:_ ${createdArray[value]}\n`
         }
         userEmbed
         .setAuthor("discord", "https://pbs.twimg.com/profile_images/1148340875937718272/sBvqcUJl.jpg")
-        .setTitle(`**${message.guild.name}'s Emojis** ${client.getEmoji("vigneDead")}`)
+        .setTitle(`**${message.guild.name}'s Emojis** ${discord.getEmoji("vigneDead")}`)
         .setThumbnail(message.guild.iconURL)
-        .setDescription(`${client.getEmoji("star")}_Emoji Count:_ **${emojiArray.length}**\n` + description)
+        .setDescription(`${discord.getEmoji("star")}_Emoji Count:_ **${emojiArray.length}**\n` + description)
         userEmbedArray.push(userEmbed);
     }
-    client.createReactionEmbed(userEmbedArray);
+    discord.createReactionEmbed(userEmbedArray);
 }

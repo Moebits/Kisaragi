@@ -1,4 +1,4 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     const kaomoji = require('kaomojilib')
     let lib: any = [];
     let keys = Object.keys(kaomoji.library);
@@ -11,7 +11,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
         message.channel.send(lib[random].icon);
         return;
     }
-    let query = client.combineArgs(args, 1);
+    let query = discord.combineArgs(args, 1);
     for (let i in lib) {
         for (let j in lib[i].keywords) {
             if (query.toLowerCase().trim() === lib[i].keywords[j].toLowerCase()) {

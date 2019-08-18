@@ -1,18 +1,18 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     let ownerID: any = process.env.OWNER_ID;
 
-    const deleteGuildEmbed: any = client.createEmbed();
+    const deleteGuildEmbed: any = discord.createEmbed();
     if (message.author.id === ownerID) {
 
         let guildID = args[1];
-        let guild = client.guilds.find((g: any) => g.id.toString() === guildID);
+        let guild = discord.guilds.find((g: any) => g.id.toString() === guildID);
 
         try {
             guild.delete();
         } catch (err) {
             console.log(err);
         } finally {
-            await client.deleteGuild(guildID)
+            await discord.deleteGuild(guildID)
         }
         
     } else {

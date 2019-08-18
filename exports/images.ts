@@ -1,4 +1,4 @@
-module.exports = async (client: any, message: any) => {
+module.exports = async (discord: any, message: any) => {
     
     const PixivApi = require('pixiv-api-client');
     const pixiv = new PixivApi();
@@ -21,7 +21,7 @@ module.exports = async (client: any, message: any) => {
     let imageDataURI = require("image-data-uri");
 
     //Compress Gif
-    client.compressGif = async (input) => {
+    discord.compressGif = async (input) => {
         let file = await imagemin(input, 
         {destination: "../assets/gifs",
         plugins: [imageminGifsicle({interlaced: true, optimizationLevel: 3, colors: 256,})]
@@ -30,7 +30,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Encode Gif
-    client.encodeGif = async (fileNames, path, file) => {
+    discord.encodeGif = async (fileNames, path, file) => {
         let images: any = [];
         if (fileNames.length > 500) {
             for (let i = 0; i < fileNames.length; i+=15) {
@@ -89,7 +89,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Compress Images
-    client.compressImages = (src, dest) => {
+    discord.compressImages = (src, dest) => {
         return new Promise(resolve => {
             imgInput = src;
             imgOutput = dest;
@@ -106,7 +106,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Pixiv Login
-    client.pixivLogin = async () => {
+    discord.pixivLogin = async () => {
         try {
             await pixiv.refreshAccessToken(process.env.PIXIV_REFRESH_TOKEN);
         } catch (err) {
@@ -120,10 +120,10 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Create Pixiv Embed
-    client.createPixivEmbed = async (refreshToken: string, image: any) => {
+    discord.createPixivEmbed = async (refreshToken: string, image: any) => {
         await pixiv.refreshAccessToken(refreshToken);
-        const pixivEmbed = client.createEmbed();
-        if (!image) client.pixivErrorEmbed;
+        const pixivEmbed = discord.createEmbed();
+        if (!image) discord.pixivErrorEmbed;
         let comments = await pixiv.illustComments(image.id);
         let commentArray: string[] = [];
             for (let i = 0; i <= 5; i++) {
@@ -137,16 +137,16 @@ module.exports = async (client: any, message: any) => {
         let cleanText = image.caption.replace(/<\/?[^>]+(>|$)/g, "");
         pixivEmbed
         .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
-        .setTitle(`**Pixiv Image** ${client.getEmoji("chinoSmug")}`)
+        .setTitle(`**Pixiv Image** ${discord.getEmoji("chinoSmug")}`)
         .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
         .setDescription(
-        `${client.getEmoji("star")}_Title:_ **${image.title}**\n` + 
-        `${client.getEmoji("star")}_Artist:_ **${image.user.name}**\n` + 
-        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(image.create_date)}**\n` + 
-        `${client.getEmoji("star")}_Views:_ **${image.total_view}**\n` + 
-        `${client.getEmoji("star")}_Bookmarks:_ **${image.total_bookmarks}**\n` + 
-        `${client.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` + 
-        `${client.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n` 
+        `${discord.getEmoji("star")}_Title:_ **${image.title}**\n` + 
+        `${discord.getEmoji("star")}_Artist:_ **${image.user.name}**\n` + 
+        `${discord.getEmoji("star")}_Creation Date:_ **${discord.formatDate(image.create_date)}**\n` + 
+        `${discord.getEmoji("star")}_Views:_ **${image.total_view}**\n` + 
+        `${discord.getEmoji("star")}_Bookmarks:_ **${image.total_bookmarks}**\n` + 
+        `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` + 
+        `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n` 
         )
         .attachFiles([authorAttachment, imageAttachment])
         .setThumbnail(`attachment://${authorAttachment.file}`)
@@ -155,29 +155,29 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Pixiv Error Embed
-    client.pixivErrorEmbed = () => {
-        let pixivEmbed = client.createEmbed();
+    discord.pixivErrorEmbed = () => {
+        let pixivEmbed = discord.createEmbed();
         pixivEmbed
-        .setTitle(`**Pixiv Image** ${client.getEmoji("chinoSmug")}`)
+        .setTitle(`**Pixiv Image** ${discord.getEmoji("chinoSmug")}`)
         .setDescription("No results were found. Try searching for the japanese tag on the Pixiv website, " +
         "as some tags can't be translated to english!" + '\n[Pixiv Website](https://www.pixiv.net/)')
         return message.channel.send(pixivEmbed);
     }
     //Process Pixiv Tag
-    client.pixivTag = async (tag: string) => {
+    discord.pixivTag = async (tag: string) => {
         let newTag = await translate(tag, {to: 'ja'});
         return newTag.text;
     }
 
     //Pixiv Image
-    client.getPixivImage = async (refresh: string, tag: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
+    discord.getPixivImage = async (refresh: string, tag: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
         let refreshToken = refresh;
         await pixiv.refreshAccessToken(refreshToken);
         let newTag;
         if (en) {
             newTag = tag;
         } else {
-            newTag = await client.pixivTag(tag);
+            newTag = await discord.pixivTag(tag);
         }
         let json;
         if (r18) {
@@ -200,12 +200,12 @@ module.exports = async (client: any, message: any) => {
         let image = json.illusts[index]; 
         if (noEmbed) return image;
 
-        let pixivEmbed = await client.createPixivEmbed(refreshToken, image);
+        let pixivEmbed = await discord.createPixivEmbed(refreshToken, image);
         return message.channel.send(pixivEmbed);
     }
 
     //Pixiv Image ID
-    client.getPixivImageID = async (refresh: string, tags: any) => {
+    discord.getPixivImageID = async (refresh: string, tags: any) => {
         let refreshToken = refresh;
         await pixiv.refreshAccessToken(refreshToken);
         let image = await pixiv.illustDetail(tags.toString());
@@ -213,17 +213,17 @@ module.exports = async (client: any, message: any) => {
             if (image.illust.tags[i].name === "うごイラ") {
                 console.log("here!");
                 const path = require("../commands/anime/ugoira.js");
-                await client.linkRun(path, message, ["ugoira", tags.toString()]);
+                await discord.linkRun(path, message, ["ugoira", tags.toString()]);
                 return;
             }
         }
-        if (!image) client.pixivErrorEmbed;
-        let pixivEmbed = await client.createPixivEmbed(refreshToken, image.illust);
+        if (!image) discord.pixivErrorEmbed;
+        let pixivEmbed = await discord.createPixivEmbed(refreshToken, image.illust);
         return message.channel.send(pixivEmbed);
     }
 
     //Pixiv Random Image
-    client.getRandomPixivImage = async (refresh: string) => {
+    discord.getRandomPixivImage = async (refresh: string) => {
         let refreshToken = refresh;
         await pixiv.refreshAccessToken(refreshToken);
         let image;
@@ -232,12 +232,12 @@ module.exports = async (client: any, message: any) => {
             random = Math.floor(Math.random() * 100000000);
             image = await pixiv.illustDetail(random.toString());
         }
-        let pixivEmbed = await client.createPixivEmbed(refreshToken, image.illust);
+        let pixivEmbed = await discord.createPixivEmbed(refreshToken, image.illust);
         return message.channel.send(pixivEmbed);
     }
 
     //Pixiv Popular Image
-    client.getPopularPixivImage = async (refresh: string) => {
+    discord.getPopularPixivImage = async (refresh: string) => {
         let refreshToken = refresh;
         await pixiv.refreshAccessToken(refreshToken);
         const json = await pixiv.illustRanking();
@@ -245,12 +245,12 @@ module.exports = async (client: any, message: any) => {
         let index = Math.floor(Math.random() * (10));
         let image = json.illusts[index]; 
     
-        let pixivEmbed = await client.createPixivEmbed(refreshToken, image);
+        let pixivEmbed = await discord.createPixivEmbed(refreshToken, image);
         return message.channel.send(pixivEmbed);
     }
 
     //Pixiv Popular R18 Image
-    client.getPopularPixivR18Image = async (refresh: string) => {
+    discord.getPopularPixivR18Image = async (refresh: string) => {
         let refreshToken = refresh;
         await pixiv.refreshAccessToken(refreshToken);
         const json = await pixiv.illustRanking({mode: "day_male_r18"});
@@ -258,12 +258,12 @@ module.exports = async (client: any, message: any) => {
         let index = Math.floor(Math.random() * (10));
         let image = json.illusts[index]; 
     
-        let pixivEmbed = await client.createPixivEmbed(refreshToken, image);
+        let pixivEmbed = await discord.createPixivEmbed(refreshToken, image);
         return message.channel.send(pixivEmbed);
     }
 
     //Download Pages
-    client.downloadPages = async (array, dest) => {
+    discord.downloadPages = async (array, dest) => {
         await Promise.all(array.map(async (url, i) => {
             const options = {
                 url,
@@ -280,35 +280,35 @@ module.exports = async (client: any, message: any) => {
     }
 
     //nhentai Doujin
-    client.getNhentaiDoujin = async (doujin: any, tag: any) => {
-        let checkArtists = doujin.details.artists ? client.checkChar(doujin.details.artists.join(" "), 50, ")") : "None";
-        let checkCharacters = doujin.details.characters ? client.checkChar(doujin.details.characters.join(" "), 50, ")") : "None";
-        let checkTags = doujin.details.tags ? client.checkChar(doujin.details.tags.join(" "), 50, ")") : "None";
-        let checkParodies = doujin.details.parodies ? client.checkChar(doujin.details.parodies.join(" "), 50, ")") : "None";
-        let checkGroups = doujin.details.groups ? client.checkChar(doujin.details.groups.join(" "), 50, ")") : "None";
-        let checkLanguages = doujin.details.languages ? client.checkChar(doujin.details.languages.join(" "), 50, ")") : "None";
-        let checkCategories = doujin.details.categories ? client.checkChar(doujin.details.categories.join(" "), 50, ")") : "None";
+    discord.getNhentaiDoujin = async (doujin: any, tag: any) => {
+        let checkArtists = doujin.details.artists ? discord.checkChar(doujin.details.artists.join(" "), 50, ")") : "None";
+        let checkCharacters = doujin.details.characters ? discord.checkChar(doujin.details.characters.join(" "), 50, ")") : "None";
+        let checkTags = doujin.details.tags ? discord.checkChar(doujin.details.tags.join(" "), 50, ")") : "None";
+        let checkParodies = doujin.details.parodies ? discord.checkChar(doujin.details.parodies.join(" "), 50, ")") : "None";
+        let checkGroups = doujin.details.groups ? discord.checkChar(doujin.details.groups.join(" "), 50, ")") : "None";
+        let checkLanguages = doujin.details.languages ? discord.checkChar(doujin.details.languages.join(" "), 50, ")") : "None";
+        let checkCategories = doujin.details.categories ? discord.checkChar(doujin.details.categories.join(" "), 50, ")") : "None";
         let doujinPages: any = [];
         /*fs.mkdirSync(`../assets/pages/${tag}/`);
         fs.mkdirSync(`../assets/pagesCompressed/${tag}/`);
-        let msg1 = await message.channel.send(`**Downloading images** ${client.getEmoji("gabCircle")}`);
-        await client.downloadPages(doujin.pages, `../assets/pages/${tag}/`);
+        let msg1 = await message.channel.send(`**Downloading images** ${discord.getEmoji("gabCircle")}`);
+        await discord.downloadPages(doujin.pages, `../assets/pages/${tag}/`);
         msg1.delete(1000);
-        let msg2 = await message.channel.send(`**Compressing images** ${client.getEmoji("gabCircle")}`);
-        await client.compressImages(`../assets/pages/${tag}/*.jpg`, `../assets/pagesCompressed/${tag}/`);
+        let msg2 = await message.channel.send(`**Compressing images** ${discord.getEmoji("gabCircle")}`);
+        await discord.compressImages(`../assets/pages/${tag}/*.jpg`, `../assets/pagesCompressed/${tag}/`);
         msg2.delete(1000);*/
         for (let i = 0; i < doujin.pages.length; i++) {
-            let nhentaiEmbed = client.createEmbed();
+            let nhentaiEmbed = discord.createEmbed();
             nhentaiEmbed
             .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
-            .setTitle(`**${doujin.title}** ${client.getEmoji("madokaLewd")}`)
+            .setTitle(`**${doujin.title}** ${discord.getEmoji("madokaLewd")}`)
             .setURL(doujin.link)
             .setDescription(
-            `${client.getEmoji("star")}_Japanese Title:_ **${doujin.nativeTitle}**\n` +
-            `${client.getEmoji("star")}_ID:_ **${tag}**\n` +
-            `${client.getEmoji("star")}_Artists:_ ${checkArtists}\n` +
-            `${client.getEmoji("star")}_Characters:_ ${checkCharacters}\n` +
-            `${client.getEmoji("star")}_Tags:_ ${checkTags} ${checkParodies}` +
+            `${discord.getEmoji("star")}_Japanese Title:_ **${doujin.nativeTitle}**\n` +
+            `${discord.getEmoji("star")}_ID:_ **${tag}**\n` +
+            `${discord.getEmoji("star")}_Artists:_ ${checkArtists}\n` +
+            `${discord.getEmoji("star")}_Characters:_ ${checkCharacters}\n` +
+            `${discord.getEmoji("star")}_Tags:_ ${checkTags} ${checkParodies}` +
             `${checkGroups} ${checkLanguages} ${checkCategories}\n` 
             )
             //.attachFiles([`../assets/pagesCompressed/${tag}/page${i}.jpg`])
@@ -317,11 +317,11 @@ module.exports = async (client: any, message: any) => {
             .setImage(doujin.pages[i])
             await doujinPages.push(nhentaiEmbed);
         }
-        await client.createReactionEmbed(doujinPages, true);
+        await discord.createReactionEmbed(doujinPages, true);
     }
 
     //Fetch Channel Attachments
-    client.fetchChannelAttachments = async (channel: any) => {
+    discord.fetchChannelAttachments = async (channel: any) => {
         let beforeID = channel.lastMessageID;
         let attachmentArray: any[] = [];
         while (beforeID !== undefined || null) {
@@ -347,7 +347,7 @@ module.exports = async (client: any, message: any) => {
         "#FF8AD8"
     ];
 
-    client.createCanvas = async (member: any, rawImage: any, text: any, color: any, uri?: boolean, iterator?: number) => {
+    discord.createCanvas = async (member: any, rawImage: any, text: any, color: any, uri?: boolean, iterator?: number) => {
         let image = "";
         if (rawImage.constructor === Array) {
             image = rawImage.join("");
@@ -416,25 +416,25 @@ module.exports = async (client: any, message: any) => {
             for (let i in frames) {
                 let readStream = frames[i].getImage()
                 let writeStream = fs.createWriteStream(`../assets/images/${random}/image${frames[i].frameIndex}.jpg`);
-                await client.awaitPipe(readStream, writeStream)
+                await discord.awaitPipe(readStream, writeStream)
                 files.push(`../assets/images/${random}/image${frames[i].frameIndex}.jpg`); 
             }
 
-            await client.timeout(500);
+            await discord.timeout(500);
             let rIterator = 0;
-            let msg2 = await message.channel.send(`**Encoding Gif. This might take awhile** ${client.getEmoji("gabCircle")}`)
+            let msg2 = await message.channel.send(`**Encoding Gif. This might take awhile** ${discord.getEmoji("gabCircle")}`)
             for (let i = 0; i < 6; i++) {
                 if (rIterator === colorStops.length - 1) {
                     rIterator = 0;
                 }
-                let dataURI = await client.createCanvas(member, files[i], text, color, true, rIterator);
+                let dataURI = await discord.createCanvas(member, files[i], text, color, true, rIterator);
                 await imageDataURI.outputFile(dataURI, `../assets/images/${random}/image${i}`);
                 attachmentArray.push(`image${i}.jpeg`);
                 rIterator++;
             }
             
             let file = fs.createWriteStream(`../assets/images/${random}/animated.gif`, (err) => console.log(err));
-            await client.encodeGif(attachmentArray, `../assets/images/${random}/`, file);
+            await discord.encodeGif(attachmentArray, `../assets/images/${random}/`, file);
             msg2.delete();
             let attachment = new Attachment(`../assets/images/${random}/animated.gif`);
             return attachment;
@@ -487,7 +487,7 @@ module.exports = async (client: any, message: any) => {
         }
     }
 
-    client.createCaptcha = async (type, color, difficulty) => {
+    discord.createCaptcha = async (type, color, difficulty) => {
         let svgCaptcha = require('svg-captcha');
         const svg2img = require("svg2img");
 
@@ -538,13 +538,13 @@ module.exports = async (client: any, message: any) => {
 
         let attachment = new Attachment("../assets/images/captcha.png");
 
-        let captchaEmbed = client.createEmbed();
+        let captchaEmbed = discord.createEmbed();
         captchaEmbed
-        .setTitle(`Captcha ${client.getEmoji("kannaAngry")}`)
+        .setTitle(`Captcha ${discord.getEmoji("kannaAngry")}`)
         .attachFiles([attachment.file])
         .setImage(`attachment://captcha.png`)
         .setDescription(
-            `${client.getEmoji("star")}_Solve the captcha below. Type **cancel** to quit, or **skip** to get another captcha._`
+            `${discord.getEmoji("star")}_Solve the captcha below. Type **cancel** to quit, or **skip** to get another captcha._`
         )
         return {
             captcha: captchaEmbed,

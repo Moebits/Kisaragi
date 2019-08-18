@@ -1,4 +1,4 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     const tenor = require("tenorjs").client({
         "Key": process.env.TENOR_API_KEY,
         "Filter": "off", 
@@ -7,8 +7,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
         "DateFormat": "MM/DD/YYYY" 
     });
 
-    let query = client.combineArgs(args, 1);
-    const tenorEmbed = client.createEmbed();
+    let query = discord.combineArgs(args, 1);
+    const tenorEmbed = discord.createEmbed();
     let result;
     if (query) {
         result = await tenor.Search.Random(query, "1");
@@ -19,11 +19,11 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let random = Math.floor(Math.random() * result.length);
     tenorEmbed
     .setAuthor("tenor", "https://tenor.com/assets/img/tenor-app-icon.png")
-    .setTitle(`**Tenor Gif** ${client.getEmoji("raphi")}`)
+    .setTitle(`**Tenor Gif** ${discord.getEmoji("raphi")}`)
     .setURL(result[random].itemurl)
     .setDescription(
-        `${client.getEmoji("star")}_Title:_ **${result[random].title}**\n` +
-        `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(result[random].created)}**`
+        `${discord.getEmoji("star")}_Title:_ **${result[random].title}**\n` +
+        `${discord.getEmoji("star")}_Creation Date:_ **${discord.formatDate(result[random].created)}**`
     )
     .setImage(result[random].media[0].gif.url)
     message.channel.send(tenorEmbed);

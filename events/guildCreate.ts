@@ -1,3 +1,3 @@
-module.exports = (client: any) => {
-    client.initGuild();
+module.exports = (discord: any) => {
+    discord.initGuild();
 }

@@ -1,7 +1,7 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    const kickEmbed: any = client.createEmbed();
-    const perm: any = client.createPermission("KICK_MEMBERS");
+    const kickEmbed: any = discord.createEmbed();
+    const perm: any = discord.createPermission("KICK_MEMBERS");
     let reasonArray: any = [];
     let userArray: any = [];
 
@@ -22,8 +22,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
             members.push(`<@${member.id}>`);
             kickEmbed
             .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
-            .setTitle(`**You Were Kicked** ${client.getEmoji("kannaFU")}`)
-            .setDescription(`${client.getEmoji("star")}_You were kicked from ${message.guild.name} for reason:_ **${reason}**`);
+            .setTitle(`**You Were Kicked** ${discord.getEmoji("kannaFU")}`)
+            .setDescription(`${discord.getEmoji("star")}_You were kicked from ${message.guild.name} for reason:_ **${reason}**`);
             let dm = await member.createDM();
             try {
                 await dm.send(kickEmbed);
@@ -34,8 +34,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
         kickEmbed
         .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
-        .setTitle(`**Member Kicked** ${client.getEmoji("kannaFU")}`)
-        .setDescription(`${client.getEmoji("star")}_Successfully kicked ${members.join(", ")} for reason:_ **${reason}**`);
+        .setTitle(`**Member Kicked** ${discord.getEmoji("kannaFU")}`)
+        .setDescription(`${discord.getEmoji("star")}_Successfully kicked ${members.join(", ")} for reason:_ **${reason}**`);
         message.channel.send(kickEmbed);
         return;
         

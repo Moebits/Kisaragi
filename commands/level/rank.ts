@@ -1,4 +1,4 @@
-exports.run = async (client: any, message: any, score: any, args: string[]) => {
+exports.run = async (discord: any, message: any, score: any, args: string[]) => {
 
     const {Attachment} = require("discord.js");
     let imageDataURI = require("image-data-uri");
@@ -8,13 +8,13 @@ exports.run = async (client: any, message: any, score: any, args: string[]) => {
     let ctx = canvas.getContext("2d");
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, 200, 5);
-    let rawPointThreshold: string[] = await client.fetchColumn("points", "point threshold");
+    let rawPointThreshold: string[] = await discord.fetchColumn("points", "point threshold");
     let pointThreshold: number = Number(rawPointThreshold);
 
-    let userScore = await client.fetchScore(message);
-    let userLevel = await client.fetchLevel(message);
+    let userScore = await discord.fetchScore(message);
+    let userLevel = await discord.fetchLevel(message);
 
-    const rankEmbed: any = client.createEmbed();
+    const rankEmbed: any = discord.createEmbed();
 
     if (userScore === (null || undefined)) {
         message.channel.send(rankEmbed
@@ -28,12 +28,12 @@ exports.run = async (client: any, message: any, score: any, args: string[]) => {
         await imageDataURI.outputFile(dataUrl, `../assets/images/rankBar.jpg`);
         let attachment = await new Attachment(`../assets/images/rankBar.jpg`)
         message.channel.send(rankEmbed
-            .setTitle(`**${message.author.username}'s Rank ${client.getEmoji("kannaXD")}**`)
+            .setTitle(`**${message.author.username}'s Rank ${discord.getEmoji("kannaXD")}**`)
             .setDescription(
-            `${client.getEmoji("star")}_Level_: **${userLevel}**\n` + 
-            `${client.getEmoji("star")}_Points_: **${userScore}**\n` + 
-            `${client.getEmoji("star")}_Progress_: ${userScore}/${(pointThreshold * userLevel) + pointThreshold}\n` +
-            `${client.getEmoji("star")}**${percent.toFixed(1)}%** of the way there!`)
+            `${discord.getEmoji("star")}_Level_: **${userLevel}**\n` + 
+            `${discord.getEmoji("star")}_Points_: **${userScore}**\n` + 
+            `${discord.getEmoji("star")}_Progress_: ${userScore}/${(pointThreshold * userLevel) + pointThreshold}\n` +
+            `${discord.getEmoji("star")}**${percent.toFixed(1)}%** of the way there!`)
             .attachFiles([attachment.file])
             .setImage(`attachment://rankBar.jpg`)
             .setThumbnail(message.author.displayAvatarURL))

@@ -1,6 +1,6 @@
 import {Message} from "discord.js";
 
-exports.run = async (client: any, message: Message, args: string[]) => {
+exports.run = async (discord: any, message: Message, args: string[]) => {
     const nekoClient = require('nekos.life');
     const neko = new nekoClient();
 
@@ -22,11 +22,11 @@ exports.run = async (client: any, message: Message, args: string[]) => {
         title = "Neko"
     }
 
-    let nekoEmbed = client.createEmbed();
+    let nekoEmbed = discord.createEmbed();
     nekoEmbed
     .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
     .setURL(image.url)
-    .setTitle(`**${title}** ${client.getEmoji("madokaLewd")}`)
+    .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)
     .setImage(image.url)
     message.channel.send(nekoEmbed);
 }

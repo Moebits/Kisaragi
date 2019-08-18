@@ -1,31 +1,31 @@
-exports.run = async (client: any, message: any, args: string[]) => {
-    let input = client.combineArgs(args, 1);
+exports.run = async (discord: any, message: any, args: string[]) => {
+    let input = discord.combineArgs(args, 1);
     if (input.trim()) {
         message.content = input.trim();
         autoPrompt(message);
         return;
     }
     
-    let command = await client.fetchColumn("auto", "command");
-    let channel = await client.fetchColumn("auto", "channel");
-    let frequency = await client.fetchColumn("auto", "frequency");
-    let toggle = await client.fetchColumn("auto", "toggle");
+    let command = await discord.fetchColumn("auto", "command");
+    let channel = await discord.fetchColumn("auto", "channel");
+    let frequency = await discord.fetchColumn("auto", "frequency");
+    let toggle = await discord.fetchColumn("auto", "toggle");
     let settings = "";
     if (command[0]) {
         for (let i = 0; i < command[0].length; i++) {
             settings += `${i + 1} **=>**\n` +
-            `${client.getEmoji("star")}_Command:_ **${command[0][i] !== "0" ? command[0][i] : "None"}**\n`+
-            `${client.getEmoji("star")}_Channel:_ **${channel[0][i] !== "0" ? "<#" + channel[0][i] + ">" : "None"}**\n`+
-            `${client.getEmoji("star")}_Frequency:_ **${frequency[0][i] !== "0" ? frequency[0][i] : "None"}**\n` +
-            `${client.getEmoji("star")}_State:_ **${toggle[0][i]}**\n`
+            `${discord.getEmoji("star")}_Command:_ **${command[0][i] !== "0" ? command[0][i] : "None"}**\n`+
+            `${discord.getEmoji("star")}_Channel:_ **${channel[0][i] !== "0" ? "<#" + channel[0][i] + ">" : "None"}**\n`+
+            `${discord.getEmoji("star")}_Frequency:_ **${frequency[0][i] !== "0" ? frequency[0][i] : "None"}**\n` +
+            `${discord.getEmoji("star")}_State:_ **${toggle[0][i]}**\n`
         }
         if (!command[0].join("")) settings = "None";
     } else {
         settings = "None";
     }
-    let autoEmbed = client.createEmbed();
+    let autoEmbed = discord.createEmbed();
     autoEmbed
-    .setTitle(`**Auto Commands** ${client.getEmoji("think")}`)
+    .setTitle(`**Auto Commands** ${discord.getEmoji("think")}`)
     .setThumbnail(message.guild.iconURL)
     .setDescription(
         "Configure settings for auto commands. You can set up a maximum of 10 auto commands.\n" +
@@ -37,28 +37,28 @@ exports.run = async (client: any, message: any, args: string[]) => {
         `${settings}\n` +
         "\n" +
         "__Edit Settings:__\n" +
-        `${client.getEmoji("star")}_Type **any command** to set the command._\n` +
-        `${client.getEmoji("star")}_**Mention any channel** to set the channel._\n` +
-        `${client.getEmoji("star")}_Type **any number** to set the frequency._\n` +
-        `${client.getEmoji("star")}_You can set **multiple options at once**._\n` +
-        `${client.getEmoji("star")}_Type **toggle (setting number)** to toggle the state._\n` +
-        `${client.getEmoji("star")}_Type **edit (setting number)** to edit a setting._\n` +
-        `${client.getEmoji("star")}_Type **delete (setting number)** to delete a setting._\n` +
-        `${client.getEmoji("star")}_Type **reset** to delete all settings._\n` +
-        `${client.getEmoji("star")}_Type **cancel** to exit._\n` 
+        `${discord.getEmoji("star")}_Type **any command** to set the command._\n` +
+        `${discord.getEmoji("star")}_**Mention any channel** to set the channel._\n` +
+        `${discord.getEmoji("star")}_Type **any number** to set the frequency._\n` +
+        `${discord.getEmoji("star")}_You can set **multiple options at once**._\n` +
+        `${discord.getEmoji("star")}_Type **toggle (setting number)** to toggle the state._\n` +
+        `${discord.getEmoji("star")}_Type **edit (setting number)** to edit a setting._\n` +
+        `${discord.getEmoji("star")}_Type **delete (setting number)** to delete a setting._\n` +
+        `${discord.getEmoji("star")}_Type **reset** to delete all settings._\n` +
+        `${discord.getEmoji("star")}_Type **cancel** to exit._\n` 
     )
 
     message.channel.send(autoEmbed)
 
     async function autoPrompt(msg: any) {
-        let responseEmbed = client.createEmbed();
-        responseEmbed.setDescription(`**Auto Commands** ${client.getEmoji("think")}`)
+        let responseEmbed = discord.createEmbed();
+        responseEmbed.setDescription(`**Auto Commands** ${discord.getEmoji("think")}`)
         let setCmd, setChannel, setFreq, setInit;
-        let cmd = await client.fetchColumn("auto", "command");
-        let chan = await client.fetchColumn("auto", "channel");
-        let freq = await client.fetchColumn("auto", "frequency");
-        let tog = await client.fetchColumn("auto", "toggle");
-        let tim = await client.fetchColumn("auto", "timeout");
+        let cmd = await discord.fetchColumn("auto", "command");
+        let chan = await discord.fetchColumn("auto", "channel");
+        let freq = await discord.fetchColumn("auto", "frequency");
+        let tog = await discord.fetchColumn("auto", "toggle");
+        let tim = await discord.fetchColumn("auto", "timeout");
         if (!cmd[0]) cmd = [[0]]; setInit = true;
         if (!chan[0]) chan = [[0]]; setInit = true;
         if (!freq[0]) freq = [[0]]; setInit = true;
@@ -77,11 +77,11 @@ exports.run = async (client: any, message: any, args: string[]) => {
                     let arrFreq = freq[0].filter(Boolean);
                     let arrTog = tog[0].filter(Boolean);
                     let arrTim = tim[0].filter(Boolean);
-                    await client.updateColumn("auto", "command", arrCmd);
-                    await client.updateColumn("auto", "channel", arrChan);
-                    await client.updateColumn("auto", "frequency", arrFreq); 
-                    await client.updateColumn("auto", "toggle", arrTog);   
-                    await client.updateColumn("auto", "timeout", arrTim);   
+                    await discord.updateColumn("auto", "command", arrCmd);
+                    await discord.updateColumn("auto", "channel", arrChan);
+                    await discord.updateColumn("auto", "frequency", arrFreq); 
+                    await discord.updateColumn("auto", "toggle", arrTog);   
+                    await discord.updateColumn("auto", "timeout", arrTim);   
                     return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`));
             } else {
                 return msg.channel.send(responseEmbed.setDescription("Setting not found!"));
@@ -90,15 +90,15 @@ exports.run = async (client: any, message: any, args: string[]) => {
         if (msg.content.toLowerCase().startsWith("toggle")) {
             let newMsg = Number(msg.content.replace(/toggle/g, "").trim());
             let num = newMsg - 1;
-            let testCmd = await client.fetchColumn("auto", "command");
-            let testChan = await client.fetchColumn("auto", "channel");
-            let testFreq = await client.fetchColumn("auto", "frequency");
+            let testCmd = await discord.fetchColumn("auto", "command");
+            let testChan = await discord.fetchColumn("auto", "channel");
+            let testFreq = await discord.fetchColumn("auto", "frequency");
             if (newMsg && testCmd && testChan && testFreq) {
                     if (tog[0][num] === "inactive") {
-                        await client.updateColumn("auto", "toggle", "active");
+                        await discord.updateColumn("auto", "toggle", "active");
                         return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **active**!`));
                     } else {
-                        await client.updateColumn("auto", "toggle", "inactive");
+                        await discord.updateColumn("auto", "toggle", "inactive");
                         return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **inactive**!`));
                     }  
             } else {
@@ -117,30 +117,30 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 let editDesc = "";
                 if (newCmd) {
                     cmd[0][num] = newCmd;
-                    await client.updateColumn("auto", "command", cmd[0]);
-                    editDesc += `${client.getEmoji("star")}Command set to **${newCmd}**!\n`
+                    await discord.updateColumn("auto", "command", cmd[0]);
+                    editDesc += `${discord.getEmoji("star")}Command set to **${newCmd}**!\n`
                 }
                 if (newChan) {
                     chan[0][num] = newChan;
-                    await client.updateColumn("auto", "channel", chan[0]);
-                    editDesc += `${client.getEmoji("star")}Channel set to **${newChan}**!\n`
+                    await discord.updateColumn("auto", "channel", chan[0]);
+                    editDesc += `${discord.getEmoji("star")}Channel set to **${newChan}**!\n`
                 }
                 if (newFreq) {
                     freq[0][num] = newFreq;    
-                    await client.updateColumn("auto", "frequency", freq[0]); 
-                    editDesc += `${client.getEmoji("star")}Command set to **${newFreq}**!\n`
+                    await discord.updateColumn("auto", "frequency", freq[0]); 
+                    editDesc += `${discord.getEmoji("star")}Command set to **${newFreq}**!\n`
                 }
-                let testCmd = await client.fetchColumn("auto", "command");
-                let testChan = await client.fetchColumn("auto", "channel");
-                let testFreq = await client.fetchColumn("auto", "frequency");
+                let testCmd = await discord.fetchColumn("auto", "command");
+                let testChan = await discord.fetchColumn("auto", "channel");
+                let testFreq = await discord.fetchColumn("auto", "frequency");
                 if (testCmd[0][num] && testChan[0][num] && testFreq[0][num]) {
                     tog[0][num] = "active"
-                    await client.updateColumn("auto", "toggle", tog[0]);
-                    editDesc += `${client.getEmoji("star")}This setting is **active**!\n`;
+                    await discord.updateColumn("auto", "toggle", tog[0]);
+                    editDesc += `${discord.getEmoji("star")}This setting is **active**!\n`;
                 } else {
                     tog[0][num] = "inactive"
-                    await client.updateColumn("auto", "toggle", tog[0]);
-                    editDesc += `${client.getEmoji("star")}This setting is **inactive**!\n`;
+                    await discord.updateColumn("auto", "toggle", tog[0]);
+                    editDesc += `${discord.getEmoji("star")}This setting is **inactive**!\n`;
                 }
                 return msg.channel.send(responseEmbed.setDescription(editDesc));
             } else {
@@ -149,18 +149,18 @@ exports.run = async (client: any, message: any, args: string[]) => {
         }
         if (msg.content.toLowerCase() === "cancel") {
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}Canceled the prompt!`)
+            .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
             msg.channel.send(responseEmbed);
             return;
         } 
         if (msg.content.toLowerCase() === "reset") {
-            await client.updateColumn("auto", "command", null);
-            await client.updateColumn("auto", "channel", null);
-            await client.updateColumn("auto", "frequency", null);
-            await client.updateColumn("auto", "toggle", null);
-            await client.updateColumn("auto", "timeout", null);
+            await discord.updateColumn("auto", "command", null);
+            await discord.updateColumn("auto", "channel", null);
+            await discord.updateColumn("auto", "frequency", null);
+            await discord.updateColumn("auto", "toggle", null);
+            await discord.updateColumn("auto", "timeout", null);
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}Auto settings were wiped!`)
+            .setDescription(`${discord.getEmoji("star")}Auto settings were wiped!`)
             msg.channel.send(responseEmbed);
             return;
         }
@@ -181,8 +181,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
             } else {
                 cmd[0].push(newCmd);
                 let arrCmd = cmd[0].filter(Boolean);
-                await client.updateColumn("auto", "command", arrCmd);
-                description += `${client.getEmoji("star")}Command set to **${newCmd}**!\n`;
+                await discord.updateColumn("auto", "command", arrCmd);
+                description += `${discord.getEmoji("star")}Command set to **${newCmd}**!\n`;
             }
         }
 
@@ -192,8 +192,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
             } else {
                 chan[0].push(newChan);
                 let arrChan = chan[0].filter(Boolean);
-                await client.updateColumn("auto", "channel", arrChan);
-                description += `${client.getEmoji("star")}Channel set to <#${newChan}>!\n`;
+                await discord.updateColumn("auto", "channel", arrChan);
+                description += `${discord.getEmoji("star")}Channel set to <#${newChan}>!\n`;
             }
         }
 
@@ -203,37 +203,37 @@ exports.run = async (client: any, message: any, args: string[]) => {
             } else {
                 freq[0].push(newFreq);
                 let arrFreq = freq[0].filter(Boolean);
-                await client.updateColumn("auto", "frequency", arrFreq);
-                description += `${client.getEmoji("star")}Frequency set to **${newFreq}**!\n`;
+                await discord.updateColumn("auto", "frequency", arrFreq);
+                description += `${discord.getEmoji("star")}Frequency set to **${newFreq}**!\n`;
             }
         }
 
         if (!setCmd) {
             if (setInit) cmd[0] = cmd[0].filter(Boolean);
             cmd[0].push(0);
-            await client.updateColumn("auto", "command", cmd[0]);
+            await discord.updateColumn("auto", "command", cmd[0]);
         }
         if (!setChannel) {
             if (setInit) chan[0] = chan[0].filter(Boolean);
             chan[0].push(0);
-            await client.updateColumn("auto", "command", chan[0]);
+            await discord.updateColumn("auto", "command", chan[0]);
         }
         if (!setFreq) {
             if (setInit) freq[0] = freq[0].filter(Boolean);
             freq[0].push(0);
-            await client.updateColumn("auto", "command", freq[0]);
+            await discord.updateColumn("auto", "command", freq[0]);
         }
 
         if (setCmd && setChannel && setFreq) {
             tog[0] = tog[0].filter(Boolean);
             tog[0].push("active")
-            await client.updateColumn("auto", "toggle", tog[0]);
-            description += `${client.getEmoji("star")}This setting is **active**!\n`;
+            await discord.updateColumn("auto", "toggle", tog[0]);
+            description += `${discord.getEmoji("star")}This setting is **active**!\n`;
         } else {
             tog[0] = tog[0].filter(Boolean);
             tog[0].push("inactive")
-            await client.updateColumn("auto", "toggle", tog[0]);
-            description += `${client.getEmoji("star")}This setting is **inactive**!\n`;
+            await discord.updateColumn("auto", "toggle", tog[0]);
+            description += `${discord.getEmoji("star")}This setting is **inactive**!\n`;
         }
 
         responseEmbed
@@ -243,5 +243,5 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
     }
 
-    client.createPrompt(autoPrompt)
+    discord.createPrompt(autoPrompt)
 }

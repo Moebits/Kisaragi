@@ -1,11 +1,11 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     const math = require("mathjs");
 
-    let input = client.combineArgs(args, 1);
+    let input = discord.combineArgs(args, 1);
     let result = math.eval(input);
-    let calcEmbed = client.createEmbed();
+    let calcEmbed = discord.createEmbed();
     calcEmbed
-    .setTitle(`**Math Calculation** ${client.getEmoji("vigneDead")}`)
+    .setTitle(`**Math Calculation** ${discord.getEmoji("vigneDead")}`)
     .setDescription(result)
     message.channel.send(calcEmbed);
     

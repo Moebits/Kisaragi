@@ -1,8 +1,8 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     const nhentai = require('nhentai-js');
     const blacklist = require("../../../blacklist.json");
 
-    client.nhentaiRandom = async (filter?: boolean) => {
+    discord.nhentaiRandom = async (filter?: boolean) => {
         let random = "0";
         while (!await nhentai.exists(random)) {
             random = Math.floor(Math.random() * 1000000).toString();
@@ -12,7 +12,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
             for (let i in doujin.details.tags) {
                 for (let j in blacklist.nhentai) {
                     if (doujin.details.tags[i] === blacklist.nhentai[j]) {
-                        await client.nhentaiRandom(true);
+                        await discord.nhentaiRandom(true);
                     }
                 }
             }
@@ -21,27 +21,27 @@ exports.run = async (client: any, message: any, args: string[]) => {
     }
 
     if (!args[1]) {
-        let doujin = await client.nhentaiRandom(false);
-        client.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
+        let doujin = await discord.nhentaiRandom(false);
+        discord.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
         return;
     } else {
         
         if (args[1].toLowerCase() === "random") {
-            let doujin = await client.nhentaiRandom(true);
-            client.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
+            let doujin = await discord.nhentaiRandom(true);
+            discord.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
             return;
         }
 
-        let tag = client.combineArgs(args, 1);
+        let tag = discord.combineArgs(args, 1);
         if (tag.match(/\d+/g) !== null) {
             let doujin = await nhentai.getDoujin(tag.match(/\d+/g).toString());
-            client.getNhentaiDoujin(doujin, tag.match(/\d+/g).toString())
+            discord.getNhentaiDoujin(doujin, tag.match(/\d+/g).toString())
         } else {
             let result = await nhentai.search(tag)
             let index = Math.floor(Math.random() * 10);
             let book = result.results[index]
             let doujin = await nhentai.getDoujin(book.bookId);
-            client.getNhentaiDoujin(doujin, book.bookId)
+            discord.getNhentaiDoujin(doujin, book.bookId)
         }
     }
 }

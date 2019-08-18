@@ -1,7 +1,7 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-  const roleEmbed: any = client.createEmbed();
-  const perm: any = client.createPermission("MANAGE_ROLES");
+  const roleEmbed: any = discord.createEmbed();
+  const perm: any = discord.createPermission("MANAGE_ROLES");
 
   if (message.member.hasPermission(perm)) {
 
@@ -26,7 +26,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
                 await message.channel.send(roleEmbed
                   .setDescription(`${member.displayName} now has the ${role} role!`));
               } catch (error) {
-                client.cmdError(error);
+                discord.cmdError(error);
                 message.channel.send(roleEmbed
                   .setDescription(`The role **${roleName}** could not be found.`));
               }
@@ -39,7 +39,7 @@ exports.run = async (client: any, message: any, args: string[]) => {
               await message.channel.send(roleEmbed
                 .setDescription(`${member.displayName} no longer has the ${role} role!`));
             } catch (error) {
-              client.cmdError(error);
+              discord.cmdError(error);
               message.channel.send(roleEmbed
                 .setDescription(`The role **${roleName}** could not be found.`));
             }

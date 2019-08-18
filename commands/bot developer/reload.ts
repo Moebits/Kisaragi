@@ -1,7 +1,7 @@
-exports.run = (client: any, message: any, args: string[]) => {
+exports.run = (discord: any, message: any, args: string[]) => {
 
   let ownerID: any = process.env.OWNER_ID;
-  const reloadEmbed: any = client.createEmbed();
+  const reloadEmbed: any = discord.createEmbed();
   const commandName: string = args[1];
   const commandDir: string = args[2];
 
@@ -10,7 +10,7 @@ exports.run = (client: any, message: any, args: string[]) => {
     .setDescription(`Correct usage is =>reload (command) (dir)`));
   }
     
-  if(!client.commands.has(commandName)) {
+  if(!discord.commands.has(commandName)) {
     return message.channel.send(reloadEmbed
     .setDescription(`${commandName} does not exist`));
   }
@@ -19,9 +19,9 @@ exports.run = (client: any, message: any, args: string[]) => {
     
     delete require.cache[require.resolve(`../${commandDir}/${commandName}.js`)];
       
-    client.commands.delete(commandName);
+    discord.commands.delete(commandName);
     const fileName = require(`../${commandDir}/${commandName}.js`);
-    client.commands.set(commandName, fileName);
+    discord.commands.set(commandName, fileName);
     message.channel.send(reloadEmbed
     .setDescription(`The command **${commandName}** has been reloaded!`));
   } else {

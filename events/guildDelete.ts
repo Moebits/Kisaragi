@@ -1,3 +1,3 @@
-module.exports = (client: any, message: any) => {
-    client.deleteGuild(message.guild);
+module.exports = (discord: any, message: any) => {
+    discord.deleteGuild(message.guild);
 }

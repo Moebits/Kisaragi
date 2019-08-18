@@ -1,11 +1,11 @@
-exports.run = (client: any, message: any, args: string[]) => {
+exports.run = (discord: any, message: any, args: string[]) => {
 
     let ownerID: any = process.env.OWNER_ID;
     let activityType: string = args[1];
-    let activityName: string = client.combineArgs(args, 2);
+    let activityName: string = discord.combineArgs(args, 2);
 
     const activityTypes: string[] = ["playing", "watching", "listening", "streaming"];
-    const setEmbed: any = client.createEmbed();
+    const setEmbed: any = discord.createEmbed();
 
     if (message.author.id === ownerID) {
 
@@ -15,13 +15,13 @@ exports.run = (client: any, message: any, args: string[]) => {
         }
 
         if (activityType === "streaming") {
-            client.user.setActivity(activityName, {url: "https://www.twitch.tv/tenpimusic"}, {type: activityType});
+            discord.user.setActivity(activityName, {url: "https://www.twitch.tv/tenpimusic"}, {type: activityType});
             message.channel.send(setEmbed
             .setDescription(`I am now ${activityType} ${activityName}`));
             return;
         }
             
-        client.user.setActivity(activityName, {type: activityType});
+        discord.user.setActivity(activityName, {type: activityType});
         message.channel.send(setEmbed
         .setDescription(`I am now ${activityType} ${activityName}`));
 

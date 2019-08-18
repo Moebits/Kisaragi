@@ -1,4 +1,4 @@
-module.exports = (client: any, message: any) => {
+module.exports = (discord: any, message: any) => {
 
     //Log edited messages
 }

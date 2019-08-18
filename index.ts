@@ -3,7 +3,7 @@ const {promisify} = require("util");
 const readdir = promisify(require("fs").readdir);
 
 const Discord = require("discord.js");
-const client = new Discord.Client({
+const discord = new Discord.Client({
     apiRequestMethod: "sequential",
     disableEveryone: true,
     restTimeOffset: 0,
@@ -17,8 +17,8 @@ const commands = require("../commands.json");
 const start = async () => {
 
     const logger = require("./exports/logger.js");
-    require('./exports/queries.js')(client, null);
-    require('./exports/functions.js')(client, null);
+    require('./exports/queries.js')(discord, null);
+    require('./exports/functions.js')(discord, null);
     
     let cmdFiles: any = [];
     const subDirectory = await readdir("./commands/");
@@ -33,7 +33,7 @@ const start = async () => {
             if (!file.endsWith(".js")) return;
             let path = `../commands/${currDir}/${file}`;
             let commandName = file.split(".")[0];
-            let cmdFind = await client.fetchCommand(commandName, "command");
+            let cmdFind = await discord.fetchCommand(commandName, "command");
             if1:
             if (!cmdFind) {
                 if (commandName === "empty" || commandName === "tempCodeRunnerFile") break if1;
@@ -41,14 +41,14 @@ const start = async () => {
                     console.log(`${commandName} not found`); 
                     break if1;
                 }
-                await client.insertCommand(commandName, commands[commandName].aliases, path, commands[commandName].cooldown);
+                await discord.insertCommand(commandName, commands[commandName].aliases, path, commands[commandName].cooldown);
             } else {
                 if (commandName === "empty" || commandName === "tempCodeRunnerFile") break if1;
                 if (!commands[commandName]) {
                     console.log(`${commandName} not found`); 
                     break if1;
                 }
-                await client.updateCommand(commandName, commands[commandName].aliases, commands[commandName].cooldown);
+                await discord.updateCommand(commandName, commands[commandName].aliases, commands[commandName].cooldown);
             }
             logger.log(`Loading Command: ${commandName}`);
         }));      
@@ -63,13 +63,13 @@ const start = async () => {
             const eventName = file.split(".")[0];
             logger.log(`Loading Event: ${eventName}`);
             const event = require(`./events/${file}`);
-            client.on(eventName, event.bind(null, client));
+            discord.on(eventName, event.bind(null, discord));
         });
     
         logger.log(`Loaded a total of ${cmdFiles.length} commands.`);
         logger.log(`Loaded a total of ${evtFiles.length} events.`);
     
-        client.login(token);
+        discord.login(token);
  
         //client.generateCommands(cmdFiles)
 

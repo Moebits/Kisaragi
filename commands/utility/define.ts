@@ -1,17 +1,17 @@
 import {CollegiateDictionary} from "mw-dict";
 
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
     
     const dictionary = new CollegiateDictionary(process.env.DICTIONARY_API_KEY);
-    let word = client.combineArgs(args, 1);
-    let defineEmbed = client.createEmbed();
+    let word = discord.combineArgs(args, 1);
+    let defineEmbed = discord.createEmbed();
     let result;
     try {
         result = await dictionary.lookup(word.trim());
     } catch (error) {
         defineEmbed
         .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
-        .setTitle(`**Word Lookup** ${client.getEmoji("raphi")}`)
+        .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`)
         .setDescription(`No definitions were found. Here are some word suggestions: \n${error.suggestions.join(", ")}`)
         message.channel.send(defineEmbed);
         return;
@@ -50,23 +50,23 @@ exports.run = async (client: any, message: any, args: string[]) => {
     let definitions = "";
     for (let i in definArray) {
         if (definArray[i]) {
-            definitions += `${client.getEmoji("star")}_Definition:_ ${definArray[i]}\n`
+            definitions += `${discord.getEmoji("star")}_Definition:_ ${definArray[i]}\n`
         }
         if (exampleArray[i]) {
-            definitions += `${client.getEmoji("star")}_Example:_ ${exampleArray[i]}\n`
+            definitions += `${discord.getEmoji("star")}_Example:_ ${exampleArray[i]}\n`
         }
     }
     defineEmbed
     .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
-    .setTitle(`**Word Lookup** ${client.getEmoji("raphi")}`)
+    .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`)
     .setURL(`https://www.merriam-webster.com/dictionary/${result[0].word.replace(/ /g, "_")}`)
     .setThumbnail(message.author.displayAvatarURL)
     .setDescription(
-        `${client.getEmoji("star")}_Word:_ **${result[0].word}**\n` +
-        `${client.getEmoji("star")}_Function:_ **${result[0].functional_label}**\n` +
-        `${client.getEmoji("star")}_Popularity:_ **${result[0].popularity}**\n` +
-        `${client.getEmoji("star")}_Etymology:_ ${result[0].etymology ? result[0].etymology : "None"}\n` +
-        `${client.checkChar(definitions, 2000, ".")}\n` 
+        `${discord.getEmoji("star")}_Word:_ **${result[0].word}**\n` +
+        `${discord.getEmoji("star")}_Function:_ **${result[0].functional_label}**\n` +
+        `${discord.getEmoji("star")}_Popularity:_ **${result[0].popularity}**\n` +
+        `${discord.getEmoji("star")}_Etymology:_ ${result[0].etymology ? result[0].etymology : "None"}\n` +
+        `${discord.checkChar(definitions, 2000, ".")}\n` 
     )
     message.channel.send(defineEmbed);
 }

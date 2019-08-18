@@ -1,27 +1,27 @@
-exports.run = async (client: any, message: any, args: string[]) => {
-    let input = client.combineArgs(args, 1);
+exports.run = async (discord: any, message: any, args: string[]) => {
+    let input = discord.combineArgs(args, 1);
     if (input.trim()) {
         message.content = input.trim();
         linkPrompt(message);
         return;
     }
-    let text = await client.fetchColumn("links", "text");
-    let voice = await client.fetchColumn("links", "voice");
-    let toggle = await client.fetchColumn("links", "toggle");
+    let text = await discord.fetchColumn("links", "text");
+    let voice = await discord.fetchColumn("links", "voice");
+    let toggle = await discord.fetchColumn("links", "toggle");
 
     let description = "";
     if (text[0]) {
         for (let i = 0; i < text[0].length; i++) {
-            description += `**${i + 1} => **\n` + `${client.getEmoji("star")}_Text:_ <#${text[0][i]}>\n` +
-            `${client.getEmoji("star")}_Voice:_ **<#${voice[0][i]}>**\n` +
-            `${client.getEmoji("star")}_State:_ **${toggle[0][i]}**\n`
+            description += `**${i + 1} => **\n` + `${discord.getEmoji("star")}_Text:_ <#${text[0][i]}>\n` +
+            `${discord.getEmoji("star")}_Voice:_ **<#${voice[0][i]}>**\n` +
+            `${discord.getEmoji("star")}_State:_ **${toggle[0][i]}**\n`
         }
     } else {
         description = "None";
     }
-    let linkEmbed = client.createEmbed();
+    let linkEmbed = discord.createEmbed();
     linkEmbed
-    .setTitle(`**Linked Channels** ${client.getEmoji("gabSip")}`)
+    .setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`)
     .setThumbnail(message.guild.iconURL)
     .setDescription(
         "Configure settings for linked channels. You can link a text channel to a voice channel so that only people in the voice channel can access it.\n" +
@@ -33,38 +33,38 @@ exports.run = async (client: any, message: any, args: string[]) => {
         description + "\n" +
         "\n" +
         "__Edit Settings:__\n" +
-        `${client.getEmoji("star")}_**Mention a text channel** to set the text channel._\n` +
-        `${client.getEmoji("star")}_**Type the name of the voice channel** to set the voice channel._\n` +
-        `${client.getEmoji("star")}_Type **toggle (setting number)** to toggle the status._\n` +
-        `${client.getEmoji("star")}_Type **edit (setting number)** to edit a setting._\n` +
-        `${client.getEmoji("star")}_Type **delete (setting number)** to delete a setting._\n` +
-        `${client.getEmoji("star")}_Type **reset** to delete all settings._\n` +
-        `${client.getEmoji("star")}_Type **cancel** to exit._\n` 
+        `${discord.getEmoji("star")}_**Mention a text channel** to set the text channel._\n` +
+        `${discord.getEmoji("star")}_**Type the name of the voice channel** to set the voice channel._\n` +
+        `${discord.getEmoji("star")}_Type **toggle (setting number)** to toggle the status._\n` +
+        `${discord.getEmoji("star")}_Type **edit (setting number)** to edit a setting._\n` +
+        `${discord.getEmoji("star")}_Type **delete (setting number)** to delete a setting._\n` +
+        `${discord.getEmoji("star")}_Type **reset** to delete all settings._\n` +
+        `${discord.getEmoji("star")}_Type **cancel** to exit._\n` 
     )
     message.channel.send(linkEmbed)
 
     async function linkPrompt(msg: any) {
-        let text = await client.fetchColumn("links", "text");
-        let voice = await client.fetchColumn("links", "voice");
-        let toggle = await client.fetchColumn("links", "toggle");
+        let text = await discord.fetchColumn("links", "text");
+        let voice = await discord.fetchColumn("links", "voice");
+        let toggle = await discord.fetchColumn("links", "toggle");
         let setText, setVoice, setInit;
         if (!text[0]) text = [[""]]; setInit = true;
         if (!voice[0]) voice = [[""]]; setInit = true;
         if (!toggle[0]) toggle = [[""]]; setInit = true;
-        let responseEmbed = client.createEmbed();
-        responseEmbed.setTitle(`**Linked Channels** ${client.getEmoji("gabSip")}`);
+        let responseEmbed = discord.createEmbed();
+        responseEmbed.setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`);
         if (msg.content.toLowerCase() === "cancel") {
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}Canceled the prompt!`)
+            .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
             msg.channel.send(responseEmbed);
             return;
         } 
         if (msg.content.toLowerCase() === "reset") {
-            await client.updateColumn("links", "voice", null);
-            await client.updateColumn("links", "text", null);
-            await client.updateColumn("links", "toggle", "off");
+            await discord.updateColumn("links", "voice", null);
+            await discord.updateColumn("links", "text", null);
+            await discord.updateColumn("links", "toggle", "off");
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}All settings were reset!`)
+            .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
             msg.channel.send(responseEmbed);
             return;
         }
@@ -78,17 +78,17 @@ exports.run = async (client: any, message: any, args: string[]) => {
                     text[0] = text[0].filter(Boolean);
                     voice[0] = voice[0].filter(Boolean);
                     toggle[0] = toggle[0].filter(Boolean);
-                    await client.updateColumn("links", "text", text[0]);
-                    await client.updateColumn("links", "voice", voice[0]);
-                    await client.updateColumn("links", "toggle", toggle[0]);
+                    await discord.updateColumn("links", "text", text[0]);
+                    await discord.updateColumn("links", "voice", voice[0]);
+                    await discord.updateColumn("links", "toggle", toggle[0]);
                     responseEmbed
-                    .setDescription(`${client.getEmoji("star")}Setting ${num} was deleted!`)
+                    .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                     msg.channel.send(responseEmbed);
                     return;
                 }
             } else {
                 responseEmbed
-                .setDescription(`${client.getEmoji("star")}Setting not found!`)
+                .setDescription(`${discord.getEmoji("star")}Setting not found!`)
                 msg.channel.send(responseEmbed);
                 return;
             }
@@ -104,8 +104,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
         if (setText) {
             text[0].push(newText[0].replace(/<#/g, "").replace(/>/g, ""));
             if (setInit) text[0] = text[0].filter(Boolean);
-            await client.updateColumn("links", "text", text);
-            description += `${client.getEmoji("star")}Text channel set to **${newText[0]}**!\n`;
+            await discord.updateColumn("links", "text", text);
+            description += `${discord.getEmoji("star")}Text channel set to **${newText[0]}**!\n`;
         }
 
         if (setVoice) {
@@ -118,8 +118,8 @@ exports.run = async (client: any, message: any, args: string[]) => {
             if (channel) {
                 voice[0].push(channel.id)
                 if (setInit) voice[0] = voice[0].filter(Boolean);
-                await client.updateColumn("links", "voice", voice);
-                description += `${client.getEmoji("star")}Voice channel set to **${channel.name}**!\n`;
+                await discord.updateColumn("links", "voice", voice);
+                description += `${discord.getEmoji("star")}Voice channel set to **${channel.name}**!\n`;
             } else {
                 return msg.channel.send(responseEmbed.setDescription("Voice channel not found!"));
             } 
@@ -128,13 +128,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
         if (setText && setVoice) {
             toggle[0].push("on");
             if (setInit) toggle[0] = toggle[0].filter(Boolean);
-            await client.updateColumn("links", "toggle", toggle);
-            description += `${client.getEmoji("star")}Status set to **on**!\n`;
+            await discord.updateColumn("links", "toggle", toggle);
+            description += `${discord.getEmoji("star")}Status set to **on**!\n`;
         } else {
             toggle[0].push("off")
             if (setInit) toggle[0] = toggle[0].filter(Boolean);
-            await client.updateColumn("links", "toggle", toggle);
-            description += `${client.getEmoji("star")}Status set to **off**!\n`;
+            await discord.updateColumn("links", "toggle", toggle);
+            description += `${discord.getEmoji("star")}Status set to **off**!\n`;
         }
         
         responseEmbed
@@ -143,5 +143,5 @@ exports.run = async (client: any, message: any, args: string[]) => {
         return;
     }
 
-    client.createPrompt(linkPrompt);
+    discord.createPrompt(linkPrompt);
 }

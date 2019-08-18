@@ -1,4 +1,4 @@
-module.exports = async (client: any, message: any) => {
+module.exports = async (discord: any, message: any) => {
 
     let Discord: any = require("discord.js");
     let config: any = require("../../config.json");
@@ -7,26 +7,26 @@ module.exports = async (client: any, message: any) => {
     const child_process = require('child_process');
 
     //Run Command 
-    client.runCommand = async (msg: any, args: string[]) => {
+    discord.runCommand = async (msg: any, args: string[]) => {
         args = args.filter(Boolean);
-        let path = await client.fetchCommand(args[0], "path");
+        let path = await discord.fetchCommand(args[0], "path");
         let cp = require(`${path[0]}`);
-        await cp.run(client, msg, args).catch((err) => msg.channel.send(client.cmdError(err)));
+        await cp.run(discord, msg, args).catch((err) => msg.channel.send(discord.cmdError(err)));
     }
 
     //Auto Command
-    client.autoCommand = async (msg: any) => {
-        let command = await client.fetchColumn("auto", "command");
-        let channel = await client.fetchColumn("auto", "channel");
-        let frequency = await client.fetchColumn("auto", "frequency");
-        let toggle = await client.fetchColumn("auto", "toggle");
+    discord.autoCommand = async (msg: any) => {
+        let command = await discord.fetchColumn("auto", "command");
+        let channel = await discord.fetchColumn("auto", "channel");
+        let frequency = await discord.fetchColumn("auto", "frequency");
+        let toggle = await discord.fetchColumn("auto", "toggle");
         if (!command[0]) return;
         for (let i = 0; i < command[0].length; i++) {
             if (toggle[0][i] === "inactive") continue;
             let guildChannel = msg.guild.channels.find((c: any) => c.id === channel[0][i]);
             let cmd = command[0][i].split(" ");
             let timeout = Number(frequency[0][i]) * 3600000;
-            let rawTimeLeft = await client.fetchColumn("auto", "timeout");
+            let rawTimeLeft = await discord.fetchColumn("auto", "timeout");
             let timeLeft;
             if (rawTimeLeft[0]) {
                 timeLeft = Number(rawTimeLeft[0][i]) || 0;
@@ -36,19 +36,19 @@ module.exports = async (client: any, message: any) => {
             let last = await guildChannel.fetchMessages({limit: 1});
             let guildMsg = await last.first();
             let interval = setInterval(async () => {
-                client.runCommand(guildMsg, cmd);
+                discord.runCommand(guildMsg, cmd);
             }, timeout - (timeLeft * 1000));
-            client.timeLeft(interval, i);
+            discord.timeLeft(interval, i);
         }
     }
 
     //Time left
-    client.timeLeft = async (timeout, i) => {
+    discord.timeLeft = async (timeout, i) => {
         setInterval(async function() {
-            let times = await client.fetchColumn("auto", "timeout");
+            let times = await discord.fetchColumn("auto", "timeout");
             if (!times[0]) times[0] = [[0]];
             times[0][i] = getTimeLeft(timeout);
-            await client.updateColumn("auto", "timeout", times[0]);
+            await discord.updateColumn("auto", "timeout", times[0]);
         }, 10000);
         function getTimeLeft(timeout) {
             return Math.ceil((timeout._idleStart + timeout._idleTimeout - Date.now()) / 1000);
@@ -56,7 +56,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Haiku
-    client.haiku = async (msg: any) => {
+    discord.haiku = async (msg: any) => {
         const syllable = require("syllable");
         let wordArray = msg.content.replace(/\s+/g, " ").split(" ");
         let lineCount1 = 0;
@@ -83,9 +83,9 @@ module.exports = async (client: any, message: any) => {
         }
 
         if (lineCount3 === 5) {
-            let haikuEmbed = client.createEmbed();
+            let haikuEmbed = discord.createEmbed();
             haikuEmbed
-            .setTitle(`**Haiku** ${client.getEmoji("vigneXD")}`)
+            .setTitle(`**Haiku** ${discord.getEmoji("vigneXD")}`)
             .setThumbnail(msg.author.displayAvatarURL)
             .setDescription(
                 `${line1.join(" ")}\n` +
@@ -100,13 +100,13 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Blocked Word
-    client.block = async (msg: any) => {
+    discord.block = async (msg: any) => {
         if (msg.author.bot) return;
-        let words = await client.fetchColumn("blocks", "blocked words");
+        let words = await discord.fetchColumn("blocks", "blocked words");
         if (!words[0]) return;
         let wordList = words[0];
         wordList.forEach((w: any) => w.replace(/0/gi, "o").replace(/1/gi, "l").replace(/!/gi, "l").replace(/\*/gi, "u"));
-        let match = await client.fetchColumn("blocks", "block match");
+        let match = await discord.fetchColumn("blocks", "block match");
         if (match[0] === "exact") {
             if (wordList.some((w: any) => w.includes(msg.content))) {
                 let reply = await msg.reply("Your post was removed because it contained a blocked word.")
@@ -125,12 +125,12 @@ module.exports = async (client: any, message: any) => {
     }
     
     //Timeout
-    client.timeout = (ms: number) => {
+    discord.timeout = (ms: number) => {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     //Await Pipe
-    client.awaitPipe = async (readStream, writeStream) => {
+    discord.awaitPipe = async (readStream, writeStream) => {
         return new Promise(resolve => {
             readStream.pipe(writeStream);
             readStream.on("end", async () => {
@@ -140,23 +140,23 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Execute File
-    client.execFile = async (file: string, args?: string[]) => {
+    discord.execFile = async (file: string, args?: string[]) => {
         await child_process.execFile(`../assets/tools/${file}`, args);
         return console.log("finished");
     }
     
     //Random Number
-    client.getRandomNum = (min: number, max: number) => {
+    discord.getRandomNum = (min: number, max: number) => {
         return Math.random() * (max - min) + min;
     }
 
     //Response Time
-    client.responseTime = () => {
+    discord.responseTime = () => {
         return `${Date.now() - message.createdTimestamp} ms`;
     }
 
     //Command Cooldown
-    client.cmdCooldown = (cmd: string, cooldown: string, msg: any, cooldowns: any) => {
+    discord.cmdCooldown = (cmd: string, cooldown: string, msg: any, cooldowns: any) => {
         if (!cooldowns.has(cmd)) {
             cooldowns.set(cmd, new Discord.Collection());
         }
@@ -169,11 +169,11 @@ module.exports = async (client: any, message: any) => {
             const expirationTime = timestamps.get(msg.guild.id) + cooldownAmount;
         
             if (now < expirationTime) {
-                let cooldownEmbed = client.createEmbed();
+                let cooldownEmbed = discord.createEmbed();
                 const timeLeft = (expirationTime - now) / 1000;
                 cooldownEmbed
-                .setTitle(`**Command Cooldown!** ${client.getEmoji("kannaHungry")}`)
-                .setDescription(`${client.getEmoji("star")}**${cmd}** is on cooldown! Wait **${timeLeft.toFixed(2)}** more seconds before trying again.`);
+                .setTitle(`**Command Cooldown!** ${discord.getEmoji("kannaHungry")}`)
+                .setDescription(`${discord.getEmoji("star")}**${cmd}** is on cooldown! Wait **${timeLeft.toFixed(2)}** more seconds before trying again.`);
                 return cooldownEmbed;
             }
         }
@@ -183,7 +183,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Format Date
-    client.formatDate = (inputDate: Date) => {
+    discord.formatDate = (inputDate: Date) => {
         let monthNames = [
           "January", "February", "March",
           "April", "May", "June", "July",
@@ -199,7 +199,7 @@ module.exports = async (client: any, message: any) => {
       }
 
     //Proper Case
-    client.toProperCase = (str) => {
+    discord.toProperCase = (str) => {
         return str.replace(
             /\w\S*/g,
             function(txt) {
@@ -209,7 +209,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Check Message Characters
-    client.checkChar = (message: any, num: number, char: string) => {
+    discord.checkChar = (message: any, num: number, char: string) => {
         let splitText;
         if (message.length > num) {
             splitText = Discord.Util.splitMessage(message, {"maxLength": num, "char": char})
@@ -222,23 +222,23 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Parse Letters
-    client.letters = (text: string) => {
+    discord.letters = (text: string) => {
         let fullText: string[] = [];
         for (let i = 0; i < text.length; i++) {
-            fullText.push(client.getLetter(text[i]));
+            fullText.push(discord.getLetter(text[i]));
         }
         let fullString = fullText.join("");
-        return client.checkChar(fullString, 1999, "<");
+        return discord.checkChar(fullString, 1999, "<");
     }
 
 
     //Parse Emoji Letters
-    client.getLetter = (letter: string) => {
+    discord.getLetter = (letter: string) => {
         if (letter === " ") return "     ";
         if (letter === letter.toUpperCase()) {
             for (let i in letters.letters) {
                 if (letters.letters[i].name === `${letter}U`) {
-                    let found = client.emojis.find((emoji: any) => emoji.id === letters.letters[i].id)
+                    let found = discord.emojis.find((emoji: any) => emoji.id === letters.letters[i].id)
                     return `<:${found.identifier}>`
                 }
             }
@@ -247,7 +247,7 @@ module.exports = async (client: any, message: any) => {
         if (letter === letter.toLowerCase()) {
             for (let i in letters.letters) {
                 if (letters.letters[i].name === `${letter}l`) {
-                    let found = client.emojis.find((emoji: any) => emoji.id === letters.letters[i].id)
+                    let found = discord.emojis.find((emoji: any) => emoji.id === letters.letters[i].id)
                     return `<:${found.identifier}>`
                 }
             }
@@ -256,7 +256,7 @@ module.exports = async (client: any, message: any) => {
         if (typeof Number(letter) === "number") {
             for (let i in letters.letters) {
                 if (letters.letters[i].name === `${letter}n`) {
-                    let found = client.emojis.find((emoji: any) => emoji.id === letters.letters[i].id)
+                    let found = discord.emojis.find((emoji: any) => emoji.id === letters.letters[i].id)
                     return `<:${found.identifier}>`
                 }
             }
@@ -265,16 +265,16 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Get Emoji
-    client.getEmoji = (name: string) => {
+    discord.getEmoji = (name: string) => {
         for (let i in config.emojis) {
             if (name === config.emojis[i].name) {
-                return client.emojis.find((emoji: any) => emoji.id === config.emojis[i].id);
+                return discord.emojis.find((emoji: any) => emoji.id === config.emojis[i].id);
             }
         }
     }
 
     //Remove from Array
-    client.arrayRemove = (arr: any, val: any) => {
+    discord.arrayRemove = (arr: any, val: any) => {
         for (let i = 0; i < arr.length; i++) { 
             if (arr[i] === val) {
               arr.splice(i, 1); 
@@ -284,35 +284,35 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Random Color
-    client.randomColor = () => {
+    discord.randomColor = () => {
         return parseInt(colors[Math.floor(Math.random() * colors.length)]);
     }
 
     //Create Embed
-    client.createEmbed = () => {
+    discord.createEmbed = () => {
         let embed: any = new Discord.RichEmbed();
             embed
-            .setColor(client.randomColor())
+            .setColor(discord.randomColor())
             .setTimestamp(embed.timestamp)
-            .setFooter(`Responded in ${client.responseTime()}`, client.user.displayAvatarURL);
+            .setFooter(`Responded in ${discord.responseTime()}`, discord.user.displayAvatarURL);
             return embed;
     }
 
     //Create Permission
-    client.createPermission = (permission: string) => {
+    discord.createPermission = (permission: string) => {
         let perm: any = new Discord.Permissions(permission);
         return perm;
     }
 
     //Check for Bot Mention
-    client.checkBotMention = (message: any) => {
+    discord.checkBotMention = (message: any) => {
         if (message.content.startsWith("<@!593838271650332672>")) {
             return true;
         }
     }
 
     //Combine args after an index
-    client.combineArgs = (args: string[], num: number) => {
+    discord.combineArgs = (args: string[], num: number) => {
         let combined: string = "";
         for (let i = num; i < args.length; i++) {
             combined += args[i] + " ";
@@ -321,7 +321,7 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Check args
-    client.checkArgs = (args: string[], num: string) => {
+    discord.checkArgs = (args: string[], num: string) => {
         switch (num) {
             case "single": {
                 if (!args[0]) {
@@ -332,7 +332,7 @@ module.exports = async (client: any, message: any) => {
 
             }
             case "multi": {
-                if (!args[0] || !client.combineArgs(args, 1)) {
+                if (!args[0] || !discord.combineArgs(args, 1)) {
                     return false;
                 } else {
                     return true;
@@ -342,11 +342,11 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Errors
-    client.cmdError = (error: any) => {
+    discord.cmdError = (error: any) => {
         console.log(error);
-        let messageErrorEmbed = client.createEmbed();
+        let messageErrorEmbed = discord.createEmbed();
         messageErrorEmbed
-        .setTitle(`**Command Error** ${client.getEmoji("maikaWut")}`)
+        .setTitle(`**Command Error** ${discord.getEmoji("maikaWut")}`)
         .setDescription(`There was an error executing this command:\n` + 
         `**${error.name}: ${error.message}**\n` + `Please report this through the following links:\n` +
         `[Official Server](https://discord.gg/77yGmWM), [Github Repo](https://github.com/Tenpi/Gab)`);
@@ -354,9 +354,9 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Fetch Score
-    client.fetchScore = async (msg: any) => {
-        let rawScoreList: string[][] = await client.fetchColumn("points", "score list");
-        let rawUserList: string[][] = await client.fetchColumn("points", "user id list");
+    discord.fetchScore = async (msg: any) => {
+        let rawScoreList: string[][] = await discord.fetchColumn("points", "score list");
+        let rawUserList: string[][] = await discord.fetchColumn("points", "user id list");
         let scoreList: number[] = rawScoreList[0].map((num: string) => Number(num));
         let userList: number[] = rawUserList[0].map((num: string) => Number(num));
         for (let i: number = 0; i < userList.length; i++) {
@@ -368,9 +368,9 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Fetch Level
-    client.fetchLevel = async (msg: any) => {
-        let rawLevelList: string[][] = await client.fetchColumn("points", "level list");
-        let rawUserList: string[][] = await client.fetchColumn("points", "user id list");
+    discord.fetchLevel = async (msg: any) => {
+        let rawLevelList: string[][] = await discord.fetchColumn("points", "level list");
+        let rawUserList: string[][] = await discord.fetchColumn("points", "user id list");
         let levelList: number[] = rawLevelList[0].map((num: string) => Number(num));
         let userList: number[] = rawUserList[0].map((num: string) => Number(num));
         for (let i: number = 0; i < userList.length; i++) {
@@ -382,14 +382,14 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Calculate Score
-    client.calcScore = async (msg: any) => {
+    discord.calcScore = async (msg: any) => {
         if (message.author.bot) return;
-        let rawScoreList: string[][] = await client.fetchColumn("points", "score list");
-        let rawLevelList: string[][] = await client.fetchColumn("points", "level list");
-        let rawPointRange: string[][] = await client.fetchColumn("points", "point range");
-        let rawPointThreshold: string[] = await client.fetchColumn("points", "point threshold");
-        let rawUserList: string[][] = await client.fetchColumn("points", "user id list");
-        let levelUpMessage: string[] = await client.fetchColumn("points", "level message");
+        let rawScoreList: string[][] = await discord.fetchColumn("points", "score list");
+        let rawLevelList: string[][] = await discord.fetchColumn("points", "level list");
+        let rawPointRange: string[][] = await discord.fetchColumn("points", "point range");
+        let rawPointThreshold: string[] = await discord.fetchColumn("points", "point threshold");
+        let rawUserList: string[][] = await discord.fetchColumn("points", "user id list");
+        let levelUpMessage: string[] = await discord.fetchColumn("points", "level message");
         let userList: number[] = rawUserList[0].map((num: string) => Number(num));
 
         if (!rawScoreList[0]) {
@@ -397,8 +397,8 @@ module.exports = async (client: any, message: any) => {
             for (let i = 0; i < userList.length; i++) {
                 initList[i] = 0;
             }
-            await client.updateColumn("points", "score list", initList);
-            await client.updateColumn("points", "level list", initList);
+            await discord.updateColumn("points", "score list", initList);
+            await discord.updateColumn("points", "level list", initList);
             return;
         }
 
@@ -415,34 +415,34 @@ module.exports = async (client: any, message: any) => {
                 if (userScore === undefined || userScore === null) {
                     scoreList[i] = 0;
                     levelList[i] = 0;
-                    await client.updateColumn("points", "score list", scoreList);
-                    await client.updateColumn("points", "score list", levelList);
+                    await discord.updateColumn("points", "score list", scoreList);
+                    await discord.updateColumn("points", "score list", levelList);
                     return;
                 }
-                let newPoints: number = Math.floor(userScore + client.getRandomNum(pointRange[0], pointRange[1]));
+                let newPoints: number = Math.floor(userScore + discord.getRandomNum(pointRange[0], pointRange[1]));
                 let newLevel: number = Math.floor(userScore / pointThreshold);
                 let lvlStr: string = userStr.replace("newlevel", newLevel.toString());
 
                 if (newLevel > userLevel) {
                     levelList[i] = newLevel;
-                    await client.updateColumn("points", "level list", levelList);
+                    await discord.updateColumn("points", "level list", levelList);
                     let channel = msg.member.lastMessage.channel;
-                    const levelEmbed = client.createEmbed();
+                    const levelEmbed = discord.createEmbed();
                     levelEmbed
-                    .setTitle(`**Level Up!** ${client.getEmoji("vigneXD")}`)
+                    .setTitle(`**Level Up!** ${discord.getEmoji("vigneXD")}`)
                     .setDescription(lvlStr);
                     channel.send(levelEmbed);
                 }
 
                 scoreList[i] = newPoints;
-                await client.updateColumn("points", "score list", scoreList);
+                await discord.updateColumn("points", "score list", scoreList);
                 return;
             }
         }
       }
 
     //Generate Commands for commands.json
-    client.generateCommands = (cmdFiles: any) => {
+    discord.generateCommands = (cmdFiles: any) => {
         let newFiles = cmdFiles.flat()
         console.log(newFiles)
         let addedFiles: any = [];
@@ -461,9 +461,9 @@ module.exports = async (client: any, message: any) => {
     }
 
     //Generate Emojis for config.json
-    client.generateEmojis = (letterNames: string[]) => {
+    discord.generateEmojis = (letterNames: string[]) => {
         for (let i = 0; i < letterNames.length; i++) {
-            client.emojis.map((emoji: any) => {
+            discord.emojis.map((emoji: any) => {
                 if (emoji.name === letterNames[i]) {
                     console.log(`{"name": "${letterNames[i]}", "id": "${emoji.id}"},`);
                 }

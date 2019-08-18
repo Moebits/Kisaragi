@@ -1,8 +1,8 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    const muteEmbed: any = client.createEmbed();
-    const perm: any = client.createPermission("MANAGE_ROLES");
-    let mute = await client.fetchColumn("special roles", "mute role");
+    const muteEmbed: any = discord.createEmbed();
+    const perm: any = discord.createPermission("MANAGE_ROLES");
+    let mute = await discord.fetchColumn("special roles", "mute role");
     if (!mute) return message.reply("You need to set a mute role first!");
     let reasonArray: any = [];
     let userArray: any = [];
@@ -26,14 +26,14 @@ exports.run = async (client: any, message: any, args: string[]) => {
             let dm = await member.createDM();
             muteEmbed
             .setAuthor("unmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-            .setTitle(`**You Were Unmuted** ${client.getEmoji("kannaFU")}`)
-            .setDescription(`${client.getEmoji("star")}_You were unmuted in ${message.guild.name} for reason:_ **${reason}**`);
+            .setTitle(`**You Were Unmuted** ${discord.getEmoji("kannaFU")}`)
+            .setDescription(`${discord.getEmoji("star")}_You were unmuted in ${message.guild.name} for reason:_ **${reason}**`);
             await dm.send(muteEmbed);
         }
         muteEmbed
         .setAuthor("unmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-        .setTitle(`**Member Unmuted** ${client.getEmoji("kannaFU")}`)
-        .setDescription(`${client.getEmoji("star")}_Successfully unmuted ${members.join(", ")} for reason:_ **${reason}**`);
+        .setTitle(`**Member Unmuted** ${discord.getEmoji("kannaFU")}`)
+        .setDescription(`${discord.getEmoji("star")}_Successfully unmuted ${members.join(", ")} for reason:_ **${reason}**`);
         message.channel.send(muteEmbed);
         return;
         

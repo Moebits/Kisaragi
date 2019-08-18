@@ -1,7 +1,7 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    let text = client.combineArgs(args, 1);
-    let emojiFied = client.letters(text);
+    let text = discord.combineArgs(args, 1);
+    let emojiFied = discord.letters(text);
     message.channel.send(`>${emojiFied}`);
 
 }

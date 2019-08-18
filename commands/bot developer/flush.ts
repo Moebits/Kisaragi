@@ -1,9 +1,9 @@
-exports.run = async (client: any, message: any, args: string[]) => {
-    let flushEmbed = client.createEmbed();
+exports.run = async (discord: any, message: any, args: string[]) => {
+    let flushEmbed = discord.createEmbed();
     let ownerID: any = process.env.OWNER_ID;
 
     if (message.author.id === ownerID) {
-        await client.flushDB();
+        await discord.flushDB();
         flushEmbed
         .setDescription("The database was flushed.")
         message.channel.send(flushEmbed);

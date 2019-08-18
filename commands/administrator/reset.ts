@@ -1,11 +1,11 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
-    const initEmbed: any = client.createEmbed();
-    const perm: any = client.createPermission("ADMINISTRATOR");
+    const initEmbed: any = discord.createEmbed();
+    const perm: any = discord.createPermission("ADMINISTRATOR");
 
     if (message.member.hasPermission(perm)) {
-        await client.deleteGuild(message.guild.id);
-        await client.initGuild();
+        await discord.deleteGuild(message.guild.id);
+        await discord.initGuild();
         message.channel.send(initEmbed
             .setDescription("All guild settings have been reset to the default."))
             return;

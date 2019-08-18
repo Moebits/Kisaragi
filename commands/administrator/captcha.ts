@@ -1,20 +1,20 @@
-exports.run = async (client: any, message: any, args: string[]) => {
-    let input = client.combineArgs(args, 1);
+exports.run = async (discord: any, message: any, args: string[]) => {
+    let input = discord.combineArgs(args, 1);
     if (input.trim()) {
         message.content = input.trim();
         captchaPrompt(message);
         return;
     }
-    let vToggle = await client.fetchColumn("captcha", "verify toggle");
-    let vRole = await client.fetchColumn("captcha", "verify role");
-    let cType = await client.fetchColumn("captcha", "captcha type");
-    let color = await client.fetchColumn("captcha", "captcha color");
-    let difficulty = await client.fetchColumn("captcha", "difficulty");
-    let captchaEmbed = client.createEmbed();
-    let {captcha} = await client.createCaptcha(cType, color, difficulty);
+    let vToggle = await discord.fetchColumn("captcha", "verify toggle");
+    let vRole = await discord.fetchColumn("captcha", "verify role");
+    let cType = await discord.fetchColumn("captcha", "captcha type");
+    let color = await discord.fetchColumn("captcha", "captcha color");
+    let difficulty = await discord.fetchColumn("captcha", "difficulty");
+    let captchaEmbed = discord.createEmbed();
+    let {captcha} = await discord.createCaptcha(cType, color, difficulty);
     console.log(captcha.files)
     captchaEmbed
-    .setTitle(`**Captcha Verification** ${client.getEmoji("kannaAngry")}`)
+    .setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)
     .attachFiles(captcha.files)
     .setImage(captcha.image.url)
     .setThumbnail(message.guild.iconURL)
@@ -27,42 +27,42 @@ exports.run = async (client: any, message: any, args: string[]) => {
         "**Captcha Difficulty** = Either easy, medium, hard, or extreme.\n" +
         "\n" +
         "__Current Settings:__\n" +
-        `${client.getEmoji("star")}_Verify Role:_ **${vRole.join("") ? "<@&" + vRole.join("") + ">" : "None"}**\n` +
-        `${client.getEmoji("star")}_Verify Toggle:_ **${vToggle.join("")}**\n` +
-        `${client.getEmoji("star")}_Captcha Type:_ **${cType.join("")}**\n` +
-        `${client.getEmoji("star")}_Captcha Difficulty:_ **${difficulty.join("")}**\n` +
-        `${client.getEmoji("star")}_Background Color:_ **${color.join("")}**\n` +
+        `${discord.getEmoji("star")}_Verify Role:_ **${vRole.join("") ? "<@&" + vRole.join("") + ">" : "None"}**\n` +
+        `${discord.getEmoji("star")}_Verify Toggle:_ **${vToggle.join("")}**\n` +
+        `${discord.getEmoji("star")}_Captcha Type:_ **${cType.join("")}**\n` +
+        `${discord.getEmoji("star")}_Captcha Difficulty:_ **${difficulty.join("")}**\n` +
+        `${discord.getEmoji("star")}_Background Color:_ **${color.join("")}**\n` +
         "\n" +
         "__Edit Settings:__\n" +
-        `${client.getEmoji("star")}_Type **enable** or **disable** to enable or disable verification._\n` +
-        `${client.getEmoji("star")}_**Mention a role** or type the **role id** to set the verified role._\n` +
-        `${client.getEmoji("star")}_Type **text** or **math** to set the captcha type._\n` +
-        `${client.getEmoji("star")}_Type **easy**, **medium**, **hard**, or **extreme** to set the difficulty._\n` +
-        `${client.getEmoji("star")}_Type a **hex color** to set the background color._\n` +
-        `${client.getEmoji("star")}_**You can type multiple options** to enable all at once._\n` +
-        `${client.getEmoji("star")}_Type **reset** to reset all settings._\n` +
-        `${client.getEmoji("star")}_Type **cancel** to exit._\n`
+        `${discord.getEmoji("star")}_Type **enable** or **disable** to enable or disable verification._\n` +
+        `${discord.getEmoji("star")}_**Mention a role** or type the **role id** to set the verified role._\n` +
+        `${discord.getEmoji("star")}_Type **text** or **math** to set the captcha type._\n` +
+        `${discord.getEmoji("star")}_Type **easy**, **medium**, **hard**, or **extreme** to set the difficulty._\n` +
+        `${discord.getEmoji("star")}_Type a **hex color** to set the background color._\n` +
+        `${discord.getEmoji("star")}_**You can type multiple options** to enable all at once._\n` +
+        `${discord.getEmoji("star")}_Type **reset** to reset all settings._\n` +
+        `${discord.getEmoji("star")}_Type **cancel** to exit._\n`
     )
     message.channel.send(captchaEmbed)
 
     async function captchaPrompt(msg: any) {
-        let responseEmbed = client.createEmbed();
-        responseEmbed.setTitle(`**Captcha Verification** ${client.getEmoji("kannaAngry")}`);
+        let responseEmbed = discord.createEmbed();
+        responseEmbed.setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`);
         let setOn, setOff, setRole, setText, setMath, setColor, setEasy, setMedium, setHard, setExtreme;
         if (msg.content.toLowerCase() === "cancel") {
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}Canceled the prompt!`)
+            .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
             msg.channel.send(responseEmbed);
             return;
         } 
         if (msg.content.toLowerCase() === "reset") {
-            await client.updateColumn("captcha", "verify toggle", "off");
-            await client.updateColumn("captcha", "verify role", null);
-            await client.updateColumn("captcha", "captcha type", "text");
-            await client.updateColumn("captcha", "captcha color", "#ffffff");
-            await client.updateColumn("captcha", "difficulty", "medium");
+            await discord.updateColumn("captcha", "verify toggle", "off");
+            await discord.updateColumn("captcha", "verify role", null);
+            await discord.updateColumn("captcha", "captcha type", "text");
+            await discord.updateColumn("captcha", "captcha color", "#ffffff");
+            await discord.updateColumn("captcha", "difficulty", "medium");
             responseEmbed
-            .setDescription(`${client.getEmoji("star")}All settings were reset!`)
+            .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
             msg.channel.send(responseEmbed);
             return;
         }
@@ -83,21 +83,21 @@ exports.run = async (client: any, message: any, args: string[]) => {
 
         if (setOn && setOff) {
             responseEmbed
-                .setDescription(`${client.getEmoji("star")}You cannot disable/enable at the same time.`)
+                .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
                 msg.channel.send(responseEmbed);
                 return;
         }
 
         if (setText && setMath) {
             responseEmbed
-                .setDescription(`${client.getEmoji("star")}You cannot set both captcha types at the same time.`)
+                .setDescription(`${discord.getEmoji("star")}You cannot set both captcha types at the same time.`)
                 msg.channel.send(responseEmbed);
                 return;
         }
 
         if (setOn && !setRole) {
             responseEmbed
-                .setDescription(`${client.getEmoji("star")}In order to enable verification, you must set the verify role.`)
+                .setDescription(`${discord.getEmoji("star")}In order to enable verification, you must set the verify role.`)
                 msg.channel.send(responseEmbed);
                 return;
         }
@@ -109,33 +109,33 @@ exports.run = async (client: any, message: any, args: string[]) => {
             let diff = setExtreme ? setExtreme : (
                 setHard ? setHard : (
                 setMedium ? setMedium : setEasy));
-            await client.updateColumn("captcha", "verify toggle", diff.join(""));
-            description += `${client.getEmoji("star")}Captcha difficulty set to **${diff.join("")}**!\n`;
+            await discord.updateColumn("captcha", "verify toggle", diff.join(""));
+            description += `${discord.getEmoji("star")}Captcha difficulty set to **${diff.join("")}**!\n`;
         }
 
         if (setOn) {
-            await client.updateColumn("captcha", "verify toggle", "on");
-            description += `${client.getEmoji("star")}Captcha verification is **on**!\n`;
+            await discord.updateColumn("captcha", "verify toggle", "on");
+            description += `${discord.getEmoji("star")}Captcha verification is **on**!\n`;
         }
         if (setOff) {
-            await client.updateColumn("captcha", "verify toggle", "off");
-            description += `${client.getEmoji("star")}Captcha verification is **off**!\n`;
+            await discord.updateColumn("captcha", "verify toggle", "off");
+            description += `${discord.getEmoji("star")}Captcha verification is **off**!\n`;
         }
         if (setText) {
-            await client.updateColumn("captcha", "captcha type", "text");
-            description += `${client.getEmoji("star")}Captcha type set to **text**!\n`;
+            await discord.updateColumn("captcha", "captcha type", "text");
+            description += `${discord.getEmoji("star")}Captcha type set to **text**!\n`;
         }
         if (setMath) {
-            await client.updateColumn("captcha", "captcha type", "math");
-            description += `${client.getEmoji("star")}Captcha type set to **math**!\n`;
+            await discord.updateColumn("captcha", "captcha type", "math");
+            description += `${discord.getEmoji("star")}Captcha type set to **math**!\n`;
         }
         if (setRole) {
-            await client.updateColumn("captcha", "verify role", newRole.join(""));
-            description += `${client.getEmoji("star")}Verify role set to <@&${newRole}>!\n`;
+            await discord.updateColumn("captcha", "verify role", newRole.join(""));
+            description += `${discord.getEmoji("star")}Verify role set to <@&${newRole}>!\n`;
         }
         if (setColor) {
-            await client.updateColumn("captcha", "captcha color", newColor.join(""));
-            description += `${client.getEmoji("star")}Background color set to ${newColor.join("")}\n`;
+            await discord.updateColumn("captcha", "captcha color", newColor.join(""));
+            description += `${discord.getEmoji("star")}Background color set to ${newColor.join("")}\n`;
         }
         responseEmbed
         .setDescription(description)
@@ -143,5 +143,5 @@ exports.run = async (client: any, message: any, args: string[]) => {
         return;
     }
 
-    client.createPrompt(captchaPrompt)
+    discord.createPrompt(captchaPrompt)
 }

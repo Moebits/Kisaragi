@@ -1,10 +1,10 @@
-exports.run = async (client: any, message: any, args: string[]) => {
+exports.run = async (discord: any, message: any, args: string[]) => {
 
   let input = "";
   if (args[1] === "return") {
-    input = client.combineArgs(args, 2);
+    input = discord.combineArgs(args, 2);
   } else {
-    input = client.combineArgs(args, 1);
+    input = discord.combineArgs(args, 1);
   }
   let website = "";
   if (input.startsWith("http")) {
@@ -35,10 +35,10 @@ exports.run = async (client: any, message: any, args: string[]) => {
     if (args[1] === "return") return;
     
     let attachment = await new Attachment("../assets/images/screenshot.png")
-    let screenEmbed = client.createEmbed();
+    let screenEmbed = discord.createEmbed();
     screenEmbed
     .setAuthor("google chrome", "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png")
-    .setTitle(`**Website Screenshot** ${client.getEmoji("kannaXD")}`)
+    .setTitle(`**Website Screenshot** ${discord.getEmoji("kannaXD")}`)
     .attachFiles([attachment.file])
     .setImage("attachment://screenshot.png")
     message.channel.send(screenEmbed);
