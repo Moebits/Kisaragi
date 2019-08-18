@@ -13,13 +13,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setThumbnail(result[0]._data.logo)
         .setImage(result[0]._data.profile_banner)
         .setDescription(
-            `${client.getEmoji("star")}_Name:_ **${result[0]._data.name}**\n` +
-            `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(result[0]._data.created_at)}**\n` +
-            `${client.getEmoji("star")}_Views:_ **${result[0]._data.views}**\n` +
-            `${client.getEmoji("star")}_Followers:_ **${result[0]._data.followers}**\n` +
-            `${client.getEmoji("star")}_Status:_ **${result[0]._data.status}**\n` +
-            `${client.getEmoji("star")}_Game:_ **${result[0]._data.game}**\n` +
-            `${client.getEmoji("star")}_Description:_ ${result[0]._data.description}\n`
+            `${client.getEmoji("star")}_Name:_ **${result[0].name}**\n` +
+            `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(result[0].creationDate.getTime())}**\n` +
+            `${client.getEmoji("star")}_Views:_ **${result[0].views}**\n` +
+            `${client.getEmoji("star")}_Followers:_ **${result[0].followers}**\n` +
+            `${client.getEmoji("star")}_Status:_ **${result[0].status}**\n` +
+            `${client.getEmoji("star")}_Game:_ **${result[0].game}**\n` +
+            `${client.getEmoji("star")}_Description:_ ${result[0].description}\n`
         )
         message.channel.send(twitchEmbed)
         return;
@@ -37,13 +37,13 @@ exports.run = async (client: any, message: any, args: string[]) => {
         .setImage(result[i]._data.preview.large)
         .setThumbnail(result[i]._data.channel.logo)
         .setDescription(
-            `${client.getEmoji("star")}_Title:_ **${result[i]._data.channel.status}**\n` +
-            `${client.getEmoji("star")}_Channel:_ **${result[i]._data.channel.name}**\n` +
-            `${client.getEmoji("star")}_Game:_ **${result[i]._data.channel.game}**\n` +
-            `${client.getEmoji("star")}_Viewers:_ **${result[i]._data.viewers}**\n` +
-            `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(result[i]._data.created_at)}**\n` +
-            `${client.getEmoji("star")}_FPS:_ **${Math.floor(result[i]._data.average_fps)}**\n` +
-            `${client.getEmoji("star")}_Description:_ ${result[i]._data.channel.description}\n`
+            `${client.getEmoji("star")}_Title:_ **${result[i].channel.status}**\n` +
+            `${client.getEmoji("star")}_Channel:_ **${result[i].channel.name}**\n` +
+            `${client.getEmoji("star")}_Game:_ **${result[i].channel.game}**\n` +
+            `${client.getEmoji("star")}_Viewers:_ **${result[i].viewers}**\n` +
+            `${client.getEmoji("star")}_Creation Date:_ **${client.formatDate(result[i].creationDate.getTime())}**\n` +
+            `${client.getEmoji("star")}_FPS:_ **${Math.floor(result[i].averageFPS)}**\n` +
+            `${client.getEmoji("star")}_Description:_ ${result[i].channel.description}\n`
         )
         twitchArray.push(twitchEmbed);
     }
