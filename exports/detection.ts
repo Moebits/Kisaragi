@@ -17,20 +17,8 @@ module.exports = async (discord: any, message: any) => {
             for (let i = 0; i < urls.length; i++) {
                 await download.image({url: urls[i], dest: `../assets/detection/image${i}.jpg`});
                 const img = await cv.imreadAsync(`../assets/detection/image${i}.jpg`);
-                const result = await classifier.detectMultiScaleAsync(img, 1.01, 1);
-                let hasAnime = true;
-                if (!result.objects.join("")) hasAnime = false;
-                let badCounter = 0;
-                for (let i in result.numDetections) {
-                    if (result.numDetections[i] < 3) {
-                        badCounter++;
-                    }
-                    if (badCounter === 2) {
-                        hasAnime = false;
-                        break;
-                    }
-                }
-                if (!hasAnime) {
+                const result = await classifier.detectMultiScaleAsync(img);
+                if (!result.objects.join("")) {
                     let reply = await msg.reply("You can only post anime pictures!");
                     await msg.delete();
                     reply.delete(10000);
@@ -58,20 +46,13 @@ module.exports = async (discord: any, message: any) => {
             await download.image({url: member.user.displayAvatarURL, dest: `../assets/detection/user.jpg`});
         } 
         const img = await cv.imreadAsync(`../assets/detection/user.jpg`);
-        const result = await classifier.detectMultiScaleAsync(img, 1.01, 1);
-                let hasAnime = true;
-                if (!result.objects.join("")) hasAnime = false;
-                let badCounter = 0;
-                for (let i in result.numDetections) {
-                    if (result.numDetections[i] < 3) {
-                        badCounter++;
-                    }
-                    if (badCounter === 2) {
-                        hasAnime = false;
-                        break;
-                    }
+        const result = await classifier.detectMultiScaleAsync(img);
+                if (!result.objects.join("")) {
+                    let reply = await msg.reply("You can only post anime pictures!");
+                    await msg.delete();
+                    reply.delete(10000);
                 }
-        if (!hasAnime) {
+        if (!result.objects.join("")) {
             let found = member.roles.find((r: any) => r === normieRole);
             if (found) {
                 return;
