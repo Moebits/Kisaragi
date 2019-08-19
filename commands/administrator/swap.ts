@@ -7,6 +7,8 @@ exports.run = async (discord: any, message: any, args: string[]) => {
     let weebCounter = 0;
     let normieCounter = 0;
 
+    let wait = await message.channel.send(`**Scanning every member in the server. This will take awhile** ${discord.getEmoji("gabCircle")}`);
+
     for (let i = 0; i < message.guild.members.size; i++) {
         let memberArray = message.guild.members.map((m: any) => m);
         let result = await discord.swapRoles(message, memberArray[i], true);
@@ -16,6 +18,8 @@ exports.run = async (discord: any, message: any, args: string[]) => {
             normieCounter += 1;
         }
     }
+
+    await wait.delete(1000);
 
     let swapEmbed = discord.createEmbed();
     swapEmbed

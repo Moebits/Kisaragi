@@ -49,7 +49,7 @@ module.exports = async (discord: any, message: any) => {
             gifFrames({url: member.user.displayAvatarURL, frames: 1}).then((frameData) => {
                 frameData[0].getImage().pipe(fs.createWriteStream('../assets/detection/user.jpg'));
             });
-            await discord.timeout(500);
+            await discord.timeout(1000);
         } else {
             await download.image({url: member.user.displayAvatarURL, dest: `../assets/detection/user.jpg`});
         } 
