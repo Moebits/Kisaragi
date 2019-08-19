@@ -2,9 +2,7 @@ const Redis = require("redis");
 const bluebird = require("bluebird");
 bluebird.promisifyAll(Redis.RedisClient.prototype);
 
-const redis = Redis.createClient({
-  host: process.env.REDIS_HOST
-});
+const redis = Redis.createClient();
 
 const Pool: any = require('pg').Pool;
 
