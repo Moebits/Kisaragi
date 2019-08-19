@@ -23,11 +23,11 @@ exports.run = async (discord: any, message: any, args: string[]) => {
         "**Pfp Detection** = Actively swaps members between the weeb role (anime pfp) and normie role (non anime pfp).\n" +
         "\n" +
         "__Current Settings__\n" +
-        `${discord.getEmoji("star")}Link detection is **${links.join("")}**\n` + 
-        `${discord.getEmoji("star")}Anime detection is **${anime.join("")}**\n` + 
-        `${discord.getEmoji("star")}Pfp detection is **${pfp.join("")}**\n` + 
-        `${discord.getEmoji("star")}Weeb role set to: ${weeb.join("") ? `<@&${weeb.join("")}>` : "None"}\n` + 
-        `${discord.getEmoji("star")}Normie role set to: ${normie.join("") ? `<@&${normie.join("")}>` : "None"}\n` + 
+        `${discord.getEmoji("star")}Link detection is **${links ? links.join("") : "off"}**\n` + 
+        `${discord.getEmoji("star")}Anime detection is **${anime ? anime.join("") : "off"}**\n` + 
+        `${discord.getEmoji("star")}Pfp detection is **${pfp ? pfp.join("") : "off"}**\n` + 
+        `${discord.getEmoji("star")}Weeb role: **${weeb ? (weeb.join("") ? `<@&${weeb.join("")}>` : "None") : "None"}**\n` + 
+        `${discord.getEmoji("star")}Normie role: **${normie ? (normie.join("") ? `<@&${normie.join("")}>` : "None") : "None"}**\n` + 
         "\n" +
         "__Edit Settings__\n" +
         `${discord.getEmoji("star")}Type **link** to toggle link detection on/off.\n` + 
@@ -81,7 +81,7 @@ exports.run = async (discord: any, message: any, args: string[]) => {
         let description = "";
 
         if (setLink) {
-            if (links.join("") === "off") {
+            if (!links || links.join("") === "off") {
                 await discord.updateColumn("detection", "links", "on");
                 description += `${discord.getEmoji("star")}Link detection is **on**!\n`
             } else {
@@ -91,7 +91,7 @@ exports.run = async (discord: any, message: any, args: string[]) => {
         }
 
         if (setAnime) {
-            if (anime.join("") === "off") {
+            if (!anime || anime.join("") === "off") {
                 await discord.updateColumn("detection", "anime", "on");
                 description += `${discord.getEmoji("star")}Anime detection is **on**!\n`
             } else {
@@ -101,7 +101,7 @@ exports.run = async (discord: any, message: any, args: string[]) => {
         }
 
         if (setPfp) {
-            if (pfp.join("") === "off") {
+            if (!pfp || pfp.join("") === "off") {
                 if (!weeb.join("") || !normie.join("")) {
                     let testWeeb, testNormie;
                     if (!weeb.join("") && setWeeb) testWeeb = true;

@@ -9,6 +9,7 @@ module.exports = async (discord: any, message: any) => {
     let fs = require('fs');
 
     discord.detectAnime = async (msg: any) => {
+        if (!anime) return;
         if (anime.join("") === "off") return;
         if (msg.author.id === discord.user.id) return;
         if (msg.attachments.size) {
@@ -16,9 +17,16 @@ module.exports = async (discord: any, message: any) => {
             for (let i = 0; i < urls.length; i++) {
                 await download.image({url: urls[i], dest: `../assets/detection/image${i}.jpg`});
                 const img = await cv.imreadAsync(`../assets/detection/image${i}.jpg`);
-                const grayImg = await img.bgrToGrayAsync();
-                const {objects} = await classifier.detectMultiScaleAsync(grayImg);
-                if (!objects.join("")) {
+                const result = await classifier.detectMultiScaleAsync(img, 1.01, 1);
+                let hasAnime = true;
+                if (!result.objects.join("")) hasAnime = false;
+                for (let i in result.numDetections) {
+                    if (result.numDetections.length > 5 && result.numDetections[i] < 3) {
+                        hasAnime = false;
+                        break;
+                    }
+                }
+                if (!hasAnime) {
                     let reply = await msg.reply("You can only post anime pictures!");
                     await msg.delete();
                     reply.delete(10000);
@@ -28,6 +36,7 @@ module.exports = async (discord: any, message: any) => {
     }
 
     discord.swapRoles = async (msg: any, member?: any, counter?: boolean) => {
+        if (!pfp) return;
         if (pfp.join("") === "off") return;
         if (msg.author.id === discord.user.id) return;
         if (!member) member = msg.member;
@@ -45,9 +54,16 @@ module.exports = async (discord: any, message: any) => {
             await download.image({url: member.user.displayAvatarURL, dest: `../assets/detection/user.jpg`});
         } 
         const img = await cv.imreadAsync(`../assets/detection/user.jpg`);
-        const grayImg = await img.bgrToGrayAsync();
-        const {objects} = await classifier.detectMultiScaleAsync(grayImg);
-        if (!objects.join("")) {
+        const result = await classifier.detectMultiScaleAsync(img, 1.01, 1);
+                let hasAnime = true;
+                if (!result.objects.join("")) hasAnime = false;
+                for (let i in result.numDetections) {
+                    if (result.numDetections.length > 5 && result.numDetections[i] < 3) {
+                        hasAnime = false;
+                        break;
+                    }
+                }
+        if (!hasAnime) {
             let found = member.roles.find((r: any) => r === normieRole);
             if (found) {
                 return;
