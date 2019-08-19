@@ -18,10 +18,15 @@ module.exports = async (discord: any, message: any) => {
                 await download.image({url: urls[i], dest: `../assets/detection/image${i}.jpg`});
                 const img = await cv.imreadAsync(`../assets/detection/image${i}.jpg`);
                 const result = await classifier.detectMultiScaleAsync(img, 1.01, 1);
+                console.log(result)
                 let hasAnime = true;
                 if (!result.objects.join("")) hasAnime = false;
+                let badCounter = 0;
                 for (let i in result.numDetections) {
-                    if (result.numDetections.length > 5 && result.numDetections[i] < 3) {
+                    if (result.numDetections[i] < 3) {
+                        badCounter++;
+                    }
+                    if (badCounter === 2) {
                         hasAnime = false;
                         break;
                     }
@@ -57,8 +62,12 @@ module.exports = async (discord: any, message: any) => {
         const result = await classifier.detectMultiScaleAsync(img, 1.01, 1);
                 let hasAnime = true;
                 if (!result.objects.join("")) hasAnime = false;
+                let badCounter = 0;
                 for (let i in result.numDetections) {
-                    if (result.numDetections.length > 5 && result.numDetections[i] < 3) {
+                    if (result.numDetections[i] < 3) {
+                        badCounter++;
+                    }
+                    if (badCounter === 2) {
                         hasAnime = false;
                         break;
                     }
