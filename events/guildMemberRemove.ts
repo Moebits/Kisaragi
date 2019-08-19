@@ -38,7 +38,16 @@ module.exports = async (discord: any, member: any) => {
 
     leaveMessages();
 
+    let pfpCheckArray = await discord.fetchColumn("ignore", "pfp");
+    let pfpCheck = false;
+    for (let i = 0; i < pfpCheckArray.length; i++) {
+        if (member.id === pfpCheckArray[i]) {
+            pfpCheck = true;
+        }
+    }
+
     async function leaveBan() {
+        if (pfpCheck) return;
         let leaveToggle = await discord.fetchColumn("blocks", "leaver ban toggle");
         const banEmbed: any = discord.createEmbed();
         if (leaveToggle.join("") === "off") return;

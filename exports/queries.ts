@@ -266,6 +266,15 @@ module.exports = async (discord: any, message: any) => {
         }
     }
 
+    //Delete row
+    discord.deleteRow = async (table: string, column: string, value: any) => {
+      let query: object = {
+        text: `DELETE FROM ${table} WHERE ${column} = $1`,
+        values: [value]
+      } 
+      await discord.runQuery(query, true);
+    }
+
     //Order tables by guild member count
     discord.orderTables = async () => {
         for (let table in tableList) {
