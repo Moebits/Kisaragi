@@ -18,7 +18,6 @@ module.exports = async (discord: any, message: any) => {
                 await download.image({url: urls[i], dest: `../assets/detection/image${i}.jpg`});
                 const img = await cv.imreadAsync(`../assets/detection/image${i}.jpg`);
                 const result = await classifier.detectMultiScaleAsync(img, 1.01, 1);
-                console.log(result)
                 let hasAnime = true;
                 if (!result.objects.join("")) hasAnime = false;
                 let badCounter = 0;
