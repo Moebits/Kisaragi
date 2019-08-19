@@ -47,11 +47,6 @@ module.exports = async (discord: any, message: any) => {
         } 
         const img = await cv.imreadAsync(`../assets/detection/user.jpg`);
         const result = await classifier.detectMultiScaleAsync(img);
-                if (!result.objects.join("")) {
-                    let reply = await msg.reply("You can only post anime pictures!");
-                    await msg.delete();
-                    reply.delete(10000);
-                }
         if (!result.objects.join("")) {
             let found = member.roles.find((r: any) => r === normieRole);
             if (found) {
