@@ -19,33 +19,6 @@ module.exports = async (discord: any, member: any) => {
     await require("../exports/images.js")(discord, defMessage ? defMessage.first() : null);
     await require("../exports/detection.js")(discord, defMessage ? defMessage.first() : null);
 
-    let pfpCheckArray = await discord.fetchColumn("ignore", "pfp");
-    for (let i = 0; i < pfpCheckArray.length; i++) {
-        if (member.id === pfpCheckArray[i]) {
-            await discord.deleteRow("ignore", "pfp", member.id);
-        }
-    }
-
-    async function animePfp() {
-        let result = await discord.swapRoles(defMessage ? defMessage.first() : null, member, true);
-        if (result === false) {
-            await discord.insertInto("ignore", "pfp", member.id);
-            let channel = defaultChannel;
-            let reason = "Doesn't have an anime profile picture!";
-            let dm = await member.user.createDM();
-            let kickEmbed = discord.createEmbed();
-            kickEmbed
-            .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
-            .setTitle(`**You Were Kicked** ${discord.getEmoji("kannaFU")}`)
-            .setDescription(`${discord.getEmoji("star")}_You were kicked from ${member.guild.name} for reason:_ **${reason}**`);
-            await dm.send(kickEmbed);
-            if (channel) await channel.send(kickEmbed);
-            await member.kick(reason);
-        }
-    }
-
-    animePfp();
-
     async function welcomeMessages() {
         let welcomeToggle = await discord.fetchColumn("welcome leaves", "welcome toggle");
         if (welcomeToggle.join("") === "off") return;
