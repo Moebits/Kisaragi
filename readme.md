@@ -13,6 +13,6 @@ This is my first programming project, a simple discord bot with chat moderation 
 ![GitHub repo size](https://img.shields.io/github/repo-size/tenpi/kisaragi)
 ![GitHub](https://img.shields.io/github/license/tenpi/kisaragi)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/tenpi/kisaragi)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/tenpi/kisaragi)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/tenpi/kisaragi)
 ![GitHub contributors](https://img.shields.io/github/contributors/tenpi/kisaragi)
 ![GitHub last commit](https://img.shields.io/github/last-commit/tenpi/kisaragi)
