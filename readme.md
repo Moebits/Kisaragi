@@ -1,40 +1,18 @@
 # Kisaragi Discord Bot
 This is my first programming project, a simple discord bot with chat moderation and fun commands. 
 
-# To Do
-Added ->
--Connection to discord
--Connection to git and github repo
--Connection to the heroku server
-=>ping
-=>eval
-=>reload
-=>reboot
-=>del
-=>role 
-=>set
+![Best Girl](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOYUG9u3l8feN4qP9O7yuGfFxCBVGJSaLC_zstsh3vwknFIoqf)
 
-Needs Work ->
--Help descriptions
--Emoji configurations
--Pictures and media
-=>help 
-=>prefix
-=>createguild
-=>remdash
-
-To Add ->
--Guild config seperations
--Sharding
-=>say 
-=>avatar
-=>info
-=>welcome
-=>leave
-
-Connections to add ->
-Osu
-Geometry Dash
-Youtube
-Soundcloud
-Pixiv
+[![Build Status](https://travis-ci.com/Tenpi/Kisaragi.svg?branch=master)](https://travis-ci.com/Tenpi/Kisaragi)
+[![Maintainability](https://api.codeclimate.com/v1/badges/186c85ba023ef996a443/maintainability)](https://codeclimate.com/github/Tenpi/Kisaragi/maintainability)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![HitCount](http://hits.dwyl.io/tenpi/kisaragi.svg)](http://hits.dwyl.io/tenpi/kisaragi)
+[![Known Vulnerabilities](https://snyk.io/test/github/tenpi/kisaragi/badge.svg)](https://snyk.io/test/github/tenpi/kisaragi)
+![Twitter Follow](https://img.shields.io/twitter/follow/tenpimusic?label=Follow&style=social)
+![Discord](https://img.shields.io/discord/578604087763795970?label=Discord&logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAOMAAADeCAMAAAD4tEcNAAAAaVBMVEX%2F%2F%2F9yidpshNmzvupthdnFzu%2Bls%2BZvh9logdhpgthlf9dkftfx8%2FuHmt%2BClt7Cy%2B73%2BP2drOSUpeLh5fbc4fXo6%2Fh6j9zZ3vS6xOx%2Bk92RouHq7fmMnuDK0vC4wuvP1vGptueaqeNYddUS94%2BGAAAIj0lEQVR4nO2da7dzPBCGiVQOSqmWaunh%2Ff8%2F8tWqPoqEbklY1txr7U9bcMlpkplMLQsEAoFAIBAIBAKBQCAQSKDjrdjMqeJ21Mq33eWcMzSvGOf5bquJ8PigiNhLEEH0oaU2XW8ZgJWId1dOGNtobqyWUKK4Km98SZVYifBUJWK6qHZai3gHdYgxXSJiCcmUNdeQLBOxhLRVMUZ4bhahkKsGMeZzk0jE1bTWfLnVWLbWvQrE45KrsaxIFWads7TJ%2F1vopIAxW%2BqgWon40xG3y26qtk3DyYwpmxtiQDSezLhbdncsO%2BRtMuN18Yy7yYwLH1ZLRgcYgREYlyJgBEZgXI6AERiBcTkCRmAExuUIGIERGJcjYARGRYyEYKnDpPz3NIfKrIyEIMpZ9nB9CQTO3ChgHmV%2FJp2PkSCePE7xy98S2sL3J1n1lHgXJfxvUVwzMZaA2fXtxA43e0kVkcz5uGSOp%2BAvmLMwEmo7l3fp29lDtau97JkYP4P6GEJlJ6xoCObkc7W1vSY%2Fh8nMwEi4XzuSji5h%2BNUvEaMUBXv37lxPu1LOPTpniFKGStSy1v1%2FvqfU%2FzGkyzhjSVgHeBUBL2sLceJH1yI99nhCw2O6iwJEEcEMOx%2B%2F%2FuE3StOMLKkrZJdQjCiJikEPaHg47UtOxqIPZZr84Ng1y0hYHX%2BwI5yy8%2BYivXNTByfj1Ht8CuzY6Ko0ykjzd0XcbI%2Ftb7%2B66Y9O4nluXWqb0%2BUxErZ5v2vwn1%2F8LQ4hdqn3CUXZjJxHDDLWoQeR545vol0ViV334O24J5tjxNHr6kNynRpKkgb3nx5tjrEK6TpdJz%2Bv1MGtOna4LEbyqsZ4ejhQpUN1o%2FuYaERjjIpCLFsaFeNlipHkCoh6FI0YWk0xcoXB602NCQ82xFivAtVLtrw2y4g2CnB6dRs2XA0xMlXjaVfDWyBmGLGi4Pzexw9OH2YY%2BfQIUqGGo9mNMOobcZ4KhhqrEUYlUetCDcYIG2FUcvpAqHBoZDXBqCIwX6bzwKhjglHf5FipGKhIE4waJ8eXwoGR1QCjLnP8nwYaqwFGBWH5A9rI38AAo95R9amtfIdOPyNJFFAMSL740M%2BIpz9h4ivoZ6SaVsdNxdLGqp2REAUMg5qXEZ%2BlhY%2FXc%2BC7skNfh3ue5feBZAZ72eyhnVE6c2zP%2FOlMxYwUgivi7Om%2FI5gn0ia%2Fk5k62hllhw%2FTjxuR8P6T0adP%2Bgjiyd5UuojUzyguGDc9pSjquWLjNe7EZS1CHDShn5GIu2MrOUQPwuW7dmS7CecZGZHYv9EqR1Dnivz7xWVrtJPkJXQzMvGA2HYEd0ani9e6mSf2J8gORetmpEJjNW3PaZ31SaduJC8rW19pZpQYq51inRQpnUlPtkqTbLNqZpRYAF1vDG%2BtpTsbbjLzXmIFaGaU3P7RZWy1607%2BCFkyHMlb6GYUW2lu58O367GzYpLVo8TvoZmRikfCzojSqaVOa5b1R4mlo5nRExfreA47iW46WxiSyVYWGqCXkWBJuaRVTbTdrsPO%2FCiLeWnfzhijbEtu8z1B9gwobssSkmY0yudilPrkvscUr2sRfVu0RGxPPCWODNDLKOtAzwjrxtDK%2B%2Fw%2Bx0ZmPtLzEca9hmZG0dK30japI95IL6JlHXD9GXCnu7Yk3mTVyyixyOuyFGGMuC%2BcY1zKyisYfww5FMQTpF7GERmIUse9SxPChoXjOiPCJMV7c3oZ9W%2BR%2F9NFaARobquaPVZNiVdXmucOg4zWPIx96wR91DMx9qwTYiUBrJbT%2FVbzjKu9a6EdmR6scyM9g5lw%2B9E8o3X9L5o23KZB7%2BaV0CifgdHaeVOi5g%2B%2B158AWBiLpHlc7a%2BwG0d8%2F7eU05uA06z%2FrsJdK72MWLC2uiSMUOL82mQvDkOEC9Yy4k0rzfsATHT7q%2Fc8xOr%2Fkta%2FyDkiiAjq%2FyR2QereQxY6YrYPTmzCPP80Jph%2Bu8k9VH4V4TfbtPcMDDJKvE3H%2FfNQKkHc3p9kzsVtes%2Fo60rWMytW2szqm%2Btf%2FFa6OPbTPUcwojyLTre41XK3cXE%2FE87w61MEYt%2FcSVKLZuJzZBsecb3h8WyIlBE78fN9FD32eZAQStH73DxJZE3anTs%2Bp3xGIB5ZDq1tqafw%2B685F2Ax4iUYCvQyEofMhCOPPP1B4xa2qCueBs9gmzoXEPQbqeNTYgscrIdsMWcfbMLznrHz8cNR5r7E%2F6k%2F5iC9ubOBhAftXTrJvN0j3g713WTjjpebPI9MGI6ah5Bv0hG%2Fq2ZUWniL2NiUD4bPlWNGM7eoUgFcxp8Mf5dmr%2FE5jDdRxn8obD7Pw3PGZzjxH2InjLBo8vCTchpFv6VgmSvvSmv601pqATmCtAsYgREYlyNgBEZgXI6AERiBcTkCRmAExuUIGIERGJcjYBwl2ZE1jTK6hzzPb1ySYPQPFitgnOe3Skmejk0YrIBxpt%2Bc5eFhZIZrBYyS0yM6hQorHue5UsE4KnmmcpGHZV1GuT9UMM7zk%2Byvc07bZMT3VcE4nP1Mi16HDsIRkEoY01kq8v3q%2FnDqNyWZX%2FI5eiQJ3g83kHvNGkxEpEn16ZG9%2Fhikp4ofwxeU6HOaK9IeS%2FbSaYYu%2Be885F36dFWM1tU8ZCP9kPTpyhit4uffDpmsRsCO5hjdWpdRgV0q1UwHdhNb6AoZy4%2BZ8Ik%2F0%2FSbvvK6ii10pYylNRBhihA2Ja8ZGBuL4kQVMz4fVTh315Cir1hKkYWunnFGbftXeatitMLeDZB1MZbGa49dtzZGa9%2B10FfHaLkdk2d9jF3TeYWMHZNnjYxtk2eVjNalme1kpYxWmOHVM1rWGa2fsbEBsl5Gy%2BHrZ7R27zlkzYxWWs0hq2a0jq8V5boZK5%2FPyhlf7pDVM5aLrfUzWndp1u%2BV6Hqf%2Bw0MyGB2NBAIBAKBQCAQCAQCgUBL1%2F%2Byj5lD%2BBe3eAAAAABJRU5ErkJggg%3D%3D&style=social)
+![GitHub repo size](https://img.shields.io/github/repo-size/tenpi/kisaragi)
+![GitHub](https://img.shields.io/github/license/tenpi/kisaragi)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/tenpi/kisaragi)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/tenpi/kisaragi)
+![GitHub contributors](https://img.shields.io/github/contributors/tenpi/kisaragi)
+![GitHub last commit](https://img.shields.io/github/last-commit/tenpi/kisaragi)
