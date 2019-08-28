@@ -2,6 +2,7 @@ exports.run = async (discord: any, message: any, args: string[]) => {
 
     const mentionEmbed: any = discord.createEmbed();
     const perm: any = discord.createPermission("ADMINISTRATOR");
+    let prefix = await discord.fetchPrefix();
 
     if (message.member.hasPermission(perm)) {
         let input = discord.combineArgs(args, 1);
@@ -13,6 +14,7 @@ exports.run = async (discord: any, message: any, args: string[]) => {
         await role.setMentionable(true);
         await message.channel.send(`<@&${role.id}>`);
         await role.setMentionable(false);
+        if (message.content.startsWith(prefix[0])) await message.delete();
 
     } else {
         message.channel.send(mentionEmbed

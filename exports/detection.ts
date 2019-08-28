@@ -30,7 +30,7 @@ module.exports = async (discord: any, message: any) => {
     discord.swapRoles = async (msg: any, member?: any, counter?: boolean) => {
         if (!pfp) return;
         if (pfp.join("") === "off") return;
-        if (msg.author.id === discord.user.id) return;
+        if (msg.author.bot) return;
         if (!member) member = msg.member;
         if (!member.user.displayAvatarURL) return;
         let weeb = await discord.fetchColumn("detection", "weeb");

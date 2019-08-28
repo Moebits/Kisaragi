@@ -107,18 +107,14 @@ module.exports = async (discord: any, message: any) => {
     }
 
     //Fetch commands
-    discord.fetchCommand = async (command: string, column: string, update?: boolean) => {
+    discord.fetchCommand = async (command: string, column: string) => {
         let query: object = {
           text: `SELECT "${column}" FROM commands WHERE command IN ($1)`,
           values: [command],
           rowMode: 'array'
         };
-        let result;
-        if (update) {
-          result = await discord.runQuery(query, true);
-        } else {
-          result = await discord.runQuery(query);
-        }
+        let result = await discord.runQuery(query, true);
+        
         return result;
     }
 
@@ -128,12 +124,7 @@ module.exports = async (discord: any, message: any) => {
           text: `SELECT aliases FROM commands`,
           rowMode: 'array'
         }
-        let result;
-        if (update) {
-          result = await discord.runQuery(query, true);
-        } else {
-          result = await discord.runQuery(query);
-        }
+        let result = await discord.runQuery(query, true);
         return result;
     }
 
@@ -250,9 +241,6 @@ module.exports = async (discord: any, message: any) => {
         values: [aliases, cooldown, command]
       }
       await discord.runQuery(query, true);
-      discord.fetchCommand(command, "aliases", true);
-      discord.fetchCommand(command, "cooldown", true);
-      discord.fetchAliases(true);
   }
 
     //Remove a guild from all tables

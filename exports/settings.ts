@@ -69,7 +69,9 @@ module.exports = (discord: any, message: any) => {
 
     const specialRoleSettings: object = {
         "mute role": null,
-        "restricted role": null
+        "restricted role": null,
+        "warn one": null,
+        "warn two": null
     }
 
     const pointSettings: object = {
@@ -114,7 +116,7 @@ module.exports = (discord: any, message: any) => {
 
     const warnSettings: object = {
         "warn log": null,
-        "warn penalty": null,
+        "warn penalty": "none",
         "warn threshold": 3
     }
 

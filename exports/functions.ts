@@ -33,6 +33,8 @@ module.exports = async (discord: any, message: any) => {
             } else {
                 timeLeft = 0;
             }
+            console.log(timeLeft)
+            console.log(timeout - timeLeft*1000)
             let last = await guildChannel.fetchMessages({limit: 1});
             let guildMsg = await last.first();
             let interval = setInterval(async () => {
@@ -48,10 +50,12 @@ module.exports = async (discord: any, message: any) => {
             let times = await discord.fetchColumn("auto", "timeout");
             if (!times[0]) times[0] = [[0]];
             times[0][i] = getTimeLeft(timeout);
+            console.log('Time left: '+getTimeLeft(timeout)+'s')
             await discord.updateColumn("auto", "timeout", times[0]);
         }, 10000);
         function getTimeLeft(timeout) {
-            return Math.ceil((timeout._idleStart + timeout._idleTimeout - Date.now()) / 1000);
+            console.log(((timeout._idleStart + timeout._idleTimeout) * 1000) - (Date.now() / 1000))
+            return Math.ceil((((timeout._idleStart + timeout._idleTimeout) * 1000) - (Date.now() / 1000)) / 1000);
         }
     }
 
@@ -122,6 +126,42 @@ module.exports = async (discord: any, message: any) => {
                 }
             }
         }
+    }
+
+    //Check Mod
+    discord.checkMod = async (msg: any) => {
+        let mod = await discord.fetchColumn("special roles", "mod role");
+        if (!mod.join("")) {
+            msg.reply("In order to use moderator commands, you must first " +
+            "configure the server's moderator role using the **mod** command!");
+            return true;
+        } else {
+            let modRole = await msg.member.roles.find((r: any) => r.id === mod.join("").trim());
+            if (!modRole) {
+                msg.reply("In order to use moderator commands, you must have " +
+                `the mod role which is currently set to <@&${mod.join("").trim()}>!`);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Check Admin
+    discord.checkAdmin = async (msg: any) => {
+        let admin = await discord.fetchColumn("special roles", "admin role");
+        if (!admin.join("")) {
+            msg.reply("In order to use administrator commands, you must first " +
+            "configure the server's administrator role using the **mod** command!");
+            return true;
+        } else {
+            let adminRole = await msg.member.roles.find((r: any) => r.id === admin.join("").trim());
+            if (!adminRole) {
+                msg.reply("In order to use administrator commands, you must have " +
+                `the admin role which is currently set to <@&${admin.join("").trim()}>!`);
+                return true;
+            }
+        }
+        return false;
     }
     
     //Timeout

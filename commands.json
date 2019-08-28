@@ -122,6 +122,8 @@
     "unmute": {"name": "unmute", "aliases": [], "cooldown": ""},
     "restrict": {"name": "restrict", "aliases": [], "cooldown": ""},
     "unrestrict": {"name": "unrestrict", "aliases": [], "cooldown": ""},
-    "upload": {"name": "upload", "aliases": [], "cooldown": ""}
+    "upload": {"name": "upload", "aliases": [], "cooldown": ""},
+    "warn": {"name": "warn", "aliases": [], "cooldown": ""},
+    "warns": {"name": "warns", "aliases": [], "cooldown": ""}
 
 }
