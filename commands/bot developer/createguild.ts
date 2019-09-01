@@ -1,4 +1,5 @@
 const createGuild = async (discord: any, message: any, guildName: string, guildRegion: string) => {
+    if (discord.checkBotDev(message)) return;
 
     try {
         const guild: any = await discord.user.createGuild(guildName, guildRegion);
@@ -16,19 +17,9 @@ const createGuild = async (discord: any, message: any, guildName: string, guildR
 
 exports.run = async (discord: any, message: any, args: string[]) => {
 
-    let ownerID: any = process.env.OWNER_ID;
-
-    const createGuildEmbed: any = discord.createEmbed();
     const guildName: string = args[1];
     const guildRegion: string = args[2];
 
-    if (message.author.id === ownerID) {
 
-        await createGuild(discord, message, guildName, guildRegion);
-
-    } else {
-        message.channel.send(createGuildEmbed
-            .setDescription("In order to use this command, you must be a bot owner."))
-            return;
-    }
+    await createGuild(discord, message, guildName, guildRegion);
 }

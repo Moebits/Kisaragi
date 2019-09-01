@@ -125,5 +125,7 @@
     "upload": {"name": "upload", "aliases": [], "cooldown": ""},
     "warn": {"name": "warn", "aliases": [], "cooldown": ""},
     "warns": {"name": "warns", "aliases": [], "cooldown": ""},
-    "detectchannels": {"name": "detectchannels", "aliases": [], "cooldown": ""}
+    "detectchannels": {"name": "detectchannels", "aliases": [], "cooldown": ""},
+    "sql": {"name": "sql", "aliases": [], "cooldown": ""},
+    "order": {"name": "order", "aliases": [], "cooldown": ""}
 }

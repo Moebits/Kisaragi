@@ -1,6 +1,6 @@
 exports.run = (discord: any, message: any, args: string[]) => {
 
-  let ownerID: any = process.env.OWNER_ID;
+  if (discord.checkBotDev(message)) return;
   const reloadEmbed: any = discord.createEmbed();
   const commandName: string = args[1];
   const commandDir: string = args[2];
@@ -15,7 +15,6 @@ exports.run = (discord: any, message: any, args: string[]) => {
     .setDescription(`${commandName} does not exist`));
   }
 
-  if (message.author.id === ownerID) {
     
     delete require.cache[require.resolve(`../${commandDir}/${commandName}.js`)];
       
@@ -24,9 +23,4 @@ exports.run = (discord: any, message: any, args: string[]) => {
     discord.commands.set(commandName, fileName);
     message.channel.send(reloadEmbed
     .setDescription(`The command **${commandName}** has been reloaded!`));
-  } else {
-    message.channel.send(reloadEmbed
-        .setDescription("In order to use this command, you must be a bot owner."))
-        return;
-  }
 }

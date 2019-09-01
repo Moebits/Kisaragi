@@ -163,6 +163,16 @@ module.exports = async (discord: any, message: any) => {
         }
         return false;
     }
+
+    //Check Bot Dev
+    discord.checkBotDev = (msg: any) => {
+        if (msg.author.id === process.env.OWNER_ID) {
+            return false;
+        } else {
+            msg.reply("Only the bot developer can use bot developer commands");
+            return true;
+        }
+    }
     
     //Timeout
     discord.timeout = (ms: number) => {

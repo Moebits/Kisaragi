@@ -1,6 +1,6 @@
 exports.run = async (discord: any, message: any, args: string[]) => {
+  if (discord.checkBotDev(message)) return;
 
-  let ownerID: any = process.env.OWNER_ID;
   const rebootEmbed: any = discord.createEmbed();
 
   const unloadCommand: any = async (commandName: string) => {
@@ -27,8 +27,6 @@ exports.run = async (discord: any, message: any, args: string[]) => {
     return false;
   };
 
-    if (message.author.id === ownerID) {
-
       await message.channel.send(rebootEmbed
       .setDescription("Bot is shutting down."));
 
@@ -36,9 +34,4 @@ exports.run = async (discord: any, message: any, args: string[]) => {
         unloadCommand(cmd)
       ));
       process.exit(0);
-    } else {
-      message.channel.send(rebootEmbed
-          .setDescription("In order to use this command, you must be a bot owner."))
-          return;
-    }
   };
