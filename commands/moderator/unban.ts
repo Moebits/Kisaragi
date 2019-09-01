@@ -19,17 +19,21 @@ exports.run = async (discord: any, message: any, args: string[]) => {
         let members: any = [];
         for (let i = 0; i < userArray.length; i++) {
             let member = message.guild.members.find((m: any) => m.id === userArray[i].join(""));
-            members.push(`<@${member.id}>`);
+            if (member) {
+                members.push(`<@${member.id}>`);
+            } else {
+                members.push(`<@${userArray[i]}>`);
+            }
             banEmbed
             .setTitle(`**You Were Unbanned** ${discord.getEmoji("kannaFU")}`)
             .setDescription(`${discord.getEmoji("star")}_You were unbanned from ${message.guild.name} for reason:_ **${reason}**`);
-            let dm = await member.createDM();
             try {
+                let dm = await member.createDM();
                 await dm.send(banEmbed);
             } catch (err) {
                 console.log(err);
             }
-            await member.unban(reason);
+            await message.guild.unban(member ? member : userArray[i][0], {reason: reason});
         }
         banEmbed
         .setAuthor("unban", "https://discordemoji.com/assets/emoji/bancat.png")
