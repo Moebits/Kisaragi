@@ -1,4 +1,5 @@
 exports.run = async (discord: any, message: any, args: string[]) => {
+    if (await discord.checkMod(message)) return;
     let input = discord.combineArgs(args, 1);
     if (input.trim()) {
         message.content = input.trim();

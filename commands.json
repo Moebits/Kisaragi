@@ -124,6 +124,6 @@
     "unrestrict": {"name": "unrestrict", "aliases": [], "cooldown": ""},
     "upload": {"name": "upload", "aliases": [], "cooldown": ""},
     "warn": {"name": "warn", "aliases": [], "cooldown": ""},
-    "warns": {"name": "warns", "aliases": [], "cooldown": ""}
-
+    "warns": {"name": "warns", "aliases": [], "cooldown": ""},
+    "detectchannels": {"name": "detectchannels", "aliases": [], "cooldown": ""}
 }

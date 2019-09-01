@@ -158,7 +158,8 @@ module.exports = (discord: any, message: any) => {
         "anime": "off",
         "pfp": "off",
         "weeb": null,
-        "normie": null
+        "normie": null,
+        "ignored": null
     }
 
     //Initialize a table

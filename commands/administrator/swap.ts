@@ -1,5 +1,5 @@
 exports.run = async (discord: any, message: any, args: string[]) => {
-
+    if (await discord.checkAdmin(message)) return;
     let pfp = await discord.fetchColumn("detection", "pfp");
     let weeb = await discord.fetchColumn("detection", "weeb");
     let normie = await discord.fetchColumn("detection", "normie");

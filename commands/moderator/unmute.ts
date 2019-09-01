@@ -1,7 +1,6 @@
 exports.run = async (discord: any, message: any, args: string[]) => {
-
+    if (await discord.checkMod(message)) return;
     const muteEmbed: any = discord.createEmbed();
-    const perm: any = discord.createPermission("MANAGE_ROLES");
     let mute = await discord.fetchColumn("special roles", "mute role");
     if (!mute) return message.reply("You need to set a mute role first!");
     let reasonArray: any = [];
@@ -17,30 +16,22 @@ exports.run = async (discord: any, message: any, args: string[]) => {
 
     let reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
 
-    if (message.member.hasPermission(perm)) {
-        let members: any = [];
-        for (let i = 0; i < userArray.length; i++) {
-            let member = message.guild.members.find((m: any) => m.id === userArray[i].join(""));
-            await member.removeRole(mute.join(""));
-            members.push(`<@${member.id}>`);
-            let dm = await member.createDM();
-            muteEmbed
-            .setAuthor("unmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-            .setTitle(`**You Were Unmuted** ${discord.getEmoji("kannaFU")}`)
-            .setDescription(`${discord.getEmoji("star")}_You were unmuted in ${message.guild.name} for reason:_ **${reason}**`);
-            await dm.send(muteEmbed);
-        }
+    let members: any = [];
+    for (let i = 0; i < userArray.length; i++) {
+        let member = message.guild.members.find((m: any) => m.id === userArray[i].join(""));
+        await member.removeRole(mute.join(""));
+        members.push(`<@${member.id}>`);
+        let dm = await member.createDM();
         muteEmbed
         .setAuthor("unmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-        .setTitle(`**Member Unmuted** ${discord.getEmoji("kannaFU")}`)
-        .setDescription(`${discord.getEmoji("star")}_Successfully unmuted ${members.join(", ")} for reason:_ **${reason}**`);
-        message.channel.send(muteEmbed);
-        return;
-        
-    } else {
-        muteEmbed
-        .setDescription("You do not have the manage roles permission!");
-        message.channel.send(muteEmbed);
-        return;
+        .setTitle(`**You Were Unmuted** ${discord.getEmoji("kannaFU")}`)
+        .setDescription(`${discord.getEmoji("star")}_You were unmuted in ${message.guild.name} for reason:_ **${reason}**`);
+        await dm.send(muteEmbed);
     }
+    muteEmbed
+    .setAuthor("unmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
+    .setTitle(`**Member Unmuted** ${discord.getEmoji("kannaFU")}`)
+    .setDescription(`${discord.getEmoji("star")}_Successfully unmuted ${members.join(", ")} for reason:_ **${reason}**`);
+    message.channel.send(muteEmbed);
+    return;
 }

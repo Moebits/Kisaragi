@@ -11,7 +11,7 @@ exports.run = async (discord: any, message: any, args: string[]) => {
     let albums = await discord.fetchColumn("images", "google albums");
     let notify = await discord.fetchColumn("images", "notify toggle");
     let step = 3.0;
-    let increment = Math.ceil(channels[0].length / step);
+    let increment = Math.ceil((channels[0] ? channels[0].length : 1) / step);
     let photosArray: any = [];
     for (let i = 0; i < increment; i++) {
         let description = "";
@@ -53,7 +53,11 @@ exports.run = async (discord: any, message: any, args: string[]) => {
         photosArray.push(photoEmbed);
     }
     
-    discord.createReactionEmbed(photosArray);
+    if (photosArray.length > 1) {
+        discord.createReactionEmbed(photosArray);
+    } else {
+        message.channel.send(photosArray[0]);
+    }
 
     async function photoPrompt(msg: any) {
         let channels = await discord.fetchColumn("images", "image channels");

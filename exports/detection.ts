@@ -8,7 +8,19 @@ module.exports = async (discord: any, message: any) => {
     let gifFrames = require('gif-frames');
     let fs = require('fs');
 
+    discord.detectIgnore = async (msg: any) => {
+        let ignored = await discord.fetchColumn("detection", "ignored");
+        if (!ignored[0]) return false;
+        for (let i = 0; i < ignored[0].length; i++) {
+            if (msg.channel.id === ignored[0][i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     discord.detectAnime = async (msg: any) => {
+        if (await discord.detectIgnore(msg)) return;
         if (!anime) return;
         if (anime.join("") === "off") return;
         if (msg.author.id === discord.user.id) return;

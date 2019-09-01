@@ -1,4 +1,5 @@
 exports.run = async (discord: any, message: any, args: string[]) => {
+    if (await discord.checkAdmin(message)) return;
 
     let newPrefix = args[1];
 
