@@ -38,7 +38,8 @@ module.exports = async (discord: any, message: any) => {
 
     const responseObject: any = {
       "kisaragi": "Kisaragi is the best girl!",
-      "f": "F",
+      "f": `${discord.letters("F")}`,
+      "e": `${discord.letters("E")}`,
       "owo": "owo",
       "uwu": "uwu",
       "rip": `${discord.getEmoji("rip")}`
@@ -51,7 +52,7 @@ module.exports = async (discord: any, message: any) => {
     }
 
     if (message.content.toLowerCase() === "i love you") {
-      if (message.author.id === "174261874362155010") {
+      if (message.author.id === process.env.OWNER_ID) {
         message.channel.send(`I love you more, <@${message.author.id}>!`);
       } else {
         message.channel.send(`Sorry <@${message.author.id}>, but I don't share the same feelings. We can still be friends though!`);
