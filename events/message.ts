@@ -1,5 +1,7 @@
-import {Collection} from "discord.js"
+import {Collection, Attachment} from "discord.js";
 const cooldowns = new Collection();
+const responseTextCool = new Set();
+const responseImageCool = new Set();
 
 module.exports = async (discord: any, message: any) => {
 
@@ -36,7 +38,7 @@ module.exports = async (discord: any, message: any) => {
       discord.autoCommand(message);
     }
 
-    const responseObject: any = {
+    const responseText: object = {
       "kisaragi": "Kisaragi is the best girl!",
       "f": `${discord.letters("F")}`,
       "e": `${discord.letters("E")}`,
@@ -46,9 +48,42 @@ module.exports = async (discord: any, message: any) => {
       "rip": `${discord.getEmoji("rip")}`
     }
 
-    if (responseObject[message.content.toLowerCase()]) {
+    const responseImage: object = {
+      "bleh": "https://i.ytimg.com/vi/Gn4ah6kAmZo/maxresdefault.jpg",
+      "smug": "https://pbs.twimg.com/media/CpfL-c3WEAE1Na_.jpg",
+      "stare": "https://thumbs.gfycat.com/OpenScaryJunebug-small.gif",
+      "sleepy": "https://thumbs.gfycat.com/VastBlackJackal-small.gif",
+      "school shooter": "https://thumbs.gfycat.com/SmoggyDependentGrayfox-size_restricted.gif",
+      "cry": "https://thumbs.gfycat.com/CompletePotableDove-small.gif",
+      "pat": "https://thumbs.gfycat.com/WarmheartedAridCygnet-small.gif",
+      "welcome": "https://thumbs.gfycat.com/PowerlessSparklingIcelandgull-small.gif",
+      "gab s": "https://thumbs.gfycat.com/PettyWeightyArrowana-small.gif",
+      "piggy back": "https://thumbs.gfycat.com/IlliterateJointAssassinbug-size_restricted.gif",
+      "kick": "https://thumbs.gfycat.com/SentimentalFocusedAmericansaddlebred-small.gif",
+      "punch": "https://thumbs.gfycat.com/ClearcutInexperiencedAnemone-small.gif"
+    }
+
+    if (responseText[message.content.toLowerCase()]) {
       if (!message.author.bot) {
-        return message.channel.send(responseObject[message.content.toLowerCase()]);
+        if (responseTextCool.has(message.guild.id)) {
+          let reply = await message.reply("This command is under a 3 second cooldown!");
+          reply.delete(3000);
+        }
+        responseTextCool.add(message.guild.id);
+        setTimeout(() => responseTextCool.delete(message.guild.id), 3000);
+        return message.channel.send(responseText[message.content.toLowerCase()]);
+      }
+    }
+
+    if (responseImage[message.content.toLowerCase()]) {
+      if (!message.author.bot) {
+        if (responseImageCool.has(message.guild.id)) {
+          let reply = await message.reply("This command is under a 10 second cooldown!");
+          reply.delete(3000);
+        }
+        responseImageCool.add(message.guild.id);
+        setTimeout(() => responseImageCool.delete(message.guild.id), 10000);
+        return message.channel.send(new Attachment(responseImage[message.content.toLowerCase()]));
       }
     }
 
