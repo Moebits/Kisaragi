@@ -40,6 +40,7 @@ module.exports = async (discord: any, message: any) => {
       "kisaragi": "Kisaragi is the best girl!",
       "f": `${discord.letters("F")}`,
       "e": `${discord.letters("E")}`,
+      "b": "🅱️",
       "owo": "owo",
       "uwu": "uwu",
       "rip": `${discord.getEmoji("rip")}`
