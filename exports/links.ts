@@ -1,8 +1,17 @@
+const linkCool = new Set();
+
 module.exports = async (discord: any, message: any) => {
 
     await require("./images.js")(discord, message);
 
     discord.linkRun = async (path: any, msg: any, args: string[]) => {
+        if (linkCool.has(msg.guild.id)) {
+            let reply = await msg.reply("This command is under a 30 second cooldown!");
+            reply.delete(3000);
+            return;
+        }
+        linkCool.add(msg.guild.id);
+        setTimeout(() => linkCool.delete(msg.guild.id), 30000);
         let loading = await msg.channel.send(`**Loading** ${discord.getEmoji("gabCircle")}`);
         await path.run(discord, msg, args).catch((err) => msg.channel.send(discord.cmdError(err)));
         loading.delete(1000);
