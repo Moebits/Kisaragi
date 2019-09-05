@@ -31,13 +31,17 @@ module.exports = async (discord: any, message: any) => {
                 const img = await cv.imreadAsync(`../assets/detection/image${i}.jpg`);
                 const grayImg = await img.bgrToGrayAsync();
                 const result = await classifier.detectMultiScaleAsync(grayImg, 1.1, 1);
+                let override = false;
                 let detection: string[] = [];
                 for (let i = 0; i < result.numDetections.length; i++) {
                     if (result.numDetections[i] < 3) {
                         detection.push("Bad");
                     }
+                    if (result.numDetections[i] > 20) {
+                        override = true;
+                    }
                 }
-                if (detection.length > 1) {
+                if (override || detection.length > 1) {
                     let reply = await msg.reply("You can only post anime pictures!");
                     await msg.delete();
                     reply.delete(10000);
@@ -66,14 +70,18 @@ module.exports = async (discord: any, message: any) => {
         } 
         const img = await cv.imreadAsync(`../assets/detection/user.jpg`);
         const grayImg = await img.bgrToGrayAsync();
-        const result = await classifier.detectMultiScaleAsync(grayImg, 1.1, 1);
-        let detection: string[] = [];
-        for (let i = 0; i < result.numDetections.length; i++) {
-            if (result.numDetections[i] < 3) {
-                detection.push("Bad");
-            }
-        }
-        if (detection.length > 1) {
+                const result = await classifier.detectMultiScaleAsync(grayImg, 1.1, 1);
+                let override = false;
+                let detection: string[] = [];
+                for (let i = 0; i < result.numDetections.length; i++) {
+                    if (result.numDetections[i] < 3) {
+                        detection.push("Bad");
+                    }
+                    if (result.numDetections[i] > 20) {
+                        override = true;
+                    }
+                }
+        if (override || detection.length > 1) {
             let found = member.roles.find((r: any) => r === normieRole);
             if (found) {
                 return;
