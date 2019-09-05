@@ -29,8 +29,15 @@ module.exports = async (discord: any, message: any) => {
             for (let i = 0; i < urls.length; i++) {
                 await download.image({url: urls[i], dest: `../assets/detection/image${i}.jpg`});
                 const img = await cv.imreadAsync(`../assets/detection/image${i}.jpg`);
-                const result = await classifier.detectMultiScaleAsync(img);
-                if (!result.objects.join("")) {
+                const grayImg = await img.bgrToGrayAsync();
+                const result = await classifier.detectMultiScaleAsync(grayImg, 1.1, 1);
+                let detection: string[] = [];
+                for (let i = 0; i < result.numDetections.length; i++) {
+                    if (result.numDetections[i] < 3) {
+                        detection.push("Bad");
+                    }
+                }
+                if (detection.length > 1) {
                     let reply = await msg.reply("You can only post anime pictures!");
                     await msg.delete();
                     reply.delete(10000);
@@ -58,8 +65,15 @@ module.exports = async (discord: any, message: any) => {
             await download.image({url: member.user.displayAvatarURL, dest: `../assets/detection/user.jpg`});
         } 
         const img = await cv.imreadAsync(`../assets/detection/user.jpg`);
-        const result = await classifier.detectMultiScaleAsync(img);
-        if (!result.objects.join("")) {
+        const grayImg = await img.bgrToGrayAsync();
+        const result = await classifier.detectMultiScaleAsync(grayImg, 1.1, 1);
+        let detection: string[] = [];
+        for (let i = 0; i < result.numDetections.length; i++) {
+            if (result.numDetections[i] < 3) {
+                detection.push("Bad");
+            }
+        }
+        if (detection.length > 1) {
             let found = member.roles.find((r: any) => r === normieRole);
             if (found) {
                 return;
