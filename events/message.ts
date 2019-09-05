@@ -60,7 +60,8 @@ module.exports = async (discord: any, message: any) => {
       "gab s": "https://thumbs.gfycat.com/PettyWeightyArrowana-small.gif",
       "piggy back": "https://thumbs.gfycat.com/IlliterateJointAssassinbug-size_restricted.gif",
       "kick": "https://thumbs.gfycat.com/SentimentalFocusedAmericansaddlebred-small.gif",
-      "punch": "https://thumbs.gfycat.com/ClearcutInexperiencedAnemone-small.gif"
+      "punch": "https://thumbs.gfycat.com/ClearcutInexperiencedAnemone-small.gif",
+      "good riddance": "https://i.imgur.com/2CrEDAD.gif"
     }
 
     if (responseText[message.content.toLowerCase()]) {
