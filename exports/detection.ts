@@ -34,14 +34,14 @@ module.exports = async (discord: any, message: any) => {
                 let override = false;
                 let detection: string[] = [];
                 for (let i = 0; i < result.numDetections.length; i++) {
-                    if (result.numDetections[i] < 3) {
+                    if (result.numDetections[i] < 4) {
                         detection.push("Bad");
                     }
-                    if (result.numDetections[i] > 20) {
+                    if (result.numDetections[i] > 10) {
                         override = true;
                     }
                 }
-                if (override || detection.length > 1) {
+                if ((!result.numDetections.join("")) || ((detection.length >= 1) && !override)) {
                     let reply = await msg.reply("You can only post anime pictures!");
                     await msg.delete();
                     reply.delete(10000);
@@ -74,14 +74,14 @@ module.exports = async (discord: any, message: any) => {
                 let override = false;
                 let detection: string[] = [];
                 for (let i = 0; i < result.numDetections.length; i++) {
-                    if (result.numDetections[i] < 3) {
+                    if (result.numDetections[i] < 4) {
                         detection.push("Bad");
                     }
-                    if (result.numDetections[i] > 20) {
+                    if (result.numDetections[i] > 10) {
                         override = true;
                     }
                 }
-        if (override || detection.length > 1) {
+                if ((!result.numDetections.join("")) || ((detection.length >= 1) && !override)) {
             let found = member.roles.find((r: any) => r === normieRole);
             if (found) {
                 return;
