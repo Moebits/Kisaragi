@@ -29,33 +29,25 @@ module.exports = async (discord: any, message: any) => {
             let rawTimeLeft = await discord.fetchColumn("auto", "timeout");
             let timeLeft;
             if (rawTimeLeft[0]) {
-                timeLeft = Number(rawTimeLeft[0][i]) || 0;
+                if (rawTimeLeft[0][i]) {
+                    let remaining = Number(Date.now() - rawTimeLeft[0][i]) || 0;
+                    timeLeft = remaining > timeout ? timeout - (remaining % timeout) : timeout - remaining;
+                } else {
+                    rawTimeLeft[0][i] = Date.now();
+                    await discord.updateColumn("auto", "timeout", rawTimeLeft[0]);
+                    timeLeft = 0;
+                }
             } else {
+                let timeoutArray: any = [];
+                timeoutArray.push(Date.now());
+                await discord.updateColumn("auto", "timeout", timeoutArray)
                 timeLeft = 0;
             }
-            console.log(timeLeft)
-            console.log(timeout - timeLeft*1000)
             let last = await guildChannel.fetchMessages({limit: 1});
             let guildMsg = await last.first();
-            let interval = setInterval(async () => {
+            setInterval(async () => {
                 discord.runCommand(guildMsg, cmd);
-            }, timeout - (timeLeft * 1000));
-            discord.timeLeft(interval, i);
-        }
-    }
-
-    //Time left
-    discord.timeLeft = async (timeout, i) => {
-        setInterval(async function() {
-            let times = await discord.fetchColumn("auto", "timeout");
-            if (!times[0]) times[0] = [[0]];
-            times[0][i] = getTimeLeft(timeout);
-            console.log('Time left: '+getTimeLeft(timeout)+'s')
-            await discord.updateColumn("auto", "timeout", times[0]);
-        }, 10000);
-        function getTimeLeft(timeout) {
-            console.log(((timeout._idleStart + timeout._idleTimeout) * 1000) - (Date.now() / 1000))
-            return Math.ceil((((timeout._idleStart + timeout._idleTimeout) * 1000) - (Date.now() / 1000)) / 1000);
+            }, timeLeft ? timeLeft : timeout);
         }
     }
 

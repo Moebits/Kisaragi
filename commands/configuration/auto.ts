@@ -131,6 +131,8 @@ exports.run = async (discord: any, message: any, args: string[]) => {
                     await discord.updateColumn("auto", "frequency", freq[0]); 
                     editDesc += `${discord.getEmoji("star")}Command set to **${newFreq}**!\n`
                 }
+                tim[0][num] = null;
+                await discord.updateColumn("auto", "timeout", tim[0]);
                 let testCmd = await discord.fetchColumn("auto", "command");
                 let testChan = await discord.fetchColumn("auto", "channel");
                 let testFreq = await discord.fetchColumn("auto", "frequency");

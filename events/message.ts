@@ -64,7 +64,7 @@ module.exports = async (discord: any, message: any) => {
       "good riddance": "https://i.imgur.com/2CrEDAD.gif"
     }
 
-    if (responseText[message.content.toLowerCase()]) {
+    if (responseText[message.content.trim().toLowerCase()]) {
       if (!message.author.bot) {
         if (responseTextCool.has(message.guild.id)) {
           let reply = await message.reply("This command is under a 3 second cooldown!");
@@ -76,7 +76,7 @@ module.exports = async (discord: any, message: any) => {
       }
     }
 
-    if (responseImage[message.content.toLowerCase()]) {
+    if (responseImage[message.content.trim().toLowerCase()]) {
       if (!message.author.bot) {
         if (responseImageCool.has(message.guild.id)) {
           let reply = await message.reply("This command is under a 10 second cooldown!");
@@ -88,7 +88,7 @@ module.exports = async (discord: any, message: any) => {
       }
     }
 
-    if (message.content.toLowerCase() === "i love you") {
+    if (message.content.trim().toLowerCase() === "i love you") {
       if (message.author.id === process.env.OWNER_ID) {
         message.channel.send(`I love you more, <@${message.author.id}>!`);
       } else {
