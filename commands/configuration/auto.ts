@@ -11,24 +11,30 @@ exports.run = async (discord: any, message: any, args: string[]) => {
     let channel = await discord.fetchColumn("auto", "channel");
     let frequency = await discord.fetchColumn("auto", "frequency");
     let toggle = await discord.fetchColumn("auto", "toggle");
-    let settings = "";
-    if (command[0]) {
-        for (let i = 0; i < command[0].length; i++) {
-            settings += `${i + 1} **=>**\n` +
-            `${discord.getEmoji("star")}_Command:_ **${command[0][i] !== "0" ? command[0][i] : "None"}**\n`+
-            `${discord.getEmoji("star")}_Channel:_ **${channel[0][i] !== "0" ? "<#" + channel[0][i] + ">" : "None"}**\n`+
-            `${discord.getEmoji("star")}_Frequency:_ **${frequency[0][i] !== "0" ? frequency[0][i] : "None"}**\n` +
-            `${discord.getEmoji("star")}_State:_ **${toggle[0][i]}**\n`
+    let step = 3.0;
+    let increment = Math.ceil((command[0] ? command[0].length : 1) / step);
+    let autoArray: any = [];
+    for (let i = 0; i < increment; i++) {
+        let settings = "";
+        for (let j = 0; j < step; j++) {
+            if (command[0]) {
+                let value = (i*step)+j;
+                if (!command[0].join("")) settings = "None";
+                if (!command[0][value]) break;
+                settings += `${i + 1} **=>**\n` +
+                `${discord.getEmoji("star")}_Command:_ **${command[0][i] !== "0" ? command[0][i] : "None"}**\n`+
+                `${discord.getEmoji("star")}_Channel:_ **${channel[0][i] !== "0" ? "<#" + channel[0][i] + ">" : "None"}**\n`+
+                `${discord.getEmoji("star")}_Frequency:_ **${frequency[0][i] !== "0" ? frequency[0][i] : "None"}**\n` +
+                `${discord.getEmoji("star")}_State:_ **${toggle[0][i]}**\n`
+            } else {
+                settings = "None";
+            }
         }
-        if (!command[0].join("")) settings = "None";
-    } else {
-        settings = "None";
-    }
-    let autoEmbed = discord.createEmbed();
-    autoEmbed
-    .setTitle(`**Auto Commands** ${discord.getEmoji("think")}`)
-    .setThumbnail(message.guild.iconURL)
-    .setDescription(
+        let autoEmbed = discord.createEmbed();
+        autoEmbed
+        .setTitle(`**Auto Commands** ${discord.getEmoji("think")}`)
+        .setThumbnail(message.guild.iconURL)
+        .setDescription(
         "Configure settings for auto commands. You can set up a maximum of 10 auto commands.\n" +
         "\n" +
         "**Frequency** = How often the command will run, in hours.\n" +
@@ -47,9 +53,15 @@ exports.run = async (discord: any, message: any, args: string[]) => {
         `${discord.getEmoji("star")}_Type **delete (setting number)** to delete a setting._\n` +
         `${discord.getEmoji("star")}_Type **reset** to delete all settings._\n` +
         `${discord.getEmoji("star")}_Type **cancel** to exit._\n` 
-    )
-
-    message.channel.send(autoEmbed)
+        )
+        autoArray.push(autoEmbed);
+    }
+    
+    if (autoArray.length > 1) {
+        discord.createReactionEmbed(autoArray);
+    } else {
+        message.channel.send(autoArray[0]);
+    }
 
     async function autoPrompt(msg: any) {
         let responseEmbed = discord.createEmbed();

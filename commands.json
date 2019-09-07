@@ -127,5 +127,6 @@
     "warns": {"name": "warns", "aliases": [], "cooldown": ""},
     "detectchannels": {"name": "detectchannels", "aliases": [], "cooldown": ""},
     "sql": {"name": "sql", "aliases": [], "cooldown": ""},
-    "order": {"name": "order", "aliases": [], "cooldown": ""}
+    "order": {"name": "order", "aliases": [], "cooldown": ""},
+    "selfroles": {"name": "selfroles", "aliases": [], "cooldown": ""}
 }

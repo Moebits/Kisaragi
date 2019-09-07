@@ -5,7 +5,7 @@ module.exports = async (discord: any, reaction: any, user: any) => {
     await require("../exports/collectors.js")(discord, reaction.message);
     if (reaction.message.author.id === discord.user.id) {
         if (active.has(reaction.message.id)) return;
-        let newArray = await discord.selectColumn("ignore", "message");
+        let newArray = await discord.selectColumn("collectors", "message", true);
         let cached = false;
         for (let i = 0; i < newArray.length; i++) {
             if (newArray[i][0] === reaction.message.id.toString()) {

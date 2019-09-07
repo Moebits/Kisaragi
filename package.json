@@ -5,7 +5,7 @@
   "main": "bin/shard.js",
   "scripts": {
     "build": "tsc -p ./",
-    "compile": "cd bin && node ./shard.js",
+    "compile": "cd bin && node --max-old-space-size=4096 ./shard.js",
     "types": "npm i @types/node",
     "start": "npm run build && npm run compile && pm2-runtime start ecosystem.config.js --env production",
     "watch": "tsc -w -p ./"
@@ -44,6 +44,7 @@
     "deviantnode": "^0.2.1",
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
+    "dropbox": "^4.0.30",
     "erlpack": "github:discordapp/erlpack",
     "ffmpeg-binaries": "^4.0.0",
     "gdprofiles": "^1.0.2-rc.2",
@@ -65,6 +66,7 @@
     "imgur": "^0.3.1",
     "inversify": "^5.0.1",
     "ip": "^1.1.5",
+    "isomorphic-fetch": "^2.2.1",
     "jikan-node": "^1.2.0",
     "jpg-stream": "^1.1.2",
     "jsdom": "^15.1.1",
