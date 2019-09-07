@@ -4,7 +4,6 @@ exports.run = async (discord: any, message: any, args: string[]) => {
 
     await discord.purgeTable("ignore");
     await discord.purgeTable("collectors");
-    await discord.purgeTable("commands");
     await discord.flushDB();
     cleanEmbed
     .setDescription("Tables were **cleaned**! Cached data was deleted.")

@@ -27,7 +27,7 @@ module.exports = async (discord: any, message: any) => {
             let cmd = command[0][i].split(" ");
             let timeout = Number(frequency[0][i]) * 3600000;
             let rawTimeLeft = await discord.fetchColumn("auto", "timeout");
-            let timeLeft;
+            let timeLeft = 0;
             if (rawTimeLeft[0]) {
                 if (rawTimeLeft[0][i]) {
                     let remaining = Number(Date.now() - rawTimeLeft[0][i]) || 0;
@@ -45,9 +45,11 @@ module.exports = async (discord: any, message: any) => {
             }
             let last = await guildChannel.fetchMessages({limit: 1});
             let guildMsg = await last.first();
+            guildMsg.author.id = discord.user.id;
             setInterval(async () => {
                 discord.runCommand(guildMsg, cmd);
-            }, timeLeft ? timeLeft : timeout);
+                timeLeft = timeout;
+            }, timeLeft > 0 ? timeLeft : timeout);
         }
     }
 
@@ -122,6 +124,7 @@ module.exports = async (discord: any, message: any) => {
 
     //Check Mod
     discord.checkMod = async (msg: any) => {
+        if (msg.author.id === discord.user.id) return false;
         let mod = await discord.fetchColumn("special roles", "mod role");
         if (!mod.join("")) {
             msg.reply("In order to use moderator commands, you must first " +
@@ -140,6 +143,7 @@ module.exports = async (discord: any, message: any) => {
 
     //Check Admin
     discord.checkAdmin = async (msg: any) => {
+        if (msg.author.id === discord.user.id) return false;
         let admin = await discord.fetchColumn("special roles", "admin role");
         if (!admin.join("")) {
             msg.reply("In order to use administrator commands, you must first " +
@@ -158,6 +162,7 @@ module.exports = async (discord: any, message: any) => {
 
     //Check Bot Dev
     discord.checkBotDev = (msg: any) => {
+        if (msg.author.id === discord.user.id) return false;
         if (msg.author.id === process.env.OWNER_ID) {
             return false;
         } else {

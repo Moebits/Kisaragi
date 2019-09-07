@@ -29,11 +29,12 @@ exports.run = async (discord: any, message: any, args: string[]) => {
             let messages = await message.channel.fetchMessages({limit: num});
             messages = messages.map((m: any) => m);
             for (let i = 0; i < messages.length; i++) {
-                if (messages[i].embeds[0] ? messages[i].embeds[0].description.toLowerCase().includes(query.trim()) : messages[i].content.toLowerCase().includes(query.trim())) {
+                if (messages[i].embeds[0] ? 
+                (messages[i].embeds[0].description ? messages[i].embeds[0].description.toLowerCase().includes(query.trim().toLowerCase()) : false) 
+                : messages[i].content.toLowerCase().includes(query.trim().toLowerCase())) {
                     msgArray.push(messages[i].id);
                 }
             }
-            console.log(msgArray)
             await message.channel.bulkDelete(msgArray, true)
         } else {
             await message.channel.bulkDelete(num, true)
