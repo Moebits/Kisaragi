@@ -54,6 +54,7 @@ module.exports = async (discord: any, message: any) => {
         if (!pfp) return;
         if (pfp.join("") === "off") return;
         if (!member) member = msg.member;
+        if (!member) return;
         if (member.user.bot) return;
         if (!member.user.displayAvatarURL) return;
         let weeb = await discord.fetchColumn("detection", "weeb");
