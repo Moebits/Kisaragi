@@ -397,8 +397,8 @@ module.exports = async (discord: any, message: any) => {
 
     //Fetch Score
     discord.fetchScore = async (msg: any) => {
-        let rawScoreList: string[][] = await discord.fetchColumn("points", "score list");
-        let rawUserList: string[][] = await discord.fetchColumn("points", "user id list");
+        let rawScoreList: string[][] = await discord.fetchColumn("points", "score list", false, false, true);
+        let rawUserList: string[][] = await discord.fetchColumn("points", "user id list", false, false, true);
         let scoreList: number[] = rawScoreList[0].map((num: string) => Number(num));
         let userList: number[] = rawUserList[0].map((num: string) => Number(num));
         for (let i: number = 0; i < userList.length; i++) {
@@ -411,8 +411,8 @@ module.exports = async (discord: any, message: any) => {
 
     //Fetch Level
     discord.fetchLevel = async (msg: any) => {
-        let rawLevelList: string[][] = await discord.fetchColumn("points", "level list");
-        let rawUserList: string[][] = await discord.fetchColumn("points", "user id list");
+        let rawLevelList: string[][] = await discord.fetchColumn("points", "level list", false, false, true);
+        let rawUserList: string[][] = await discord.fetchColumn("points", "user id list", false, false, true);
         let levelList: number[] = rawLevelList[0].map((num: string) => Number(num));
         let userList: number[] = rawUserList[0].map((num: string) => Number(num));
         for (let i: number = 0; i < userList.length; i++) {
@@ -426,12 +426,12 @@ module.exports = async (discord: any, message: any) => {
     //Calculate Score
     discord.calcScore = async (msg: any) => {
         if (message.author.bot) return;
-        let rawScoreList: string[][] = await discord.fetchColumn("points", "score list");
-        let rawLevelList: string[][] = await discord.fetchColumn("points", "level list");
-        let rawPointRange: string[][] = await discord.fetchColumn("points", "point range");
-        let rawPointThreshold: string[] = await discord.fetchColumn("points", "point threshold");
-        let rawUserList: string[][] = await discord.fetchColumn("points", "user id list");
-        let levelUpMessage: string[] = await discord.fetchColumn("points", "level message");
+        let rawScoreList: string[][] = await discord.fetchColumn("points", "score list", false, false, true);
+        let rawLevelList: string[][] = await discord.fetchColumn("points", "level list", false, false, true);
+        let rawPointRange: string[][] = await discord.fetchColumn("points", "point range", false, false, true);
+        let rawPointThreshold: string[] = await discord.fetchColumn("points", "point threshold", false, false, true);
+        let rawUserList: string[][] = await discord.fetchColumn("points", "user id list", false, false, true);
+        let levelUpMessage: string[] = await discord.fetchColumn("points", "level message", false, false, true);
         let userList: number[] = rawUserList[0].map((num: string) => Number(num));
 
         if (!rawScoreList[0]) {

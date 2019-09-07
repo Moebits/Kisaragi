@@ -263,6 +263,14 @@ module.exports = async (discord: any, message: any) => {
       await discord.runQuery(query, true);
     }
 
+    //Purge Table
+    discord.purgeTable = async (table: string) => {
+      let query: object = {
+        text: `DELETE FROM ${table}`
+      }
+      await discord.runQuery(query, true);
+    }
+
     //Order tables by guild member count
     discord.orderTables = async () => {
         for (let table in tableList) {
