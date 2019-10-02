@@ -6,8 +6,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Rule34 extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -41,8 +41,8 @@ export default class Rule34 extends Command {
             return
         }
 
-        const tagArray: any = []
-        for (const i in tags) {
+        const tagArray: string[] = []
+        for (let i = 0; i < tags.length; i++) {
             tagArray.push(tags[i].trim().replace(/ /g, "_"))
         }
 
@@ -55,7 +55,7 @@ export default class Rule34 extends Command {
             url = rule34.postView(image[0].id)
         }
 
-        const rawID = url.match(/\d+/g).join("")
+        const rawID = url.match(/\d+/g)!.join("")
         const id = rawID.slice(2)
         const result = await axios.get(`https://rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&id=${id}`)
         const img = result.data[0]

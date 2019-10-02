@@ -6,8 +6,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Unrestrict extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -18,15 +18,15 @@ export default class Unrestrict extends Command {
         const sql = new SQLQuery(message)
         const perms = new Permissions(discord, message)
         if (await perms.checkMod(message)) return
-        const restrictEmbed: any = embeds.createEmbed()
+        const restrictEmbed = embeds.createEmbed()
         const restrict = await sql.fetchColumn("special roles", "restricted role")
         if (!restrict) return message.reply("You need to set a restricted role first!")
-        const reasonArray: any = []
-        const userArray: any = []
+        const reasonArray: string[] = []
+        const userArray: string[] = []
 
         for (let i = 1; i < args.length; i++) {
             if (args[i].match(/\d+/g)) {
-                userArray.push(args[i].match(/\d+/g))[0]
+                userArray.push(args[i].match(/\d+/g)![0])
             } else {
                 reasonArray.push(args[i])
             }
@@ -34,9 +34,9 @@ export default class Unrestrict extends Command {
 
         const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
 
-        const members: any = []
+        const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = message.guild!.members.find((m: any) => m.id === userArray[i].join("")) as GuildMember
+            const member = message.guild!.members.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
             await member.roles.remove(restrict.join(""))
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()

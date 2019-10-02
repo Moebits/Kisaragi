@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {GuildChannel, Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class InstantBan extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -56,7 +56,7 @@ export default class InstantBan extends Command {
         )
         message.channel.send(instantBanEmbed)
 
-        async function instantBanPrompt(msg: any) {
+        async function instantBanPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             let setPfp, setLeave, setChannel
             if (msg.content.toLowerCase() === "cancel") {
@@ -78,10 +78,10 @@ export default class InstantBan extends Command {
             if (msg.mentions.channels.array().join("")) setChannel = true
 
             if (setChannel) {
-                const channel = msg.guild.channels.find((c: any) => c === msg.mentions.channels.first())
-                await sql.updateColumn("blocks", "default channel", channel.id)
+                const channel = msg.guild!.channels.find((c: GuildChannel) => c === msg.mentions.channels.first())
+                await sql.updateColumn("blocks", "default channel", channel!.id)
                 responseEmbed
-                .setDescription(`${star}Default channel set to <#${channel.id}>!\n`)
+                .setDescription(`${star}Default channel set to <#${channel!.id}>!\n`)
                 if (setPfp || setLeave) {
                     msg.channel.send(responseEmbed)
                 } else {

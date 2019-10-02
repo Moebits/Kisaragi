@@ -1,13 +1,14 @@
 import {Message} from "discord.js"
-import {CollegiateDictionary} from "mw-dict"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const {CollegiateDictionary} = require("mw-dict")
+
 export default class Define extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -30,11 +31,11 @@ export default class Define extends Command {
             message.channel.send(defineEmbed)
             return
         }
-        const definArray: any = []
-        const exampleArray: any = []
+        const definArray: string[] = []
+        const exampleArray: string[] = []
         for (const i in result[0].definition) {
             if (result[0].definition[i].senses) {
-                const meaningArray: any = []
+                const meaningArray: string[] = []
                 if (result[0].definition[i].senses.join("")) {
                     for (const j in result[0].definition[i].senses[0].meanings) {
                         if (result[0].definition[i].senses[0].meanings[j] === ":") {
@@ -62,7 +63,7 @@ export default class Define extends Command {
             }
         }
         let definitions = ""
-        for (const i in definArray) {
+        for (let i = 0; i < definArray.length; i++) {
             if (definArray[i]) {
                 definitions += `${star}_Definition:_ ${definArray[i]}\n`
             }

@@ -39,7 +39,7 @@ export default class GuildMemberAdd {
         const welcomeColor = await sql.fetchColumn("welcome leaves", "welcome bg color")
         const channel = member.guild.channels.find((c) => c.id.toString() === welcomeChannel.join("")) as TextChannel
 
-        const attachment = await image.createCanvas(member, welcomeImage, welcomeText, welcomeColor) as MessageAttachment
+        const attachment = await image.createCanvas(member, welcomeImage[0], welcomeText[0], welcomeColor[0]) as MessageAttachment
 
         const newMsg = welcomeMsg.join("").replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())
@@ -51,7 +51,7 @@ export default class GuildMemberAdd {
 
         async function avatarBan(discord: Kisaragi) {
         const banToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
-        const banEmbed: any = embeds.createEmbed()
+        const banEmbed = embeds.createEmbed()
         if (banToggle.join("") === "off") return
 
         if (!member.user.avatarURL) {

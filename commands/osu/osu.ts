@@ -1,13 +1,14 @@
 import {Message} from "discord.js"
-import {Osu} from "node-osu"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const {Osu} = require("node-osu")
+
 export default class OsuCommand extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

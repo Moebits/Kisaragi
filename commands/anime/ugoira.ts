@@ -1,7 +1,4 @@
 import {Message} from "discord.js"
-import Ugoira from "node-ugoira"
-import * as PixivApiClient from "pixiv-api-client"
-import * as pixivImg from "pixiv-img"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -9,9 +6,13 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {PixivApi} from "./../../structures/PixivApi"
 
+const PixivApiClient = require("pixiv-api-client")
+const Ugoira = require("node-ugoira")
+const pixivImg = require("pixiv-img")
+
 export default class UgoiraCommand extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -82,7 +83,7 @@ export default class UgoiraCommand extends Command {
         const ugoira = new Ugoira(pixivID)
         await ugoira.initUgoira(refreshToken)
 
-        const file = fs.createWriteStream(`ugoira/${pixivID}/${pixivID}.gif`, (err) => console.log(err))
+        const file = fs.createWriteStream(`ugoira/${pixivID}/${pixivID}.gif`, (error: Error) => console.log(error))
 
         msg1.delete({timeout: 1000})
         const msg2 = await message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${discord.getEmoji("gabCircle")}`) as Message

@@ -6,8 +6,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Captcha extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -19,7 +19,7 @@ export default class Captcha extends Command {
         const embeds = new Embeds(discord, message)
         if (await perms.checkAdmin(message)) return
 
-        const initEmbed: any = embeds.createEmbed()
+        const initEmbed = embeds.createEmbed()
 
         await sql.deleteGuild(message.guild!.id)
         await sql.initGuild()

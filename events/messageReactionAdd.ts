@@ -27,7 +27,7 @@ export default class MessageReactionAdd {
                 const page = await sql.fetchColumn("collectors", "page", "message", reaction.message.id)
                 const newEmbeds: MessageEmbed[] = []
                 for (let i = 0; i < cachedEmbeds[0].length; i++) {
-                    newEmbeds.push(new MessageEmbed(JSON.parse(embeds[0][i])))
+                    newEmbeds.push(new MessageEmbed(JSON.parse(cachedEmbeds[0][i])))
                 }
                 active.add(reaction.message.id)
                 await embeds.editReactionCollector(reaction.message, reaction.emoji.name, newEmbeds, Boolean(collapse[0]), Number(page[0]))

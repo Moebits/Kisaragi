@@ -8,7 +8,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class SQL extends Command {
     constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+        super({
             aliases: [],
             cooldown: 3
         })

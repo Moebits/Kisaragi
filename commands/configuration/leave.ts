@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {GuildChannel, Message, MessageAttachment} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -8,8 +8,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Leave extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -36,7 +36,7 @@ export default class Leave extends Command {
         const leaveImage = await sql.fetchColumn("welcome leaves", "leave bg image")
         const leaveText = await sql.fetchColumn("welcome leaves", "leave bg text")
         const leaveColor = await sql.fetchColumn("welcome leaves", "leave bg color")
-        const attachment = await images.createCanvas(message.member, leaveImage, leaveText, leaveColor) as MessageAttachment
+        const attachment = await images.createCanvas(message.member!, leaveImage[0], leaveText[0], leaveColor[0]) as MessageAttachment
         const json = await axios.get(`https://is.gd/create.php?format=json&url=${leaveImage.join("")}`)
         const newImg = json.data.shorturl
         console.log(attachment)
@@ -76,7 +76,7 @@ export default class Leave extends Command {
         )
         message.channel.send(leaveEmbed)
 
-        async function leavePrompt(msg: any) {
+        async function leavePrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             let setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor
             responseEmbed.setTitle(`**Leave Messages** ${discord.getEmoji("sagiriBleh")}`)
@@ -131,10 +131,10 @@ export default class Leave extends Command {
                 description += `${star}Leave Message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
-                const channel = msg.guild.channels.find((c: any) => c === msg.mentions.channels.first())
-                await sql.updateColumn("welcome leaves", "leave channel", channel.id)
+                const channel = msg.guild!.channels.find((c: GuildChannel) => c === msg.mentions.channels.first())
+                await sql.updateColumn("welcome leaves", "leave channel", channel!.id)
                 setOn = true
-                description += `${star}Leave channel set to <#${channel.id}>!\n`
+                description += `${star}Leave channel set to <#${channel!.id}>!\n`
             }
             if (setOn) {
                 await sql.updateColumn("welcome leaves", "leave toggle", "on")
@@ -145,16 +145,16 @@ export default class Leave extends Command {
                 description += `${star}Leave Messages are **off**!\n`
             }
             if (setImage) {
-                await sql.updateColumn("welcome leaves", "leave bg image", newImage[0])
-                description += `${star}Background image set to **${newImage[0]}**!\n`
+                await sql.updateColumn("welcome leaves", "leave bg image", newImage![0])
+                description += `${star}Background image set to **${newImage![0]}**!\n`
             }
             if (setBGText) {
-                await sql.updateColumn("welcome leaves", "leave bg text", newBGText[0].replace(/\[/g, "").replace(/\]/g, ""))
-                description += `${star}Background text set to **${newBGText[0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
+                await sql.updateColumn("welcome leaves", "leave bg text", newBGText![0].replace(/\[/g, "").replace(/\]/g, ""))
+                description += `${star}Background text set to **${newBGText![0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
             }
             if (setBGColor) {
-                await sql.updateColumn("welcome leaves", "leave bg color", newBGColor[0])
-                description += `${star}Background color set to **${newBGColor[0]}**!\n`
+                await sql.updateColumn("welcome leaves", "leave bg color", newBGColor![0])
+                description += `${star}Background color set to **${newBGColor![0]}**!\n`
             }
 
             responseEmbed

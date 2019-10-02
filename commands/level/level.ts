@@ -6,8 +6,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Level extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -67,7 +67,7 @@ export default class Level extends Command {
         )
         message.channel.send(levelEmbed)
 
-        async function levelPrompt(msg: any) {
+        async function levelPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Level Settings** ${discord.getEmoji("mexShrug")}`)
             let setOn, setOff, setRange, setThreshold, setTimeout, setMsg
@@ -97,7 +97,7 @@ export default class Level extends Command {
                 return
             }
             const newMsg = msg.content.replace(/enable/g, "").replace(/disable/g, "").replace(/\[(.*)\]/g, "")
-            .replace(/<(.*)>/g, "").replace(/\{(.*)\}/g).replace(/\s/g, "")
+            .replace(/<(.*)>/g, "").replace(/\{(.*)\}/g, "").replace(/\s/g, "")
             const newRange = msg.content.match(/\[(.*)\]/g)
             const newTimeout = msg.content.match(/<(.*)>/g)
             const newThreshold = msg.content.match(/\{(.*)\}/g)
@@ -136,12 +136,12 @@ export default class Level extends Command {
                 description += `${discord.getEmoji("star")}Point range set to **${newRange}**!\n`
             }
             if (setThreshold) {
-                await sql.updateColumn("points", "point range", newThreshold[0])
-                description += `${discord.getEmoji("star")}Point threshold set to **${newThreshold[0].replace(/\{/g, "").replace(/\}/g, "")}**!\n`
+                await sql.updateColumn("points", "point range", newThreshold![0])
+                description += `${discord.getEmoji("star")}Point threshold set to **${newThreshold![0].replace(/\{/g, "").replace(/\}/g, "")}**!\n`
             }
             if (setTimeout) {
-                await sql.updateColumn("points", "point range", [Math.floor(parseInt(newTimeout[0].replace(/</g, "").replace(/>/g, ""), 10)*1000)])
-                description += `${discord.getEmoji("star")}Point timeout set to **${newTimeout[0].replace(/</g, "").replace(/>/g, "")}**!\n`
+                await sql.updateColumn("points", "point range", [Math.floor(parseInt(newTimeout![0].replace(/</g, "").replace(/>/g, ""), 10)*1000)])
+                description += `${discord.getEmoji("star")}Point timeout set to **${newTimeout![0].replace(/</g, "").replace(/>/g, "")}**!\n`
             }
 
             responseEmbed

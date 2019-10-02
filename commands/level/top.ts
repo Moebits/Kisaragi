@@ -1,12 +1,12 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Top extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -33,14 +33,14 @@ export default class Top extends Command {
       objectArray.push(scoreObject)
     }
 
-      objectArray.sort((a, b) => (a.points > b.points) ? -1 : 1)
+      objectArray.sort((a: any, b: any) => (a.points > b.points) ? -1 : 1)
 
       const iterations = Math.ceil(message.guild!.memberCount / 10)
 
-      const embedArray: any = []
+      const embedArray: MessageEmbed[] = []
       loop1:
     for (let i = 0; i < iterations; i++) {
-      const topEmbed: any = embeds.createEmbed()
+      const topEmbed = embeds.createEmbed()
       let description = ""
       for (let j = 0; j < 10; j++) {
         const position = (i*10) + j
@@ -51,7 +51,7 @@ export default class Top extends Command {
       }
       topEmbed
       .setTitle(`**${message.guild!.name}'s Leaderboard** ${discord.getEmoji("hanaDesires")}`)
-      .setThumbnail(message.guild!.iconURL)
+      .setThumbnail(message.guild!.iconURL() as string)
       .setDescription(description)
       embedArray.push(topEmbed)
     }

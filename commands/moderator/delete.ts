@@ -6,15 +6,15 @@ import {Functions} from "./../../structures/Functions"
 import {Permissions} from "./../../structures/Permissions"
 
 export default class Delete extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
     }
 
     public bulkDelete = async (num: number, message: Message, userID: boolean, search: boolean, args: string[], query: string) => {
-        const msgArray: any = []
+        const msgArray: string[] = []
         if (userID) {
             const messages = await message.channel.messages.fetch({limit: num}).then((c) => c.map((m: Message) => m))
             for (let i = 0; i < messages.length; i++) {
@@ -42,11 +42,11 @@ export default class Delete extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permissions(discord, message)
         if (await perms.checkMod(message)) return
-        const delEmbed: any = embeds.createEmbed()
+        const delEmbed = embeds.createEmbed()
         const num: number = Number(args[1]) + 2
         let userID = false
         let search = false
-        let query
+        let query = ""
         if (args[2]) {
             if (args[2].match(/\d+/g)) {
                 userID = true

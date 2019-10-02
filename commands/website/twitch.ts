@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import TwitchClient from "twitch"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -6,8 +6,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Twitch extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -42,7 +42,7 @@ export default class Twitch extends Command {
 
         const term = Functions.combineArgs(args, 1)
         const result = await twitch.kraken.search.searchStreams(term.trim(), 1, 11)
-        const twitchArray: any = []
+        const twitchArray: MessageEmbed[] = []
         for (let i = 0; i < result.length; i++) {
             const twitchEmbed = embeds.createEmbed()
             twitchEmbed

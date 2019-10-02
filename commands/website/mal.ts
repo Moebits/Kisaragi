@@ -1,13 +1,14 @@
-import {Message} from "discord.js"
-import * as Jikan from "jikan-node"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const Jikan = require("jikan-node")
+
 export default class Mal extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -20,11 +21,11 @@ export default class Mal extends Command {
         if (args[1] === "character") {
             const query = Functions.combineArgs(args, 2)
             const result = await mal.search("character", query.trim())
-            const malArray: any = []
+            const malArray: MessageEmbed[] = []
             for (let i = 0; i < result.results.length; i++) {
                 const char = result.results[i]
                 const detailed = await mal.findCharacter(char.mal_id)
-                const info = char.anime.join("") ? char.anime.map((n) => n.name) : char.manga.map((n) => n.name)
+                const info = char.anime.join("") ? char.anime.map((n: any) => n.name) : char.manga.map((n: any) => n.name)
                 const malEmbed = embeds.createEmbed()
                 malEmbed
                 .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")
@@ -49,8 +50,8 @@ export default class Mal extends Command {
         if (args[1] === "user") {
             const result = await mal.findUser(args[2])
             const malEmbed = embeds.createEmbed()
-            const anime = result.favorites.anime.map((a) => a.name)
-            const characters = result.favorites.characters.map((c) => c.name)
+            const anime = result.favorites.anime.map((a: any) => a.name)
+            const characters = result.favorites.characters.map((c: any) => c.name)
             const cleanText = result.about.replace(/<\/?[^>]+(>|$)/g, "")
             malEmbed
             .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")

@@ -1,13 +1,14 @@
 import {Message} from "discord.js"
-import Tenor from "tenorjs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const Tenor = require("tenorjs")
+
 export default class TenorCommand extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

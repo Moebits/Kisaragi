@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {GuildEmoji, Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class ReactionRoles extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -40,7 +40,7 @@ export default class ReactionRoles extends Command {
         states = JSON.parse(states[0])
         const step = 3.0
         const increment = Math.ceil((messages[0] ? messages.length : 1) / step)
-        const reactArray: any = []
+        const reactArray = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {
@@ -49,11 +49,11 @@ export default class ReactionRoles extends Command {
                     if (!messages.join("") || !emojis[0] || !roles[0] || !states[0]) settings = "None"
                     if (!messages[value]) break
                     const foundMsg = await discord.fetchMessage(message, messages[value])
-                    const identifier = message.guild!.emojis.find((e: any) => {
-                        if (e.name.toLowerCase().includes(emojis[value].toLowerCase())) {
-                            return e.identifier
-                        }
+                    const guildEmoji = message.guild!.emojis.find((e: GuildEmoji) => {
+                        const found = (e.name.toLowerCase().includes(emojis[value].toLowerCase())) ? true : false
+                        return found
                     })
+                    const identifier = guildEmoji!.identifier
                     settings += `${i + 1} **=>**\n` +
                     `${discord.getEmoji("star")}_Message:_ [Link](${foundMsg!.url})\n` +
                     `${discord.getEmoji("star")}_Emoji:_ ${identifier}\n` +
@@ -91,7 +91,7 @@ export default class ReactionRoles extends Command {
             message.channel.send(reactArray[0])
         }
 
-        async function reactPrompt(msg: any) {
+        async function reactPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
 
             if (msg.content.toLowerCase() === "cancel") {

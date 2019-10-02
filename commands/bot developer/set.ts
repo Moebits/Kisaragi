@@ -6,8 +6,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permissions} from "./../../structures/Permissions"
 
 export default class Set extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -23,7 +23,7 @@ export default class Set extends Command {
         const activityName = Functions.combineArgs(args, 2)
 
         const activityTypes: string[] = ["PLAYING", "WATCHING", "LISTENING", "STREAMING"]
-        const setEmbed: any = embeds.createEmbed()
+        const setEmbed = embeds.createEmbed()
 
         if (!activityName || (!activityTypes.includes(activityType.toString()))) {
             message.channel.send(setEmbed

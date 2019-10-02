@@ -1,4 +1,4 @@
-import {Message, TextChannel} from "discord.js"
+import {GuildChannel, Message, MessageAttachment, TextChannel} from "discord.js"
 import GPhotos from "upload-gphotos"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -6,8 +6,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Upload extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -35,7 +35,7 @@ export default class Upload extends Command {
             accessToken: process.env.DROPBOX_ACCESS_TOKEN
         });*/
 
-        async function downloadImage(onlinePhoto: string[], channelName: string) {
+        async function downloadImage(onlinePhoto: string, channelName: string) {
             const dir = `../assets/images/channels/${channelName}`
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir)
@@ -44,11 +44,11 @@ export default class Upload extends Command {
             return filename
         }
 
-        async function gatherPhotos(guildChannel: any) {
-            const channel = message.guild!.channels.find((c: any) => c.id === guildChannel) as TextChannel
+        async function gatherPhotos(guildChannel: string) {
+            const channel = message.guild!.channels.find((c: GuildChannel) => c.id === guildChannel) as TextChannel
             let done = false
             let counter = 0
-            const photoArray: any = []
+            const photoArray: string[] = []
             while (!done) {
                 setTimeout(async () => {
                     let notMsg
@@ -62,7 +62,7 @@ export default class Upload extends Command {
                             break
                         }
                         if (messages[i].attachments.size) {
-                            const attachments = messages[i].attachments.map((a: any) => a)
+                            const attachments = messages[i].attachments.map((a: MessageAttachment) => a)
                             console.log(attachments)
                             for (let j = 0; j < attachments.length; j++) {
                                 const photo = await downloadImage(attachments[j].url, channel.name)
@@ -77,8 +77,8 @@ export default class Upload extends Command {
             return photoArray
         }
 
-        async function uploadToAlbum(photos: string[], albumName: string, guildChannel: any) {
-            const channel = message.guild!.channels.find((c: any) => c.id === guildChannel) as TextChannel
+        async function uploadToAlbum(photos: string[], albumName: string, guildChannel: string) {
+            const channel = message.guild!.channels.find((c: GuildChannel) => c.id === guildChannel) as TextChannel
             const album = await gphotos.searchOrCreateAlbum(albumName)
             let notMsg
             if (notify[0] === "on") {

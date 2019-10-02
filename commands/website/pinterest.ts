@@ -1,22 +1,22 @@
 import axios from "axios"
-import {Message} from "discord.js"
-import * as GoogleImages from "google-images"
+import {Message, MessageEmbed} from "discord.js"
+import GoogleImages from "google-images"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-const pinArray: any = []
+const pinArray: MessageEmbed[] = []
 
 export default class Pinterest extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
     }
 
-    public pinterestError = (discord, message, embeds) => {
+    public pinterestError = (discord: Kisaragi, message: Message, embeds: Embeds) => {
         const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
         .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png")
@@ -26,8 +26,9 @@ export default class Pinterest extends Command {
         message.channel.send(pinterestEmbed)
     }
 
-    public pinterestPin = (discord, response: any) => {
-        const pinterestEmbed = discord.createEmbed()
+    public pinterestPin = (discord: Kisaragi, message: Message, response: any) => {
+        const embeds = new Embeds(discord, message)
+        const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
         .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png")
         .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
@@ -36,7 +37,7 @@ export default class Pinterest extends Command {
         .setDescription(
             `${discord.getEmoji("star")}_Creator:_ **${response.creator.url}**\n` +
             `${discord.getEmoji("star")}_Board:_ **${response.board.url}**\n` +
-            `${discord.getEmoji("star")}_Creation Date:_ **${discord.formatDate(response.created_at)}**\n` +
+            `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(response.created_at)}**\n` +
             `${discord.getEmoji("star")}_Saves:_ **${response.counts.saves}**\n` +
             `${discord.getEmoji("star")}_Comments:_ **${response.counts.comments}**\n` +
             `${discord.getEmoji("star")}_Source:_ **${response.link ? response.link : "None"}**\n` +
@@ -48,7 +49,7 @@ export default class Pinterest extends Command {
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
         const accessToken = (process.env.PINTEREST_ACCESS_TOKEN)
-        const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID, process.env.GOOGLE_API_KEY)
+        const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID!, process.env.GOOGLE_API_KEY!)
 
         if (args[1] === "board") {
             const user = args[2]
@@ -57,7 +58,7 @@ export default class Pinterest extends Command {
             const json = await axios.get(`https://api.pinterest.com/v1/boards/${user}/${board}/pins/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`)
             const response = json.data
             for (const i in response) {
-                this.pinterestPin(discord, response[i])
+                this.pinterestPin(discord, message, response[i])
             }
             if (!pinArray.join("")) {
                 this.pinterestError(discord, message, embeds)
@@ -76,7 +77,7 @@ export default class Pinterest extends Command {
             const json = await axios.get(`https://api.pinterest.com/v1/me/search/pins/?access_token=${accessToken}&query=${query.replace(/ /g, "-")}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`)
             const response = json.data
             for (const i in response) {
-                this.pinterestPin(discord, response[i])
+                this.pinterestPin(discord, message, response[i])
             }
             if (!pinArray.join("")) {
                 this.pinterestError(discord, message, embeds)
@@ -97,7 +98,7 @@ export default class Pinterest extends Command {
         for (let i = 0; i < imageResult.length; i++) {
             if (pin) break
             random = Math.floor(Math.random() * imageResult.length)
-            pin = (imageResult[random].parentPage.match(/\d{18}/g))
+            pin = (imageResult[random].url.match(/\d{18}/g))
         }
         if (!pin) {
             this.pinterestError(discord, message, embeds)
@@ -108,7 +109,7 @@ export default class Pinterest extends Command {
         const board = response.board.url.slice(25)
         const response2 = await axios.get(`https://api.pinterest.com/v1/boards/${board}/pins/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`)
         const random2 = Math.floor(Math.random() * response2.data.length)
-        this.pinterestPin(discord, response2.data[random2])
+        this.pinterestPin(discord, message, response2.data[random2])
         if (!pinArray.join("")) {
             this.pinterestError(discord, message, embeds)
             return

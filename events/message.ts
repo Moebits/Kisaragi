@@ -55,7 +55,7 @@ export default class MessageEvent {
         cmdFunctions.autoCommand(message)
     }
 
-      const responseText: object = {
+      const responseText: any = {
       kisaragi: "Kisaragi is the best girl!",
       f: `${letters.letters("F")}`,
       e: `${letters.letters("E")}`,
@@ -65,7 +65,7 @@ export default class MessageEvent {
       rip: `${this.discord.getEmoji("rip")}`
     }
 
-      const responseImage: object = {
+      const responseImage: any = {
       "bleh": "https://i.ytimg.com/vi/Gn4ah6kAmZo/maxresdefault.jpg",
       "smug": "https://pbs.twimg.com/media/CpfL-c3WEAE1Na_.jpg",
       "stare": "https://thumbs.gfycat.com/OpenScaryJunebug-small.gif",

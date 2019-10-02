@@ -1,14 +1,15 @@
 import {Message} from "discord.js"
-import Kuroshiro from "kuroshiro"
-import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const Kuroshiro = require("kuroshiro")
+const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
+
 export default class Furigana extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

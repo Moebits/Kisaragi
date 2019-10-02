@@ -7,6 +7,7 @@
     "jsRules": {},
     "rules": {
         "jsx-no-lambda": false,
+        "no-object-literal-type-assertion": false,
         "no-console": false,
         "no-shadowed-variable": false,
         "no-any": true,

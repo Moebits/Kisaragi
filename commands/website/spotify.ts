@@ -1,14 +1,15 @@
-import {Message} from "discord.js"
-import * as Spotify from "node-spotify-api"
+import {Message, MessageEmbed} from "discord.js"
 import ms from "pretty-ms"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const Spotify = require("node-spotify-api")
+
 export default class SpotifyCommand extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -44,7 +45,7 @@ export default class SpotifyCommand extends Command {
 
         const query = Functions.combineArgs(args, 1)
         const response = await spotify.search({type: "track", query: query.trim()})
-        const spotifyArray: any = []
+        const spotifyArray: MessageEmbed[] = []
         for (let i = 0; i < response.tracks.items.length; i++) {
             const track = response.tracks.items[i]
             const artists = track.artists.map((a: any) => a.name)

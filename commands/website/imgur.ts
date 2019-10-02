@@ -1,13 +1,14 @@
-import {Message} from "discord.js"
-import imgur from "imgur"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const imgur = require("imgur")
+
 export default class Imgur extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -56,7 +57,7 @@ export default class Imgur extends Command {
             message.channel.send(imgurEmbed)
             return
         } else {
-            const imageArray: any = []
+            const imageArray: MessageEmbed[] = []
             for (let i = 0; i < image.images.length - 1; i++) {
                 console.log(i)
                 const imgurEmbed = embeds.createEmbed()

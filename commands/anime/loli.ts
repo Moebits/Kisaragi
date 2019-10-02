@@ -1,12 +1,13 @@
 import {Message} from "discord.js"
-import * as Loli from "lolis.life"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const Loli = require("lolis.life")
+
 export default class LoliCommand extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

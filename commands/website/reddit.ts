@@ -1,25 +1,26 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import snoowrap from "snoowrap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-const redditArray: any = []
+const redditArray: MessageEmbed[] = []
 
 export default class Reddit extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
     }
 
-    public getSubmissions = async (discord: Kisaragi, reddit, embeds: Embeds, postIDS: string) => {
+    public getSubmissions = async (discord: Kisaragi, reddit: snoowrap, embeds: Embeds, postIDS: string[]) => {
         for (let i = 0; i < 10; i++) {
             if (!postIDS[i]) break
+            // @ts-ignore
             const post = await reddit.getSubmission(postIDS[i]).fetch()
-            const commentArray: any = []
+            const commentArray: string[] = []
             for (let j = 0; j < 3; j++) {
                 if (!post.comments[j]) break
                 commentArray.push(`**${post.comments[j].author ? post.comments[j].author.name : "Deleted"}**: ${(Functions.checkChar(post.comments[j].body, 150, " ") as string).replace(/(\r\n|\n|\r)/gm, " ")}`)
@@ -56,6 +57,7 @@ export default class Reddit extends Command {
 
         if (args[1] === "user") {
             const query = Functions.combineArgs(args, 2)
+            // @ts-ignore
             const user = await reddit.getUser(query.trim()).fetch()
             console.log(user)
             const redditEmbed = embeds.createEmbed()
@@ -75,10 +77,11 @@ export default class Reddit extends Command {
             return
         }
 
-        let posts
-        let subreddit
+        let posts = {} as snoowrap.Listing<snoowrap.Submission>
+        let subreddit = ""
         if (!args[1]) {
-            posts = [await reddit.getRandomSubmission()]
+            // @ts-ignore
+            posts = [await reddit.getRandomSubmission()] as snoowrap.Listing<snoowrap.Submission>
         } else {
             subreddit = args[1]
         }
@@ -99,11 +102,12 @@ export default class Reddit extends Command {
                     posts = await reddit.getSubreddit(subreddit).search({query, time: "all", sort: "relevance"})
                 }
             } else {
+                // @ts-ignore
                 posts = await reddit.getSubreddit(subreddit).getRandomSubmission()
             }
         }
-        const postIDS: any = []
-        for (const i in posts) {
+        const postIDS: string[] = []
+        for (let i = 0; i < posts.length; i++) {
             if (posts[i]) {
                 postIDS.push(posts[i].id)
             }

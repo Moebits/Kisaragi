@@ -5,8 +5,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permissions} from "./../../structures/Permissions"
 
 export default class Clean extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -18,7 +18,7 @@ export default class Clean extends Command {
         if (perms.checkBotDev(message)) return
 
         const guildID = args[1]
-        const guild = discord.guilds.find((g: any) => g.id.toString() === guildID) as Guild
+        const guild = discord.guilds.find((g: Guild) => g.id.toString() === guildID) as Guild
 
         try {
             guild.delete()

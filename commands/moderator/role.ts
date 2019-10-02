@@ -1,12 +1,12 @@
-import {Message} from "discord.js"
+import {GuildMember, Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permissions} from "./../../structures/Permissions"
 
 export default class Role extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -17,7 +17,7 @@ export default class Role extends Command {
       const perms = new Permissions(discord, message)
       if (await perms.checkMod(message)) return
 
-      const roleEmbed: any = embeds.createEmbed()
+      const roleEmbed = embeds.createEmbed()
 
       if ((!args[3]) || (message.mentions.members!.size === 0)) {
         return message.channel.send(roleEmbed
@@ -25,18 +25,18 @@ export default class Role extends Command {
 
       } else {
 
-          const member: any = message.mentions.members!.first()
+          const member: GuildMember = message.mentions.members!.first()!
           const roleName: string = args[3]
           const snowflake: RegExp = /\d+/
           let roleID: string = roleName.substring(roleName.search(snowflake))
           if (roleID.includes(">")) roleID = roleID.slice(0, -1)
-          const role: any = message.guild!.roles.get(roleID)
+          const role = message.guild!.roles.get(roleID)
 
           switch (args[1]) {
 
             case "add": {
                 try {
-                  await member.addRole(role)
+                  await member.roles.add(role!)
                   await message.channel.send(roleEmbed
                     .setDescription(`${member.displayName} now has the ${role} role!`))
                 } catch (error) {
@@ -49,7 +49,7 @@ export default class Role extends Command {
 
             case "del": {
               try {
-                await member.removeRole(role)
+                await member.roles.remove(role!)
                 await message.channel.send(roleEmbed
                   .setDescription(`${member.displayName} no longer has the ${role} role!`))
               } catch (error) {

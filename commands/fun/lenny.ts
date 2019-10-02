@@ -1,11 +1,12 @@
 import {Message} from "discord.js"
-import * as lenny from "lenny"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const lenny = require("lenny")
+
 export default class Lenny extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

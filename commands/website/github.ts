@@ -1,14 +1,15 @@
 import axios from "axios"
-import {Message} from "discord.js"
-import GitHub from "github-api"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const GitHub = require("github-api")
+
 export default class Github extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -51,11 +52,11 @@ export default class Github extends Command {
         const search = github.search({q: input.trim()})
         const json = await search.forRepositories()
         const result = json.data
-        const githubArray: any = []
+        const githubArray: MessageEmbed[] = []
         for (let i = 0; i < 10; i++) {
             const source = await axios.get(result[i].html_url)
             const regex = /<meta[^>]+name="twitter:image:src"[^>]+content="?([^"\s]+)"?\s*\/>/g
-            const urls: any = []
+            const urls: string[] = []
             const m = regex.exec(source.data)
             if (m !== null) {
                 for (let i = 0; i < m.length; i++) {

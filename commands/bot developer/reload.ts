@@ -5,8 +5,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permissions} from "./../../structures/Permissions"
 
 export default class Reload extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -17,9 +17,9 @@ export default class Reload extends Command {
       const embeds = new Embeds(discord, message)
 
       if (perms.checkBotDev(message)) return
-      const reloadEmbed: any = embeds.createEmbed()
-      const commandName: string = args[1]
-      const commandDir: string = args[2]
+      const reloadEmbed = embeds.createEmbed()
+      const commandName = args[1]
+      const commandDir = args[2]
 
       if (!args[1]) {
       return message.channel.send(reloadEmbed

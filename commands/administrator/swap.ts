@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {GuildMember, Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Detector} from "./../../structures/Detector"
 import {Embeds} from "./../../structures/Embeds"
@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Swap extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -31,7 +31,7 @@ export default class Swap extends Command {
         const wait = await message.channel.send(`**Scanning every member in the server. This will take awhile** ${discord.getEmoji("gabCircle")}`)
 
         for (let i = 0; i < message.guild!.members.size; i++) {
-            const memberArray = message.guild!.members.map((m: any) => m)
+            const memberArray = message.guild!.members.map((m: GuildMember) => m)
             const result = await detect.swapRoles(message, memberArray[i], true)
             if (result === true) {
                 weebCounter += 1

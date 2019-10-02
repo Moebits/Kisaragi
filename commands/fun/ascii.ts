@@ -5,8 +5,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Ascii extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -20,7 +20,7 @@ export default class Ascii extends Command {
         const text = Functions.combineArgs(args, 1)
         if (!text) return
 
-        ascii.font(text, "Doom", (asciiText) => {
+        ascii.font(text, "Doom", (asciiText: string) => {
             asciiEmbed
             .setTitle(`**Ascii Art** ${discord.getEmoji("kannaSip")}`)
             .setDescription("```" + Functions.checkChar(asciiText, 2000, "|") + "```")

@@ -7,8 +7,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Danbooru extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -41,8 +41,8 @@ export default class Danbooru extends Command {
             return
         }
 
-        const tagArray: any = []
-        for (const i in tags) {
+        const tagArray: string[] = []
+        for (let i = 0; i < tags.length; i++) {
             tagArray.push(tags[i].trim().replace(/ /g, "_"))
         }
 

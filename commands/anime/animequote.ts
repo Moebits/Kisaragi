@@ -1,12 +1,13 @@
-import * as animeQuotes from "animequotes"
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const animeQuotes = require("animequotes")
+
 export default class AnimeQuote extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

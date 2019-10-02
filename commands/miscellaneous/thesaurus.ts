@@ -1,13 +1,14 @@
 import {Message} from "discord.js"
-import {CollegiateThesaurus} from "mw-dict"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const {CollegiateThesaurus} = require("mw-dict")
+
 export default class Thesaurus extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -30,10 +31,10 @@ export default class Thesaurus extends Command {
             return
         }
 
-        const meaningArray: any = []
-        const exampleArray: any = []
-        const synonymArray: any = []
-        const antonymArray: any = []
+        const meaningArray: string[] = []
+        const exampleArray: string[] = []
+        const synonymArray: string[] = []
+        const antonymArray: string[] = []
         for (const i in result[0].definition) {
             meaningArray.push(result[0].definition[i].meanings[0])
             if (result[0].definition[i].illustrations) {
@@ -50,7 +51,7 @@ export default class Thesaurus extends Command {
         }
 
         let synonyms = ""
-        for (const i in meaningArray) {
+        for (let i = 0; i < meaningArray.length; i++) {
             synonyms += `${discord.getEmoji("star")}_Meaning:_ ${meaningArray[i]}\n`
             if (exampleArray[i]) {
                 synonyms += `${discord.getEmoji("star")}_Example:_ ${exampleArray[i]}\n`

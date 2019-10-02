@@ -1,4 +1,4 @@
-import {GuildMember, Message} from "discord.js"
+import {GuildMember, Message, MessageEmbed, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Warns extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -26,7 +26,7 @@ export default class Warns extends Command {
             return
         }
 
-        const warnArray: any = []
+        const warnArray: MessageEmbed[] = []
         let warnings = ""
         let warnLog = await sql.fetchColumn("warns", "warn log") as any
         if (!warnLog[0]) warnLog = [""]
@@ -40,7 +40,7 @@ export default class Warns extends Command {
                 }
             }
             const warnEmbed = embeds.createEmbed()
-            const member = message.guild!.members.find((m: any) => m.id === warnLog[i].user)
+            const member = message.guild!.members.find((m: GuildMember) => m.id === warnLog[i].user)
             warnEmbed
             .setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
             .setThumbnail(message.guild!.iconURL() as string)
@@ -64,7 +64,7 @@ export default class Warns extends Command {
             message.channel.send(warnArray[0])
         }
 
-        async function warnPrompt(msg: any) {
+        async function warnPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
             const warnOne = await sql.fetchColumn("special roles", "warn one")
@@ -79,10 +79,10 @@ export default class Warns extends Command {
             }
 
             const userID = msg.content.match(/(?<=<@)(.*?)(?=>)/g)
-            const member = message.guild!.members.find((m: any) => m.id === userID.join("")) as GuildMember
+            const member = message.guild!.members.find((m: GuildMember) => m.id === userID!.join("")) as GuildMember
             let warnOneRole, warnTwoRole
-            if (warnOne[0]) warnOneRole = message.guild!.roles.find((r: any) => r.id === warnOne[0])
-            if (warnTwo[0]) warnTwoRole = message.guild!.roles.find((r: any) => r.id === warnTwo[0])
+            if (warnOne[0]) warnOneRole = message.guild!.roles.find((r: Role) => r.id === warnOne[0])
+            if (warnTwo[0]) warnTwoRole = message.guild!.roles.find((r: Role) => r.id === warnTwo[0])
 
             if (member && !msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)) setUser = true
             if (member && msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)) setDelete = true
@@ -145,8 +145,8 @@ export default class Warns extends Command {
                 return msg.channel.send(responseEmbed)
             }
             if (setDelete) {
-                let num = msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)
-                num = parseInt(num[0], 10) - 1
+                let num: number = Number(msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)![0])
+                num = num - 1
                 let found = false
                 for (let i = 0; i < warnLog[0].length; i++) {
                     if (typeof warnLog[0][i] === "string") warnLog[0][i] = JSON.parse(warnLog[0][i])

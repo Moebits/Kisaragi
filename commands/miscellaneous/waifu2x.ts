@@ -4,8 +4,8 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Waifu2x extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -17,7 +17,7 @@ export default class Waifu2x extends Command {
         let imgUrl
         if (!args[1]) {
             const messages = await message.channel.messages.fetch({limit: 10})
-            const imgUrls = messages.filter((m: any) => m.attachments.size)
+            const imgUrls = messages.filter((m: Message) => m.attachments.size ? true : false)
             imgUrl = imgUrls.first()!.attachments.first()!.url
         } else {
             imgUrl = args[1]

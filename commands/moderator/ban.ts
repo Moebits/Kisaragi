@@ -1,12 +1,12 @@
-import {Message} from "discord.js"
+import {GuildMember, Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permissions} from "./../../structures/Permissions"
 
 export default class Ban extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -16,13 +16,13 @@ export default class Ban extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permissions(discord, message)
         if (await perms.checkMod(message)) return
-        const banEmbed: any = embeds.createEmbed()
-        const reasonArray: any = []
-        const userArray: any = []
+        const banEmbed = embeds.createEmbed()
+        const reasonArray: string[] = []
+        const userArray: string[] = []
 
         for (let i = 1; i < args.length; i++) {
             if (args[i].match(/\d+/g)) {
-                userArray.push(args[i].match(/\d+/g))[0]
+                userArray.push(args[i].match(/\d+/g)![0])
             } else {
                 reasonArray.push(args[i])
             }
@@ -30,9 +30,9 @@ export default class Ban extends Command {
 
         const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
 
-        const members: any = []
+        const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = message.guild!.members.find((m: any) => m.id === userArray[i].join(""))
+            const member = message.guild!.members.find((m: GuildMember) => m.id === userArray[i])
             if (member) {
                 members.push(`<@${member.id}>`)
             } else {

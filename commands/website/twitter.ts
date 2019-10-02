@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import Twitter from "twitter"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -6,8 +6,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class TwitterCommand extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -17,10 +17,10 @@ export default class TwitterCommand extends Command {
 
         const embeds = new Embeds(discord, message)
         const twitter = new Twitter({
-            consumer_key: process.env.TWITTER_API_KEY,
-            consumer_secret: process.env.TWITTER_API_SECRET,
-            access_token_key: process.env.TWITTER_ACCESS_TOKEN,
-            access_token_secret: process.env.TWITTER_ACCESS_SECRET
+            consumer_key: process.env.TWITTER_API_KEY!,
+            consumer_secret: process.env.TWITTER_API_SECRET!,
+            access_token_key: process.env.TWITTER_ACCESS_TOKEN!,
+            access_token_secret: process.env.TWITTER_ACCESS_SECRET!
         })
 
         if (args[1] === "user") {
@@ -51,7 +51,7 @@ export default class TwitterCommand extends Command {
 
         const query = Functions.combineArgs(args, 1)
         const tweets = await twitter.get("search/tweets", {q: query})
-        const twitterArray: any = []
+        const twitterArray: MessageEmbed[] = []
         for (const i in tweets.statuses) {
             const twitterEmbed = embeds.createEmbed()
             twitterEmbed

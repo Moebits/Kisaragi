@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class DetectChannels extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -30,7 +30,7 @@ export default class DetectChannels extends Command {
         const ignored = await sql.fetchColumn("detection", "ignored")
         const step = 5.0
         const increment = Math.ceil((ignored[0] ? ignored[0].length : 1) / step)
-        const detectArray: any = []
+        const detectArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             let description = ""
             for (let j = 0; j < step; j++) {
@@ -67,7 +67,7 @@ export default class DetectChannels extends Command {
             message.channel.send(detectArray[0])
         }
 
-        async function detectPrompt(msg: any) {
+        async function detectPrompt(msg: Message) {
             let dIgnored = await sql.fetchColumn("detection", "ignored")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Ignored Detection Channels** ${discord.getEmoji("kisaragibawls")}`)
@@ -88,15 +88,15 @@ export default class DetectChannels extends Command {
             }
 
             const newChan = msg.content.match(/(?<=<#)(.*?)(?=>)/g)
-            if (!newChan.join("")) return msg.reply("You did not mention any channels!")
+            if (!newChan!.join("")) return msg.reply("You did not mention any channels!")
 
             let description = ""
 
-            for (let i = 0; i < newChan.length; i++) {
-                dIgnored.push(newChan[i])
+            for (let i = 0; i < newChan!.length; i++) {
+                dIgnored.push(newChan![i])
                 if (setInit) dIgnored = dIgnored.filter(Boolean)
                 await sql.updateColumn("detection", "ignored", dIgnored)
-                description += `${star}Added <#${newChan[i]}>!\n`
+                description += `${star}Added <#${newChan![i]}>!\n`
             }
 
             responseEmbed

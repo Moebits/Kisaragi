@@ -8,8 +8,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class CaptchaCmd extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -68,7 +68,7 @@ export default class CaptchaCmd extends Command {
         )
         message.channel.send(captchaEmbed)
 
-        async function captchaPrompt(msg: any) {
+        async function captchaPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)
             let [setOn, setOff, setRole, setText, setMath, setColor, setEasy, setMedium, setHard, setExtreme] = [] as boolean[]
@@ -152,12 +152,12 @@ export default class CaptchaCmd extends Command {
                 description += `${star}Captcha type set to **math**!\n`
             }
             if (setRole) {
-                await sql.updateColumn("captcha", "verify role", newRole.join(""))
+                await sql.updateColumn("captcha", "verify role", newRole!.join(""))
                 description += `${star}Verify role set to <@&${newRole}>!\n`
             }
             if (setColor) {
-                await sql.updateColumn("captcha", "captcha color", newColor.join(""))
-                description += `${star}Background color set to ${newColor.join("")}\n`
+                await sql.updateColumn("captcha", "captcha color", newColor!.join(""))
+                description += `${star}Background color set to ${newColor!.join("")}\n`
             }
             responseEmbed
             .setDescription(description)

@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Photos extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -33,7 +33,7 @@ export default class Photos extends Command {
         const notify = await sql.fetchColumn("images", "notify toggle")
         const step = 3.0
         const increment = Math.ceil((channels[0] ? channels[0].length : 1) / step)
-        const photosArray: any = []
+        const photosArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             let description = ""
             for (let j = 0; j < step; j++) {
@@ -80,7 +80,7 @@ export default class Photos extends Command {
             message.channel.send(photosArray[0])
         }
 
-        async function photoPrompt(msg: any) {
+        async function photoPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Photo Downloader/Uploader** ${discord.getEmoji("gabYes")}`)
             let setChannel, setFolder, setAlbum, setNotify, setInit
@@ -132,7 +132,7 @@ export default class Photos extends Command {
                     const tempAlbum = tempMsg.match(/(?<=\[)(.*?)(?=\])/g)
                     let editDesc = ""
                     if (tempChan) {
-                        channels[num] = tempChan
+                        channels[num] = tempChan[0]
                         await sql.updateColumn("images", "image channels", channels)
                         editDesc += `${star}Channel set to **${tempChan}**!\n`
                     }
@@ -142,7 +142,7 @@ export default class Photos extends Command {
                         editDesc += `${star}Dropbox folder set to **${tempFolder}**!\n`
                     }
                     if (tempAlbum) {
-                        albums[num] = tempAlbum
+                        albums[num] = tempAlbum[0]
                         await sql.updateColumn("images", "google albums", albums)
                         editDesc += `${star}Google album set to **${tempAlbum}**!\n`
                     }
@@ -164,7 +164,7 @@ export default class Photos extends Command {
             let description = ""
 
             if (setChannel) {
-                channels.push(newChan)
+                channels.push(newChan![0])
                 if (setInit) channels = channels.filter(Boolean)
                 await sql.updateColumn("images", "image channels", channels)
                 description += `${star}Channel set to <#${newChan}>!\n`
@@ -178,7 +178,7 @@ export default class Photos extends Command {
             }
 
             if (setAlbum) {
-                albums.push(newAlbum)
+                albums.push(newAlbum![0])
                 if (setInit) albums = albums.filter(Boolean)
                 await sql.updateColumn("images", "google albums", albums)
                 description += `${star}Google album set to **${newAlbum}**!\n`

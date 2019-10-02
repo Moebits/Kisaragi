@@ -1,12 +1,13 @@
 import {Message} from "discord.js"
-import * as SoundCloud from "soundcloud-api-client"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const SoundCloud = require("soundcloud-api-client")
+
 export default class Soundcloud extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

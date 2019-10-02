@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Captcha} from "./../../structures/Captcha"
 import {Embeds} from "./../../structures/Embeds"
@@ -6,8 +6,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Verify extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -24,7 +24,7 @@ export default class Verify extends Command {
         const color = await sql.fetchColumn("captcha", "captcha color")
         const difficulty = await sql.fetchColumn("captcha", "difficulty")
 
-        const role = message.guild!.roles.find((r: any) => r.id === vRole.join(""))
+        const role = message.guild!.roles.find((r: Role) => r.id === vRole.join(""))
         if (!role) {
             const vErrorEmbed = embeds.createEmbed()
             vErrorEmbed.setDescription("Could not find the verify role!")
@@ -34,11 +34,11 @@ export default class Verify extends Command {
 
         const {captcha, text} = await captchaClass.createCaptcha(type, color, difficulty)
 
-        const filter = (response) => {
+        const filter = (response: Message) => {
             return (response.author === message.author)
         }
 
-        function sendCaptcha(cap, txt) {
+        function sendCaptcha(cap: MessageEmbed, txt: string) {
             message.channel.send(cap).then(() => {
                 message.channel.awaitMessages(filter, {max: 1, time: 30000, errors: ["time"]})
                     .then(async (collected) => {

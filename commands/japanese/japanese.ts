@@ -1,12 +1,13 @@
-import * as translate from "@vitalets/google-translate-api"
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const translate = require("@vitalets/google-translate-api")
+
 export default class Japanese extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

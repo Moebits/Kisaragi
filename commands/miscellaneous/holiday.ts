@@ -5,8 +5,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Holiday extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -27,7 +27,7 @@ export default class Holiday extends Command {
             if (!inputMonth) inputMonth = parseInt(args[1][0], 10)
             if (!args[2]) {
                 inputDay = args[1].match(/\/\d+/g)
-                if (inputDay[0]) inputDay  = parseInt(inputDay[0].replace(/\//g, ""), 10)
+                if (inputDay![0]) inputDay  = parseInt(inputDay![0].replace(/\//g, ""), 10)
             } else {
                 inputDay = parseInt(args[2], 10)
             }

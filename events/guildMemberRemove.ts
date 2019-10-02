@@ -36,7 +36,7 @@ export default class GuildMemberRemove {
         const leaveColor = await sql.fetchColumn("welcome leaves", "leave bg color")
         const channel = member.guild.channels.find((c) => c.id.toString() === leaveChannel.join("")) as TextChannel
 
-        const attachment = await image.createCanvas(member, leaveImage, leaveText, leaveColor) as MessageAttachment
+        const attachment = await image.createCanvas(member, leaveImage[0], leaveText[0], leaveColor[0]) as MessageAttachment
 
         const newMsg = leaveMsg.join("").replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())
@@ -48,7 +48,7 @@ export default class GuildMemberRemove {
 
         async function leaveBan(discord: Kisaragi) {
         const leaveToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
-        const banEmbed: any = embeds.createEmbed()
+        const banEmbed = embeds.createEmbed()
         if (leaveToggle.join("") === "off") return
 
         const now = Math.ceil(Date.now())

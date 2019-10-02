@@ -1,15 +1,16 @@
-import * as deviantArt from "deviantnode"
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-const deviantArray: any = []
+const deviantArt = require("deviantnode")
+
+const deviantArray: MessageEmbed[] = []
 
 export default class DeviantArt extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

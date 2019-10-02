@@ -4,8 +4,8 @@ import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Chain extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

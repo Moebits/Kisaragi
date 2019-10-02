@@ -6,8 +6,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Lolibooru extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -41,8 +41,8 @@ export default class Lolibooru extends Command {
             return
         }
 
-        const tagArray: any = []
-        for (const i in tags) {
+        const tagArray: string[] = []
+        for (let i = 0; i < tags.length; i++) {
             tagArray.push(tags[i].trim().replace(/ /g, "_"))
         }
 
@@ -54,7 +54,7 @@ export default class Lolibooru extends Command {
             url = lolibooru.postView(image[0].id)
         }
 
-        const id = url.match(/\d+/g).join("")
+        const id = url.match(/\d+/g)!.join("")
 
         const result = await axios.get(`https://lolibooru.moe/post/index.json?tags=id:${id}`)
         const img = result.data[0]

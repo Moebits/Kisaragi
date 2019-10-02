@@ -1,20 +1,21 @@
-import * as chan from "4chanapi.js"
 import axios from "axios"
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const chan = require("4chanapi.js")
+
 export default class $4chan extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
     }
 
-    public chanError = (discord, message, embeds) => {
+    public chanError = (discord: Kisaragi, message: Message, embeds: Embeds) => {
         const chanEmbed = embeds.createEmbed()
         chanEmbed
         .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png")
@@ -49,7 +50,7 @@ export default class $4chan extends Command {
             const results = await chan.threadMediaLinks(threads[random].url)
             const rawUrl = `https://boards.4channel.org/${board}/thread/${threads[random].url.match(/\d+/g)}`
             const url = rawUrl.replace(/4,/g, "")
-            const imageArray: any = []
+            const imageArray: MessageEmbed[] = []
             for (const i in results) {
                 const chanEmbed = embeds.createEmbed()
                 chanEmbed
@@ -80,7 +81,7 @@ export default class $4chan extends Command {
         const posts = json.data.posts
         const rawUrl = `https://boards.4channel.org/${board}/thread/${threads[random].url.match(/\d+/g)}`
         const url = rawUrl.replace(/4,/g, "")
-        const chanArray: any = []
+        const chanArray: MessageEmbed[] = []
         for (const i in posts) {
             const chanEmbed = embeds.createEmbed()
             chanEmbed

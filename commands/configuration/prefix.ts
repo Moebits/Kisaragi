@@ -6,8 +6,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Prefix extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -22,7 +22,7 @@ export default class Prefix extends Command {
 
         await SQLQuery.updatePrefix(message, newPrefix)
 
-        const prefixEmbed: any = embeds.createEmbed()
+        const prefixEmbed = embeds.createEmbed()
         prefixEmbed
         .setDescription("The prefix has been changed to " + newPrefix + "\n" + "If you ever forget the prefix just tag me!")
         message.channel.send(prefixEmbed)

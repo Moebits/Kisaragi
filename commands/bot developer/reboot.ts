@@ -6,16 +6,16 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Reboot extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
     }
 
-    public unloadCommand: any = async (commandName: string) => {
+    public unloadCommand = async (commandName: string) => {
 
-      const mod: any = require.cache[require.resolve(`../commands/$${commandName}`)]
+      const mod = require.cache[require.resolve(`../commands/$${commandName}`)]
       delete require.cache[require.resolve(`../commands/${commandName}.js`)]
       for (let i = 0; i < mod.parent.children.length; i++) {
         if (mod.parent.children[i] === mod) {
@@ -33,12 +33,12 @@ export default class Reboot extends Command {
       const commands = await sql.fetchColumn("commands", "command")
       if (perms.checkBotDev(message)) return
 
-      const rebootEmbed: any = embeds.createEmbed()
+      const rebootEmbed = embeds.createEmbed()
 
       await message.channel.send(rebootEmbed
           .setDescription("Bot is shutting down."))
 
-      await Promise.all(commands.map((cmd: any) =>
+      await Promise.all(commands.map((cmd: string) =>
             this.unloadCommand(cmd)
           ))
       process.exit(0)

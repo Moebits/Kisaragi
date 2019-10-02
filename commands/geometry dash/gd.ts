@@ -1,15 +1,16 @@
-import base64 from "base-64"
-import {Message} from "discord.js"
-import * as gd from "gdprofiles"
-import * as GDClient from "geometry-dash-api"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const GDClient = require("geometry-dash-api")
+const gd = require("gdprofiles")
+const base64 = require("base-64")
+
 export default class GeometryDash extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -32,7 +33,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getByNick(nick)
             const gdUser = await gd.search(nick)
             console.log(gdUser)
-            const levelArray: any = []
+            const levelArray: MessageEmbed[] = []
             for (const i in gdUser.lastLevels) {
                 levelArray.push(gdUser.lastLevels[i].name)
             }
@@ -112,7 +113,7 @@ export default class GeometryDash extends Command {
         }
 
         if (args[1] === "top") {
-            const topArray: any = []
+            const topArray: MessageEmbed[] = []
             let users
             if (args[2] === "100") {
                 users = await api.tops.get({type: "top", count: 100})
@@ -154,7 +155,7 @@ export default class GeometryDash extends Command {
         }
 
         const result = await api.levels.find({query: query.trim()})
-        const gdArray: any = []
+        const gdArray: MessageEmbed[] = []
         for (let i = 0; i < result.levels.length; i++) {
             const level = await api.levels.getById({levelID: result.levels[i].levelID})
             const user = await api.users.getById(result.levels[i].creatorUserID)

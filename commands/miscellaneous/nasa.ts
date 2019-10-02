@@ -1,13 +1,14 @@
 import {Message} from "discord.js"
-import * as nasa from "nasa-sdk"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const nasa = require("nasa-sdk")
+
 export default class Nasa extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

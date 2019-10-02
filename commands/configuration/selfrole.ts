@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -6,8 +6,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Selfrole extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -23,17 +23,17 @@ export default class Selfrole extends Command {
 
         if (!selfroles[0]) return
 
-        const roles = message.guild!.roles.filter((r: any) => {
+        const roles = message.guild!.roles.filter((r: Role) => {
             for (let i = 0; i < selfroles.length; i++) {
-                if (selfroles[i] === r.id) {
-                    return r
-                }
+                const found = (selfroles[i] === r.id) ? true : false
+                return found
             }
-        })
+            return false
+        }).map((r: Role) => r)
 
-        for (let i = 0; i < roles.size; i++) {
+        for (let i = 0; i < roles.length; i++) {
             if (roles[i].name.toLowerCase().includes(args[1].toLowerCase())) {
-                const found = message.member!.roles.find((r: any) => r.id === roles[i].id)
+                const found = message.member!.roles.find((r: Role) => r.id === roles[i].id)
                 let description = ""
                 if (found) {
                     await message.member!.roles.remove(roles[i].id)

@@ -1,14 +1,15 @@
-import {Message, MessageAttachment} from "discord.js"
-import google from "google-it"
+import {Message, MessageAttachment, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const google = require("google-it")
+
 export default class Google extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -26,7 +27,7 @@ export default class Google extends Command {
             resultArray.push(`${discord.getEmoji("star")}_Title:_ **${result[i].title}**`)
             resultArray.push(`${discord.getEmoji("star")}_Link:_ ${result[i].link}`)
         }
-        const googleEmbedArray: any = []
+        const googleEmbedArray: MessageEmbed[] = []
         await commands.runCommand(message, ["screenshot", "return", `https://www.google.com/search?q=${query.trim().replace(/ /g, "+")}`])
         const attachment = new MessageAttachment("../assets/images/screenshot.png")
         for (let i = 0; i < resultArray.length; i+=10) {

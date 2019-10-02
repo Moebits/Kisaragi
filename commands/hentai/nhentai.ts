@@ -1,14 +1,15 @@
 import {Message} from "discord.js"
-import * as nhentai from "nhentai-js"
 import * as blacklist from "../../blacklist.json"
 import {Command} from "../../structures/Command"
 import {Images} from "../../structures/Images.js"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const nhentai = require("nhentai-js")
+
 export default class $nHentai extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

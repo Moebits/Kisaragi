@@ -6,8 +6,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permissions} from "./../../structures/Permissions"
 
 export default class Clean extends Command {
-  constructor(kisaragi: Kisaragi) {
-      super(kisaragi, {
+  constructor() {
+      super({
           aliases: [],
           cooldown: 3
       })
@@ -22,7 +22,7 @@ export default class Clean extends Command {
     const embeds = new Embeds(discord, message)
     if (perms.checkBotDev(message)) return
 
-    const evalEmbed: any = embeds.createEmbed()
+    const evalEmbed = embeds.createEmbed()
 
     try {
           const code: string = Functions.combineArgs(args, 1)
@@ -34,7 +34,7 @@ export default class Clean extends Command {
 
           evalEmbed
           .setTitle(`**Javascript Code Eval** ${discord.getEmoji("kaosWTF")}`)
-          .setDescription(this.clean(evaled), {code:"xl"})
+          .setDescription(this.clean(evaled))
           message.channel.send(evalEmbed)
 
         } catch (error) {

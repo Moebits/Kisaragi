@@ -4,8 +4,8 @@ import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Ping extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -14,7 +14,7 @@ export default class Ping extends Command {
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
       const embeds = new Embeds(discord, message)
 
-      const pingEmbed: any = embeds.createEmbed()
+      const pingEmbed = embeds.createEmbed()
 
       const msg = await message.channel.send(pingEmbed
       .setDescription("Ping?")) as Message

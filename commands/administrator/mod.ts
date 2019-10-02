@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Mod extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -77,7 +77,7 @@ export default class Mod extends Command {
 
         message.channel.send(modEmbed)
 
-        async function modPrompt(msg: any) {
+        async function modPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)
             let [setAscii, setMute, setRestrict, setWarnOne, setWarnTwo, setWarnPenalty, setWarnThreshold, setAdmin, setMod] = [] as boolean[]
@@ -133,43 +133,43 @@ export default class Mod extends Command {
             }
 
             if (setAdmin) {
-                await sql.updateColumn("special roles", "admin role", adminRole.join(""))
-                description += `${star}Admin role set to <@&${adminRole.join("")}>!\n`
+                await sql.updateColumn("special roles", "admin role", adminRole!.join(""))
+                description += `${star}Admin role set to <@&${adminRole!.join("")}>!\n`
             }
 
             if (setMod) {
-                await sql.updateColumn("special roles", "mod role", modRole.join(""))
-                description += `${star}Mod role set to <@&${modRole.join("")}>!\n`
+                await sql.updateColumn("special roles", "mod role", modRole!.join(""))
+                description += `${star}Mod role set to <@&${modRole!.join("")}>!\n`
             }
 
             if (setMute) {
-                await sql.updateColumn("special roles", "mute role", muteRole.join(""))
-                description += `${star}Mute role set to <@&${muteRole.join("")}>!\n`
+                await sql.updateColumn("special roles", "mute role", muteRole!.join(""))
+                description += `${star}Mute role set to <@&${muteRole!.join("")}>!\n`
             }
 
             if (setRestrict) {
-                await sql.updateColumn("special roles", "restricted role", restrictRole.join(""))
-                description += `${star}Restricted role set to <@&${restrictRole.join("")}>!\n`
+                await sql.updateColumn("special roles", "restricted role", restrictRole!.join(""))
+                description += `${star}Restricted role set to <@&${restrictRole!.join("")}>!\n`
             }
 
             if (setWarnOne) {
-                await sql.updateColumn("special roles", "warn one", warnOneRole.join(""))
-                description += `${star}Warn one role set to <@&${warnOneRole.join("")}>!\n`
+                await sql.updateColumn("special roles", "warn one", warnOneRole!.join(""))
+                description += `${star}Warn one role set to <@&${warnOneRole!.join("")}>!\n`
             }
 
             if (setWarnTwo) {
-                await sql.updateColumn("special roles", "warn two", warnTwoRole.join(""))
-                description += `${star}Warn two role set to <@&${warnTwoRole.join("")}>!\n`
+                await sql.updateColumn("special roles", "warn two", warnTwoRole!.join(""))
+                description += `${star}Warn two role set to <@&${warnTwoRole!.join("")}>!\n`
             }
 
             if (setWarnThreshold) {
-                await sql.updateColumn("warns", "warn threshold", warnThreshold.join(""))
-                description += `${star}Warn threshold set to **${warnThreshold.join("").trim()}**!\n`
+                await sql.updateColumn("warns", "warn threshold", warnThreshold!.join(""))
+                description += `${star}Warn threshold set to **${warnThreshold!.join("").trim()}**!\n`
             }
 
             if (setWarnPenalty) {
-                await sql.updateColumn("warns", "warn penalty", warnPenalty.join(""))
-                description += `${star}Warn penalty set to **${warnPenalty.join("").trim()}**!\n`
+                await sql.updateColumn("warns", "warn penalty", warnPenalty!.join(""))
+                description += `${star}Warn penalty set to **${warnPenalty!.join("").trim()}**!\n`
             }
 
             responseEmbed

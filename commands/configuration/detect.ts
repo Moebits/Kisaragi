@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Detect extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -62,7 +62,7 @@ export default class Detect extends Command {
         )
         message.channel.send(detectEmbed)
 
-        async function detectPrompt(msg: any) {
+        async function detectPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Detection Settings** ${discord.getEmoji("sagiriBleh")}`)
             const dLinks = await sql.fetchColumn("detection", "links")
@@ -145,13 +145,13 @@ export default class Detect extends Command {
             }
 
             if (setWeeb) {
-                await sql.updateColumn("detection", "weeb", weebRole.join(""))
-                description += `${star}Weeb role set to **<@&${weebRole.join("")}>**!\n`
+                await sql.updateColumn("detection", "weeb", weebRole!.join(""))
+                description += `${star}Weeb role set to **<@&${weebRole!.join("")}>**!\n`
             }
 
             if (setNormie) {
-                await sql.updateColumn("detection", "normie", normieRole.join(""))
-                description += `${star}Normie role set to **<@&${normieRole.join("")}>**!\n`
+                await sql.updateColumn("detection", "normie", normieRole!.join(""))
+                description += `${star}Normie role set to **<@&${normieRole!.join("")}>**!\n`
             }
 
             responseEmbed

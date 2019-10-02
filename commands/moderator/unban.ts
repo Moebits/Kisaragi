@@ -1,12 +1,12 @@
-import {Message} from "discord.js"
+import {GuildMember, Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permissions} from "./../../structures/Permissions"
 
 export default class Unban extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -22,7 +22,7 @@ export default class Unban extends Command {
 
         for (let i = 1; i < args.length; i++) {
             if (args[i].match(/\d+/g)) {
-                userArray.push(args[i].match(/\d+/g)!.toString())[0]
+                userArray.push(args[i].match(/\d+/g)!.toString()![0])
             } else {
                 reasonArray.push(args[i])
             }
@@ -30,9 +30,9 @@ export default class Unban extends Command {
 
         const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
 
-        const members: any = []
+        const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = message.guild!.members.find((m: any) => m.id === userArray[i])
+            const member = message.guild!.members.find((m: GuildMember) => m.id === userArray[i])
             if (member) {
                 members.push(`<@${member.id}>`)
             } else {

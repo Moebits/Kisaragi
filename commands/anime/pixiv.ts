@@ -5,8 +5,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {PixivApi} from "./../../structures/PixivApi"
 
 export default class Pixiv extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })

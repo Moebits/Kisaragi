@@ -1,15 +1,16 @@
 import {Message, MessageAttachment} from "discord.js"
 import fs from "fs"
-import svg2img from "svg2img"
 import wiki from "wikijs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
+const svg2img = require("svg2img")
+
 export default class Wikipedia extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -35,7 +36,7 @@ export default class Wikipedia extends Command {
         const mainImg = await page.mainImage()
 
         if (mainImg.slice(-3) === "svg") {
-            await svg2img(mainImg, function(error, buffer) {
+            await svg2img(mainImg, function(error: Error, buffer: Buffer) {
                     fs.writeFileSync("../assets/images/wiki.png", buffer)
             })
 

@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {GuildChannel, Message, MessageAttachment} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Images} from "../../structures/Images"
@@ -8,8 +8,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Welcome extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -35,7 +35,7 @@ export default class Welcome extends Command {
         const welcomeImage = await sql.fetchColumn("welcome leaves", "welcome bg image")
         const welcomeText = await sql.fetchColumn("welcome leaves", "welcome bg text")
         const welcomeColor = await sql.fetchColumn("welcome leaves", "welcome bg color")
-        const attachment = await images.createCanvas(message.member, welcomeImage, welcomeText, welcomeColor) as MessageAttachment
+        const attachment = await images.createCanvas(message.member!, welcomeImage[0], welcomeText[0], welcomeColor[0]) as MessageAttachment
         const json = await axios.get(`https://is.gd/create.php?format=json&url=${welcomeImage.join("")}`)
         const newImage = json.data.shorturl
         welcomeEmbed
@@ -74,7 +74,7 @@ export default class Welcome extends Command {
         )
         message.channel.send(welcomeEmbed)
 
-        async function welcomePrompt(msg: any) {
+        async function welcomePrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             let [setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor] = [] as boolean[]
             responseEmbed.setTitle(`**Welcome Messages** ${discord.getEmoji("karenSugoi")}`)
@@ -129,10 +129,10 @@ export default class Welcome extends Command {
                 description += `${discord.getEmoji("star")}Welcome message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
-                const channel = msg.guild.channels.find((c: any) => c === msg.mentions.channels.first())
-                await sql.updateColumn("welcome leaves", "welcome channel", channel.id)
+                const channel = msg.guild!.channels.find((c: GuildChannel) => c === msg.mentions.channels.first())
+                await sql.updateColumn("welcome leaves", "welcome channel", channel!.id)
                 setOn = true
-                description += `${discord.getEmoji("star")}Welcome channel set to <#${channel.id}>!\n`
+                description += `${discord.getEmoji("star")}Welcome channel set to <#${channel!.id}>!\n`
             }
             if (setOn) {
                 await sql.updateColumn("welcome leaves", "welcome toggle", "on")
@@ -143,16 +143,16 @@ export default class Welcome extends Command {
                 description += `${discord.getEmoji("star")}Welcome messages are **off**!\n`
             }
             if (setImage) {
-                await sql.updateColumn("welcome leaves", "welcome bg image", newImg[0])
-                description += `${discord.getEmoji("star")}Background image set to **${newImg[0]}**!\n`
+                await sql.updateColumn("welcome leaves", "welcome bg image", newImg![0])
+                description += `${discord.getEmoji("star")}Background image set to **${newImg![0]}**!\n`
             }
             if (setBGText) {
-                await sql.updateColumn("welcome leaves", "welcome bg text", newBGText[0].replace(/\[/g, "").replace(/\]/g, ""))
-                description += `${discord.getEmoji("star")}Background text set to **${newBGText[0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
+                await sql.updateColumn("welcome leaves", "welcome bg text", newBGText![0].replace(/\[/g, "").replace(/\]/g, ""))
+                description += `${discord.getEmoji("star")}Background text set to **${newBGText![0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
             }
             if (setBGColor) {
-                await sql.updateColumn("welcome leaves", "welcome bg color", newBGColor[0].trim())
-                description += `${discord.getEmoji("star")}Background color set to **${newBGColor[0].trim()}**!\n`
+                await sql.updateColumn("welcome leaves", "welcome bg color", newBGColor![0].trim())
+                description += `${discord.getEmoji("star")}Background color set to **${newBGColor![0].trim()}**!\n`
             }
 
             responseEmbed

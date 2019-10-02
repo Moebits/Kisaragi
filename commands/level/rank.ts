@@ -1,15 +1,16 @@
 import {createCanvas} from "canvas"
 import {Message, MessageAttachment} from "discord.js"
-import * as imageDataURI from "image-data-uri"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Points} from "./../../structures/Points"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
+const imageDataURI = require("image-data-uri")
+
 export default class Rank extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -30,7 +31,7 @@ export default class Rank extends Command {
         const userScore = await points.fetchScore(message)
         const userLevel = await points.fetchLevel(message)
 
-        const rankEmbed: any = embeds.createEmbed()
+        const rankEmbed = embeds.createEmbed()
 
         if (userScore === (null || undefined)) {
             message.channel.send(rankEmbed
@@ -52,7 +53,7 @@ export default class Rank extends Command {
                 `${discord.getEmoji("star")}**${percent.toFixed(1)}%** of the way there!`)
                 .attachFiles([attachment])
                 .setImage(`attachment://rankBar.jpg`)
-                .setThumbnail(message.author!.displayAvatarURL))
+                .setThumbnail(message.author!.displayAvatarURL()))
 
         }
     }

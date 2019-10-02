@@ -6,8 +6,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Calc extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -17,7 +17,7 @@ export default class Calc extends Command {
         const embeds = new Embeds(discord, message)
 
         const input = Functions.combineArgs(args, 1)
-        const result = math.eval(input)
+        const result = math.evaluate(input)
         const calcEmbed = embeds.createEmbed()
         calcEmbed
         .setTitle(`**Math Calculation** ${discord.getEmoji("vigneDead")}`)

@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Selfroles extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -25,7 +25,7 @@ export default class Selfroles extends Command {
             selfroles = JSON.parse(selfroles[0])
             const step = 3.0
             const increment = Math.ceil((selfroles[0] ? selfroles.length : 1) / step)
-            const selfArray: any = []
+            const selfArray: MessageEmbed[] = []
             for (let i = 0; i < increment; i++) {
                 let settings = ""
                 for (let j = 0; j < step; j++) {
@@ -67,7 +67,7 @@ export default class Selfroles extends Command {
         selfroles = JSON.parse(selfroles[0])
         const step = 3.0
         const increment = Math.ceil((selfroles[0] ? selfroles.length : 1) / step)
-        const selfArray: any = []
+        const selfArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {
@@ -105,7 +105,7 @@ export default class Selfroles extends Command {
             message.channel.send(selfArray[0])
         }
 
-        async function selfPrompt(msg: any) {
+        async function selfPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Self Role Settings** ${discord.getEmoji("karenSugoi")}`)
             let selfroles = await sql.fetchColumn("special roles", "self roles")
@@ -150,7 +150,7 @@ export default class Selfroles extends Command {
             }
 
             let roles = msg.content.replace(/<@&/g, "").replace(/>/g, "").match(/\s?\d+/g)
-            roles = roles.map((r: string) => r.trim())
+            roles = roles!.map((r: string) => r.trim())
 
             let description = ""
 

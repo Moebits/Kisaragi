@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Auto extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -33,7 +33,7 @@ export default class Auto extends Command {
         const toggle = await sql.fetchColumn("auto", "toggle")
         const step = 3.0
         const increment = Math.ceil((command ? command.length : 1) / step)
-        const autoArray: any = []
+        const autoArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {
@@ -83,7 +83,7 @@ export default class Auto extends Command {
             message.channel.send(autoArray)
         }
 
-        async function autoPrompt(msg: any) {
+        async function autoPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Auto Commands** ${discord.getEmoji("think")}`)
             let [setCmd, setChannel, setFreq, setInit] = [] as boolean[]
@@ -143,9 +143,9 @@ export default class Auto extends Command {
                 const tempMsg = newMsg.slice(1).join(" ")
                 const num = Number(newMsg) - 1
                 if (tempMsg) {
-                    const tempCmd = tempMsg.match(/\D+/gi) ? tempMsg.match(/\D+/gi).join("").replace(/<#/g, "").replace(/>/g, "").trim() : null
-                    const tempChan = tempMsg.match(/<#\d+>/g) ? tempMsg.match(/<#\d+>/g).join("").replace(/<#/g, "").replace(/>/g, "") : null
-                    const tempReChan = new RegExp(tempChan, "g")
+                    const tempCmd = tempMsg.match(/\D+/gi) ? tempMsg.match(/\D+/gi)!.join("").replace(/<#/g, "").replace(/>/g, "").trim() : null
+                    const tempChan = tempMsg.match(/<#\d+>/g) ? tempMsg.match(/<#\d+>/g)!.join("").replace(/<#/g, "").replace(/>/g, "") : null
+                    const tempReChan = new RegExp(tempChan!, "g")
                     const tempFreq = tempMsg.replace(/\D+/gi, "").replace(tempReChan, "").replace(/\s+/g, "")
                     let editDesc = ""
                     if (tempCmd) {
@@ -200,8 +200,8 @@ export default class Auto extends Command {
                 return
             }
 
-            const newCmd = msg.content.match(/\D+/gi).join("").replace(/<#/g, "").replace(/>/g, "").trim()
-            const newChan = msg.content.match(/<#\d+>/g).join("").replace(/<#/g, "").replace(/>/g, "")
+            const newCmd = msg.content.match(/\D+/gi)!.join("").replace(/<#/g, "").replace(/>/g, "").trim()
+            const newChan = msg.content.match(/<#\d+>/g)!.join("").replace(/<#/g, "").replace(/>/g, "")
             const reChan = new RegExp(newChan, "g")
             const newFreq = msg.content.replace(/\D+/gi, "").replace(reChan, "").replace(/\s+/g, "")
             if (newCmd) setCmd = true

@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {GuildChannel, Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -7,8 +7,8 @@ import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class ChannelLink extends Command {
-    constructor(kisaragi: Kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         })
@@ -64,7 +64,7 @@ export default class ChannelLink extends Command {
         )
         message.channel.send(linkEmbed)
 
-        async function linkPrompt(msg: any) {
+        async function linkPrompt(msg: Message) {
             let text = await sql.fetchColumn("links", "text")
             let voice = await sql.fetchColumn("links", "voice")
             let toggle = await sql.fetchColumn("links", "toggle")
@@ -123,18 +123,20 @@ export default class ChannelLink extends Command {
             let description = ""
 
             if (setText) {
-                text.push(newText[0].replace(/<#/g, "").replace(/>/g, ""))
+                text.push(newText![0].replace(/<#/g, "").replace(/>/g, ""))
                 if (setInit) text = text.filter(Boolean)
                 await sql.updateColumn("links", "text", text)
-                description += `${star}Text channel set to **${newText[0]}**!\n`
+                description += `${star}Text channel set to **${newText![0]}**!\n`
             }
 
             if (setVoice) {
-                const channels = msg.guild.channels.filter((c: any) => {
-                    if (c.type === "voice") return c
+                const channels = msg.guild!.channels.filter((c: GuildChannel) => {
+                    const type = c.type === "voice" ? true : false
+                    return type
                 })
-                const channel = channels.find((c: any) => {
-                    if (c.name.replace(/\s+/g, " ").toLowerCase().includes(newVoice[0].toLowerCase())) return c
+                const channel = channels.find((c: GuildChannel) => {
+                    const name = (c.name.replace(/\s+/g, " ").toLowerCase().includes(newVoice![0].toLowerCase())) ? true : false
+                    return name
                 })
                 if (channel) {
                     voice.push(channel.id)
