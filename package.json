@@ -4,14 +4,15 @@
   "description": "Kisaragi is the best girl",
   "main": "bin/shard.js",
   "scripts": {
+    "start": "npm run build && npm run compile && npm run pm2",
     "build": "tsc -p ./",
-    "compile": "cd bin && node --max-old-space-size=4096 ./shard.js",
-    "types": "npm i @types/node",
-    "start": "npm run build && npm run compile && pm2-runtime start ecosystem.config.js --env production",
-    "watch": "tsc -w -p ./"
+    "compile": "cd dist && node --max-old-space-size=4096 ./shard.js",
+    "pm2": "pm2-runtime start ecosystem.config.js --env production",
+    "watch": "tsc -w -p ./",
+    "debug": "cd dist && node --nolazy --inspect-brk=9229 ./index.js"
   },
   "engines": {
-    "node": "^8.x",
+    "node": "^10.x",
     "npm": "*"
   },
   "repository": {
@@ -23,7 +24,14 @@
   "dependencies": {
     "4chanapi.js": "^1.1.1",
     "@discordjs/uws": "^11.149.1",
+    "@types/bluebird": "^3.5.27",
+    "@types/dotenv": "^6.1.1",
+    "@types/image-size": "^0.7.0",
+    "@types/imagemin": "^7.0.0",
+    "@types/imagemin-gifsicle": "^5.2.0",
+    "@types/moment": "^2.13.0",
     "@types/node": "^12.0.10",
+    "@types/pg": "^7.11.1",
     "@vitalets/google-translate-api": "^2.8.0",
     "anifetch": "^3.0.0",
     "animequotes": "^1.0.0",
@@ -42,7 +50,7 @@
     "danbooru": "^3.1.0",
     "deepai": "^1.0.10",
     "deviantnode": "^0.2.1",
-    "discord.js": "^11.5.1",
+    "discord.js": "github:tenpi/discord.js#partial-types",
     "dotenv": "^8.0.0",
     "dropbox": "^4.0.30",
     "erlpack": "github:discordapp/erlpack",
@@ -51,7 +59,7 @@
     "geometry-dash-api": "^2.0.0",
     "get-pixels": "^3.3.2",
     "gif-encoder": "^0.7.2",
-    "gif-frames": "^1.0.1",
+    "gif-frames": "github:Tenpi/gif-frames",
     "giphy-api": "^2.0.1",
     "github-api": "^3.2.2",
     "google": "^2.1.0",
@@ -102,28 +110,33 @@
     "postgres-redis": "^0.1.0",
     "pretty-ms": "^5.0.0",
     "puppeteer": "^1.19.0",
+    "redis": "^2.8.0",
     "shorturl-2": "0.0.7",
     "snoowrap": "^1.18.0",
     "sodium": "^3.0.2",
     "soundcloud-api-client": "0.0.9",
     "svg-captcha": "^1.4.0",
     "svg2img": "^0.6.1",
-    "syllable": "^3.6.1",
+    "syllable": "github:Tenpi/syllable",
     "tenorjs": "^1.0.7",
     "twitch": "^3.1.1",
     "twitter": "^1.7.1",
-    "typescript": "^3.5.3",
     "upload-gphotos": "^3.1.0",
     "urban.js": "^2.4.3",
     "wikijs": "^6.0.0",
-    "xkcd": "^1.1.3"
+    "xkcd": "^1.1.3",
+    "zlib-sync": "^0.1.5"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.7",
+    "@types/redis": "^2.8.13",
     "chai": "^4.2.0",
     "mocha": "^6.1.4",
     "ts-mockito": "^2.3.1",
-    "ts-node": "^8.3.0"
+    "ts-node": "^8.3.0",
+    "tslint": "^5.20.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "typescript": "^3.6.3"
   }
 }

@@ -1,4 +1,11 @@
-module.exports = (discord: any, message: any) => {
+import {Message} from "discord.js"
+import {Kisaragi} from "./../structures/Kisaragi"
 
-    //Log deleted messages
+export default class MessageDelete {
+    constructor(private readonly discord: Kisaragi) {}
+
+    public run = (message: Message) => {
+        // log deleted
+        console.log(this.discord)
+    }
 }

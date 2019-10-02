@@ -1,37 +1,46 @@
-exports.run = async (discord: any, message: any, args: string[]) => {
-  if (discord.checkBotDev(message)) return;
+import {Message} from "discord.js"
+import {Command} from "../../structures/Command"
+import {Embeds} from "./../../structures/Embeds"
+import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permissions} from "./../../structures/Permissions"
+import {SQLQuery} from "./../../structures/SQLQuery"
 
-  const rebootEmbed: any = discord.createEmbed();
+export default class Reboot extends Command {
+    constructor(kisaragi: Kisaragi) {
+        super(kisaragi, {
+            aliases: [],
+            cooldown: 3
+        })
+    }
 
-  const unloadCommand: any = async (commandName: string) => {
-    let command: any;
-    if (discord.commands.has(commandName)) {
-      command = discord.commands.get(commandName);
-    } else if (discord.aliases.has(commandName)) {
-      command = discord.commands.get(discord.aliases.get(commandName));
-    }
-    if (!command) return `The command \`${commandName}\` could not be found.`;
-  
-    if (command.shutdown) {
-      await command.shutdown(discord);
-    }
-  
-    const mod: any = require.cache[require.resolve(`../commands/$${commandName}`)];
-    delete require.cache[require.resolve(`../commands/${commandName}.js`)];
-    for (let i = 0; i < mod.parent.children.length; i++) {
-      if (mod.parent.children[i] === mod) {
-        mod.parent.children.splice(i, 1);
-        break;
+    public unloadCommand: any = async (commandName: string) => {
+
+      const mod: any = require.cache[require.resolve(`../commands/$${commandName}`)]
+      delete require.cache[require.resolve(`../commands/${commandName}.js`)]
+      for (let i = 0; i < mod.parent.children.length; i++) {
+        if (mod.parent.children[i] === mod) {
+          mod.parent.children.splice(i, 1)
+          break
+        }
       }
+      return false
     }
-    return false;
-  };
+
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+      const perms = new Permissions(discord, message)
+      const embeds = new Embeds(discord, message)
+      const sql = new SQLQuery(message)
+      const commands = await sql.fetchColumn("commands", "command")
+      if (perms.checkBotDev(message)) return
+
+      const rebootEmbed: any = embeds.createEmbed()
 
       await message.channel.send(rebootEmbed
-      .setDescription("Bot is shutting down."));
+          .setDescription("Bot is shutting down."))
 
-      await Promise.all(discord.commands.map((cmd: any) =>
-        unloadCommand(cmd)
-      ));
-      process.exit(0);
-  };
+      await Promise.all(commands.map((cmd: any) =>
+            this.unloadCommand(cmd)
+          ))
+      process.exit(0)
+      }
+    }

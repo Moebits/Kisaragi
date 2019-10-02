@@ -1,20 +1,26 @@
-import {Message} from "discord.js";
+import {Message} from "discord.js"
+import * as Loli from "lolis.life"
+import {Command} from "../../structures/Command"
+import {Embeds} from "./../../structures/Embeds"
+import {Kisaragi} from "./../../structures/Kisaragi"
 
-exports.run = async (discord: any, message: Message, args: string[]) => {
-    const Loli = require('lolis.life');
-    const loli = new Loli();
-    const loliEmbed = discord.createEmbed();
-    let result;
-
-    if (args[1] === "hentai") {
-        result = await loli.getNSFWLoli();
-    } else {
-        result = await loli.getSFWLoli();
+export default class LoliCommand extends Command {
+    constructor(kisaragi: Kisaragi) {
+        super(kisaragi, {
+            aliases: [],
+            cooldown: 3
+        })
     }
 
-    loliEmbed
-    .setTitle(`**Loli** ${discord.getEmoji("madokaLewd")}`)
-    .setImage(result.url)
-    message.channel.send(loliEmbed);
-    console.log(result)
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+        const embeds = new Embeds(discord, message)
+        const loli = new Loli()
+        const loliEmbed = embeds.createEmbed()
+        const result = (args[1] === "hentai") ? await loli.getNSFWLoli() : await loli.getSFWLoli()
+
+        loliEmbed
+        .setTitle(`**Loli** ${discord.getEmoji("madokaLewd")}`)
+        .setImage(result.url)
+        message.channel.send(loliEmbed)
+    }
 }

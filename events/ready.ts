@@ -1,14 +1,15 @@
-module.exports = (discord: any, message: any) => {
+import chalk from "chalk"
+import moment from "moment"
+import {Kisaragi} from "./../structures/Kisaragi"
 
-    let chalk: any = require("chalk");
-    let moment: any = require("moment");
+export default class Ready {
+    constructor(private readonly discord: Kisaragi) {}
 
-    const timestamp: string = `${moment().format("MM DD YYYY hh:mm:ss")} ->`;
-
-    let logString: string = `${timestamp} Logged in as ${discord.user.tag}!`;
-    let readyString: string = `${timestamp} Ready in ${discord.guilds.size} guilds on ${discord.channels.size} channels, for a total of ${discord.users.size} users.`;
-
-    console.log(chalk`{magentaBright ${logString}}`);
-    console.log(chalk`{magentaBright ${readyString}}`);
-
+    public run = () => {
+      const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`
+      const logString = `${timestamp} Logged in as ${this.discord.user!.tag}!`
+      const readyString = `${timestamp} Ready in ${this.discord.guilds.size} guilds on ${this.discord.channels.size} channels, for a total of ${this.discord.users.size} users.`
+      console.log(chalk`{magentaBright ${logString}}`)
+      console.log(chalk`{magentaBright ${readyString}}`)
+    }
 }

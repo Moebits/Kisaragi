@@ -1,32 +1,40 @@
-import {RichEmbed} from "discord.js";
-const active = new Set();
+import {MessageEmbed, MessageReaction} from "discord.js"
+import {Embeds} from "./../structures/Embeds"
+import {Kisaragi} from "./../structures/Kisaragi"
+import {SQLQuery} from "./../structures/SQLQuery"
+const active = new Set()
 
-module.exports = async (discord: any, reaction: any, user: any) => {
-    await require("../exports/collectors.js")(discord, reaction.message);
-    if (reaction.message.author.id === discord.user.id) {
-        if (active.has(reaction.message.id)) return;
-        let newArray = await discord.selectColumn("collectors", "message", true);
-        let cached = false;
+export default class MessageReactionAdd {
+    constructor(private readonly discord: Kisaragi) {}
+
+    public run = async (reaction: MessageReaction) => {
+        const sql = new SQLQuery(reaction.message)
+        const embeds = new Embeds(this.discord, reaction.message)
+        if (reaction.message.author!.id === this.discord.user!.id) {
+        if (active.has(reaction.message.id)) return
+        const newArray = await sql.selectColumn("collectors", "message", true)
+        let cached = false
         for (let i = 0; i < newArray.length; i++) {
             if (newArray[i][0] === reaction.message.id.toString()) {
-                cached = true;
+                cached = true
             }
         }
         if (cached) {
-            let messageID = await discord.fetchColumn("collectors", "message", "message", reaction.message.id);
+            const messageID = await sql.fetchColumn("collectors", "message", "message", reaction.message.id)
             if (messageID) {
-                let embeds = await discord.fetchColumn("collectors", "embeds", "message", reaction.message.id);
-                let collapse = await discord.fetchColumn("collectors", "collapse", "message", reaction.message.id);
-                let page = await discord.fetchColumn("collectors", "page", "message", reaction.message.id);
-                let newEmbeds: any = [];
-                for (let i in embeds[0]) {
-                    newEmbeds.push(new RichEmbed(JSON.parse(embeds[0][i])));
+                const cachedEmbeds = await sql.fetchColumn("collectors", "embeds", "message", reaction.message.id)
+                const collapse = await sql.fetchColumn("collectors", "collapse", "message", reaction.message.id)
+                const page = await sql.fetchColumn("collectors", "page", "message", reaction.message.id)
+                const newEmbeds: MessageEmbed[] = []
+                for (let i = 0; i < cachedEmbeds[0].length; i++) {
+                    newEmbeds.push(new MessageEmbed(JSON.parse(embeds[0][i])))
                 }
-                active.add(reaction.message.id);
-                await discord.editReactionCollector(reaction.message, reaction._emoji.name, newEmbeds, collapse[0], page[0])
+                active.add(reaction.message.id)
+                await embeds.editReactionCollector(reaction.message, reaction.emoji.name, newEmbeds, Boolean(collapse[0]), Number(page[0]))
             }
         } else {
-            return;
+            return
         }
+    }
     }
 }

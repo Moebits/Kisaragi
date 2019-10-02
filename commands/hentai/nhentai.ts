@@ -1,47 +1,63 @@
-exports.run = async (discord: any, message: any, args: string[]) => {
-    const nhentai = require('nhentai-js');
-    const blacklist = require("../../../blacklist.json");
+import {Message} from "discord.js"
+import * as nhentai from "nhentai-js"
+import * as blacklist from "../../blacklist.json"
+import {Command} from "../../structures/Command"
+import {Images} from "../../structures/Images.js"
+import {Functions} from "./../../structures/Functions"
+import {Kisaragi} from "./../../structures/Kisaragi"
 
-    discord.nhentaiRandom = async (filter?: boolean) => {
-        let random = "0";
+export default class $nHentai extends Command {
+    constructor(kisaragi: Kisaragi) {
+        super(kisaragi, {
+            aliases: [],
+            cooldown: 3
+        })
+    }
+
+    public nhentaiRandom = async (filter?: boolean) => {
+        let random = "0"
         while (!await nhentai.exists(random)) {
-            random = Math.floor(Math.random() * 1000000).toString();
+            random = Math.floor(Math.random() * 1000000).toString()
         }
-        let doujin = await nhentai.getDoujin(random);
+        const doujin = await nhentai.getDoujin(random)
         if (filter) {
-            for (let i in doujin.details.tags) {
-                for (let j in blacklist.nhentai) {
+            for (const i in doujin.details.tags) {
+                for (let j = 0; j < blacklist.nhentai.length; j++) {
                     if (doujin.details.tags[i] === blacklist.nhentai[j]) {
-                        await discord.nhentaiRandom(true);
+                        await this.nhentaiRandom(true)
                     }
                 }
             }
         }
-        return doujin;
+        return doujin
     }
 
-    if (!args[1]) {
-        let doujin = await discord.nhentaiRandom(false);
-        discord.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
-        return;
-    } else {
-        
-        if (args[1].toLowerCase() === "random") {
-            let doujin = await discord.nhentaiRandom(true);
-            discord.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g));
-            return;
-        }
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+        const images = new Images(discord, message)
 
-        let tag = discord.combineArgs(args, 1);
-        if (tag.match(/\d+/g) !== null) {
-            let doujin = await nhentai.getDoujin(tag.match(/\d+/g).toString());
-            discord.getNhentaiDoujin(doujin, tag.match(/\d+/g).toString())
+        if (!args[1]) {
+            const doujin = await this.nhentaiRandom(false)
+            images.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g))
+            return
         } else {
-            let result = await nhentai.search(tag)
-            let index = Math.floor(Math.random() * 10);
-            let book = result.results[index]
-            let doujin = await nhentai.getDoujin(book.bookId);
-            discord.getNhentaiDoujin(doujin, book.bookId)
+
+            if (args[1].toLowerCase() === "random") {
+                const doujin = await this.nhentaiRandom(true)
+                images.getNhentaiDoujin(doujin, doujin.link.match(/\d+/g))
+                return
+            }
+
+            const tag = Functions.combineArgs(args, 1)
+            if (tag.match(/\d+/g) !== null) {
+                const doujin = await nhentai.getDoujin(tag.match(/\d+/g)!.toString())
+                images.getNhentaiDoujin(doujin, tag.match(/\d+/g)!.toString())
+            } else {
+                const result = await nhentai.search(tag)
+                const index = Math.floor(Math.random() * 10)
+                const book = result.results[index]
+                const doujin = await nhentai.getDoujin(book.bookId)
+                images.getNhentaiDoujin(doujin, book.bookId)
+            }
         }
     }
 }

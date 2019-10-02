@@ -1,23 +1,33 @@
-exports.run = async (discord: any, message: any, args: string[]) => {
+import axios from "axios"
+import {Message} from "discord.js"
+import * as GoogleImages from "google-images"
+import {Command} from "../../structures/Command"
+import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
+import {Kisaragi} from "./../../structures/Kisaragi"
 
-    let accessToken = (process.env.PINTEREST_ACCESS_TOKEN);
-    const GoogleImages = require('google-images');
-    const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID, process.env.GOOGLE_API_KEY);
-    const axios = require("axios");
+const pinArray: any = []
 
-    discord.pinterestError = () => {
-        let pinterestEmbed = discord.createEmbed();
+export default class Pinterest extends Command {
+    constructor(kisaragi: Kisaragi) {
+        super(kisaragi, {
+            aliases: [],
+            cooldown: 3
+        })
+    }
+
+    public pinterestError = (discord, message, embeds) => {
+        const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
         .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png")
         .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
         .setDescription("No results were found. Try searching on the pinterest website: " +
         "[Pinterest Website](https://www.pinterest.com/)")
-        message.channel.send(pinterestEmbed);
+        message.channel.send(pinterestEmbed)
     }
-    
-    let pinArray: any = [];
-    discord.pinterestPin = (response: any) => {
-        let pinterestEmbed = discord.createEmbed();
+
+    public pinterestPin = (discord, response: any) => {
+        const pinterestEmbed = discord.createEmbed()
         pinterestEmbed
         .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png")
         .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
@@ -30,73 +40,79 @@ exports.run = async (discord: any, message: any, args: string[]) => {
             `${discord.getEmoji("star")}_Saves:_ **${response.counts.saves}**\n` +
             `${discord.getEmoji("star")}_Comments:_ **${response.counts.comments}**\n` +
             `${discord.getEmoji("star")}_Source:_ **${response.link ? response.link : "None"}**\n` +
-            `${discord.getEmoji("star")}_Note:_ ${response.note ? response.note : "None"}\n` 
+            `${discord.getEmoji("star")}_Note:_ ${response.note ? response.note : "None"}\n`
         )
-        pinArray.push(pinterestEmbed);
+        pinArray.push(pinterestEmbed)
     }
 
-    if (args[1] === "board") {
-        let user = args[2];
-        let board = args[3];
-        if (!user || !board) return;
-        let json = await axios.get(`https://api.pinterest.com/v1/boards/${user}/${board}/pins/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`);
-        let response = json.data;
-        for (let i in response) {
-            discord.pinterestPin(response[i]);
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+        const embeds = new Embeds(discord, message)
+        const accessToken = (process.env.PINTEREST_ACCESS_TOKEN)
+        const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID, process.env.GOOGLE_API_KEY)
+
+        if (args[1] === "board") {
+            const user = args[2]
+            const board = args[3]
+            if (!user || !board) return
+            const json = await axios.get(`https://api.pinterest.com/v1/boards/${user}/${board}/pins/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`)
+            const response = json.data
+            for (const i in response) {
+                this.pinterestPin(discord, response[i])
+            }
+            if (!pinArray.join("")) {
+                this.pinterestError(discord, message, embeds)
+                return
+            }
+            if (pinArray.length === 1) {
+                message.channel.send(pinArray[0])
+            } else {
+                embeds.createReactionEmbed(pinArray)
+            }
+            return
         }
+
+        if (args[1] === "search") {
+            const query = Functions.combineArgs(args, 2)
+            const json = await axios.get(`https://api.pinterest.com/v1/me/search/pins/?access_token=${accessToken}&query=${query.replace(/ /g, "-")}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`)
+            const response = json.data
+            for (const i in response) {
+                this.pinterestPin(discord, response[i])
+            }
+            if (!pinArray.join("")) {
+                this.pinterestError(discord, message, embeds)
+                return
+            }
+            if (pinArray.length === 1) {
+                message.channel.send(pinArray[0])
+            } else {
+                embeds.createReactionEmbed(pinArray)
+            }
+            return
+        }
+
+        const query = Functions.combineArgs(args, 1)
+        const imageResult = await images.search(query)
+        let random = 0
+        let pin
+        for (let i = 0; i < imageResult.length; i++) {
+            if (pin) break
+            random = Math.floor(Math.random() * imageResult.length)
+            pin = (imageResult[random].parentPage.match(/\d{18}/g))
+        }
+        if (!pin) {
+            this.pinterestError(discord, message, embeds)
+            return
+        }
+        const json = await axios.get(`https://api.pinterest.com/v1/pins/${pin}/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`)
+        const response = json.data.data
+        const board = response.board.url.slice(25)
+        const response2 = await axios.get(`https://api.pinterest.com/v1/boards/${board}/pins/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`)
+        const random2 = Math.floor(Math.random() * response2.data.length)
+        this.pinterestPin(discord, response2.data[random2])
         if (!pinArray.join("")) {
-            discord.pinterestError(); 
-            return; 
+            this.pinterestError(discord, message, embeds)
+            return
         }
-        if (pinArray.length === 1) {
-            message.channel.send(pinArray[0]);
-        } else { 
-            discord.createReactionEmbed(pinArray);
-        }
-        return;
+        message.channel.send(pinArray[0])
     }
-
-    if (args[1] === "search") {
-        let query = discord.combineArgs(args, 2);
-        let json = await axios.get(`https://api.pinterest.com/v1/me/search/pins/?access_token=${accessToken}&query=${query.replace(/ /g, "-")}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`);
-        let response = json.data;
-        for (let i in response) {
-            discord.pinterestPin(response[i]);
-        }
-        if (!pinArray.join("")) {
-            discord.pinterestError(); 
-            return; 
-        }
-        if (pinArray.length === 1) {
-            message.channel.send(pinArray[0]);
-        } else { 
-            discord.createReactionEmbed(pinArray);
-        }
-        return;
-    }
-
-    let query = discord.combineArgs(args, 1);
-    let imageResult = await images.search(query);
-    let random = 0;
-    let pin;
-    for (let i = 0; i < imageResult.length; i++) {
-        if (pin) break;
-        random = Math.floor(Math.random() * imageResult.length)
-        pin = (imageResult[random].parentPage.match(/\d{18}/g))
-    }
-    if (!pin) { 
-        discord.pinterestError();
-        return;
-    }
-    let json = await axios.get(`https://api.pinterest.com/v1/pins/${pin}/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`);
-    let response = json.data.data;
-    let board = response.board.url.slice(25);
-    let response2 = await axios.get(`https://api.pinterest.com/v1/boards/${board}/pins/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`);
-    let random2 = Math.floor(Math.random() * response2.data.length)
-    discord.pinterestPin(response2.data[random2]);
-    if (!pinArray.join("")) {
-        discord.pinterestError(); 
-        return; 
-    }
-    message.channel.send(pinArray[0]);
 }

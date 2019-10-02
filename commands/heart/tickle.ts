@@ -1,14 +1,29 @@
-exports.run = async (discord: any, message: any, args: string[]) => {
-    const nekoClient = require('nekos.life');
-    const neko = new nekoClient();
+import {Message} from "discord.js"
+import nekoClient from "nekos.life"
+import {Command} from "../../structures/Command"
+import {Embeds} from "./../../structures/Embeds"
+import {Kisaragi} from "./../../structures/Kisaragi"
 
-    let image = await neko.sfw.tickle();
+export default class Tickle extends Command {
+    constructor(kisaragi: Kisaragi) {
+        super(kisaragi, {
+            aliases: [],
+            cooldown: 3
+        })
+    }
 
-    let tickleEmbed = discord.createEmbed();
-    tickleEmbed
-    .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
-    .setURL(image.url)
-    .setTitle(`**Tickle** ${discord.getEmoji("chinoSmug")}`)
-    .setImage(image.url)
-    message.channel.send(tickleEmbed);
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+        const embeds = new Embeds(discord, message)
+        const neko = new nekoClient()
+
+        const image = await neko.sfw.tickle()
+
+        const tickleEmbed = embeds.createEmbed()
+        tickleEmbed
+        .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
+        .setURL(image.url)
+        .setTitle(`**Tickle** ${discord.getEmoji("chinoSmug")}`)
+        .setImage(image.url)
+        message.channel.send(tickleEmbed)
+    }
 }
