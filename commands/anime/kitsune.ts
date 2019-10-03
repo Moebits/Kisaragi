@@ -1,29 +1,42 @@
-import {Message} from "discord.js";
+import {Message} from "discord.js"
+import nekoClient, {NekoRequestResults} from "nekos.life"
+import {Command} from "../../structures/Command"
+import {Embeds} from "./../../structures/Embeds"
+import {Kisaragi} from "./../../structures/Kisaragi"
 
-exports.run = async (discord: any, message: Message, args: string[]) => {
-    const nekoClient = require('nekos.life');
-    const neko = new nekoClient();
-
-    let image;
-    let title;
-    if (args[1] === "lewd") {
-        if (args[2] === "ero") {
-            image = await neko.nsfw.eroKitsune();
-            title = "Lewd Ero Kitsune"
-        } else {
-            image = await neko.nsfw.kitsune();
-            title = "Lewd Kitsune"
-        }
-    } else {
-        image = await neko.sfw.foxGirl();
-        title = "Kitsune"
+export default class Kitsune extends Command {
+    constructor() {
+        super({
+            aliases: [],
+            cooldown: 3
+        })
     }
 
-    let nekoEmbed = discord.createEmbed();
-    nekoEmbed
-    .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
-    .setURL(image.url)
-    .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)
-    .setImage(image.url)
-    message.channel.send(nekoEmbed);
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+        const embeds = new Embeds(discord, message)
+        const neko = new nekoClient()
+
+        let image: NekoRequestResults
+        let title: string
+        if (args[1] === "lewd") {
+            if (args[2] === "ero") {
+                image = await neko.nsfw.eroKitsune()
+                title = "Lewd Ero Kitsune"
+            } else {
+                image = await neko.nsfw.kitsune()
+                title = "Lewd Kitsune"
+            }
+        } else {
+            image = await neko.sfw.foxGirl()
+            title = "Kitsune"
+        }
+
+        const nekoEmbed = embeds.createEmbed()
+        nekoEmbed
+        .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
+        .setURL(image.url)
+        .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)
+        .setImage(image.url)
+        message.channel.send(nekoEmbed)
+    }
 }

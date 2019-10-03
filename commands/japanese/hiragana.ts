@@ -1,18 +1,34 @@
-import Kuroshiro from "kuroshiro";
-import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
+import {Message} from "discord.js"
+import {Command} from "../../structures/Command"
+import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
+import {Kisaragi} from "./../../structures/Kisaragi"
 
-exports.run = async (discord: any, message: any, args: string[]) => {
-    const kuroshiro = new Kuroshiro();
-    await kuroshiro.init(new KuromojiAnalyzer());
+const Kuroshiro = require("kuroshiro")
+const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
 
-    let input = discord.combineArgs(args, 1);
-    let result = await kuroshiro.convert(input, {mode: "spaced", to: "hiragana"});
-    let cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "");
+export default class Hiragana extends Command {
+    constructor() {
+        super({
+            aliases: [],
+            cooldown: 3
+        })
+    }
 
-    let hiraganaEmbed = discord.createEmbed();
-    hiraganaEmbed
-    .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
-    .setTitle(`**Hiragana Conversion** ${discord.getEmoji("kannaSip")}`)
-    .setDescription(`${discord.getEmoji("star")}${cleanResult}`);
-    message.channel.send(hiraganaEmbed);
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+        const embeds = new Embeds(discord, message)
+        const kuroshiro = new Kuroshiro()
+        await kuroshiro.init(new KuromojiAnalyzer())
+
+        const input = Functions.combineArgs(args, 1)
+        const result = await kuroshiro.convert(input, {mode: "spaced", to: "hiragana"})
+        const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
+
+        const hiraganaEmbed = embeds.createEmbed()
+        hiraganaEmbed
+        .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
+        .setTitle(`**Hiragana Conversion** ${discord.getEmoji("kannaSip")}`)
+        .setDescription(`${discord.getEmoji("star")}${cleanResult}`)
+        message.channel.send(hiraganaEmbed)
+    }
 }

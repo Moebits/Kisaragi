@@ -1,54 +1,71 @@
-import {Collection, Attachment} from "discord.js";
-const cooldowns = new Collection();
-const responseTextCool = new Set();
-const responseImageCool = new Set();
+import {Collection, Message, MessageAttachment} from "discord.js"
+import {CommandFunctions} from "../structures/CommandFunctions"
+import {Cooldown} from "../structures/Cooldown.js"
+import {Kisaragi} from "../structures/Kisaragi.js"
+import {Block} from "./../structures/Block"
+import {Detector} from "./../structures/Detector"
+import {Haiku} from "./../structures/Haiku"
+import {Letters} from "./../structures/Letters"
+import {Link} from "./../structures/Link"
+import {Points} from "./../structures/Points"
+import {SQLQuery} from "./../structures/SQLQuery"
 
-module.exports = async (discord: any, message: any) => {
+export default class MessageEvent {
+    private readonly cooldowns: Collection<string, Collection<string, number>> = new Collection()
+    private readonly responseTextCool = new Set()
+    private readonly responseImageCool = new Set()
+    constructor(private readonly discord: Kisaragi) {}
 
-  /*let guildIDs = [
-    "594616328351121419"
-  ]
-  for (let i in guildIDs) {
-    let guild = discord.guilds.find(g => guildIDs[i] === g.id.toString())
-    await guild.delete()
-  }*/
-  
-    await require("../exports/functions.js")(discord, message);
-    await require("../exports/queries.js")(discord, message);
-    await require("../exports/links.js")(discord, message);
-    await require("../exports/detection.js")(discord, message);
-    let commands = require("../../commands.json");
-    let prefix: string = await discord.fetchPrefix();
+    public run = async (message: Message) => {
+      const letters = new Letters(this.discord)
+      const points = new Points(this.discord)
+      const haiku = new Haiku(this.discord)
+      const cmdFunctions = new CommandFunctions(this.discord)
+      const detect = new Detector(this.discord)
+      const links = new Link(this.discord)
 
-    /*let letterNames = [
-      ""
-    ]
-  
-    discord.generateEmojis(letterNames)*/
+      /*let guildIDs = [
+        "594616328351121419"
+      ]
+      for (let i in guildIDs) {
+        let guild = discord.guilds.find(g => guildIDs[i] === g.id.toString())
+        await guild.delete()
+      }*/
 
-    if (message.guild) {
-      let pointTimeout = await discord.fetchColumn("points", "point timeout");
-      setTimeout(() => {
-        discord.calcScore(message)
-      }, pointTimeout[0] ? pointTimeout[0] : 60000);
-      discord.block(message);
-      discord.detectAnime(message);
-      discord.swapRoles(message);
-      discord.haiku(message);
-      discord.autoCommand(message);
+      const prefix = await SQLQuery.fetchPrefix(message)
+
+      /*let letterNames = [
+        ""
+      ]
+
+      discord.generateEmojis(letterNames)*/
+
+      if (message.author.bot) return
+
+      if (message.guild) {
+        const sql = new SQLQuery(message)
+        const pointTimeout = await sql.fetchColumn("points", "point timeout")
+        setTimeout(() => {
+        points.calcScore(message)
+        }, pointTimeout ? Number(pointTimeout) : 60000)
+        Block.blockWord(message)
+        detect.detectAnime(message)
+        detect.swapRoles(message)
+        haiku.haiku(message)
+        cmdFunctions.autoCommand(message)
     }
 
-    const responseText: object = {
-      "kisaragi": "Kisaragi is the best girl!",
-      "f": `${discord.letters("F")}`,
-      "e": `${discord.letters("E")}`,
-      "b": "🅱️",
-      "owo": "owo",
-      "uwu": "uwu",
-      "rip": `${discord.getEmoji("rip")}`
+      const responseText: any = {
+      kisaragi: "Kisaragi is the best girl!",
+      f: `${letters.letters("F")}`,
+      e: `${letters.letters("E")}`,
+      b: "🅱️",
+      owo: "owo",
+      uwu: "uwu",
+      rip: `${this.discord.getEmoji("rip")}`
     }
 
-    const responseImage: object = {
+      const responseImage: any = {
       "bleh": "https://i.ytimg.com/vi/Gn4ah6kAmZo/maxresdefault.jpg",
       "smug": "https://pbs.twimg.com/media/CpfL-c3WEAE1Na_.jpg",
       "stare": "https://thumbs.gfycat.com/OpenScaryJunebug-small.gif",
@@ -61,89 +78,77 @@ module.exports = async (discord: any, message: any) => {
       "piggy back": "https://thumbs.gfycat.com/IlliterateJointAssassinbug-size_restricted.gif",
       "kick": "https://thumbs.gfycat.com/SentimentalFocusedAmericansaddlebred-small.gif",
       "punch": "https://thumbs.gfycat.com/ClearcutInexperiencedAnemone-small.gif",
-      "good riddance": "https://i.imgur.com/2CrEDAD.gif"
+      "bye": "https://i.imgur.com/2CrEDAD.gif"
     }
 
-    if (responseText[message.content.trim().toLowerCase()]) {
-      if (!message.author.bot) {
-        if (responseTextCool.has(message.guild.id)) {
-          let reply = await message.reply("This command is under a 3 second cooldown!");
-          reply.delete(3000);
+      if (responseText[message.content.trim().toLowerCase()]) {
+      if (!message.author!.bot) {
+        if (this.responseTextCool.has(message.guild!.id)) {
+          const reply = await message.reply("This command is under a 3 second cooldown!") as Message
+          reply.delete({timeout: 3000})
         }
-        responseTextCool.add(message.guild.id);
-        setTimeout(() => responseTextCool.delete(message.guild.id), 3000);
-        return message.channel.send(responseText[message.content.toLowerCase()]);
+        this.responseTextCool.add(message.guild!.id)
+        setTimeout(() => this.responseTextCool.delete(message.guild!.id), 3000)
+        return message.channel.send(responseText[message.content.toLowerCase()])
       }
     }
 
-    if (responseImage[message.content.trim().toLowerCase()]) {
-      if (!message.author.bot) {
-        if (responseImageCool.has(message.guild.id)) {
-          let reply = await message.reply("This command is under a 10 second cooldown!");
-          reply.delete(3000);
+      if (responseImage[message.content.trim().toLowerCase()]) {
+      if (!message.author!.bot) {
+        if (this.responseImageCool.has(message.guild!.id)) {
+          const reply = await message.reply("This command is under a 10 second cooldown!") as Message
+          reply.delete({timeout: 3000})
         }
-        responseImageCool.add(message.guild.id);
-        setTimeout(() => responseImageCool.delete(message.guild.id), 10000);
-        return message.channel.send(new Attachment(responseImage[message.content.toLowerCase()]));
+        this.responseImageCool.add(message.guild!.id)
+        setTimeout(() => this.responseImageCool.delete(message.guild!.id), 10000)
+        return message.channel.send(new MessageAttachment(responseImage[message.content.toLowerCase()]))
       }
     }
 
-    if (message.content.trim().toLowerCase() === "i love you") {
-      if (message.author.id === process.env.OWNER_ID) {
-        message.channel.send(`I love you more, <@${message.author.id}>!`);
+      if (message.content.trim().toLowerCase() === "i love you") {
+      if (message.author!.id === process.env.OWNER_ID) {
+        message.channel.send(`I love you more, <@${message.author!.id}>!`)
       } else {
-        message.channel.send(`Sorry <@${message.author.id}>, but I don't share the same feelings. We can still be friends though!`);
+        message.channel.send(`Sorry <@${message.author!.id}>, but I don't share the same feelings. We can still be friends though!`)
       }
     }
 
-    if (discord.checkBotMention(message)) {
-        const prefixHelpEmbed: any = discord.createEmbed();
-        prefixHelpEmbed
-        .setDescription(`My prefix is set to "${prefix}  "!\nType ${prefix}help if you need help.`)
-        message.channel.send(prefixHelpEmbed);
-    }
-
-    if (message.content.startsWith("https")) {
-      await discord.postLink(message);
-      return;
-    }
-
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-
-    const args: string[] = message.content.slice(prefix.length).trim().split(/ +/g);
-    if (args[0] === undefined) return;
-    let cmd: string = args[0].toLowerCase();
-    let path: string = await discord.fetchCommand(cmd, "path");
-    if1:
-    if (!path) {
-      for (let i in commands) {
-        for (let j in commands[i].aliases) {
-          if (commands[i].aliases[j] === cmd) {
-            cmd = commands[i].name;
-            path = await discord.fetchCommand(cmd, "path");
-            break if1;
-          } 
+      if (this.discord.checkBotMention(message)) {
+        const args = message.content.slice(`<@!${this.discord.user!.id}>`.length).trim().split(/ +/g)
+        message.reply(`My prefix is set to "${prefix}"!\n`)
+        if (!args[0]) {
+          cmdFunctions.runCommand(message, ["help"])
+        } else {
+          cmdFunctions.runCommand(message, args)
         }
-      }
     }
-    if (!path) return;
-    let cooldown: string[] = await discord.fetchCommand(cmd, "cooldown");
-    const cmdPath = require(path[0]);
 
-    await require("../exports/images.js")(discord, message);
-    await require("../exports/collectors.js")(discord, message);
-
-    let onCooldown = discord.cmdCooldown(cmd, cooldown.join(""), message, cooldowns);
-    if (onCooldown) {
-      message.channel.send(onCooldown);
-      return;
+      if (message.content.startsWith("https")) {
+      await links.postLink(message)
+      return
     }
-    
-    let msg = await message.channel.send(`**Loading** ${discord.getEmoji("gabCircle")}`);
-    cmdPath.run(discord, message, args).then(() => {
-    let msgCheck = message.channel.messages;
-    if(msgCheck.has(msg.id)) msg.delete(1000)})
-    .catch((err: any) => message.channel.send(discord.cmdError(err)));
-    
-}
 
+      if (!message.content.startsWith(prefix[0])) return
+
+      const args = message.content.slice(prefix.length).trim().split(/ +/g)
+      if (args[0] === undefined) return
+      const cmd = args[0].toLowerCase()
+      const path = await cmdFunctions.findCommand(cmd)
+      if (!path) return cmdFunctions.noCommand(message, cmd)
+      const coolAmount = await SQLQuery.fetchCommand(cmd, "cooldown")
+      const cmdPath = new (require(path).default)(this.discord)
+
+      const cooldown = new Cooldown(this.discord, message)
+      const onCooldown = cooldown.cmdCooldown(cmd, coolAmount.join(""), message, this.cooldowns)
+      if (onCooldown) {
+      message.channel.send(onCooldown)
+      return
+    }
+
+      const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
+      cmdPath.run(this.discord, message, args).then(() => {
+      const msgCheck = message.channel.messages
+      if (msgCheck.has(msg.id)) msg.delete({timeout: 1000})
+      }). catch ((err: Error) => message.channel.send(this.discord.cmdError(err)))
+    }
+  }

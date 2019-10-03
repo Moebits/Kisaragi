@@ -1,24 +1,39 @@
-exports.run = async (discord: any, message: any, args: string[]) => {
-    const kaomoji = require('kaomojilib')
-    let lib: any = [];
-    let keys = Object.keys(kaomoji.library);
-    for(let i = 0, n = keys.length; i < n; i++) {
-        let key  = keys[i];
-        lib[i] = kaomoji.library[key];
+import {Message} from "discord.js"
+import {Command} from "../../structures/Command"
+import {Functions} from "./../../structures/Functions"
+import {Kisaragi} from "./../../structures/Kisaragi"
+
+const kaomoji = require("kaomojilib")
+
+export default class Kaomoji extends Command {
+    constructor() {
+        super({
+            aliases: [],
+            cooldown: 3
+        })
     }
-    if (!args[1]) {
-        let random = Math.floor(Math.random() * lib.length);
-        message.channel.send(lib[random].icon);
-        return;
-    }
-    let query = discord.combineArgs(args, 1);
-    for (let i in lib) {
-        for (let j in lib[i].keywords) {
-            if (query.toLowerCase().trim() === lib[i].keywords[j].toLowerCase()) {
-                message.channel.send(lib[i].icon);
-                return;
+
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+        const lib: any = []
+        const keys = Object.keys(kaomoji.library)
+        for (let i = 0, n = keys.length; i < n; i++) {
+            const key  = keys[i]
+            lib[i] = kaomoji.library[key]
+        }
+        if (!args[1]) {
+            const random = Math.floor(Math.random() * lib.length)
+            message.channel.send(lib[random].icon)
+            return
+        }
+        const query = Functions.combineArgs(args, 1)
+        for (let i = 0; i < lib.length; i++) {
+            for (let j = 0;  j < lib[i].keywords.length; j++) {
+                if (query.toLowerCase().trim() === lib[i].keywords[j].toLowerCase()) {
+                    message.channel.send(lib[i].icon)
+                    return
+                }
             }
         }
+        message.channel.send("No kaomoji were found.")
     }
-    message.channel.send("No kaomoji were found.");
 }

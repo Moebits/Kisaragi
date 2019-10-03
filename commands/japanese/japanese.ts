@@ -1,20 +1,29 @@
-exports.run = async (discord: any, message: any, args: string[]) => {
+import {Message} from "discord.js"
+import {Command} from "../../structures/Command"
+import {Functions} from "./../../structures/Functions"
+import {Kisaragi} from "./../../structures/Kisaragi"
 
-    const translate = require('@vitalets/google-translate-api');
-    let translateText = discord.combineArgs(args, 1);
-    let translateEmbed = discord.createEmbed();
+const translate = require("@vitalets/google-translate-api")
 
-    let result = await translate(translateText, {to: 'ja'});
-    if (result.from.language.iso === 'ja') {
-        let newResult = await translate(translateText, {to: 'en'});
-        translateEmbed
-        .setTitle(`**Translated Text** ${discord.getEmoji("kannaCurious")}`)
-        .setDescription(`${discord.getEmoji("star")} ${newResult.text}`)
-        message.channel.send(translateEmbed)
-        return;
+export default class Japanese extends Command {
+    constructor() {
+        super({
+            aliases: [],
+            cooldown: 3
+        })
     }
-    translateEmbed
-    .setTitle(`**Translated Text** ${discord.getEmoji("kannaCurious")}`)
-    .setDescription(`${discord.getEmoji("star")} ${result.text}`)
-    message.channel.send(translateEmbed)
+
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+        const translateText = Functions.combineArgs(args, 1)
+
+        const result = await translate(translateText, {to: "ja"})
+        if (result.from.language.iso === "ja") {
+            const newResult = await translate(translateText, {to: "en"})
+            await message.channel.send(`**Translated Text** ${discord.getEmoji("kannaCurious")}`)
+            message.channel.send(newResult.text)
+            return
+        }
+        await message.channel.send(`**Translated Text** ${discord.getEmoji("kannaCurious")}`)
+        message.channel.send(result.text)
+    }
 }

@@ -1,10 +1,25 @@
-exports.run = async (discord: any, message: any, args: string[]) => {
+import {Message} from "discord.js"
+import {Command} from "../../structures/Command"
+import {Functions} from "./../../structures/Functions"
+import {Kisaragi} from "./../../structures/Kisaragi"
+import {SQLQuery} from "./../../structures/SQLQuery"
 
-    let prefix = await discord.fetchPrefix();
+export default class Say extends Command {
+    constructor() {
+        super({
+            aliases: [],
+            cooldown: 3
+        })
+    }
 
-    let rawText = discord.combineArgs(args, 1);
-    await message.channel.send(discord.checkChar(rawText, 2000, "."));
-    if (message.content.startsWith(prefix[0])) await message.delete();
-    return;
-    
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+
+        const prefix = await SQLQuery.fetchPrefix(message)
+
+        const rawText = Functions.combineArgs(args, 1)
+        await message.channel.send(Functions.checkChar(rawText, 2000, "."))
+        if (message.content.startsWith(prefix[0])) await message.delete()
+        return
+
+    }
 }

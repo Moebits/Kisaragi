@@ -1,22 +1,24 @@
 {
 	"compilerOptions": {
 		"module": "commonjs",
-		"outDir": "bin",
-		"declaration": true,
-		"declarationDir": "declarations",
+		"outDir": "dist",
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"resolveJsonModule": true,
 		"noEmitOnError": true,
-		"inlineSourceMap": true,
 		"target": "es6",
+		"lib": ["es2019"],
+		"esModuleInterop": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"noUnusedLocals": true,
-		"noImplicitAny": false,
+		"noImplicitAny": true,
 		"strict": true,
-		"esModuleInterop": true
+		"sourceMap": true
 	},
 	"exclude": [
 		"node_modules",
-		"bin",
+		"dist",
 		"declarations"
 	]
 }

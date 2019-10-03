@@ -1,43 +1,60 @@
-exports.run = async (discord: any, message: any, args: string[]) => {
-  
-  let rawScoreList: string[][] = await discord.fetchColumn("points", "score list");
-  let rawLevelList: string[][] = await discord.fetchColumn("points", "level list");
-  let rawUserList: string[][] = await discord.fetchColumn("points", "user id list");
-  let userList: number[] = rawUserList[0].map((num: string) => Number(num));
-  let scoreList: number[] = rawScoreList[0].map((num: string) => Number(num))
-  let levelList: number[] = rawLevelList[0].map((num: string) => Number(num));
+import {Message, MessageEmbed} from "discord.js"
+import {Command} from "../../structures/Command"
+import {Embeds} from "./../../structures/Embeds"
+import {Kisaragi} from "./../../structures/Kisaragi"
+import {SQLQuery} from "./../../structures/SQLQuery"
 
-  let objectArray: any = [];
-  for (let i = 0; i < userList.length; i++) {
-    let scoreObject: object = { 
-      "user": userList[i],
-      "points": scoreList[i],
-      "level": levelList[i]
+export default class Top extends Command {
+    constructor() {
+        super({
+            aliases: [],
+            cooldown: 3
+        })
     }
-    objectArray.push(scoreObject);
-  }
 
-  objectArray.sort((a, b) => (a.points > b.points) ? -1 : 1)
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+      const embeds = new Embeds(discord, message)
+      const sql = new SQLQuery(message)
 
-  let iterations = Math.ceil(message.guild.memberCount / 10);
+      const rawScoreList = await sql.fetchColumn("points", "score list")
+      const rawLevelList = await sql.fetchColumn("points", "level list")
+      const rawUserList = await sql.fetchColumn("points", "user id list")
+      const userList = rawUserList.map((num: string) => Number(num))
+      const scoreList  = rawScoreList.map((num: string) => Number(num))
+      const levelList = rawLevelList.map((num: string) => Number(num))
 
-  let embedArray: any = [];
-  loop1:
-  for (let i = 0; i < iterations; i++) {
-    const topEmbed: any = discord.createEmbed();
-    let description = "";
-    for (let j = 0; j < 10; j++) {
-      let position = (i*10) + j;
-      if (!objectArray[position]) break loop1;
-      description += `${discord.getEmoji("star")}_User:_ <@${objectArray[position].user}>\n` +
-      `${discord.getEmoji("star")}_Points:_ **${objectArray[position].points}**\n` +
-      `${discord.getEmoji("star")}_Level:_ **${objectArray[position].level}**\n`
+      const objectArray: any = []
+      for (let i = 0; i < userList.length; i++) {
+      const scoreObject: object = {
+        user: userList[i],
+        points: scoreList[i],
+        level: levelList[i]
+      }
+      objectArray.push(scoreObject)
     }
-    topEmbed
-    .setTitle(`**${message.guild.name}'s Leaderboard** ${discord.getEmoji("hanaDesires")}`)
-    .setThumbnail(message.guild.iconURL)
-    .setDescription(description)
-    embedArray.push(topEmbed)
+
+      objectArray.sort((a: any, b: any) => (a.points > b.points) ? -1 : 1)
+
+      const iterations = Math.ceil(message.guild!.memberCount / 10)
+
+      const embedArray: MessageEmbed[] = []
+      loop1:
+    for (let i = 0; i < iterations; i++) {
+      const topEmbed = embeds.createEmbed()
+      let description = ""
+      for (let j = 0; j < 10; j++) {
+        const position = (i*10) + j
+        if (!objectArray[position]) break loop1
+        description += `${discord.getEmoji("star")}_User:_ <@${objectArray[position].user}>\n` +
+        `${discord.getEmoji("star")}_Points:_ **${objectArray[position].points}**\n` +
+        `${discord.getEmoji("star")}_Level:_ **${objectArray[position].level}**\n`
+      }
+      topEmbed
+      .setTitle(`**${message.guild!.name}'s Leaderboard** ${discord.getEmoji("hanaDesires")}`)
+      .setThumbnail(message.guild!.iconURL() as string)
+      .setDescription(description)
+      embedArray.push(topEmbed)
+    }
+      embeds.createReactionEmbed(embedArray)
   }
-  discord.createReactionEmbed(embedArray);
 }
