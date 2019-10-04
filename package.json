@@ -131,7 +131,7 @@
     "wikijs": "^6.0.0",
     "xkcd": "^1.1.3",
     "zlib-sync": "^0.1.5",
-    "snyk": "^1.230.4"
+    "snyk": "^1.231.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
