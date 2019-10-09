@@ -14,8 +14,8 @@ const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
 const Permissions_1 = require("./../../structures/Permissions");
 class Set extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });

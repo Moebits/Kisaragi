@@ -13,19 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
-const github_api_1 = __importDefault(require("github-api"));
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const GitHub = require("github-api");
 class Github extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
         this.run = (discord, message, args) => __awaiter(this, void 0, void 0, function* () {
             const embeds = new Embeds_1.Embeds(discord, message);
-            const github = new github_api_1.default({
+            const github = new GitHub({
                 token: process.env.GITHUB_ACCESS_TOKEN
             });
             if (args[1].toLowerCase() === "user") {

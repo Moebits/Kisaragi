@@ -13,8 +13,8 @@ const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Permissions_1 = require("./../../structures/Permissions");
 class Role extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -39,12 +39,12 @@ class Role extends Command_1.Command {
                 switch (args[1]) {
                     case "add": {
                         try {
-                            yield member.addRole(role);
+                            yield member.roles.add(role);
                             yield message.channel.send(roleEmbed
                                 .setDescription(`${member.displayName} now has the ${role} role!`));
                         }
                         catch (error) {
-                            discord.cmdError(error);
+                            discord.cmdError(message, error);
                             message.channel.send(roleEmbed
                                 .setDescription(`The role **${roleName}** could not be found.`));
                         }
@@ -52,12 +52,12 @@ class Role extends Command_1.Command {
                     }
                     case "del": {
                         try {
-                            yield member.removeRole(role);
+                            yield member.roles.remove(role);
                             yield message.channel.send(roleEmbed
                                 .setDescription(`${member.displayName} no longer has the ${role} role!`));
                         }
                         catch (error) {
-                            discord.cmdError(error);
+                            discord.cmdError(message, error);
                             message.channel.send(roleEmbed
                                 .setDescription(`The role **${roleName}** could not be found.`));
                         }

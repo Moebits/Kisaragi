@@ -8,19 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const google_it_1 = __importDefault(require("google-it"));
 const Command_1 = require("../../structures/Command");
 const CommandFunctions_1 = require("./../../structures/CommandFunctions");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const google = require("google-it");
 class Google extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -29,7 +26,7 @@ class Google extends Command_1.Command {
             const embeds = new Embeds_1.Embeds(discord, message);
             const query = Functions_1.Functions.combineArgs(args, 1);
             const resultArray = [];
-            const result = yield google_it_1.default({ query, limit: 50 });
+            const result = yield google({ query, limit: 50 });
             for (const i in result) {
                 resultArray.push(`${discord.getEmoji("star")}_Title:_ **${result[i].title}**`);
                 resultArray.push(`${discord.getEmoji("star")}_Link:_ ${result[i].link}`);

@@ -13,7 +13,7 @@ export class CommandFunctions {
         const path = await this.findCommand(args[0])
         if (!path) return this.noCommand(message, args[0])
         const cp = require(`${path}`)
-        await cp.run(this.discord, message, args).catch((err: Error) => {if (message) message.channel.send(this.discord.cmdError(err))})
+        await cp.run(this.discord, message, args).catch((err: Error) => {if (message) message.channel.send(this.discord.cmdError(message, err))})
     }
 
     // Auto Command
@@ -47,9 +47,8 @@ export class CommandFunctions {
                 timeLeft = 0
             }
             const guildMsg = await guildChannel.messages.fetch({limit: 1}).then((m) => m.first())
-            if (guildMsg && guildMsg.author) guildMsg.author.id = this.discord.user!.id
             setInterval(async () => {
-                await this.runCommand(message, cmd)
+                await this.runCommand(guildMsg || message, cmd)
                 timeLeft = timeout
             }, timeLeft > 0 ? timeLeft : timeout)
         }

@@ -1,12 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class MessageUpdate {
-    constructor(discord) {
-        this.discord = discord;
+    constructor() {
         this.run = (message) => {
             // log updated
-            console.log(this.discord);
         };
+        //
     }
 }
 exports.default = MessageUpdate;

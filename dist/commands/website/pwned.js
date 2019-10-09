@@ -14,8 +14,8 @@ const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
 class Pwned extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -50,7 +50,7 @@ class Pwned extends Command_1.Command {
                 .setURL("https://haveibeenpwned.com/PwnedWebsites")
                 .setThumbnail(result.LogoPath)
                 .setDescription(`${discord.getEmoji("star")}_Website:_ **${result.Name}**\n` +
-                `${discord.getEmoji("star")}_Breach Date:_ **${Functions_1.Functions.formatDate(result.BreachDate)}**\n` +
+                `${discord.getEmoji("star")}_Breach Date:_ **${Functions_1.Functions.formatDate(new Date(result.BreachDate))}**\n` +
                 `${discord.getEmoji("star")}_Pwned Records:_ **${result.PwnCount}**\n` +
                 `${discord.getEmoji("star")}_Pwned Data:_ **${result.DataClasses.join(", ")}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${result.Description.replace(/<\/?[^>]+(>|$)/g, "")}\n`);

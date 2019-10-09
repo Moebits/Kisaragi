@@ -14,14 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const fs_1 = __importDefault(require("fs"));
-const svg2img_1 = __importDefault(require("svg2img"));
 const wikijs_1 = __importDefault(require("wikijs"));
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const svg2img = require("svg2img");
 class Wikipedia extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -41,7 +41,7 @@ class Wikipedia extends Command_1.Command {
             const summary = yield page.summary();
             const mainImg = yield page.mainImage();
             if (mainImg.slice(-3) === "svg") {
-                yield svg2img_1.default(mainImg, function (error, buffer) {
+                yield svg2img(mainImg, function (error, buffer) {
                     fs_1.default.writeFileSync("../assets/images/wiki.png", buffer);
                 });
                 yield Functions_1.Functions.timeout(500);

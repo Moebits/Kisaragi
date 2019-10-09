@@ -8,17 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const xkcd_1 = __importDefault(require("xkcd"));
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const xkcd = require("xkcd");
 class Xkcd extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -32,7 +29,7 @@ class Xkcd extends Command_1.Command {
                 "November", "December"
             ];
             if (args[1]) {
-                yield xkcd_1.default(Number(args[1]), (comic) => {
+                yield xkcd(Number(args[1]), (comic) => {
                     const cleanText = comic.transcript.replace(/\[\[/g, "**").replace(/\]\]/g, "**").replace(/{{/g, "_").replace(/}}/g, "_");
                     const checkedText = Functions_1.Functions.checkChar(cleanText, 2000, ",");
                     xkcdEmbed
@@ -49,7 +46,7 @@ class Xkcd extends Command_1.Command {
                 });
             }
             else {
-                yield xkcd_1.default((comic) => {
+                yield xkcd((comic) => {
                     const cleanText = comic.transcript.replace(/\[\[/g, "**").replace(/\]\]/g, "**").replace(/{{/g, "_").replace(/}}/g, "_");
                     const checkedText = Functions_1.Functions.checkChar(cleanText, 2000, ",");
                     xkcdEmbed

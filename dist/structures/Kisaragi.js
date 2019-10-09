@@ -20,10 +20,8 @@ const discord_js_1 = require("discord.js");
 const config = __importStar(require("../config.json"));
 const Embeds_1 = require("./Embeds");
 class Kisaragi extends discord_js_1.Client {
-    constructor(options, message) {
+    constructor(options) {
         super(options);
-        this.message = message;
-        this.embeds = new Embeds_1.Embeds(this, this.message);
         // Get Emoji
         this.getEmoji = (name) => {
             for (let i = 0; i < config.emojis.length; i++) {
@@ -61,9 +59,10 @@ class Kisaragi extends discord_js_1.Client {
                 return true;
         };
         // Errors
-        this.cmdError = (error) => {
+        this.cmdError = (msg, error) => {
+            const embeds = new Embeds_1.Embeds(this, msg);
             console.log(error);
-            const messageErrorEmbed = this.embeds.createEmbed();
+            const messageErrorEmbed = embeds.createEmbed();
             messageErrorEmbed
                 .setTitle(`**Command Error** ${this.getEmoji("maikaWut")}`)
                 .setDescription(`There was an error executing this command:\n` +

@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 class Help extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -28,7 +28,7 @@ class Help extends Command_1.Command {
             helpInfo
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
                 // .setImage("https://i.imgur.com/Av9RN7x.png")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Info Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**avatar** _mentions_\n` +
                 `Posts the avatar image of the user(s).\n` +
@@ -47,7 +47,7 @@ class Help extends Command_1.Command {
             const helpLevel = embeds.createEmbed();
             helpLevel
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Level Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**give** mention/id\n` +
                 `Does not work yet\n` +
@@ -60,7 +60,7 @@ class Help extends Command_1.Command {
             const helpHeart = embeds.createEmbed();
             helpHeart
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Heart Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**baka** _mention_\n` +
                 `Call someone a baka.\n` +
@@ -91,7 +91,7 @@ class Help extends Command_1.Command {
             const helpAnime = embeds.createEmbed();
             helpAnime
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Anime Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**anime** anime\n` +
                 `Gets an anime's description.\n` +
@@ -134,7 +134,7 @@ class Help extends Command_1.Command {
             const helpHentai = embeds.createEmbed();
             helpHentai
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Hentai Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**fakku**\n` +
                 `Does not work yet.\n` +
@@ -150,21 +150,21 @@ class Help extends Command_1.Command {
             const helpOsu = embeds.createEmbed();
             helpOsu
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Osu Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**osu** player\n` +
                 `Gets an osu player's profile.\n`);
             const helpGeometry = embeds.createEmbed();
             helpGeometry
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Geometry Dash Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**level** name/id\n` +
                 `Does not work yet.\n`);
             const helpJapanese = embeds.createEmbed();
             helpJapanese
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Japanese Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**furigana** text\n` +
                 `Adds furigana to the input text.\n` +
@@ -183,7 +183,7 @@ class Help extends Command_1.Command {
             const helpWeb = embeds.createEmbed();
             helpWeb
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Website Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**giphy** _tag_\n` +
                 `Searches giphy.\n` +
@@ -214,7 +214,7 @@ class Help extends Command_1.Command {
             const helpFun = embeds.createEmbed();
             helpFun
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Fun Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**ascii** text\n` +
                 `Posts ascii art of the input text.\n` +
@@ -227,7 +227,7 @@ class Help extends Command_1.Command {
             const helpUtil = embeds.createEmbed();
             helpUtil
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Utility Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**holiday**\n` +
                 `Does not work yet.\n` +
@@ -243,21 +243,21 @@ class Help extends Command_1.Command {
             const helpMusic = embeds.createEmbed();
             helpMusic
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Music Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**play**\n` +
                 `Does not work yet.\n`);
             const helpRole = embeds.createEmbed();
             helpRole
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Role Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**role add/del** _user/id_\n` +
                 `Adds or removes a role from the specified user.\n`);
             const helpMod = embeds.createEmbed();
             helpMod
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Moderator Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**ban** user/id\n` +
                 `Bans the specified user.\n` +
@@ -273,28 +273,28 @@ class Help extends Command_1.Command {
             const helpAdmin = embeds.createEmbed();
             helpAdmin
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Administrator Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**n/a**\n` +
                 `N/A\n`);
             const helpLogging = embeds.createEmbed();
             helpLogging
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Logging Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**n/a**\n` +
                 `N/A\n`);
             const helpConfig = embeds.createEmbed();
             helpConfig
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Configuration Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**n/a**\n` +
                 `N/A\n`);
             const helpBotOwner = embeds.createEmbed();
             helpBotOwner
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-                .setThumbnail(message.author.avatarURL)
+                .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(`Bot Developer Commands ${discord.getEmoji("gabTired")}`)
                 .setDescription(`${discord.getEmoji("star")}**createguild** name region\n` +
                 `Does not work yet.\n` +

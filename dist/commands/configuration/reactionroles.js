@@ -15,8 +15,8 @@ const Functions_1 = require("./../../structures/Functions");
 const Permissions_1 = require("./../../structures/Permissions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class ReactionRoles extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -56,11 +56,11 @@ class ReactionRoles extends Command_1.Command {
                         if (!messages[value])
                             break;
                         const foundMsg = yield discord.fetchMessage(message, messages[value]);
-                        const identifier = message.guild.emojis.find((e) => {
-                            if (e.name.toLowerCase().includes(emojis[value].toLowerCase())) {
-                                return e.identifier;
-                            }
+                        const guildEmoji = message.guild.emojis.find((e) => {
+                            const found = (e.name.toLowerCase().includes(emojis[value].toLowerCase())) ? true : false;
+                            return found;
                         });
+                        const identifier = guildEmoji.identifier;
                         settings += `${i + 1} **=>**\n` +
                             `${discord.getEmoji("star")}_Message:_ [Link](${foundMsg.url})\n` +
                             `${discord.getEmoji("star")}_Emoji:_ ${identifier}\n` +

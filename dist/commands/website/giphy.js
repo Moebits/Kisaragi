@@ -17,16 +17,14 @@ const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
 class GiphyCommand extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
         this.run = (discord, message, args) => __awaiter(this, void 0, void 0, function* () {
             const embeds = new Embeds_1.Embeds(discord, message);
-            const giphy = new giphy_api_1.default({
-                apiKey: process.env.GIPHY_API_KEY
-            });
+            const giphy = giphy_api_1.default(process.env.GIPHY_API_KEY);
             const query = Functions_1.Functions.combineArgs(args, 1);
             const giphyEmbed = embeds.createEmbed();
             let gif;
@@ -44,7 +42,7 @@ class GiphyCommand extends Command_1.Command {
                 .setTitle(`**Giphy Gif** ${discord.getEmoji("raphi")}`)
                 .setURL(gif.url)
                 .setDescription(`${discord.getEmoji("star")}_Title:_ **${gif.title}**\n` +
-                `${discord.getEmoji("star")}_Creation Date:_ **${Functions_1.Functions.formatDate(gif.import_datetime)}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions_1.Functions.formatDate(new Date(gif.import_datetime))}**\n` +
                 `${discord.getEmoji("star")}_Source Post:_ ${gif.source_post_url ? gif.source_post_url : "None"}\n`)
                 .setImage(gif.images.original.url);
             message.channel.send(giphyEmbed);

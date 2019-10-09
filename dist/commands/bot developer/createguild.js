@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = require("../../structures/Command");
 const Permissions_1 = require("./../../structures/Permissions");
 class CreateGuild extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -22,16 +22,16 @@ class CreateGuild extends Command_1.Command {
             if (perms.checkBotDev(message))
                 return;
             try {
-                const guild = yield discord.user.createGuild(guildName, guildRegion);
+                const guild = yield discord.guilds.create(guildName, { region: guildRegion, icon: null });
                 const defaultChannel = guild.channels.find((channel) => channel.permissionsFor(guild.me).has("SEND_MESSAGES"));
                 const invite = yield defaultChannel.createInvite();
                 yield message.author.send(invite.url);
-                const role = yield guild.createRole({ name: "Administrator", permissions: ["ADMINISTRATOR"] });
+                const role = yield guild.roles.create({ data: { name: "Administrator", permissions: ["ADMINISTRATOR"] } });
                 yield message.author.send(role.id);
                 yield message.channel.send(`I made a guild! The invite is ${invite.url} The Administrator role ID is ${role.id}.`);
             }
             catch (error) {
-                discord.cmdError();
+                discord.cmdError(message, error);
             }
         });
         this.run = (discord, message, args) => __awaiter(this, void 0, void 0, function* () {

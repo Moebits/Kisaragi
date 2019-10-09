@@ -1,4 +1,4 @@
-import * as child_process from "child_process"
+import child_process from "child_process"
 import {Message, Util} from "discord.js"
 import * as stream from "stream"
 import * as config from "../config.json"

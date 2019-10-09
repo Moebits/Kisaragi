@@ -13,8 +13,8 @@ const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Permissions_1 = require("./../../structures/Permissions");
 class Unban extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -28,7 +28,7 @@ class Unban extends Command_1.Command {
             const userArray = [];
             for (let i = 1; i < args.length; i++) {
                 if (args[i].match(/\d+/g)) {
-                    userArray.push(args[i].match(/\d+/g).toString())[0];
+                    userArray.push(args[i].match(/\d+/g).toString()[0]);
                 }
                 else {
                     reasonArray.push(args[i]);

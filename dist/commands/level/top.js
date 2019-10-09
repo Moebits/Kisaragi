@@ -13,8 +13,8 @@ const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Top extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -52,7 +52,7 @@ class Top extends Command_1.Command {
                 }
                 topEmbed
                     .setTitle(`**${message.guild.name}'s Leaderboard** ${discord.getEmoji("hanaDesires")}`)
-                    .setThumbnail(message.guild.iconURL)
+                    .setThumbnail(message.guild.iconURL())
                     .setDescription(description);
                 embedArray.push(topEmbed);
             }

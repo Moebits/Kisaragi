@@ -15,8 +15,8 @@ const SQLQuery_1 = require("../../structures/SQLQuery");
 const Functions_1 = require("./../../structures/Functions");
 const Permissions_1 = require("./../../structures/Permissions");
 class Block extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -36,6 +36,7 @@ class Block extends Command_1.Command {
             const blockedWords = yield sql.fetchColumn("blocks", "blocked words");
             const match = yield sql.fetchColumn("blocks", "block match");
             const toggle = yield sql.fetchColumn("blocks", "block toggle");
+            const asterisk = yield sql.fetchColumn("blocks", "asterisk");
             let wordList = "";
             if (blockedWords[0]) {
                 for (let i = 0; i < blockedWords[0].length; i++) {
@@ -53,6 +54,7 @@ class Block extends Command_1.Command {
                 "\n" +
                 "**Exact** = Only matches the exact word.\n" +
                 "**Partial** = Also matches if the word is partially in another word.\n" +
+                "**Asterisk Filtering** = Whether messages containing asterisks will be blocked.\n" +
                 "\n" +
                 "__Word List__\n" +
                 wordList + "\n" +
@@ -60,12 +62,14 @@ class Block extends Command_1.Command {
                 "__Current Settings__" +
                 `${star}_Filtering is **${toggle[0]}**._\n` +
                 `${star}_Matching algorithm set to **${match[0]}**._\n` +
+                `${star}_Asterisk filtering is **${asterisk[0]}**._\n` +
                 "\n" +
                 "__Edit Settings__" +
                 "\n" +
                 `${star}_**Type any words**, separated by a space, to add blocked words._\n` +
                 `${star}_Type **enable** or **disable** to enable/disable filtering._\n` +
                 `${star}_Type **exact** or **partial** to set the matching algorithm._\n` +
+                `${star}_Type **asterisk** to toggle asterisk filtering._\n` +
                 `${star}_Type **delete (word number)** to delete a word._\n` +
                 `${star}_Type **reset** to delete all words._\n` +
                 `${star}_Type **cancel** to exit._\n`);
@@ -74,7 +78,7 @@ class Block extends Command_1.Command {
                 return __awaiter(this, void 0, void 0, function* () {
                     const responseEmbed = embeds.createEmbed();
                     let words = yield sql.fetchColumn("blocks", "blocked words");
-                    let [setOn, setOff, setExact, setPartial, setWord] = [];
+                    let [setOn, setOff, setExact, setPartial, setWord, setAsterisk] = [];
                     if (msg.content.toLowerCase() === "cancel") {
                         responseEmbed
                             .setDescription(`${star}Canceled the prompt!`);
@@ -83,6 +87,7 @@ class Block extends Command_1.Command {
                     }
                     if (msg.content.toLowerCase() === "reset") {
                         yield sql.updateColumn("blocks", "blocked words", null);
+                        yield sql.updateColumn("blocks", "asterisk", "off");
                         responseEmbed
                             .setDescription(`${star}All blocked words were deleted!`);
                         msg.channel.send(responseEmbed);
@@ -117,6 +122,8 @@ class Block extends Command_1.Command {
                         setExact = true;
                     if (msg.content.match(/partial/gi))
                         setPartial = true;
+                    if (msg.content.match(/asterisk/gi))
+                        setAsterisk = true;
                     if (newMsg)
                         setWord = true;
                     let wordArray = newMsg.split(" ");
@@ -164,6 +171,16 @@ class Block extends Command_1.Command {
                     if (setOff) {
                         yield sql.updateColumn("blocks", "block toggle", "off");
                         description += `${star}Filtering is **disabled**!\n`;
+                    }
+                    if (setAsterisk) {
+                        if (asterisk.join("") === "off") {
+                            yield sql.updateColumn("blocks", "asterisk", "on");
+                            description += `${star}Asterisk filtering is **on**!\n`;
+                        }
+                        else {
+                            yield sql.updateColumn("blocks", "asterisk", "off");
+                            description += `${star}Asterisk filtering is **off**!\n`;
+                        }
                     }
                     responseEmbed
                         .setDescription(description);

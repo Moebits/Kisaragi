@@ -3,8 +3,7 @@ import * as config from "../config.json"
 import {Embeds} from "./Embeds"
 
 export class Kisaragi extends Client {
-    private readonly embeds = new Embeds(this, this.message as Message)
-    constructor(options: ClientOptions, private readonly message?: Message) {
+    constructor(options: ClientOptions) {
         super(options)
     }
 
@@ -45,9 +44,10 @@ export class Kisaragi extends Client {
     }
 
     // Errors
-    public cmdError = (error: Error) => {
-        console.error(error)
-        const messageErrorEmbed = this.embeds.createEmbed()
+    public cmdError = (msg: Message, error: Error) => {
+        const embeds = new Embeds(this, msg)
+        console.log(error)
+        const messageErrorEmbed = embeds.createEmbed()
         messageErrorEmbed
         .setTitle(`**Command Error** ${this.getEmoji("maikaWut")}`)
         .setDescription(`There was an error executing this command:\n` +

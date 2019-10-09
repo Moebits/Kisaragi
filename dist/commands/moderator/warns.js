@@ -15,8 +15,8 @@ const Functions_1 = require("./../../structures/Functions");
 const Permissions_1 = require("./../../structures/Permissions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Warns extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -152,8 +152,8 @@ class Warns extends Command_1.Command {
                         return msg.channel.send(responseEmbed);
                     }
                     if (setDelete) {
-                        let num = msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g);
-                        num = parseInt(num[0], 10) - 1;
+                        let num = Number(msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)[0]);
+                        num = num - 1;
                         let found = false;
                         for (let i = 0; i < warnLog[0].length; i++) {
                             if (typeof warnLog[0][i] === "string")

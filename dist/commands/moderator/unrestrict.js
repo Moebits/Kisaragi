@@ -14,8 +14,8 @@ const Embeds_1 = require("./../../structures/Embeds");
 const Permissions_1 = require("./../../structures/Permissions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Unrestrict extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -33,7 +33,7 @@ class Unrestrict extends Command_1.Command {
             const userArray = [];
             for (let i = 1; i < args.length; i++) {
                 if (args[i].match(/\d+/g)) {
-                    userArray.push(args[i].match(/\d+/g))[0];
+                    userArray.push(args[i].match(/\d+/g)[0]);
                 }
                 else {
                     reasonArray.push(args[i]);
@@ -42,7 +42,7 @@ class Unrestrict extends Command_1.Command {
             const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!";
             const members = [];
             for (let i = 0; i < userArray.length; i++) {
-                const member = message.guild.members.find((m) => m.id === userArray[i].join(""));
+                const member = message.guild.members.find((m) => m.id === userArray[i]);
                 yield member.roles.remove(restrict.join(""));
                 members.push(`<@${member.id}>`);
                 const dm = yield member.createDM();

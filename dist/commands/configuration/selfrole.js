@@ -14,8 +14,8 @@ const Embeds_1 = require("./../../structures/Embeds");
 const Permissions_1 = require("./../../structures/Permissions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Selfrole extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -31,12 +31,12 @@ class Selfrole extends Command_1.Command {
                 return;
             const roles = message.guild.roles.filter((r) => {
                 for (let i = 0; i < selfroles.length; i++) {
-                    if (selfroles[i] === r.id) {
-                        return r;
-                    }
+                    const found = (selfroles[i] === r.id) ? true : false;
+                    return found;
                 }
-            });
-            for (let i = 0; i < roles.size; i++) {
+                return false;
+            }).map((r) => r);
+            for (let i = 0; i < roles.length; i++) {
                 if (roles[i].name.toLowerCase().includes(args[1].toLowerCase())) {
                     const found = message.member.roles.find((r) => r.id === roles[i].id);
                     let description = "";

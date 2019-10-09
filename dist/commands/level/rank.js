@@ -8,24 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const canvas_1 = require("canvas");
 const discord_js_1 = require("discord.js");
-const imageDataURI = __importStar(require("image-data-uri"));
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Points_1 = require("./../../structures/Points");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
+const imageDataURI = require("image-data-uri");
 class Rank extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -62,7 +55,7 @@ class Rank extends Command_1.Command {
                     `${discord.getEmoji("star")}**${percent.toFixed(1)}%** of the way there!`)
                     .attachFiles([attachment])
                     .setImage(`attachment://rankBar.jpg`)
-                    .setThumbnail(message.author.displayAvatarURL));
+                    .setThumbnail(message.author.displayAvatarURL()));
             }
         });
     }

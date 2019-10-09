@@ -16,8 +16,8 @@ const Functions_1 = require("./../../structures/Functions");
 const Permissions_1 = require("./../../structures/Permissions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class CaptchaCmd extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });

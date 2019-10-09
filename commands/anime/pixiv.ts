@@ -16,46 +16,45 @@ export default class Pixiv extends Command {
         const pixivApi = new PixivApi(discord, message)
 
         const tags = Functions.combineArgs(args, 1)
-        const refreshToken = await pixivApi.pixivLogin()
 
         if (!args[1]) {
-            await pixivApi.getRandomPixivImage(refreshToken)
+            await pixivApi.getRandomPixivImage()
             return
         }
 
         if (tags.match(/\d+/g) !== null) {
-            await pixivApi.getPixivImageID(refreshToken, tags.match(/\d+/g))
+            await pixivApi.getPixivImageID(tags.match(/\d+/g))
             return
         }
 
         if (args[1].toLowerCase() === "r18") {
             if (args[2].toLowerCase() === "en") {
                 const r18Tags = Functions.combineArgs(args, 3)
-                await pixivApi.getPixivImage(refreshToken, r18Tags, true, true)
+                await pixivApi.getPixivImage(r18Tags, true, true)
                 return
             } else {
                 const r18Tags = Functions.combineArgs(args, 2)
-                await pixivApi.getPixivImage(refreshToken, r18Tags, true)
+                await pixivApi.getPixivImage(r18Tags, true)
                 return
             }
         }
 
         if (args[1].toLowerCase() === "en") {
             const enTags = Functions.combineArgs(args, 2)
-            await pixivApi.getPixivImage(refreshToken, enTags, false, true)
+            await pixivApi.getPixivImage(enTags, false, true)
             return
         }
 
         if (args[1].toLowerCase() === "popular") {
             if (args[2].toLowerCase() === "r18") {
-                await pixivApi.getPopularPixivR18Image(refreshToken)
+                await pixivApi.getPopularPixivR18Image()
                 return
             }
-            await pixivApi.getPopularPixivImage(refreshToken)
+            await pixivApi.getPopularPixivImage()
             return
 
         }
 
-        await pixivApi.getPixivImage(refreshToken, tags)
+        await pixivApi.getPixivImage(tags)
     }
 }

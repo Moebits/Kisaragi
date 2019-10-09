@@ -8,26 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const imgur_1 = __importDefault(require("imgur"));
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const imgur = require("imgur");
 class Imgur extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
         this.run = (discord, message, args) => __awaiter(this, void 0, void 0, function* () {
             const embeds = new Embeds_1.Embeds(discord, message);
-            yield imgur_1.default.setClientId(process.env.IMGUR_discord_ID);
-            yield imgur_1.default.setAPIUrl("https://api.imgur.com/3/");
+            yield imgur.setClientId(process.env.IMGUR_discord_ID);
+            yield imgur.setAPIUrl("https://api.imgur.com/3/");
             const query = Functions_1.Functions.combineArgs(args, 1);
-            const json = yield imgur_1.default.search(query);
+            const json = yield imgur.search(query);
             const random = Math.floor(Math.random() * json.data.length);
             const image = json.data[random];
             if (!image) {

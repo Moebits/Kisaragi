@@ -17,55 +17,42 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
-const util = __importStar(require("util"));
-const Kisaragi_js_1 = require("./structures/Kisaragi.js");
+const Kisaragi_1 = require("./structures/Kisaragi");
 const Logger_1 = require("./structures/Logger");
 const SQLQuery_1 = require("./structures/SQLQuery");
-const readdir = util.promisify(fs.readdir);
-const discord = new Kisaragi_js_1.Kisaragi({
+const discord = new Kisaragi_1.Kisaragi({
     disableEveryone: true,
     restTimeOffset: 100,
     disabledEvents: ["TYPING_START", "TYPING_STOP"]
 });
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     const cmdFiles = [];
-    const subDirectory = yield readdir("./commands/");
-    const commands = require("./commands.json");
+    const subDirectory = fs.readdirSync("./commands/");
     for (let i = 0; i < subDirectory.length; i++) {
         const currDir = subDirectory[i];
-        const addFiles = yield readdir(`./commands/${currDir}`);
-        if (addFiles !== null) {
+        const addFiles = fs.readdirSync(`./commands/${currDir}`);
+        if (addFiles !== null)
             cmdFiles.push(addFiles);
-        }
         yield Promise.all(addFiles.map((file) => __awaiter(void 0, void 0, void 0, function* () {
             if (!file.endsWith(".ts") && !file.endsWith(".js"))
                 return;
             const path = `../commands/${currDir}/${file}`;
             const commandName = file.split(".")[0];
+            if (commandName === "empty" || commandName === "tempCodeRunnerFile")
+                return;
             const cmdFind = yield SQLQuery_1.SQLQuery.fetchCommand(commandName, "command");
-            if1: if (!cmdFind) {
-                if (commandName === "empty" || commandName === "tempCodeRunnerFile")
-                    break if1;
-                if (!commands[commandName]) {
-                    console.log(`${commandName} not found`);
-                    break if1;
-                }
-                yield SQLQuery_1.SQLQuery.insertCommand(commandName, commands[commandName].aliases, path, commands[commandName].cooldown);
+            const command = new (require(`./commands/${currDir}/${file}`).default)(discord);
+            if (!cmdFind) {
+                yield SQLQuery_1.SQLQuery.insertCommand(commandName, command.aliases, path, command.cooldown);
             }
             else {
-                if (commandName === "empty" || commandName === "tempCodeRunnerFile")
-                    break if1;
-                if (!commands[commandName]) {
-                    console.log(`${commandName} not found`);
-                    break if1;
-                }
-                yield SQLQuery_1.SQLQuery.updateCommand(commandName, commands[commandName].aliases, commands[commandName].cooldown);
+                yield SQLQuery_1.SQLQuery.updateCommand(commandName, command.aliases, command.cooldown);
             }
             Logger_1.Logger.log(`Loading Command: ${commandName}`);
         })));
     }
     setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
-        const evtFiles = yield readdir("./events/");
+        const evtFiles = fs.readdirSync("./events/");
         evtFiles.forEach((file) => {
             if (!file.endsWith(".ts") && !file.endsWith(".js"))
                 return;
@@ -73,12 +60,10 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
             Logger_1.Logger.log(`Loading Event: ${eventName}`);
             const event = new (require(`./events/${eventName}.js`).default)(discord);
             discord.on(eventName, (...args) => event.run(...args));
-            delete require.cache[require.resolve(`./events/${eventName}.js`)];
         });
         Logger_1.Logger.log(`Loaded a total of ${cmdFiles.length} commands.`);
         Logger_1.Logger.log(`Loaded a total of ${evtFiles.length} events.`);
         yield discord.login(process.env.TOKEN);
-        // client.generateCommands(cmdFiles)
     }), 1000);
 });
 start();

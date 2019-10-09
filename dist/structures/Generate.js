@@ -4,7 +4,7 @@ class Generate {
     constructor(discord) {
         // Generate Commands for commands.json
         this.generateCommands = (cmdFiles) => {
-            const newFiles = cmdFiles.flat();
+            const newFiles = cmdFiles.flat(Infinity);
             const addedFiles = [];
             loop1: for (let i = 0; i < newFiles.length; i++) {
                 const commandName = newFiles[i].split(".")[0];

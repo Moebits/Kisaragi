@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = require("../../structures/Command");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Test extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });

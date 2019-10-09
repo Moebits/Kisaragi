@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = require("../../structures/Command");
 class HelpCommands extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });

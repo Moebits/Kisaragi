@@ -9,19 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mw_dict_1 = require("mw-dict");
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const { CollegiateThesaurus } = require("mw-dict");
 class Thesaurus extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
         this.run = (discord, message, args) => __awaiter(this, void 0, void 0, function* () {
             const embeds = new Embeds_1.Embeds(discord, message);
-            const thesaurus = new mw_dict_1.CollegiateThesaurus(process.env.THESAURUS_API_KEY);
+            const thesaurus = new CollegiateThesaurus(process.env.THESAURUS_API_KEY);
             const word = Functions_1.Functions.combineArgs(args, 1);
             const thesaurusEmbed = embeds.createEmbed();
             let result;
@@ -57,7 +57,7 @@ class Thesaurus extends Command_1.Command {
                 }
             }
             let synonyms = "";
-            for (const i in meaningArray) {
+            for (let i = 0; i < meaningArray.length; i++) {
                 synonyms += `${discord.getEmoji("star")}_Meaning:_ ${meaningArray[i]}\n`;
                 if (exampleArray[i]) {
                     synonyms += `${discord.getEmoji("star")}_Example:_ ${exampleArray[i]}\n`;

@@ -26,6 +26,7 @@ class MessageEvent {
         this.responseTextCool = new Set();
         this.responseImageCool = new Set();
         this.run = (message) => __awaiter(this, void 0, void 0, function* () {
+            console.log(message.author.id);
             const letters = new Letters_1.Letters(this.discord);
             const points = new Points_1.Points(this.discord);
             const haiku = new Haiku_1.Haiku(this.discord);
@@ -43,15 +44,17 @@ class MessageEvent {
             /*let letterNames = [
               ""
             ]
-        
+      
             discord.generateEmojis(letterNames)*/
+            if (message.author.bot)
+                return;
             if (message.guild) {
                 const sql = new SQLQuery_1.SQLQuery(message);
                 const pointTimeout = yield sql.fetchColumn("points", "point timeout");
                 setTimeout(() => {
                     points.calcScore(message);
                 }, pointTimeout ? Number(pointTimeout) : 60000);
-                Block_1.Block.block(message);
+                Block_1.Block.blockWord(message);
                 detect.detectAnime(message);
                 detect.swapRoles(message);
                 haiku.haiku(message);
@@ -125,7 +128,7 @@ class MessageEvent {
                 yield links.postLink(message);
                 return;
             }
-            if (!message.content.startsWith(prefix[0]) || message.author.bot)
+            if (!message.content.startsWith(prefix[0]))
                 return;
             const args = message.content.slice(prefix.length).trim().split(/ +/g);
             if (args[0] === undefined)
@@ -147,7 +150,7 @@ class MessageEvent {
                 const msgCheck = message.channel.messages;
                 if (msgCheck.has(msg.id))
                     msg.delete({ timeout: 1000 });
-            }).catch((err) => message.channel.send(this.discord.cmdError(err)));
+            }).catch((err) => message.channel.send(this.discord.cmdError(message, err)));
         });
     }
 }

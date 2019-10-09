@@ -8,45 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const translate = __importStar(require("@vitalets/google-translate-api"));
 const discord_js_1 = require("discord.js");
-const pixivApi = __importStar(require("pixiv-api-client"));
-const pixivImg = __importStar(require("pixiv-img"));
+const pixiv_app_api_1 = __importDefault(require("pixiv-app-api"));
 const Embeds_1 = require("./Embeds");
 const Functions_1 = require("./Functions");
 const Link_1 = require("./Link");
-const pixiv = new pixivApi();
+const translate = require("@vitalets/google-translate-api");
+const pixivImg = require("pixiv-img");
+const pixiv = new pixiv_app_api_1.default(process.env.USERNAME, process.env.PASSWORD);
 class PixivApi {
     constructor(discord, message) {
         this.discord = discord;
         this.message = message;
         this.embeds = new Embeds_1.Embeds(this.discord, this.message);
         this.links = new Link_1.Link(this.discord);
-        // Pixiv Login
-        this.pixivLogin = () => __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield pixiv.refreshAccessToken(process.env.PIXIV_REFRESH_TOKEN);
-            }
-            catch (err) {
-                yield pixiv.login(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD, true);
-                const refresh = yield pixiv.refreshAccessToken();
-                console.log("Refresh token expired. New one:");
-                console.log(refresh.refresh_token);
-            }
-            const token = yield pixiv.refreshAccessToken();
-            return token.refresh_token;
-        });
         // Create Pixiv Embed
-        this.createPixivEmbed = (refreshToken, image) => __awaiter(this, void 0, void 0, function* () {
-            yield pixiv.refreshAccessToken(refreshToken);
+        this.createPixivEmbed = (image) => __awaiter(this, void 0, void 0, function* () {
+            yield pixiv.login();
             const pixivEmbed = this.embeds.createEmbed();
             if (!image)
                 this.pixivErrorEmbed;
@@ -93,29 +75,26 @@ class PixivApi {
             return newTag.text;
         });
         // Pixiv Image
-        this.getPixivImage = (refresh, tag, r18, en, ugoira, noEmbed) => __awaiter(this, void 0, void 0, function* () {
-            const refreshToken = refresh;
-            yield pixiv.refreshAccessToken(refreshToken);
+        this.getPixivImage = (tag, r18, en, ugoira, noEmbed) => __awaiter(this, void 0, void 0, function* () {
             let newTag = en ? tag : yield this.pixivTag(tag);
             newTag = newTag.trim();
             yield pixiv.login(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD);
             const json = r18 ? (ugoira ? yield pixiv.searchIllust(`うごイラ R-18 ${newTag}`) : yield pixiv.searchIllust(`R-18 ${newTag}`)) :
                 (ugoira ? yield pixiv.searchIllust(`うごイラ ${newTag} -R-18`) : yield pixiv.searchIllust(`${newTag} -R-18`));
-            [].sort.call(json.illusts, ((a, b) => (a.total_bookmarks - b.total_bookmarks) * -1));
+            [].sort.call(json.illusts, ((a, b) => (a.totalBookmarks - b.totalBookmarks) * -1));
             const index = Math.floor(Math.random() * (10));
             const image = json.illusts[index];
             if (noEmbed)
                 return image;
-            const pixivEmbed = yield this.createPixivEmbed(refreshToken, image);
+            const pixivEmbed = yield this.createPixivEmbed(image);
             return this.message.channel.send(pixivEmbed);
         });
         // Pixiv Image ID
-        this.getPixivImageID = (refresh, tags) => __awaiter(this, void 0, void 0, function* () {
-            const refreshToken = refresh;
-            yield pixiv.refreshAccessToken(refreshToken);
+        this.getPixivImageID = (tags) => __awaiter(this, void 0, void 0, function* () {
+            yield pixiv.login();
             const image = yield pixiv.illustDetail(tags.toString());
-            for (const i in image.illust.tags) {
-                if (image.illust.tags[i].name === "うごイラ") {
+            for (let i = 0; i < image.tags.length; i++) {
+                if (image.tags[i].name === "うごイラ") {
                     const path = require("../commands/anime/ugoira.js");
                     yield this.links.linkRun(path, this.message, ["ugoira", tags.toString()]);
                     return;
@@ -123,42 +102,39 @@ class PixivApi {
             }
             if (!image)
                 this.pixivErrorEmbed;
-            const pixivEmbed = yield this.createPixivEmbed(refreshToken, image.illust);
+            const pixivEmbed = yield this.createPixivEmbed(image);
             return this.message.channel.send(pixivEmbed);
         });
         // Pixiv Random Image
-        this.getRandomPixivImage = (refresh) => __awaiter(this, void 0, void 0, function* () {
-            const refreshToken = refresh;
-            yield pixiv.refreshAccessToken(refreshToken);
+        this.getRandomPixivImage = () => __awaiter(this, void 0, void 0, function* () {
+            yield pixiv.login();
             let image;
             let random = 0;
             while (!image) {
                 random = Math.floor(Math.random() * 100000000);
-                image = yield pixiv.illustDetail(random.toString());
+                image = yield pixiv.illustDetail(random);
             }
-            const pixivEmbed = yield this.createPixivEmbed(refreshToken, image.illust);
+            const pixivEmbed = yield this.createPixivEmbed(image);
             return this.message.channel.send(pixivEmbed);
         });
         // Pixiv Popular Image
-        this.getPopularPixivImage = (refresh) => __awaiter(this, void 0, void 0, function* () {
-            const refreshToken = refresh;
-            yield pixiv.refreshAccessToken(refreshToken);
+        this.getPopularPixivImage = () => __awaiter(this, void 0, void 0, function* () {
+            yield pixiv.login();
             const json = yield pixiv.illustRanking();
             [].sort.call(json.illusts, ((a, b) => (a.total_bookmarks - b.total_bookmarks) * -1));
             const index = Math.floor(Math.random() * (10));
             const image = json.illusts[index];
-            const pixivEmbed = yield this.createPixivEmbed(refreshToken, image);
+            const pixivEmbed = yield this.createPixivEmbed(image);
             return this.message.channel.send(pixivEmbed);
         });
         // Pixiv Popular R18 Image
-        this.getPopularPixivR18Image = (refresh) => __awaiter(this, void 0, void 0, function* () {
-            const refreshToken = refresh;
-            yield pixiv.refreshAccessToken(refreshToken);
+        this.getPopularPixivR18Image = () => __awaiter(this, void 0, void 0, function* () {
+            yield pixiv.login();
             const json = yield pixiv.illustRanking({ mode: "day_male_r18" });
-            [].sort.call(json.illusts, ((a, b) => (a.total_bookmarks - b.total_bookmarks) * -1));
+            [].sort.call(json.illusts, ((a, b) => (a.totalBookmarks - b.totalBookmarks) * -1));
             const index = Math.floor(Math.random() * (10));
             const image = json.illusts[index];
-            const pixivEmbed = yield this.createPixivEmbed(refreshToken, image);
+            const pixivEmbed = yield this.createPixivEmbed(image);
             return this.message.channel.send(pixivEmbed);
         });
     }

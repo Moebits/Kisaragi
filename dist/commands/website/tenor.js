@@ -8,23 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const tenorjs_1 = __importDefault(require("tenorjs"));
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const Tenor = require("tenorjs");
 class TenorCommand extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
         this.run = (discord, message, args) => __awaiter(this, void 0, void 0, function* () {
             const embeds = new Embeds_1.Embeds(discord, message);
-            const tenor = new tenorjs_1.default.client({
+            const tenor = new Tenor.client({
                 Key: process.env.TENOR_API_KEY,
                 Filter: "off",
                 Locale: "en_US",

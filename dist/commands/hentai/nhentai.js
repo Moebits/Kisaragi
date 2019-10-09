@@ -16,14 +16,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const nhentai = __importStar(require("nhentai-js"));
 const blacklist = __importStar(require("../../blacklist.json"));
 const Command_1 = require("../../structures/Command");
 const Images_js_1 = require("../../structures/Images.js");
 const Functions_1 = require("./../../structures/Functions");
+const nhentai = require("nhentai-js");
 class $nHentai extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });

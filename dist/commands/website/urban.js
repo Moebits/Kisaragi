@@ -8,17 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const urban_js_1 = __importDefault(require("urban.js"));
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const urban = require("urban.js");
 class Urban extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -27,7 +24,7 @@ class Urban extends Command_1.Command {
             const urbanEmbed = embeds.createEmbed();
             if (args[1]) {
                 const word = args[1];
-                const result = yield urban_js_1.default(word);
+                const result = yield urban(word);
                 const cleanDef = result.definition.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "");
                 const cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "");
                 const checkedExample = Functions_1.Functions.checkChar(cleanExample, 1700, ".");
@@ -44,7 +41,7 @@ class Urban extends Command_1.Command {
                 message.channel.send(urbanEmbed);
                 return;
             }
-            const result = yield urban_js_1.default.random();
+            const result = yield urban.random();
             const cleanDef = result.definition.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "");
             const cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "");
             const checkedExample = Functions_1.Functions.checkChar(cleanExample, 1700, ".");
