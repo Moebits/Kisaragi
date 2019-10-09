@@ -1,5 +1,6 @@
 #Sensitive data
 .env
+dist/.env
 
 #Node modules
 node_modules
