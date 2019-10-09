@@ -13,8 +13,8 @@ const Command_1 = require("../../structures/Command");
 const Functions_1 = require("./../../structures/Functions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Say extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });

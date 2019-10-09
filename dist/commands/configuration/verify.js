@@ -14,8 +14,8 @@ const Captcha_1 = require("./../../structures/Captcha");
 const Embeds_1 = require("./../../structures/Embeds");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Verify extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });

@@ -4,8 +4,8 @@ const Command_1 = require("../../structures/Command");
 const Functions_1 = require("./../../structures/Functions");
 const Letters_1 = require("./../../structures/Letters");
 class Emojify extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });

@@ -130,7 +130,8 @@ class Settings {
             "ascii name toggle": "off",
             "default channel": null,
             "block match": "partial",
-            "block toggle": "off"
+            "block toggle": "off",
+            "asterisk": "off"
         };
         this.captchaSettings = {
             "verify toggle": "off",

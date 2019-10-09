@@ -13,8 +13,8 @@ const Command_1 = require("../../structures/Command");
 const SQLQuery_1 = require("../../structures/SQLQuery");
 const Permissions_1 = require("./../../structures/Permissions");
 class Clean extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });

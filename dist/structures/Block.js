@@ -13,18 +13,20 @@ const SQLQuery_1 = require("./SQLQuery");
 class Block {
 }
 exports.Block = Block;
-// Blocked Word
-Block.block = (message) => __awaiter(void 0, void 0, void 0, function* () {
+Block.blockWord = (message) => __awaiter(void 0, void 0, void 0, function* () {
     const sql = new SQLQuery_1.SQLQuery(message);
     if (message.author.bot)
         return;
     const words = yield sql.fetchColumn("blocks", "blocked words");
+    if (words === null)
+        return;
+    const asterisk = yield sql.fetchColumn("blocks", "asterisk").then((a) => a[0] === "on" ? true : false);
     if (!words)
         return;
-    words.forEach((w) => w.replace(/0/gi, "o").replace(/1/gi, "l").replace(/!/gi, "l").replace(/\*/gi, "u"));
+    words.forEach((w) => w.replace(/0/gi, "o").replace(/1/gi, "l").replace(/!/gi, "l"));
     const match = yield sql.fetchColumn("blocks", "block match");
     if (match[0] === "exact") {
-        if (words.some((w) => w.includes(message.content))) {
+        if (words.some((w) => w.includes(message.content) || (asterisk ? w.match(/\*/g) : false))) {
             const reply = yield message.reply("Your post was removed because it contained a blocked word.");
             yield message.delete();
             reply.delete({ timeout: 10000 });
@@ -32,7 +34,7 @@ Block.block = (message) => __awaiter(void 0, void 0, void 0, function* () {
     }
     else {
         for (let i = 0; i < words.length; i++) {
-            if (message.content.includes(words[i])) {
+            if (message.content.includes(words[i]) || (asterisk ? words[i].match(/\*/g) : false)) {
                 const reply = yield message.reply("Your post was removed because it contained a blocked word.");
                 yield message.delete();
                 reply.delete({ timeout: 10000 });

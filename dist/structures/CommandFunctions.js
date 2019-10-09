@@ -22,7 +22,7 @@ class CommandFunctions {
                 return this.noCommand(message, args[0]);
             const cp = require(`${path}`);
             yield cp.run(this.discord, message, args).catch((err) => { if (message)
-                message.channel.send(this.discord.cmdError(err)); });
+                message.channel.send(this.discord.cmdError(message, err)); });
         });
         // Auto Command
         this.autoCommand = (message) => __awaiter(this, void 0, void 0, function* () {
@@ -59,10 +59,8 @@ class CommandFunctions {
                     timeLeft = 0;
                 }
                 const guildMsg = yield guildChannel.messages.fetch({ limit: 1 }).then((m) => m.first());
-                if (guildMsg && guildMsg.author)
-                    guildMsg.author.id = this.discord.user.id;
                 setInterval(() => __awaiter(this, void 0, void 0, function* () {
-                    yield this.runCommand(message, cmd);
+                    yield this.runCommand(guildMsg || message, cmd);
                     timeLeft = timeout;
                 }), timeLeft > 0 ? timeLeft : timeout);
             }

@@ -9,20 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const node_osu_1 = require("node-osu");
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const { Osu } = require("node-osu");
 class OsuCommand extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
         this.run = (discord, message, args) => __awaiter(this, void 0, void 0, function* () {
             const embeds = new Embeds_1.Embeds(discord, message);
             // const axios = require("axios");
-            const osu = new node_osu_1.Osu.Api(process.env.OSU_API_KEY);
+            const osu = new Osu.Api(process.env.OSU_API_KEY);
             const osuEmbed = embeds.createEmbed();
             const star = discord.getEmoji("star");
             const playerName = args[1];

@@ -40,7 +40,7 @@ export default class Role extends Command {
                   await message.channel.send(roleEmbed
                     .setDescription(`${member.displayName} now has the ${role} role!`))
                 } catch (error) {
-                  discord.cmdError(error)
+                  discord.cmdError(message, error)
                   message.channel.send(roleEmbed
                     .setDescription(`The role **${roleName}** could not be found.`))
                 }
@@ -53,7 +53,7 @@ export default class Role extends Command {
                 await message.channel.send(roleEmbed
                   .setDescription(`${member.displayName} no longer has the ${role} role!`))
               } catch (error) {
-                discord.cmdError(error)
+                discord.cmdError(message, error)
                 message.channel.send(roleEmbed
                   .setDescription(`The role **${roleName}** could not be found.`))
               }

@@ -15,14 +15,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
-const gifFrames = __importStar(require("gif-frames"));
-const download = __importStar(require("image-downloader"));
+const gif_frames_1 = __importDefault(require("gif-frames"));
 const cv = __importStar(require("opencv4nodejs"));
 const Functions_1 = require("./Functions");
 const SQLQuery_1 = require("./SQLQuery");
 const classifier = new cv.CascadeClassifier("../assets/cascades/animeface.xml");
+const download = require("image-downloader");
 class Detector {
     constructor(discord) {
         this.discord = discord;
@@ -65,6 +68,7 @@ class Detector {
             }
         });
         this.swapRoles = (message, member, counter) => __awaiter(this, void 0, void 0, function* () {
+            // console.log(message.author.id)
             if (message.author.bot)
                 return;
             const sql = new SQLQuery_1.SQLQuery(message);
@@ -80,7 +84,7 @@ class Detector {
             const weebRole = message.guild.roles.find((r) => r.id === weeb);
             const normieRole = message.guild.roles.find((r) => r.id === normie);
             if (member.user.displayAvatarURL().slice(-3) === "gif") {
-                gifFrames({ url: member.user.displayAvatarURL(), frames: 1 }).then((frameData) => {
+                gif_frames_1.default({ url: member.user.displayAvatarURL(), frames: 1 }).then((frameData) => {
                     frameData[0].getImage().pipe(fs.createWriteStream("../assets/detection/user.jpg"));
                 });
                 yield Functions_1.Functions.timeout(1000);

@@ -57,32 +57,32 @@ class Embeds {
                     const thumbnail = [];
                     for (let i = 0; i < embeds.length; i++) {
                         description.push(embeds[i].description);
-                        thumbnail.push(embeds[i].thumbnail);
+                        thumbnail.push((embeds[i].thumbnail));
                     }
-                    for (const reaction of reactionsCollapse)
-                        yield msg.react(reaction);
+                    for (let i = 0; i < reactionsCollapse.length; i++)
+                        yield msg.react(reactionsCollapse[i]);
                     const collapseCheck = (reaction, user) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false;
                     const expandCheck = (reaction, user) => reaction.emoji === this.discord.getEmoji("expand") && user.bot === false;
                     const collapse = msg.createReactionCollector(collapseCheck);
                     const expand = msg.createReactionCollector(expandCheck);
-                    collapse.on("collect", (r) => {
+                    collapse.on("collect", (reaction, user) => {
                         for (let i = 0; i < embeds.length; i++) {
                             embeds[i].setDescription("");
                             embeds[i].setThumbnail("");
                         }
                         msg.edit(embeds[page]);
-                        r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                        reaction.users.remove(user);
                     });
-                    expand.on("collect", (r) => {
+                    expand.on("collect", (reaction, user) => {
                         for (let i = 0; i < embeds.length; i++) {
                             embeds[i].setDescription(description[i]);
                             embeds[i].setThumbnail(thumbnail[i].url);
                         }
                         msg.edit(embeds[page]);
-                        r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                        reaction.users.remove(user);
                     });
                 }
-                backward.on("collect", (r) => __awaiter(this, void 0, void 0, function* () {
+                backward.on("collect", (reaction, user) => __awaiter(this, void 0, void 0, function* () {
                     if (page === 0) {
                         page = embeds.length - 1;
                     }
@@ -91,9 +91,9 @@ class Embeds {
                     }
                     yield this.sql.updateColumn("collectors", "page", page, "message", msg.id);
                     msg.edit(embeds[page]);
-                    r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                    yield reaction.users.remove(user);
                 }));
-                forward.on("collect", (r) => __awaiter(this, void 0, void 0, function* () {
+                forward.on("collect", (reaction, user) => __awaiter(this, void 0, void 0, function* () {
                     if (page === embeds.length - 1) {
                         page = 0;
                     }
@@ -102,9 +102,9 @@ class Embeds {
                     }
                     yield this.sql.updateColumn("collectors", "page", page, "message", msg.id);
                     msg.edit(embeds[page]);
-                    r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                    reaction.users.remove(user);
                 }));
-                tripleBackward.on("collect", (r) => __awaiter(this, void 0, void 0, function* () {
+                tripleBackward.on("collect", (reaction, user) => __awaiter(this, void 0, void 0, function* () {
                     if (page === 0) {
                         page = (embeds.length - 1) - Math.floor(embeds.length / 5);
                     }
@@ -115,9 +115,9 @@ class Embeds {
                         page *= -1;
                     yield this.sql.updateColumn("collectors", "page", page, "message", msg.id);
                     msg.edit(embeds[page]);
-                    r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                    reaction.users.remove(user);
                 }));
-                tripleForward.on("collect", (r) => __awaiter(this, void 0, void 0, function* () {
+                tripleForward.on("collect", (reaction, user) => __awaiter(this, void 0, void 0, function* () {
                     if (page === embeds.length - 1) {
                         page = 0 + Math.floor(embeds.length / 5);
                     }
@@ -128,7 +128,7 @@ class Embeds {
                         page -= embeds.length - 1;
                     yield this.sql.updateColumn("collectors", "page", page, "message", msg.id);
                     msg.edit(embeds[page]);
-                    r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                    reaction.users.remove(user);
                 }));
             }));
         };
@@ -212,24 +212,24 @@ class Embeds {
                 const expandCheck = (reaction, user) => reaction.emoji === this.discord.getEmoji("expand") && user.bot === false;
                 const collapse = msg.createReactionCollector(collapseCheck);
                 const expand = msg.createReactionCollector(expandCheck);
-                collapse.on("collect", (r) => {
+                collapse.on("collect", (reaction, user) => {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription("");
                         embeds[i].setThumbnail("");
                     }
                     msg.edit(embeds[page]);
-                    r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                    reaction.users.remove(user);
                 });
-                expand.on("collect", (r) => {
+                expand.on("collect", (reaction, user) => {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription(description[i]);
                         embeds[i].setThumbnail(thumbnail[i].url);
                     }
                     msg.edit(embeds[page]);
-                    r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                    reaction.users.remove(user);
                 });
             }
-            backward.on("collect", (r) => __awaiter(this, void 0, void 0, function* () {
+            backward.on("collect", (reaction, user) => __awaiter(this, void 0, void 0, function* () {
                 if (page === 0) {
                     page = embeds.length - 1;
                 }
@@ -238,9 +238,9 @@ class Embeds {
                 }
                 yield this.sql.updateColumn("collectors", "page", page, "message", msg.id);
                 msg.edit(embeds[page]);
-                r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                reaction.users.remove(user);
             }));
-            forward.on("collect", (r) => __awaiter(this, void 0, void 0, function* () {
+            forward.on("collect", (reaction, user) => __awaiter(this, void 0, void 0, function* () {
                 if (page === embeds.length - 1) {
                     page = 0;
                 }
@@ -249,9 +249,9 @@ class Embeds {
                 }
                 yield this.sql.updateColumn("collectors", "page", page, "message", msg.id);
                 msg.edit(embeds[page]);
-                r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                reaction.users.remove(user);
             }));
-            tripleBackward.on("collect", (r) => __awaiter(this, void 0, void 0, function* () {
+            tripleBackward.on("collect", (reaction, user) => __awaiter(this, void 0, void 0, function* () {
                 if (page === 0) {
                     page = (embeds.length - 1) - Math.floor(embeds.length / 5);
                 }
@@ -262,9 +262,9 @@ class Embeds {
                     page *= -1;
                 yield this.sql.updateColumn("collectors", "page", page, "message", msg.id);
                 msg.edit(embeds[page]);
-                r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                reaction.users.remove(user);
             }));
-            tripleForward.on("collect", (r) => __awaiter(this, void 0, void 0, function* () {
+            tripleForward.on("collect", (reaction, user) => __awaiter(this, void 0, void 0, function* () {
                 if (page === embeds.length - 1) {
                     page = 0 + Math.floor(embeds.length / 5);
                 }
@@ -275,7 +275,7 @@ class Embeds {
                     page -= embeds.length - 1;
                 yield this.sql.updateColumn("collectors", "page", page, "message", msg.id);
                 msg.edit(embeds[page]);
-                r.users.remove(r.users.find((u) => u.id !== this.discord.user.id));
+                reaction.users.remove(user);
             }));
         });
         // Create Prompt

@@ -8,20 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const kaomoji = __importStar(require("kaomojilib"));
 const Command_1 = require("../../structures/Command");
 const Functions_1 = require("./../../structures/Functions");
+const kaomoji = require("kaomojilib");
 class Kaomoji extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -38,8 +31,8 @@ class Kaomoji extends Command_1.Command {
                 return;
             }
             const query = Functions_1.Functions.combineArgs(args, 1);
-            for (const i in lib) {
-                for (const j in lib[i].keywords) {
+            for (let i = 0; i < lib.length; i++) {
+                for (let j = 0; j < lib[i].keywords.length; j++) {
                     if (query.toLowerCase().trim() === lib[i].keywords[j].toLowerCase()) {
                         message.channel.send(lib[i].icon);
                         return;

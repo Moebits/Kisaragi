@@ -8,25 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const kuroshiro_1 = __importDefault(require("kuroshiro"));
-const kuroshiro_analyzer_kuromoji_1 = __importDefault(require("kuroshiro-analyzer-kuromoji"));
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const Kuroshiro = require("kuroshiro");
+const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji");
 class Romaji extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
         this.run = (discord, message, args) => __awaiter(this, void 0, void 0, function* () {
             const embeds = new Embeds_1.Embeds(discord, message);
-            const kuroshiro = new kuroshiro_1.default();
-            yield kuroshiro.init(new kuroshiro_analyzer_kuromoji_1.default());
+            const kuroshiro = new Kuroshiro();
+            yield kuroshiro.init(new KuromojiAnalyzer());
             const input = Functions_1.Functions.combineArgs(args, 1);
             const result = yield kuroshiro.convert(input, { mode: "spaced", to: "romaji" });
             const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "");

@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import PixivApiClient from "pixiv-app-api"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -6,7 +7,6 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {PixivApi} from "./../../structures/PixivApi"
 
-const PixivApiClient = require("pixiv-api-client")
 const Ugoira = require("node-ugoira")
 const pixivImg = require("pixiv-img")
 
@@ -23,8 +23,7 @@ export default class UgoiraCommand extends Command {
         const embeds = new Embeds(discord, message)
         const pixivApi = new PixivApi(discord, message)
         const fs = require("fs")
-        const pixiv = new PixivApiClient()
-        const refreshToken = await pixivApi.pixivLogin()
+        const pixiv = new PixivApiClient(undefined, undefined, {camelcaseKeys: true})
         const input = (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en") ?
         ((args[2] === "en") ? Functions.combineArgs(args, 3) : Functions.combineArgs(args, 2)) :
         Functions.combineArgs(args, 1)
@@ -35,14 +34,14 @@ export default class UgoiraCommand extends Command {
         } else {
             if (args[1].toLowerCase() === "r18") {
                 if (args[2].toLowerCase() === "en") {
-                    const image = await pixivApi.getPixivImage(refreshToken, input, true, true, true, true)
+                    const image = await pixivApi.getPixivImage(input, true, true, true, true)
                     try {
                             pixivID = image.id
                         } catch (err) {
                             if (err) pixivApi.pixivErrorEmbed()
                         }
                 } else {
-                    const image = await pixivApi.getPixivImage(refreshToken, input, true, false, true, true)
+                    const image = await pixivApi.getPixivImage(input, true, false, true, true)
                     try {
                             pixivID = image.id
                         } catch (err) {
@@ -50,14 +49,14 @@ export default class UgoiraCommand extends Command {
                         }
                 }
             } else if (args[1].toLowerCase() === "en") {
-                const image = await pixivApi.getPixivImage(refreshToken, input, false, true, true, true)
+                const image = await pixivApi.getPixivImage(input, false, true, true, true)
                 try {
                         pixivID = image.id
                     } catch (err) {
                         if (err) pixivApi.pixivErrorEmbed()
                     }
             } else {
-                const image = await pixivApi.getPixivImage(refreshToken, input, false, false, true, true)
+                const image = await pixivApi.getPixivImage(input, false, false, true, true)
                 try {
                         pixivID = image.id
                     } catch (err) {
@@ -66,22 +65,22 @@ export default class UgoiraCommand extends Command {
             }
         }
 
-        await pixiv.refreshAccessToken(refreshToken)
-        const details = await pixiv.illustDetail(pixivID)
-        const ugoiraInfo = await pixiv.ugoiraMetaData(pixivID)
+        await pixiv.login()
+        const details = await pixiv.illustDetail(pixivID as number)
+        const ugoiraInfo = await pixiv.ugoiraMetaData(pixivID as number)
         const fileNames: string[] = []
-        const frameDelays: string[] = []
+        const frameDelays: number[] = []
         const frameNames: string[] = []
-        for (const i in ugoiraInfo.ugoira_metadata.frames) {
-            frameDelays.push(ugoiraInfo.ugoira_metadata.frames[i].delay)
-            fileNames.push(ugoiraInfo.ugoira_metadata.frames[i].file)
+        for (let i = 0; i < ugoiraInfo.ugoiraMetadata.frames.length; i++) {
+            frameDelays.push(ugoiraInfo.ugoiraMetadata.frames[i].delay)
+            fileNames.push(ugoiraInfo.ugoiraMetadata.frames[i].file)
         }
         for (let i = 0; i < fileNames.length; i++) {
             frameNames.push(fileNames[i].slice(0, -4))
         }
 
         const ugoira = new Ugoira(pixivID)
-        await ugoira.initUgoira(refreshToken)
+        await ugoira.initUgoira()
 
         const file = fs.createWriteStream(`ugoira/${pixivID}/${pixivID}.gif`, (error: Error) => console.log(error))
 
@@ -97,9 +96,9 @@ export default class UgoiraCommand extends Command {
         const ugoiraEmbed = embeds.createEmbed()
         const {Attachment} = require("discord.js")
         const outGif = new Attachment(`../assets/gifs/${pixivID}.gif`)
-        const comments = await pixiv.illustComments(pixivID)
-        const cleanText = details.illust.caption.replace(/<\/?[^>]+(>|$)/g, "")
-        const authorUrl = await pixivImg(details.illust.user.profile_image_urls.medium)
+        const comments = await pixiv.illustComments(pixivID as number)
+        const cleanText = details.caption.replace(/<\/?[^>]+(>|$)/g, "")
+        const authorUrl = await pixivImg(details.user.profileImageUrls.medium)
         const authorAttachment = new Attachment(authorUrl)
         const commentArray: string[] = []
         for (let i = 0; i <= 5; i++) {
@@ -110,11 +109,11 @@ export default class UgoiraCommand extends Command {
             .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("kannaSip")}`)
             .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${pixivID}`)
             .setDescription(
-                `${discord.getEmoji("star")}_Title:_ **${details.illust.title}**\n` +
-                `${discord.getEmoji("star")}_Artist:_ **${details.illust.user.name}**\n` +
-                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(details.illust.create_date)}**\n` +
-                `${discord.getEmoji("star")}_Views:_ **${details.illust.total_view}**\n` +
-                `${discord.getEmoji("star")}_Bookmarks:_ **${details.illust.total_bookmarks}**\n` +
+                `${discord.getEmoji("star")}_Title:_ **${details.title}**\n` +
+                `${discord.getEmoji("star")}_Artist:_ **${details.user.name}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(details.createDate))}**\n` +
+                `${discord.getEmoji("star")}_Views:_ **${details.totalView}**\n` +
+                `${discord.getEmoji("star")}_Bookmarks:_ **${details.totalBookmarks}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` +
                 `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
                 )

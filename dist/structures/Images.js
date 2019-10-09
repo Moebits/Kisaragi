@@ -15,21 +15,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const Canvas = __importStar(require("canvas"));
-const compressImages = __importStar(require("compress-images"));
 const discord_js_1 = require("discord.js");
 const fs = __importStar(require("fs"));
-const getPixels = __importStar(require("get-pixels"));
-const GifEncoder = __importStar(require("gif-encoder"));
-const gifFrames = __importStar(require("gif-frames"));
-const imageDataURI = __importStar(require("image-data-uri"));
-const download = __importStar(require("image-downloader"));
-const sizeOf = __importStar(require("image-size"));
-const imagemin = __importStar(require("imagemin"));
-const imageminGifsicle = __importStar(require("imagemin-gifsicle"));
+const gif_frames_1 = __importDefault(require("gif-frames"));
+const image_size_1 = __importDefault(require("image-size"));
+const imagemin_1 = __importDefault(require("imagemin"));
+const imagemin_gifsicle_1 = __importDefault(require("imagemin-gifsicle"));
 const Embeds_1 = require("./Embeds");
 const Functions_1 = require("./Functions");
+const compressImages = require("compress-images");
+const getPixels = require("get-pixels");
+const GifEncoder = require("gif-encoder");
+const imageDataURI = require("image-data-uri");
+const download = require("image-downloader");
 class Images {
     // let blacklist = require("../blacklist.json");
     constructor(discord, message) {
@@ -38,8 +41,8 @@ class Images {
         this.embeds = new Embeds_1.Embeds(this.discord, this.message);
         // Compress Gif
         this.compressGif = (input) => __awaiter(this, void 0, void 0, function* () {
-            const file = yield imagemin(input, { destination: "../assets/gifs",
-                plugins: [imageminGifsicle({ interlaced: true, optimizationLevel: 3, colors: 256 })]
+            const file = yield imagemin_1.default(input, { destination: "../assets/gifs",
+                plugins: [imagemin_gifsicle_1.default({ interlaced: true, optimizationLevel: 3, colors: 256 })]
             });
             return file;
         });
@@ -77,7 +80,7 @@ class Images {
                 }
             }
             return new Promise((resolve) => {
-                const dimensions = sizeOf(`${path}${images[0]}`);
+                const dimensions = image_size_1.default(`${path}${images[0]}`);
                 const gif = new GifEncoder(dimensions.width, dimensions.height);
                 gif.pipe(file);
                 gif.setQuality(20);
@@ -133,7 +136,7 @@ class Images {
             })));
         });
         // nhentai Doujin
-        this.getNhentaiDoujin = (doujin, tag) => __awaiter(this, void 0, void 0, function* () {
+        this.getNhentaiDoujin = (doujin, tag) => {
             const checkArtists = doujin.details.artists ? Functions_1.Functions.checkChar(doujin.details.artists.join(" "), 50, ")") : "None";
             const checkCharacters = doujin.details.characters ? Functions_1.Functions.checkChar(doujin.details.characters.join(" "), 50, ")") : "None";
             const checkTags = doujin.details.tags ? Functions_1.Functions.checkChar(doujin.details.tags.join(" "), 50, ")") : "None";
@@ -166,20 +169,19 @@ class Images {
                     // .setImage(`attachment://page${i}.jpg`)
                     .setThumbnail(doujin.thumbnails[0])
                     .setImage(doujin.pages[i]);
-                yield doujinPages.push(nhentaiEmbed);
+                doujinPages.push(nhentaiEmbed);
             }
             this.embeds.createReactionEmbed(doujinPages, true);
-        });
+        };
         // Fetch Channel Attachments
         this.fetchChannelAttachments = (channel) => __awaiter(this, void 0, void 0, function* () {
             let beforeID = channel.lastMessageID;
             const attachmentArray = [];
             while (beforeID !== undefined || null) {
                 setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                    const messages = yield channel.fetchMessages({ limit: 100, before: beforeID });
+                    const messages = yield channel.messages.fetch({ limit: 100, before: beforeID });
                     beforeID = messages.lastKey();
-                    const filteredMessages = yield messages.filter((msg) => msg.attachments.firstKey() !== undefined || null);
-                    const filteredArray = yield filteredMessages.attachments.map((attachment) => attachment.url);
+                    const filteredArray = messages.map((msg) => msg.attachments.map((a) => a.url)).flat(1);
                     for (let i = 0; i < filteredArray.length; i++) {
                         attachmentArray.push(filteredArray[i]);
                     }
@@ -195,11 +197,10 @@ class Images {
             "#8AE4FF",
             "#FF8AD8"
         ];
-        this.createCanvas = (member, rawImage, text, color, uri, iterator) => __awaiter(this, void 0, void 0, function* () {
+        this.createCanvas = (member, image, text, color, uri, iterator) => __awaiter(this, void 0, void 0, function* () {
             const colorStops = this.colorStops;
-            const image = (rawImage.constructor === Array) ? rawImage.join("") : rawImage;
-            const newText = text.join("").replace(/user/g, `@${member.user.tag}`).replace(/guild/g, member.guild.name)
-                .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount);
+            const newText = text.replace(/user/g, `@${member.user.tag}`).replace(/guild/g, member.guild.name)
+                .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, String(member.guild.memberCount));
             function wrapText(context, txt, x, y, maxWidth, lineHeight) {
                 const cars = txt.split("\n");
                 for (let i = 0; i < cars.length; i++) {
@@ -242,7 +243,7 @@ class Images {
                 }
                 const files = [];
                 const attachmentArray = [];
-                const frames = yield gifFrames({ url: image, frames: "all", cumulative: true });
+                const frames = yield gif_frames_1.default({ url: image, frames: "all", cumulative: true });
                 for (let i = 0; i < frames.length; i++) {
                     const readStream = frames[i].getImage();
                     const writeStream = fs.createWriteStream(`../assets/images/${random}/image${frames[i].frameIndex}.jpg`);
@@ -273,7 +274,7 @@ class Images {
                 ctx.font = applyText(canvas, newText);
                 ctx.strokeStyle = "black";
                 ctx.lineWidth = 4;
-                if (color.join("") === "rainbow") {
+                if (color === "rainbow") {
                     let rainbowIterator = iterator ? iterator : 0;
                     const gradient = ctx.createLinearGradient(0, 0, canvas.width + 200, 0);
                     for (let i = 0; i < colorStops.length; i++) {
@@ -288,14 +289,14 @@ class Images {
                     ctx.fillStyle = gradient;
                 }
                 else {
-                    ctx.fillStyle = color.join("");
+                    ctx.fillStyle = color;
                 }
                 wrapText(ctx, newText, canvas.width / 2.8, canvas.height / 4, 450, 55);
                 ctx.beginPath();
                 ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
                 ctx.closePath();
                 ctx.clip();
-                const avatar = yield Canvas.loadImage(member.user.displayAvatarURL);
+                const avatar = yield Canvas.loadImage(member.user.displayAvatarURL());
                 ctx.drawImage(avatar, 25, 25, 200, 200);
                 if (uri) {
                     return canvas.toDataURL("image/jpeg");

@@ -40,7 +40,7 @@ class GuildMemberAdd {
                     const welcomeText = yield sql.fetchColumn("welcome leaves", "welcome bg text");
                     const welcomeColor = yield sql.fetchColumn("welcome leaves", "welcome bg color");
                     const channel = member.guild.channels.find((c) => c.id.toString() === welcomeChannel.join(""));
-                    const attachment = yield image.createCanvas(member, welcomeImage, welcomeText, welcomeColor);
+                    const attachment = yield image.createCanvas(member, welcomeImage[0], welcomeText[0], welcomeColor[0]);
                     const newMsg = welcomeMsg.join("").replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
                         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString());
                     channel.send(newMsg, attachment);

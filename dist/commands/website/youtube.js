@@ -19,33 +19,33 @@ const Embeds_1 = require("../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
 let ytEmbeds = [];
 class Youtube extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
-        this.ytChannelEmbed = (discord, youtube, channelLink) => __awaiter(this, void 0, void 0, function* () {
+        this.ytChannelEmbed = (discord, embeds, youtube, channelLink) => __awaiter(this, void 0, void 0, function* () {
             const channel = yield youtube.getChannelByUrl(channelLink);
             const channelBanner = yield axios_1.default.get(`https://www.googleapis.com/youtube/v3/channels?part=brandingSettings&id=${channel.id}&key=${process.env.GOOGLE_API_KEY}`);
             const keywords = channelBanner.data.items[0].brandingSettings.channel.keywords;
             const channelBannerUrl = channelBanner.data.items[0].brandingSettings.image.bannerImageUrl;
-            const youtubeEmbed = discord.createEmbed();
+            const youtubeEmbed = embeds.createEmbed();
             youtubeEmbed
                 .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
                 .setTitle(`**${channel.name}** ${discord.getEmoji("kannaWave")}`)
                 .setURL(channel.url)
                 .setDescription(`${discord.getEmoji("star")}_Custom URL:_ **${channel.data.snippet.customUrl ? `https://youtube.com/c/${channel.data.snippet.customUrl}` : "None"}**\n` +
                 `${discord.getEmoji("star")}_Keywords:_ ${keywords ? keywords : "None"}\n` +
-                `${discord.getEmoji("star")}_Creation Date:_ **${discord.formatDate(channel.dateCreated)}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions_1.Functions.formatDate(channel.dateCreated)}**\n` +
                 `${discord.getEmoji("star")}_Country:_ ${channel.country}\n` +
                 `${discord.getEmoji("star")}_Subscribers:_ **${channel.subCount}** _Views:_ **${channel.views}**\n` +
                 `${discord.getEmoji("star")}_Videos:_ **${channel.data.statistics.videoCount}**\n` +
-                `${discord.getEmoji("star")}_About:_ ${discord.checkChar(channel.about, 1800, ".")}\n`)
+                `${discord.getEmoji("star")}_About:_ ${Functions_1.Functions.checkChar(channel.about, 1800, ".")}\n`)
                 .setThumbnail(channel.profilePictures.high.url)
                 .setImage(channelBannerUrl);
             ytEmbeds.push(youtubeEmbed);
         });
-        this.ytPlaylistEmbed = (discord, youtube, playLink) => __awaiter(this, void 0, void 0, function* () {
+        this.ytPlaylistEmbed = (discord, embeds, youtube, playLink) => __awaiter(this, void 0, void 0, function* () {
             const playlist = yield youtube.getPlaylistByUrl(playLink);
             const ytChannel = yield youtube.getChannel(playlist.creatorId);
             const videos = yield playlist.fetchVideos(5);
@@ -55,13 +55,13 @@ class Youtube extends Command_1.Command {
                     break;
                 videoArray.push(`**${videos[i].title}**\n`);
             }
-            const youtubeEmbed = discord.createEmbed();
+            const youtubeEmbed = embeds.createEmbed();
             youtubeEmbed
                 .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
                 .setTitle(`**${playlist.title}** ${discord.getEmoji("kannaWave")}`)
                 .setURL(`https://www.youtube.com/playlist?list=${playlist.id}`)
                 .setDescription(`${discord.getEmoji("star")}_Channel:_ **${ytChannel.name}**\n` +
-                `${discord.getEmoji("star")}_Creation Date:_ **${discord.formatDate(playlist.dateCreated)}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions_1.Functions.formatDate(playlist.dateCreated)}**\n` +
                 `${discord.getEmoji("star")}_Tags:_ ${playlist.tags ? playlist.tags : "None"}\n` +
                 `${discord.getEmoji("star")}_Video Count:_ **${playlist.length}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${playlist.data.snippet.description ? playlist.data.snippet.description : "None"}\n` +
@@ -70,7 +70,7 @@ class Youtube extends Command_1.Command {
                 .setImage(playlist.thumbnails.maxres ? playlist.thumbnails.maxres.url : playlist.thumbnails.high.url);
             ytEmbeds.push(youtubeEmbed);
         });
-        this.ytVideoEmbed = (discord, youtube, videoLink) => __awaiter(this, void 0, void 0, function* () {
+        this.ytVideoEmbed = (discord, embeds, youtube, videoLink) => __awaiter(this, void 0, void 0, function* () {
             const video = yield youtube.getVideoByUrl(videoLink);
             const comments = yield video.fetchComments(5);
             const commentArray = [];
@@ -80,7 +80,7 @@ class Youtube extends Command_1.Command {
                 commentArray.push(`**${comments[i].author.username}:** ${comments[i].text.displayed}\n`);
             }
             const ytChannel = yield youtube.getChannel(video.channelId);
-            const youtubeEmbed = discord.createEmbed();
+            const youtubeEmbed = embeds.createEmbed();
             youtubeEmbed
                 .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
                 .setTitle(`**${video.title}** ${discord.getEmoji("kannaWave")}`)
@@ -88,9 +88,9 @@ class Youtube extends Command_1.Command {
                 .setDescription(`${discord.getEmoji("star")}_Channel:_ **${ytChannel.name}**\n` +
                 `${discord.getEmoji("star")}_Views:_ **${video.views}**\n` +
                 `${discord.getEmoji("star")} ${discord.getEmoji("up")} **${video.likes}** ${discord.getEmoji("down")} **${video.dislikes}**\n` +
-                `${discord.getEmoji("star")}_Date Published:_ **${discord.formatDate(video.datePublished)}**\n` +
-                `${discord.getEmoji("star")}_Description:_ ${video.description ? discord.checkChar(video.description, 1500, ".") : "None"}\n` +
-                `${discord.getEmoji("star")}_Comments:_ ${commentArray.join(" ") ? discord.checkChar(commentArray.join(" "), 200, " ") : "None"}\n`)
+                `${discord.getEmoji("star")}_Date Published:_ **${Functions_1.Functions.formatDate(video.datePublished)}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${video.description ? Functions_1.Functions.checkChar(video.description, 1500, ".") : "None"}\n` +
+                `${discord.getEmoji("star")}_Comments:_ ${commentArray.join(" ") ? Functions_1.Functions.checkChar(commentArray.join(" "), 200, " ") : "None"}\n`)
                 .setThumbnail(ytChannel.profilePictures.high.url)
                 .setImage(video.thumbnails.maxres ? video.thumbnails.maxres.url : video.thumbnails.high.url);
             ytEmbeds.push(youtubeEmbed);
@@ -109,13 +109,13 @@ class Youtube extends Command_1.Command {
                         if (!channelResult[i])
                             break;
                         channelLink = channelResult[i].url;
-                        yield this.ytChannelEmbed(discord, youtube, channelLink);
+                        yield this.ytChannelEmbed(discord, embeds, youtube, channelLink);
                     }
                     embeds.createReactionEmbed(ytEmbeds);
                     msg.delete({ timeout: 1000 });
                     return;
                 }
-                yield this.ytChannelEmbed(discord, youtube, channelLink);
+                yield this.ytChannelEmbed(discord, embeds, youtube, channelLink);
                 message.channel.send(ytEmbeds[0]);
                 msg.delete({ timeout: 1000 });
                 return;
@@ -130,13 +130,13 @@ class Youtube extends Command_1.Command {
                         if (!playlistResult[i])
                             break;
                         playLink = `https://www.youtube.com/playlist?list=${playlistResult[i].id}`;
-                        yield this.ytPlaylistEmbed(discord, youtube, playLink);
+                        yield this.ytPlaylistEmbed(discord, embeds, youtube, playLink);
                     }
                     embeds.createReactionEmbed(ytEmbeds);
                     msg.delete({ timeout: 1000 });
                     return;
                 }
-                yield this.ytPlaylistEmbed(discord, youtube, playLink);
+                yield this.ytPlaylistEmbed(discord, embeds, youtube, playLink);
                 message.channel.send(ytEmbeds[0]);
                 msg.delete({ timeout: 1000 });
                 return;
@@ -150,13 +150,13 @@ class Youtube extends Command_1.Command {
                         if (!videoResult[i])
                             break;
                         videoLink = videoResult[i].url;
-                        yield this.ytVideoEmbed(discord, youtube, videoLink);
+                        yield this.ytVideoEmbed(discord, embeds, youtube, videoLink);
                     }
                     embeds.createReactionEmbed(ytEmbeds);
                     msg.delete({ timeout: 1000 });
                     return;
                 }
-                yield this.ytVideoEmbed(discord, youtube, videoLink);
+                yield this.ytVideoEmbed(discord, embeds, youtube, videoLink);
                 message.channel.send(ytEmbeds[0]);
                 msg.delete({ timeout: 1000 });
                 return;

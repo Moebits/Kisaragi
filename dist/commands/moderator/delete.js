@@ -14,8 +14,8 @@ const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
 const Permissions_1 = require("./../../structures/Permissions");
 class Delete extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -54,7 +54,7 @@ class Delete extends Command_1.Command {
             const num = Number(args[1]) + 2;
             let userID = false;
             let search = false;
-            let query;
+            let query = "";
             if (args[2]) {
                 if (args[2].match(/\d+/g)) {
                     userID = true;

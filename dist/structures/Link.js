@@ -16,14 +16,15 @@ class Link {
         this.linkRun = (path, msg, args) => __awaiter(this, void 0, void 0, function* () {
             if (linkCool.has(msg.guild.id)) {
                 const reply = yield msg.reply("This command is under a 30 second cooldown!");
-                reply.delete(3000);
+                reply.delete({ timeout: 3000 });
                 return;
             }
             linkCool.add(msg.guild.id);
             setTimeout(() => linkCool.delete(msg.guild.id), 30000);
             const loading = yield msg.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`);
-            yield path.run(this.discord, msg, args).catch((err) => msg.channel.send(this.discord.cmdError(err)));
-            loading.delete(1000);
+            const cmd = new (require(path).default)();
+            yield cmd.run(this.discord, msg, args).catch((err) => msg.channel.send(this.discord.cmdError(msg, err)));
+            loading.delete({ timeout: 1000 });
         });
         this.postLink = (msg) => __awaiter(this, void 0, void 0, function* () {
             if (msg.content.startsWith("https://www.youtube.com/channel/") || msg.content.startsWith("https://www.youtube.com/c/")) {

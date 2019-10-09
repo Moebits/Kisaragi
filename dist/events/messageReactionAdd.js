@@ -37,7 +37,7 @@ class MessageReactionAdd {
                         const page = yield sql.fetchColumn("collectors", "page", "message", reaction.message.id);
                         const newEmbeds = [];
                         for (let i = 0; i < cachedEmbeds[0].length; i++) {
-                            newEmbeds.push(new discord_js_1.MessageEmbed(JSON.parse(embeds[0][i])));
+                            newEmbeds.push(new discord_js_1.MessageEmbed(JSON.parse(cachedEmbeds[0][i])));
                         }
                         active.add(reaction.message.id);
                         yield embeds.editReactionCollector(reaction.message, reaction.emoji.name, newEmbeds, Boolean(collapse[0]), Number(page[0]));

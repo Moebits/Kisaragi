@@ -16,8 +16,8 @@ const Images_1 = require("./../../structures/Images");
 const Permissions_1 = require("./../../structures/Permissions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Leave extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -43,7 +43,7 @@ class Leave extends Command_1.Command {
             const leaveImage = yield sql.fetchColumn("welcome leaves", "leave bg image");
             const leaveText = yield sql.fetchColumn("welcome leaves", "leave bg text");
             const leaveColor = yield sql.fetchColumn("welcome leaves", "leave bg color");
-            const attachment = yield images.createCanvas(message.member, leaveImage, leaveText, leaveColor);
+            const attachment = yield images.createCanvas(message.member, leaveImage[0], leaveText[0], leaveColor[0]);
             const json = yield axios.get(`https://is.gd/create.php?format=json&url=${leaveImage.join("")}`);
             const newImg = json.data.shorturl;
             console.log(attachment);

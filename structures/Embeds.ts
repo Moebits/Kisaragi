@@ -1,7 +1,14 @@
-import {Emoji, Message, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, User} from "discord.js"
+import {Emoji, Message, MessageCollector, MessageEmbed, MessageReaction, ReactionEmoji, User} from "discord.js"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 import {SQLQuery} from "./SQLQuery"
+
+interface MessageEmbedThumbnail {
+    url: string
+    proxyURL?: string
+    height?: number
+    width?: number
+}
 
 export class Embeds {
     private readonly functions = new Functions(this.message)
@@ -26,7 +33,7 @@ export class Embeds {
             embeds[i].setFooter(`Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL())
         }
         const reactions: Emoji[] = [this.discord.getEmoji("right"), this.discord.getEmoji("left"), this.discord.getEmoji("tripleRight"), this.discord.getEmoji("tripleLeft")]
-        const reactionsCollapse = [this.discord.getEmoji("collapse"), this.discord.getEmoji("expand")]
+        const reactionsCollapse: Emoji[] = [this.discord.getEmoji("collapse"), this.discord.getEmoji("expand")]
         this.message.channel.send(embeds[page]).then(async (msg: Message) => {
             for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
             await this.sql.insertInto("collectors", "message", msg.id)
@@ -51,32 +58,32 @@ export class Embeds {
                     description.push(embeds[i].description)
                     thumbnail.push((embeds[i].thumbnail!))
                 }
-                for (const reaction of reactionsCollapse) await msg.react(reaction)
+                for (let i = 0; i < reactionsCollapse.length; i++) await msg.react(reactionsCollapse[i] as ReactionEmoji)
                 const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
                 const expandCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("expand") && user.bot === false
                 const collapse = msg.createReactionCollector(collapseCheck)
                 const expand = msg.createReactionCollector(expandCheck)
 
-                collapse.on("collect", (r: MessageReaction) => {
+                collapse.on("collect", (reaction: MessageReaction, user: User) => {
                         for (let i = 0; i < embeds.length; i++) {
                             embeds[i].setDescription("")
                             embeds[i].setThumbnail("")
                         }
                         msg.edit(embeds[page])
-                        r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+                        reaction.users.remove(user)
                 })
 
-                expand.on("collect", (r: MessageReaction) => {
+                expand.on("collect", (reaction: MessageReaction, user: User) => {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription(description[i])
                         embeds[i].setThumbnail(thumbnail[i].url)
                     }
                     msg.edit(embeds[page])
-                    r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+                    reaction.users.remove(user)
                 })
             }
 
-            backward.on("collect", async (r: MessageReaction) => {
+            backward.on("collect", async (reaction: MessageReaction, user: User) => {
                 if (page === 0) {
                     page = embeds.length - 1
                 } else {
@@ -84,10 +91,10 @@ export class Embeds {
                 }
                 await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
                 msg.edit(embeds[page])
-                r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+                await reaction.users.remove(user)
             })
 
-            forward.on("collect", async (r: MessageReaction) => {
+            forward.on("collect", async (reaction: MessageReaction, user: User) => {
                 if (page === embeds.length - 1) {
                     page = 0
                 } else {
@@ -95,10 +102,10 @@ export class Embeds {
                 }
                 await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
                 msg.edit(embeds[page])
-                r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+                reaction.users.remove(user)
             })
 
-            tripleBackward.on("collect", async (r: MessageReaction) => {
+            tripleBackward.on("collect", async (reaction: MessageReaction, user: User) => {
                 if (page === 0) {
                     page = (embeds.length - 1) - Math.floor(embeds.length/5)
                 } else {
@@ -107,10 +114,10 @@ export class Embeds {
                 if (page < 0) page *= -1
                 await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
                 msg.edit(embeds[page])
-                r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+                reaction.users.remove(user)
             })
 
-            tripleForward.on("collect", async (r: MessageReaction) => {
+            tripleForward.on("collect", async (reaction: MessageReaction, user: User) => {
                 if (page === embeds.length - 1) {
                     page = 0 + Math.floor(embeds.length/5)
                 } else {
@@ -119,7 +126,7 @@ export class Embeds {
                 if (page > embeds.length - 1) page -= embeds.length - 1
                 await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
                 msg.edit(embeds[page])
-                r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+                reaction.users.remove(user)
             })
         })
     }
@@ -203,26 +210,26 @@ export class Embeds {
             const collapse = msg.createReactionCollector(collapseCheck)
             const expand = msg.createReactionCollector(expandCheck)
 
-            collapse.on("collect", (r: MessageReaction) => {
+            collapse.on("collect", (reaction: MessageReaction, user: User) => {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription("")
                         embeds[i].setThumbnail("")
                     }
                     msg.edit(embeds[page])
-                    r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+                    reaction.users.remove(user)
             })
 
-            expand.on("collect", (r: MessageReaction) => {
+            expand.on("collect", (reaction: MessageReaction, user: User) => {
                 for (let i = 0; i < embeds.length; i++) {
                     embeds[i].setDescription(description[i])
                     embeds[i].setThumbnail(thumbnail[i].url)
                 }
                 msg.edit(embeds[page])
-                r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+                reaction.users.remove(user)
             })
         }
 
-        backward.on("collect", async (r: MessageReaction) => {
+        backward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === 0) {
                 page = embeds.length - 1
             } else {
@@ -230,10 +237,10 @@ export class Embeds {
             }
             await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
             msg.edit(embeds[page])
-            r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+            reaction.users.remove(user)
         })
 
-        forward.on("collect", async (r: MessageReaction) => {
+        forward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === embeds.length - 1) {
                 page = 0
             } else {
@@ -241,10 +248,10 @@ export class Embeds {
             }
             await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
             msg.edit(embeds[page])
-            r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+            reaction.users.remove(user)
         })
 
-        tripleBackward.on("collect", async (r: MessageReaction) => {
+        tripleBackward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === 0) {
                 page = (embeds.length - 1) - Math.floor(embeds.length/5)
             } else {
@@ -253,10 +260,10 @@ export class Embeds {
             if (page < 0) page *= -1
             await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
             msg.edit(embeds[page])
-            r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+            reaction.users.remove(user)
         })
 
-        tripleForward.on("collect", async (r: MessageReaction) => {
+        tripleForward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === embeds.length - 1) {
                 page = 0 + Math.floor(embeds.length/5)
             } else {
@@ -265,7 +272,7 @@ export class Embeds {
             if (page > embeds.length - 1) page -= embeds.length - 1
             await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
             msg.edit(embeds[page])
-            r.users.remove(r.users.find((u: User) => u.id !== this.discord.user!.id))
+            reaction.users.remove(user)
         })
     }
 

@@ -15,8 +15,8 @@ const Functions_1 = require("./../../structures/Functions");
 const Permissions_1 = require("./../../structures/Permissions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class ChannelLink extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -142,12 +142,12 @@ class ChannelLink extends Command_1.Command {
                     }
                     if (setVoice) {
                         const channels = msg.guild.channels.filter((c) => {
-                            if (c.type === "voice")
-                                return c;
+                            const type = c.type === "voice" ? true : false;
+                            return type;
                         });
                         const channel = channels.find((c) => {
-                            if (c.name.replace(/\s+/g, " ").toLowerCase().includes(newVoice[0].toLowerCase()))
-                                return c;
+                            const name = (c.name.replace(/\s+/g, " ").toLowerCase().includes(newVoice[0].toLowerCase())) ? true : false;
+                            return name;
                         });
                         if (channel) {
                             voice.push(channel.id);

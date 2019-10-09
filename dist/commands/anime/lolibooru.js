@@ -17,8 +17,8 @@ const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
 class Lolibooru extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -50,7 +50,7 @@ class Lolibooru extends Command_1.Command {
                 return;
             }
             const tagArray = [];
-            for (const i in tags) {
+            for (let i = 0; i < tags.length; i++) {
                 tagArray.push(tags[i].trim().replace(/ /g, "_"));
             }
             let url;

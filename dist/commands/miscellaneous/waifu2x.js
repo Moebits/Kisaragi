@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 class Waifu2x extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -22,7 +22,7 @@ class Waifu2x extends Command_1.Command {
             let imgUrl;
             if (!args[1]) {
                 const messages = yield message.channel.messages.fetch({ limit: 10 });
-                const imgUrls = messages.filter((m) => m.attachments.size);
+                const imgUrls = messages.filter((m) => m.attachments.size ? true : false);
                 imgUrl = imgUrls.first().attachments.first().url;
             }
             else {

@@ -14,8 +14,8 @@ const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Level extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -100,7 +100,7 @@ class Level extends Command_1.Command {
                         return;
                     }
                     const newMsg = msg.content.replace(/enable/g, "").replace(/disable/g, "").replace(/\[(.*)\]/g, "")
-                        .replace(/<(.*)>/g, "").replace(/\{(.*)\}/g).replace(/\s/g, "");
+                        .replace(/<(.*)>/g, "").replace(/\{(.*)\}/g, "").replace(/\s/g, "");
                     const newRange = msg.content.match(/\[(.*)\]/g);
                     const newTimeout = msg.content.match(/<(.*)>/g);
                     const newThreshold = msg.content.match(/\{(.*)\}/g);

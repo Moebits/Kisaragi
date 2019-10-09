@@ -17,6 +17,7 @@ export default class MessageEvent {
     constructor(private readonly discord: Kisaragi) {}
 
     public run = async (message: Message) => {
+      console.log(message.author.id)
       const letters = new Letters(this.discord)
       const points = new Points(this.discord)
       const haiku = new Haiku(this.discord)
@@ -149,6 +150,6 @@ export default class MessageEvent {
       cmdPath.run(this.discord, message, args).then(() => {
       const msgCheck = message.channel.messages
       if (msgCheck.has(msg.id)) msg.delete({timeout: 1000})
-      }). catch ((err: Error) => message.channel.send(this.discord.cmdError(err)))
+      }).catch((err: Error) => message.channel.send(this.discord.cmdError(message, err)))
     }
   }

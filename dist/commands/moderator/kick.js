@@ -13,8 +13,8 @@ const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Permissions_1 = require("./../../structures/Permissions");
 class Kick extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -28,7 +28,7 @@ class Kick extends Command_1.Command {
             const userArray = [];
             for (let i = 1; i < args.length; i++) {
                 if (args[i].match(/\d+/g)) {
-                    userArray.push(args[i].match(/\d+/g))[0];
+                    userArray.push(args[i].match(/\d+/g)[0]);
                 }
                 else {
                     reasonArray.push(args[i]);
@@ -37,7 +37,7 @@ class Kick extends Command_1.Command {
             const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!";
             const members = [];
             for (let i = 0; i < userArray.length; i++) {
-                const member = message.guild.members.find((m) => m.id === userArray[i].join(""));
+                const member = message.guild.members.find((m) => m.id === userArray[i]);
                 members.push(`<@${member.id}>`);
                 kickEmbed
                     .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")

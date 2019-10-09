@@ -18,8 +18,8 @@ const Embeds_1 = require("../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
 const redditArray = [];
 class Reddit extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -27,6 +27,7 @@ class Reddit extends Command_1.Command {
             for (let i = 0; i < 10; i++) {
                 if (!postIDS[i])
                     break;
+                // @ts-ignore
                 const post = yield reddit.getSubmission(postIDS[i]).fetch();
                 const commentArray = [];
                 for (let j = 0; j < 3; j++) {
@@ -61,8 +62,8 @@ class Reddit extends Command_1.Command {
             });
             if (args[1] === "user") {
                 const query = Functions_1.Functions.combineArgs(args, 2);
+                // @ts-ignore
                 const user = yield reddit.getUser(query.trim()).fetch();
-                console.log(user);
                 const redditEmbed = embeds.createEmbed();
                 redditEmbed
                     .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
@@ -77,9 +78,10 @@ class Reddit extends Command_1.Command {
                 message.channel.send(redditEmbed);
                 return;
             }
-            let posts;
-            let subreddit;
+            let posts = {};
+            let subreddit = "";
             if (!args[1]) {
+                // @ts-ignore
                 posts = [yield reddit.getRandomSubmission()];
             }
             else {
@@ -108,11 +110,12 @@ class Reddit extends Command_1.Command {
                     }
                 }
                 else {
+                    // @ts-ignore
                     posts = yield reddit.getSubreddit(subreddit).getRandomSubmission();
                 }
             }
             const postIDS = [];
-            for (const i in posts) {
+            for (let i = 0; i < posts.length; i++) {
                 if (posts[i]) {
                     postIDS.push(posts[i].id);
                 }

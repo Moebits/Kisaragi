@@ -8,26 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const base_64_1 = __importDefault(require("base-64"));
-const gd = __importStar(require("gdprofiles"));
-const GDClient = __importStar(require("geometry-dash-api"));
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const GDClient = require("geometry-dash-api");
+const gd = require("gdprofiles");
+const base64 = require("base-64");
 class GeometryDash extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -91,7 +81,7 @@ class GeometryDash extends Command_1.Command {
                     `${star}_Downloads:_ **${level.downloads}**\n` +
                     `${star}_Likes:_ **${level.likes}**\n` +
                     `${star}_Password:_ **${level.password ? level.password : "None"}**\n` +
-                    `${star}_Description:_ ${base_64_1.default.decode(level.desc)}\n`);
+                    `${star}_Description:_ ${base64.decode(level.desc)}\n`);
                 message.channel.send(gdEmbed);
                 return;
             }
@@ -111,7 +101,7 @@ class GeometryDash extends Command_1.Command {
                     `${star}_Downloads:_ **${level.downloads}**\n` +
                     `${star}_Likes:_ **${level.likes}**\n` +
                     `${star}_Password:_ **${level.password ? level.password : "None"}**\n` +
-                    `${star}_Description:_ ${base_64_1.default.decode(level.desc)}\n`);
+                    `${star}_Description:_ ${base64.decode(level.desc)}\n`);
                 message.channel.send(gdEmbed);
                 return;
             }
@@ -173,7 +163,7 @@ class GeometryDash extends Command_1.Command {
                     `${star}_Downloads:_ **${level.downloads}**\n` +
                     `${star}_Likes:_ **${level.likes}**\n` +
                     `${star}_Password:_ **${level.password ? level.password : "None"}**\n` +
-                    `${star}_Description:_ ${base_64_1.default.decode(level.desc)}\n`);
+                    `${star}_Description:_ ${base64.decode(level.desc)}\n`);
                 gdArray.push(gdEmbed);
             }
             embeds.createReactionEmbed(gdArray);

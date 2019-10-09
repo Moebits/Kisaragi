@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 class Avatar extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -41,7 +41,7 @@ class Avatar extends Command_1.Command {
                 else {
                     yield message.channel.send(avatarEmbed
                         .setDescription(`**${user.username}'s Profile Picture**`)
-                        .setImage(user.displayAvatarURL));
+                        .setImage(user.displayAvatarURL()));
                 }
             }
         });

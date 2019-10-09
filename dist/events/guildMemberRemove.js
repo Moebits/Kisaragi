@@ -41,7 +41,7 @@ class GuildMemberRemove {
                     const leaveText = yield sql.fetchColumn("welcome leaves", "leave bg text");
                     const leaveColor = yield sql.fetchColumn("welcome leaves", "leave bg color");
                     const channel = member.guild.channels.find((c) => c.id.toString() === leaveChannel.join(""));
-                    const attachment = yield image.createCanvas(member, leaveImage, leaveText, leaveColor);
+                    const attachment = yield image.createCanvas(member, leaveImage[0], leaveText[0], leaveColor[0]);
                     const newMsg = leaveMsg.join("").replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
                         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString());
                     channel.send(newMsg, attachment);

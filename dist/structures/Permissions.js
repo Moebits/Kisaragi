@@ -28,7 +28,7 @@ class Permissions {
                 return true;
             }
             else {
-                const modRole = yield msg.member.roles.find((r) => r.id === mod.join("").trim());
+                const modRole = msg.member.roles.find((r) => r.id === mod.join("").trim());
                 if (!modRole) {
                     if (ignore)
                         return true;
@@ -52,7 +52,7 @@ class Permissions {
                 return true;
             }
             else {
-                const adminRole = yield msg.member.roles.find((r) => r.id === admin.join("").trim());
+                const adminRole = msg.member.roles.find((r) => r.id === admin.join("").trim());
                 if (!adminRole) {
                     if (ignore)
                         return true;

@@ -16,7 +16,7 @@ const Permissions_1 = require("./../../structures/Permissions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class SQL extends Command_1.Command {
     constructor(kisaragi) {
-        super(kisaragi, {
+        super({
             aliases: [],
             cooldown: 3
         });

@@ -15,8 +15,8 @@ const Functions_1 = require("./../../structures/Functions");
 const Permissions_1 = require("./../../structures/Permissions");
 const SQLQuery_1 = require("./../../structures/SQLQuery");
 class Photos extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -145,7 +145,7 @@ class Photos extends Command_1.Command {
                             const tempAlbum = tempMsg.match(/(?<=\[)(.*?)(?=\])/g);
                             let editDesc = "";
                             if (tempChan) {
-                                channels[num] = tempChan;
+                                channels[num] = tempChan[0];
                                 yield sql.updateColumn("images", "image channels", channels);
                                 editDesc += `${star}Channel set to **${tempChan}**!\n`;
                             }
@@ -155,7 +155,7 @@ class Photos extends Command_1.Command {
                                 editDesc += `${star}Dropbox folder set to **${tempFolder}**!\n`;
                             }
                             if (tempAlbum) {
-                                albums[num] = tempAlbum;
+                                albums[num] = tempAlbum[0];
                                 yield sql.updateColumn("images", "google albums", albums);
                                 editDesc += `${star}Google album set to **${tempAlbum}**!\n`;
                             }
@@ -179,7 +179,7 @@ class Photos extends Command_1.Command {
                         setAlbum = true;
                     let description = "";
                     if (setChannel) {
-                        channels.push(newChan);
+                        channels.push(newChan[0]);
                         if (setInit)
                             channels = channels.filter(Boolean);
                         yield sql.updateColumn("images", "image channels", channels);
@@ -193,7 +193,7 @@ class Photos extends Command_1.Command {
                         description += `${star}Dropbox folder set to **${newFolder}**!\n`;
                     }
                     if (setAlbum) {
-                        albums.push(newAlbum);
+                        albums.push(newAlbum[0]);
                         if (setInit)
                             albums = albums.filter(Boolean);
                         yield sql.updateColumn("images", "google albums", albums);

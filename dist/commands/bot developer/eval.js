@@ -14,8 +14,8 @@ const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
 const Permissions_1 = require("./../../structures/Permissions");
 class Clean extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
@@ -36,7 +36,7 @@ class Clean extends Command_1.Command {
                 }
                 evalEmbed
                     .setTitle(`**Javascript Code Eval** ${discord.getEmoji("kaosWTF")}`)
-                    .setDescription(this.clean(evaled), { code: "xl" });
+                    .setDescription(this.clean(evaled));
                 message.channel.send(evalEmbed);
             }
             catch (error) {

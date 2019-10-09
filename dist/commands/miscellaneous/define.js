@@ -9,20 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mw_dict_1 = require("mw-dict");
 const Command_1 = require("../../structures/Command");
 const Embeds_1 = require("./../../structures/Embeds");
 const Functions_1 = require("./../../structures/Functions");
+const { CollegiateDictionary } = require("mw-dict");
 class Define extends Command_1.Command {
-    constructor(kisaragi) {
-        super(kisaragi, {
+    constructor() {
+        super({
             aliases: [],
             cooldown: 3
         });
         this.run = (discord, message, args) => __awaiter(this, void 0, void 0, function* () {
             const embeds = new Embeds_1.Embeds(discord, message);
             const star = discord.getEmoji("star");
-            const dictionary = new mw_dict_1.CollegiateDictionary(process.env.DICTIONARY_API_KEY);
+            const dictionary = new CollegiateDictionary(process.env.DICTIONARY_API_KEY);
             const word = Functions_1.Functions.combineArgs(args, 1);
             const defineEmbed = embeds.createEmbed();
             let result;
@@ -74,7 +74,7 @@ class Define extends Command_1.Command {
                 }
             }
             let definitions = "";
-            for (const i in definArray) {
+            for (let i = 0; i < definArray.length; i++) {
                 if (definArray[i]) {
                     definitions += `${star}_Definition:_ ${definArray[i]}\n`;
                 }

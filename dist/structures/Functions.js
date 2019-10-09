@@ -8,6 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -16,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const child_process = __importStar(require("child_process"));
+const child_process_1 = __importDefault(require("child_process"));
 const discord_js_1 = require("discord.js");
 const config = __importStar(require("../config.json"));
 class Functions {
@@ -48,7 +51,7 @@ Functions.awaitPipe = (readStream, writeStream) => __awaiter(void 0, void 0, voi
 });
 // Execute File
 Functions.execFile = (file, args) => __awaiter(void 0, void 0, void 0, function* () {
-    child_process.execFile(`../assets/tools/${file}`, args);
+    child_process_1.default.execFile(`../assets/tools/${file}`, args);
     return console.log("finished");
 });
 // Random Number
