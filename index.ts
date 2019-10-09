@@ -1,6 +1,6 @@
 import {WSEventType} from "discord.js"
 import * as fs from "fs"
-import {Kisaragi} from "./structures/Kisaragi.js"
+import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 
@@ -46,7 +46,7 @@ const start = async (): Promise<void> => {
             const eventName = file.split(".")[0]
             Logger.log(`Loading Event: ${eventName}`)
             const event = new (require(`./events/${eventName}.js`).default)(discord)
-            discord.on(eventName, (...args: string[]) => event.run(...args))
+            discord.on(eventName, (...args: any) => event.run(...args))
         })
 
         Logger.log(`Loaded a total of ${cmdFiles.length} commands.`)

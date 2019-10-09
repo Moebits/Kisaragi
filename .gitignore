@@ -5,7 +5,7 @@
 node_modules
 
 #Compiled folder
-bin
+dist
 
 #Linter settings
 eslintrc.json

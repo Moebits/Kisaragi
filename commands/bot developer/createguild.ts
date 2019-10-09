@@ -25,7 +25,7 @@ export default class CreateGuild extends Command {
             await message.channel.send(`I made a guild! The invite is ${invite.url} The Administrator role ID is ${role.id}.`)
 
         } catch (error) {
-            discord.cmdError(error)
+            discord.cmdError(message, error)
         }
     }
 

@@ -1,37 +1,23 @@
 import {Message, MessageAttachment} from "discord.js"
+import PixivApiClient, {PixivIllust} from "pixiv-app-api"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 import {Link} from "./Link"
 
 const translate = require("@vitalets/google-translate-api")
-const pixivApi = require("pixiv-api-client")
 const pixivImg = require("pixiv-img")
 
-const pixiv = new pixivApi()
+const pixiv = new PixivApiClient(process.env.USERNAME, process.env.PASSWORD)
 
 export class PixivApi {
     private readonly embeds = new Embeds(this.discord, this.message)
     private readonly links = new Link(this.discord)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
-    // Pixiv Login
-    public pixivLogin = async () => {
-    try {
-        await pixiv.refreshAccessToken(process.env.PIXIV_REFRESH_TOKEN)
-    } catch (err) {
-        await pixiv.login(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD, true)
-        const refresh = await pixiv.refreshAccessToken()
-        console.log("Refresh token expired. New one:")
-        console.log(refresh.refresh_token)
-    }
-    const token = await pixiv.refreshAccessToken()
-    return token.refresh_token
-    }
-
     // Create Pixiv Embed
-    public createPixivEmbed = async (refreshToken: string, image: any) => {
-    await pixiv.refreshAccessToken(refreshToken)
+    public createPixivEmbed = async (image: any) => {
+    await pixiv.login()
     const pixivEmbed = this.embeds.createEmbed()
     if (!image) this.pixivErrorEmbed
     const comments = await pixiv.illustComments(image.id)
@@ -80,77 +66,71 @@ export class PixivApi {
     }
 
     // Pixiv Image
-    public getPixivImage = async (refresh: string, tag: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
-    const refreshToken = refresh
-    await pixiv.refreshAccessToken(refreshToken)
+    public getPixivImage = async (tag: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
     let newTag = en ? tag : await this.pixivTag(tag)
     newTag = newTag.trim()
     await pixiv.login(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD)
     const json = r18 ? (ugoira ? await pixiv.searchIllust(`うごイラ R-18 ${newTag}`) : await pixiv.searchIllust(`R-18 ${newTag}`)) :
     (ugoira ? await pixiv.searchIllust(`うごイラ ${newTag} -R-18`) : await pixiv.searchIllust(`${newTag} -R-18`));
-    [].sort.call(json.illusts, ((a: any, b: any) => (a.total_bookmarks - b.total_bookmarks)*-1))
+    [].sort.call(json.illusts, ((a: PixivIllust, b: PixivIllust) => (a.totalBookmarks - b.totalBookmarks)*-1))
     const index = Math.floor(Math.random() * (10))
     const image = json.illusts[index]
     if (noEmbed) return image
 
-    const pixivEmbed = await this.createPixivEmbed(refreshToken, image)
+    const pixivEmbed = await this.createPixivEmbed(image)
     return this.message.channel.send(pixivEmbed)
     }
 
     // Pixiv Image ID
-    public getPixivImageID = async (refresh: string, tags: any) => {
-    const refreshToken = refresh
-    await pixiv.refreshAccessToken(refreshToken)
+    public getPixivImageID = async (tags: any) => {
+    await pixiv.login()
     const image = await pixiv.illustDetail(tags.toString())
-    for (const i in image.illust.tags) {
-        if (image.illust.tags[i].name === "うごイラ") {
+    for (let i = 0; i < image.tags.length; i++) {
+        if (image.tags[i].name === "うごイラ") {
             const path = require("../commands/anime/ugoira.js")
             await this.links.linkRun(path, this.message, ["ugoira", tags.toString()])
             return
         }
     }
     if (!image) this.pixivErrorEmbed
-    const pixivEmbed = await this.createPixivEmbed(refreshToken, image.illust)
+    const pixivEmbed = await this.createPixivEmbed(image)
     return this.message.channel.send(pixivEmbed)
     }
 
     // Pixiv Random Image
-    public getRandomPixivImage = async (refresh: string) => {
-    const refreshToken = refresh
-    await pixiv.refreshAccessToken(refreshToken)
+    public getRandomPixivImage = async () => {
+    await pixiv.login()
     let image
     let random = 0
     while (!image) {
         random = Math.floor(Math.random() * 100000000)
-        image = await pixiv.illustDetail(random.toString())
+        image = await pixiv.illustDetail(random)
     }
-    const pixivEmbed = await this.createPixivEmbed(refreshToken, image.illust)
+    const pixivEmbed = await this.createPixivEmbed(image)
     return this.message.channel.send(pixivEmbed)
     }
 
     // Pixiv Popular Image
-    public getPopularPixivImage = async (refresh: string) => {
-    const refreshToken = refresh
-    await pixiv.refreshAccessToken(refreshToken)
+    public getPopularPixivImage = async () => {
+    await pixiv.login()
     const json = await pixiv.illustRanking();
     [].sort.call(json.illusts, ((a: any, b: any) => (a.total_bookmarks - b.total_bookmarks)*-1))
     const index = Math.floor(Math.random() * (10))
     const image = json.illusts[index]
 
-    const pixivEmbed = await this.createPixivEmbed(refreshToken, image)
+    const pixivEmbed = await this.createPixivEmbed(image)
     return this.message.channel.send(pixivEmbed)
     }
 
     // Pixiv Popular R18 Image
-    public getPopularPixivR18Image = async (refresh: string) => {
-    const refreshToken = refresh
-    await pixiv.refreshAccessToken(refreshToken)
+    public getPopularPixivR18Image = async () => {
+    await pixiv.login()
     const json = await pixiv.illustRanking({mode: "day_male_r18"});
-    [].sort.call(json.illusts, ((a: any, b: any) => (a.total_bookmarks - b.total_bookmarks)*-1))
+    [].sort.call(json.illusts, ((a: any, b: any) => (a.totalBookmarks - b.totalBookmarks)*-1))
     const index = Math.floor(Math.random() * (10))
     const image = json.illusts[index]
 
-    const pixivEmbed = await this.createPixivEmbed(refreshToken, image)
+    const pixivEmbed = await this.createPixivEmbed(image)
     return this.message.channel.send(pixivEmbed)
     }
 }

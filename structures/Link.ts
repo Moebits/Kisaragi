@@ -15,7 +15,7 @@ export class Link {
         setTimeout(() => linkCool.delete(msg.guild!.id), 30000)
         const loading = await msg.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`)
         const cmd = new (require(path).default)()
-        await cmd.run(this.discord, msg, args).catch((err: Error) => msg.channel.send(this.discord.cmdError(err)))
+        await cmd.run(this.discord, msg, args).catch((err: Error) => msg.channel.send(this.discord.cmdError(msg, err)))
         loading.delete({timeout: 1000})
     }
 

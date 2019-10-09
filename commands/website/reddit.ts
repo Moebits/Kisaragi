@@ -59,7 +59,6 @@ export default class Reddit extends Command {
             const query = Functions.combineArgs(args, 2)
             // @ts-ignore
             const user = await reddit.getUser(query.trim()).fetch()
-            console.log(user)
             const redditEmbed = embeds.createEmbed()
             redditEmbed
             .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
