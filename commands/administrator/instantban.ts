@@ -1,9 +1,9 @@
 import {GuildChannel, Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class InstantBan extends Command {
@@ -15,11 +15,11 @@ export default class InstantBan extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const star = discord.getEmoji("star")
-        if (await perms.checkAdmin(message)) return
+        if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -33,7 +33,7 @@ export default class InstantBan extends Command {
         const instantBanEmbed = embeds.createEmbed()
         instantBanEmbed
         .setTitle(`**Instant Bans** ${discord.getEmoji("mexShrug")}`)
-        .setThumbnail(message.guild!.iconURL() as string)
+        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .setDescription(
             "Configure settings for instant bans.\n" +
             "\n" +
@@ -42,9 +42,9 @@ export default class InstantBan extends Command {
             "**Default Channel** = The default channel where messages will be posted.\n" +
             "\n" +
             "__Current Settings:__\n" +
-            `${star}_Profile Picture Ban:_ **${pfpBan.join("")}**\n` +
-            `${star}_Leave Ban:_ **${leaveBan.join("")}**\n` +
-            `${star}_Default Channel:_ **${defChannel.join("") ? `<#${defChannel.join("")}>` : "None"}**\n` +
+            `${star}_Profile Picture Ban:_ **${pfpBan}**\n` +
+            `${star}_Leave Ban:_ **${leaveBan}**\n` +
+            `${star}_Default Channel:_ **${defChannel ? `<#${defChannel}>` : "None"}**\n` +
             "\n" +
             "__Edit Settings:__\n" +
             `${star}_Type **pfp** to toggle profile picture bans._\n` +
@@ -100,7 +100,7 @@ export default class InstantBan extends Command {
             }
 
             if (setPfp) {
-                if (pfpBan.join("") === "off") {
+                if (String(pfpBan) === "off") {
                     await sql.updateColumn("blocks", "pfp ban toggle", "on")
                     responseEmbed
                     .setDescription(`${star}Profile picture bans are now **on**!`)
@@ -116,7 +116,7 @@ export default class InstantBan extends Command {
             }
 
             if (setLeave) {
-                if (pfpBan.join("") === "off") {
+                if (String(leaveBan) === "off") {
                     await sql.updateColumn("blocks", "leaver ban toggle", "on")
                     responseEmbed
                     .setDescription(`${star}Leave bans are now **on**!`)
@@ -130,6 +130,11 @@ export default class InstantBan extends Command {
                     return
                 }
             }
+
+            responseEmbed
+            .setDescription(`${star}Invalid arguments provided, canceled the prompt.`)
+            msg.channel.send(responseEmbed)
+            return
         }
 
         embeds.createPrompt(instantBanPrompt)

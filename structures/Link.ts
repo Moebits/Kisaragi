@@ -3,7 +3,7 @@ import {Kisaragi} from "./Kisaragi.js"
 const linkCool = new Set()
 
 export class Link {
-    constructor(private readonly discord: Kisaragi) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     public linkRun = async (path: string, msg: Message, args: string[]) => {
         if (linkCool.has(msg.guild!.id)) {
@@ -12,67 +12,67 @@ export class Link {
             return
         }
         linkCool.add(msg.guild!.id)
-        setTimeout(() => linkCool.delete(msg.guild!.id), 30000)
+        setTimeout(() => linkCool.delete(this.message.guild!.id), 30000)
         const loading = await msg.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`)
         const cmd = new (require(path).default)()
         await cmd.run(this.discord, msg, args).catch((err: Error) => msg.channel.send(this.discord.cmdError(msg, err)))
         loading.delete({timeout: 1000})
     }
 
-    public postLink = async (msg: Message) => {
-        if (msg.content.startsWith("https://www.youtube.com/channel/") || msg.content.startsWith("https://www.youtube.com/c/")) {
+    public postLink = async () => {
+        if (this.message.content.startsWith("https://www.youtube.com/channel/") || this.message.content.startsWith("https://www.youtube.com/c/")) {
             const path = require("../commands/website/youtube.js")
-            await this.linkRun(path, msg, ["youtube", "channel", msg.content])
+            await this.linkRun(path, this.message, ["youtube", "channel", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://www.youtube.com/watch") || msg.content.startsWith("https://youtu.be/")) {
+        if (this.message.content.startsWith("https://www.youtube.com/watch") || this.message.content.startsWith("https://youtu.be/")) {
             const path = require("../commands/website/youtube.js")
-            await this.linkRun(path, msg, ["youtube", "video", msg.content])
+            await this.linkRun(path, this.message, ["youtube", "video", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://www.youtube.com/playlist")) {
+        if (this.message.content.startsWith("https://www.youtube.com/playlist")) {
             const path = require("../commands/website/youtube.js")
-            await this.linkRun(path, msg, ["youtube", "playlist", msg.content])
+            await this.linkRun(path, this.message, ["youtube", "playlist", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://www.pixiv.net/member_illust.php?mode=medium&illust_id=")) {
+        if (this.message.content.startsWith("https://www.pixiv.net/member_illust.php?mode=medium&illust_id=")) {
             const path = require("../commands/anime/pixiv.js")
-            await this.linkRun(path, msg, ["pixiv", msg.content])
+            await this.linkRun(path, this.message, ["pixiv", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://danbooru.donmai.us/posts/")) {
+        if (this.message.content.startsWith("https://danbooru.donmai.us/posts/")) {
             const path = require("../commands/anime/danbooru.js")
-            await this.linkRun(path, msg, ["danbooru", msg.content])
+            await this.linkRun(path, this.message, ["danbooru", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://gelbooru.com/index.php?page=post&s=view&id=")) {
+        if (this.message.content.startsWith("https://gelbooru.com/index.php?page=post&s=view&id=")) {
             const path = require("../commands/anime/gelbooru.js")
-            await this.linkRun(path, msg, ["gelbooru", msg.content])
+            await this.linkRun(path, this.message, ["gelbooru", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://konachan.net/post/show/")) {
+        if (this.message.content.startsWith("https://konachan.net/post/show/")) {
             const path = require("../commands/anime/konachan.js")
-            await this.linkRun(path, msg, ["konachan", msg.content])
+            await this.linkRun(path, this.message, ["konachan", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://lolibooru.moe/post/show/")) {
+        if (this.message.content.startsWith("https://lolibooru.moe/post/show/")) {
             const path = require("../commands/anime/lolibooru.js")
-            await this.linkRun(path, msg, ["lolibooru", msg.content])
+            await this.linkRun(path, this.message, ["lolibooru", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://yande.re/post/show/")) {
+        if (this.message.content.startsWith("https://yande.re/post/show/")) {
             const path = require("../commands/anime/yandere.js")
-            await this.linkRun(path, msg, ["yandere", msg.content])
+            await this.linkRun(path, this.message, ["yandere", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://rule34.xxx/index.php?page=post&s=view&id=")) {
+        if (this.message.content.startsWith("https://rule34.xxx/index.php?page=post&s=view&id=")) {
             const path = require("../commands/hentai/rule34.js")
-            await this.linkRun(path, msg, ["rule34", msg.content])
+            await this.linkRun(path, this.message, ["rule34", this.message.content])
             return
         }
-        if (msg.content.startsWith("https://nhentai.net/g/")) {
+        if (this.message.content.startsWith("https://nhentai.net/g/")) {
             const path = require("../commands/hentai/nhentai.js")
-            await this.linkRun(path, msg, ["nhentai", msg.content])
+            await this.linkRun(path, this.message, ["nhentai", this.message.content])
             return
         }
     }

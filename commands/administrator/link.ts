@@ -1,9 +1,9 @@
 import {GuildChannel, Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class ChannelLink extends Command {
@@ -15,11 +15,11 @@ export default class ChannelLink extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const star = discord.getEmoji("star")
-        if (await perms.checkAdmin(message)) return
+        if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -31,11 +31,11 @@ export default class ChannelLink extends Command {
         const linkToggle = await sql.fetchColumn("links", "toggle")
 
         let linkDescription = ""
-        if (linkText[0]) {
+        if (linkText) {
             for (let i = 0; i < linkText[0].length; i++) {
-                linkDescription += `**${i + 1} => **\n` + `${star}_Text:_ <#${linkText[0][i]}>\n` +
-                `${star}_Voice:_ **<#${linkVoice[0][i]}>**\n` +
-                `${star}_State:_ **${linkToggle[0][i]}**\n`
+                linkDescription += `**${i + 1} => **\n` + `${star}_Text:_ <#${linkText[i]}>\n` +
+                `${star}_Voice:_ **<#${linkVoice[i]}>**\n` +
+                `${star}_State:_ **${linkToggle[i]}**\n`
             }
         } else {
             linkDescription = "None"
@@ -43,7 +43,7 @@ export default class ChannelLink extends Command {
         const linkEmbed = embeds.createEmbed()
         linkEmbed
         .setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`)
-        .setThumbnail(message.guild!.iconURL() as string)
+        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .setDescription(
             "Configure settings for linked channels. You can link a text channel to a voice channel so that only people in the voice channel can access it.\n" +
             "In order for this to work, you should disable the **read messages** permission on the text channel for all member roles.\n" +
@@ -92,7 +92,7 @@ export default class ChannelLink extends Command {
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
                 if (num) {
-                    if (text[0]) {
+                    if (text) {
                         text[num - 1] = ""
                         voice[num - 1] = ""
                         toggle[num - 1] = ""
@@ -123,10 +123,10 @@ export default class ChannelLink extends Command {
             let description = ""
 
             if (setText) {
-                text.push(newText![0].replace(/<#/g, "").replace(/>/g, ""))
+                text.push(String(newText!).replace(/<#/g, "").replace(/>/g, ""))
                 if (setInit) text = text.filter(Boolean)
                 await sql.updateColumn("links", "text", text)
-                description += `${star}Text channel set to **${newText![0]}**!\n`
+                description += `${star}Text channel set to **${newText!}**!\n`
             }
 
             if (setVoice) {
@@ -160,6 +160,7 @@ export default class ChannelLink extends Command {
                 description += `${star}Status set to **off**!\n`
             }
 
+            if (!description) description = `${star}Invalid arguments provided, canceled the prompt.`
             responseEmbed
             .setDescription(description)
             msg.channel.send(responseEmbed)

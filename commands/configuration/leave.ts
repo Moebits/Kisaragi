@@ -1,10 +1,10 @@
 import {GuildChannel, Message, MessageAttachment} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Leave extends Command {
@@ -16,12 +16,12 @@ export default class Leave extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
         const sql = new SQLQuery(message)
         const star = discord.getEmoji("star")
-        if (await perms.checkAdmin(message)) return
+        if (!await perms.checkAdmin()) return
         const axios = require("axios")
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -42,7 +42,7 @@ export default class Leave extends Command {
         console.log(attachment)
         leaveEmbed
         .setTitle(`**Leave Messages** ${discord.getEmoji("sagiriBleh")}`)
-        .setThumbnail(message.guild!.iconURL() as string)
+        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .attachFiles([attachment])
         .setImage(`attachment://${attachment.name ? attachment.name : "animated.gif"}`)
         .setDescription(

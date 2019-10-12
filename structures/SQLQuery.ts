@@ -148,7 +148,7 @@ export class SQLQuery {
         rowMode: "array"
       }
       const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, false)
-      return result[0]
+      return result as unknown as string[]
     }
 
   // Insert row into a table

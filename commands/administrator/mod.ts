@@ -1,9 +1,9 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Mod extends Command {
@@ -15,11 +15,11 @@ export default class Mod extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const star = discord.getEmoji("star")
-        if (await perms.checkAdmin(message)) return
+        if (!perms.checkPerm("administrator")) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -40,25 +40,25 @@ export default class Mod extends Command {
         const modEmbed = embeds.createEmbed()
         modEmbed
         .setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)
-        .setThumbnail(message.guild!.iconURL() as string)
+        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .setDescription(
             "Edit moderation settings for the server.\n" +
             "\n" +
-            "**Restricted Role** = Can be any role with restricted permissions.\n" +
+            "**Restricted Role** = Can be any role with restricted Permission.\n" +
             "**Warn Threshold** = How many warnings will trigger the punishment.\n" +
             "**Warn Penalty** = The punishment after hitting the warn threshold.\n" +
             "**Ascii Names** = Removes all non-ascii characters in usernames.\n" +
             "\n" +
             "__Current Settings__\n" +
-            `${star}Admin role: ${admin.join("") ? `<@&${admin.join("")}>` : "None"}\n` +
-            `${star}Mod role: ${mod.join("") ? `<@&${mod.join("")}>` : "None"}\n` +
-            `${star}Mute role: ${mute.join("") ? `<@&${mute.join("")}>` : "None"}\n` +
-            `${star}Restricted role: ${restrict.join("") ? `<@&${restrict.join("")}>` : "None"}\n` +
-            `${star}Warn One role: ${warnOne.join("") ? `<@&${warnOne.join("")}>` : "None"}\n` +
-            `${star}Warn Two role: ${warnTwo.join("") ? `<@&${warnTwo.join("")}>` : "None"}\n` +
-            `${star}Warn Threshold: **${warnThresh.join("")}**\n` +
-            `${star}Warn Penalty: **${warnPen.join("") ? `${warnPen.join("")}` : "none"}**\n` +
-            `${star}Ascii names are **${ascii.join("")}**\n` +
+            `${star}Admin role: ${admin ? `<@&${admin}>` : "None"}\n` +
+            `${star}Mod role: ${mod ? `<@&${mod}>` : "None"}\n` +
+            `${star}Mute role: ${mute ? `<@&${mute}>` : "None"}\n` +
+            `${star}Restricted role: ${restrict ? `<@&${restrict}>` : "None"}\n` +
+            `${star}Warn One role: ${warnOne ? `<@&${warnOne}>` : "None"}\n` +
+            `${star}Warn Two role: ${warnTwo ? `<@&${warnTwo}>` : "None"}\n` +
+            `${star}Warn Threshold: **${warnThresh}**\n` +
+            `${star}Warn Penalty: **${warnPen ? warnPen : "none"}**\n` +
+            `${star}Ascii names are **${ascii}**\n` +
             "\n" +
             "__Edit Settings__\n" +
             `${star}Type **ascii** to toggle ascii names on/off.\n` +
@@ -66,7 +66,7 @@ export default class Mod extends Command {
             `${star}Type **ban**, **kick**, **mute**, or **none** to set the warn penalty.\n` +
             `${star}**Mention a role or type a role id** to set the admin role.\n` +
             `${star}Do the same **between exclamation points !role!** to set the mod role.\n` +
-            `${star}Do the same **between percent signs %role%** to set the mute role.\n` +
+            `${star}Do the same **between hashtags #role#** to set the mute role.\n` +
             `${star}Do the same **between dollar signs $role$** to set the restricted role.\n` +
             `${star}Do the same **between parentheses (role)** to set the role for warn one.\n` +
             `${star}Do the same **between brackets [role]** to set the role for warn two.\n` +
@@ -78,6 +78,7 @@ export default class Mod extends Command {
         message.channel.send(modEmbed)
 
         async function modPrompt(msg: Message) {
+            const ascii = await sql.fetchColumn("blocks", "ascii name toggle")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)
             let [setAscii, setMute, setRestrict, setWarnOne, setWarnTwo, setWarnPenalty, setWarnThreshold, setAdmin, setMod] = [] as boolean[]
@@ -123,7 +124,7 @@ export default class Mod extends Command {
             let description = ""
 
             if (setAscii) {
-                if (ascii.join("") === "off") {
+                if (String(ascii) === "off") {
                     await sql.updateColumn("blocks", "ascii name toggle", "on")
                     description += `${star}Ascii names are **on**!\n`
                 } else {
@@ -133,43 +134,43 @@ export default class Mod extends Command {
             }
 
             if (setAdmin) {
-                await sql.updateColumn("special roles", "admin role", adminRole!.join(""))
-                description += `${star}Admin role set to <@&${adminRole!.join("")}>!\n`
+                await sql.updateColumn("special roles", "admin role", String(adminRole!))
+                description += `${star}Admin role set to <@&${adminRole!}>!\n`
             }
 
             if (setMod) {
-                await sql.updateColumn("special roles", "mod role", modRole!.join(""))
-                description += `${star}Mod role set to <@&${modRole!.join("")}>!\n`
+                await sql.updateColumn("special roles", "mod role", String(modRole!))
+                description += `${star}Mod role set to <@&${modRole!}>!\n`
             }
 
             if (setMute) {
-                await sql.updateColumn("special roles", "mute role", muteRole!.join(""))
-                description += `${star}Mute role set to <@&${muteRole!.join("")}>!\n`
+                await sql.updateColumn("special roles", "mute role", String(muteRole!))
+                description += `${star}Mute role set to <@&${muteRole!}>!\n`
             }
 
             if (setRestrict) {
-                await sql.updateColumn("special roles", "restricted role", restrictRole!.join(""))
-                description += `${star}Restricted role set to <@&${restrictRole!.join("")}>!\n`
+                await sql.updateColumn("special roles", "restricted role", String(restrictRole!))
+                description += `${star}Restricted role set to <@&${restrictRole!}>!\n`
             }
 
             if (setWarnOne) {
-                await sql.updateColumn("special roles", "warn one", warnOneRole!.join(""))
-                description += `${star}Warn one role set to <@&${warnOneRole!.join("")}>!\n`
+                await sql.updateColumn("special roles", "warn one", String(warnOneRole!))
+                description += `${star}Warn one role set to <@&${warnOneRole!}>!\n`
             }
 
             if (setWarnTwo) {
-                await sql.updateColumn("special roles", "warn two", warnTwoRole!.join(""))
-                description += `${star}Warn two role set to <@&${warnTwoRole!.join("")}>!\n`
+                await sql.updateColumn("special roles", "warn two", String(warnTwoRole!))
+                description += `${star}Warn two role set to <@&${warnTwoRole!}>!\n`
             }
 
             if (setWarnThreshold) {
-                await sql.updateColumn("warns", "warn threshold", warnThreshold!.join(""))
-                description += `${star}Warn threshold set to **${warnThreshold!.join("").trim()}**!\n`
+                await sql.updateColumn("warns", "warn threshold", String(warnThreshold!))
+                description += `${star}Warn threshold set to **${warnThreshold!}**!\n`
             }
 
             if (setWarnPenalty) {
-                await sql.updateColumn("warns", "warn penalty", warnPenalty!.join(""))
-                description += `${star}Warn penalty set to **${warnPenalty!.join("").trim()}**!\n`
+                await sql.updateColumn("warns", "warn penalty", String(warnPenalty!))
+                description += `${star}Warn penalty set to **${warnPenalty!}**!\n`
             }
 
             responseEmbed

@@ -32,7 +32,7 @@ export default class Verify extends Command {
         }
         const type = cType
 
-        const {captcha, text} = await captchaClass.createCaptcha(type, color, difficulty)
+        const {captcha, text} = await captchaClass.createCaptcha(String(type), String(color), String(difficulty))
 
         const filter = (response: Message) => {
             return (response.author === message.author)
@@ -52,7 +52,7 @@ export default class Verify extends Command {
                             return msg.channel.send(responseEmbed)
                         } else if (msg.content.trim() === "skip") {
                             message.reply("Skipped this captcha!")
-                            const result = await captchaClass.createCaptcha(type, color, difficulty)
+                            const result = await captchaClass.createCaptcha(String(type), String(color), String(difficulty))
                             return sendCaptcha(result.captcha, result.text)
                         } else if (msg.content.trim() === txt) {
                             if (msg.member!.roles.has(role!.id)) {
@@ -66,7 +66,7 @@ export default class Verify extends Command {
                             return msg.channel.send(responseEmbed)
                         } else {
                             msg.reply("Wrong answer! Please try again.")
-                            const result = await captchaClass.createCaptcha(type, color, difficulty)
+                            const result = await captchaClass.createCaptcha(String(type), String(color), String(difficulty))
                             return sendCaptcha(result.captcha, result.text)
                         }
                     })

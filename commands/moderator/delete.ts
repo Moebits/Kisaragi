@@ -1,9 +1,9 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
-import {Permissions} from "./../../structures/Permissions"
 
 export default class Delete extends Command {
     constructor() {
@@ -40,8 +40,8 @@ export default class Delete extends Command {
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
-        const perms = new Permissions(discord, message)
-        if (await perms.checkMod(message)) return
+        const perms = new Permission(discord, message)
+        if (!await perms.checkMod()) return
         const delEmbed = embeds.createEmbed()
         const num: number = Number(args[1]) + 2
         let userID = false

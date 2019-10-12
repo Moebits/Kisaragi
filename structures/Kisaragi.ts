@@ -39,7 +39,7 @@ export class Kisaragi extends Client {
 
     // Check for Bot Mention
     public checkBotMention = (message: Message) => {
-        if (message.author.id === this.user!.id) return false
+        if (message.author!.id === this.user!.id) return false
         if (message.content.startsWith(this.user!.id)) return true
     }
 

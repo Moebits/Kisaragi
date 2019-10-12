@@ -1,9 +1,9 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Auto extends Command {
@@ -15,11 +15,11 @@ export default class Auto extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const star = discord.getEmoji("star")
-        if (await perms.checkAdmin(message)) return
+        if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -53,7 +53,7 @@ export default class Auto extends Command {
             const autoEmbed = embeds.createEmbed()
             autoEmbed
             .setTitle(`**Auto Commands** ${discord.getEmoji("think")}`)
-            .setThumbnail(message.guild!.iconURL() as string)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
             .setDescription(
             "Configure settings for auto commands. You can set up a maximum of 10 auto commands.\n" +
             "\n" +

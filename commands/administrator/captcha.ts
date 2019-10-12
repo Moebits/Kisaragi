@@ -1,27 +1,42 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Captcha} from "./../../structures/Captcha"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class CaptchaCmd extends Command {
     constructor() {
         super({
-            aliases: [],
-            cooldown: 3
+            name: "captcha",
+            category: "administrator",
+            description: "Configure settings for captcha verification.",
+            help:
+            `
+            Note: You can type multiple options in one command.
+            captcha - Opens interactive captcha prompt.
+            captcha enable/disable - Enables or disables captcha verification.
+            captcha @role/role id - Sets the verify role.
+            captcha text/math - Changes the captcha type.
+            captcha easy/medium/hard/extreme - Changes the difficulty.
+            captcha #hexcolor - Changes the background color.
+            captcha reset - Resets all settings.
+            `,
+            guildOnly: true,
+            aliases: ["verification"],
+            cooldown: 30
         })
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const captchaClass = new Captcha(discord, message)
         const star = discord.getEmoji("star")
-        if (await perms.checkAdmin(message)) return
+        if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -34,27 +49,26 @@ export default class CaptchaCmd extends Command {
         const color = await sql.fetchColumn("captcha", "captcha color")
         const difficulty = await sql.fetchColumn("captcha", "difficulty")
         const captchaEmbed = embeds.createEmbed()
-        const {captcha} = await captchaClass.createCaptcha(cType, color, difficulty)
-        console.log(captcha.files)
+        const {captcha} = await captchaClass.createCaptcha(String(cType), String(color), String(difficulty))
         captchaEmbed
         .setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)
         .attachFiles(captcha.files)
         .setImage(captcha.image!.url)
-        .setThumbnail(message.guild!.iconURL() as string)
+        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .setDescription(
             "Configure settings for captcha verification. In order for this to function, you should create a role for verified members " +
-            "and deny the @everyone role reading permissions in all your guild channels, with the exception of the rules channel and the verify channel. Use **verify** to send a captcha.\n" +
+            "and deny the @everyone role reading Permission in all your guild channels, with the exception of the rules channel and the verify channel. Use **verify** to send a captcha.\n" +
             "\n" +
             "**Verify Role** = The role given to members who solve the captcha.\n" +
             "**Captcha Type** = Either text or math.\n" +
             "**Captcha Difficulty** = Either easy, medium, hard, or extreme.\n" +
             "\n" +
             "__Current Settings:__\n" +
-            `${star}_Verify Role:_ **${vRole.join("") ? "<@&" + vRole.join("") + ">" : "None"}**\n` +
-            `${star}_Verify Toggle:_ **${vToggle.join("")}**\n` +
-            `${star}_Captcha Type:_ **${cType.join("")}**\n` +
-            `${star}_Captcha Difficulty:_ **${difficulty.join("")}**\n` +
-            `${star}_Background Color:_ **${color.join("")}**\n` +
+            `${star}_Verify Role:_ **${vRole ? "<@&" + String(vRole) + ">" : "None"}**\n` +
+            `${star}_Verify Toggle:_ **${String(vToggle)}**\n` +
+            `${star}_Captcha Type:_ **${String(cType)}**\n` +
+            `${star}_Captcha Difficulty:_ **${String(difficulty)}**\n` +
+            `${star}_Background Color:_ **${String(color)}**\n` +
             "\n" +
             "__Edit Settings:__\n" +
             `${star}_Type **enable** or **disable** to enable or disable verification._\n` +
@@ -128,10 +142,10 @@ export default class CaptchaCmd extends Command {
             let description = ""
 
             if (setExtreme || setHard || setMedium || setEasy) {
-                const diff = setExtreme ? setExtreme : (
-                    setHard ? setHard : (
-                    setMedium ? setMedium : setEasy))
-                await sql.updateColumn("captcha", "verify toggle", diff)
+                const diff = setExtreme ? "extreme" : (
+                    setHard ? "hard" : (
+                    setMedium ? "medium" : "easy"))
+                await sql.updateColumn("captcha", "difficulty", diff)
                 description += `${star}Captcha difficulty set to **${diff}**!\n`
             }
 
@@ -152,13 +166,15 @@ export default class CaptchaCmd extends Command {
                 description += `${star}Captcha type set to **math**!\n`
             }
             if (setRole) {
-                await sql.updateColumn("captcha", "verify role", newRole!.join(""))
-                description += `${star}Verify role set to <@&${newRole}>!\n`
+                await sql.updateColumn("captcha", "verify role", String(newRole!))
+                description += `${star}Verify role set to <@&${String(newRole!)}>!\n`
             }
             if (setColor) {
-                await sql.updateColumn("captcha", "captcha color", newColor!.join(""))
-                description += `${star}Background color set to ${newColor!.join("")}\n`
+                await sql.updateColumn("captcha", "captcha color", String(newColor!))
+                description += `${star}Background color set to ${String(newColor!)}\n`
             }
+
+            if (!description) description = `${star}Invalid arguments provided, canceled the prompt.`
             responseEmbed
             .setDescription(description)
             msg.channel.send(responseEmbed)

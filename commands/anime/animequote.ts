@@ -1,6 +1,7 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 const animeQuotes = require("animequotes")
@@ -31,9 +32,10 @@ export default class AnimeQuote extends Command {
             message.channel.send(animeQuoteEmbed)
             return
         } else {
-            const quote = animeQuotes.getQuotesByAnime(args[1])
+            const query = Functions.combineArgs(args, 1)
+            const quote = animeQuotes.getQuotesByAnime(query)
             if (quote.quote === undefined) {
-                    const aniQuote = animeQuotes.getQuotesByCharacter(args[1])
+                    const aniQuote = animeQuotes.getQuotesByCharacter(query)
                     if (aniQuote.quote === undefined) {
                         animeQuoteEmbed
                         .setTitle(`**Anime Quote** ${discord.getEmoji("raphi")}`)

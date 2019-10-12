@@ -19,7 +19,7 @@ export default class Rank extends Command {
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        const points = new Points(discord)
+        const points = new Points(discord, message)
 
         const canvas = createCanvas(200, 5)
         const ctx = canvas.getContext("2d")
@@ -28,8 +28,8 @@ export default class Rank extends Command {
         const rawPointThreshold = await sql.fetchColumn("points", "point threshold")
         const pointThreshold = Number(rawPointThreshold)
 
-        const userScore = await points.fetchScore(message)
-        const userLevel = await points.fetchLevel(message)
+        const userScore = await points.fetchScore()
+        const userLevel = await points.fetchLevel()
 
         const rankEmbed = embeds.createEmbed()
 

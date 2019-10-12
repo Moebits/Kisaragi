@@ -1,9 +1,9 @@
 import {GuildEmoji, Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class ReactionRoles extends Command {
@@ -17,8 +17,8 @@ export default class ReactionRoles extends Command {
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        const perms = new Permissions(discord, message)
-        if (await perms.checkMod(message)) return
+        const perms = new Permission(discord, message)
+        if (!await perms.checkMod()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -65,7 +65,7 @@ export default class ReactionRoles extends Command {
             const reactEmbed = embeds.createEmbed()
             reactEmbed
             .setTitle(`**Reaction Roles** ${discord.getEmoji("aquaUp")}`)
-            .setThumbnail(message.guild!.iconURL() as string)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
             .setDescription(
                 `Add and remove reaction roles.\n` +
                 "\n" +

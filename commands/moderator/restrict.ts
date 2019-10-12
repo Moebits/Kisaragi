@@ -1,8 +1,8 @@
 import {GuildMember, Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Restrict extends Command {
@@ -16,8 +16,8 @@ export default class Restrict extends Command {
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        const perms = new Permissions(discord, message)
-        if (await perms.checkMod(message)) return
+        const perms = new Permission(discord, message)
+        if (!await perms.checkMod()) return
         const restrictEmbed = embeds.createEmbed()
         const restrict = await sql.fetchColumn("special roles", "restricted role")
         if (!restrict) return message.reply("You need to set a restricted role first!")

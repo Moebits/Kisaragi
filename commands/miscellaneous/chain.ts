@@ -12,7 +12,7 @@ export default class Chain extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const commands = new CommandFunctions(discord)
+        const commands = new CommandFunctions(discord, message)
 
         const cmdArgs = args.join(" ").split("& ")
         for (let i = 0; i < cmdArgs.length; i++) {

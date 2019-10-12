@@ -16,7 +16,7 @@ export default class Google extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const commands = new CommandFunctions(discord)
+        const commands = new CommandFunctions(discord, message)
         const embeds = new Embeds(discord, message)
         const query = Functions.combineArgs(args, 1)
 

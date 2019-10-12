@@ -1,9 +1,9 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Selfroles extends Command {
@@ -16,11 +16,11 @@ export default class Selfroles extends Command {
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
 
         // If not admin, only shows the role list.
-        if (await perms.checkAdmin(message, true)) {
+        if (!await perms.checkAdmin(true)) {
             let selfroles = await sql.fetchColumn("special roles", "self roles")
             selfroles = JSON.parse(selfroles[0])
             const step = 3.0
@@ -41,7 +41,7 @@ export default class Selfroles extends Command {
                 const selfEmbed = embeds.createEmbed()
                 selfEmbed
                 .setTitle(`**Self Role List** ${discord.getEmoji("karenSugoi")}`)
-                .setThumbnail(message.guild!.iconURL() as string)
+                .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
                 .setDescription(
                     settings + "\n"
                 )
@@ -83,7 +83,7 @@ export default class Selfroles extends Command {
             const selfEmbed = embeds.createEmbed()
             selfEmbed
             .setTitle(`**Self Role Settings** ${discord.getEmoji("karenSugoi")}`)
-            .setThumbnail(message.guild!.iconURL() as string)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
             .setDescription(
                 `Add and remove self-assignable roles. Users can assign them with the command **selfrole**.\n` +
                 "\n" +

@@ -1,9 +1,9 @@
 import {GuildMember, Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Detector} from "./../../structures/Detector"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Swap extends Command {
@@ -15,16 +15,16 @@ export default class Swap extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        const detect = new Detector(discord)
+        const detect = new Detector(discord, message)
         const star = discord.getEmoji("star")
-        if (await perms.checkAdmin(message)) return
+        if (!await perms.checkAdmin()) return
         const pfp = await sql.fetchColumn("detection", "pfp")
         const weeb = await sql.fetchColumn("detection", "weeb")
         const normie = await sql.fetchColumn("detection", "normie")
-        if (pfp.join("") === "off") return
+        if (String(pfp) === "off") return message.reply("Cannot use this command, have not set the weeb and normie roles!")
         let weebCounter = 0
         let normieCounter = 0
 
@@ -32,7 +32,7 @@ export default class Swap extends Command {
 
         for (let i = 0; i < message.guild!.members.size; i++) {
             const memberArray = message.guild!.members.map((m: GuildMember) => m)
-            const result = await detect.swapRoles(message, memberArray[i], true)
+            const result = await detect.swapRoles(memberArray[i], true)
             if (result === true) {
                 weebCounter += 1
             } else if (result === false) {
@@ -46,8 +46,8 @@ export default class Swap extends Command {
         swapEmbed
         .setTitle(`**Role Swapping** ${discord.getEmoji("gabYes")}`)
         .setDescription(
-            `${star}**${weebCounter}** members were swapped into the <@&${weeb.join("")}> role.\n` +
-            `${star}**${normieCounter}** members were swapped into the <@&${normie.join("")}> role.\n`
+            `${star}**${weebCounter}** members were swapped into the <@&${weeb}> role.\n` +
+            `${star}**${normieCounter}** members were swapped into the <@&${normie}> role.\n`
         )
         message.channel.send(swapEmbed)
     }

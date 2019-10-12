@@ -1,9 +1,9 @@
 import {GuildMember, Message, MessageEmbed, Role} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Warns extends Command {
@@ -16,9 +16,9 @@ export default class Warns extends Command {
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
-        if (await perms.checkMod(message)) return
+        if (!await perms.checkMod()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()

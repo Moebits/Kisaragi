@@ -2,10 +2,7 @@ import {GuildEmoji} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
 
 export class Generate {
-    private readonly discord: Kisaragi
-    constructor(discord: Kisaragi) {
-        this.discord = discord
-    }
+    constructor(private readonly discord: Kisaragi) {}
 
     // Generate Commands for commands.json
     public generateCommands = (cmdFiles: string[]) => {

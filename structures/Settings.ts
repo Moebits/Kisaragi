@@ -65,10 +65,9 @@ export class Settings {
 
     private readonly logSettings: Init = {
         "mod log": null,
-        "this.message log": null,
+        "message log": null,
         "user log": null,
-        "guild log": null,
-        "discord log": null
+        "guild log": null
     }
 
     private readonly specialChannelSettings: Init = {
@@ -84,8 +83,7 @@ export class Settings {
         "warn two": null,
         "mod role": null,
         "admin role": null,
-        "self roles": null,
-        "reaction roles": null
+        "self roles": null
     }
 
     private readonly pointSettings: Init = {
@@ -93,17 +91,17 @@ export class Settings {
         "level list": null,
         "point range": [10, 20],
         "point threshold": 1000,
-        "level this.message": "Congrats user, you are now level newlevel!",
+        "level message": "Congrats user, you are now level newlevel!",
         "point timeout": 60000,
         "point toggle": "off"
     }
 
     private readonly welcomeLeaveSettings: Init = {
         "welcome channel": null,
-        "welcome this.message": "Welcome to guild, user!",
+        "welcome message": "Welcome to guild, user!",
         "welcome toggle": "off",
         "leave channel": null,
-        "leave this.message": "user has left guild!",
+        "leave message": "user has left guild!",
         "leave toggle": "off",
         "welcome bg image": "https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif",
         "welcome bg text": "Welcome tag! There are now count members.",
@@ -117,7 +115,7 @@ export class Settings {
         "birthday user id": null,
         "birthday date": null,
         "birthday channel": null,
-        "birthday this.message": "Happy birthday to {{user}}!",
+        "birthday message": "Happy birthday to {{user}}!",
         "birthday toggle": "off"
     }
 
@@ -143,6 +141,7 @@ export class Settings {
         "default channel": null,
         "block match": "partial",
         "block toggle": "off",
+        "link ban": "off",
         "asterisk": "off"
     }
 
@@ -178,10 +177,15 @@ export class Settings {
     }
 
     private readonly reactionSettings: Init = {
-        "this.message": null,
-        "emoji": null,
-        "role": null,
-        "state": null
+        message: null,
+        emoji: null,
+        role: null,
+        state: null
+    }
+
+    private readonly configSettings: Init = {
+        "embed color": "default",
+        "permissions": "role"
     }
 
     private readonly tableMap: object = {
@@ -206,7 +210,8 @@ export class Settings {
         "auto": this.autoSettings,
         "links": this.linkSettings,
         "detection": this.detectionSettings,
-        "reaction": this.reactionSettings
+        "reaction": this.reactionSettings,
+        "config": this.configSettings
     }
 
     // Initialize all tables

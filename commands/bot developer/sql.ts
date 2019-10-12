@@ -1,9 +1,9 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class SQL extends Command {
@@ -15,9 +15,9 @@ export default class SQL extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
-        if (perms.checkBotDev(message)) return
+        if (!perms.checkBotDev()) return
         const query = {text: Functions.combineArgs(args, 1), rowMode: "array"}
         const sqlEmbed = embeds.createEmbed()
         let result

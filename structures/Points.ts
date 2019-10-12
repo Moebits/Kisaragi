@@ -5,17 +5,17 @@ import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
 export class Points {
-    constructor(private readonly discord: Kisaragi) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Fetch Score
-    public fetchScore = async (message: Message) => {
-        const sql = new SQLQuery(message)
+    public fetchScore = async () => {
+        const sql = new SQLQuery(this.message)
         const rawScoreList = await sql.fetchColumn("points", "score list", false, false, true)
         const rawUserList = await sql.fetchColumn("points", "user id list", false, false, true)
         const scoreList = rawScoreList.map((num: string) => Number(num))
         const userList = rawUserList.map((num: string) => Number(num))
         for (let i = 0; i < userList.length; i++) {
-            if (userList[i] === Number(message.author.id)) {
+            if (userList[i] === Number(this.message.author!.id)) {
                 const userScore: number = scoreList[i]
                 return userScore
             }
@@ -23,14 +23,14 @@ export class Points {
     }
 
     // Fetch Level
-    public fetchLevel = async (message: Message) => {
-        const sql = new SQLQuery(message)
+    public fetchLevel = async () => {
+        const sql = new SQLQuery(this.message)
         const rawLevelList = await sql.fetchColumn("points", "level list", false, false, true)
         const rawUserList = await sql.fetchColumn("points", "user id list", false, false, true)
         const levelList = rawLevelList.map((num: string) => Number(num))
         const userList = rawUserList.map((num: string) => Number(num))
         for (let i = 0; i < userList.length; i++) {
-            if (userList[i] === Number(message.author.id)) {
+            if (userList[i] === Number(this.message.author!.id)) {
                 const userLevel: number = levelList[i]
                 return userLevel
             }
@@ -38,10 +38,10 @@ export class Points {
     }
 
     // Calculate Score
-    public calcScore = async (message: Message) => {
-        if (message.author.bot) return
-        const sql = new SQLQuery(message)
-        const embeds = new Embeds(this.discord, message)
+    public calcScore = async () => {
+        if (this.message.author!.bot) return
+        const sql = new SQLQuery(this.message)
+        const embeds = new Embeds(this.discord, this.message)
         const rawScoreList = await sql.fetchColumn("points", "score list", false, false, true)
         const rawLevelList = await sql.fetchColumn("points", "level list", false, false, true)
         const rawPointRange = await sql.fetchColumn("points", "point range", false, false, true)
@@ -60,16 +60,16 @@ export class Points {
             return
         }
 
-        const scoreList: number[] = rawScoreList.map((num: string) => Number(num))
-        const levelList: number[] = rawLevelList.map((num: string) => Number(num))
-        const pointRange: number[] = rawPointRange.map((num: string) => Number(num))
-        const pointThreshold: number = Number(rawPointThreshold)
-        const userStr: string = levelUpMessage.join("").replace("user", `<@${message.author.id}>`)
+        const scoreList = rawScoreList.map((num: string) => Number(num))
+        const levelList = rawLevelList.map((num: string) => Number(num))
+        const pointRange = rawPointRange.map((num: string) => Number(num))
+        const pointThreshold = Number(rawPointThreshold)
+        const userStr = levelUpMessage.join("").replace("user", `<@${this.message.author!.id}>`)
 
         for (let i = 0; i < userList.length; i++) {
-            if (userList[i] === Number(message.author.id)) {
-                const userScore: number = scoreList[i]
-                const userLevel: number = levelList[i]
+            if (userList[i] === Number(this.message.author!.id)) {
+                const userScore = scoreList[i]
+                const userLevel = levelList[i]
                 if (userScore === undefined || userScore === null) {
                     scoreList[i] = 0
                     levelList[i] = 0
@@ -77,14 +77,14 @@ export class Points {
                     await sql.updateColumn("points", "score list", levelList)
                     return
                 }
-                const newPoints: number = Math.floor(userScore + Functions.getRandomNum(pointRange[0], pointRange[1]))
-                const newLevel: number = Math.floor(userScore / pointThreshold)
-                const lvlStr: string = userStr.replace("newlevel", newLevel.toString())
+                const newPoints = Math.floor(userScore + Functions.getRandomNum(pointRange[0], pointRange[1]))
+                const newLevel = Math.floor(userScore / pointThreshold)
+                const lvlStr = userStr.replace("newlevel", newLevel.toString())
 
                 if (newLevel > userLevel) {
                     levelList[i] = newLevel
                     await sql.updateColumn("points", "level list", levelList)
-                    const channel = message.member!.lastMessage!.channel
+                    const channel = this.message.member!.lastMessage!.channel
                     const levelEmbed = embeds.createEmbed()
                     levelEmbed
                     .setTitle(`**Level Up!** ${this.discord.getEmoji("vigneXD")}`)

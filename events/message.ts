@@ -17,13 +17,12 @@ export default class MessageEvent {
     constructor(private readonly discord: Kisaragi) {}
 
     public run = async (message: Message) => {
-      console.log(message.author.id)
       const letters = new Letters(this.discord)
-      const points = new Points(this.discord)
-      const haiku = new Haiku(this.discord)
-      const cmdFunctions = new CommandFunctions(this.discord)
-      const detect = new Detector(this.discord)
-      const links = new Link(this.discord)
+      const points = new Points(this.discord, message)
+      const haiku = new Haiku(this.discord, message)
+      const cmdFunctions = new CommandFunctions(this.discord, message)
+      const detect = new Detector(this.discord, message)
+      const links = new Link(this.discord, message)
 
       /*let guildIDs = [
         "594616328351121419"
@@ -35,25 +34,26 @@ export default class MessageEvent {
 
       const prefix = await SQLQuery.fetchPrefix(message)
 
-      /*let letterNames = [
-        ""
+      /*const letterNames = [
+        "numberSelect"
       ]
+      const {Generate} = require("../structures/Generate")
+      const generate = new Generate(this.discord)
+      generate.generateEmojis(letterNames)*/
 
-      discord.generateEmojis(letterNames)*/
-
-      if (message.author.bot) return
+      if (message.author!.bot) return
 
       if (message.guild) {
         const sql = new SQLQuery(message)
         const pointTimeout = await sql.fetchColumn("points", "point timeout")
         setTimeout(() => {
-        points.calcScore(message)
+        points.calcScore()
         }, pointTimeout ? Number(pointTimeout) : 60000)
         Block.blockWord(message)
-        detect.detectAnime(message)
-        detect.swapRoles(message)
-        haiku.haiku(message)
-        cmdFunctions.autoCommand(message)
+        detect.detectAnime()
+        detect.swapRoles()
+        haiku.haiku()
+        cmdFunctions.autoCommand()
     }
 
       const responseText: any = {
@@ -125,7 +125,7 @@ export default class MessageEvent {
     }
 
       if (message.content.startsWith("https")) {
-      await links.postLink(message)
+      await links.postLink()
       return
     }
 
@@ -135,12 +135,12 @@ export default class MessageEvent {
       if (args[0] === undefined) return
       const cmd = args[0].toLowerCase()
       const path = await cmdFunctions.findCommand(cmd)
-      if (!path) return cmdFunctions.noCommand(message, cmd)
+      if (!path) return cmdFunctions.noCommand(cmd)
       const coolAmount = await SQLQuery.fetchCommand(cmd, "cooldown")
       const cmdPath = new (require(path).default)(this.discord)
 
       const cooldown = new Cooldown(this.discord, message)
-      const onCooldown = cooldown.cmdCooldown(cmd, coolAmount.join(""), message, this.cooldowns)
+      const onCooldown = cooldown.cmdCooldown(cmd, String(coolAmount), message, this.cooldowns)
       if (onCooldown) {
       message.channel.send(onCooldown)
       return

@@ -4,12 +4,12 @@ import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
 
 export class Haiku {
-    constructor(private readonly discord: Kisaragi) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Haiku
-    public haiku = (message: Message) => {
-        const embeds = new Embeds(this.discord, message)
-        const wordArray = message.content.replace(/\s+/g, " ").split(" ")
+    public haiku = () => {
+        const embeds = new Embeds(this.discord, this.message)
+        const wordArray = this.message.content.replace(/\s+/g, " ").split(" ")
         let lineCount1 = 0
         let lineCount2 = 0
         let lineCount3 = 0
@@ -37,16 +37,15 @@ export class Haiku {
             const haikuEmbed = embeds.createEmbed()
             haikuEmbed
             .setTitle(`**Haiku** ${this.discord.getEmoji("vigneXD")}`)
-            .setThumbnail(message.author.displayAvatarURL())
+            .setThumbnail(this.message.author!.displayAvatarURL())
             .setDescription(
                 `${line1.join(" ")}\n` +
                 `${line2.join(" ")}\n` +
                 `${line3.join(" ")}\n` +
                 "\n" +
-                `**- ${message.author.username}**\n`
+                `**- ${this.message.author!.username}**\n`
             )
-            message.channel.send(haikuEmbed)
+            this.message.channel.send(haikuEmbed)
         }
-
     }
 }

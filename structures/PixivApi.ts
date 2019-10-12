@@ -12,7 +12,7 @@ const pixiv = new PixivApiClient(process.env.USERNAME, process.env.PASSWORD)
 
 export class PixivApi {
     private readonly embeds = new Embeds(this.discord, this.message)
-    private readonly links = new Link(this.discord)
+    private readonly links = new Link(this.discord, this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Create Pixiv Embed

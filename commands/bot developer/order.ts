@@ -1,8 +1,8 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Order extends Command {
@@ -14,9 +14,9 @@ export default class Order extends Command {
     }
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
-        if (perms.checkBotDev(message)) return
+        if (!perms.checkBotDev()) return
         const orderEmbed = embeds.createEmbed()
 
         await SQLQuery.orderTables()

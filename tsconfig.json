@@ -5,7 +5,7 @@
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
 		"resolveJsonModule": true,
-		"noEmitOnError": true,
+		"noEmitOnError": false,
 		"target": "es6",
 		"lib": ["es2019"],
 		"esModuleInterop": true,
@@ -13,8 +13,7 @@
 		"emitDecoratorMetadata": true,
 		"noUnusedLocals": true,
 		"noImplicitAny": true,
-		"strict": true,
-		"sourceMap": true
+		"strict": true
 	},
 	"exclude": [
 		"node_modules",

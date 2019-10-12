@@ -1,8 +1,8 @@
 import {GuildMember, Message, Role} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Warn extends Command {
@@ -110,9 +110,9 @@ export default class Warn extends Command {
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
-        if (await perms.checkMod(message)) return
+        if (!await perms.checkMod()) return
         const warnThreshold = await sql.fetchColumn("warns", "warn threshold")
         const warnPenalty = await sql.fetchColumn("warns", "warn penalty")
         const warnOne = await sql.fetchColumn("special roles", "warn one")

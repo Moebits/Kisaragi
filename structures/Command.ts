@@ -11,12 +11,11 @@ interface CommandOptions {
   cooldown: number
   permission: string
   botPermission: string
-  nsfw: boolean
 }
 
 export class Command {
 
-  private readonly options: CommandOptions
+  public readonly options: CommandOptions
 
   constructor({
       name = "None",
@@ -27,13 +26,12 @@ export class Command {
       image = "No image",
       enabled = true,
       guildOnly = false,
-      aliases = [],
+      aliases = [""],
       cooldown = 3,
       permission = "SEND_MESSAGES",
-      botPermission = "SEND_MESSAGES",
-      nsfw = false
+      botPermission = "SEND_MESSAGES"
     }) {
-      this.options = {name, category, description, help, examples, image, enabled, guildOnly, aliases, cooldown, permission, botPermission, nsfw}
+      this.options = {name, category, description, help, examples, image, enabled, guildOnly, aliases, cooldown, permission, botPermission}
     }
 
   get help() {

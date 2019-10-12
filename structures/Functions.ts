@@ -5,9 +5,7 @@ import * as config from "../config.json"
 
 export class Functions {
     private static readonly colors: string[] = config.colors
-    constructor(private readonly message?: Message) {
-        this.message = message
-    }
+    constructor(private readonly message?: Message) {}
 
     // Timeout
     public static timeout = (ms: number) => {
@@ -57,6 +55,11 @@ export class Functions {
 
         return `${monthNames[monthIndex]} ${day}, ${year}`
       }
+
+    // Clean HTML
+    public static cleanHTML = (str: string) => {
+        return str.replace(/<\/?[^>]+(>|$)/g, "")
+    }
 
     // Proper Case
     public static toProperCase = (str: string) => {

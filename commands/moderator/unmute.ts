@@ -1,8 +1,8 @@
 import {GuildMember, Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Unmute extends Command {
@@ -15,9 +15,9 @@ export default class Unmute extends Command {
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
-        const perms = new Permissions(discord, message)
+        const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
-        if (await perms.checkMod(message)) return
+        if (!await perms.checkMod()) return
         const muteEmbed = embeds.createEmbed()
         const mute = await sql.fetchColumn("special roles", "mute role")
         if (!mute) return message.reply("You need to set a mute role first!")

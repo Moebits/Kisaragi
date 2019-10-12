@@ -2,9 +2,9 @@ import {GuildChannel, Message, MessageAttachment} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Images} from "../../structures/Images"
+import {Permission} from "../../structures/Permission"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permissions} from "./../../structures/Permissions"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Welcome extends Command {
@@ -19,8 +19,8 @@ export default class Welcome extends Command {
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
-        const perms = new Permissions(discord, message)
-        if (await perms.checkAdmin(message)) return
+        const perms = new Permission(discord, message)
+        if (!await perms.checkAdmin()) return
         const axios = require("axios")
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -40,7 +40,7 @@ export default class Welcome extends Command {
         const newImage = json.data.shorturl
         welcomeEmbed
         .setTitle(`**Welcome Messages** ${discord.getEmoji("karenSugoi")}`)
-        .setThumbnail(message.guild!.iconURL() as string)
+        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .attachFiles([attachment])
         .setImage(`attachment://${attachment.name ? attachment.name : "animated.gif"}`)
         .setDescription(
