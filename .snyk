@@ -20,6 +20,8 @@ patch:
         patched: '2019-10-04T18:51:30.661Z'
     - snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
         patched: '2019-10-04T18:51:30.661Z'
+    - libnpmsearch > npm-registry-fetch > make-fetch-happen > https-proxy-agent:
+        patched: '2019-10-12T01:51:45.893Z'
   SNYK-JS-LODASH-450202:
     - snyk > @snyk/dep-graph > lodash:
         patched: '2019-10-04T18:51:30.661Z'
@@ -39,3 +41,5 @@ patch:
         patched: '2019-10-04T18:51:30.661Z'
     - snyk > snyk-go-plugin > graphlib > lodash:
         patched: '2019-10-04T18:51:30.661Z'
+    - mdn-docs-search > cheerio > lodash:
+        patched: '2019-10-12T01:51:45.893Z'
