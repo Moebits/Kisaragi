@@ -125,7 +125,7 @@
     "redis": "^2.8.0",
     "shorturl-2": "0.0.7",
     "snoowrap": "^1.19.0",
-    "snyk": "^1.231.0",
+    "snyk": "^1.234.2",
     "sodium": "^3.0.2",
     "soundcloud-api-client": "0.0.9",
     "svg-captcha": "^1.4.0",
