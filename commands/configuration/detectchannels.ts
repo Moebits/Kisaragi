@@ -7,14 +7,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class DetectChannels extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Configures channels ignored by anime detection.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)

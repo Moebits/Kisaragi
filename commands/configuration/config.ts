@@ -7,14 +7,17 @@ import {Permission} from "./../../structures/Permission"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Config extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Configures bot config settings.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)

@@ -4,8 +4,9 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Roles extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Lists all roles in the guild.",
             aliases: [],
             cooldown: 3
         })

@@ -6,9 +6,10 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 
 export default class Delete extends Command {
-    constructor() {
-        super({
-            aliases: [],
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Deletes messages.",
+            aliases: ["del", "prune", "purge"],
             cooldown: 3
         })
     }
@@ -38,7 +39,9 @@ export default class Delete extends Command {
         }
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return

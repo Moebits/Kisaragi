@@ -9,14 +9,17 @@ const gd = require("gdprofiles")
 const base64 = require("base-64")
 
 export default class GeometryDash extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches for gd players and levels.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const star = discord.getEmoji("star")
 

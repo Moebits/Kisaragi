@@ -7,31 +7,40 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Block extends Command {
-    constructor() {
-        super({
-            name: "block",
-            category: "administrator",
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
             description: "Configure settings for word filtering.",
             help:
             `
-            Note: You can type multiple options in one command.
-            block - Opens the interactive block prompt.
-            block word1 word2... - Adds blocked words.
-            block enable/disable - Toggles filtering on or off.
-            block exact/partial - Sets the matching algorithm.
-            block asterisk - Toggles asterisk filtering.
-            block delete (number) - Deletes a word.
-            block reset - Deletes all words.
+            _Note: You can type multiple options in one command._
+            \`block\` - Opens the interactive block prompt.
+            \`block word1 word2...\` - Adds blocked words.
+            \`block enable/disable\` - Toggles filtering on or off.
+            \`block exact/partial\` - Sets the matching algorithm.
+            \`block asterisk\` - Toggles asterisk filtering.
+            \`block delete (number)\` - Deletes a word.
+            \`block reset\` - Deletes all words.
+            `,
+            examples:
+            `
+            \`=>block lolicon\`
+            \`=>block delete 1\`
+            \`=>block\` _then_ \`asterisk disable\`
+            \`=>block partial\`
+            \`=>block reset\`
             `,
             guildOnly: true,
             aliases: ["filter"],
             permission: "MANAGE_CHANNELS",
             botPermission: "MANAGE_MESSAGES",
+            image: "../assets/help images/administrator/block.png",
             cooldown: 30
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
@@ -49,7 +58,6 @@ export default class Block extends Command {
         const asterisk = await sql.fetchColumn("blocks", "asterisk")
         let wordList = ""
         if (words) {
-            console.log("here")
             for (let i = 0; i < words.length; i++) {
                 wordList += `**${i + 1} - ${words[i]}**\n`
             }
@@ -60,31 +68,31 @@ export default class Block extends Command {
         blockEmbed
         .setTitle(`**Blocked Words** ${discord.getEmoji("gabuChrist")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) || message.author!.displayAvatarURL({format: "png", dynamic: true}))
-        .setDescription(
-        "Add or remove blocked words.\n" +
-        "\n" +
-        "**Exact** = Only matches the exact word.\n" +
-        "**Partial** = Also matches if the word is partially in another word.\n" +
-        "**Asterisk** = Whether messages containing asterisks will be blocked.\n" +
-        "\n" +
-        "__Word List__\n" +
-        wordList + "\n" +
-        "\n" +
-        "__Current Settings__\n" +
-        `${star}_Filtering is **${toggle}**._\n` +
-        `${star}_Matching algorithm set to **${match}**._\n` +
-        `${star}_Asterisk filtering is **${asterisk}**._\n` +
-        "\n" +
-        "__Edit Settings__\n" +
-        `${star}_**Type any words**, separated by a space, to add blocked words._\n` +
-        `${star}_Type **enable** or **disable** to enable/disable filtering._\n` +
-        `${star}_Type **exact** or **partial** to set the matching algorithm._\n` +
-        `${star}_Type **asterisk** to toggle asterisk filtering._\n` +
-        `${star}_Type **delete (word number)** to delete a word._\n` +
-        `${star}_**You can type multiple options** to enable all at once._\n` +
-        `${star}_Type **reset** to delete all words._\n` +
-        `${star}_Type **cancel** to exit._\n`
-        )
+        .setDescription(Functions.multiTrim(`
+        Add or remove blocked words.
+
+        **Exact** = Only matches the exact word.
+        **Partial** = Also matches if the word is partially in another word.
+        **Asterisk** = Whether messages containing asterisks will be blocked.
+
+        __Word List__
+        ${wordList}
+
+        __Current Settings__
+        ${star}_Filtering is **${toggle}**._
+        ${star}_Matching algorithm set to **${match}**._
+        ${star}_Asterisk filtering is **${asterisk}**._
+
+        __Edit Settings__
+        ${star}_**Type any words**, separated by a space, to add blocked words._
+        ${star}_Type **enable** or **disable** to enable/disable filtering._
+        ${star}_Type **exact** or **partial** to set the matching algorithm._
+        ${star}_Type **asterisk** to toggle asterisk filtering._
+        ${star}_Type **delete (word number)** to delete a word._
+        ${star}_**You can type multiple options** to enable all at once._
+        ${star}_Type **reset** to delete all words._
+        ${star}_Type **cancel** to exit.
+        `))
         message.channel.send(blockEmbed)
 
         async function blockPrompt(msg: Message) {
@@ -134,7 +142,7 @@ export default class Block extends Command {
             if (msg.content.match(/exact/gi)) setExact = true
             if (msg.content.match(/partial/gi)) setPartial = true
             if (msg.content.match(/asterisk/gi)) setAsterisk = true
-            if (newMsg) setWord = true
+            if (newMsg.trim()) setWord = true
 
             let wordArray = newMsg.split(" ")
 

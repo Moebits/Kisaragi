@@ -6,8 +6,9 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Calc extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Calculate a math expression.",
             aliases: [],
             cooldown: 3
         })

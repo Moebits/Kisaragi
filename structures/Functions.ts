@@ -61,6 +61,11 @@ export class Functions {
         return str.replace(/<\/?[^>]+(>|$)/g, "")
     }
 
+    // Multi Trim
+    public static multiTrim = (str: string) => {
+        return str.replace(/^\s+/gm, "").replace(/\s+$/gm, "")
+    }
+
     // Proper Case
     public static toProperCase = (str: string) => {
         return str.replace(/\w\S*/g, (txt) => {

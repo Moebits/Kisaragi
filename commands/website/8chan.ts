@@ -5,8 +5,9 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class $8chan extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches 8chan.",
             aliases: [],
             cooldown: 3
         })
@@ -18,7 +19,9 @@ export default class $8chan extends Command {
         return clean2
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const board = args[1]
         const result = await axios.get(`https://8ch.net/${board}/0.json`)

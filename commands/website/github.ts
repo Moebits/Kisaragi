@@ -8,14 +8,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const GitHub = require("github-api")
 
 export default class Github extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches github.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const github = new GitHub({
             token: process.env.GITHUB_ACCESS_TOKEN

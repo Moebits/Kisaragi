@@ -7,14 +7,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const weeb = require("node-weeb")
 
 export default class Manga extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Search for a manga series.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const query = Functions.combineArgs(args, 1)
         const mangaEmbed = embeds.createEmbed()

@@ -8,14 +8,17 @@ const Kuroshiro = require("kuroshiro")
 const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
 
 export default class Katakana extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Converts romaji to katakana.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const kuroshiro = new Kuroshiro()
         await kuroshiro.init(new KuromojiAnalyzer())

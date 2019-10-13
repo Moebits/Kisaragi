@@ -6,8 +6,9 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Clean extends Command {
-  constructor() {
-      super({
+  constructor(discord: Kisaragi, message: Message) {
+      super(discord, message, {
+          description: "Evaluates Typescript code.",
           aliases: [],
           cooldown: 3
       })
@@ -17,14 +18,16 @@ export default class Clean extends Command {
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203))
   }
 
-  public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-    const perms = new Permission(discord, message)
-    const embeds = new Embeds(discord, message)
-    if (!perms.checkBotDev()) return
+  public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
+        const perms = new Permission(discord, message)
+        const embeds = new Embeds(discord, message)
+        if (!perms.checkBotDev()) return
 
-    const evalEmbed = embeds.createEmbed()
+        const evalEmbed = embeds.createEmbed()
 
-    try {
+        try {
           const code: string = Functions.combineArgs(args, 1)
           let evaled: string = eval(code)
 

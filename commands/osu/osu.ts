@@ -7,14 +7,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const {Osu} = require("node-osu")
 
 export default class OsuCommand extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches for osu players and beatmaps.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         // const axios = require("axios");
         const osu = new Osu.Api(process.env.OSU_API_KEY)

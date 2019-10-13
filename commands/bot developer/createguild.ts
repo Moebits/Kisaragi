@@ -4,8 +4,9 @@ import {Permission} from "../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class CreateGuild extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Creates a new guild.",
             aliases: [],
             cooldown: 3
         })
@@ -29,11 +30,13 @@ export default class CreateGuild extends Command {
         }
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
 
-    const guildName: string = args[1]
-    const guildRegion: string = args[2]
+        const guildName: string = args[1]
+        const guildRegion: string = args[2]
 
-    await this.createGuild(discord, message, guildName, guildRegion)
+        await this.createGuild(discord, message, guildName, guildRegion)
     }
 }

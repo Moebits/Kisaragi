@@ -8,8 +8,9 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const chan = require("4chanapi.js")
 
 export default class $4chan extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches 4chan.",
             aliases: [],
             cooldown: 3
         })
@@ -35,7 +36,9 @@ export default class $4chan extends Command {
         return clean7
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
 
         if (args[1] === "images") {

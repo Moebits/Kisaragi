@@ -5,23 +5,29 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 export default class Konachan extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Search for images on konachan.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
         const konachan = Booru("konachan.com", process.env.KONACHAN_API_KEY)
         const konachanEmbed = embeds.createEmbed()
         let tags
         if (!args[1]) {
             tags = ["rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
+            if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
             tags.push("-rating:safe")
         } else {

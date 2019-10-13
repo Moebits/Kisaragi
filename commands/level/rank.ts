@@ -9,14 +9,17 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 const imageDataURI = require("image-data-uri")
 
 export default class Rank extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Posts your rank.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const points = new Points(discord, message)

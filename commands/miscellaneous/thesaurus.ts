@@ -7,14 +7,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const {CollegiateThesaurus} = require("mw-dict")
 
 export default class Thesaurus extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Find synonyms for a word.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const thesaurus = new CollegiateThesaurus(process.env.THESAURUS_API_KEY)
         const word = Functions.combineArgs(args, 1)

@@ -5,14 +5,16 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Say extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Posts your message.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const message = this.message
 
         const prefix = await SQLQuery.fetchPrefix(message)
 

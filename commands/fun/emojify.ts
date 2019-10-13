@@ -5,8 +5,9 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Letters} from "./../../structures/Letters"
 
 export default class Emojify extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Emojify the text.",
             aliases: [],
             cooldown: 3
         })

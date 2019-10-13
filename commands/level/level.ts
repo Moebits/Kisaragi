@@ -6,14 +6,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Level extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Configure settings for xp gaining.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         const input = Functions.combineArgs(args, 1)

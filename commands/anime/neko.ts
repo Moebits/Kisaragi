@@ -3,17 +3,22 @@ import nekoClient, {NekoRequestResults} from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 export default class Neko extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Posts an image of a neko girl.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
         const neko = new nekoClient()
 
         let image: NekoRequestResults
@@ -22,6 +27,7 @@ export default class Neko extends Command {
             image = await neko.sfw.nekoGif()
             title = "Neko Gif"
         } else if (args[1] === "lewd") {
+            if (!perms.checkNSFW()) return
             if (args[2] === "gif") {
                 image = await neko.nsfw.nekoGif()
                 title = "Lewd Neko Gif"

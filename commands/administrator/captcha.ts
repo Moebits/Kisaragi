@@ -8,29 +8,36 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class CaptchaCmd extends Command {
-    constructor() {
-        super({
-            name: "captcha",
-            category: "administrator",
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
             description: "Configure settings for captcha verification.",
             help:
             `
             Note: You can type multiple options in one command.
-            captcha - Opens interactive captcha prompt.
-            captcha enable/disable - Enables or disables captcha verification.
-            captcha @role/role id - Sets the verify role.
-            captcha text/math - Changes the captcha type.
-            captcha easy/medium/hard/extreme - Changes the difficulty.
-            captcha #hexcolor - Changes the background color.
-            captcha reset - Resets all settings.
+            \`captcha\` - Opens interactive captcha prompt.
+            \`captcha enable/disable\` - Enables or disables captcha verification.
+            \`captcha @role/role id\` - Sets the verify role.
+            \`captcha text/math\` - Changes the captcha type.
+            \`captcha easy/medium/hard/extreme\` - Changes the difficulty.
+            \`captcha #hexcolor\` - Changes the background color.
+            \`captcha reset\` - Resets all settings.
             `,
+            examples:
+            `
+            \`=>captcha @Member 🔑 text medium #ffffff\`
+            \`=>captcha\` _then_ \`extreme\`
+            \`=>captcha math easy\`
+            `,
+            image: "../assets/help images/administrator/captcha.png",
             guildOnly: true,
             aliases: ["verification"],
             cooldown: 30
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)

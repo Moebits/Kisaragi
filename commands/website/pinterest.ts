@@ -9,8 +9,9 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const pinArray: MessageEmbed[] = []
 
 export default class Pinterest extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches pinterest.",
             aliases: [],
             cooldown: 3
         })
@@ -46,7 +47,9 @@ export default class Pinterest extends Command {
         pinArray.push(pinterestEmbed)
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const accessToken = (process.env.PINTEREST_ACCESS_TOKEN)
         const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID!, process.env.GOOGLE_API_KEY!)

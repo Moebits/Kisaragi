@@ -4,12 +4,14 @@ import {Command} from "../../structures/Command"
 import {Images} from "../../structures/Images.js"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 const nhentai = require("nhentai-js")
 
 export default class $nHentai extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches a doujinshi on nhentai.",
             aliases: [],
             cooldown: 3
         })
@@ -33,8 +35,12 @@ export default class $nHentai extends Command {
         return doujin
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const images = new Images(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkNSFW()) return
 
         if (!args[1]) {
             const doujin = await this.nhentaiRandom(false)

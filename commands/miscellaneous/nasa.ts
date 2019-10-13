@@ -7,14 +7,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const nasa = require("nasa-sdk")
 
 export default class Nasa extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Posts a nasa image.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         nasa.setNasaApiKey(process.env.NASA_API_KEY)
         const nasaEmbed = embeds.createEmbed()

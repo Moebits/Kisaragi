@@ -5,8 +5,9 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const lenny = require("lenny")
 
 export default class Lenny extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Posts a lenny emoji.",
             aliases: [],
             cooldown: 3
         })

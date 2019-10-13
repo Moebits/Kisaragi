@@ -4,44 +4,44 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Emoji extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Posts the image of an emoji.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
 
         const emojiEmbed = embeds.createEmbed()
-        const emojiName: string = args[1]
+        .setTitle(`**Emoji Search** ${discord.getEmoji("gabStare")}`)
+        const emojiName = args[1]
 
-        if (!emojiName.includes("<" || ">")) {
+        const emojiID = String(emojiName.replace(/(?<=:)(.*?)(?=:)/g, "").match(/\d+/))
 
-            const emojiFound = discord.emojis.find((emoji: GuildEmoji) => emoji.identifier === emojiName)
-            if (emojiFound === null) {
+        if (emojiID === "null") {
+            const emojiFound = discord.emojis.find((emoji: GuildEmoji) => emoji.name.toLowerCase() === emojiName.toLowerCase())
+            if (emojiFound === undefined) {
                 message.channel.send(emojiEmbed
-                    .setDescription("Could not find that emoji!"))
+                .setDescription("Could not find that emoji!"))
                 return
             }
+
             message.channel.send(emojiEmbed
-                .setDescription(`**${emojiName} Emoji**`)
-                .setImage(`${emojiFound!.url}`))
+            .setDescription(`**${emojiFound!.name} Emoji**`)
+            .setImage(`${emojiFound!.url}`))
             return
 
-            }
-
-        const snowflake: RegExp = /\d+/
-        let emojiID: string = emojiName.substring(emojiName.search(snowflake))
-        if (emojiID.includes(">")) {emojiID = emojiID.slice(0, -1)}
-
-        if (typeof parseInt(emojiID, 10) === "number") {
-            const emojiGet = discord.emojis.get(emojiID)
-            message.channel.send(emojiEmbed
+            } else {
+                const emojiGet = discord.emojis.get(emojiID)
+                message.channel.send(emojiEmbed
                 .setDescription(`**${emojiGet!.name} Emoji**`)
                 .setImage(emojiGet!.url))
-            return
-        }
+                return
+            }
     }
 }

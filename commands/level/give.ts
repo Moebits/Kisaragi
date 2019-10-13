@@ -4,8 +4,9 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Give extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Gives a user level xp.",
             aliases: [],
             cooldown: 3
         })

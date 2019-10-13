@@ -1,5 +1,4 @@
 import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, TextChannel} from "discord.js"
-import * as config from "../config.json"
 import {Embeds} from "./Embeds"
 
 export class Kisaragi extends Client {
@@ -9,12 +8,12 @@ export class Kisaragi extends Client {
 
     // Get Emoji
     public getEmoji = (name: string): GuildEmoji => {
-        for (let i = 0; i < config.emojis.length; i++) {
-            if (name === config.emojis[i].name) {
-                return this.emojis.find((emoji: GuildEmoji) => emoji.id === config.emojis[i].id) as GuildEmoji
-            }
+        const emoji = this.emojis.find((e) => (e.name === name) && (e.guild.ownerID === process.env.OWNER_ID))
+        if (emoji) {
+            return emoji as unknown as GuildEmoji
+        } else {
+            return `<:ConfusedAnime:579870079311937557>` as unknown as GuildEmoji
         }
-        return `<:ConfusedAnime:579870079311937557>` as unknown as GuildEmoji
     }
 
     // Fetch Message

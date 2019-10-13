@@ -4,8 +4,9 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Emojis extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Lists all emojis in the guild.",
             aliases: [],
             cooldown: 3
         })

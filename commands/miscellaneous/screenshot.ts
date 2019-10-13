@@ -6,21 +6,24 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Screenshot extends Command {
-    constructor() {
-        super({
-            aliases: [],
-            cooldown: 3
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+          description: "Posts a website screenshot.",
+          aliases: [],
+          cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-      const embeds = new Embeds(discord, message)
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
+        const embeds = new Embeds(discord, message)
 
-      const input = (args[1] === "return") ? Functions.combineArgs(args, 2) : Functions.combineArgs(args, 1)
+        const input = (args[1] === "return") ? Functions.combineArgs(args, 2) : Functions.combineArgs(args, 1)
 
-      const website = (input.startsWith("http")) ? input.trim() : `http://${input.trim}`
+        const website = (input.startsWith("http")) ? input.trim() : `http://${input.trim}`
 
-      const browser = await puppeteer.launch({
+        const browser = await puppeteer.launch({
           headless: true,
           args: [
             "--no-sandbox",
@@ -28,24 +31,24 @@ export default class Screenshot extends Command {
             "--disable-dev-shm-usage"
           ]
         })
-      const page = await browser.newPage()
-      await page.goto(website)
-      await page.screenshot({path: "../assets/images/screenshot.png", omitBackground: true, clip: {
+        const page = await browser.newPage()
+        await page.goto(website)
+        await page.screenshot({path: "../assets/images/screenshot.png", omitBackground: true, clip: {
         x: 0,
         y: 0,
         width: 1280,
         height: 720
       }})
-      await browser.close()
-      if (args[1] === "return") return
+        await browser.close()
+        if (args[1] === "return") return
 
-      const attachment = new MessageAttachment("../assets/images/screenshot.png")
-      const screenEmbed = embeds.createEmbed()
-      screenEmbed
+        const attachment = new MessageAttachment("../assets/images/screenshot.png")
+        const screenEmbed = embeds.createEmbed()
+        screenEmbed
       .setAuthor("google chrome", "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png")
       .setTitle(`**Website Screenshot** ${discord.getEmoji("kannaXD")}`)
       .attachFiles([attachment])
       .setImage("attachment://screenshot.png")
-      message.channel.send(screenEmbed)
+        message.channel.send(screenEmbed)
   }
 }

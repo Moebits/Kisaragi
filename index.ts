@@ -6,7 +6,7 @@ import {SQLQuery} from "./structures/SQLQuery"
 
 const discord = new Kisaragi({
     disableEveryone: true,
-    restTimeOffset: 100,
+    restTimeOffset: 0,
     disabledEvents: ["TYPING_START", "TYPING_STOP"] as WSEventType[]
 })
 
@@ -26,7 +26,7 @@ const start = async (): Promise<void> => {
             const commandName = file.split(".")[0]
             if (commandName === "empty" || commandName === "tempCodeRunnerFile") return
             const cmdFind = await SQLQuery.fetchCommand(commandName, "command")
-            const command = new (require(`./commands/${currDir}/${file}`).default)(discord)
+            const command = new (require(`./commands/${currDir}/${file}`).default)(discord, null)
 
             if (!cmdFind) {
                 await SQLQuery.insertCommand(commandName, command.aliases, path, command.cooldown)

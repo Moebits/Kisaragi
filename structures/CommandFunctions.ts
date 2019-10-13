@@ -1,5 +1,6 @@
-import {Message, TextChannel} from "discord.js"
+import {Collection, Message, TextChannel} from "discord.js"
 import fs from "fs"
+import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
@@ -9,12 +10,19 @@ export class CommandFunctions {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Run Command
-    public runCommand = async (msg: Message, args: string[]) => {
+    public runCommand = async (msg: Message, args: string[], ts?: boolean) => {
         args = args.filter(Boolean)
-        const path = await this.findCommand(args[0])
+        let path = await this.findCommand(args[0])
         if (!path) return this.noCommand(args[0])
-        const cp = require(`${path}`)
-        await cp.run(this.discord, msg, args).catch((err: Error) => {if (msg) msg.channel.send(this.discord.cmdError(msg, err))})
+        if (ts) path = path.replace(/js/, "ts")
+        const cp = new (require(path).default)(this.discord, msg)
+        return new Promise(async (resolve, reject) => {
+            await cp.run(args).then(() => resolve())
+            .catch((err: Error) => {
+                if (msg) msg.channel.send(this.discord.cmdError(msg, err))
+                reject()
+            })
+        })
     }
 
     // Auto Command
@@ -81,7 +89,7 @@ export class CommandFunctions {
                 const commands = fs.readdirSync(`../commands/${directories[i]}`)
                 for (let j = 0; j < commands.length; j++) {
                     commands[j] = commands[j].slice(0, -3)
-                    const cmdClass = new (require(`../commands/${directories[i]}/${commands[j]}.js`).default)()
+                    const cmdClass = new (require(`../commands/${directories[i]}/${commands[j]}.js`).default)(this.discord, this.message)
                     const aliases = cmdClass.options.aliases
                     for (let k = 0; k < aliases.length; k++) {
                         if (aliases[k] === cmd) {
@@ -96,6 +104,21 @@ export class CommandFunctions {
             return false
         } else {
             return path[0]
+        }
+    }
+
+    // Assert Last Command Worked
+    public assertLast = async <T extends string | boolean>(test: T, timeout?: number): Promise<T extends true ? number : boolean> => {
+        type assertLast = Promise<T extends true ? number : boolean>
+        if (!timeout) timeout = 20
+        await Functions.timeout(timeout)
+        const lastMsg = await this.message.channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
+        if (lastMsg!.embeds[0]) {
+            if (test === true) return lastMsg!.embeds[0].description.length as unknown as assertLast
+            return lastMsg!.embeds[0].description.includes(String(test)) as unknown as assertLast
+        } else {
+            if (test === true) return lastMsg!.content.length as unknown as assertLast
+            return lastMsg!.content.includes(String(test)) as unknown as assertLast
         }
     }
 }

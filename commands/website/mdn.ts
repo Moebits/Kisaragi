@@ -6,8 +6,9 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class MDN extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches the mdn docs.",
             aliases: [],
             cooldown: 3
         })
@@ -29,7 +30,9 @@ export default class MDN extends Command {
         .replace(/BigInt/gm, "[**BigInt**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)")
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const query = Functions.combineArgs(args, 1)
         const star = discord.getEmoji("star")

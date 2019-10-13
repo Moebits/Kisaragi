@@ -6,14 +6,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const translate = require("@vitalets/google-translate-api")
 
 export default class Japanese extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Translates to and from japanese.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const translateText = Functions.combineArgs(args, 1)
 
         const result = await translate(translateText, {to: "ja"})

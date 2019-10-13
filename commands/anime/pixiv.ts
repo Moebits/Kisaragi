@@ -2,18 +2,23 @@ import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 
 export default class Pixiv extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Search for images on pixiv.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const pixivApi = new PixivApi(discord, message)
+        const perms = new Permission(discord, message)
 
         const tags = Functions.combineArgs(args, 1)
 
@@ -28,6 +33,7 @@ export default class Pixiv extends Command {
         }
 
         if (args[1].toLowerCase() === "r18") {
+            if (!perms.checkNSFW()) return
             if (args[2].toLowerCase() === "en") {
                 const r18Tags = Functions.combineArgs(args, 3)
                 await pixivApi.getPixivImage(r18Tags, true, true)
@@ -47,6 +53,7 @@ export default class Pixiv extends Command {
 
         if (args[1].toLowerCase() === "popular") {
             if (args[2].toLowerCase() === "r18") {
+                if (!perms.checkNSFW()) return
                 await pixivApi.getPopularPixivR18Image()
                 return
             }

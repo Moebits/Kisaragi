@@ -6,10 +6,11 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Reboot extends Command {
-    constructor() {
-        super({
-            aliases: [],
-            cooldown: 3
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+          description: "Reboots the bot.",
+          aliases: [],
+          cooldown: 3
         })
     }
 
@@ -26,21 +27,23 @@ export default class Reboot extends Command {
       return false
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-      const perms = new Permission(discord, message)
-      const embeds = new Embeds(discord, message)
-      const sql = new SQLQuery(message)
-      const commands = await sql.fetchColumn("commands", "command")
-      if (!perms.checkBotDev()) return
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
+        const perms = new Permission(discord, message)
+        const embeds = new Embeds(discord, message)
+        const sql = new SQLQuery(message)
+        const commands = await sql.fetchColumn("commands", "command")
+        if (!perms.checkBotDev()) return
 
-      const rebootEmbed = embeds.createEmbed()
+        const rebootEmbed = embeds.createEmbed()
 
-      await message.channel.send(rebootEmbed
+        await message.channel.send(rebootEmbed
           .setDescription("Bot is shutting down."))
 
-      await Promise.all(commands.map((cmd: string) =>
+        await Promise.all(commands.map((cmd: string) =>
             this.unloadCommand(cmd)
           ))
-      process.exit(0)
+        process.exit(0)
       }
     }

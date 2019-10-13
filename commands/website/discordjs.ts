@@ -6,14 +6,17 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Discordjs extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches the discord.js docs.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const star = discord.getEmoji("star")
         const srcOptions = ["master", "stable", "rpc", "commando", "akairo", "akairo-master"]

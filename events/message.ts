@@ -137,7 +137,7 @@ export default class MessageEvent {
       const path = await cmdFunctions.findCommand(cmd)
       if (!path) return cmdFunctions.noCommand(cmd)
       const coolAmount = await SQLQuery.fetchCommand(cmd, "cooldown")
-      const cmdPath = new (require(path).default)(this.discord)
+      const cmdPath = new (require(path).default)(this.discord, message)
 
       const cooldown = new Cooldown(this.discord, message)
       const onCooldown = cooldown.cmdCooldown(cmd, String(coolAmount), message, this.cooldowns)
@@ -147,7 +147,7 @@ export default class MessageEvent {
     }
 
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
-      cmdPath.run(this.discord, message, args).then(() => {
+      cmdPath.run(args).then(() => {
       const msgCheck = message.channel.messages
       if (msgCheck.has(msg.id)) msg.delete({timeout: 1000})
       }).catch((err: Error) => message.channel.send(this.discord.cmdError(message, err)))

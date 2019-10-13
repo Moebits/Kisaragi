@@ -8,14 +8,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const google = require("google-it")
 
 export default class Google extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches google.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const commands = new CommandFunctions(discord, message)
         const embeds = new Embeds(discord, message)
         const query = Functions.combineArgs(args, 1)

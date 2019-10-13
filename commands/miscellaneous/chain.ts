@@ -4,14 +4,17 @@ import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Chain extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Run multiple commands, one after another.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const commands = new CommandFunctions(discord, message)
 
         const cmdArgs = args.join(" ").split("& ")

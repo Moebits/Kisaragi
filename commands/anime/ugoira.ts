@@ -5,23 +5,28 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 
 const Ugoira = require("node-ugoira")
 const pixivImg = require("pixiv-img")
 
 export default class UgoiraCommand extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Posts a pixiv ugoira.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const images = new Images(discord, message)
         const embeds = new Embeds(discord, message)
         const pixivApi = new PixivApi(discord, message)
+        const perms = new Permission(discord, message)
         const fs = require("fs")
         const pixiv = new PixivApiClient(undefined, undefined, {camelcaseKeys: true})
         const input = (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en") ?
@@ -33,6 +38,7 @@ export default class UgoiraCommand extends Command {
             pixivID = input.match(/\d+/g)!.join("")
         } else {
             if (args[1].toLowerCase() === "r18") {
+                if (!perms.checkNSFW()) return
                 if (args[2].toLowerCase() === "en") {
                     const image = await pixivApi.getPixivImage(input, true, true, true, true)
                     try {

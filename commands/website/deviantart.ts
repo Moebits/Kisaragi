@@ -9,8 +9,9 @@ const deviantArt = require("deviantnode")
 const deviantArray: MessageEmbed[] = []
 
 export default class DeviantArt extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches deviantart.",
             aliases: [],
             cooldown: 3
         })
@@ -40,7 +41,9 @@ export default class DeviantArt extends Command {
         }
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const id = process.env.DEVIANTART_discord_ID
         const secret = process.env.DEVIANTART_discord_SECRET

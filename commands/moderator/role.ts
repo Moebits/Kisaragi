@@ -5,21 +5,24 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Role extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+          description: "Adds or removes a role from a user.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-      const embeds = new Embeds(discord, message)
-      const perms = new Permission(discord, message)
-      if (!await perms.checkMod()) return
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
+        const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (!await perms.checkMod()) return
 
-      const roleEmbed = embeds.createEmbed()
+        const roleEmbed = embeds.createEmbed()
 
-      if ((!args[3]) || (message.mentions.members!.size === 0)) {
+        if ((!args[3]) || (message.mentions.members!.size === 0)) {
         return message.channel.send(roleEmbed
           .setDescription("You must type =>role <add or del> [user] [role]"))
 

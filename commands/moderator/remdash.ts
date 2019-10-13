@@ -5,14 +5,17 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Remdash extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Remove dashes from channel names.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
@@ -21,7 +24,7 @@ export default class Remdash extends Command {
         const idArray = message.guild!.channels.map((c: GuildChannel) => c.id)
         for (let i = 0; i < nameArray.length; i++) {
             if (nameArray[i].includes("-")) {
-                const newName = nameArray[i].replace(/-/g, " ")
+                const newName = nameArray[i].replace(/-/g, "\u2005")
                 const channel = message.guild!.channels.find((c: GuildChannel) => c.id === idArray[i])
                 await channel!.setName(newName)
             }

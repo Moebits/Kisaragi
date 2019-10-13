@@ -3,10 +3,12 @@ import * as lewdme from "../../assets/links/lewdme.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 export default class LewdMe extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "???",
             aliases: [],
             cooldown: 3
         })
@@ -14,6 +16,8 @@ export default class LewdMe extends Command {
 
     public run = (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkNSFW()) return
         const lewdmeEmbed = embeds.createEmbed()
         const random = Math.floor(Math.random() * (lewdme.pics.length - 1))
         lewdmeEmbed

@@ -5,14 +5,17 @@ import {SQLQuery} from "../../structures/SQLQuery"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Clean extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Deletes a guild that the bot created.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
         if (!perms.checkBotDev()) return

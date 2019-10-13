@@ -5,14 +5,16 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Shorten extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Shortens a url.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const message = this.message
         const input = Functions.combineArgs(args, 1)
         const json = await axios.get(`https://is.gd/create.php?format=json&url=${input.trim()}`)
         const newLink = json.data.shorturl

@@ -5,26 +5,29 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Top extends Command {
-    constructor() {
-        super({
-            aliases: [],
-            cooldown: 3
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+          description: "Lists the xp leaderboard.",
+          aliases: [],
+          cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
-      const embeds = new Embeds(discord, message)
-      const sql = new SQLQuery(message)
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
+        const embeds = new Embeds(discord, message)
+        const sql = new SQLQuery(message)
 
-      const rawScoreList = await sql.fetchColumn("points", "score list")
-      const rawLevelList = await sql.fetchColumn("points", "level list")
-      const rawUserList = await sql.fetchColumn("points", "user id list")
-      const userList = rawUserList.map((num: string) => Number(num))
-      const scoreList  = rawScoreList.map((num: string) => Number(num))
-      const levelList = rawLevelList.map((num: string) => Number(num))
+        const rawScoreList = await sql.fetchColumn("points", "score list")
+        const rawLevelList = await sql.fetchColumn("points", "level list")
+        const rawUserList = await sql.fetchColumn("points", "user id list")
+        const userList = rawUserList.map((num: string) => Number(num))
+        const scoreList  = rawScoreList.map((num: string) => Number(num))
+        const levelList = rawLevelList.map((num: string) => Number(num))
 
-      const objectArray: any = []
-      for (let i = 0; i < userList.length; i++) {
+        const objectArray: any = []
+        for (let i = 0; i < userList.length; i++) {
       const scoreObject: object = {
         user: userList[i],
         points: scoreList[i],
@@ -33,12 +36,12 @@ export default class Top extends Command {
       objectArray.push(scoreObject)
     }
 
-      objectArray.sort((a: any, b: any) => (a.points > b.points) ? -1 : 1)
+        objectArray.sort((a: any, b: any) => (a.points > b.points) ? -1 : 1)
 
-      const iterations = Math.ceil(message.guild!.memberCount / 10)
+        const iterations = Math.ceil(message.guild!.memberCount / 10)
 
-      const embedArray: MessageEmbed[] = []
-      loop1:
+        const embedArray: MessageEmbed[] = []
+        loop1:
     for (let i = 0; i < iterations; i++) {
       const topEmbed = embeds.createEmbed()
       let description = ""
@@ -55,6 +58,6 @@ export default class Top extends Command {
       .setDescription(description)
       embedArray.push(topEmbed)
     }
-      embeds.createReactionEmbed(embedArray)
+        embeds.createReactionEmbed(embedArray)
   }
 }

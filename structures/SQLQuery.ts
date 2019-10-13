@@ -40,7 +40,8 @@ const tableList = [
   "auto",
   "links",
   "detection",
-  "reaction"
+  "reaction",
+  "config"
 ]
 
 export class SQLQuery {
@@ -137,7 +138,7 @@ export class SQLQuery {
         text: `SELECT "${column}" FROM "${table}" WHERE "guild id" = ${this.message.guild!.id}`,
         rowMode: "array"
       }
-      const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
+      const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
       return result[0]
     }
 
@@ -147,7 +148,7 @@ export class SQLQuery {
         text: `SELECT "${column}" FROM "${table}"`,
         rowMode: "array"
       }
-      const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, false)
+      const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
       return result as unknown as string[]
     }
 
@@ -194,13 +195,6 @@ export class SQLQuery {
           }
         }
         await SQLQuery.runQuery(query, true)
-        this.selectColumn(table, column, true)
-        if (key) {
-          await this.fetchColumn(table, column, key, keyVal, true)
-        } else {
-          await this.fetchColumn(table, column, false, false, true)
-          this.fetchRow(table, true)
-        }
     }
 
   // Update Command

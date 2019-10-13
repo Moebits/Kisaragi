@@ -5,8 +5,9 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Snowflake extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Deconstructs or generates a snowflake.",
             aliases: [],
             cooldown: 3
         })

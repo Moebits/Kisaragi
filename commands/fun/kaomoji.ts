@@ -6,14 +6,16 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const kaomoji = require("kaomojilib")
 
 export default class Kaomoji extends Command {
-    constructor() {
-        super({
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Post a kawaii emoji.",
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const message = this.message
         const lib: any = []
         const keys = Object.keys(kaomoji.library)
         for (let i = 0, n = keys.length; i < n; i++) {
