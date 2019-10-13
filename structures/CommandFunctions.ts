@@ -32,15 +32,15 @@ export class CommandFunctions {
         const channel = await sql.fetchColumn("auto", "channel")
         const frequency = await sql.fetchColumn("auto", "frequency")
         const toggle = await sql.fetchColumn("auto", "toggle")
-        if (!command) return
+        if (!command[0]) return
         for (let i = 0; i < command.length; i++) {
-            if (toggle[0][i] === "inactive") continue
+            if (toggle[i] === "inactive") continue
             const guildChannel = (this.message.guild!.channels.find((c) => c.id === channel[i])) as TextChannel
             const cmd = command[i].split(" ")
             const timeout = Number(frequency[i]) * 3600000
             const rawTimeLeft = await sql.fetchColumn("auto", "timeout")
             let timeLeft = 0
-            if (rawTimeLeft[0]) {
+            if (rawTimeLeft) {
                 if (rawTimeLeft[i]) {
                     const remaining = (Date.now() - Number(rawTimeLeft[i])) || 0
                     timeLeft = remaining > timeout ? timeout - (remaining % timeout) : timeout - remaining
@@ -103,7 +103,7 @@ export class CommandFunctions {
         if (!path) {
             return false
         } else {
-            return path[0]
+            return String(path)
         }
     }
 
@@ -112,6 +112,8 @@ export class CommandFunctions {
         type assertLast = Promise<T extends true ? number : boolean>
         if (!timeout) timeout = 20
         await Functions.timeout(timeout)
+        const channel = this.message.channel as TextChannel
+        if (channel.nsfw === false) await channel.setNSFW(true)
         const lastMsg = await this.message.channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
         if (lastMsg!.embeds[0]) {
             if (test === true) return lastMsg!.embeds[0].description.length as unknown as assertLast
@@ -119,6 +121,36 @@ export class CommandFunctions {
         } else {
             if (test === true) return lastMsg!.content.length as unknown as assertLast
             return lastMsg!.content.includes(String(test)) as unknown as assertLast
+        }
+    }
+
+    // Assert Command only works in NSFW channels
+    public assertNSFW = async (cmd: string[], timeout?: number) => {
+        if (!timeout) timeout = 20
+        const channel = this.message.channel as TextChannel
+        await channel.setNSFW(false)
+        await this.runCommand(this.message, cmd, true)
+        await Functions.timeout(timeout)
+        await channel.setNSFW(true)
+        if (await this.assertLast("You can only use this command in NSFW channels!")) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    // Assert Command Image
+    public assertImage = async (cmd: string[], timeout?: number) => {
+        if (!timeout) timeout = 20
+        await this.runCommand(this.message, cmd, true)
+        await Functions.timeout(timeout)
+        const lastMsg = await this.message.channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
+        if (lastMsg!.embeds[0]) {
+            const check = lastMsg!.embeds[0].image ? true : false
+            return check
+        } else {
+            const check = lastMsg!.attachments.first() ? true : false
+            return check
         }
     }
 }

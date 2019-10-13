@@ -142,6 +142,7 @@
     "zlib-sync": "^0.1.5"
   },
   "devDependencies": {
+    "@tenpi/tslint": "^1.0.5",
     "@types/chai": "^4.1.7",
     "@types/mathjs": "^6.0.2",
     "@types/mocha": "^5.2.7",

@@ -1,8 +1,8 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
 
 const GDClient = require("geometry-dash-api")
 const gd = require("gdprofiles")

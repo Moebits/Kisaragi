@@ -18,13 +18,23 @@ export class Embeds {
         return embed
     }
 
+    // Update Embed
+    public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean) => {
+        if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+        if (help) {
+            const name = embeds[page].title.replace(/(?<=<)(.*?)(?=>)/g, "").replace(/commands/i, "help")
+            embeds[page].setFooter(`${name} ・ Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+        } else {
+            embeds[page].setFooter(`Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+        }
+        embeds[page].setThumbnail(user.displayAvatarURL({format: "png", dynamic: true}))
+    }
+
     // Create Reaction Embed
     public createReactionEmbed = (embeds: MessageEmbed[], collapseOn?: boolean, startPage?: number) => {
         let page = 0
         if (startPage) page = startPage
-        for (let i = 0; i < embeds.length; i++) {
-            embeds[i].setFooter(`Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
-        }
+        this.updateEmbed(embeds, page, this.message.author!)
         const reactions: Emoji[] = [this.discord.getEmoji("right"), this.discord.getEmoji("left"), this.discord.getEmoji("tripleRight"), this.discord.getEmoji("tripleLeft"), this.discord.getEmoji("numberSelect")]
         const reactionsCollapse: Emoji[] = [this.discord.getEmoji("collapse"), this.discord.getEmoji("expand")]
         this.message.channel.send(embeds[page]).then(async (msg: Message) => {
@@ -59,22 +69,22 @@ export class Embeds {
                 const collapse = msg.createReactionCollector(collapseCheck)
                 const expand = msg.createReactionCollector(expandCheck)
 
-                collapse.on("collect", (reaction: MessageReaction, user: User) => {
+                collapse.on("collect", async (reaction: MessageReaction, user: User) => {
                         for (let i = 0; i < embeds.length; i++) {
                             embeds[i].setDescription("")
                             embeds[i].setThumbnail("")
                         }
-                        embeds[page].setFooter(`Page ${page}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+                        await this.updateEmbed(embeds, page, user)
                         msg.edit(embeds[page])
                         reaction.users.remove(user)
                 })
 
-                expand.on("collect", (reaction: MessageReaction, user: User) => {
+                expand.on("collect", async (reaction: MessageReaction, user: User) => {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription(description[i])
                         embeds[i].setThumbnail(thumbnail[i].url)
                     }
-                    embeds[page].setFooter(`Page ${page}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+                    await this.updateEmbed(embeds, page, user)
                     msg.edit(embeds[page])
                     reaction.users.remove(user)
                 })
@@ -86,8 +96,7 @@ export class Embeds {
                 } else {
                     page--
                 }
-                await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
-                embeds[page].setFooter(`Page ${page}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+                await this.updateEmbed(embeds, page, user, msg)
                 msg.edit(embeds[page])
                 await reaction.users.remove(user)
             })
@@ -98,8 +107,7 @@ export class Embeds {
                 } else {
                     page++
                 }
-                await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
-                embeds[page].setFooter(`Page ${page}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+                await this.updateEmbed(embeds, page, user, msg)
                 msg.edit(embeds[page])
                 reaction.users.remove(user)
             })
@@ -111,8 +119,7 @@ export class Embeds {
                     page -= Math.floor(embeds.length/5)
                 }
                 if (page < 0) page *= -1
-                await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
-                embeds[page].setFooter(`Page ${page}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+                await this.updateEmbed(embeds, page, user, msg)
                 msg.edit(embeds[page])
                 reaction.users.remove(user)
             })
@@ -124,20 +131,20 @@ export class Embeds {
                     page += Math.floor(embeds.length/5)
                 }
                 if (page > embeds.length - 1) page -= embeds.length - 1
-                await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
-                embeds[page].setFooter(`Page ${page}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+                await this.updateEmbed(embeds, page, user, msg)
                 msg.edit(embeds[page])
                 reaction.users.remove(user)
             })
 
             numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
+                const self = this
                 async function getPageNumber(response: Message) {
                     if (Number.isNaN(Number(response.content))) {
                         const rep = await response.reply("That page number is invalid.")
                         await rep.delete({timeout: 2000})
                     } else {
                         page = Number(response.content) - 1
-                        embeds[page].setFooter(`Page ${page}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+                        self.updateEmbed(embeds, page, user, msg)
                         msg.edit(embeds[Number(response.content) - 1])
                     }
                     await response.delete()
@@ -145,7 +152,6 @@ export class Embeds {
                 const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
                 reaction.users.remove(user)
                 await this.createPrompt(getPageNumber)
-                await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
                 await numReply.delete()
             })
         })
@@ -155,9 +161,7 @@ export class Embeds {
     public editReactionCollector = async (msg: Message, emoji: string, embeds: MessageEmbed[], collapseOn?: boolean, startPage?: number) => {
         let page = 0
         if (startPage) page = startPage
-        for (let i = 0; i < embeds.length; i++) {
-            embeds[i].setFooter(`Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
-        }
+        await this.updateEmbed(embeds, page, this.message.author!)
         const description: string[] = []
         const thumbnail: MessageEmbedThumbnail[] = []
         for (let i = 0; i < embeds.length; i++) {
@@ -171,7 +175,7 @@ export class Embeds {
                     } else {
                         page++
                     }
-                    await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+                    await this.updateEmbed(embeds, page, this.message.author!, msg)
                     msg.edit(embeds[page])
                     break
             case "left":
@@ -180,7 +184,7 @@ export class Embeds {
                     } else {
                         page--
                     }
-                    await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+                    await this.updateEmbed(embeds, page, this.message.author!, msg)
                     msg.edit(embeds[page])
                     break
 
@@ -190,7 +194,7 @@ export class Embeds {
                     } else {
                         page++
                     }
-                    await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+                    await this.updateEmbed(embeds, page, this.message.author!, msg)
                     msg.edit(embeds[page])
                     break
             case "tripleLeft":
@@ -200,23 +204,24 @@ export class Embeds {
                         page -= Math.floor(embeds.length/5)
                     }
                     if (page < 0) page *= -1
-                    await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+                    await this.updateEmbed(embeds, page, this.message.author!, msg)
                     msg.edit(embeds[page])
                     break
             case "numberSelect":
+                    const self = this
                     async function getPageNumber(response: Message) {
                         if (Number.isNaN(Number(response.content))) {
                             const rep = await response.reply("That page number is invalid.")
                             await rep.delete({timeout: 2000})
                         } else {
                             page = Number(response.content) - 1
+                            await self.updateEmbed(embeds, page, self.message.author!, msg)
                             msg.edit(embeds[Number(response.content) - 1])
                         }
                         await response.delete()
                     }
                     const numReply = await msg.channel.send(`Enter the page number to jump to.`)
                     await this.createPrompt(getPageNumber)
-                    await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
                     await numReply.delete()
                     break
             case "collapse":
@@ -253,20 +258,22 @@ export class Embeds {
             const collapse = msg.createReactionCollector(collapseCheck)
             const expand = msg.createReactionCollector(expandCheck)
 
-            collapse.on("collect", (reaction: MessageReaction, user: User) => {
+            collapse.on("collect", async (reaction: MessageReaction, user: User) => {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription("")
                         embeds[i].setThumbnail("")
                     }
+                    await this.updateEmbed(embeds, page, user)
                     msg.edit(embeds[page])
                     reaction.users.remove(user)
             })
 
-            expand.on("collect", (reaction: MessageReaction, user: User) => {
+            expand.on("collect", async (reaction: MessageReaction, user: User) => {
                 for (let i = 0; i < embeds.length; i++) {
                     embeds[i].setDescription(description[i])
                     embeds[i].setThumbnail(thumbnail[i].url)
                 }
+                await this.updateEmbed(embeds, page, user)
                 msg.edit(embeds[page])
                 reaction.users.remove(user)
             })
@@ -278,7 +285,8 @@ export class Embeds {
             } else {
                 page--
             }
-            await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+            await this.updateEmbed(embeds, page, user, msg)
+            this.updateEmbed(embeds, page, user)
             msg.edit(embeds[page])
             reaction.users.remove(user)
         })
@@ -289,7 +297,7 @@ export class Embeds {
             } else {
                 page++
             }
-            await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+            await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
             reaction.users.remove(user)
         })
@@ -301,7 +309,7 @@ export class Embeds {
                 page -= Math.floor(embeds.length/5)
             }
             if (page < 0) page *= -1
-            await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+            await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
             reaction.users.remove(user)
         })
@@ -313,18 +321,20 @@ export class Embeds {
                 page += Math.floor(embeds.length/5)
             }
             if (page > embeds.length - 1) page -= embeds.length - 1
-            await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+            await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
             reaction.users.remove(user)
         })
 
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
+            const self = this
             async function getPageNumber(response: Message) {
                 if (Number.isNaN(Number(response.content))) {
                     const rep = await response.reply("That page number is invalid.")
                     await rep.delete({timeout: 2000})
                 } else {
                     page = Number(response.content) - 1
+                    await self.updateEmbed(embeds, page, user, msg)
                     msg.edit(embeds[Number(response.content) - 1])
                 }
                 await response.delete()
@@ -332,8 +342,109 @@ export class Embeds {
             const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
             reaction.users.remove(user)
             await this.createPrompt(getPageNumber)
-            await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
             await numReply.delete()
+        })
+    }
+
+    // Create Help Embed
+    public createHelpEmbed = (embeds: MessageEmbed[]) => {
+        let page = 8
+        for (let i = 0; i < embeds.length; i++) {
+            embeds[i].setFooter(`${embeds[i].title}Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
+        }
+        const reactions: Emoji[] = [
+            this.discord.getEmoji("admin"),
+            this.discord.getEmoji("anime"),
+            this.discord.getEmoji("botDeveloper"),
+            this.discord.getEmoji("config"),
+            this.discord.getEmoji("fun"),
+            this.discord.getEmoji("game"),
+            this.discord.getEmoji("heart"),
+            this.discord.getEmoji("hentai"),
+            this.discord.getEmoji("info"),
+            this.discord.getEmoji("japanese"),
+            this.discord.getEmoji("level"),
+            this.discord.getEmoji("logging"),
+            this.discord.getEmoji("misc"),
+            this.discord.getEmoji("mod"),
+            this.discord.getEmoji("music"),
+            this.discord.getEmoji("website"),
+            this.discord.getEmoji("websiteTwo"),
+            this.discord.getEmoji("numberSelect")
+        ]
+        this.message.channel.send(embeds[page]).then(async (msg: Message) => {
+            for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
+            await this.sql.insertInto("collectors", "message", msg.id)
+            await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
+            await this.sql.updateColumn("collectors", "collapse", false, "message", msg.id)
+            await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+
+            const adminCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("admin") && user.bot === false
+            const animeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("anime") && user.bot === false
+            const botDevCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("botDeveloper") && user.bot === false
+            const configCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("config") && user.bot === false
+            const funCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fun") && user.bot === false
+            const gameCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("game") && user.bot === false
+            const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("heart") && user.bot === false
+            const hentaiCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("hentai") && user.bot === false
+            const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("info") && user.bot === false
+            const japaneseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("japanese") && user.bot === false
+            const levelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("level") && user.bot === false
+            const loggingCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("logging") && user.bot === false
+            const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("misc") && user.bot === false
+            const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
+            const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
+            const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
+            const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
+            const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
+
+            const admin = msg.createReactionCollector(adminCheck)
+            const anime = msg.createReactionCollector(animeCheck)
+            const botDev = msg.createReactionCollector(botDevCheck)
+            const config = msg.createReactionCollector(configCheck)
+            const fun = msg.createReactionCollector(funCheck)
+            const game = msg.createReactionCollector(gameCheck)
+            const heart = msg.createReactionCollector(heartCheck)
+            const hentai = msg.createReactionCollector(hentaiCheck)
+            const info = msg.createReactionCollector(infoCheck)
+            const japanese = msg.createReactionCollector(japaneseCheck)
+            const level = msg.createReactionCollector(levelCheck)
+            const logging = msg.createReactionCollector(loggingCheck)
+            const misc = msg.createReactionCollector(miscCheck)
+            const mod = msg.createReactionCollector(modCheck)
+            const music = msg.createReactionCollector(musicCheck)
+            const web = msg.createReactionCollector(webCheck)
+            const webTwo = msg.createReactionCollector(webTwoCheck)
+            const numberSelect = msg.createReactionCollector(numberSelectCheck)
+
+            const collectors = [admin, anime, botDev, config, fun, game, heart, hentai, info, japanese, level, logging, misc, mod, music, web, webTwo]
+
+            for (let i = 0; i < collectors.length; i++) {
+                collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
+                    await this.updateEmbed(embeds, page, user, msg, true)
+                    msg.edit(embeds[i])
+                    reaction.users.remove(user)
+                })
+            }
+
+            numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
+                const self = this
+                async function getPageNumber(response: Message) {
+                    if (Number.isNaN(Number(response.content))) {
+                        const rep = await response.reply("That page number is invalid.")
+                        await rep.delete({timeout: 2000})
+                    } else {
+                        page = Number(response.content) - 1
+                        await self.updateEmbed(embeds, page, user, msg)
+                        msg.edit(embeds[Number(response.content) - 1])
+                    }
+                    await response.delete()
+                }
+                const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
+                reaction.users.remove(user)
+                await this.createPrompt(getPageNumber)
+                await numReply.delete()
+            })
         })
     }
 

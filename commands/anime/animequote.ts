@@ -10,62 +10,108 @@ export default class AnimeQuote extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts a random anime quote.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            _Note: Search for japanese names. Punctuation and capitalization could matter._
+            \`animequote\` - Gets a random quote.
+            \`animequote id\` - Gets a quote with the given id.
+            \`animequote anime\` - Searches for a quote in the given anime.
+            \`animequote character\` - Searches for a quote by the given character.
+            `,
+            examples:
+            `
+            \`=>animequote\`
+            \`=>animequote 6969\`
+            \`=>animequote pokemon\`
+            \`=>animequote himouto\`
+            \`=>animequote rem\`
+            `,
+            aliases: ["aq"],
+            image: "../assets/help images/anime/animequote",
+            cooldown: 5
         })
+    }
+
+    public replaceQuery = (query: string) => {
+        query = Functions.toProperCase(query)
+        query = query
+        .replace(/pokemon/gi, "Pokémon")
+        .replace(/clannad/gi, "CLANNAD")
+        .replace(/full metal panic/gi, "Full Metal Panic!")
+        .replace(/re:?zero/gi, "Re:Zero kara Hajimeru Isekai Seikatsu")
+        .replace(/sao 2/gi, "Sword Art Online II")
+        .replace(/sao/gi, "Sword Art Online")
+        .replace(/himouto!?/gi, "Himouto! Umaru-chan")
+        .replace(/rem/gi, "Rem (re:zero)")
+        .replace(/No/g, "no")
+        return query
     }
 
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const star = discord.getEmoji("star")
 
         const animeQuoteEmbed = embeds.createEmbed()
+        .setAuthor("animequotes", "https://discordemoji.com/assets/emoji/KannaCurious.png")
+        .setTitle(`**Anime Quote** ${discord.getEmoji("raphi")}`)
 
         if (!args[1]) {
             const quote = animeQuotes.randomQuote()
             animeQuoteEmbed
-            .setAuthor("animequotes", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnI2SHuhdw8zEPc3xG0gfJyT4y2f8n4b_UKZCdjLQxnoI-2JEP")
-            .setTitle(`**Anime Quote** ${discord.getEmoji("raphi")}`)
             .setDescription(
-            `${discord.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
-            `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
-            `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
+            `${star}_ID:_ **${quote.id}**\n` +
+            `${star}_Anime:_ **${quote.anime}**\n` +
+            `${star}_Character:_ **${quote.name}**\n` +
+            `${star}_Quote:_ ${quote.quote}`
             )
-            message.channel.send(animeQuoteEmbed)
-            return
+            return message.channel.send(animeQuoteEmbed)
         } else {
-            const query = Functions.combineArgs(args, 1)
-            const quote = animeQuotes.getQuotesByAnime(query)
-            if (quote.quote === undefined) {
-                    const aniQuote = animeQuotes.getQuotesByCharacter(query)
-                    if (aniQuote.quote === undefined) {
-                        animeQuoteEmbed
-                        .setTitle(`**Anime Quote** ${discord.getEmoji("raphi")}`)
-                        .setDescription("Could not find a quote!")
-                        message.channel.send(animeQuoteEmbed)
-                        return
-                    }
-                    animeQuoteEmbed
-                    .setAuthor("animequotes", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnI2SHuhdw8zEPc3xG0gfJyT4y2f8n4b_UKZCdjLQxnoI-2JEP")
-                    .setTitle(`**Anime Quote** ${discord.getEmoji("raphi")}`)
-                    .setDescription(
-                    `${discord.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
-                    `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
-                    `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
-                    )
-                    message.channel.send(animeQuoteEmbed)
-                    return
+            let query = Functions.combineArgs(args, 1).trim()
+            query = this.replaceQuery(query)
+            if (query.match(/\d+/)) {
+                const quote = animeQuotes.getQuote(Number(query))[0]
+                if (quote === undefined) {
+                    return this.invalidQuery(animeQuoteEmbed, "Could not find a quote!")
                 }
-            animeQuoteEmbed
-                .setAuthor("animequotes", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnI2SHuhdw8zEPc3xG0gfJyT4y2f8n4b_UKZCdjLQxnoI-2JEP")
-                .setTitle(`**Anime Quote** ${discord.getEmoji("raphi")}`)
+                animeQuoteEmbed
                 .setDescription(
+                `${star}_ID:_ **${quote.id}**\n` +
                 `${discord.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
                 `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
                 `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
                 )
-            message.channel.send(animeQuoteEmbed)
+                return message.channel.send(animeQuoteEmbed)
+            }
+
+            let quote = animeQuotes.getQuotesByAnime(query)
+            let random = Math.floor(Math.random() * quote.length)
+            quote = quote[random]
+            if (quote === undefined) {
+                    let aniQuote = animeQuotes.getQuotesByCharacter(query)
+                    random = Math.floor(Math.random() * aniQuote.length)
+                    aniQuote = aniQuote[random]
+                    if (aniQuote === undefined) {
+                        return this.invalidQuery(animeQuoteEmbed, "Could not find a quote!")
+                    }
+                    animeQuoteEmbed
+                    .setDescription(
+                    `${star}_ID:_ **${aniQuote.id}**\n` +
+                    `${discord.getEmoji("star")}_Anime:_ **${aniQuote.anime}**\n` +
+                    `${discord.getEmoji("star")}_Character:_ **${aniQuote.name}**\n` +
+                    `${discord.getEmoji("star")}_Quote:_ ${aniQuote.quote}`
+                    )
+                    return message.channel.send(animeQuoteEmbed)
+                }
+            animeQuoteEmbed
+                .setDescription(
+                `${star}_ID:_ **${quote.id}**\n` +
+                `${discord.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
+                `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
+                `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
+                )
+            return message.channel.send(animeQuoteEmbed)
             }
     }
 }

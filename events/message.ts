@@ -1,4 +1,5 @@
 import {Collection, Message, MessageAttachment} from "discord.js"
+import path from "path"
 import {CommandFunctions} from "../structures/CommandFunctions"
 import {Cooldown} from "../structures/Cooldown.js"
 import {Kisaragi} from "../structures/Kisaragi.js"
@@ -134,17 +135,13 @@ export default class MessageEvent {
       const args = message.content.slice(prefix.length).trim().split(/ +/g)
       if (args[0] === undefined) return
       const cmd = args[0].toLowerCase()
-      const path = await cmdFunctions.findCommand(cmd)
-      if (!path) return cmdFunctions.noCommand(cmd)
-      const coolAmount = await SQLQuery.fetchCommand(cmd, "cooldown")
-      const cmdPath = new (require(path).default)(this.discord, message)
+      const pathFind = await cmdFunctions.findCommand(cmd)
+      if (!pathFind) return cmdFunctions.noCommand(cmd)
+      const cmdPath = new (require(pathFind).default)(this.discord, message)
 
       const cooldown = new Cooldown(this.discord, message)
-      const onCooldown = cooldown.cmdCooldown(cmd, String(coolAmount), message, this.cooldowns)
-      if (onCooldown) {
-      message.channel.send(onCooldown)
-      return
-    }
+      const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown, this.cooldowns)
+      if (onCooldown) return message.reply({embed: onCooldown})
 
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
       cmdPath.run(args).then(() => {

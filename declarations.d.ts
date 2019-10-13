@@ -10,6 +10,10 @@ declare module "redis" {
 
 declare module "pg" {
     export interface PoolClient extends ClientBase {
-        release(err?: Error | boolean): void;
+        release(err?: Error | boolean): void
     }    
+}
+
+declare module "syllable" {
+    export default function syllable(value: string): number
 }

@@ -1,3 +1,4 @@
+import axios from "axios"
 import Booru from "booru"
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
@@ -9,9 +10,25 @@ import {Permission} from "./../../structures/Permission"
 export default class Gelbooru extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Search for images on gelbooru.",
-            aliases: [],
-            cooldown: 3
+            description: "Search for anime images on gelbooru.",
+            help:
+            `
+            _Note: Underscores are not required._
+            \`gelbooru\` - Get a random image.
+            \`gelbooru link/id\` - Gets the image from the link.
+            \`gelbooru tag\` - Gets an image with the tag.
+            \`gelbooru r18\` - Get a random r18 image.
+            \`gelbooru r18 tag\` - Get an r18 image with the tag.
+            `,
+            examples:
+            `
+            \`=>gelbooru\`
+            \`=>gelbooru tenma gabriel white\`
+            \`=>gelbooru r18 gabriel dropout\`
+            `,
+            aliases: ["g", "gel"],
+            image: "../assets/help images/anime/gelbooru.png",
+            cooldown: 20
         })
     }
 
@@ -22,14 +39,15 @@ export default class Gelbooru extends Command {
         const gelbooru = Booru("gelbooru", process.env.GELBOORU_API_KEY)
         const perms = new Permission(discord, message)
         const gelbooruEmbed = embeds.createEmbed()
-        // const axios = require("axios")
+        .setAuthor("gelbooru", "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png")
+        .setTitle(`**Gelbooru Search** ${discord.getEmoji("gabLewd")}`)
 
         let tags
         if (!args[1]) {
-            tags = ["rating:safe"]
+            tags = ["1girl", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
-            if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
+            if (!tags.join("")) tags = ["1girl"]
             tags.push("-rating:safe")
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
@@ -42,38 +60,40 @@ export default class Gelbooru extends Command {
         }
 
         let url
-        let img: any
         if (tags.join("").match(/\d\d+/g)) {
-            url = `https://gelbooru.com/index.php?page=post&s=view&id=${tags.join("").match(/\d+/g)}`
+            url = `https://gelbooru.com/index.php?page=post&s=view&json=1&id=${tags.join("").match(/\d+/g)}`
         } else {
             const image = await gelbooru.search(tagArray, {limit: 1, random: true})
             if (!image[0]) {
-                gelbooruEmbed
-                .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")
-                .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
-                .setDescription("No results were found. Underscores are not required, " +
-                "if you want to search multiple terms separate them with a comma. Tags usually start with a last name, try looking up your tag " +
-                "on the gelbooru website.\n" + "[Gelbooru Website](https://gelbooru.com//)")
-                message.channel.send(gelbooruEmbed)
-                return
+                return this.invalidQuery(gelbooruEmbed, "Underscores are not required, " +
+                "if you want to search multiple terms separate them with a comma. Tags usually start with a last name; try looking up your tag " +
+                "on the [Gelbooru Website](https://gelbooru.com//)")
             }
             url = gelbooru.postView(image[0].id)
-            img = image[0]
         }
 
-        // const id = url.match(/\d+/g)!.join("")
-        // const result = await axios.get(`https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&id=${id}${process.env.GELBOORU_API_KEY}`)
+        let id
+        if (url.match(/json/)) {
+            id = url.match(/\d+/g)!.join("").slice(1)
+        } else {
+            id = url.match(/\d+/g)!.join("")
+        }
+        const result = await axios.get(`https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&id=${id}${process.env.GELBOORU_API_KEY}`).then((r) => r.data)
+        const img = result[0]
+        if (!img) return this.invalidQuery(gelbooruEmbed, "The url is invalid.")
+        if (img.rating !== "s") {
+            if (!perms.checkNSFW()) return
+        }
         gelbooruEmbed
-        .setAuthor("gelbooru", "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png")
         .setURL(url)
-        .setTitle(`**Gelbooru Image** ${discord.getEmoji("gabLewd")}`)
         .setDescription(
             `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
             `${discord.getEmoji("star")}_Uploader:_ **${img.owner}**\n` +
             `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(img.created_at)}**\n` +
             `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(String(img.tags), 1900, " ")}\n`
         )
-        .setImage(`https://img2.gelbooru.com/samples/${img.directory}/sample_${img.hash}.jpg`)
+        .setImage(img.file_url)
+        // .setImage(`https://img2.gelbooru.com/samples/${img.directory}/sample_${img.image}`)
         message.channel.send(gelbooruEmbed)
     }
 }

@@ -10,8 +10,19 @@ export default class Anime extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for an anime series.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            \`anime query\` - Searches kitsu for the given query.
+            `,
+            examples:
+            `
+            \`=>anime gabriel dropout\`
+            \`=>anime konosuba\`
+            \`=>anime rezero\`
+            `,
+            aliases: ["a"],
+            cooldown: 30,
+            image: "../assets/help images/anime/anime.png"
         })
     }
 

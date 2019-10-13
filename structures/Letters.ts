@@ -22,6 +22,7 @@ export class Letters {
         for (let i = 0; i < letters.letters.length; i++) {
             if (letters.letters[i].name === `${letter}U`) {
                 const found = this.discord.emojis.find((emoji: GuildEmoji) => emoji.id === letters.letters[i].id)
+                if (!found) return
                 return `<:${found!.identifier}>`
             }
         }

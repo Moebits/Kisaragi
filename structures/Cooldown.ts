@@ -6,7 +6,7 @@ export class Cooldown {
     private readonly embeds = new Embeds(this.discord, this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
     // Command Cooldown
-    public cmdCooldown = (cmd: string, cooldown: string, msg: Message, cooldowns: Collection<string, Collection<string, number>>) => {
+    public cmdCooldown = (cmd: string, cooldown: string, cooldowns: Collection<string, Collection<string, number>>) => {
     if (!cooldowns.has(cmd)) {
         cooldowns.set(cmd, new Collection())
     }
@@ -16,8 +16,8 @@ export class Cooldown {
     if (!timestamps) return
     const cooldownAmount = (Number(cooldown) || 3) * 1000
 
-    if (timestamps.has(msg.guild!.id)) {
-        const expirationTime = timestamps.get(msg.guild!.id)! + cooldownAmount
+    if (timestamps.has(this.message.guild!.id)) {
+        const expirationTime = timestamps.get(this.message.guild!.id)! + cooldownAmount
 
         if (now < expirationTime) {
             const cooldownEmbed = this.embeds.createEmbed()
@@ -28,8 +28,8 @@ export class Cooldown {
             return cooldownEmbed
         }
     }
-    timestamps.set(msg.guild!.id, now)
-    setTimeout(() => {timestamps.delete(msg.guild!.id)}, cooldownAmount)
+    timestamps.set(this.message.guild!.id, now)
+    setTimeout(() => {timestamps.delete(this.message.guild!.id)}, cooldownAmount)
     return null
 }
 }

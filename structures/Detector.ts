@@ -47,11 +47,10 @@ export class Detector {
     }
 
     public swapRoles = async (member?: GuildMember, counter?: boolean) => {
-        // console.log(this.message.author!.id)
         if (this.message.author!.bot) return
         const sql = new SQLQuery(this.message)
         const pfp = await sql.fetchColumn("detection", "pfp") as unknown as string
-        if (!pfp || pfp === "off") return
+        if (!pfp || pfp === "off" || pfp[0] === "off") return
         if (!member) member = this.message.member!
         if (!member || member.user.bot || !member.user.displayAvatarURL()) return
         const weeb = await sql.fetchColumn("detection", "weeb") as unknown as string

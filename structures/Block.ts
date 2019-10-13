@@ -6,10 +6,8 @@ export class Block {
         const sql = new SQLQuery(message)
         if (message.author!.bot) return
         const words = await sql.fetchColumn("blocks", "blocked words")
-        if (!words) return
+        if (!words || !words[0]) return
         const asterisk = await sql.fetchColumn("blocks", "asterisk").then((a: string[]) => String(a) === "on" ? true : false)
-        console.log(asterisk)
-        if (!words) return
         words.forEach((w: string) => w.replace(/0/gi, "o").replace(/1/gi, "l").replace(/!/gi, "l"))
         const match = await sql.fetchColumn("blocks", "block match")
         if (String(match) === "exact") {

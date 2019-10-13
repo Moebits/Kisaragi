@@ -12,7 +12,8 @@ export class Kisaragi extends Client {
         if (emoji) {
             return emoji as unknown as GuildEmoji
         } else {
-            return `<:ConfusedAnime:579870079311937557>` as unknown as GuildEmoji
+            // Confused Anime
+            return this.emojis.get("579870079311937557") as unknown as GuildEmoji
         }
     }
 

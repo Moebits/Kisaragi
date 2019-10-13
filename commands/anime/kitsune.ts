@@ -8,9 +8,21 @@ import {Permission} from "./../../structures/Permission"
 export default class Kitsune extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Post a picture of a kitsune girl.",
-            aliases: [],
-            cooldown: 3
+            description: "Post a picture of a fox girl.",
+            help:
+            `
+            \`kitsune\` - Gets a random sfw image.
+            \`kitsune ecchi\` - Gets a random ecchi image.
+            \`kitsune lewd\` - Gets a random nsfw image.
+            `,
+            examples:
+            `
+            \`=>kitsune\`
+            \`=>kitsune ecchi\`
+            \`=>kitsune lewd\`
+            `,
+            aliases: ["k", "foxgirl"],
+            cooldown: 10
         })
     }
 
@@ -25,13 +37,11 @@ export default class Kitsune extends Command {
         let title: string
         if (args[1] === "lewd") {
             if (!perms.checkNSFW()) return
-            if (args[2] === "ero") {
-                image = await neko.nsfw.eroKitsune()
-                title = "Lewd Ero Kitsune"
-            } else {
-                image = await neko.nsfw.kitsune()
-                title = "Lewd Kitsune"
-            }
+            image = await neko.nsfw.kitsune()
+            title = "Lewd Kitsune"
+        } else if (args[1] === "ecchi") {
+            image = await neko.nsfw.eroKitsune()
+            title = "Ecchi Kitsune"
         } else {
             image = await neko.sfw.foxGirl()
             title = "Kitsune"

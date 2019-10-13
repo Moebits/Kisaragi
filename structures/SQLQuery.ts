@@ -125,7 +125,7 @@ export class SQLQuery {
           rowMode: "array"
         }
         const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
-        if (!result.join("")) return ["=>"]
+        if (!result) return ["=>"]
         return result[0]
     }
 
