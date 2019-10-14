@@ -9,6 +9,14 @@ export default class Set extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Sets the bots presence.",
+            help:
+            `
+            \`set type activity, status\`
+            `,
+            examples:
+            `
+            \`=>set watching anime, dnd\`
+            `,
             aliases: [],
             cooldown: 3
         })
@@ -22,27 +30,24 @@ export default class Set extends Command {
 
         if (!perms.checkBotDev()) return
         type activityTypes = number | "WATCHING" | "PLAYING" | "STREAMING" | "LISTENING"
-        const activityType = args[1].toUpperCase() as activityTypes
-        const activityName = Functions.combineArgs(args, 2)
+        type status = "online" | "dnd" | "idle" | "invisible"
+        const activityType = (args[1].toUpperCase() || "PLAYING") as activityTypes
+        const name = Functions.combineArgs(args, 2).split(",")[0] || "=>help"
+        const status = (Functions.combineArgs(args, 2).split(",")[1] || "dnd") as status
 
-        const activityTypes: string[] = ["PLAYING", "WATCHING", "LISTENING", "STREAMING"]
+        const activityTypes = ["PLAYING", "WATCHING", "LISTENING", "STREAMING"]
         const setEmbed = embeds.createEmbed()
-
-        if (!activityName || (!activityTypes.includes(activityType.toString()))) {
-            message.channel.send(setEmbed
-            .setDescription("Correct usage is =>set (type) (activity), where (type) is playing, watching, listening, or streaming."))
-        }
+        .setTitle(`**Set Presence ${discord.getEmoji("karenSugoi")}**`)
 
         if (activityType === "STREAMING") {
-            discord.user!.setActivity(activityName, {url: "https://www.twitch.tv/tenpimusic", type: activityType})
+            await discord.user!.setPresence({activity: {name, url: "https://www.twitch.tv/tenpimusic", type: activityType}, status})
             message.channel.send(setEmbed
-            .setDescription(`I am now ${activityType} ${activityName}`))
+            .setDescription(`I am now **${status}** and **${args[1]} ${name}**!`))
             return
         }
 
-        discord.user!.setActivity(activityName, {type: activityType})
+        await discord.user!.setPresence({activity: {name, type: activityType}, status})
         message.channel.send(setEmbed
-        .setDescription(`I am now ${activityType} ${activityName}`))
-
+        .setDescription(`I am now **${status}** and **${args[1]} ${name}**!`))
     }
 }

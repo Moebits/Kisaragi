@@ -1,0 +1,39 @@
+import {Message} from "discord.js"
+import fs from "fs"
+import {Command} from "../../structures/Command"
+import {Embeds} from "../../structures/Embeds"
+import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
+
+export default class Reboot extends Command {
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+          description: "Restarts the bot.",
+          aliases: ["reboot"],
+          cooldown: 100
+        })
+    }
+
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
+        const perms = new Permission(discord, message)
+        const embeds = new Embeds(discord, message)
+        if (!perms.checkBotDev()) return
+
+        const subDir = fs.readdirSync("commands")
+        for (let i = 0; i < subDir.length; i++) {
+          const commands = fs.readdirSync(`commands/${subDir[i]}`)
+          for (let j = 0; j < commands.length; j++) {
+            delete require.cache[require.resolve(`../${subDir[i]}/${commands[j]}`)]
+          }
+        }
+
+        const rebootEmbed = embeds.createEmbed()
+        .setTitle(`**Reboot** ${discord.getEmoji("gabStare")}`)
+        .setDescription("Rebooting bot!")
+
+        await message.channel.send(rebootEmbed)
+        process.exit(0)
+      }
+    }

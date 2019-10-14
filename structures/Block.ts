@@ -9,7 +9,7 @@ export class Block {
         if (!words) return
         const asterisk = await sql.fetchColumn("blocks", "asterisk").then((a: string[]) => String(a) === "on" ? true : false)
         if (!words[0]) return
-        words.forEach((w: string) => w.replace(/0/gi, "o").replace(/1/gi, "l").replace(/!/gi, "l"))
+        words.forEach((w: string) => {console.log(w); w.replace(/0/gi, "o").replace(/1/gi, "l").replace(/!/gi, "l")})
         const match = await sql.fetchColumn("blocks", "block match")
         if (String(match) === "exact") {
             if (words.some((w: string) => w.includes(message.content) || (asterisk ? message.content.match(/\*/g) : false))) {
