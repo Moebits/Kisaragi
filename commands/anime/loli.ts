@@ -10,8 +10,20 @@ export default class LoliCommand extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts a random loli image.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            \`loli\` - Posts a sfw loli image.
+            \`loli hentai\` - Use at your own risk.
+            `,
+            examples:
+            `
+            \`=>loli\`
+            \`=>loli hentai\`
+            `,
+            aliases: ["l"],
+            cooldown: 5,
+            unlist: true,
+            image: "../assets/help images/anime/loli.png"
         })
     }
 

@@ -38,6 +38,7 @@ export default class Danbooru extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const danbooru = Booru("danbooru", process.env.DANBOORU_API_KEY)
+        const star = discord.getEmoji("star")
         const danbooruEmbed = embeds.createEmbed()
         .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")
         .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
@@ -68,11 +69,16 @@ export default class Danbooru extends Command {
             if (!image[0]) {
                 return this.invalidQuery(danbooruEmbed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name, try looking up your tag " +
-                "on the danbooru website.\n" + "[Danbooru Website](https://danbooru.donmai.us/)")
+                "on the [**Danbooru Website**](https://danbooru.donmai.us/)")
             }
             url = danbooru.postView(image[random].id)
         }
-        const result = await axios.get(`${url}.json`)
+        let result
+        try {
+            result = await axios.get(`${url}.json`)
+        } catch {
+            return this.invalidQuery(danbooruEmbed, "The url is invalid.")
+        }
         const img = result.data
         if (img.rating !== "s") {
             if (!perms.checkNSFW()) return
@@ -80,12 +86,12 @@ export default class Danbooru extends Command {
         danbooruEmbed
         .setURL(url)
         .setDescription(
-            `${discord.getEmoji("star")}_Character:_ **${img.tag_string_character ? Functions.toProperCase(img.tag_string_character.replace(/ /g, "\n").replace(/_/g, " ")) : "Original"}**\n` +
-            `${discord.getEmoji("star")}_Artist:_ **${Functions.toProperCase(img.tag_string_artist.replace(/_/g, " "))}**\n` +
-            `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
-            `${discord.getEmoji("star")}_Uploader:_ **${img.uploader_name}**\n` +
-            `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(img.created_at)}**\n` +
-            `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(img.tag_string_general, 2048, " ")}\n`
+            `${star}_Character:_ **${img.tag_string_character ? Functions.toProperCase(img.tag_string_character.replace(/ /g, "\n").replace(/_/g, " ")) : "Original"}**\n` +
+            `${star}_Artist:_ **${Functions.toProperCase(img.tag_string_artist.replace(/_/g, " "))}**\n` +
+            `${star}_Source:_ ${img.source}\n` +
+            `${star}_Uploader:_ **${img.uploader_name}**\n` +
+            `${star}_Creation Date:_ **${Functions.formatDate(img.created_at)}**\n` +
+            `${star}_Tags:_ ${Functions.checkChar(img.tag_string_general, 2048, " ")}\n`
         )
         .setImage(img.file_url)
         message.channel.send(danbooruEmbed)

@@ -125,10 +125,10 @@ export default class MessageEvent {
         }
     }
 
-      if (message.content.startsWith("https")) {
-      await links.postLink()
-      return
-    }
+      if (message.content.startsWith("http")) {
+        await links.postLink()
+        return
+      }
 
       if (!message.content.startsWith(prefix[0])) return
 
@@ -141,7 +141,7 @@ export default class MessageEvent {
 
       const cooldown = new Cooldown(this.discord, message)
       const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown, this.cooldowns)
-      if (onCooldown) return message.reply({embed: onCooldown})
+      if (onCooldown && (message.author!.id !== process.env.OWNER_ID)) return message.reply({embed: onCooldown})
 
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
       cmdPath.run(args).then(() => {

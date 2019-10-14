@@ -27,7 +27,7 @@ export default class AnimeQuote extends Command {
             \`=>animequote rem\`
             `,
             aliases: ["aq"],
-            image: "../assets/help images/anime/animequote",
+            image: "../assets/help images/anime/animequote.png",
             cooldown: 5
         })
     }
@@ -78,9 +78,9 @@ export default class AnimeQuote extends Command {
                 animeQuoteEmbed
                 .setDescription(
                 `${star}_ID:_ **${quote.id}**\n` +
-                `${discord.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
-                `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
-                `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
+                `${star}_Anime:_ **${quote.anime}**\n` +
+                `${star}_Character:_ **${quote.name}**\n` +
+                `${star}_Quote:_ ${quote.quote}`
                 )
                 return message.channel.send(animeQuoteEmbed)
             }
@@ -98,18 +98,18 @@ export default class AnimeQuote extends Command {
                     animeQuoteEmbed
                     .setDescription(
                     `${star}_ID:_ **${aniQuote.id}**\n` +
-                    `${discord.getEmoji("star")}_Anime:_ **${aniQuote.anime}**\n` +
-                    `${discord.getEmoji("star")}_Character:_ **${aniQuote.name}**\n` +
-                    `${discord.getEmoji("star")}_Quote:_ ${aniQuote.quote}`
+                    `${star}_Anime:_ **${aniQuote.anime}**\n` +
+                    `${star}_Character:_ **${aniQuote.name}**\n` +
+                    `${star}_Quote:_ ${aniQuote.quote}`
                     )
                     return message.channel.send(animeQuoteEmbed)
                 }
             animeQuoteEmbed
                 .setDescription(
                 `${star}_ID:_ **${quote.id}**\n` +
-                `${discord.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
-                `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
-                `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
+                `${star}_Anime:_ **${quote.anime}**\n` +
+                `${star}_Character:_ **${quote.name}**\n` +
+                `${star}_Quote:_ ${quote.quote}`
                 )
             return message.channel.send(animeQuoteEmbed)
             }

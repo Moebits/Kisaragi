@@ -50,7 +50,7 @@ export default class Anime extends Command {
         animeEmbed
         .setAuthor("kitsu", "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4")
         .setURL(`https://kitsu.io/anime/${data.attributes.slug}`)
-        .setTitle(`**${data.attributes.titles.en}** ${discord.getEmoji("gabYes")}`)
+        .setTitle(`**${data.attributes.titles.en_jp}** ${discord.getEmoji("gabYes")}`)
         .setDescription(
             `${star}_Japanese Title:_ **${data.attributes.titles.ja_jp}**\n` +
             `${star}_Most Popular Rank:_ **#${data.attributes.popularityRank}**\n` +

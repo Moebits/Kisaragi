@@ -6,7 +6,7 @@ export class Cooldown {
     private readonly embeds = new Embeds(this.discord, this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
     // Command Cooldown
-    public cmdCooldown = (cmd: string, cooldown: string, cooldowns: Collection<string, Collection<string, number>>) => {
+    public cmdCooldown = (cmd: string, cooldown: number, cooldowns: Collection<string, Collection<string, number>>) => {
     if (!cooldowns.has(cmd)) {
         cooldowns.set(cmd, new Collection())
     }

@@ -7,9 +7,8 @@ describe("danbooru", async function() {
         await login()
     })
 
-    it("should get a random image on no query", async function() {
-        await cmd.runCommand(message, ["danbooru"], true)
-        assert(await cmd.assertLast(true) > 300)
+    it("should get an image on no query", async function() {
+        assert(await cmd.assertImage(["danbooru"]))
     })
 
     it("should get an image from a link", async function() {
@@ -26,13 +25,15 @@ describe("danbooru", async function() {
         assert(await cmd.assertNSFW(["danbooru", "r18"]))
     })
 
-    it("should get an r18 image from the query", async function() {
-        await cmd.runCommand(message, ["danbooru", "gabriel", "dropout"], true)
-        assert(await cmd.assertLast(true) > 300)
+    it("should get an r18 image from a query", async function() {
+        assert(await cmd.assertImage(["danbooru", "gabriel", "dropout"]))
     })
 
     it("should reject an invalid query", async function() {
-        await cmd.runCommand(message, ["danbooru", "fakeQueryAf"], true)
-        assert(await cmd.assertLast("No results were found."))
+        await cmd.assertReject(["danbooru", "fakeQueryAf"])
+    })
+
+    it("should reject an invalid url", async function() {
+        await cmd.assertReject(["danbooru", "https://danbooru.donmai.us/posts/45435455342"])
     })
 })

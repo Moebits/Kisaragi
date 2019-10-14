@@ -9,8 +9,22 @@ export default class Neko extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts an image of a neko girl.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            \`neko\` - Posts a random neko image.
+            \`neko gif\` - Posts a random neko gif.
+            \`neko lewd\` - Posts a random nsfw neko image.
+            \`neko lewd gif\` - Posts a random nsfw neko gif.
+            `,
+            examples:
+            `
+            \`=>neko\`
+            \`=>neko lewd gif\`
+            \`=>neko lewd\`
+            `,
+            aliases: ["catgirl"],
+            cooldown: 5,
+            image: "../assets/help images/anime/neko.png"
         })
     }
 

@@ -5,7 +5,9 @@ import gifFrames from "gif-frames"
 import sizeOf from "image-size"
 import imagemin from "imagemin"
 import imageminGifsicle from "imagemin-gifsicle"
+import request from "request"
 import stream from "stream"
+import unzip from "unzip"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
@@ -35,15 +37,11 @@ export class Images {
     public encodeGif = async (fileNames: string[], path: string, file: string | stream.Writable) => {
         const images: string[] = []
         if (fileNames.length > 500) {
-            for (let i = 0; i < fileNames.length; i+=15) {
+            for (let i = 0; i < fileNames.length; i+=5) {
                 images.push(fileNames[i])
             }
         } else if (fileNames.length > 300) {
-            for (let i = 0; i < fileNames.length; i+=10) {
-                images.push(fileNames[i])
-            }
-        } else if (fileNames.length > 150) {
-            for (let i = 0; i < fileNames.length; i+=5) {
+            for (let i = 0; i < fileNames.length; i+=4) {
                 images.push(fileNames[i])
             }
         } else if (fileNames.length > 80) {
@@ -104,6 +102,16 @@ export class Images {
                         resolve()
                     }
                 })
+        })
+    }
+
+    // Download Zip
+    public downloadZip = async (url: string, path: string) => {
+        return new Promise((resolve) => {
+            const writeStream = request({url, headers: {Referer: "https://www.pixiv.net/"}}).pipe(unzip.Extract({path}))
+            writeStream.on("finish", () => {
+                resolve()
+            })
         })
     }
 

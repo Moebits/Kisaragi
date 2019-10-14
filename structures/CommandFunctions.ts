@@ -153,4 +153,13 @@ export class CommandFunctions {
             return check
         }
     }
+
+    // Assert that command was rejected
+    public assertReject = async (cmd: string[], timeout?: number) => {
+        if (!timeout) timeout = 20
+        await this.runCommand(this.message, cmd, true)
+        await Functions.timeout(timeout)
+        const reject = await this.assertLast("No results were found.")
+        return reject
+    }
 }

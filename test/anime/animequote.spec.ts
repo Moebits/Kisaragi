@@ -26,4 +26,8 @@ describe("animequote", async function() {
         await cmd.runCommand(message, ["animequote", "rem"], true)
         assert (await cmd.assertLast("Rem (re:zero)"))
     })
+
+    it("should reject an invalid query", async function() {
+        await cmd.assertReject(["animequote", "thisIsNotAnAnime"])
+    })
 })
