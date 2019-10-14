@@ -19,7 +19,7 @@ export default class Discordjs extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const star = discord.getEmoji("star")
-        const srcOptions = ["master", "stable", "rpc", "commando", "akairo", "akairo-master"]
+        const srcOptions = ["master", "stable", "rpc", "commando", "akairo", "akairo-master", "collection"]
         let src = ""
         let query = Functions.combineArgs(args, 2)
         if (srcOptions.includes(args[1])) {

@@ -1,3 +1,4 @@
+import axios from "axios"
 import Booru from "booru"
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
@@ -27,6 +28,7 @@ export default class Lolibooru extends Command {
             `,
             aliases: ["lb"],
             cooldown: 20,
+            unlist: true,
             image: "../assets/help images/anime/lolibooru.png"
         })
     }
@@ -39,18 +41,19 @@ export default class Lolibooru extends Command {
         const embeds = new Embeds(discord, message)
         const lolibooru = Booru("lolibooru")
         const lolibooruEmbed = embeds.createEmbed()
-        const axios = require("axios")
+        .setAuthor("lolibooru", "https://i.imgur.com/vayyvC4.png")
+        .setTitle(`**Lolibooru Image** ${discord.getEmoji("gabLewd")}`)
 
         let tags
         if (!args[1]) {
-            tags = ["1girl", "rating:safe"]
+            tags = ["girl", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
             tags = Functions.combineArgs(args, 2).split(",")
-            if (!tags.join("")) tags = ["1girl"]
+            if (!tags.join("")) tags = ["girl"]
             tags.push("-rating:safe")
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
-            if (!tags.join("")) tags = ["1girl"]
+            if (!tags.join("")) tags = ["girl"]
             tags.push("rating:safe")
         }
 
@@ -61,11 +64,11 @@ export default class Lolibooru extends Command {
 
         let url
         if (tags.join("").match(/\d\d+/g)) {
-            url = `https://lolibooru.net/post/show/${tags.join("").match(/\d+/g)}/`
+            url = `https://lolibooru.net/post/show/${tags.join("").match(/\d\d+/g)}/`
         } else {
             const image = await lolibooru.search(tagArray, {limit: 1, random: true})
             if (!image[0]) {
-                return this.invalidQuery(lolibooruEmbed, "No results were found. Underscores are not required, " +
+                return this.invalidQuery(lolibooruEmbed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name, try looking up your tag " +
                 "on the [**Lolibooru Website**](https://lolibooru.moe//)")
             }
@@ -77,13 +80,12 @@ export default class Lolibooru extends Command {
         const result = await axios.get(`https://lolibooru.moe/post/index.json?tags=id:${id}`)
         const img = result.data[0]
         if (!img) return this.invalidQuery(lolibooruEmbed, "The url is invalid.")
+        console.log(img.rating)
         if (img.rating !== "s") {
             if (!perms.checkNSFW()) return
         }
         lolibooruEmbed
-        .setAuthor("lolibooru", "https://i.imgur.com/vayyvC4.png")
         .setURL(url)
-        .setTitle(`**Lolibooru Image** ${discord.getEmoji("gabLewd")}`)
         .setDescription(
             `${star}_Source:_ ${img.source}\n` +
             `${star}_Uploader:_ **${img.author}**\n` +

@@ -16,7 +16,7 @@ describe("manga", async function() {
     })
 
     it("should search for manga", async function() {
-        await cmd.runCommand(message, ["manga", "eromanga sensei"], true)
+        await cmd.runCommand(message, ["manga", "eromanga sensei"])
         assert((await cmd.assertLast("Japanese Title") && (await cmd.assertLast(true) > 1000)))
     })
 })

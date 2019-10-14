@@ -12,7 +12,7 @@ export default class Manga extends Command {
             description: "Search for a manga series.",
             help:
             `
-            \`manga query\` - Searches kitsu for the given query.
+            \`manga query\` - Searches for a manga with the query.
             `,
             examples:
             `
@@ -44,6 +44,9 @@ export default class Manga extends Command {
 
         const result = await weeb.manga(query)
         const data = JSON.parse(result).data[0]
+        if (!data) {
+            return this.invalidQuery(mangaEmbed, "You can try searching on the [**Kitsu Website**](https://kitsu.io/anime)")
+        }
         mangaEmbed
         .setURL(`https://kitsu.io/manga/${data.attributes.slug}`)
         .setTitle(`${data.attributes.titles.en_jp} ${discord.getEmoji("gabYes")}`)

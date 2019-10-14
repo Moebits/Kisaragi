@@ -1,21 +1,22 @@
 import {Collection, Message, TextChannel} from "discord.js"
 import fs from "fs"
+import path from "path"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
 const noCmdCool = new Set()
+const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
 
 export class CommandFunctions {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Run Command
-    public runCommand = async (msg: Message, args: string[], ts?: boolean) => {
+    public runCommand = async (msg: Message, args: string[]) => {
         args = args.filter(Boolean)
-        let path = await this.findCommand(args[0])
-        if (!path) return this.noCommand(args[0])
-        if (ts) path = path.replace(/js/, "ts")
-        const cp = new (require(path).default)(this.discord, msg)
+        const cmdPath = await this.findCommand(args[0])
+        if (!cmdPath) return this.noCommand(args[0])
+        const cp = new (require(`${topDir}${cmdPath.slice(0, -3)}`).default)(this.discord, msg)
         return new Promise(async (resolve, reject) => {
             await cp.run(args).then(() => resolve())
             .catch((err: Error) => {
@@ -81,9 +82,9 @@ export class CommandFunctions {
     }
 
     public findCommand = async (cmd: string) => {
-        let path = await SQLQuery.fetchCommand(cmd, "path")
+        let cmdPath = await SQLQuery.fetchCommand(cmd, "path")
         loop1:
-        if (!path) {
+        if (!cmdPath) {
             const directories = fs.readdirSync(`../commands/`)
             for (let i = 0; i < directories.length; i++) {
                 const commands = fs.readdirSync(`../commands/${directories[i]}`)
@@ -93,17 +94,17 @@ export class CommandFunctions {
                     const aliases = cmdClass.options.aliases
                     for (let k = 0; k < aliases.length; k++) {
                         if (aliases[k] === cmd) {
-                            path = [`../commands/${directories[i]}/${commands[j]}.js`]
+                            cmdPath = [`../commands/${directories[i]}/${commands[j]}.js`]
                             break loop1
                         }
                     }
                 }
             }
         }
-        if (!path) {
+        if (!cmdPath) {
             return false
         } else {
-            return String(path)
+            return String(cmdPath)
         }
     }
 
@@ -129,7 +130,7 @@ export class CommandFunctions {
         if (!timeout) timeout = 20
         const channel = this.message.channel as TextChannel
         await channel.setNSFW(false)
-        await this.runCommand(this.message, cmd, true)
+        await this.runCommand(this.message, cmd)
         await Functions.timeout(timeout)
         await channel.setNSFW(true)
         if (await this.assertLast("You can only use this command in NSFW channels!")) {
@@ -142,7 +143,7 @@ export class CommandFunctions {
     // Assert Command Image
     public assertImage = async (cmd: string[], timeout?: number) => {
         if (!timeout) timeout = 20
-        await this.runCommand(this.message, cmd, true)
+        await this.runCommand(this.message, cmd)
         await Functions.timeout(timeout)
         const lastMsg = await this.message.channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
         if (lastMsg!.embeds[0]) {
@@ -157,7 +158,7 @@ export class CommandFunctions {
     // Assert that command was rejected
     public assertReject = async (cmd: string[], timeout?: number) => {
         if (!timeout) timeout = 20
-        await this.runCommand(this.message, cmd, true)
+        await this.runCommand(this.message, cmd)
         await Functions.timeout(timeout)
         const reject = await this.assertLast("No results were found.")
         return reject

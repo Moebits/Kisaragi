@@ -2,7 +2,7 @@ import {assert} from "chai"
 import "mocha"
 import login, {cmd, message} from "../login"
 
-describe("lolibooru", async function() {
+describe.only("lolibooru", async function() {
     this.beforeAll(async function() {
         await login()
     })
@@ -12,7 +12,7 @@ describe("lolibooru", async function() {
     })
 
     it("should work with a link", async function() {
-        await cmd.runCommand(message, ["lolibooru", "https://lolibooru.moe/post/show/202922/1girl-o-blue_eyes-blush-bow-eromanga_sensei-eyebro"], true)
+        await cmd.runCommand(message, ["lolibooru", "https://lolibooru.moe/post/show/202922/1girl-o-blue_eyes-blush-bow-eromanga_sensei-eyebro"])
         assert(await cmd.assertLast("izumi_sagiri"))
     })
 

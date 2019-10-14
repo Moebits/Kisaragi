@@ -125,8 +125,10 @@ export class PixivApi {
 
     // Pixiv Popular Image
     public getPopularPixivImage = async () => {
+        const mode = "day_male"
         await pixiv.login()
-        const json = await pixiv.illustRanking();
+        // @ts-ignore
+        const json = await pixiv.illustRanking({mode});
         [].sort.call(json.illusts, ((a: PixivIllust, b: PixivIllust) => (a.totalBookmarks - b.totalBookmarks)*-1))
         const index = Math.floor(Math.random() * (10))
         const image = json.illusts[index]
@@ -138,8 +140,10 @@ export class PixivApi {
 
     // Pixiv Popular R18 Image
     public getPopularPixivR18Image = async () => {
+        const mode = "day_male_r18"
         await pixiv.login()
-        const json = await pixiv.illustRanking({mode: "day_male_r18"});
+        // @ts-ignore
+        const json = await pixiv.illustRanking({mode});
         [].sort.call(json.illusts, ((a: PixivIllust, b: PixivIllust) => (a.totalBookmarks - b.totalBookmarks) * -1))
         const index = Math.floor(Math.random() * (10))
         const image = json.illusts[index]

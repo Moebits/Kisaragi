@@ -12,12 +12,12 @@ describe("danbooru", async function() {
     })
 
     it("should get an image from a link", async function() {
-        await cmd.runCommand(message, ["danbooru", "https://danbooru.donmai.us/posts/3544720"], true)
+        await cmd.runCommand(message, ["danbooru", "https://danbooru.donmai.us/posts/3544720"])
         assert(await cmd.assertLast("Chisaki Tapris Sugarbell"))
     })
 
     it("should get an image from the query", async function() {
-        await cmd.runCommand(message, ["danbooru", "tenma", "gabriel", "white"], true)
+        await cmd.runCommand(message, ["danbooru", "tenma", "gabriel", "white"])
         assert(await cmd.assertLast("Tenma Gabriel White"))
     })
 

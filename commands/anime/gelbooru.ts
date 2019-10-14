@@ -62,13 +62,13 @@ export default class Gelbooru extends Command {
 
         let url
         if (tags.join("").match(/\d\d+/g)) {
-            url = `https://gelbooru.com/index.php?page=post&s=view&json=1&id=${tags.join("").match(/\d+/g)}`
+            url = `https://gelbooru.com/index.php?page=post&s=view&json=1&id=${tags.join("").match(/\d\d+/g)}`
         } else {
             const image = await gelbooru.search(tagArray, {limit: 1, random: true})
             if (!image[0]) {
                 return this.invalidQuery(gelbooruEmbed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name; try looking up your tag " +
-                "on the [Gelbooru Website](https://gelbooru.com//)")
+                "on the [**Gelbooru Website**](https://gelbooru.com//)")
             }
             url = gelbooru.postView(image[0].id)
         }

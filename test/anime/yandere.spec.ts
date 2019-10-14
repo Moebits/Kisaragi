@@ -12,7 +12,7 @@ describe("yandere", async function() {
     })
 
     it("should work with a link", async function() {
-        await cmd.runCommand(message, ["yandere", "https://yande.re/post/show/579170"], true)
+        await cmd.runCommand(message, ["yandere", "https://yande.re/post/show/579170"])
         assert(await cmd.assertLast("azur_lane"))
     })
 

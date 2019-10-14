@@ -62,7 +62,7 @@ export default class Danbooru extends Command {
 
         let url
         if (tags.join("").match(/\d\d+/g)) {
-            url = `https://danbooru.donmai.us/posts/${tags.join("").match(/\d+/g)}`
+            url = `https://danbooru.donmai.us/posts/${tags.join("").match(/\d\d+/g)}`
         } else {
             const image = await danbooru.search(tagArray, {limit: 100})
             const random = Math.floor(Math.random() * image.length)

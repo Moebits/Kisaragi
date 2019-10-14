@@ -2,7 +2,7 @@ import {assert} from "chai"
 import "mocha"
 import login, {cmd} from "../login"
 
-describe.only("ugoira", async function() {
+describe("ugoira", async function() {
     this.beforeAll(async function() {
         await login()
     })

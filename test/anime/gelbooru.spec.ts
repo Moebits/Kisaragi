@@ -12,7 +12,7 @@ describe("gelbooru", async function() {
     })
 
     it("should work with a link", async function() {
-        await cmd.runCommand(message, ["gelbooru", "https://gelbooru.com/index.php?page=post&s=view&id=4788423&tags=gabriel_dropout"], true)
+        await cmd.runCommand(message, ["gelbooru", "https://gelbooru.com/index.php?page=post&s=view&id=4788423&tags=gabriel_dropout"])
         assert(await cmd.assertLast("chisaki_tapris_sugarbell"))
     })
 

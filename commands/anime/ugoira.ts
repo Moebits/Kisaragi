@@ -19,12 +19,11 @@ export default class UgoiraCommand extends Command {
             `
             _Note: Using the **pixiv** command on a ugoira link will run this command too!_
             \`ugoira\` - Gets a random pixiv ugoira.
+            \`ugoira link/id\` - Gets the pixiv ugoira from the link.
             \`ugoira tag\` - Gets a pixiv ugoira from the tag (translated to japanese).
             \`ugoira en tag\` - Gets a pixiv ugoira from the tag (not translated).
-            \`ugoira popular\` - Gets a random ugoira from the daily rankings.
             \`ugoira r18 tag\` - Gets an R-18 ugoira from the tag (translated to japanese).
             \`ugoira r18 en tag\` - Gets an R-18 ugoira from the tag (not translated).
-            \`ugoira r18 popular\` - Gets a random ugoira from the R-18 daily rankings.
             `,
             examples:
             `
@@ -48,10 +47,10 @@ export default class UgoiraCommand extends Command {
         const pixivApi = new PixivApi(discord, message)
         const perms = new Permission(discord, message)
         const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
-        const pixiv = new PixivApiClient()
+        const pixiv = new PixivApiClient(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD)
         let input
-        if (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en") {
-            if (args[2] === "en") {
+        if (args[1] && (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en" || args[1].toLowerCase() === "popular")) {
+            if (args[2] === "en" || args[2] === "popular") {
                 input = Functions.combineArgs(args, 3)
             } else {
                 input = Functions.combineArgs(args, 2)
@@ -64,33 +63,37 @@ export default class UgoiraCommand extends Command {
         if (input.match(/\d\d\d+/g)) {
             pixivID = input.match(/\d+/g)!.join("")
         } else {
-            if (args[1].toLowerCase() === "r18") {
+            if (args[1] && args[1].toLowerCase() === "r18") {
                 if (!perms.checkNSFW()) return
-                if (args[2].toLowerCase() === "en") {
-                    const image = await pixivApi.getPixivImage(input, true, true, true, true)
+                if (args[2] && args[2].toLowerCase() === "en") {
+                    let image
                     try {
+                        image = await pixivApi.getPixivImage(input, true, true, true, true)
                         pixivID = image!.id
                     } catch {
                         return pixivApi.pixivErrorEmbed()
                     }
                 } else {
-                    const image = await pixivApi.getPixivImage(input, true, false, true, true)
+                    let image
                     try {
+                        image = await pixivApi.getPixivImage(input, true, false, true, true)
                         pixivID = image!.id
                     } catch {
                         return pixivApi.pixivErrorEmbed()
                     }
                 }
-            } else if (args[1].toLowerCase() === "en") {
-                const image = await pixivApi.getPixivImage(input, false, true, true, true)
+            } else if (args[1] && args[1].toLowerCase() === "en") {
+                let image
                 try {
+                    image = await pixivApi.getPixivImage(input, false, true, true, true)
                     pixivID = image!.id
                 } catch {
                     return pixivApi.pixivErrorEmbed()
                 }
             } else {
-                const image = await pixivApi.getPixivImage(input, false, false, true, true)
+                let image
                 try {
+                    image = await pixivApi.getPixivImage(input, false, false, true, true)
                     pixivID = image!.id
                 } catch {
                     return pixivApi.pixivErrorEmbed()
@@ -114,15 +117,15 @@ export default class UgoiraCommand extends Command {
 
         await images.downloadZip(ugoiraInfo.ugoiraMetadata.zipUrls.medium, `${topDir}assets/ugoira/${pixivID}`)
 
-        const file = fs.createWriteStream(`${topDir}ugoira/${pixivID}/${pixivID}.gif`)
+        const file = fs.createWriteStream(`${topDir}assets/ugoira/${pixivID}/${pixivID}.gif`)
 
         msg1.delete({timeout: 1000})
         const msg2 = await message.channel.send(`**Converting Ugoira to Gif. This might take awhile** ${discord.getEmoji("gabCircle")}`) as Message
-        await images.encodeGif(fileNames, `${topDir}ugoira/${pixivID}/`, file)
+        await images.encodeGif(fileNames, `${topDir}assets/ugoira/${pixivID}/`, file)
         msg2.delete({timeout: 1000})
 
         const msg3 = await message.channel.send(`**Compressing Gif** ${discord.getEmoji("gabCircle")}`) as Message
-        await images.compressGif([`${topDir}ugoira/${pixivID}/${pixivID}.gif`])
+        await images.compressGif([`${topDir}assets/ugoira/${pixivID}/${pixivID}.gif`])
         msg3.delete({timeout: 1000})
 
         const ugoiraEmbed = embeds.createEmbed()
@@ -138,20 +141,21 @@ export default class UgoiraCommand extends Command {
                     commentArray.push(comments.comments[i].comment)
                 }
         ugoiraEmbed
-            .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("chinoSmug")}`)
-            .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${pixivID}`)
-            .setDescription(
-                `${star}_Title:_ **${details.title}**\n` +
-                `${star}_Artist:_ **${details.user.name}**\n` +
-                `${star}_Creation Date:_ **${Functions.formatDate(new Date(details.createDate))}**\n` +
-                `${star}_Views:_ **${details.totalView}**\n` +
-                `${star}_Bookmarks:_ **${details.totalBookmarks}**\n` +
-                `${star}_Description:_ ${cleanText ? cleanText : "None"}\n` +
-                `${star}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
-                )
-            .attachFiles([outGif.attachment as string, authorAttachment])
-            .setThumbnail(`attachment://${authorName}`)
-            .setImage(`attachment://${pixivID}.gif`)
+        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
+        .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("chinoSmug")}`)
+        .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${pixivID}`)
+        .setDescription(
+            `${star}_Title:_ **${details.title}**\n` +
+            `${star}_Artist:_ **${details.user.name}**\n` +
+            `${star}_Creation Date:_ **${Functions.formatDate(new Date(details.createDate))}**\n` +
+            `${star}_Views:_ **${details.totalView}**\n` +
+            `${star}_Bookmarks:_ **${details.totalBookmarks}**\n` +
+            `${star}_Description:_ ${cleanText ? cleanText : "None"}\n` +
+            `${star}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
+            )
+        .attachFiles([outGif.attachment as string, authorAttachment])
+        .setThumbnail(`attachment://${authorName}`)
+        .setImage(`attachment://${pixivID}.gif`)
         message.channel.send(ugoiraEmbed)
     }
 }

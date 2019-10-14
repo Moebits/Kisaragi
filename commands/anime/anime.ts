@@ -12,7 +12,7 @@ export default class Anime extends Command {
             description: "Searches for an anime series.",
             help:
             `
-            \`anime query\` - Searches kitsu for the given query.
+            \`anime query\` - Searches for an anime with the query.
             `,
             examples:
             `
@@ -34,7 +34,7 @@ export default class Anime extends Command {
         const star = discord.getEmoji("star")
         const animeEmbed = embeds.createEmbed()
         .setAuthor("kitsu", "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4")
-        .setTitle(`**Anime Search** ${discord.getEmoji("gabYes")}`)
+        .setTitle(`**Anime** ${discord.getEmoji("gabYes")}`)
 
         if (!query) {
             return this.noQuery(animeEmbed,

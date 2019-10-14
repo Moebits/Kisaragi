@@ -12,7 +12,7 @@ describe("konachan", async function() {
     })
 
     it("should work with a link", async function() {
-        await cmd.runCommand(message, ["konachan", "https://konachan.com/post/show/258662/animal_ears-anthropomorphism-ass-azur_lane-bell-bl"], true)
+        await cmd.runCommand(message, ["konachan", "https://konachan.com/post/show/258662/animal_ears-anthropomorphism-ass-azur_lane-bell-bl"])
         assert(await cmd.assertLast("azur_lane"))
     })
 
@@ -29,7 +29,7 @@ describe("konachan", async function() {
     })
 
     it("should reject an invalid query", async function() {
-        await cmd.runCommand(message, ["konachan", "fakeQueryAf"], true)
+        await cmd.runCommand(message, ["konachan", "fakeQueryAf"])
         assert(await cmd.assertLast("No results were found."))
     })
 

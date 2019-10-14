@@ -63,11 +63,11 @@ export default class Konachan extends Command {
 
         let url
         if (tags.join("").match(/\d\d+/g)) {
-            url = `https://konachan.net/post/show/${tags.join("").match(/\d+/g)}/`
+            url = `https://konachan.net/post/show/${tags.join("").match(/\d\d+/g)}/`
         } else {
             const image = await konachan.search(tagArray, {limit: 1, random: true})
             if (!image[0]) {
-                return this.invalidQuery(konachanEmbed, "No results were found. Underscores are not required, " +
+                return this.invalidQuery(konachanEmbed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name, try looking up your tag " +
                 "on the [**Konachan Website**](https://konachan.com//)")
             }
