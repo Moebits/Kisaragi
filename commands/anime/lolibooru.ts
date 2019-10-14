@@ -48,6 +48,7 @@ export default class Lolibooru extends Command {
         if (!args[1]) {
             tags = ["girl", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
+            if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["girl"]
             tags.push("-rating:safe")
@@ -80,7 +81,6 @@ export default class Lolibooru extends Command {
         const result = await axios.get(`https://lolibooru.moe/post/index.json?tags=id:${id}`)
         const img = result.data[0]
         if (!img) return this.invalidQuery(lolibooruEmbed, "The url is invalid.")
-        console.log(img.rating)
         if (img.rating !== "s") {
             if (!perms.checkNSFW()) return
         }

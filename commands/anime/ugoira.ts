@@ -1,7 +1,7 @@
 import {Message, MessageAttachment} from "discord.js"
 import fs from "fs"
 import path from "path"
-import PixivApiClient from "pixiv-app-api"
+import PixivApiClient, {PixivIllust, UgoiraMetaData} from "pixiv-app-api"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -66,44 +66,31 @@ export default class UgoiraCommand extends Command {
             if (args[1] && args[1].toLowerCase() === "r18") {
                 if (!perms.checkNSFW()) return
                 if (args[2] && args[2].toLowerCase() === "en") {
-                    let image
-                    try {
-                        image = await pixivApi.getPixivImage(input, true, true, true, true)
-                        pixivID = image!.id
-                    } catch {
-                        return pixivApi.pixivErrorEmbed()
-                    }
+                    const image = await pixivApi.getPixivImage(input, true, true, true, true)
+                    pixivID = image!.id
                 } else {
-                    let image
-                    try {
-                        image = await pixivApi.getPixivImage(input, true, false, true, true)
-                        pixivID = image!.id
-                    } catch {
-                        return pixivApi.pixivErrorEmbed()
-                    }
+                    const image = await pixivApi.getPixivImage(input, true, false, true, true)
+                    pixivID = image!.id
                 }
             } else if (args[1] && args[1].toLowerCase() === "en") {
-                let image
-                try {
-                    image = await pixivApi.getPixivImage(input, false, true, true, true)
-                    pixivID = image!.id
-                } catch {
-                    return pixivApi.pixivErrorEmbed()
-                }
+                const image = await pixivApi.getPixivImage(input, false, true, true, true)
+                pixivID = image!.id
             } else {
-                let image
-                try {
-                    image = await pixivApi.getPixivImage(input, false, false, true, true)
-                    pixivID = image!.id
-                } catch {
-                    return pixivApi.pixivErrorEmbed()
-                }
+                const image = await pixivApi.getPixivImage(input, false, false, true, true)
+                pixivID = image!.id
             }
         }
 
         await pixiv.login()
-        const details = await pixiv.illustDetail(pixivID as number).then((i) => i.illust)
-        const ugoiraInfo = await pixiv.ugoiraMetaData(pixivID as number)
+        let details: PixivIllust
+        let ugoiraInfo: UgoiraMetaData
+        try {
+            details = await pixiv.illustDetail(pixivID as number).then((i) => i.illust)
+            ugoiraInfo = await pixiv.ugoiraMetaData(pixivID as number)
+        } catch {
+            msg1.delete({timeout: 1000})
+            return
+        }
         const fileNames: string[] = []
         const frameDelays: number[] = []
         const frameNames: string[] = []
