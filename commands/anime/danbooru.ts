@@ -27,7 +27,6 @@ export default class Danbooru extends Command {
             \`=>danbooru r18 gabriel dropout\`
             `,
             aliases: ["d", "dan"],
-            image: "../assets/help images/anime/danbooru.png",
             cooldown: 20
         })
     }

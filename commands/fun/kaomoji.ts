@@ -8,8 +8,18 @@ const kaomoji = require("kaomojilib")
 export default class Kaomoji extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Post a kawaii emoji.",
-            aliases: [],
+            description: "Posts a kawaii emoji.",
+            help:
+            `
+            \`kaomoji\` - Gets a random kaomoji.
+            \`kaomoji query\` - Searches for a kaomoji with the query.
+            `,
+            examples:
+            `
+            \`=>kaomoji\`
+            \`=>kaomoji kawaii\`
+            `,
+            aliases: ["kmoji"],
             cooldown: 3
         })
     }

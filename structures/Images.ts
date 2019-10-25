@@ -1,5 +1,5 @@
 import * as Canvas from "canvas"
-import {GuildMember, Message, MessageAttachment, MessageEmbed, TextChannel} from "discord.js"
+import {GuildMember, Message, MessageAttachment, TextChannel} from "discord.js"
 import * as fs from "fs"
 import gifFrames from "gif-frames"
 import sizeOf from "image-size"
@@ -8,7 +8,6 @@ import imageminGifsicle from "imagemin-gifsicle"
 import request from "request"
 import stream from "stream"
 import unzip from "unzip"
-import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 
@@ -19,7 +18,6 @@ const imageDataURI = require("image-data-uri")
 const download = require("image-downloader")
 
 export class Images {
-    private readonly embeds = new Embeds(this.discord, this.message)
     // let blacklist = require("../blacklist.json");
 
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
@@ -28,7 +26,7 @@ export class Images {
     public compressGif = async (input: string[]) => {
         const file = await imagemin(input,
         {destination: "../assets/gifs",
-         plugins: [imageminGifsicle({interlaced: true, optimizationLevel: 3, colors: 256})]
+         plugins: [imageminGifsicle({interlaced: false, optimizationLevel: 2, colors: 512})]
         })
         return file
     }
@@ -130,47 +128,6 @@ export class Images {
                 console.log(e)
             }
         }))
-    }
-
-    // nhentai Doujin
-    public getNhentaiDoujin = (doujin: any, tag: string) => {
-        const checkArtists = doujin.details.artists ? Functions.checkChar(doujin.details.artists.join(" "), 50, ")") : "None"
-        const checkCharacters = doujin.details.characters ? Functions.checkChar(doujin.details.characters.join(" "), 50, ")") : "None"
-        const checkTags = doujin.details.tags ? Functions.checkChar(doujin.details.tags.join(" "), 50, ")") : "None"
-        const checkParodies = doujin.details.parodies ? Functions.checkChar(doujin.details.parodies.join(" "), 50, ")") : "None"
-        const checkGroups = doujin.details.groups ? Functions.checkChar(doujin.details.groups.join(" "), 50, ")") : "None"
-        const checkLanguages = doujin.details.languages ? Functions.checkChar(doujin.details.languages.join(" "), 50, ")") : "None"
-        const checkCategories = doujin.details.categories ? Functions.checkChar(doujin.details.categories.join(" "), 50, ")") : "None"
-        const doujinPages: MessageEmbed[] = []
-        /*fs.mkdirSync(`../assets/pages/${tag}/`);
-        fs.mkdirSync(`../assets/pagesCompressed/${tag}/`);
-        let msg1 = await message.channel.send(`**Downloading images** ${discord.getEmoji("gabCircle")}`);
-        await discord.downloadPages(doujin.pages, `../assets/pages/${tag}/`);
-        msg1.delete(1000);
-        let msg2 = await message.channel.send(`**Compressing images** ${discord.getEmoji("gabCircle")}`);
-        await discord.compressImages(`../assets/pages/${tag}/*.jpg`, `../assets/pagesCompressed/${tag}/`);
-        msg2.delete(1000);*/
-        for (let i = 0; i < doujin.pages.length; i++) {
-            const nhentaiEmbed = this.embeds.createEmbed()
-            nhentaiEmbed
-            .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
-            .setTitle(`**${doujin.title}** ${this.discord.getEmoji("madokaLewd")}`)
-            .setURL(doujin.link)
-            .setDescription(
-            `${this.discord.getEmoji("star")}_Japanese Title:_ **${doujin.nativeTitle}**\n` +
-            `${this.discord.getEmoji("star")}_ID:_ **${tag}**\n` +
-            `${this.discord.getEmoji("star")}_Artists:_ ${checkArtists}\n` +
-            `${this.discord.getEmoji("star")}_Characters:_ ${checkCharacters}\n` +
-            `${this.discord.getEmoji("star")}_Tags:_ ${checkTags} ${checkParodies}` +
-            `${checkGroups} ${checkLanguages} ${checkCategories}\n`
-            )
-            // .attachFiles([`../assets/pagesCompressed/${tag}/page${i}.jpg`])
-            // .setImage(`attachment://page${i}.jpg`)
-            .setThumbnail(doujin.thumbnails[0])
-            .setImage(doujin.pages[i])
-            doujinPages.push(nhentaiEmbed)
-        }
-        this.embeds.createReactionEmbed(doujinPages, true)
     }
 
     // Fetch Channel Attachments

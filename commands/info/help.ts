@@ -22,7 +22,8 @@ export default class Help extends Command {
         const helpEmbedArray: MessageEmbed[] = []
         if (args[1]) {
             const helpDir = new (require("./helpInfo").default)(this.discord, this.message)
-            return helpDir.run(args)
+            await helpDir.run(args)
+            return
         }
         const subDir = fs.readdirSync("./commands")
         for (let i = 0; i < subDir.length; i++) {
@@ -32,6 +33,7 @@ export default class Help extends Command {
                 commands[j] = commands[j].slice(0, -3)
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
                 const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
+                if (cmdClass.options.unlist === true) continue
                 help += `${star}**${commands[j]}**\n` + `${cmdClass.options.description}\n`
             }
             const helpEmbed = embeds.createEmbed()

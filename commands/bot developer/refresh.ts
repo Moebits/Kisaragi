@@ -8,7 +8,7 @@ import {Permission} from "../../structures/Permission"
 export default class Reload extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Reloads a command.",
+          description: "Refreshes a command.",
           aliases: ["reload"],
           cooldown: 50
         })

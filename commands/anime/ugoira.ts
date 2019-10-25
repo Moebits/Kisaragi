@@ -24,6 +24,7 @@ export default class UgoiraCommand extends Command {
             \`ugoira en tag\` - Gets a pixiv ugoira from the tag (not translated).
             \`ugoira r18 tag\` - Gets an R-18 ugoira from the tag (translated to japanese).
             \`ugoira r18 en tag\` - Gets an R-18 ugoira from the tag (not translated).
+            \`all\` - Add this to include illusts with under 100 bookmarks.
             `,
             examples:
             `
@@ -33,8 +34,7 @@ export default class UgoiraCommand extends Command {
             \`=>ugoira popular\`
             `,
             aliases: ["u"],
-            cooldown: 30,
-            image: "../assets/help images/anime/ugoira.png"
+            cooldown: 30
         })
     }
 

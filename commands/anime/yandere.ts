@@ -27,8 +27,7 @@ export default class Yandere extends Command {
             \`=>yandere r18 azur lane\`
             `,
             aliases: ["y", "ydere"],
-            cooldown: 20,
-            image: "../assets/help images/anime/yandere.png"
+            cooldown: 20
         })
     }
 

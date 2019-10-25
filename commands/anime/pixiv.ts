@@ -19,6 +19,7 @@ export default class Pixiv extends Command {
             \`pixiv r18 tag\` - Gets an R-18 pixiv image from the tag (translated to japanese).
             \`pixiv r18 en tag\` - Gets an R-18 pixiv image from the tag (not translated).
             \`pixiv r18 popular\` - Gets a random image from the R-18 daily rankings.
+            \`all\` - Add this to include illusts with under 100 bookmarks.
             `,
             examples:
             `
@@ -30,8 +31,7 @@ export default class Pixiv extends Command {
             \`=>pixiv r18 popular\`
             `,
             aliases: ["p"],
-            cooldown: 30,
-            image: "../assets/help images/anime/pixiv.png"
+            cooldown: 30
         })
     }
 

@@ -8,13 +8,16 @@ import {Permission} from "./../../structures/Permission"
 export default class LewdMe extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "???",
+            description: "Why do you want to lewd me?",
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            unlist: true
         })
     }
 
-    public run = (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!perms.checkNSFW()) return

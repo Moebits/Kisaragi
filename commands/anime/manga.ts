@@ -21,8 +21,7 @@ export default class Manga extends Command {
             \`=>manga himouto umaru chan\`
             `,
             aliases: ["m"],
-            cooldown: 10,
-            image: "../assets/help images/anime/manga.png"
+            cooldown: 10
         })
     }
 

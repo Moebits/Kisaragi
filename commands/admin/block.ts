@@ -33,7 +33,6 @@ export default class Block extends Command {
             aliases: ["filter"],
             permission: "MANAGE_CHANNELS",
             botPermission: "MANAGE_MESSAGES",
-            image: "../assets/help images/admin/block.png",
             cooldown: 30
         })
     }

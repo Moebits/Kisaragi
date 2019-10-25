@@ -28,8 +28,7 @@ export default class Lolibooru extends Command {
             `,
             aliases: ["lb"],
             cooldown: 20,
-            unlist: true,
-            image: "../assets/help images/anime/lolibooru.png"
+            unlist: true
         })
     }
 

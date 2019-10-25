@@ -27,8 +27,7 @@ export default class Konachan extends Command {
             \`=>konachan r18 azur lane\`
             `,
             aliases: ["k", "kona", "kchan"],
-            cooldown: 20,
-            image: "../assets/help images/anime/konachan.png"
+            cooldown: 20
         })
     }
 

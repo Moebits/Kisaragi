@@ -2,7 +2,7 @@ import bluebird from "bluebird"
 import chalk from "chalk"
 import {Message} from "discord.js"
 import moment from "moment"
-import {Pool, PoolClient, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
+import {Pool, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
 import * as Redis from "redis"
 import {Settings} from "./Settings"
 
@@ -50,13 +50,13 @@ export class SQLQuery {
   // Run Query
   public static runQuery = async (query: QueryConfig | QueryArrayConfig, newData?: boolean): Promise<string[][]> => {
       const start = Date.now()
-      let redisResult: string | null = await redis.getAsync(JSON.stringify(query))
+      let redisResult = await redis.getAsync(JSON.stringify(query))
       if (newData) redisResult = null
       if (redisResult) {
         SQLQuery.logQuery(Object.values(query)[0], start, true)
         return (JSON.parse(redisResult))[0]
       } else {
-        const pgClient: PoolClient = await pgPool.connect()
+        const pgClient = await pgPool.connect()
         try {
             const result: QueryResult<string[]> = await pgClient.query(query)
             // this.logQuery(Object.values(query)[0], start);
@@ -74,8 +74,8 @@ export class SQLQuery {
   // Log Query
   public static logQuery = (text: string, start: number, blue?: boolean): void => {
 
-      const duration: number = Date.now() - start
-      const color: string = blue ? "cyanBright" : "magentaBright"
+      const duration = Date.now() - start
+      const color = blue ? "cyanBright" : "magentaBright"
       const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`
 
       const queryString = `${timestamp} Executed query ${text} in ${duration} ms`
@@ -86,6 +86,21 @@ export class SQLQuery {
   public static flushDB = async (): Promise<void> => {
       await redis.flushdbAsync()
     }
+
+  // Redis Set
+  public redisSet = async (key: string, value: string, expiration?: number) => {
+    if (expiration) {
+      await redis.setAsync(key, value, "EX", expiration)
+    } else {
+      await redis.setAsync(key, value)
+    }
+  }
+
+  // Redis Get
+  public redisGet = async (key: string) => {
+    const result = await redis.getAsync(key)
+    return result
+  }
 
   // Fetch a row
   public fetchRow = async (table: string, update?: boolean): Promise<string[]> => {

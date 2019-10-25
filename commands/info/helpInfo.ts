@@ -1,4 +1,5 @@
 import {Message, MessageAttachment} from "discord.js"
+import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -28,12 +29,20 @@ export default class HelpInfo extends Command {
         const category = path.dirname(cmdPath).replace(/\.\.\//, "")
         const name = path.basename(cmdPath)
         const aliases = command.aliases.join("") ? `**${command.aliases.join(", ")}**` : "_None_"
+        let image
+        if (fs.existsSync(`../assets/help images/${category}/${name}.png`)) {
+            image = `../assets/help images/${category}/${name}.png`
+        } else if (fs.existsSync(`../assets/help images/${category}/${name}.gif`)) {
+            image = `../assets/help images/${category}/${name}.gif`
+        } else if (fs.existsSync(`../assets/help images/${category}/${name}.jpg`)) {
+            image = `../assets/help images/${category}/${name}.png`
+        }
         const helpInfoEmbed = embeds.createEmbed()
-        if (command.image) {
-            const image = new MessageAttachment(command.image).attachment as string
+        if (image) {
+            const img = new MessageAttachment(image).attachment as string
             helpInfoEmbed
-            .attachFiles([image])
-            .setImage(`attachment://${path.basename(image)}`)
+            .attachFiles([img])
+            .setImage(`attachment://${path.basename(img)}`)
         }
         helpInfoEmbed
         .setTitle(`**Command Help** ${discord.getEmoji("gabYes")}`)

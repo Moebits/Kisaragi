@@ -7,7 +7,16 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Ascii extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts ascii art.",
+            description: "Converts text to ascii art.",
+            help:
+            `
+            _Note: Long texts will get chopped off._
+            \`ascii text\` - Converts the text to ascii.
+            `,
+            examples:
+            `
+            \`=>ascii hi\`
+            `,
             aliases: [],
             cooldown: 3
         })
@@ -21,7 +30,7 @@ export default class Ascii extends Command {
         const asciiEmbed = embeds.createEmbed()
 
         const text = Functions.combineArgs(args, 1)
-        if (!text) return
+        if (!text) return message.reply("You did not provide any text.")
 
         ascii.font(text, "Doom", (asciiText: string) => {
             asciiEmbed

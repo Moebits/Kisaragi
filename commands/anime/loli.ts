@@ -22,8 +22,7 @@ export default class LoliCommand extends Command {
             `,
             aliases: ["l"],
             cooldown: 5,
-            unlist: true,
-            image: "../assets/help images/anime/loli.png"
+            unlist: true
         })
     }
 

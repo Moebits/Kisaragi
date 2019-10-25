@@ -21,8 +21,7 @@ export default class Anime extends Command {
             \`=>anime rezero\`
             `,
             aliases: ["a"],
-            cooldown: 30,
-            image: "../assets/help images/anime/anime.png"
+            cooldown: 30
         })
     }
 

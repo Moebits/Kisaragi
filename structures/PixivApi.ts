@@ -65,20 +65,48 @@ export class PixivApi {
         pixivEmbed
         .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
         .setTitle(`**Pixiv Image** ${this.discord.getEmoji("chinoSmug")}`)
-        .setDescription("No results were found. Try searching for the japanese tag on the " +
-        "[**Pixiv Website**](https://www.pixiv.net/), as some tags can't be translated to english!")
+        .setDescription("No results were found. You can turn off the bookmark filter by adding **all**. Also, try searching for the japanese tag on the " +
+        "[**Pixiv Website**](https://www.pixiv.net/), as some tags can't be translated to english.")
         return this.message.reply({embed: pixivEmbed})
     }
 
     // Process Pixiv Tag
     public pixivTag = async (tag: string) => {
+        const replaceString = tag
+        .replace(/gabriel dropout/i, "ガヴリールドロップアウト")
+        .replace(/tenma gabriel white|gabriel white|gabriel/i, "天真=ガヴリール=ホワイト")
+        .replace(/vignette tsukinose april|vignette tsukinose|vignette/i, "月乃瀬=ヴィネット=エイプリル")
+        .replace(/satanichia kurumizawa mcDowell|satania/i, "胡桃沢=サタニキア=マクドウェル")
+        .replace(/chisaki tapris sugarbell|tapris/i, "千咲=タプリス=シュガーベル")
+        .replace(/shiraha raphiel ainsworth|raphiel|raphi/i, "白羽=ラフィエル=エインズワース")
+        .replace(/kisaragi/i, "如月(アズールレーン)")
+        .replace(/sagiri izumi|sagiri/i, "和泉紗霧")
+        .replace(/eromanga sensei/i, "エロマンガ先生")
+        .replace(/black tights/i, "黒タイツ")
+        .replace(/white tights/i, "白タイツ")
+        .replace(/konosuba/i, "この素晴らしい世界に祝福を!")
+        .replace(/megumin/i, "めぐみん")
+        .replace(/aqua/i, "アクア(このすば)")
+        .replace(/kiniro mosaic/i, "きんいろモザイク")
+        .replace(/karen kujo|karen/i, "九条カレン")
+        .replace(/chino kafuu|chino/i, "香風智乃")
+        .replace(/is the order a rabbit[\s\S]*/i, "ご注文はうさぎですか?")
+        .replace(/tohru/i, "トール(小林さんちのメイドラゴン)")
+        .replace(/kanna kamui|kanna/i, "カンナカムイ")
+        .replace(/miss kobayashi[\s\S]*dragon maid|dragon maid/i, "小林さんちのメイドラゴン")
+        .replace(/kancolle/i, "艦これ")
+        .replace(/azur lane/i, "アズールレーン")
+        .replace(/laffey/i, "ラフィー(アズールレーン)")
+        .replace(/senko[\s\S]*san|senko/i, "仙狐さん")
+        if (replaceString !== tag) return replaceString
         const newTag = await translate(tag, {to: "ja"})
         return newTag.text.trim()
     }
 
     // Pixiv Image
     public getPixivImage = async (tag: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
-        const newTag = en ? tag.trim() : await this.pixivTag(tag)
+        tag = tag.match(/all/gi) ? tag : tag += "00"
+        const newTag = en ? tag.trim() : await this.pixivTag(tag.trim())
         await pixiv.login()
         let json
         if (r18) {
@@ -95,7 +123,7 @@ export class PixivApi {
             }
         }
         [].sort.call(json.illusts, ((a: PixivIllust, b: PixivIllust) => (a.totalBookmarks - b.totalBookmarks) * -1))
-        const index = Math.floor(Math.random() * (10))
+        const index = Math.floor(Math.random() * (json.illusts.length - json.illusts.length/2) + json.illusts.length/2)
         const image = json.illusts[index]
         if (!image) return this.pixivErrorEmbed()
         if (noEmbed) return image
@@ -127,10 +155,9 @@ export class PixivApi {
     public getPopularPixivImage = async () => {
         const mode = "day_male"
         await pixiv.login()
-        // @ts-ignore
         const json = await pixiv.illustRanking({mode});
         [].sort.call(json.illusts, ((a: PixivIllust, b: PixivIllust) => (a.totalBookmarks - b.totalBookmarks)*-1))
-        const index = Math.floor(Math.random() * (10))
+        const index = Math.floor(Math.random() * (json.illusts.length - json.illusts.length/2) + json.illusts.length/2)
         const image = json.illusts[index]
 
         const pixivEmbed = await this.createPixivEmbed(image)
@@ -142,10 +169,9 @@ export class PixivApi {
     public getPopularPixivR18Image = async () => {
         const mode = "day_male_r18"
         await pixiv.login()
-        // @ts-ignore
         const json = await pixiv.illustRanking({mode});
         [].sort.call(json.illusts, ((a: PixivIllust, b: PixivIllust) => (a.totalBookmarks - b.totalBookmarks) * -1))
-        const index = Math.floor(Math.random() * (10))
+        const index = Math.floor(Math.random() * (json.illusts.length - json.illusts.length/2) + json.illusts.length/2)
         const image = json.illusts[index]
 
         const pixivEmbed = await this.createPixivEmbed(image)

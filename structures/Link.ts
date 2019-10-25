@@ -62,5 +62,10 @@ export class Link {
             await this.linkRun(this.message, ["nhentai", this.message.content])
             return
         }
+
+        if (this.message.content.includes("deviantart.com")) {
+            await this.linkRun(this.message, ["deviantart", this.message.content])
+            return
+        }
     }
 }

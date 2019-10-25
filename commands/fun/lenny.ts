@@ -8,12 +8,25 @@ export default class Lenny extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts a lenny emoji.",
+            help:
+            `
+            \`lenny\` - Posts a lenny emoji.
+            \`lenny face/shrug/tableflip/unflip\` - Posts one of these popular faces.
+            \`lenny query\` - Searches for a lenny emoji with the query.
+            `,
+            examples:
+            `
+            \`=>lenny\`
+            \`=>lenny face\`
+            \`=>lenny shrug\`
+            `,
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = (args: string[]) => {
+        const message = this.message
 
         if (args[1] === "face") {
             message.channel.send("( ͡° ͜ʖ ͡°)")

@@ -11,7 +11,7 @@
 		"esModuleInterop": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
-		"noUnusedLocals": true,
+		"noUnusedLocals": false,
 		"noImplicitAny": true,
 		"strict": true
 	},

@@ -27,34 +27,23 @@ export class Embeds {
         } else {
             embeds[page].setFooter(`Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
         }
-        embeds[page].setThumbnail(user.displayAvatarURL({format: "png", dynamic: true}))
+    }
+
+    // Add active embed to Redis
+    public redisAddEmbed = async (msg: Message) => {
+        await this.sql.redisSet(msg.id, "true", 600)
     }
 
     // Create Reaction Embed
-    public createReactionEmbed = (embeds: MessageEmbed[], collapseOn?: boolean, startPage?: number) => {
+    public createReactionEmbed = async (embeds: MessageEmbed[], collapseOn?: boolean, startPage?: number) => {
         let page = 0
         if (startPage) page = startPage
-        this.updateEmbed(embeds, page, this.message.author!)
-        const reactions: Emoji[] = [this.discord.getEmoji("right"), this.discord.getEmoji("left"), this.discord.getEmoji("tripleRight"), this.discord.getEmoji("tripleLeft"), this.discord.getEmoji("numberSelect")]
+        const insertEmbeds = embeds
+        await this.updateEmbed(embeds, page, this.message.author!)
+        const reactions: Emoji[] = [this.discord.getEmoji("right"), this.discord.getEmoji("left"), this.discord.getEmoji("tripleRight"), this.discord.getEmoji("tripleLeft")]
         const reactionsCollapse: Emoji[] = [this.discord.getEmoji("collapse"), this.discord.getEmoji("expand")]
         this.message.channel.send(embeds[page]).then(async (msg: Message) => {
             for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
-            await this.sql.insertInto("collectors", "message", msg.id)
-            await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
-            await this.sql.updateColumn("collectors", "collapse", collapseOn, "message", msg.id)
-            await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
-
-            const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
-            const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
-            const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
-            const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleLeft") && user.bot === false
-            const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
-
-            const forward = msg.createReactionCollector(forwardCheck)
-            const backward = msg.createReactionCollector(backwardCheck)
-            const tripleForward = msg.createReactionCollector(tripleForwardCheck)
-            const tripleBackward = msg.createReactionCollector(tripleBackwardCheck)
-            const numberSelect = msg.createReactionCollector(numberSelectCheck)
 
             if (collapseOn) {
                 const description: string[] = []
@@ -66,8 +55,8 @@ export class Embeds {
                 for (let i = 0; i < reactionsCollapse.length; i++) await msg.react(reactionsCollapse[i] as ReactionEmoji)
                 const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
                 const expandCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("expand") && user.bot === false
-                const collapse = msg.createReactionCollector(collapseCheck)
-                const expand = msg.createReactionCollector(expandCheck)
+                const collapse = msg.createReactionCollector(collapseCheck, {time: 600000})
+                const expand = msg.createReactionCollector(expandCheck, {time: 600000})
 
                 collapse.on("collect", async (reaction: MessageReaction, user: User) => {
                         for (let i = 0; i < embeds.length; i++) {
@@ -89,6 +78,24 @@ export class Embeds {
                     reaction.users.remove(user)
                 })
             }
+            await msg.react(this.discord.getEmoji("numberSelect"))
+            const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
+            const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
+            const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
+            const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleLeft") && user.bot === false
+            const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
+
+            const forward = msg.createReactionCollector(forwardCheck, {time: 600000})
+            const backward = msg.createReactionCollector(backwardCheck, {time: 600000})
+            const tripleForward = msg.createReactionCollector(tripleForwardCheck, {time: 600000})
+            const tripleBackward = msg.createReactionCollector(tripleBackwardCheck, {time: 600000})
+            const numberSelect = msg.createReactionCollector(numberSelectCheck, {time: 600000})
+
+            await this.sql.insertInto("collectors", "message", msg.id)
+            await this.sql.updateColumn("collectors", "embeds", insertEmbeds, "message", msg.id)
+            await this.sql.updateColumn("collectors", "collapse", collapseOn, "message", msg.id)
+            await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+            await this.redisAddEmbed(msg)
 
             backward.on("collect", async (reaction: MessageReaction, user: User) => {
                 if (page === 0) {
@@ -139,12 +146,12 @@ export class Embeds {
             numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
                 const self = this
                 async function getPageNumber(response: Message) {
-                    if (Number.isNaN(Number(response.content))) {
+                    if (Number.isNaN(Number(response.content)) || Number(response.content) > embeds.length) {
                         const rep = await response.reply("That page number is invalid.")
                         await rep.delete({timeout: 2000})
                     } else {
                         page = Number(response.content) - 1
-                        self.updateEmbed(embeds, page, user, msg)
+                        await self.updateEmbed(embeds, page, user, msg)
                         msg.edit(embeds[Number(response.content) - 1])
                     }
                     await response.delete()
@@ -158,10 +165,10 @@ export class Embeds {
     }
 
     // Re-trigger Existing Reaction Embed
-    public editReactionCollector = async (msg: Message, emoji: string, embeds: MessageEmbed[], collapseOn?: boolean, startPage?: number) => {
+    public editReactionCollector = async (msg: Message, emoji: string, user: User, embeds: MessageEmbed[], collapseOn?: boolean, startPage?: number) => {
         let page = 0
         if (startPage) page = startPage
-        await this.updateEmbed(embeds, page, this.message.author!)
+        await this.updateEmbed(embeds, page, this.message.author!, msg)
         const description: string[] = []
         const thumbnail: MessageEmbedThumbnail[] = []
         for (let i = 0; i < embeds.length; i++) {
@@ -215,12 +222,12 @@ export class Embeds {
                             await rep.delete({timeout: 2000})
                         } else {
                             page = Number(response.content) - 1
-                            await self.updateEmbed(embeds, page, self.message.author!, msg)
+                            await self.updateEmbed(embeds, page, response.author!, msg)
                             msg.edit(embeds[Number(response.content) - 1])
                         }
                         await response.delete()
                     }
-                    const numReply = await msg.channel.send(`Enter the page number to jump to.`)
+                    const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
                     await this.createPrompt(getPageNumber)
                     await numReply.delete()
                     break
@@ -286,7 +293,6 @@ export class Embeds {
                 page--
             }
             await this.updateEmbed(embeds, page, user, msg)
-            this.updateEmbed(embeds, page, user)
             msg.edit(embeds[page])
             reaction.users.remove(user)
         })
@@ -329,7 +335,7 @@ export class Embeds {
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
             const self = this
             async function getPageNumber(response: Message) {
-                if (Number.isNaN(Number(response.content))) {
+                if (Number.isNaN(Number(response.content)) || Number(response.content) > embeds.length) {
                     const rep = await response.reply("That page number is invalid.")
                     await rep.delete({timeout: 2000})
                 } else {
@@ -339,9 +345,9 @@ export class Embeds {
                 }
                 await response.delete()
             }
+            await this.createPrompt(getPageNumber)
             const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
             reaction.users.remove(user)
-            await this.createPrompt(getPageNumber)
             await numReply.delete()
         })
     }
@@ -461,7 +467,7 @@ export class Embeds {
             collector.on("end", async (collector, reason) => {
                 if (reason === "time") {
                     const time = await this.message.reply(`Ended the prompt because you took too long to answer.`)
-                    time.delete({timeout: 10000})
+                    time.delete({timeout: 600000})
                 }
                 resolve()
             })

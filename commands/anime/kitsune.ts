@@ -22,8 +22,7 @@ export default class Kitsune extends Command {
             \`=>kitsune lewd\`
             `,
             aliases: ["k", "foxgirl"],
-            cooldown: 10,
-            image: "../assets/help images/anime/kitsune.png"
+            cooldown: 10
         })
     }
 

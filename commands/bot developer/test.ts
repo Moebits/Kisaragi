@@ -8,7 +8,8 @@ export default class Test extends Command {
         super(discord, message, {
             description: "For general tests.",
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            unlist: true
         })
     }
 

@@ -2,8 +2,8 @@ import {ClientBase} from "pg"
 
 declare module "redis" {
     export interface RedisClient extends Commands<boolean>, NodeJS.EventEmitter {
-        setAsync(key: string, value: string): Promise<void>
-        getAsync(key: string): Promise<string>
+        setAsync(key: string, value: string, ex?: string, expiration?: number): Promise<void>
+        getAsync(key: string): Promise<string | null>
         flushdbAsync(): Promise<void>
     }
 }

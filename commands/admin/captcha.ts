@@ -28,7 +28,6 @@ export default class CaptchaCmd extends Command {
             \`=>captcha\` _then_ \`extreme\`
             \`=>captcha math easy\`
             `,
-            image: "../assets/help images/admin/captcha.png",
             guildOnly: true,
             aliases: ["verification"],
             cooldown: 30

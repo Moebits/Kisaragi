@@ -44,7 +44,7 @@ export default class MessageEvent {
 
       if (message.author!.bot) return
 
-      if (message.guild) {
+      /*if (message.guild) {
         const sql = new SQLQuery(message)
         const pointTimeout = await sql.fetchColumn("points", "point timeout")
         setTimeout(() => {
@@ -55,7 +55,7 @@ export default class MessageEvent {
         detect.swapRoles()
         haiku.haiku()
         cmdFunctions.autoCommand()
-    }
+    }*/
 
       const responseText: any = {
       kisaragi: "Kisaragi is the best girl!",

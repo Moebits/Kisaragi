@@ -5,7 +5,6 @@ interface CommandOptions {
   description: string
   help: string
   examples: string
-  image: string
   enabled: boolean
   guildOnly: boolean
   aliases: string[]
@@ -24,7 +23,6 @@ export class Command {
       description = "No description provided.",
       help = "This command is not documented.",
       examples = "There are no examples.",
-      image = "",
       enabled = true,
       guildOnly = false,
       aliases = [""],
@@ -33,7 +31,7 @@ export class Command {
       botPermission = "SEND_MESSAGES",
       unlist = false
     }) {
-      this.options = {params, description, help, examples, image, enabled, guildOnly, aliases, cooldown, permission, botPermission, unlist}
+      this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, unlist}
     }
 
   get help() {

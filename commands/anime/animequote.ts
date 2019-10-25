@@ -27,7 +27,6 @@ export default class AnimeQuote extends Command {
             \`=>animequote rem\`
             `,
             aliases: ["aq"],
-            image: "../assets/help images/anime/animequote.png",
             cooldown: 5
         })
     }

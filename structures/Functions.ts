@@ -66,6 +66,11 @@ export class Functions {
         return str.replace(/^\s+/gm, "").replace(/\s+$/gm, "")
     }
 
+    // Trim Punctuation
+    public static punctuationTrim = (str: string) => {
+        return str.replace(/[.,\[\]\|\/#!$%\^&\*;:{}=\-_`~()]/g, " ").replace(/ +/g, " ")
+    }
+
     // Proper Case
     public static toProperCase = (str: string) => {
         return str.replace(/\w\S*/g, (txt) => {
@@ -75,12 +80,12 @@ export class Functions {
     }
 
     // Check Message Characters
-    public static checkChar = (message: string, num: number, char: string) => {
+    public static checkChar = (message: string, num: number, char: string): string => {
         const splitText = Util.splitMessage(message, {maxLength: num, char})
         if (splitText[0]) {
             return splitText[0]
         } else {
-            return splitText
+            return String(splitText)
         }
     }
 

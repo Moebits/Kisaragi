@@ -1,4 +1,4 @@
-import {MessageEmbed, MessageReaction} from "discord.js"
+import {MessageEmbed, MessageReaction, User} from "discord.js"
 import {Embeds} from "./../structures/Embeds"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
@@ -7,8 +7,11 @@ const active = new Set()
 export default class MessageReactionAdd {
     constructor(private readonly discord: Kisaragi) {}
 
-    public run = async (reaction: MessageReaction) => {
+    public run = async (reaction: MessageReaction, user: User) => {
+        if (user.id === this.discord.user!.id) return
         const sql = new SQLQuery(reaction.message)
+        const check = await sql.redisGet(reaction.message.id)
+        if (check) return
         const embeds = new Embeds(this.discord, reaction.message)
         if (reaction.message.author!.id === this.discord.user!.id) {
             if (active.has(reaction.message.id)) return
@@ -26,11 +29,11 @@ export default class MessageReactionAdd {
                     const collapse = await sql.fetchColumn("collectors", "collapse", "message", reaction.message.id)
                     const page = await sql.fetchColumn("collectors", "page", "message", reaction.message.id)
                     const newEmbeds: MessageEmbed[] = []
-                    for (let i = 0; i < cachedEmbeds.length; i++) {
-                        newEmbeds.push(new MessageEmbed(JSON.parse(cachedEmbeds[i])))
+                    for (let i = 0; i < cachedEmbeds[0].length; i++) {
+                        newEmbeds.push(new MessageEmbed(JSON.parse(cachedEmbeds[0][i])))
                     }
                     active.add(reaction.message.id)
-                    embeds.editReactionCollector(reaction.message, reaction.emoji.name, newEmbeds, Boolean(collapse), Number(page))
+                    embeds.editReactionCollector(reaction.message, reaction.emoji.name, user, newEmbeds, Boolean(collapse), Number(page))
                 }
             } else {
                 return

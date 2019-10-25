@@ -1,57 +1,156 @@
+import DeviantArt, {DeviantArtSearchResults, DeviationRSSExtended} from "deviantart.ts"
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-
-const deviantArt = require("deviantnode")
+import {Permission} from "./../../structures/Permission"
 
 const deviantArray: MessageEmbed[] = []
 
-export default class DeviantArt extends Command {
+export default class Deviantart extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches deviantart.",
-            aliases: [],
-            cooldown: 3
+            description: "Searches for images or users on deviantart.",
+            help:
+            `
+            \`deviantart\` - Gets popular deviations by default.
+            \`deviantart link\` - Gets the deviation from the link.
+            \`deviantart query\` - Gets deviations from the query.
+            \`deviantart user\` - Gets the profile of a user.
+            \`deviantart gallery user\` - Gets the deviations from the user.
+            \`deviantart daily date?\` - Gets daily deviations, optional date in yyyy-mm-dd format.
+            \`deviantart hot category?\` - Gets hot deviations, optional category.
+            \`deviantart new query?\` - Gets new deviations, optional query.
+            \`deviantart popular query?\` - Gets popular deviations, optional query.
+            `,
+            examples:
+            `
+            \`=>deviantart anime\`
+            \`=>deviantart user tenpii\`
+            \`=>deviantart daily 2019-07-03\`
+            \`=>deviantart popular konosuba\`
+            \`=>deviantart hot manga\`
+            `,
+            aliases: ["da", "deviant"],
+            cooldown: 60
         })
     }
 
-    public createDeviantEmbed = (discord: Kisaragi, embeds: Embeds, result: any) => {
-        for (let i = 0; i < result.results.length; i++) {
-            const deviation = result.results[i]
-            if (!deviation.content) return
+    public createDeviantEmbed = async (deviantArt: DeviantArt, discord: Kisaragi, embeds: Embeds, result: DeviantArtSearchResults) => {
+        const star = discord.getEmoji("star")
+        const perms = new Permission(discord, this.message)
+        if (!result.results[0]) {
+            const badDeviantEmbed = embeds.createEmbed()
+            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png")
+            .setTitle(`**DeviantArt Search** ${discord.getEmoji("aquaUp")}`)
+            this.invalidQuery(badDeviantEmbed, "Try searching for another tag or looking at the [**DeviantArt Website**](https://www.deviantart.com/)")
+            return true
+        }
+        const extendedResults = await deviantArt.extendDeviations(result.results)
+        for (let i = 0; i < extendedResults.length; i++) {
+            const deviation = extendedResults[i]
+            if (deviation.is_mature) {
+                if (!perms.checkNSFW()) continue
+            }
+            if (!deviation.content) continue
             const deviantEmbed = embeds.createEmbed()
             deviantEmbed
             .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png")
             .setTitle(`**DeviantArt Search** ${discord.getEmoji("aquaUp")}`)
-            .setURL(deviation.url)
+            .setURL(deviation.url!)
             .setImage(deviation.content.src)
-            .setThumbnail(deviation.author.usericon)
+            .setThumbnail(deviation.author!.usericon)
             .setDescription(
-                `${discord.getEmoji("star")}_Title:_ **${deviation.title}**\n` +
-                `${discord.getEmoji("star")}_Author:_ **${deviation.author.username}**\n` +
-                `${discord.getEmoji("star")}_Category:_ **${deviation.category}**\n` +
-                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date((deviation.published_time) * 1000))}**\n` +
-                `${discord.getEmoji("star")}_Comments:_ **${deviation.stats.comments}**\n` +
-                `${discord.getEmoji("star")}_Favorites:_ **${deviation.stats.favorites ? deviation.stats.favorites : 0}**\n` +
-                `${discord.getEmoji("star")}_Description:_ ${deviation.excerpt ? Functions.checkChar(deviation.excerpt, 1900, ".") : "None"}\n`
+                `${star}_Title:_ **${deviation.title}**\n` +
+                `${star}_Author:_ **${deviation.author!.username}**\n` +
+                `${star}_Category:_ **${deviation.category}**\n` +
+                `${star}_Creation Date:_ **${Functions.formatDate(new Date((Number(deviation.published_time)) * 1000))}**\n` +
+                `${star}_Comments:_ **${deviation.stats!.comments}**\n` +
+                `${star}_Favorites:_ **${deviation.stats!.favourites ? deviation.stats!.favourites : 0}**\n` +
+                `${star}_Description:_ ${deviation.description ? Functions.checkChar(deviation.description, 1900, ".") : "None"}\n`
             )
             deviantArray.push(deviantEmbed)
         }
     }
 
+    public createRSSDeviantEmbed = (discord: Kisaragi, embeds: Embeds, result: DeviationRSSExtended[]) => {
+        const star = discord.getEmoji("star")
+        const perms = new Permission(discord, this.message)
+        if (!result[0]) {
+            const badDeviantEmbed = embeds.createEmbed()
+            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png")
+            .setTitle(`**DeviantArt Search** ${discord.getEmoji("aquaUp")}`)
+            this.invalidQuery(badDeviantEmbed, "Try searching for another tag or looking at the [**DeviantArt Website**](https://www.deviantart.com/)")
+            return true
+        }
+        for (let i = 0; i < result.length; i++) {
+            const deviation = result[i]
+            if (deviation.rating !== "nonadult") {
+                if (!perms.checkNSFW()) continue
+            }
+            if (!deviation.content) continue
+            const deviantEmbed = embeds.createEmbed()
+            deviantEmbed
+            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png")
+            .setTitle(`**DeviantArt Search** ${discord.getEmoji("aquaUp")}`)
+            .setURL(deviation.url!)
+            .setImage(deviation.content[0].url)
+            .setThumbnail(deviation.author.user.usericon)
+            .setDescription(
+                `${star}_Title:_ **${deviation.title}**\n` +
+                `${star}_Author:_ **${deviation.author!.user.username}**\n` +
+                `${star}_Category:_ **${deviation.category}**\n` +
+                `${star}_Creation Date:_ **${Functions.formatDate(new Date((Number(deviation.date)) * 1000))}**\n` +
+                `${star}_Description:_ ${deviation.description ? Functions.checkChar(deviation.description, 1900, ".") : "None"}\n`
+            )
+            deviantArray.push(deviantEmbed)
+        }
+
+    }
+
+    public deviantUrl = async (deviantArt: DeviantArt, embeds: Embeds, query: string) => {
+        const self = this
+        const star = this.discord.getEmoji("star")
+        const rssDeviation = await deviantArt.rss.get(query)
+        if (!rssDeviation) {
+            const deviantEmbed = embeds.createEmbed()
+            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png")
+            .setTitle(`**DeviantArt Search** ${self.discord.getEmoji("aquaUp")}`)
+            return self.invalidQuery(deviantEmbed, "The url is invalid.")
+        }
+        const perms = new Permission(self.discord, self.message)
+        const deviation = await deviantArt.extendRSSDeviations([rssDeviation]).then((r) => r[0])
+        if (deviation) {
+            if (!perms.checkNSFW()) return "nsfw"
+        }
+        const deviantEmbed = embeds.createEmbed()
+            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png")
+            .setTitle(`**DeviantArt Search** ${self.discord.getEmoji("aquaUp")}`)
+            .setURL(deviation.url)
+            .setImage(deviation.content[0].url)
+            .setDescription(
+                `${star}_Title:_ **${deviation.title}**\n` +
+                `${star}_Author:_ **${deviation.author}**\n` +
+                `${star}_Category:_ **${deviation.category}**\n` +
+                `${star}_Creation Date:_ **${Functions.formatDate(new Date((Number(deviation.date)) * 1000))}**\n` +
+                `${star}_Description:_ ${deviation.description ? Functions.checkChar(deviation.description, 1900, ".") : "None"}\n`
+            )
+        return deviantEmbed
+    }
+
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
+        const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
-        const id = process.env.DEVIANTART_discord_ID
-        const secret = process.env.DEVIANTART_discord_SECRET
-
+        const deviantArt = await DeviantArt.login(process.env.DEVIANTART_CLIENT_ID!, process.env.DEVIANTART_CLIENT_SECRET!)
+        if (!args[1]) args[1] = "popular"
         if (args[1] === "daily") {
-            const result = (args[2]) ? await deviantArt.getDailyDeviations(id, secret, {date: args[2]})
-            : await deviantArt.getDailyDeviations(id, secret)
-            this.createDeviantEmbed(discord, embeds, result)
+            const result = (args[2]) ? await deviantArt.browse.daily({date: args[2]}) as DeviantArtSearchResults
+            : await deviantArt.browse.daily() as DeviantArtSearchResults
+            const invalid = this.createDeviantEmbed(deviantArt, discord, embeds, result)
+            if (invalid) return
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
@@ -61,10 +160,11 @@ export default class DeviantArt extends Command {
         }
 
         if (args[1] === "hot") {
-            const result = (args[2]) ? await deviantArt.getHotDeviations(id, secret, {category: args[2]})
-            : await deviantArt.getHotDeviations(id, secret)
+            const result = (args[2]) ? await deviantArt.browse.hot({category_path: args[2], limit: 24})
+            : await deviantArt.browse.hot()
 
-            this.createDeviantEmbed(discord, embeds, result)
+            const invalid = this.createDeviantEmbed(deviantArt, discord, embeds, result)
+            if (invalid) return
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
@@ -75,10 +175,11 @@ export default class DeviantArt extends Command {
 
         if (args[1] === "new") {
             const query = Functions.combineArgs(args, 2)
-            const result = (query) ? await deviantArt.getNewestDeviations(id, secret, {q: query})
-            : await deviantArt.getNewestDeviations(id, secret)
+            const result = (query) ? await deviantArt.browse.newest({q: query, limit: 24})
+            : await deviantArt.browse.newest()
 
-            this.createDeviantEmbed(discord, embeds, result)
+            const invalid = this.createDeviantEmbed(deviantArt, discord, embeds, result)
+            if (invalid) return
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
@@ -89,10 +190,11 @@ export default class DeviantArt extends Command {
 
         if (args[1] === "popular") {
             const query = Functions.combineArgs(args, 2)
-            const result = (query) ? await deviantArt.getPopularDeviations(id, secret, {q: query})
-            : await deviantArt.getPopularDeviations(id, secret)
+            const result = (query) ? await deviantArt.browse.popular({q: query, limit: 24})
+            : await deviantArt.browse.popular()
 
-            this.createDeviantEmbed(discord, embeds, result)
+            const invalid = this.createDeviantEmbed(deviantArt, discord, embeds, result)
+            if (invalid) return
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
@@ -102,34 +204,36 @@ export default class DeviantArt extends Command {
         }
 
         if (args[1] === "user") {
-            const result = await deviantArt.getUserInfo(id, secret, {username: args[2]})
             const deviantEmbed = embeds.createEmbed()
             deviantEmbed
             .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png")
             .setTitle(`**DeviantArt User** ${discord.getEmoji("aquaUp")}`)
+            if (!args[2]) return this.noQuery(deviantEmbed, "You must provide a username.")
+            const result = await deviantArt.user.profile({username: args[2]})
+            deviantEmbed
             .setURL(result.profile_url)
             .setThumbnail(result.user.usericon)
             .setImage(result.cover_photo ? result.cover_photo : result.user.usericon)
             .setDescription(
-                `${discord.getEmoji("star")}_User:_ **${result.user.username}**\n` +
-                `${discord.getEmoji("star")}_Specialty:_ **${result.artist_specialty}**\n` +
-                `${discord.getEmoji("star")}_Country:_ **${result.country}**\n` +
-                `${discord.getEmoji("star")}_Website:_ **${result.website ? result.website : "None"}**\n` +
-                `${discord.getEmoji("star")}_Deviations:_ **${result.stats.user_deviations}**\n` +
-                `${discord.getEmoji("star")}_User Favorites:_ **${result.stats.user_favourites}**\n` +
-                `${discord.getEmoji("star")}_User Comments:_ **${result.stats.user_comments}**\n` +
-                `${discord.getEmoji("star")}_Page Views:_ **${result.stats.profile_pageviews}**\n` +
-                `${discord.getEmoji("star")}_Profile Comments:_ **${result.stats.profile_comments}**\n` +
-                `${discord.getEmoji("star")}_Tag Line:_ ${result.tagline ? result.tagline : "None"}\n` +
-                `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(result.bio, 1800, ".")}\n`
+                `${star}_User:_ **${result.user.username}**\n` +
+                `${star}_Specialty:_ **${result.artist_specialty}**\n` +
+                `${star}_Country:_ **${result.country}**\n` +
+                `${star}_Website:_ **${result.website ? result.website : "None"}**\n` +
+                `${star}_Deviations:_ **${result.stats.user_deviations}**\n` +
+                `${star}_User Favorites:_ **${result.stats.user_favourites}**\n` +
+                `${star}_User Comments:_ **${result.stats.user_comments}**\n` +
+                `${star}_Page Views:_ **${result.stats.profile_pageviews}**\n` +
+                `${star}_Profile Comments:_ **${result.stats.profile_comments}**\n` +
+                `${star}_Tag Line:_ ${result.tagline ? result.tagline : "None"}\n` +
+                `${star}_Description:_ ${Functions.checkChar(result.bio, 1800, ".")}\n`
             )
             message.channel.send(deviantEmbed)
             return
         }
 
         if (args[1] === "gallery") {
-            const result = await deviantArt.getGalleryAllDeviations(id, secret, {username: args[2]})
-            this.createDeviantEmbed(discord, embeds, result)
+            const result = await deviantArt.gallery.all({username: args[2], limit: 24})
+            this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
@@ -138,9 +242,17 @@ export default class DeviantArt extends Command {
             return
         }
 
-        const query = Functions.combineArgs(args, 1)
-        const result = await deviantArt.getTagDeviations(id, secret, {tag: query})
-        this.createDeviantEmbed(discord, embeds, result)
+        const query = Functions.combineArgs(args, 1).trim()
+        const urlEmbed = await this.deviantUrl(deviantArt, embeds, query)
+        if (urlEmbed === "nsfw") {
+            return
+        } else if (urlEmbed) {
+            return message.channel.send(urlEmbed)
+        }
+        const result = await deviantArt.rss.search(query, 50, "popular")
+        const extended = await deviantArt.extendRSSDeviations(result)
+        const invalid = this.createRSSDeviantEmbed(discord, embeds, extended)
+        if (invalid) return
         if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {

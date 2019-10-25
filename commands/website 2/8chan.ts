@@ -9,7 +9,8 @@ export default class $8chan extends Command {
         super(discord, message, {
             description: "Searches 8chan.",
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            unlist: true
         })
     }
 

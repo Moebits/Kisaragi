@@ -27,7 +27,6 @@ export default class Gelbooru extends Command {
             \`=>gelbooru r18 gabriel dropout\`
             `,
             aliases: ["g", "gel"],
-            image: "../assets/help images/anime/gelbooru.png",
             cooldown: 20
         })
     }

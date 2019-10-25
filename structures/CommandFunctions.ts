@@ -90,7 +90,8 @@ export class CommandFunctions {
                 const commands = fs.readdirSync(`../commands/${directories[i]}`)
                 for (let j = 0; j < commands.length; j++) {
                     commands[j] = commands[j].slice(0, -3)
-                    const cmdClass = new (require(`../commands/${directories[i]}/${commands[j]}.js`).default)(this.discord, this.message)
+                    if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
+                    const cmdClass = new (require(`${topDir}../commands/${directories[i]}/${commands[j]}.js`).default)(this.discord, this.message)
                     const aliases = cmdClass.options.aliases
                     for (let k = 0; k < aliases.length; k++) {
                         if (aliases[k] === cmd) {
@@ -160,7 +161,8 @@ export class CommandFunctions {
         if (!timeout) timeout = 20
         await this.runCommand(this.message, cmd)
         await Functions.timeout(timeout)
-        const reject = await this.assertLast("No results were found.")
+        let reject = await this.assertLast("No results were found.")
+        if (!reject) reject = await this.assertLast("You must provide a search query.")
         return reject
     }
 }
