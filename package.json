@@ -44,7 +44,7 @@
     "@vitalets/google-translate-api": "^2.8.0",
     "anifetch": "^3.0.0",
     "animequotes": "^1.0.0",
-    "ascii-art": "^1.5.1",
+    "ascii-art": "^2.0.2",
     "async-redis": "^1.1.7",
     "axios": "^0.19.0",
     "base-64": "^0.1.0",
