@@ -46,7 +46,6 @@
     "async-redis": "^1.1.7",
     "axios": "^0.19.0",
     "base-64": "^0.1.0",
-    "better-youtube-api": "^1.0.2",
     "bluebird": "^3.5.5",
     "booru": "^2.0.3",
     "bufferutil": "^4.0.1",

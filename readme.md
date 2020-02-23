@@ -8,3 +8,5 @@ This is my first programming project, a simple discord bot with chat moderation 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/tenpi/kisaragi)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/tenpi/kisaragi)
 ![GitHub last commit](https://img.shields.io/github/last-commit/tenpi/kisaragi)
+[![HitCount](http://hits.dwyl.io/tenpi/kisaragi.svg)](http://hits.dwyl.io/tenpi/kisaragi)
+
