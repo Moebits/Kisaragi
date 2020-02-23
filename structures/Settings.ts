@@ -112,10 +112,10 @@ export class Settings {
     }
 
     private readonly birthdaySettings: Init = {
-        "birthday user id": null,
-        "birthday date": null,
+        "birthday user list": null,
+        "birthday date list": null,
         "birthday channel": null,
-        "birthday message": "Happy birthday to {{user}}!",
+        "birthday message": "Happy birthday to user!",
         "birthday toggle": "off"
     }
 
@@ -184,7 +184,7 @@ export class Settings {
     }
 
     private readonly configSettings: Init = {
-        "embed color": "default",
+        "embed colors": "default",
         "permissions": "role"
     }
 

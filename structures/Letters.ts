@@ -5,6 +5,7 @@ import {Kisaragi} from "./Kisaragi"
 
 export class Letters {
     constructor(private readonly discord: Kisaragi) {}
+
     // Parse Letters
     public letters = (text: string) => {
     const fullText: string[] = []

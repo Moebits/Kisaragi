@@ -31,5 +31,5 @@ export class Cooldown {
     timestamps.set(this.message.guild!.id, now)
     setTimeout(() => {timestamps.delete(this.message.guild!.id)}, cooldownAmount)
     return null
-}
+    }
 }

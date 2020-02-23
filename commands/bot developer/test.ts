@@ -13,17 +13,7 @@ export default class Test extends Command {
         })
     }
 
-    public run = async (args: string[]) => {
+    public run = (args: string[]) => {
         const message = this.message
-
-        console.log("here")
-        const prefix = await SQLQuery.fetchPrefix(message)
-        console.log(prefix)
-        await SQLQuery.updatePrefix(message, "g!")
-        const prefix2 = await SQLQuery.fetchPrefix(message)
-        console.log(prefix2)
-        await SQLQuery.updatePrefix(message, "=>")
-        const prefix4 = await SQLQuery.fetchPrefix(message)
-        console.log(prefix4)
     }
 }

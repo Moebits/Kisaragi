@@ -70,7 +70,7 @@ export default class CaptchaCmd extends Command {
             "**Captcha Difficulty** = Either easy, medium, hard, or extreme.\n" +
             "\n" +
             "__Current Settings:__\n" +
-            `${star}_Verify Role:_ **${vRole ? "<@&" + String(vRole) + ">" : "None"}**\n` +
+            `${star}_Verify Role:_ **${String(vRole) ? "<@&" + String(vRole) + ">" : "None"}**\n` +
             `${star}_Verify Toggle:_ **${String(vToggle)}**\n` +
             `${star}_Captcha Type:_ **${String(cType)}**\n` +
             `${star}_Captcha Difficulty:_ **${String(difficulty)}**\n` +

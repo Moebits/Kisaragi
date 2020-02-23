@@ -1,7 +1,7 @@
 import {Message, MessageAttachment} from "discord.js"
 import fs from "fs"
 import path from "path"
-import PixivApiClient, {PixivIllust, UgoiraMetaData} from "pixiv-app-api"
+import Pixiv, {PixivIllust, UgoiraMetaData} from "pixiv.ts"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -11,7 +11,7 @@ import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 const download = require("image-downloader")
 
-export default class UgoiraCommand extends Command {
+export default class Ugoira extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Search for animated pixiv images (pixiv ugoira).",
@@ -47,7 +47,7 @@ export default class UgoiraCommand extends Command {
         const pixivApi = new PixivApi(discord, message)
         const perms = new Permission(discord, message)
         const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
-        const pixiv = new PixivApiClient(process.env.PIXIV_NAME, process.env.PIXIV_PASSWORD)
+        const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         let input
         if (args[1] && (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en" || args[1].toLowerCase() === "popular")) {
             if (args[2] === "en" || args[2] === "popular") {
@@ -81,28 +81,31 @@ export default class UgoiraCommand extends Command {
             }
         }
 
-        await pixiv.login()
+        await pixiv.util.downloadUgoira(String(pixivID), `assets/gifs/`, 50)
+
         let details: PixivIllust
         let ugoiraInfo: UgoiraMetaData
         try {
-            details = await pixiv.illustDetail(pixivID as number).then((i) => i.illust)
-            ugoiraInfo = await pixiv.ugoiraMetaData(pixivID as number)
+            details = await pixiv.illust.detail({illust_id: pixivID as number}).then((i) => i.illust)
+            ugoiraInfo = await pixiv.ugoira.metadata({illust_id: pixivID as number})
         } catch {
             msg1.delete({timeout: 1000})
             return
         }
+
+        /*
         const fileNames: string[] = []
         const frameDelays: number[] = []
         const frameNames: string[] = []
-        for (let i = 0; i < ugoiraInfo.ugoiraMetadata.frames.length; i++) {
-            frameDelays.push(ugoiraInfo.ugoiraMetadata.frames[i].delay)
-            fileNames.push(ugoiraInfo.ugoiraMetadata.frames[i].file)
+        for (let i = 0; i < ugoiraInfo.ugoira_metadata.frames.length; i++) {
+            frameDelays.push(ugoiraInfo.ugoira_metadata.frames[i].delay)
+            fileNames.push(ugoiraInfo.ugoira_metadata.frames[i].file)
         }
         for (let i = 0; i < fileNames.length; i++) {
             frameNames.push(fileNames[i].slice(0, -4))
         }
 
-        await images.downloadZip(ugoiraInfo.ugoiraMetadata.zipUrls.medium, `${topDir}assets/ugoira/${pixivID}`)
+        await images.downloadZip(ugoiraInfo.ugoira_metadata.zip_urls.medium, `${topDir}assets/ugoira/${pixivID}`)
 
         const file = fs.createWriteStream(`${topDir}assets/ugoira/${pixivID}/${pixivID}.gif`)
 
@@ -114,14 +117,15 @@ export default class UgoiraCommand extends Command {
         const msg3 = await message.channel.send(`**Compressing Gif** ${discord.getEmoji("gabCircle")}`) as Message
         await images.compressGif([`${topDir}assets/ugoira/${pixivID}/${pixivID}.gif`])
         msg3.delete({timeout: 1000})
+        */
 
+        msg1.delete({timeout: 1000})
         const ugoiraEmbed = embeds.createEmbed()
         const outGif = new MessageAttachment(`../assets/gifs/${pixivID}.gif`)
-        const comments = await pixiv.illustComments(pixivID as number)
+        const comments = await pixiv.illust.comments({illust_id: pixivID as number})
         const cleanText = details.caption.replace(/<\/?[^>]+(>|$)/g, "")
-        const authorUrl = await download.image({url: details.user.profileImageUrls.medium, dest: `${topDir}assets/pixiv/illusts`, headers: {Referer: "http://www.pixiv.net/"}})
-        const authorAttachment = new MessageAttachment(authorUrl.filename)
-        const authorName = path.basename(authorAttachment.attachment as string)
+        const authorUrl = await pixiv.util.downloadProfilePicture(details, `assets/pixiv/profiles`)
+        const authorAttachment = new MessageAttachment(authorUrl, "author.png")
         const commentArray: string[] = []
         for (let i = 0; i <= 5; i++) {
                     if (!comments.comments[i]) break
@@ -134,14 +138,14 @@ export default class UgoiraCommand extends Command {
         .setDescription(
             `${star}_Title:_ **${details.title}**\n` +
             `${star}_Artist:_ **${details.user.name}**\n` +
-            `${star}_Creation Date:_ **${Functions.formatDate(new Date(details.createDate))}**\n` +
-            `${star}_Views:_ **${details.totalView}**\n` +
-            `${star}_Bookmarks:_ **${details.totalBookmarks}**\n` +
+            `${star}_Creation Date:_ **${Functions.formatDate(new Date(details.create_date))}**\n` +
+            `${star}_Views:_ **${details.total_view}**\n` +
+            `${star}_Bookmarks:_ **${details.total_bookmarks}**\n` +
             `${star}_Description:_ ${cleanText ? cleanText : "None"}\n` +
             `${star}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
             )
         .attachFiles([outGif.attachment as string, authorAttachment])
-        .setThumbnail(`attachment://${authorName}`)
+        .setThumbnail(`attachment://author.png`)
         .setImage(`attachment://${pixivID}.gif`)
         message.channel.send(ugoiraEmbed)
     }

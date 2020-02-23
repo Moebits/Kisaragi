@@ -90,7 +90,7 @@ export default class Block extends Command {
         ${star}_Type **delete (word number)** to delete a word._
         ${star}_**You can type multiple options** to enable all at once._
         ${star}_Type **reset** to delete all words._
-        ${star}_Type **cancel** to exit.
+        ${star}_Type **cancel** to exit_.
         `))
         message.channel.send(blockEmbed)
 
