@@ -9,7 +9,20 @@ let ytEmbeds: MessageEmbed[] = []
 export default class Youtube extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches youtube.",
+            description: "Searches for youtube videos, channels, and playlists.",
+            help:
+            `
+            \`youtube query\` - Searches for youtube videos
+            \`youtube channel query\` - Searches for youtube channels
+            \`youtube playlist query\` - Searches for youtube playlists
+            \`youtube video query\` - Searches for videos (long form)
+            `,
+            examples:
+            `
+            \`=>youtube anime\`
+            \`=>youtube channel tenpi\`
+            \`=>youtube playlist kawaii music\`
+            `,
             aliases: ["yt"],
             cooldown: 10
         })

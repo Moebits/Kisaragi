@@ -15,11 +15,11 @@ export default class Guilds extends Command {
     public run = (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
         const guilds = discord.guilds
-        const guildArray = guilds.map((g: Guild) => g.name)
-        const idArray = guilds.map((g: Guild) => g.id)
-        const createdArray = guilds.map((g: Guild) => g.createdAt)
+        const guildArray = guilds.cache.map((g: Guild) => g.name)
+        const idArray = guilds.cache.map((g: Guild) => g.id)
+        const createdArray = guilds.cache.map((g: Guild) => g.createdAt)
         const step = 7.0
-        const increment = Math.ceil(guilds.size / step)
+        const increment = Math.ceil(guilds.cache.size / step)
         const userEmbedArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             const userEmbed = embeds.createEmbed()

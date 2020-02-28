@@ -8,18 +8,18 @@ export class Kisaragi extends Client {
 
     // Get Emoji
     public getEmoji = (name: string): GuildEmoji => {
-        const emoji = this.emojis.find((e) => (e.name === name) && (e.guild.ownerID === process.env.OWNER_ID))
+        const emoji = this.emojis.cache.find((e) => (e.name === name) && (e.guild.ownerID === process.env.OWNER_ID))
         if (emoji) {
             return emoji as unknown as GuildEmoji
         } else {
             // Confused Anime
-            return this.emojis.get("579870079311937557") as unknown as GuildEmoji
+            return this.emojis.cache.get("579870079311937557") as unknown as GuildEmoji
         }
     }
 
     // Fetch Message
     public fetchMessage = async (msg: Message, messageID: string) => {
-        const channels = msg.guild!.channels.map((c: GuildChannel) => {if (c.type === "text") return c as TextChannel})
+        const channels = msg.guild!.channels.cache.map((c: GuildChannel) => {if (c.type === "text") return c as TextChannel})
         const msgArray: Message[] = []
         for (let i = 0; i < channels.length; i++) {
             const found = await channels[i]!.messages.fetch({limit: 1, around: messageID})
@@ -31,7 +31,7 @@ export class Kisaragi extends Client {
 
     // Fetch First Message in a Guild
     public fetchFirstMessage = async (guild: Guild) => {
-        const channels = guild.channels.filter((c: GuildChannel) => c.type === "text")
+        const channels = guild.channels.cache.filter((c: GuildChannel) => c.type === "text")
         const channel = channels.first() as TextChannel
         const lastMsg = await channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
         return lastMsg

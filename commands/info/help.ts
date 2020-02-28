@@ -8,9 +8,20 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Help extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Lists all bot commands.",
-            aliases: [],
-            cooldown: 3
+            description: "Lists all bot commands and describes how to use them.",
+            help:
+            `
+            Looking for help on the help command, how ironic!
+            \`help\` - Lists all commands
+            \`help cmd\` - Gets detailed help on a command
+            `,
+            examples:
+            `
+            \`=>help\`
+            \`=>help help\`
+            `,
+            aliases: ["h"],
+            cooldown: 5
         })
     }
 
@@ -25,8 +36,10 @@ export default class Help extends Command {
             await helpDir.run(args)
             return
         }
+        const unlistedDirs = ["bot developer", "heart", "logging", "music"]
         const subDir = fs.readdirSync("./commands")
         for (let i = 0; i < subDir.length; i++) {
+            if (unlistedDirs.includes(subDir[i])) continue
             let help = ""
             const commands = fs.readdirSync(`./commands/${subDir[i]}`)
             for (let j = 0; j < commands.length; j++) {

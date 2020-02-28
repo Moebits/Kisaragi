@@ -9,8 +9,16 @@ export default class MDN extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches the mdn docs.",
+            help:
+            `
+            \`mdn query\` - Searches mdn for the query
+            `,
+            examples:
+            `
+            \`=>mdn array\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -35,6 +43,11 @@ export default class MDN extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const query = Functions.combineArgs(args, 1)
+        if (!query) {
+            return this.noQuery(embeds.createEmbed()
+            .setTitle(`**MDN Search** ${discord.getEmoji("gabStare")}`)
+            .setAuthor(`mdn`, "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png"))
+        }
         const star = discord.getEmoji("star")
         const url = `https://mdn.pleb.xyz/search?local=en-US&q=${query}`
         const result = await axios.get(url).then((r) => r.data)

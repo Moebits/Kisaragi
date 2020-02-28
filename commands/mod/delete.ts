@@ -28,7 +28,7 @@ export default class Delete extends Command {
             const messages = await message.channel.messages.fetch({limit: num}).then((c) => c.map((m: Message) => m))
             for (let i = 0; i < messages.length; i++) {
                 if (messages[i].embeds[0] ?
-                (messages[i].embeds[0].description ? messages[i].embeds[0].description.toLowerCase().includes(query.trim().toLowerCase()) : false)
+                (messages[i].embeds[0].description ? messages[i].embeds[0].description!.toLowerCase().includes(query.trim().toLowerCase()) : false)
                 : messages[i].content.toLowerCase().includes(query.trim().toLowerCase())) {
                     msgArray.push(messages[i].id)
                 }

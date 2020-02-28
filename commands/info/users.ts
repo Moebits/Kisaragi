@@ -15,11 +15,11 @@ export default class Users extends Command {
     public run = (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
         const members = message.guild!.members
-        const userArray = members.map((m: GuildMember) => `${m.user.username}#${m.user.discriminator}`)
-        const idArray = members.map((m: GuildMember) => m.user.id)
-        const joinArray = members.map((m: GuildMember) => m.joinedAt)
+        const userArray = members.cache.map((m: GuildMember) => `${m.user.username}#${m.user.discriminator}`)
+        const idArray = members.cache.map((m: GuildMember) => m.user.id)
+        const joinArray = members.cache.map((m: GuildMember) => m.joinedAt)
         const step = 7.0
-        const increment = Math.ceil(members.size / step)
+        const increment = Math.ceil(members.cache.size / step)
         const userEmbedArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             const userEmbed = embeds.createEmbed()

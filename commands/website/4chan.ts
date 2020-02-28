@@ -14,7 +14,7 @@ const nsfwBoards = ["b", "r9k", "pol", "bant", "soc", "s4s", "s", "hc", "hm", "h
 export default class $4chan extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Search 4chan boards.",
+            description: "Searches for posts and images on 4chan boards.",
             help:
             `
             \`4chan board query\` - Searches the specified board with the query.
@@ -25,7 +25,7 @@ export default class $4chan extends Command {
             \`=>4chan a kawaii\`
             \`=>4chan images c cute\`
             `,
-            aliases: ["4ch"],
+            aliases: ["4", "4ch"],
             cooldown: 15
         })
     }

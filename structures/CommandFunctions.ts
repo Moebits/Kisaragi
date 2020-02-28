@@ -36,7 +36,7 @@ export class CommandFunctions {
         if (!command[0]) return
         for (let i = 0; i < command.length; i++) {
             if (toggle[i] === "inactive") continue
-            const guildChannel = (this.message.guild!.channels.find((c) => c.id === channel[i])) as TextChannel
+            const guildChannel = (this.message.guild!.channels.cache.find((c) => c.id === channel[i])) as TextChannel
             const cmd = command[i].split(" ")
             const timeout = Number(frequency[i]) * 3600000
             const rawTimeLeft = await sql.fetchColumn("auto", "timeout")
@@ -118,8 +118,8 @@ export class CommandFunctions {
         if (channel.nsfw === false) await channel.setNSFW(true)
         const lastMsg = await this.message.channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
         if (lastMsg!.embeds[0]) {
-            if (test === true) return lastMsg!.embeds[0].description.length as unknown as assertLast
-            return lastMsg!.embeds[0].description.includes(String(test)) as unknown as assertLast
+            if (test === true) return lastMsg!.embeds[0].description!.length as unknown as assertLast
+            return lastMsg!.embeds[0].description!.includes(String(test)) as unknown as assertLast
         } else {
             if (test === true) return lastMsg!.content.length as unknown as assertLast
             return lastMsg!.content.includes(String(test)) as unknown as assertLast

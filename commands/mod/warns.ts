@@ -43,7 +43,7 @@ export default class Warns extends Command {
                 }
             }
             const warnEmbed = embeds.createEmbed()
-            const member = message.guild!.members.find((m: GuildMember) => m.id === warnLog[i].user)
+            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === warnLog[i].user)
             warnEmbed
             .setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
             .setThumbnail(message.guild!.iconURL() as string)
@@ -82,10 +82,10 @@ export default class Warns extends Command {
             }
 
             const userID = msg.content.match(/(?<=<@)(.*?)(?=>)/g)
-            const member = message.guild!.members.find((m: GuildMember) => m.id === userID!.join("")) as GuildMember
+            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userID!.join("")) as GuildMember
             let warnOneRole, warnTwoRole
-            if (warnOne[0]) warnOneRole = message.guild!.roles.find((r: Role) => r.id === warnOne[0])
-            if (warnTwo[0]) warnTwoRole = message.guild!.roles.find((r: Role) => r.id === warnTwo[0])
+            if (warnOne[0]) warnOneRole = message.guild!.roles.cache.find((r: Role) => r.id === warnOne[0])
+            if (warnTwo[0]) warnTwoRole = message.guild!.roles.cache.find((r: Role) => r.id === warnTwo[0])
 
             if (member && !msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)) setUser = true
             if (member && msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)) setDelete = true
@@ -101,7 +101,7 @@ export default class Warns extends Command {
                         found = true
                         if (warnLog[0][i].warns.length < 1) {
                             if (warnOneRole) {
-                                if (member.roles.has(warnOneRole.id)) {
+                                if (member.roles.cache.has(warnOneRole.id)) {
                                     await member.roles.remove(warnOneRole)
                                     message.channel.send(
                                         `<@${userID}>, you were removed from the ${warnOneRole} role because you do not have any warns.`
@@ -111,7 +111,7 @@ export default class Warns extends Command {
                         }
                         if (warnLog[0][i].warns.length < 2) {
                             if (warnTwoRole) {
-                                if (member.roles.has(warnTwoRole.id)) {
+                                if (member.roles.cache.has(warnTwoRole.id)) {
                                     await member.roles.remove(warnTwoRole)
                                     message.channel.send(
                                         `<@${userID}>, you were removed from the ${warnTwoRole} role because you do not have two warns.`
@@ -161,7 +161,7 @@ export default class Warns extends Command {
                         found = true
                         if (warnLog[0][i].warns.length < 1) {
                             if (warnOneRole) {
-                                if (member.roles.has(warnOneRole.id)) {
+                                if (member.roles.cache.has(warnOneRole.id)) {
                                     await member.roles.remove(warnOneRole)
                                     message.channel.send(
                                         `<@${userID}>, you were removed from the ${warnOneRole} role because you do not have any warns.`
@@ -171,7 +171,7 @@ export default class Warns extends Command {
                         }
                         if (warnLog[0][i].warns.length < 2) {
                             if (warnTwoRole) {
-                                if (member.roles.has(warnTwoRole.id)) {
+                                if (member.roles.cache.has(warnTwoRole.id)) {
                                     await member.roles.remove(warnTwoRole)
                                     message.channel.send(
                                         `<@${userID}>, you were removed from the ${warnTwoRole} role because you do not have two warns.`

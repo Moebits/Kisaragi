@@ -22,7 +22,7 @@ export class Embeds {
     public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean) => {
         if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         if (help) {
-            const name = embeds[page].title.replace(/(?<=<)(.*?)(?=>)/g, "").replace(/commands/i, "help")
+            const name = embeds[page].title!.replace(/(?<=<)(.*?)(?=>)/g, "").replace(/commands/i, "help")
             embeds[page].setFooter(`${name} ・ Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
         } else {
             embeds[page].setFooter(`Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
@@ -49,7 +49,7 @@ export class Embeds {
                 const description: string[] = []
                 const thumbnail: MessageEmbedThumbnail[] = []
                 for (let i = 0; i < embeds.length; i++) {
-                    description.push(embeds[i].description)
+                    description.push(embeds[i].description!)
                     thumbnail.push((embeds[i].thumbnail!))
                 }
                 for (let i = 0; i < reactionsCollapse.length; i++) await msg.react(reactionsCollapse[i] as ReactionEmoji)
@@ -172,7 +172,7 @@ export class Embeds {
         const description: string[] = []
         const thumbnail: MessageEmbedThumbnail[] = []
         for (let i = 0; i < embeds.length; i++) {
-                description.push(embeds[i].description)
+                description.push(embeds[i].description!)
                 thumbnail.push(embeds[i].thumbnail!)
             }
         switch (emoji) {

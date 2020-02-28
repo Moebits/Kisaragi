@@ -15,11 +15,11 @@ export default class Channels extends Command {
     public run = (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
         const channels = message.guild!.channels
-        const channelArray = channels.map((t: GuildChannel) => t.name)
-        const idArray = channels.map((t: GuildChannel) => t.id)
-        const createdArray = channels.map((t: GuildChannel) => t.createdAt)
+        const channelArray = channels.cache.map((t: GuildChannel) => t.name)
+        const idArray = channels.cache.map((t: GuildChannel) => t.id)
+        const createdArray = channels.cache.map((t: GuildChannel) => t.createdAt)
         const step = 7.0
-        const increment = Math.ceil(channels.size / step)
+        const increment = Math.ceil(channels.cache.size / step)
         const userEmbedArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             const userEmbed = embeds.createEmbed()

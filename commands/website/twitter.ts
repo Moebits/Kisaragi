@@ -8,9 +8,19 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class TwitterCommand extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches twitter.",
-            aliases: [],
-            cooldown: 3
+            description: "Searches for twitter tweets and users.",
+            help:
+            `
+            \`twitter query\` - Searches for tweets with the query
+            \`twitter user query\` - Searches for a user
+            `,
+            examples:
+            `
+            \`=>twitter anime\`
+            \`=>twitter user imtenpi\`
+            `,
+            aliases: ["t"],
+            cooldown: 10
         })
     }
 
@@ -28,6 +38,11 @@ export default class TwitterCommand extends Command {
 
         if (args[1] === "user") {
             const name = Functions.combineArgs(args, 2)
+            if (!name) {
+                return this.noQuery(embeds.createEmbed()
+                .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png")
+                .setTitle(`**Twitter User** ${discord.getEmoji("aquaUp")}`))
+            }
             const users = await twitter.get("users/lookup", {screen_name: name})
             const user = users[0]
             const twitterEmbed = embeds.createEmbed()
@@ -53,6 +68,11 @@ export default class TwitterCommand extends Command {
         }
 
         const query = Functions.combineArgs(args, 1)
+        if (!query) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png")
+            .setTitle(`**Twitter Search** ${discord.getEmoji("aquaUp")}`))
+        }
         const tweets = await twitter.get("search/tweets", {q: query})
         const twitterArray: MessageEmbed[] = []
         for (const i in tweets.statuses) {
@@ -63,12 +83,10 @@ export default class TwitterCommand extends Command {
             .setURL(`https://twitter.com/${tweets.statuses[i].user.screen_name}/status/${tweets.statuses[i].id_str}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Author:_ **${tweets.statuses[i].user.screen_name}**\n` +
-                `${discord.getEmoji("star")}_Location:_ ${tweets.statuses[i].user.location ? tweets.statuses[i].user.location : "None"}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${tweets.statuses[i].user.description ? tweets.statuses[i].user.description : "None"}\n` +
                 `${discord.getEmoji("star")}_Favorites:_ **${tweets.statuses[i].favorite_count}**\n` +
                 `${discord.getEmoji("star")}_Retweets:_ **${tweets.statuses[i].retweet_count}**\n` +
                 `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(tweets.statuses[i].created_at)}**\n` +
-                `${discord.getEmoji("star")}_Language:_ **${tweets.statuses[i].lang}**\n` +
                 `${discord.getEmoji("star")}_Tweet:_ ${tweets.statuses[i].text}\n`
                 )
             .setThumbnail(tweets.statuses[i].user.profile_image_url_https)

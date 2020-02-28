@@ -9,8 +9,17 @@ export default class Screenshot extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Posts a website screenshot.",
+          help:
+            `
+            Note: If the bot doesn't have a chrome installation this command won't work.
+            \`screenshot url\` - Posts the screenshot of the webpage
+            `,
+          examples:
+            `
+            \`=>screenshot https://www.youtube.com/\`
+            `,
           aliases: [],
-          cooldown: 3
+          cooldown: 15
         })
     }
 
@@ -21,7 +30,7 @@ export default class Screenshot extends Command {
 
         const input = (args[1] === "return") ? Functions.combineArgs(args, 2) : Functions.combineArgs(args, 1)
 
-        const website = (input.startsWith("http")) ? input.trim() : `http://${input.trim}`
+        const website = (input.startsWith("http")) ? input.trim() : `https://${input.trim}`
 
         const browser = await puppeteer.launch({
           headless: true,

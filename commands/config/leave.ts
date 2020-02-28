@@ -134,7 +134,7 @@ export default class Leave extends Command {
                 description += `${star}Leave Message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
-                const channel = msg.guild!.channels.find((c: GuildChannel) => c === msg.mentions.channels.first())
+                const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
                 await sql.updateColumn("welcome leaves", "leave channel", channel!.id)
                 setOn = true
                 description += `${star}Leave channel set to <#${channel!.id}>!\n`

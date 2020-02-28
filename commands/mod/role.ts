@@ -8,8 +8,8 @@ export default class Role extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Adds or removes a role from a user.",
-            aliases: [],
-            cooldown: 3
+          aliases: [],
+          cooldown: 3
         })
     }
 
@@ -33,7 +33,7 @@ export default class Role extends Command {
           const snowflake: RegExp = /\d+/
           let roleID: string = roleName.substring(roleName.search(snowflake))
           if (roleID.includes(">")) roleID = roleID.slice(0, -1)
-          const role = message.guild!.roles.get(roleID)
+          const role = message.guild!.roles.cache.get(roleID)
 
           switch (args[1]) {
 

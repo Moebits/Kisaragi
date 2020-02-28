@@ -35,7 +35,7 @@ export default class Kick extends Command {
 
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = message.guild!.members.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
+            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
             members.push(`<@${member.id}>`)
             kickEmbed
             .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")

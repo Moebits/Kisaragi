@@ -8,9 +8,19 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Pwned extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts pwned websites.",
+            description: "Searches for data breaches/pwned websites.",
+            help:
+            `
+            \`pwned\` - Posts pwned websites
+            \`pwned query\` - Searches for a data breach
+            `,
+            examples:
+            `
+            \`=>pwned\`
+            \`=>pwned myspace\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -43,6 +53,11 @@ export default class Pwned extends Command {
         }
         const query = Functions.combineArgs(args, 1)
         const result = await breach(query)
+        if (!result?.LogoPath) {
+            return this.invalidQuery(embeds.createEmbed()
+            .setAuthor("have i been pwned", "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png")
+            .setTitle(`**Pwned Databases** ${discord.getEmoji("sagiriBleh")}`))
+        }
         const pwnedEmbed = embeds.createEmbed()
         pwnedEmbed
                 .setAuthor("have i been pwned", "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png")

@@ -9,9 +9,19 @@ const Tenor = require("tenorjs")
 export default class TenorCommand extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches tenor.",
-            aliases: [],
-            cooldown: 3
+            description: "Searches for gifs on tenor.",
+            help:
+            `
+            \`tenor\` - Posts a random gif
+            \`tenor query\` - Searches for a gif with the query
+            `,
+            examples:
+            `
+            \`=>tenor\`
+            \`=>tenor anime\`
+            `,
+            aliases: ["ten"],
+            cooldown: 5
         })
     }
 

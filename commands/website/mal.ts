@@ -9,9 +9,22 @@ const Jikan = require("jikan-node")
 export default class Mal extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches my anime list.",
-            aliases: [],
-            cooldown: 3
+            description: "Searches for listings on my anime list.",
+            help:
+            `
+            \`mal\` - Gets the top anime
+            \`mal query\` - Searches for anime matching the query
+            \`mal character query\` - Searches for characters with the query
+            \`mal user query\` - Searches for users matching the query
+            `,
+            examples:
+            `
+            \`=>mal gabriel dropout\`
+            \`=>mal satania\`
+            \`=>mal tenpi\`
+            `,
+            aliases: ["animelist", "anilist"],
+            cooldown: 10
         })
     }
 
@@ -23,6 +36,12 @@ export default class Mal extends Command {
 
         if (args[1] === "character") {
             const query = Functions.combineArgs(args, 2)
+            if (!query) {
+                return this.noQuery(embeds.createEmbed()
+                .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")
+                .setTitle(`**My Anime List Character** ${discord.getEmoji("raphi")}`)
+                )
+            }
             const result = await mal.search("character", query.trim())
             const malArray: MessageEmbed[] = []
             for (let i = 0; i < result.results.length; i++) {
@@ -32,7 +51,7 @@ export default class Mal extends Command {
                 const malEmbed = embeds.createEmbed()
                 malEmbed
                 .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")
-                .setTitle(`**My Anime List Search** ${discord.getEmoji("raphi")}`)
+                .setTitle(`**My Anime List Character** ${discord.getEmoji("raphi")}`)
                 .setURL(char.url)
                 .setImage(char.image_url)
                 .setThumbnail("https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")
@@ -51,14 +70,15 @@ export default class Mal extends Command {
         }
 
         if (args[1] === "user") {
-            const result = await mal.findUser(args[2])
             const malEmbed = embeds.createEmbed()
+            .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")
+            .setTitle(`**My Anime List User** ${discord.getEmoji("raphi")}`)
+            if (!args[2]) return this.noQuery(malEmbed)
+            const result = await mal.findUser(args[2])
             const anime = result.favorites.anime.map((a: any) => a.name)
             const characters = result.favorites.characters.map((c: any) => c.name)
             const cleanText = result.about.replace(/<\/?[^>]+(>|$)/g, "")
             malEmbed
-            .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")
-            .setTitle(`**My Anime List Search** ${discord.getEmoji("raphi")}`)
             .setURL(result.url)
             .setImage(result.image_url)
             .setThumbnail("https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")
@@ -91,7 +111,9 @@ export default class Mal extends Command {
         }
 
         const malArray: any = []
-        for (let i = 0; i < result.length; i++) {
+        let max = result.length
+        if (max > 20) max = 20
+        for (let i = 0; i < max; i++) {
             const malEmbed = embeds.createEmbed()
             const anime = result[i]
             const detailed = await mal.findAnime(anime.mal_id)

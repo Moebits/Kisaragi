@@ -15,11 +15,11 @@ export default class Roles extends Command {
     public run = (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
         const roles = message.guild!.roles
-        const roleArray = roles.map((r: Role) => r.name)
-        const idArray = roles.map((r: Role) => r.id)
-        const createdArray = roles.map((r: Role) => r.createdAt)
+        const roleArray = roles.cache.map((r: Role) => r.name)
+        const idArray = roles.cache.map((r: Role) => r.id)
+        const createdArray = roles.cache.map((r: Role) => r.createdAt)
         const step = 7.0
-        const increment = Math.ceil(roles.size / step)
+        const increment = Math.ceil(roles.cache.size / step)
         const userEmbedArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             const userEmbed = embeds.createEmbed()

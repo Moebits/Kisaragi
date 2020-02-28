@@ -9,8 +9,18 @@ export default class Discordjs extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches the discord.js docs.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            \`discordjs query\` - Searches the docs for the query (master branch)
+            \`discordjs master/stable/rpc/command/akairo/akairo-master/collection query\` - Searches the specified branch for the query
+            `,
+            examples:
+            `
+            \`=>discordjs attachment\`
+            \`=>discordjs stable message\`
+            `,
+            aliases: ["djs"],
+            cooldown: 5
         })
     }
 
@@ -28,7 +38,11 @@ export default class Discordjs extends Command {
                 src = "master"
                 query = Functions.combineArgs(args, 1)
         }
-        if (!query) return message.reply("You must provide a query!")
+        if (!query) {
+            return this.noQuery(embeds.createEmbed()
+            .setTitle(`**Discord.js Docs** ${discord.getEmoji("gabStare")}`)
+            .setAuthor(`discord.js`, "https://discord.js.org/static/logo-square.png"))
+        }
         let result = await axios.get(`https://djsdocs.sorta.moe/v2/embed?src=${src}&q=${query}`).then((r) => r.data)
         if (result.title === "Search results:") {
             result = await axios.get(`https://djsdocs.sorta.moe/v2/embed?src=${src}&q=${result.description.match(/(?<=\[)(.*?)(?=\])/)[0].replace(/#/, ".")}`).then((r) => r.data)

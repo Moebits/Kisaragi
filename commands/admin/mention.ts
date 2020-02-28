@@ -25,7 +25,7 @@ export default class Mention extends Command {
         const prefix = await SQLQuery.fetchPrefix(message)
 
         const input = Functions.combineArgs(args, 1)
-        const role = message.guild!.roles.find((r: Role) => r.name.toLowerCase().includes(input.toLowerCase().trim()))
+        const role = message.guild!.roles.cache.find((r: Role) => r.name.toLowerCase().includes(input.toLowerCase().trim()))
         if (!role) {
             message.channel.send(mentionEmbed
             .setDescription("Could not find that role!"))

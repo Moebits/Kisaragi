@@ -9,9 +9,17 @@ const {CollegiateDictionary} = require("mw-dict")
 export default class Define extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Defines a word.",
-            aliases: [],
-            cooldown: 3
+            description: "Retrieves the definition of a word from merriam webster.",
+            help:
+            `
+            \`define word\` - Gets the definition of the word
+            `,
+            examples:
+            `
+            \`=>define energy\`
+            `,
+            aliases: ["def", "definition", "word"],
+            cooldown: 10
         })
     }
 
@@ -22,6 +30,11 @@ export default class Define extends Command {
         const star = discord.getEmoji("star")
         const dictionary = new CollegiateDictionary(process.env.DICTIONARY_API_KEY)
         const word = Functions.combineArgs(args, 1)
+        if (!word) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
+            .setTitle(`**Dictionary** ${discord.getEmoji("raphi")}`))
+        }
         const defineEmbed = embeds.createEmbed()
         let result
         try {
@@ -29,7 +42,7 @@ export default class Define extends Command {
         } catch (error) {
             defineEmbed
             .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
-            .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`)
+            .setTitle(`**Dictionary** ${discord.getEmoji("raphi")}`)
             .setDescription(`No definitions were found. Here are some word suggestions: \n${error.suggestions.join(", ")}`)
             message.channel.send(defineEmbed)
             return
@@ -78,7 +91,7 @@ export default class Define extends Command {
         .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
         .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`)
         .setURL(`https://www.merriam-webster.com/dictionary/${result[0].word.replace(/ /g, "_")}`)
-        .setThumbnail(message.author!.displayAvatarURL())
+        .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
         .setDescription(
             `${star}_Word:_ **${result[0].word}**\n` +
             `${star}_Function:_ **${result[0].functional_label}**\n` +

@@ -133,7 +133,7 @@ export default class ChannelLink extends Command {
             }
 
             if (setVoice) {
-                const channels = msg.guild!.channels.filter((c: GuildChannel) => {
+                const channels = msg.guild!.channels.cache.filter((c: GuildChannel) => {
                     const type = c.type === "voice" ? true : false
                     return type
                 })

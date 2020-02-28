@@ -8,8 +8,10 @@ export default class Remdash extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Remove dashes from channel names.",
-            aliases: [],
-            cooldown: 3
+            aliases: ["delhyphen"],
+            cooldown: 5,
+            // doesn't work anymore
+            unlist: true
         })
     }
 
@@ -20,16 +22,17 @@ export default class Remdash extends Command {
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
         const remEmbed = embeds.createEmbed()
-        const nameArray = message.guild!.channels.map((c: GuildChannel) => c.name)
-        const idArray = message.guild!.channels.map((c: GuildChannel) => c.id)
+        const nameArray = message.guild!.channels.cache.map((c: GuildChannel) => c.name)
+        const idArray = message.guild!.channels.cache.map((c: GuildChannel) => c.id)
         for (let i = 0; i < nameArray.length; i++) {
             if (nameArray[i].includes("-")) {
                 const newName = nameArray[i].replace(/-/g, "\u2005")
-                const channel = message.guild!.channels.find((c: GuildChannel) => c.id === idArray[i])
+                const channel = message.guild!.channels.cache.find((c: GuildChannel) => c.id === idArray[i])
                 await channel!.setName(newName)
             }
         }
         remEmbed
+        .setTitle(`**Remdash** ${discord.getEmoji("KannaXD")}`)
         .setDescription("Removed dashes from all channel names!")
         message.channel.send(remEmbed)
         return

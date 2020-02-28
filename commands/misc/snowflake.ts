@@ -7,21 +7,31 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Snowflake extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Deconstructs or generates a snowflake.",
+            description: "Deconstructs or generates a discord snowflake.",
+            help:
+            `
+            \`snowflake flake\` - Deconstructs the snowflake
+            \`snowflake date?\` - Generates a snowflake for the current time (or date, if provided)
+            `,
+            examples:
+            `
+            \`=>snowflake\`
+            \`=>snowflake 579720679612612608\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
-    public run = (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
 
-        let input = Functions.combineArgs(args, 1)
+        const input = Functions.combineArgs(args, 1)
         const snowflakeEmbed = embeds.createEmbed()
-        console.log(input.match(/\d+/g)!.join(""))
-        console.log(input)
 
-        if (input.match(/\d+/g)!.join("") === input.trim()) {
+        if (input && (input.match(/\d+/g)?.join("") === input.trim())) {
             const snowflake = SnowflakeUtil.deconstruct(input.trim())
             snowflakeEmbed
             .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
@@ -36,15 +46,14 @@ export default class Snowflake extends Command {
             message.channel.send(snowflakeEmbed)
 
         } else {
-            if (!input) input = Date.now().toString()
-            const snowflake = SnowflakeUtil.generate(new Date(input))
+            const snowflake = SnowflakeUtil.generate(input.trim() ? new Date(input) : Date.now())
             snowflakeEmbed
             .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
             .setTitle(`**Snowflake** ${discord.getEmoji("gabTired")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Snowflake:_ **${snowflake}**\n`
             )
-            message.channel.send(snowflakeEmbed)
+            return message.channel.send(snowflakeEmbed)
         }
     }
 }

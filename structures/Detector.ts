@@ -55,8 +55,8 @@ export class Detector {
         if (!member || member.user.bot || !member.user.displayAvatarURL()) return
         const weeb = await sql.fetchColumn("detection", "weeb") as unknown as string
         const normie = await sql.fetchColumn("detection", "normie") as unknown as string
-        const weebRole = this.message.guild!.roles.find((r: Role) => r.id === weeb)
-        const normieRole = this.message.guild!.roles.find((r: Role) => r.id === normie)
+        const weebRole = this.message.guild!.roles.cache.find((r: Role) => r.id === weeb)
+        const normieRole = this.message.guild!.roles.cache.find((r: Role) => r.id === normie)
         if (member!.user.displayAvatarURL().slice(-3) === "gif") {
             gifFrames({url: member!.user.displayAvatarURL(), frames: 1}).then((frameData) => {
                 frameData[0].getImage().pipe(fs.createWriteStream("../assets/detection/user.jpg"))
@@ -69,11 +69,11 @@ export class Detector {
         const grayImg = await img.bgrToGrayAsync()
         const {numDetections} = await classifier.detectMultiScaleAsync(grayImg)
         if (!numDetections.join("")) {
-            const found = member!.roles.find((r: Role) => r === normieRole)
+            const found = member!.roles.cache.find((r: Role) => r === normieRole)
             if (found) {
                 return
             } else {
-                if (member!.roles.find((r: Role) => r === weebRole)) {
+                if (member!.roles.cache.find((r: Role) => r === weebRole)) {
                     await member!.roles.remove(weebRole!)
                 }
                 await member!.roles.add(normieRole!)
@@ -84,11 +84,11 @@ export class Detector {
                 }
             }
         } else {
-            const found = member!.roles.find((r: Role) => r === weebRole)
+            const found = member!.roles.cache.find((r: Role) => r === weebRole)
             if (found) {
                 return
             } else {
-                if (member!.roles.find((r: Role) => r === normieRole)) {
+                if (member!.roles.cache.find((r: Role) => r === normieRole)) {
                     await member!.roles.remove(normieRole!)
                 }
                 await member!.roles.add(weebRole!)

@@ -16,7 +16,7 @@ export default class GuildMemberRemove {
         let defaultChannel = firstMsg.channel as TextChannel
         const defChannel = await sql.fetchColumn("blocks", "default channel")
         if (defChannel.join("")) {
-        defaultChannel = this.discord.channels.find((c) => c.id.toString() === defChannel.join("")) as TextChannel
+        defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === defChannel.join("")) as TextChannel
         }
 
         const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message :
@@ -34,7 +34,7 @@ export default class GuildMemberRemove {
         const leaveImage = await sql.fetchColumn("welcome leaves", "leave bg image")
         const leaveText = await sql.fetchColumn("welcome leaves", "leave bg text")
         const leaveColor = await sql.fetchColumn("welcome leaves", "leave bg color")
-        const channel = member.guild.channels.find((c) => c.id.toString() === leaveChannel.join("")) as TextChannel
+        const channel = member.guild.channels.cache.find((c) => c.id.toString() === leaveChannel.join("")) as TextChannel
 
         const attachment = await image.createCanvas(member, leaveImage[0], leaveText[0], leaveColor[0]) as MessageAttachment
 

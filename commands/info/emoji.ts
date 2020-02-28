@@ -24,7 +24,7 @@ export default class Emoji extends Command {
         const emojiID = String(emojiName.replace(/(?<=:)(.*?)(?=:)/g, "").match(/\d+/))
 
         if (emojiID === "null") {
-            const emojiFound = discord.emojis.find((emoji: GuildEmoji) => emoji.name.toLowerCase() === emojiName.toLowerCase())
+            const emojiFound = discord.emojis.cache.find((emoji: GuildEmoji) => emoji.name.toLowerCase() === emojiName.toLowerCase())
             if (emojiFound === undefined) {
                 message.channel.send(emojiEmbed
                 .setDescription("Could not find that emoji!"))
@@ -37,7 +37,7 @@ export default class Emoji extends Command {
             return
 
             } else {
-                const emojiGet = discord.emojis.get(emojiID)
+                const emojiGet = discord.emojis.cache.get(emojiID)
                 message.channel.send(emojiEmbed
                 .setDescription(`**${emojiGet!.name} Emoji**`)
                 .setImage(emojiGet!.url))

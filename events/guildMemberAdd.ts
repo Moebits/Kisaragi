@@ -19,7 +19,7 @@ export default class GuildMemberAdd {
         let defaultChannel = firstMsg!.channel as TextChannel
         const defChannel = await sql.fetchColumn("blocks", "default channel")
         if (defChannel.join("")) {
-        defaultChannel = this.discord.channels.find((c) => c.id.toString() === defChannel.join("")) as TextChannel
+        defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === defChannel.join("")) as TextChannel
         }
 
         const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message :
@@ -37,7 +37,7 @@ export default class GuildMemberAdd {
         const welcomeImage = await sql.fetchColumn("welcome leaves", "welcome bg image")
         const welcomeText = await sql.fetchColumn("welcome leaves", "welcome bg text")
         const welcomeColor = await sql.fetchColumn("welcome leaves", "welcome bg color")
-        const channel = member.guild.channels.find((c) => c.id.toString() === welcomeChannel.join("")) as TextChannel
+        const channel = member.guild.channels.cache.find((c) => c.id.toString() === welcomeChannel.join("")) as TextChannel
 
         const attachment = await image.createCanvas(member, welcomeImage[0], welcomeText[0], welcomeColor[0]) as MessageAttachment
 

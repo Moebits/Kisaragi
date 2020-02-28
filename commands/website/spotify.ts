@@ -10,9 +10,19 @@ const Spotify = require("node-spotify-api")
 export default class SpotifyCommand extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches spotify.",
+            description: "Searches for spotify tracks and artists.",
+            help:
+            `
+            \`spotify query\` - Searches for tracks with the query
+            \`spotify artist query\` - Searches artists with the query
+            `,
+            examples:
+            `
+            \`=>spotify virtual riot\`
+            \`=>spotify artist synthion\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 
@@ -28,25 +38,42 @@ export default class SpotifyCommand extends Command {
 
         if (args[1] === "artist") {
             const query = Functions.combineArgs(args, 2)
+            if (!query) {
+                return this.noQuery(embeds.createEmbed()
+                .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
+                .setTitle(`**Spotify Artist** ${discord.getEmoji("aquaUp")}`))
+            }
+            const spotifyArray: MessageEmbed[] = []
             const response = await spotify.search({type: "artist", query: query.trim()})
-            const artist = response.artists.items[0]
-            const spotifyEmbed = embeds.createEmbed()
-            spotifyEmbed
-            .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
-            .setTitle(`**Spotify Artist** ${discord.getEmoji("aquaUp")}`)
-            .setURL(artist.external_urls.spotify)
-            .setImage(artist.images[0].url)
-            .setDescription(
-                `${discord.getEmoji("star")}_Artist:_ **${artist.name}**\n` +
-                `${discord.getEmoji("star")}_Genres:_ **${artist.genres.join(", ")}**\n` +
-                `${discord.getEmoji("star")}_Followers:_ **${artist.followers.total}**\n` +
-                `${discord.getEmoji("star")}_Popularity:_ **${artist.popularity}**\n`
-            )
-            message.channel.send(spotifyEmbed)
-            return
+            const artists = response.artists.items
+            for (let i = 0; i < artists.length; i++) {
+                const artist = artists[i]
+                const spotifyEmbed = embeds.createEmbed()
+                spotifyEmbed
+                .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
+                .setTitle(`**Spotify Artist** ${discord.getEmoji("aquaUp")}`)
+                .setURL(artist.external_urls.spotify)
+                .setImage(artist.images[0]?.url)
+                .setDescription(
+                    `${discord.getEmoji("star")}_Artist:_ **${artist.name}**\n` +
+                    `${discord.getEmoji("star")}_Genres:_ **${artist.genres.join(", ")}**\n` +
+                    `${discord.getEmoji("star")}_Followers:_ **${artist.followers.total}**\n` +
+                    `${discord.getEmoji("star")}_Popularity:_ **${artist.popularity}**\n`
+                )
+                spotifyArray.push(spotifyEmbed)
+            }
+            if (spotifyArray.length === 1) {
+                return message.channel.send(spotifyArray[0])
+            }
+            return embeds.createReactionEmbed(spotifyArray)
         }
 
         const query = Functions.combineArgs(args, 1)
+        if (!query) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
+            .setTitle(`**Spotify Search** ${discord.getEmoji("aquaUp")}`))
+        }
         const response = await spotify.search({type: "track", query: query.trim()})
         const spotifyArray: MessageEmbed[] = []
         for (let i = 0; i < response.tracks.items.length; i++) {

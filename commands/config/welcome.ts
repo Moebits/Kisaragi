@@ -132,7 +132,7 @@ export default class Welcome extends Command {
                 description += `${discord.getEmoji("star")}Welcome message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
-                const channel = msg.guild!.channels.find((c: GuildChannel) => c === msg.mentions.channels.first())
+                const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
                 await sql.updateColumn("welcome leaves", "welcome channel", channel!.id)
                 setOn = true
                 description += `${discord.getEmoji("star")}Welcome channel set to <#${channel!.id}>!\n`

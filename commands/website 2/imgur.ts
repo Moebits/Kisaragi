@@ -9,9 +9,17 @@ const imgur = require("imgur")
 export default class Imgur extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches imgur.",
-            aliases: [],
-            cooldown: 3
+            description: "Searches for images on imgur.",
+            help:
+            `
+            \`imgur query\` - Searches for images with the query
+            `,
+            examples:
+            `
+            \`=>imgur anime\`
+            `,
+            aliases: ["im"],
+            cooldown: 5
         })
     }
 
@@ -23,6 +31,12 @@ export default class Imgur extends Command {
         await imgur.setAPIUrl("https://api.imgur.com/3/")
 
         const query = Functions.combineArgs(args, 1)
+        if (!query) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg")
+            .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
+            )
+        }
         const json = await imgur.search(query)
         const random = Math.floor(Math.random() * json.data.length)
         const image = json.data[random]
@@ -62,7 +76,6 @@ export default class Imgur extends Command {
         } else {
             const imageArray: MessageEmbed[] = []
             for (let i = 0; i < image.images.length - 1; i++) {
-                console.log(i)
                 const imgurEmbed = embeds.createEmbed()
                 let extension
                 switch (image.images[i].type.slice(-3)) {
@@ -84,7 +97,6 @@ export default class Imgur extends Command {
                     `${discord.getEmoji("star")}_Description:_ ${image.description ? image.description : "None"}\n`
                 )
                 .setImage(cover)
-                console.log(image)
                 imageArray.push(imgurEmbed)
             }
             embeds.createReactionEmbed(imageArray)

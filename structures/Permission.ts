@@ -17,7 +17,7 @@ export class Permission {
             "configure the server's moderator role using the **mod** command!")
             return false
         } else {
-            const modRole = this.message.member!.roles.find((r: Role) => r.id === String(mod))
+            const modRole = this.message.member!.roles.cache.find((r: Role) => r.id === String(mod))
             if (!modRole) {
                 if (ignore) return false
                 this.message.reply("In order to use moderator commands, you must have " +
@@ -39,7 +39,7 @@ export class Permission {
             "configure the server's administrator role using the **mod** command!")
             return false
         } else {
-            const adminRole = this.message.member!.roles.find((r: Role) => r.id === String(admin))
+            const adminRole = this.message.member!.roles.cache.find((r: Role) => r.id === String(admin))
             if (!adminRole) {
                 if (ignore) return false
                 this.message.reply("In order to use administrator commands, you must have " +

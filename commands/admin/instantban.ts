@@ -81,7 +81,7 @@ export default class InstantBan extends Command {
             if (msg.mentions.channels.array().join("")) setChannel = true
 
             if (setChannel) {
-                const channel = msg.guild!.channels.find((c: GuildChannel) => c === msg.mentions.channels.first())
+                const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
                 await sql.updateColumn("blocks", "default channel", channel!.id)
                 responseEmbed
                 .setDescription(`${star}Default channel set to <#${channel!.id}>!\n`)

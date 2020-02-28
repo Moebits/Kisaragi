@@ -27,7 +27,7 @@ export default class Verify extends Command {
         const color = await sql.fetchColumn("captcha", "captcha color")
         const difficulty = await sql.fetchColumn("captcha", "difficulty")
 
-        const role = message.guild!.roles.find((r: Role) => r.id === vRole.join(""))
+        const role = message.guild!.roles.cache.find((r: Role) => r.id === vRole.join(""))
         if (!role) {
             const vErrorEmbed = embeds.createEmbed()
             vErrorEmbed.setDescription("Could not find the verify role!")
@@ -58,7 +58,7 @@ export default class Verify extends Command {
                             const result = await captchaClass.createCaptcha(String(type), String(color), String(difficulty))
                             return sendCaptcha(result.captcha, result.text)
                         } else if (msg.content.trim() === txt) {
-                            if (msg.member!.roles.has(role!.id)) {
+                            if (msg.member!.roles.cache.has(role!.id)) {
                                 await msg.member!.roles.remove(role!)
                                 await msg.member!.roles.add!(role!, "Successfully solved the captcha")
                             } else {

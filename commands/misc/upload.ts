@@ -10,7 +10,8 @@ export default class Upload extends Command {
         super(discord, message, {
             description: "Upload a channels images to google images or dropbox.",
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            unlist: true
         })
     }
 
@@ -48,7 +49,7 @@ export default class Upload extends Command {
         }
 
         async function gatherPhotos(guildChannel: string) {
-            const channel = message.guild!.channels.find((c: GuildChannel) => c.id === guildChannel) as TextChannel
+            const channel = message.guild!.channels.cache.find((c: GuildChannel) => c.id === guildChannel) as TextChannel
             let done = false
             let counter = 0
             const photoArray: string[] = []
@@ -81,7 +82,7 @@ export default class Upload extends Command {
         }
 
         async function uploadToAlbum(photos: string[], albumName: string, guildChannel: string) {
-            const channel = message.guild!.channels.find((c: GuildChannel) => c.id === guildChannel) as TextChannel
+            const channel = message.guild!.channels.cache.find((c: GuildChannel) => c.id === guildChannel) as TextChannel
             const album = await gphotos.searchOrCreateAlbum(albumName)
             let notMsg
             if (notify[0] === "on") {

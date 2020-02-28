@@ -9,9 +9,18 @@ const npm = require("libnpmsearch")
 export default class NPM extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches the npm registry.",
+            description: "Searches for packages on the npm registry.",
+            help:
+            `
+            \`npm query\` - Searches for packages with the query
+            `,
+            examples:
+            `
+            \`=>npm soundcloud.ts\`
+            \`=>npm pixiv.ts\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -20,6 +29,11 @@ export default class NPM extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const query = Functions.combineArgs(args, 1)
+        if (!query) {
+            return this.noQuery(embeds.createEmbed()
+            .setTitle(`**NPM Search** ${discord.getEmoji("gabStare")}`)
+            .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png"))
+        }
         const result = await npm(query, {sortBy: "popularity"})
         const star = discord.getEmoji("star")
         const npmArray: MessageEmbed[] = []

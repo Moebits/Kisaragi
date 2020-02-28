@@ -22,7 +22,7 @@ export class Letters {
     if (letter === letter.toUpperCase()) {
         for (let i = 0; i < letters.letters.length; i++) {
             if (letters.letters[i].name === `${letter}U`) {
-                const found = this.discord.emojis.find((emoji: GuildEmoji) => emoji.id === letters.letters[i].id)
+                const found = this.discord.emojis.cache.find((emoji: GuildEmoji) => emoji.id === letters.letters[i].id)
                 if (!found) return
                 return `<:${found!.identifier}>`
             }
@@ -32,7 +32,7 @@ export class Letters {
     if (letter === letter.toLowerCase()) {
         for (let i = 0; i < letters.letters.length; i++) {
             if (letters.letters[i].name === `${letter}l`) {
-                const found = this.discord.emojis.find((emoji: GuildEmoji) => emoji.id === letters.letters[i].id)
+                const found = this.discord.emojis.cache.find((emoji: GuildEmoji) => emoji.id === letters.letters[i].id)
                 return `<:${found!.identifier}>`
             }
         }
@@ -41,7 +41,7 @@ export class Letters {
     if (typeof Number(letter) === "number") {
         for (let i = 0; i < letters.letters.length; i++) {
             if (letters.letters[i].name === `${letter}n`) {
-                const found = this.discord.emojis.find((emoji: GuildEmoji) => emoji.id === letters.letters[i].id)
+                const found = this.discord.emojis.cache.find((emoji: GuildEmoji) => emoji.id === letters.letters[i].id)
                 return `<:${found!.identifier}>`
             }
         }

@@ -146,7 +146,7 @@ export default class MessageEvent {
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
       cmdPath.run(args).then(() => {
       const msgCheck = message.channel.messages
-      if (msgCheck.has(msg.id)) msg.delete({timeout: 1000})
+      if (msgCheck.cache.has(msg.id)) msg.delete({timeout: 1000})
       }).catch((err: Error) => message.channel.send(this.discord.cmdError(message, err)))
     }
   }

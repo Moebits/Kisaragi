@@ -15,7 +15,7 @@ export default class Warn extends Command {
     }
 
     public checkWarns = async (discord: Kisaragi, message: Message, embeds: Embeds, sql: SQLQuery, warnLog: any, userID: any, warnThreshold: string[], warnPenalty: string[], warnOneRole: any, warnTwoRole: any) => {
-        const member = message.guild!.members.find((m: GuildMember) => m.id === userID)
+        const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userID)
         const warnReason = `Exceeded the threshold of ${warnThreshold[0]} warns.`
         const dmEmbed = embeds.createEmbed()
         const guildEmbed = embeds.createEmbed()
@@ -25,7 +25,7 @@ export default class Warn extends Command {
             if (warnLog[i].user === userID) {
                 if (warnLog[i].warns.length >= 1) {
                     if (warnOneRole) {
-                        if (!member!.roles.has(warnOneRole.id)) {
+                        if (!member!.roles.cache.has(warnOneRole.id)) {
                             await member!.roles.add(warnOneRole)
                             message.channel.send(
                                 `<@${userID}>, you were given the ${warnOneRole} role because you have one warn.`
@@ -35,7 +35,7 @@ export default class Warn extends Command {
                 }
                 if (warnLog[i].warns.length >= 2) {
                     if (warnTwoRole) {
-                        if (!member!.roles.has(warnTwoRole.id)) {
+                        if (!member!.roles.cache.has(warnTwoRole.id)) {
                             await member!.roles.add(warnTwoRole)
                             message.channel.send(
                                 `<@${userID}>, you were given the ${warnTwoRole} role because you have two warns.`
@@ -125,8 +125,8 @@ export default class Warn extends Command {
         if (!warnLog.join("")) warnLog = [""]; setInit = true
 
         let warnOneRole, warnTwoRole
-        if (warnOne[0]) warnOneRole = message.guild!.roles.find((r: Role) => r.id === warnOne[0])
-        if (warnTwo[0]) warnTwoRole = message.guild!.roles.find((r: Role) => r.id === warnTwo[0])
+        if (warnOne[0]) warnOneRole = message.guild!.roles.cache.find((r: Role) => r.id === warnOne[0])
+        if (warnTwo[0]) warnTwoRole = message.guild!.roles.cache.find((r: Role) => r.id === warnTwo[0])
 
         const reasonArray: string[] = []
         const userArray: string[] = []
@@ -171,7 +171,7 @@ export default class Warn extends Command {
             .setDescription(
                 `${discord.getEmoji("star")}_You were warned in ${message.guild!.name} for reason: **${reason}**_`
             )
-            const member = message.guild!.members.find((m: GuildMember) => m.id === userArray[i])
+            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i])
             const dm = await member!.createDM()
             await dm.send(warnDMEmbed)
         }

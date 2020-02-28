@@ -32,35 +32,35 @@ export class Settings {
         "region": this.message.guild!.region,
         "owner": this.message.guild!.owner!.user.tag,
         "owner id": this.message.guild!.ownerID,
-        "games": this.message.guild!.presences.map((presence: Presence) => presence.activity !== null ? presence.activity.name : null)
+        "games": this.message.guild!.presences.cache.map((presence: Presence) => presence.activities.join("") ? presence.activities.map((a) => a.name) : null)
     }
 
     private readonly userSettings: Init = {
-        "user list": this.message.guild!.members.map((member: GuildMember) => member.displayName),
-        "user id list": this.message.guild!.members.map((member: GuildMember) => member.id),
-        "user join list": this.message.guild!.members.map((member: GuildMember) => member.joinedTimestamp)
+        "user list": this.message.guild!.members.cache.map((member: GuildMember) => member.displayName),
+        "user id list": this.message.guild!.members.cache.map((member: GuildMember) => member.id),
+        "user join list": this.message.guild!.members.cache.map((member: GuildMember) => member.joinedTimestamp)
     }
 
     private readonly channelSettings: Init = {
-        "channel list": this.message.guild!.channels.map((channel: GuildChannel) => channel.name),
-        "channel id list": this.message.guild!.channels.map((channel: GuildChannel) => channel.id),
-        "channel created list": this.message.guild!.channels.map((channel: GuildChannel) => channel.createdTimestamp),
-        "category list": this.message.guild!.channels.map((channel: GuildChannel) => channel.parent !== null ? channel.parent.name : null),
-        "category id list": this.message.guild!.channels.map((channel: GuildChannel) => channel.parent !== null ? channel.parentID : null)
+        "channel list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.name),
+        "channel id list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.id),
+        "channel created list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.createdTimestamp),
+        "category list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.parent !== null ? channel.parent.name : null),
+        "category id list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.parent !== null ? channel.parentID : null)
     }
 
     private readonly roleSettings: Init = {
-        "role list": this.message.guild!.roles.map((role: Role) => role.name),
-        "role id list": this.message.guild!.roles.map((role: Role) => role.id),
-        "role created list": this.message.guild!.roles.map((role: Role) => role.createdTimestamp),
-        "role color list": this.message.guild!.roles.map((role: Role) => role.hexColor)
+        "role list": this.message.guild!.roles.cache.map((role: Role) => role.name),
+        "role id list": this.message.guild!.roles.cache.map((role: Role) => role.id),
+        "role created list": this.message.guild!.roles.cache.map((role: Role) => role.createdTimestamp),
+        "role color list": this.message.guild!.roles.cache.map((role: Role) => role.hexColor)
     }
 
     private readonly emojiSettings: Init = {
-        "emoji list": this.message.guild!.emojis.map((emoji: GuildEmoji) => emoji.name),
-        "emoji id list": this.message.guild!.emojis.map((emoji: GuildEmoji) => emoji.id),
-        "emoji created list": this.message.guild!.emojis.map((emoji: GuildEmoji) => emoji.createdTimestamp),
-        "emoji identifier list": this.message.guild!.emojis.map((emoji: GuildEmoji) => emoji.identifier)
+        "emoji list": this.message.guild!.emojis.cache.map((emoji: GuildEmoji) => emoji.name),
+        "emoji id list": this.message.guild!.emojis.cache.map((emoji: GuildEmoji) => emoji.id),
+        "emoji created list": this.message.guild!.emojis.cache.map((emoji: GuildEmoji) => emoji.createdTimestamp),
+        "emoji identifier list": this.message.guild!.emojis.cache.map((emoji: GuildEmoji) => emoji.identifier)
     }
 
     private readonly logSettings: Init = {

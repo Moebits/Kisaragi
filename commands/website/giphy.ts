@@ -8,9 +8,19 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class GiphyCommand extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches giphy.",
-            aliases: [],
-            cooldown: 3
+            description: "Searches for a gif on giphy.",
+            help:
+            `
+            \`giphy\` - Gets a random gif
+            \`giphy query\` - Searches giphy for the query.
+            `,
+            examples:
+            `
+            \`=>giphy\`
+            \`=>giphy anime\`
+            `,
+            aliases: ["gif"],
+            cooldown: 5
         })
     }
 

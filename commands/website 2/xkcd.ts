@@ -9,9 +9,19 @@ const xkcd = require("xkcd")
 export default class Xkcd extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches xkcd.",
+            description: "Searches for an xkcd comic.",
+            help:
+            `
+            \`xkcd\` - Posts the most recent comic
+            \`xkcd number\` - Gets a comic by id
+            `,
+            examples:
+            `
+            \`=>xkcd\`
+            \`=>xkcd 42\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -59,7 +69,7 @@ export default class Xkcd extends Command {
                 `${discord.getEmoji("star")}_Date:_ **${monthNames[comic.month]} ${comic.day}, ${comic.year}**\n` +
                 `${discord.getEmoji("star")}_Transcript_: ${checkedText ? checkedText : "None"}\n`
                 )
-                .setThumbnail(message.author!.displayAvatarURL())
+                .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
                 .setImage(comic.img)
                 message.channel.send(xkcdEmbed)
             })

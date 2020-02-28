@@ -24,7 +24,7 @@ export class Generate {
     // Generate Emojis for config.json
     public generateEmojis = (letterNames: string[]) => {
         for (let i = 0; i < letterNames.length; i++) {
-            this.discord.emojis.map((emoji: GuildEmoji) => {
+            this.discord.emojis.cache.map((emoji: GuildEmoji) => {
                 if (emoji.name === letterNames[i]) {
                     console.log(`{"name": "${letterNames[i]}", "id": "${emoji.id}"},`)
                 }

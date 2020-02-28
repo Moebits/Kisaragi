@@ -58,7 +58,3 @@ const start = async (): Promise<void> => {
 }
 
 start()
-
-process.on("unhandledRejection", (err) => {
-    console.error("Uncaught Promise Error: ", err)
-  })

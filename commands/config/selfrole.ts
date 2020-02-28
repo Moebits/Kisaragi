@@ -26,7 +26,7 @@ export default class Selfrole extends Command {
 
         if (!selfroles[0]) return
 
-        const roles = message.guild!.roles.filter((r: Role) => {
+        const roles = message.guild!.roles.cache.filter((r: Role) => {
             for (let i = 0; i < selfroles.length; i++) {
                 const found = (selfroles[i] === r.id) ? true : false
                 return found
@@ -36,7 +36,7 @@ export default class Selfrole extends Command {
 
         for (let i = 0; i < roles.length; i++) {
             if (roles[i].name.toLowerCase().includes(args[1].toLowerCase())) {
-                const found = message.member!.roles.find((r: Role) => r.id === roles[i].id)
+                const found = message.member!.roles.cache.find((r: Role) => r.id === roles[i].id)
                 let description = ""
                 if (found) {
                     await message.member!.roles.remove(roles[i].id)

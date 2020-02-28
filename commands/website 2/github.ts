@@ -10,9 +10,19 @@ const GitHub = require("github-api")
 export default class Github extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches github.",
-            aliases: [],
-            cooldown: 3
+            description: "Searches for github repositories and users.",
+            help:
+            `
+            \`github query\` - Searches for repositories with the query
+            \`github user query\` - Searches for users with the query
+            `,
+            examples:
+            `
+            \`=>github anime\`
+            \`=>github user tenpi\`
+            `,
+            aliases: ["gh"],
+            cooldown: 10
         })
     }
 
@@ -24,8 +34,13 @@ export default class Github extends Command {
             token: process.env.GITHUB_ACCESS_TOKEN
         })
 
-        if (args[1].toLowerCase() === "user") {
+        if (args[1] && args[1].toLowerCase() === "user") {
             const input = Functions.combineArgs(args, 2)
+            if (!input) {
+                return this.noQuery(embeds.createEmbed()
+                .setAuthor("github", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png")
+                .setTitle(`**Github Search** ${discord.getEmoji("raphi")}`))
+            }
             const user = github.getUser(input.trim())
             const json = await user.getProfile()
             const result = json.data
@@ -52,20 +67,19 @@ export default class Github extends Command {
         }
 
         const input = Functions.combineArgs(args, 1)
+        if (!input) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("github", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png")
+            .setTitle(`**Github Search** ${discord.getEmoji("raphi")}`))
+        }
         const search = github.search({q: input.trim()})
         const json = await search.forRepositories()
         const result = json.data
         const githubArray: MessageEmbed[] = []
         for (let i = 0; i < 10; i++) {
             const source = await axios.get(result[i].html_url)
-            const regex = /<meta[^>]+name="twitter:image:src"[^>]+content="?([^"\s]+)"?\s*\/>/g
-            const urls: string[] = []
-            const m = regex.exec(source.data)
-            if (m !== null) {
-                for (let i = 0; i < m.length; i++) {
-                    urls.push(m[i])
-                }
-            }
+            const regex = /(?<=name="twitter:image:src" content=")(.*?)(?=" \/\>)/
+            const url = regex.exec(source.data)
             const githubEmbed = embeds.createEmbed()
             githubEmbed
             .setAuthor("github", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png")
@@ -85,7 +99,7 @@ export default class Github extends Command {
                 `${discord.getEmoji("star")}_Description:_ ${result[i].description}\n`
             )
             .setThumbnail(result[i].owner.avatar_url)
-            .setImage(urls[0])
+            .setImage(url ? url[0] : "")
             githubArray.push(githubEmbed)
         }
         embeds.createReactionEmbed(githubArray)

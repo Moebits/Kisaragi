@@ -13,7 +13,8 @@ export default class Pinterest extends Command {
         super(discord, message, {
             description: "Searches pinterest.",
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            unlist: true
         })
     }
 

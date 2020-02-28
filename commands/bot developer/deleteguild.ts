@@ -21,7 +21,7 @@ export default class Clean extends Command {
         if (!perms.checkBotDev()) return
 
         const guildID = args[1]
-        const guild = discord.guilds.find((g: Guild) => g.id.toString() === guildID) as Guild
+        const guild = discord.guilds.cache.find((g: Guild) => g.id.toString() === guildID) as Guild
 
         try {
             guild.delete()

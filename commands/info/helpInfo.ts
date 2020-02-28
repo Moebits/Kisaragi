@@ -12,7 +12,8 @@ export default class HelpInfo extends Command {
         super(discord, message, {
             description: "Detailed help info.",
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            unlist: true
         })
     }
 

@@ -8,9 +8,19 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Twitch extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches twitch.",
-            aliases: [],
-            cooldown: 3
+            description: "Searches for twitch streams and channels.",
+            help:
+            `
+            \`twitch query\` - Searches for streams with the query
+            \`twitch channel query\` - Searches for a channel
+            `,
+            examples:
+            `
+            \`=>twitch osu\`
+            \`=>twitch channel imtenpi\`
+            `,
+            aliases: ["tw"],
+            cooldown: 10
         })
     }
 
@@ -18,10 +28,15 @@ export default class Twitch extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const twitch = await TwitchClient.withCredentials(process.env.TWITCH_CLIENT_ID!, process.env.TWITCH_ACCESS_TOKEN)
+        const twitch = TwitchClient.withCredentials(process.env.TWITCH_CLIENT_ID!, process.env.TWITCH_ACCESS_TOKEN!)
 
         if (args[1] === "channel") {
             const term = args[2]
+            if (!term) {
+                return this.noQuery(embeds.createEmbed()
+                .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg")
+                .setTitle(`**Twitch Channel** ${discord.getEmoji("gabSip")}`))
+            }
             const result = await twitch.kraken.search.searchChannels(term, 1, 1)
             const twitchEmbed = embeds.createEmbed()
             twitchEmbed
@@ -44,6 +59,11 @@ export default class Twitch extends Command {
         }
 
         const term = Functions.combineArgs(args, 1)
+        if (!term) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg")
+            .setTitle(`**Twitch Stream** ${discord.getEmoji("gabSip")}`))
+        }
         const result = await twitch.kraken.search.searchStreams(term.trim(), 1, 11)
         const twitchArray: MessageEmbed[] = []
         for (let i = 0; i < result.length; i++) {

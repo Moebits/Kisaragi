@@ -52,7 +52,7 @@ export default class ReactionRoles extends Command {
                     if (!messages.join("") || !emojis[0] || !roles[0] || !states[0]) settings = "None"
                     if (!messages[value]) break
                     const foundMsg = await discord.fetchMessage(message, messages[value])
-                    const guildEmoji = message.guild!.emojis.find((e: GuildEmoji) => {
+                    const guildEmoji = message.guild!.emojis.cache.find((e: GuildEmoji) => {
                         const found = (e.name.toLowerCase().includes(emojis[value].toLowerCase())) ? true : false
                         return found
                     })

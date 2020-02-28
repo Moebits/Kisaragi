@@ -3,14 +3,25 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 const urban = require("urban.js")
 export default class Urban extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches urban dictionary.",
+            description: "Searches for words on urban dictionary.",
+            help:
+            `
+            \`urban\` - Posts a random word
+            \`urban word\` - Searches for a word in the dictionary
+            `,
+            examples:
+            `
+            \`=>urban\`
+            \`=>urban loli\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -19,6 +30,8 @@ export default class Urban extends Command {
         const message = this.message
 
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkNSFW()) return
         const urbanEmbed = embeds.createEmbed()
 
         if (args[1]) {
@@ -38,7 +51,7 @@ export default class Urban extends Command {
             `${discord.getEmoji("star")}**Definition**: ${cleanDef ? cleanDef : "None"}\n` +
             `${discord.getEmoji("star")}**Example**: ${checkedExample ? checkedExample : "None"}`
             )
-            .setThumbnail(message.author!.displayAvatarURL())
+            .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
             message.channel.send(urbanEmbed)
             return
         }
@@ -58,7 +71,7 @@ export default class Urban extends Command {
             `${discord.getEmoji("star")}**Definition**: ${cleanDef ? cleanDef : "None"}\n` +
             `${discord.getEmoji("star")}**Example**: ${checkedExample ? checkedExample : "None"}`
             )
-            .setThumbnail(message.author!.displayAvatarURL())
+            .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
         message.channel.send(urbanEmbed)
     }
 }

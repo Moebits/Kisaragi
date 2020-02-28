@@ -32,7 +32,7 @@ export default class Create extends Command {
             const name = newArgs[0].replace(/ /g, "\u2005")
             const above = newArgs[1].toLowerCase()
             if (above) {
-                position = message.guild!.channels.find((c) => c.name.toLowerCase().includes(above))!.position - 1
+                position = message.guild!.channels.cache.find((c) => c.name.toLowerCase().includes(above))!.position - 1
             }
             if (!name) return message.reply("You did not provide a name!")
             await message.guild!.channels.create(name, {position, parent, type: "text"})

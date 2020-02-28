@@ -15,12 +15,12 @@ export default class Emojis extends Command {
     public run = (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
         const emojis = message.guild!.emojis
-        const emojiArray = emojis.map((e: Emoji) => discord.emojis.find((emoji: Emoji) => e.id === emoji.id))
-        const nameArray = emojis.map((e: Emoji) => e.name)
-        const idArray = emojis.map((e: Emoji) => e.id)
-        const createdArray = emojis.map((e: Emoji) => e.createdAt)
+        const emojiArray = emojis.cache.map((e: Emoji) => discord.emojis.cache.find((emoji: Emoji) => e.id === emoji.id))
+        const nameArray = emojis.cache.map((e: Emoji) => e.name)
+        const idArray = emojis.cache.map((e: Emoji) => e.id)
+        const createdArray = emojis.cache.map((e: Emoji) => e.createdAt)
         const step = 5.0
-        const increment = Math.ceil(emojis.size / step)
+        const increment = Math.ceil(emojis.cache.size / step)
         const userEmbedArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             const userEmbed = embeds.createEmbed()

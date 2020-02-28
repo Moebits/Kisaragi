@@ -5,14 +5,28 @@ import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-const redditArray: MessageEmbed[] = []
+let redditArray: MessageEmbed[] = []
 
 export default class Reddit extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches reddit.",
-            aliases: [],
-            cooldown: 3
+            description: "Searches posts on a reddit subreddit.",
+            help:
+            `
+            \`reddit\` - Gets a random post
+            \`reddit board query?\` - Searches for posts in the board or gets random ones
+            \`reddit board hot/new/top/rising/controversial\` - Gets hot, new, top, etc. posts in the board
+            \`reddit user query\` - Searches for users
+            `,
+            examples:
+            `
+            \`=>reddit\`
+            \`=>reddit anime cute\`
+            \`=>reddit animemes hot\`
+            \`=>reddit user imtenpi\`
+            `,
+            aliases: ["r"],
+            cooldown: 10
         })
     }
 
@@ -49,9 +63,10 @@ export default class Reddit extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        redditArray = []
 
         const reddit = new snoowrap({
-            userAgent: "kisaragi bot v1.0 by /u/tenpimusic",
+            userAgent: "kisaragi bot v1.0 by /u/imtenpi",
             clientId: process.env.REDDIT_APP_ID,
             clientSecret: process.env.REDDIT_APP_SECRET,
             username: process.env.REDDIT_USERNAME,
@@ -60,6 +75,12 @@ export default class Reddit extends Command {
 
         if (args[1] === "user") {
             const query = Functions.combineArgs(args, 2)
+            if (!query) {
+                return this.noQuery(embeds.createEmbed()
+                .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
+                .setTitle(`**Reddit User** ${discord.getEmoji("aquaUp")}`)
+                )
+            }
             // @ts-ignore
             const user = await reddit.getUser(query.trim()).fetch()
             const redditEmbed = embeds.createEmbed()
@@ -104,8 +125,16 @@ export default class Reddit extends Command {
                     posts = await reddit.getSubreddit(subreddit).search({query, time: "all", sort: "relevance"})
                 }
             } else {
-                // @ts-ignore
-                posts = await reddit.getSubreddit(subreddit).getRandomSubmission()
+                try {
+                    // @ts-ignore
+                    posts = await reddit.getSubreddit(subreddit).getRandomSubmission()
+                } catch {
+                    return this.invalidQuery(embeds.createEmbed()
+                    .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
+                    .setTitle(`**Reddit Search** ${discord.getEmoji("aquaUp")}`)
+                    .setDescription("No results were found. Try searching on the reddit website: " +
+                    "[Reddit Website](https://www.reddit.com)"))
+                }
             }
         }
         const postIDS: string[] = []

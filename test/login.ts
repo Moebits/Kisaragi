@@ -15,7 +15,7 @@ async function start() {
             })
         }
     await ready()
-    guild = discord.guilds.get("582230160737042480") as Guild
+    guild = discord.guilds.cache.get("582230160737042480") as Guild
     message = await discord.fetchFirstMessage(guild!) as Message
     cmd = new CommandFunctions(discord, message)
 }

@@ -1,3 +1,4 @@
+import axios from "axios"
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -7,9 +8,20 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Holiday extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts the daily holiday.",
+            description: "Searches for daily holidays.",
+            help:
+            `
+            \`holiday\` - Gets today's holiday.
+            \`holiday date\` - Gets the holiday for the date
+            `,
+            examples:
+            `
+            \`=>holiday\`
+            \`=>holiday January 20\`
+            \`=>holiday 7/3\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 
@@ -35,20 +47,20 @@ export default class Holiday extends Command {
                 inputDay = parseInt(args[2], 10)
             }
         }
-        const axios = require("axios")
-        const pg1Regex = /(?<=href="\/days\/).*?(?="(> |\s))/gm
-        const pg2Regex = /(?<=description" content=").*?(?="(\s))/gm
-        const imageRegex = /(?<=image" content=").*?(?=(\s))/gm
+        const pg1Regex = /(?<=href="https:\/\/www.daysoftheyear.com\/days\/)(.*?)(?=\/"\>\<img)/gm
+        const pg2Regex = /(?<=description" content=")(.*?)(?="(\s))/gm
+        const imageRegex = /(?<=image" content=")(.*?)(?=(\s))/gm
         const now = new Date(Date.now())
         const month = inputMonth ? inputMonth : now.getUTCMonth() + 1
         const day = inputDay ? inputDay : now.getUTCDate()
         const year = now.getUTCFullYear()
-        const data = await axios.get(`https://www.daysoftheyear.com/days/${year}/${month < 10 ? `0${month}` : month}/${day < 10 ? `0${day}` : day}/`)
+        const url = `https://www.daysoftheyear.com/days/${year}/${month < 10 ? `0${month}` : month}/${day < 10 ? `0${day}` : day}/`
+        const data = await axios.get(url)
         const matchArray = data.data.match(pg1Regex)
         const holidayName = Functions.toProperCase(matchArray[0].replace(/-/g, " ").replace(/\//g, ""))
         const date = `${monthNames[month - 1]} ${day}`
-        const url = `https://www.daysoftheyear.com/days/${matchArray[0]}`
-        const holidayData = await axios.get(url)
+        const url2 = `https://www.daysoftheyear.com/days/${matchArray[0]}`
+        const holidayData = await axios.get(url2)
         const rawDescription = holidayData.data.match(pg2Regex)[0]
         const description = rawDescription.replace(/&hellip;/g, "...").replace(/&#8217;/g, "'").replace(/&#8211;/g, "-").trim()
         const image = holidayData.data.match(imageRegex)[0].replace(/"/g, "")

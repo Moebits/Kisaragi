@@ -33,8 +33,8 @@ export default class Swap extends Command {
 
         const wait = await message.channel.send(`**Scanning every member in the server. This will take awhile** ${discord.getEmoji("gabCircle")}`)
 
-        for (let i = 0; i < message.guild!.members.size; i++) {
-            const memberArray = message.guild!.members.map((m: GuildMember) => m)
+        for (let i = 0; i < message.guild!.members.cache.size; i++) {
+            const memberArray = message.guild!.members.cache.map((m: GuildMember) => m)
             const result = await detect.swapRoles(memberArray[i], true)
             if (result === true) {
                 weebCounter += 1

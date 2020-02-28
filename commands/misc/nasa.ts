@@ -9,9 +9,17 @@ const nasa = require("nasa-sdk")
 export default class Nasa extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts a nasa image.",
+            description: "Posts the nasa image of the day",
+            help:
+            `
+            \`nasa\` - Posts the astronomy picture of the day
+            `,
+            examples:
+            `
+            \`=>nasa\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 

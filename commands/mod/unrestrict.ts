@@ -39,7 +39,7 @@ export default class Unrestrict extends Command {
 
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = message.guild!.members.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
+            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
             await member.roles.remove(restrict.join(""))
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()

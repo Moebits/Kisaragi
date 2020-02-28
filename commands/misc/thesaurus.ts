@@ -9,9 +9,17 @@ const {CollegiateThesaurus} = require("mw-dict")
 export default class Thesaurus extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Find synonyms for a word.",
-            aliases: [],
-            cooldown: 3
+            description: "Gets synonyms for a word from merriam webster.",
+            help:
+            `
+            \`thesaurus word\` - Gets synonyms and antonyms for the word
+            `,
+            examples:
+            `
+            \`=>thesaurus said\`
+            `,
+            aliases: ["synonym"],
+            cooldown: 10
         })
     }
 
@@ -21,6 +29,11 @@ export default class Thesaurus extends Command {
         const embeds = new Embeds(discord, message)
         const thesaurus = new CollegiateThesaurus(process.env.THESAURUS_API_KEY)
         const word = Functions.combineArgs(args, 1)
+        if (!word) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
+            .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`))
+        }
         const thesaurusEmbed = embeds.createEmbed()
         let result
         try {
@@ -28,7 +41,7 @@ export default class Thesaurus extends Command {
         } catch (error) {
             thesaurusEmbed
             .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
-            .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`)
+            .setTitle(`**Thesaurus** ${discord.getEmoji("raphi")}`)
             .setDescription(`No synonyms were found. Here are some word suggestions: \n${error.suggestions.join(", ")}`)
             message.channel.send(thesaurusEmbed)
             return
@@ -67,9 +80,9 @@ export default class Thesaurus extends Command {
 
         thesaurusEmbed
         .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
-        .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`)
+        .setTitle(`**Thesaurus** ${discord.getEmoji("raphi")}`)
         .setURL(`https://www.merriam-webster.com/thesaurus/${result[0].word.replace(/ /g, "_")}`)
-        .setThumbnail(message.author!.displayAvatarURL())
+        .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
         .setDescription(
             `${discord.getEmoji("star")}_Word:_ **${result[0].word}**\n` +
             `${discord.getEmoji("star")}_Function:_ **${result[0].functional_label}**\n` +
