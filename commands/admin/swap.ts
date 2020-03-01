@@ -10,8 +10,17 @@ export default class Swap extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Swap all members to a weeb or normie role.",
+            help:
+            `
+            \`swap\` - Swaps all members to the weeb or normie role.
+            `,
+            examples:
+            `
+            \`=>swap\`
+            `,
+            guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 

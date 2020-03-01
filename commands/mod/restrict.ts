@@ -9,6 +9,7 @@ export default class Restrict extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Restricts users.",
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })
@@ -23,7 +24,7 @@ export default class Restrict extends Command {
         if (!await perms.checkMod()) return
         const restrictEmbed = embeds.createEmbed()
         const restrict = await sql.fetchColumn("special roles", "restricted role")
-        if (!restrict) return message.reply("You need to set a restricted role first!")
+        if (!restrict.join("")) return message.reply("You need to set a restricted role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []
 

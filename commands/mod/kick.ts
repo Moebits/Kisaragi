@@ -7,7 +7,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Kick extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Kicks users.",
+            description: "Kicks the specified users.",
+            help:
+            `
+            \`kick @user1 @user2 reason?\` - Kicks the user(s) with an optional reason
+            \`kick id1 id2 reason?\` - Kicks by user id instead of mention
+            `,
+            examples:
+            `
+            \`=>kick @user annoying\`
+            `,
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })

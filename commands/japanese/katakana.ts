@@ -10,9 +10,18 @@ const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
 export default class Katakana extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Converts romaji to katakana.",
+            description: "Converts text to katakana.",
+            help:
+            `
+            \`katakana text\` - Converts the text tokatakana
+            `,
+            examples:
+            `
+            \`=>katakana 艦隊これくしょん\`
+            \`=>katakana tesuto\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -24,14 +33,15 @@ export default class Katakana extends Command {
         await kuroshiro.init(new KuromojiAnalyzer())
 
         const input = Functions.combineArgs(args, 1)
+        if (!input) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
+            .setTitle(`**Katakana Conversion** ${discord.getEmoji("kannaCurious")}`))
+        }
         const result = await kuroshiro.convert(input, {mode: "spaced", to: "katakana"})
         const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
 
-        const katakanaEmbed = embeds.createEmbed()
-        katakanaEmbed
-        .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
-        .setTitle(`**Katakana Conversion** ${discord.getEmoji("kannaSip")}`)
-        .setDescription(`${discord.getEmoji("star")}${cleanResult}`)
-        message.channel.send(katakanaEmbed)
+        await message.channel.send(`**Katakana Conversion** ${discord.getEmoji("kannaCurious")}`)
+        message.channel.send(cleanResult)
     }
 }

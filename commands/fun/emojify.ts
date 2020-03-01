@@ -21,7 +21,7 @@ export default class Emojify extends Command {
         })
     }
 
-    public run = (args: string[]) => {
+    public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
         const letters = new Letters(discord)
@@ -30,6 +30,7 @@ export default class Emojify extends Command {
         if (!text) return message.reply("You did not provide any text.")
         const emojiFied = letters.letters(text)
         message.channel.send(`>${emojiFied}`)
+        return
 
     }
 }

@@ -11,8 +11,24 @@ export default class Welcome extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for welcome messages.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            \`welcome\` - Opens the welcome messages prompt
+            \`welcome msg\` - Sets the welcome message
+            \`welcome #channel\` - Sets the channel where welcome messages are sent
+            \`welcome url\` - Sets the background image url
+            \`welcome [msg]\` - Sets the background text
+            \`welcome rainbow/#hexcolor\` - Sets the background text color
+            \`welcome reset\` - Resets welcome settings to the default
+            `,
+            examples:
+            `
+            \`=>welcome welcome user to guild! [welcome tag! There are now count members.]\`
+            \`=>welcome enable rainbow\`
+            `,
+            guildOnly: true,
+            aliases: ["greeting"],
+            cooldown: 10
         })
     }
 
@@ -23,6 +39,7 @@ export default class Welcome extends Command {
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
         const perms = new Permission(discord, message)
+        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const axios = require("axios")
         const input = Functions.combineArgs(args, 1)
@@ -46,35 +63,35 @@ export default class Welcome extends Command {
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .attachFiles([attachment])
         .setImage(`attachment://${attachment.name ? attachment.name : "animated.gif"}`)
-        .setDescription(
-            "View and edit the settings for welcome messages!\n" +
-            "\n" +
-            "__Text Replacements:__\n" +
-            "**user** = member mention\n" +
-            "**tag** = member tag\n" +
-            "**name** = member name\n" +
-            "**guild** = guild name\n" +
-            "**count** = guild member count\n" +
-            "\n" +
-            "__Current Settings:__\n" +
-            `${discord.getEmoji("star")}_Welcome Message:_ **${welcomeMsg}**\n` +
-            `${discord.getEmoji("star")}_Welcome Channel:_ **${welcomeChannel.join("") ? `<#${welcomeChannel}>` : "None"}**\n` +
-            `${discord.getEmoji("star")}_Welcome Toggle:_ **${welcomeToggle}**\n` +
-            `${discord.getEmoji("star")}_Background Image:_ **${newImage}**\n` +
-            `${discord.getEmoji("star")}_Background Text:_ **${welcomeText}**\n` +
-            `${discord.getEmoji("star")}_Background Text Color:_ **${welcomeColor}**\n` +
-            "\n" +
-            "__Edit Settings:__\n" +
-            `${discord.getEmoji("star")}_**Type any message** to set it as the welcome message._\n` +
-            `${discord.getEmoji("star")}_Type **enable** or **disable** to enable or disable welcome messages._\n` +
-            `${discord.getEmoji("star")}_**Mention a channel** to set it as the welcome channel._\n` +
-            `${discord.getEmoji("star")}_Post an **image URL** (jpg, png, gif) to set the background image._\n` +
-            `${discord.getEmoji("star")}_Add brackets **[text]** to set the background text._\n` +
-            `${discord.getEmoji("star")}_Type **rainbow** or a **hex color** to set the background text color._\n` +
-            `${discord.getEmoji("star")}_**You can type multiple options** to set them at once._\n` +
-            `${discord.getEmoji("star")}_Type **reset** to reset settings._\n` +
-            `${discord.getEmoji("star")}_Type **cancel** to exit._\n`
-        )
+        .setDescription(Functions.multiTrim(`
+            View and edit the settings for welcome messages!
+            newline
+            __Text Replacements:__
+            **user** = member mention
+            **tag** = member tag
+            **name** = member name
+            **guild** = guild name
+            **count** = guild member count
+            newline
+            __Current Settings:__
+            ${star}_Welcome Message:_ **${welcomeMsg}**
+            ${star}_Welcome Channel:_ **${welcomeChannel.join("") ?  `<#${welcomeChannel}>`  :  "None"}**
+            ${star}_Welcome Toggle:_ **${welcomeToggle}**
+            ${star}_Background Image:_ **${newImage}**
+            ${star}_Background Text:_ **${welcomeText}**
+            ${star}_Background Text Color:_ **${welcomeColor}**
+            newline
+            __Edit Settings:__
+            ${star}_**Type any message** to set it as the welcome message._
+            ${star}_Type **enable** or **disable** to enable or disable welcome messages._
+            ${star}_**Mention a channel** to set it as the welcome channel._
+            ${star}_Post an **image URL** (jpg, png, gif) to set the background image._
+            ${star}_Add brackets **[text]** to set the background text._
+            ${star}_Type **rainbow** or a **hex color** to set the background text color._
+            ${star}_**You can type multiple options** to set them at once._
+            ${star}_Type **reset** to reset settings._
+            ${star}_Type **cancel** to exit._
+        `))
         message.channel.send(welcomeEmbed)
 
         async function welcomePrompt(msg: Message) {
@@ -128,12 +145,12 @@ export default class Welcome extends Command {
             }
             let description = ""
             if (setMsg) {
-                await sql.updateColumn("welcome leaves", "welcome message", newMsg.trim())
+                await sql.updateColumn("welcome leaves", "welcome message", String(newMsg.trim()))
                 description += `${discord.getEmoji("star")}Welcome message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
                 const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
-                await sql.updateColumn("welcome leaves", "welcome channel", channel!.id)
+                await sql.updateColumn("welcome leaves", "welcome channel", String(channel!.id))
                 setOn = true
                 description += `${discord.getEmoji("star")}Welcome channel set to <#${channel!.id}>!\n`
             }
@@ -146,15 +163,15 @@ export default class Welcome extends Command {
                 description += `${discord.getEmoji("star")}Welcome messages are **off**!\n`
             }
             if (setImage) {
-                await sql.updateColumn("welcome leaves", "welcome bg image", newImg![0])
+                await sql.updateColumn("welcome leaves", "welcome bg image", String(newImg![0]))
                 description += `${discord.getEmoji("star")}Background image set to **${newImg![0]}**!\n`
             }
             if (setBGText) {
-                await sql.updateColumn("welcome leaves", "welcome bg text", newBGText![0].replace(/\[/g, "").replace(/\]/g, ""))
+                await sql.updateColumn("welcome leaves", "welcome bg text", String(newBGText![0].replace(/\[/g, "").replace(/\]/g, "")))
                 description += `${discord.getEmoji("star")}Background text set to **${newBGText![0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
             }
             if (setBGColor) {
-                await sql.updateColumn("welcome leaves", "welcome bg color", newBGColor![0].trim())
+                await sql.updateColumn("welcome leaves", "welcome bg color", String(newBGColor![0].trim()))
                 description += `${discord.getEmoji("star")}Background color set to **${newBGColor![0].trim()}**!\n`
             }
 

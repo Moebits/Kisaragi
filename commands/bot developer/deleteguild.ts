@@ -8,7 +8,7 @@ export default class Clean extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Deletes a guild that the bot created.",
-            aliases: [],
+            aliases: ["dg"],
             cooldown: 3
         })
     }
@@ -22,6 +22,7 @@ export default class Clean extends Command {
 
         const guildID = args[1]
         const guild = discord.guilds.cache.find((g: Guild) => g.id.toString() === guildID) as Guild
+        const name = guild.name
 
         try {
             guild.delete()
@@ -30,5 +31,7 @@ export default class Clean extends Command {
         } finally {
             await sql.deleteGuild(guildID)
         }
+
+        message.channel.send(`Deleted the guild **${name}**!`)
     }
 }

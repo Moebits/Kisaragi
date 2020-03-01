@@ -7,12 +7,22 @@ export default class Guilds extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts all the guilds the bot is in.",
+            help:
+            `
+            \`guilds\` - Posts all of the bot guilds
+            `,
+            examples:
+            `
+            \`=>guilds\`
+            `,
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const guilds = discord.guilds
         const guildArray = guilds.cache.map((g: Guild) => g.name)
@@ -34,10 +44,11 @@ export default class Guilds extends Command {
             userEmbed
             .setAuthor("discord", "https://pbs.twimg.com/profile_images/1148340875937718272/sBvqcUJl.jpg")
             .setTitle(`**${discord.user!.username}'s Guilds** ${discord.getEmoji("vigneDead")}`)
-            .setThumbnail(message.guild!.iconURL() as string)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
             .setDescription(`${discord.getEmoji("star")}_Guild Count:_ **${guildArray.length}**\n` + description)
             userEmbedArray.push(userEmbed)
         }
         embeds.createReactionEmbed(userEmbedArray)
+        return
     }
 }

@@ -7,12 +7,23 @@ export default class Channels extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lists all channels in the guild.",
+            help:
+            `
+            \`channels\` - Posts all of the channels
+            `,
+            examples:
+            `
+            \`=>channels\`
+            `,
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const channels = message.guild!.channels
         const channelArray = channels.cache.map((t: GuildChannel) => t.name)
@@ -34,10 +45,11 @@ export default class Channels extends Command {
             userEmbed
             .setAuthor("discord", "https://pbs.twimg.com/profile_images/1148340875937718272/sBvqcUJl.jpg")
             .setTitle(`**${message.guild!.name}'s Channels** ${discord.getEmoji("vigneDead")}`)
-            .setThumbnail(message.guild!.iconURL() as string)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
             .setDescription(`${discord.getEmoji("star")}_Channel Count:_ **${channelArray.length}**\n` + description)
             userEmbedArray.push(userEmbed)
         }
         embeds.createReactionEmbed(userEmbedArray)
+        return
     }
 }

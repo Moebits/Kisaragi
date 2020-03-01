@@ -9,8 +9,18 @@ export default class Verify extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts a captcha that must be solved to be verified.",
+            help:
+            `
+            _Note:_ Edit captcha and verify role settings using the **captcha** command.
+            \`verify\` - Posts a captcha that must be solved.
+            `,
+            examples:
+            `
+            \`=>verify\`
+            `,
+            guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 
@@ -74,7 +84,6 @@ export default class Verify extends Command {
                         }
                     })
                     .catch((collected) => {
-                        console.log(collected)
                         message.channel.send("Quit the captcha because the time has run out.")
                     })
             })

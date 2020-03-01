@@ -10,8 +10,24 @@ export default class Selfroles extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for self-assignable roles, or lists all of them.",
+            help:
+            `
+            _Note:_ The commands for the prompt are restricted to admins only.
+            \`selfroles\` - Lists all self assignable roles (non-admin) or opens the self roles prompt (admin)
+            \`selfroles list\` - Lists all of the self assignable roles (works for admins)
+            \`selfroles @role1 @role2\` - Adds roles to the self assignable roles list
+            \`selfroles delete setting\` - Removes a role from the list
+            \`selfroles reset\` - Deletes all roles.
+            `,
+            examples:
+            `
+            \`=>selfroles list\`
+            \`=>selfroles @role1 @role2\`
+            \`=>selfroles reset\`
+            `,
+            guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 
@@ -23,7 +39,7 @@ export default class Selfroles extends Command {
         const sql = new SQLQuery(message)
 
         // If not admin, only shows the role list.
-        if (!await perms.checkAdmin(true)) {
+        if (!await perms.checkAdmin(true) || args[1] === "list") {
             let selfroles = await sql.fetchColumn("special roles", "self roles")
             selfroles = JSON.parse(selfroles[0])
             const step = 3.0
@@ -87,18 +103,18 @@ export default class Selfroles extends Command {
             selfEmbed
             .setTitle(`**Self Role Settings** ${discord.getEmoji("karenSugoi")}`)
             .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-            .setDescription(
-                `Add and remove self-assignable roles. Users can assign them with the command **selfrole**.\n` +
-                "\n" +
-                `__Current Settings__\n` +
-                settings + "\n" +
-                "\n" +
-                `__Edit Settings__\n` +
-                `${discord.getEmoji("star")}**Mention roles** to add self assignable roles.\n` +
-                `${discord.getEmoji("star")}Type **delete (setting number)** to remove a role.\n` +
-                `${discord.getEmoji("star")}Type **reset** to delete all roles.\n` +
-                `${discord.getEmoji("star")}Type **cancel** to exit.\n`
-            )
+            .setDescription(Functions.multiTrim(`
+                Add and remove self-assignable roles. Users can assign them with the command **selfrole**.
+                newline
+                __Current Settings__
+                ${settings}
+                newline
+                __Edit Settings__
+                ${discord.getEmoji("star")}**Mention roles** to add self assignable roles.
+                ${discord.getEmoji("star")}Type **delete (setting number)** to remove a role.
+                ${discord.getEmoji("star")}Type **reset** to delete all roles.
+                ${discord.getEmoji("star")}Type **cancel** to exit.
+            `))
             selfArray.push(selfEmbed)
         }
 

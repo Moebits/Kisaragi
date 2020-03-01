@@ -9,9 +9,18 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Mention extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Mention any role, then set it to unmentionable.",
+            description: "Mentions any role, then sets it to unmentionable.",
+            help:
+            `
+            \`mention @role\` - Mentions the role, and then makes it unmentionable.
+            `,
+            examples:
+            `
+            \`=>mention @news\`
+            `,
+            guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -25,6 +34,7 @@ export default class Mention extends Command {
         const prefix = await SQLQuery.fetchPrefix(message)
 
         const input = Functions.combineArgs(args, 1)
+        if (!input) return message.reply(`What role do you want me to mention ${discord.getEmoji("kannaCurious")}`)
         const role = message.guild!.roles.cache.find((r: Role) => r.name.toLowerCase().includes(input.toLowerCase().trim()))
         if (!role) {
             message.channel.send(mentionEmbed

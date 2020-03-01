@@ -7,7 +7,16 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Unban extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Unbans a user.",
+            description: "Unbans the specified user.",
+            help:
+            `
+            \`unban id1 id2 reason?\` - Unbans the user(s) by user id, with an optional reason
+            `,
+            examples:
+            `
+            \`=>unban 593838271650332672 forgiven\`
+            `,
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })

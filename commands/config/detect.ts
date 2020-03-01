@@ -9,9 +9,25 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Detect extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configures anime detection settings.",
-            aliases: [],
-            cooldown: 3
+            description: "Configures detection settings.",
+            help:
+            `
+            \`detect\` - Shows the anime detection prompt.
+            \`detect link\` - Detects links and runs a command on them, eg. youtube links
+            \`detect anime\` - Removes pictures that don't contain anime characters
+            \`detect pfp\` - Swaps members to a weeb (anime pfp) and normie (non anime pfp) role
+            \`detect reset\` - Resets settings to the default
+            \`detect @role [@role]\` Sets the weeb role (@role) and normie role [@role]
+            `,
+            examples:
+            `
+            \`=>detect link anime pfp\`
+            \`=>detect @role [@role]\`
+            \`=>detect reset\`
+            `,
+            guildOnly: true,
+            aliases: ["detection"],
+            cooldown: 10
         })
     }
 
@@ -39,30 +55,30 @@ export default class Detect extends Command {
         detectEmbed
         .setTitle(`**Detection Settings** ${discord.getEmoji("sagiriBleh")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-        .setDescription(
-            "Configure settings for automatic detection.\n" +
-            "\n" +
-            "**Link Detection** = Detects links and automatically runs the corresponding command.\n" +
-            "**Anime Detection** = Removes all pictures that don't contain anime characters.\n" +
-            "**Pfp Detection** = Actively swaps members between the weeb role (anime pfp) and normie role (non anime pfp).\n" +
-            "\n" +
-            "__Current Settings__\n" +
-            `${star}Link detection is **${links ? links.join("") : "off"}**\n` +
-            `${star}Anime detection is **${anime ? anime.join("") : "off"}**\n` +
-            `${star}Pfp detection is **${pfp ? pfp.join("") : "off"}**\n` +
-            `${star}Weeb role: **${weeb ? (weeb.join("") ? `<@&${weeb.join("")}>` : "None") : "None"}**\n` +
-            `${star}Normie role: **${normie ? (normie.join("") ? `<@&${normie.join("")}>` : "None") : "None"}**\n` +
-            "\n" +
-            "__Edit Settings__\n" +
-            `${star}Type **link** to toggle link detection on/off.\n` +
-            `${star}Type **anime** to toggle anime detection on/off.\n` +
-            `${star}Type **pfp** to toggle pfp detection on/off.\n` +
-            `${star}**Mention a role or type a role id** to set the weeb role.\n` +
-            `${star}Mention a role or type a role id **between brackets [role]** to set the normie role.\n` +
-            `${star}You can set **multiple options at the same time**.\n` +
-            `${star}Type **reset** to reset settings.\n` +
-            `${star}Type **cancel** to exit.\n`
-        )
+        .setDescription(Functions.multiTrim(`
+            Configure settings for automatic detection.
+            newline
+            **Link Detection** = Detects links and automatically runs the corresponding command.
+            **Anime Detection** = Removes all pictures that don't contain anime characters.
+            **Pfp Detection** = Actively swaps members between the weeb role (anime pfp) and normie role (non anime pfp).
+            newline
+            __Current Settings__
+            ${star}Link detection is **${links ? links.join("") :  "off"}**
+            ${star}Anime detection is **${anime ? anime.join("") :  "off"}**
+            ${star}Pfp detection is **${pfp ? pfp.join("") :  "off"}**
+            ${star}Weeb role: **${weeb ? (weeb.join("") ?  `<@&${weeb.join("")}>` : "None") :  "None"}**
+            ${star}Normie role: **${normie ? (normie.join("") ?  `<@&${normie.join("")}>` : "None") : "None"}**
+            newline
+            __Edit Settings__
+            ${star}Type **link** to toggle link detection on/off.
+            ${star}Type **anime** to toggle anime detection on/off.
+            ${star}Type **pfp** to toggle pfp detection on/off.
+            ${star}**Mention a role or type a role id** to set the weeb role.
+            ${star}Mention a role or type a role id **between brackets [role]** to set the normie role.
+            ${star}You can set **multiple options at the same time**.
+            ${star}Type **reset** to reset settings.
+            ${star}Type **cancel** to exit.
+        `))
         message.channel.send(detectEmbed)
 
         async function detectPrompt(msg: Message) {

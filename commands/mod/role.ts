@@ -8,8 +8,19 @@ export default class Role extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Adds or removes a role from a user.",
+          help:
+          `
+          \`role add user role\` - Adds the role to the specified user
+          \`role del user role\` - Deletes the role from the specified user
+          `,
+          examples:
+          `
+          \`=>role add @user @kawaii\`
+          \`=>role del @user @normie\`
+          `,
+          guildOnly: true,
           aliases: [],
-          cooldown: 3
+          cooldown: 5
         })
     }
 
@@ -21,10 +32,10 @@ export default class Role extends Command {
         if (!await perms.checkMod()) return
 
         const roleEmbed = embeds.createEmbed()
+        .setTitle(`**Role** ${discord.getEmoji("akariLurk")}`)
 
         if ((!args[3]) || (message.mentions.members!.size === 0)) {
-        return message.channel.send(roleEmbed
-          .setDescription("You must type =>role <add or del> [user] [role]"))
+        return message.reply(roleEmbed.setDescription("You must type =>role <add or del> (user) (role)"))
 
       } else {
 
@@ -40,12 +51,10 @@ export default class Role extends Command {
             case "add": {
                 try {
                   await member.roles.add(role!)
-                  await message.channel.send(roleEmbed
-                    .setDescription(`${member.displayName} now has the ${role} role!`))
+                  await message.channel.send(roleEmbed.setDescription(`${member.displayName} now has the ${role} role!`))
                 } catch (error) {
                   discord.cmdError(message, error)
-                  message.channel.send(roleEmbed
-                    .setDescription(`The role **${roleName}** could not be found.`))
+                  message.channel.send(roleEmbed.setDescription(`The role **${roleName}** could not be found.`))
                 }
                 break
             }
@@ -53,12 +62,10 @@ export default class Role extends Command {
             case "del": {
               try {
                 await member.roles.remove(role!)
-                await message.channel.send(roleEmbed
-                  .setDescription(`${member.displayName} no longer has the ${role} role!`))
+                await message.channel.send(roleEmbed.setDescription(`${member.displayName} no longer has the ${role} role!`))
               } catch (error) {
                 discord.cmdError(message, error)
-                message.channel.send(roleEmbed
-                  .setDescription(`The role **${roleName}** could not be found.`))
+                message.channel.send(roleEmbed.setDescription(`The role **${roleName}** could not be found.`))
               }
             }
             default:

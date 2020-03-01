@@ -20,6 +20,7 @@ export class Embeds {
 
     // Update Embed
     public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean) => {
+        if (!embeds[page]) return
         if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         if (help) {
             const name = embeds[page].title!.replace(/(?<=<)(.*?)(?=>)/g, "").replace(/commands/i, "help")

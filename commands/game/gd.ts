@@ -12,8 +12,22 @@ export default class GeometryDash extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for gd players and levels.",
+            help:
+            `
+            \`gd query\` - Searches for levels with the query
+            \`gd user name\` - Gets the profile of a user
+            \`gd daily\` - Gets the daily level
+            \`gd weekly\` - Gets the weekly demon
+            \`gd top 100/friends/global/creators\` - Fetches the specified leaderboard
+            `,
+            examples:
+            `
+            \`=>gd anime\`
+            \`=>gd user tenpi\`
+            \`=>gd top creators\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 
@@ -35,14 +49,13 @@ export default class GeometryDash extends Command {
             const nick = Functions.combineArgs(args, 2)
             const user = await api.users.getByNick(nick)
             const gdUser = await gd.search(nick)
-            console.log(gdUser)
             const levelArray: MessageEmbed[] = []
             for (const i in gdUser.lastLevels) {
                 levelArray.push(gdUser.lastLevels[i].name)
             }
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://tchol.org/images/geometry-dash-png-7.png")
+            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
             .setTitle(`**GD Profile** ${discord.getEmoji("raphi")}`)
             .setURL(`https://gdprofiles.com/${user.nick}`)
             .setDescription(
@@ -74,7 +87,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(level.creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://tchol.org/images/geometry-dash-png-7.png")
+            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${star}_Name:_ **${level.name}**\n` +
@@ -97,7 +110,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(level.creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://tchol.org/images/geometry-dash-png-7.png")
+            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${star}_Name:_ **${level.name}**\n` +
@@ -126,11 +139,13 @@ export default class GeometryDash extends Command {
                 users = await api.tops.get({type: "relative", count: 100})
             } else if (args[2] === "creators") {
                 users = await api.tops.get({type: "creators", count: 100})
+            } else {
+                return message.reply("You need to specify either 100, friends, global, or creators.")
             }
             for (let i = 0; i < users.length; i++) {
                 const topEmbed = embeds.createEmbed()
                 topEmbed
-                .setAuthor("geometry dash", "https://tchol.org/images/geometry-dash-png-7.png")
+                .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
                 .setTitle(`**GD Leaderboard** ${discord.getEmoji("raphi")}`)
                 .setDescription(
                     `${star}_Rank:_ **${users[i].top}**\n` +
@@ -149,12 +164,24 @@ export default class GeometryDash extends Command {
         if (query.match(/\d+/g)) {
             const level = await api.levels.getById({levelID: query.trim()})
             const user = await api.users.getById(level.creatorUserID)
-            console.log(level.creatorUserID)
-            console.log(user)
-            const gdLevel = await gd.getLevelInfo(query.trim())
-            console.log(level)
-            console.log(gdLevel)
-            return
+            const gdEmbed = embeds.createEmbed()
+            gdEmbed
+            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
+            .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
+            .setDescription(
+                `${star}_Name:_ **${level.name}**\n` +
+                `${star}_Creator:_ **${user ? user.nick : "Not Found"}**\n` +
+                `${star}_Level ID:_ **${level.levelID}**\n` +
+                `${star}_Song ID:_ **${level.songID}**\n` +
+                `${star}_Difficulty:_ **${level.diff}**\n` +
+                `${star}_Stars:_ **${level.stars}**\n` +
+                `${star}_Downloads:_ **${level.downloads}**\n` +
+                `${star}_Likes:_ **${level.likes}**\n` +
+                `${star}_Password:_ **${level.password ? level.password : "None"}**\n` +
+                `${star}_Description:_ ${base64.decode(level.desc)}\n`
+
+            )
+            return message.channel.send(gdEmbed)
         }
 
         const result = await api.levels.find({query: query.trim()})
@@ -164,7 +191,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(result.levels[i].creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://tchol.org/images/geometry-dash-png-7.png")
+            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${star}_Name:_ **${level.name}**\n` +

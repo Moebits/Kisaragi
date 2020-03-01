@@ -15,7 +15,7 @@ export default class LewdMe extends Command {
         })
     }
 
-    public run = (args: string[]) => {
+    public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
@@ -28,5 +28,6 @@ export default class LewdMe extends Command {
         .setURL(lewdme.pics[random].source)
         .setImage(lewdme.pics[random].link)
         message.channel.send(lewdmeEmbed)
+        return
     }
 }

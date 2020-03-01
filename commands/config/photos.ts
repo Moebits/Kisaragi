@@ -11,7 +11,9 @@ export default class Photos extends Command {
         super(discord, message, {
             description: "Configures photo upload settings.",
             aliases: [],
-            cooldown: 3
+            guildOnly: true,
+            cooldown: 10,
+            unlist: true
         })
     }
 

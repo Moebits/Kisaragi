@@ -25,7 +25,7 @@ export default class Block extends Command {
             `
             \`=>block lolicon\`
             \`=>block delete 1\`
-            \`=>block\` _then_ \`asterisk disable\`
+            \`=>block asterisk disable\`
             \`=>block partial\`
             \`=>block reset\`
             `,
@@ -33,7 +33,7 @@ export default class Block extends Command {
             aliases: ["filter"],
             permission: "MANAGE_CHANNELS",
             botPermission: "MANAGE_MESSAGES",
-            cooldown: 30
+            cooldown: 10
         })
     }
 
@@ -69,19 +69,19 @@ export default class Block extends Command {
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) || message.author!.displayAvatarURL({format: "png", dynamic: true}))
         .setDescription(Functions.multiTrim(`
         Add or remove blocked words.
-
+        newline
         **Exact** = Only matches the exact word.
         **Partial** = Also matches if the word is partially in another word.
         **Asterisk** = Whether messages containing asterisks will be blocked.
-
+        newline
         __Word List__
         ${wordList}
-
+        newline
         __Current Settings__
         ${star}_Filtering is **${toggle}**._
         ${star}_Matching algorithm set to **${match}**._
         ${star}_Asterisk filtering is **${asterisk}**._
-
+        newline
         __Edit Settings__
         ${star}_**Type any words**, separated by a space, to add blocked words._
         ${star}_Type **enable** or **disable** to enable/disable filtering._

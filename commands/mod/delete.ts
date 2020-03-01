@@ -8,9 +8,20 @@ import {Functions} from "./../../structures/Functions"
 export default class Delete extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Deletes messages.",
+            description: "Deletes the specified number of messages.",
+            help:
+            `
+            \`delete number\` - Deletes the number of messages, up to 1000
+            \`delete number user id\` - Deletes the last x messages by the user
+            \`delete number query\` - Deletes the last x messages containing the query
+            `,
+            examples:
+            `
+            \`=>delete 1000\`
+            \`=>delete 100 badWord\`
+            `,
             aliases: ["del", "prune", "purge"],
-            cooldown: 3
+            cooldown: 10
         })
     }
 

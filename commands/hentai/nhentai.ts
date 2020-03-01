@@ -13,8 +13,20 @@ export default class $nHentai extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches a doujinshi on nhentai.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            \`nhentai\` - Gets a random doujinshi (after a quality filter)
+            \`nhentai query\` - Searches for a doujinshi with the query
+            \`nhentai url/id\` - Gets a doujinshi by url or id
+            \`nhentai random\` - Gets a truly random doujinshi, not recommended
+            `,
+            examples:
+            `
+            \`=>nhentai loli stockings\`
+            \`=>nhentai\`
+            `,
+            aliases: ["nh"],
+            cooldown: 15
         })
     }
 

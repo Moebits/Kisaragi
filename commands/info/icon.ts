@@ -7,8 +7,17 @@ export default class GuildIcon extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts the guild's icon.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            \`icon\` - Posts the guild icon
+            `,
+            examples:
+            `
+            \`=>icon\`
+            `,
+            guildOnly: true,
+            aliases: ["gicon", "guildicon"],
+            cooldown: 5
         })
     }
 

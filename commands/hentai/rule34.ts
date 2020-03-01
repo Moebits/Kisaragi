@@ -1,3 +1,4 @@
+import axios from "axios"
 import Booru from "booru"
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
@@ -9,8 +10,19 @@ import {Permission} from "./../../structures/Permission"
 export default class Rule34 extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            \`rule34\` - Gets a random sfw image
+            \`rule34 r18 query?\` - Gets a nsfw image (random or with a query)
+            \`rule34 url/id\` - Gets the image by url or id
+            `,
+            examples:
+            `
+            \`=>rule34 anime\`
+            \`=>rule34\`
+            `,
+            aliases: ["r34"],
+            cooldown: 10
         })
     }
 
@@ -21,29 +33,20 @@ export default class Rule34 extends Command {
         const perms = new Permission(discord, message)
         const rule34 = Booru("rule34")
         const rule34Embed = embeds.createEmbed()
-        const axios = require("axios")
+        .setAuthor("rule34", "https://cdn.imgbin.com/18/6/2/imgbin-rule-34-internet-mpeg-4-part-14-rule-34-Eg19BPJrNiThRQmqwVpTJsZAw.jpg")
+        .setTitle(`**Rule34 Search** ${discord.getEmoji("gabLewd")}`)
 
         let tags
         if (!args[1]) {
-            tags = ["rating:safe"]
+            tags = ["1girl", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
             if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
+            if (!tags.join("")) tags = ["1girl"]
             tags.push("-rating:safe")
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
             tags.push("rating:safe")
-        }
-
-        if (!tags.join(" ")) {
-            rule34Embed
-            .setAuthor("rule34", "https://cdn.imgbin.com/18/6/2/imgbin-rule-34-internet-mpeg-4-part-14-rule-34-Eg19BPJrNiThRQmqwVpTJsZAw.jpg")
-            .setTitle(`**Rule34 Search** ${discord.getEmoji("gabLewd")}`)
-            .setDescription("No results were found. Underscores are not required, " +
-            "if you want to search multiple terms separate them with a comma. Tags usually start with a last name, try looking up your tag " +
-            "on the rule34 website.\n" + "[rule34 Website](https://rule34.xxx//)")
-            message.channel.send(rule34Embed)
-            return
         }
 
         const tagArray: string[] = []
@@ -52,8 +55,8 @@ export default class Rule34 extends Command {
         }
 
         let url
-        if (tags.join("").match(/\d+/g)) {
-            const rawUrl = `https://rule34.xxx/index.php?page=post&s=view&id=${tags.join("").match(/\d+/g)}`
+        if (tags.join("").match(/\d\d+/g)) {
+            const rawUrl = `https://rule34.xxx/index.php?page=post&s=view&id=${tags.join("").match(/\d\d+/g)}`
             url = rawUrl.replace(/34,/g, "")
         } else {
             const image = await rule34.search(tagArray, {limit: 1, random: true})
@@ -62,8 +65,17 @@ export default class Rule34 extends Command {
 
         const rawID = url.match(/\d+/g)!.join("")
         const id = rawID.slice(2)
-        const result = await axios.get(`https://rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&id=${id}`)
+        let result
+        try {
+            result = await axios.get(`https://rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&id=${id}`)
+        } catch {
+            return this.invalidQuery(rule34Embed, "The url is invalid.")
+        }
+        console.log(result)
         const img = result.data[0]
+        if (img.rating !== "s") {
+            if (!perms.checkNSFW()) return
+        }
         console.log(img)
         rule34Embed
         .setAuthor("rule34", "https://cdn.imgbin.com/18/6/2/imgbin-rule-34-internet-mpeg-4-part-14-rule-34-Eg19BPJrNiThRQmqwVpTJsZAw.jpg")

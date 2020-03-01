@@ -9,6 +9,7 @@ export default class Remdash extends Command {
         super(discord, message, {
             description: "Remove dashes from channel names.",
             aliases: ["delhyphen"],
+            guildOnly: true,
             cooldown: 5,
             // doesn't work anymore
             unlist: true

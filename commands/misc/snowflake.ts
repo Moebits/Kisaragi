@@ -23,7 +23,7 @@ export default class Snowflake extends Command {
         })
     }
 
-    public run = (args: string[]) => {
+    public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)

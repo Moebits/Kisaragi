@@ -25,7 +25,7 @@ export default class Lenny extends Command {
         })
     }
 
-    public run = (args: string[]) => {
+    public run = async (args: string[]) => {
         const message = this.message
 
         if (args[1] === "face") {
@@ -39,5 +39,6 @@ export default class Lenny extends Command {
         } else {
             message.channel.send(lenny())
         }
+        return
     }
 }

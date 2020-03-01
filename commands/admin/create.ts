@@ -10,6 +10,7 @@ export default class Create extends Command {
         super(discord, message, {
             description: "Create channels, roles, and emojis.",
             aliases: [],
+            guildOnly: true,
             cooldown: 30
         })
     }

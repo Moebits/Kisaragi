@@ -144,9 +144,12 @@ export default class MessageEvent {
       if (onCooldown && (message.author!.id !== process.env.OWNER_ID)) return message.reply({embed: onCooldown})
 
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
+
       cmdPath.run(args).then(() => {
-      const msgCheck = message.channel.messages
-      if (msgCheck.cache.has(msg.id)) msg.delete({timeout: 1000})
-      }).catch((err: Error) => message.channel.send(this.discord.cmdError(message, err)))
+          const msgCheck = message.channel.messages
+          if (msgCheck.cache.has(msg.id)) msg.delete({timeout: 1000})
+        }).catch((err: Error) => {
+        message.channel.send(this.discord.cmdError(message, err))
+      })
     }
   }

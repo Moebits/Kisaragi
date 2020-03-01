@@ -8,9 +8,18 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Captcha extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Reset all settings to the default.",
+            description: "Reset all settings to the default (no undo).",
+            help:
+            `
+            \`reset\` - Resets all settings (no undo)
+            `,
+            examples:
+            `
+            \`=>reset\`
+            `,
+            guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 
@@ -28,6 +37,7 @@ export default class Captcha extends Command {
         await sql.initGuild()
         message.channel.send(
         initEmbed
+        .setTitle(`**Reset** ${discord.getEmoji("kaosWTF")}`)
         .setDescription("All guild settings have been reset to the default."))
         return
     }

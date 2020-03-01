@@ -11,8 +11,16 @@ export default class Furigana extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Adds furigana to japanese text.",
+            help:
+            `
+            \`furigana text\` - Adds furigana to the text
+            `,
+            examples:
+            `
+            \`=>furigana 艦隊これくしょん\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -24,14 +32,15 @@ export default class Furigana extends Command {
         await kuroshiro.init(new KuromojiAnalyzer())
 
         const input = Functions.combineArgs(args, 1)
+        if (!input) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
+            .setTitle(`**Furigana Conversion** ${discord.getEmoji("KannaXD")}`))
+        }
         const result = await kuroshiro.convert(input, {mode: "furigana", to: "hiragana"})
         const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
 
-        const furiganaEmbed = embeds.createEmbed()
-        furiganaEmbed
-        .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
-        .setTitle(`**furigana Conversion** ${discord.getEmoji("kannaSip")}`)
-        .setDescription(`${discord.getEmoji("star")}${cleanResult}`)
-        message.channel.send(furiganaEmbed)
+        await message.channel.send(`**Furigana Conversion** ${discord.getEmoji("KannaXD")}`)
+        message.channel.send(cleanResult)
     }
 }

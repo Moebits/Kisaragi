@@ -52,7 +52,7 @@ export class Kisaragi extends Client {
         .setTitle(`**Command Error** ${this.getEmoji("maikaWut")}`)
         .setDescription(`There was an error executing this command:\n` +
         `**${error.name}: ${error.message}**\n` + `Please report this through the following links:\n` +
-        `[Official Server](https://gg/77yGmWM), [Github Repo](https://github.com/Tenpi/Gab)`)
+        `[Support Server](https://discord.gg/77yGmWM), [Github Repository](https://github.com/Tenpi/Kisaragi)`)
         return messageErrorEmbed
     }
 

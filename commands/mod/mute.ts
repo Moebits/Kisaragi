@@ -9,6 +9,7 @@ export default class Mute extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Mutes users.",
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })
@@ -23,7 +24,7 @@ export default class Mute extends Command {
         if (!await perms.checkMod()) return
         const muteEmbed = embeds.createEmbed()
         const mute = await sql.fetchColumn("special roles", "mute role")
-        if (!mute) return message.reply("You need to set a mute role first!")
+        if (!mute.join("")) return message.reply("You need to set a mute role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []
 

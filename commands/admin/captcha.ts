@@ -30,7 +30,7 @@ export default class CaptchaCmd extends Command {
             `,
             guildOnly: true,
             aliases: ["verification"],
-            cooldown: 30
+            cooldown: 10
         })
     }
 
@@ -61,31 +61,31 @@ export default class CaptchaCmd extends Command {
         .attachFiles(captcha.files)
         .setImage(captcha.image!.url)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-        .setDescription(
-            "Configure settings for captcha verification. In order for this to function, you should create a role for verified members " +
-            "and deny the @everyone role reading Permission in all your guild channels, with the exception of the rules channel and the verify channel. Use **verify** to send a captcha.\n" +
-            "\n" +
-            "**Verify Role** = The role given to members who solve the captcha.\n" +
-            "**Captcha Type** = Either text or math.\n" +
-            "**Captcha Difficulty** = Either easy, medium, hard, or extreme.\n" +
-            "\n" +
-            "__Current Settings:__\n" +
-            `${star}_Verify Role:_ **${String(vRole) ? "<@&" + String(vRole) + ">" : "None"}**\n` +
-            `${star}_Verify Toggle:_ **${String(vToggle)}**\n` +
-            `${star}_Captcha Type:_ **${String(cType)}**\n` +
-            `${star}_Captcha Difficulty:_ **${String(difficulty)}**\n` +
-            `${star}_Background Color:_ **${String(color)}**\n` +
-            "\n" +
-            "__Edit Settings:__\n" +
-            `${star}_Type **enable** or **disable** to enable or disable verification._\n` +
-            `${star}_**Mention a role** or type the **role id** to set the verified role._\n` +
-            `${star}_Type **text** or **math** to set the captcha type._\n` +
-            `${star}_Type **easy**, **medium**, **hard**, or **extreme** to set the difficulty._\n` +
-            `${star}_Type a **hex color** to set the background color._\n` +
-            `${star}_**You can type multiple options** to enable all at once._\n` +
-            `${star}_Type **reset** to reset all settings._\n` +
-            `${star}_Type **cancel** to exit._\n`
-        )
+        .setDescription(Functions.multiTrim(`
+            Configure settings for captcha verification. In order for this to function, you should create a role for verified members
+            and deny the @everyone role reading Permission in all your guild channels, with the exception of the rules channel and the verify channel. Use **verify** to send a captcha.
+            newline
+            **Verify Role** = The role given to members who solve the captcha.
+            **Captcha Type** = Either text or math.
+            **Captcha Difficulty** = Either easy, medium, hard, or extreme.
+            newline
+            __Current Settings:__
+            ${star}_Verify Role:_ **${String(vRole) ?  "<@&" + String(vRole) + ">" : "None"}**
+            ${star}_Verify Toggle:_ **${String(vToggle)}**
+            ${star}_Captcha Type:_ **${String(cType)}**
+            ${star}_Captcha Difficulty:_ **${String(difficulty)}**
+            ${star}_Background Color:_ **${String(color)}**
+            newline
+            __Edit Settings:__
+            ${star}_Type **enable** or **disable** to enable or disable verification._
+            ${star}_**Mention a role** or type the **role id** to set the verified role._
+            ${star}_Type **text** or **math** to set the captcha type._
+            ${star}_Type **easy**, **medium**, **hard**, or **extreme** to set the difficulty._
+            ${star}_Type a **hex color** to set the background color._
+            ${star}_**You can type multiple options** to enable all at once._
+            ${star}_Type **reset** to reset all settings._
+            ${star}_Type **cancel** to exit._
+        `))
         message.channel.send(captchaEmbed)
 
         async function captchaPrompt(msg: Message) {

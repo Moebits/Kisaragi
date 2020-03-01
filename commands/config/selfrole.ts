@@ -9,8 +9,18 @@ export default class Selfrole extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Add a role from the self assignable roles list.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            _Note:_ Add roles to the self assignable role list with **selfroles**.
+            \`selfrole rolename\` - Adds a role from the guilds self assignable role list
+            `,
+            examples:
+            `
+            \`=>selfrole kanna\`
+            `,
+            guildOnly: true,
+            aliases: ["sr"],
+            cooldown: 10
         })
     }
 
@@ -25,6 +35,7 @@ export default class Selfrole extends Command {
         selfroles = JSON.parse(selfroles[0])
 
         if (!selfroles[0]) return
+        if (!args[1]) return message.reply(`What role are you asking for ${discord.getEmoji("kannaCurious")}`)
 
         const roles = message.guild!.roles.cache.filter((r: Role) => {
             for (let i = 0; i < selfroles.length; i++) {

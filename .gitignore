@@ -1,6 +1,7 @@
 #Sensitive data
 .env
 dist/.env
+latest.dump
 
 #Node modules
 node_modules

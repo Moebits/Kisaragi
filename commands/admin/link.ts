@@ -11,6 +11,7 @@ export default class ChannelLink extends Command {
         super(discord, message, {
             description: "Configure settings for linked channels.",
             aliases: [],
+            guildOnly: true,
             cooldown: 3
         })
     }

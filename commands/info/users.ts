@@ -7,12 +7,23 @@ export default class Users extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lists all users in the guild.",
+            help:
+            `
+            \`users\` - Posts all of the users
+            `,
+            examples:
+            `
+            \`=>users\`
+            `,
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const members = message.guild!.members
         const userArray = members.cache.map((m: GuildMember) => `${m.user.username}#${m.user.discriminator}`)
@@ -34,10 +45,11 @@ export default class Users extends Command {
             userEmbed
             .setAuthor("discord", "https://pbs.twimg.com/profile_images/1148340875937718272/sBvqcUJl.jpg")
             .setTitle(`**${message.guild!.name}'s Members** ${discord.getEmoji("vigneDead")}`)
-            .setThumbnail(message.guild!.iconURL() as string)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
             .setDescription(`${discord.getEmoji("star")}_Member Count:_ **${message.guild!.memberCount}**\n` + description)
             userEmbedArray.push(userEmbed)
         }
         embeds.createReactionEmbed(userEmbedArray)
+        return
     }
 }

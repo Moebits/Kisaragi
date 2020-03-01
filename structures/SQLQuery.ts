@@ -7,7 +7,11 @@ import * as Redis from "redis"
 import {Settings} from "./Settings"
 
 const RedisAsync = bluebird.promisifyAll(Redis)
-const redis = RedisAsync.createClient()
+const redis = RedisAsync.createClient({
+  host: process.env.REDISHOST,
+  port: Number(process.env.REDISPORT),
+  password: process.env.REDISPASSWORD
+})
 const pgPool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,

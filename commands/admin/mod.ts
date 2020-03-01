@@ -11,6 +11,7 @@ export default class Mod extends Command {
         super(discord, message, {
             description: "Configure moderation settings.",
             aliases: [],
+            guildOnly: true,
             cooldown: 3
         })
     }

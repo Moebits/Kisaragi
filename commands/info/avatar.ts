@@ -7,8 +7,17 @@ export default class Avatar extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Posts your avatar or the avatar of a user.",
-          aliases: [],
-          cooldown: 3
+          help:
+          `
+          \`avatar\` - Posts your avatar
+          \`avatar @user1 @user2\` - Posts the avatar(s) of the mentioned user(s)
+          `,
+          examples:
+          `
+          \`=>avatar\`
+          `,
+          aliases: ["av"],
+          cooldown: 5
         })
     }
 

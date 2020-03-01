@@ -9,6 +9,7 @@ export default class Warn extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Warns users.",
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })

@@ -10,8 +10,19 @@ export default class DetectChannels extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures channels ignored by anime detection.",
+            help:
+            `
+            \`detectchannels\` - Opens the detection channels prompt
+            \`detectchannels #channel1 #channel2\` - Sets channels that are ignored from anime detection
+            \`detectchannels reset\` - Deletes all settings
+            `,
+            examples:
+            `
+            \`=>detectchannels #channel\`
+            `,
+            guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 
@@ -50,17 +61,17 @@ export default class DetectChannels extends Command {
             detectEmbed
             .setTitle(`**Ignored Detection Channels** ${discord.getEmoji("kisaragibawls")}`)
             .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-            .setDescription(
-                "Channels in this list will be exempt from anime detection.\n" +
-                "\n" +
-                "__Current Settings__\n" +
-                description + "\n" +
-                "\n" +
-                "__Edit Settings__\n" +
-                `${star}**Mention channels** to add channels.\n` +
-                `${star}Type **reset** to delete all settings.\n` +
-                `${star}Type **cancel** to exit.\n`
-            )
+            .setDescription(Functions.multiTrim(`
+                Channels in this list will be exempt from anime detection.
+                newline
+                __Current Settings__
+                ${description}
+                newline
+                __Edit Settings__
+                ${star}**Mention channels** to add channels.
+                ${star}Type **reset** to delete all settings.
+                ${star}Type **cancel** to exit.
+            `))
             detectArray.push(detectEmbed)
         }
 

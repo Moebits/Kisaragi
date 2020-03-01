@@ -10,9 +10,18 @@ const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
 export default class Hiragana extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Converts romaji to hiragana.",
+            description: "Converts text to hiragana.",
+            help:
+            `
+            \`hiragana text\` - Converts text to hiragana
+            `,
+            examples:
+            `
+            \`=>hiragana 艦隊これくしょん\`
+            \`=>hiragana senpai\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -24,14 +33,15 @@ export default class Hiragana extends Command {
         await kuroshiro.init(new KuromojiAnalyzer())
 
         const input = Functions.combineArgs(args, 1)
+        if (!input) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
+            .setTitle(`**Hiragana Conversion** ${discord.getEmoji("aquaUp")}`))
+        }
         const result = await kuroshiro.convert(input, {mode: "spaced", to: "hiragana"})
         const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
 
-        const hiraganaEmbed = embeds.createEmbed()
-        hiraganaEmbed
-        .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
-        .setTitle(`**Hiragana Conversion** ${discord.getEmoji("kannaSip")}`)
-        .setDescription(`${discord.getEmoji("star")}${cleanResult}`)
-        message.channel.send(hiraganaEmbed)
+        await message.channel.send(`**Hiragana Conversion** ${discord.getEmoji("aquaUp")}`)
+        message.channel.send(cleanResult)
     }
 }

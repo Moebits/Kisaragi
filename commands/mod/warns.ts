@@ -10,6 +10,7 @@ export default class Warns extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lists all warns.",
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })

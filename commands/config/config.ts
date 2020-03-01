@@ -9,9 +9,22 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Config extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configures bot config settings.",
+            description: "Configures bot settings.",
+            help:
+            `
+            \`config\` - Shows the config prompt.
+            \`config default/random/#hexcolor\` - Sets the colors of the embeds
+            \`config role/perm\` - Checks permissions with mod/admin roles or discord permissions (eg. ban members)
+            \`config reset\` - Resets settings to the default
+            `,
+            examples:
+            `
+            \`=>config default role\`
+            \`=>config reset\`
+            `,
+            guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 10
         })
     }
 
@@ -36,13 +49,13 @@ export default class Config extends Command {
         configEmbed
         .setTitle(`**Bot Config Settings** ${discord.getEmoji("gabStare")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-        .setDescription(`
+        .setDescription(Functions.multiTrim(`
         Configure bot settings.
-
+        newline
         __Current Settings__
         ${star}Embed color set to **${color}**
         ${star}Permission checks set to **${permCheck}**
-
+        newline
         __Edit Settings__
         ${star}Type **default/random** or a **hexcolor** to set the embed color.
         ${star}Type **role/perm** to set how permissions are checked.
@@ -50,7 +63,7 @@ export default class Config extends Command {
         ${star}Type **reset** to delete all settings.
         ${star}Type **cancel** to exit.
         `
-        )
+        ))
 
         message.channel.send(configEmbed)
 
@@ -84,13 +97,13 @@ export default class Config extends Command {
             let description = ""
 
             if (setColor) {
-                await sql.updateColumn("config", "embed colors", newColor)
-                description += `${star}Embed color set to **${newColor}!**`
+                await sql.updateColumn("config", "embed colors", String(newColor))
+                description += `${star}Embed color set to **${newColor}!**\n`
             }
 
             if (setPerm) {
-                await sql.updateColumn("config", "permissions", newPerm)
-                description += `${star}Permission check set to **${newPerm}!**`
+                await sql.updateColumn("config", "permissions", String(newPerm))
+                description += `${star}Permission check set to **${newPerm}!**\n`
             }
 
             if (!description) description = `${star}Invalid arguments provided, canceled the prompt.`

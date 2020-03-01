@@ -6,7 +6,15 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Ping extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Pings the discord api.",
+          description: "Ping.",
+          help:
+          `
+          \`ping\` - Posts the response time
+          `,
+          examples:
+          `
+          \`=>ping\`
+          `,
           aliases: [],
           cooldown: 3
         })
@@ -20,8 +28,9 @@ export default class Ping extends Command {
         const pingEmbed = embeds.createEmbed()
 
         const msg = await message.channel.send(pingEmbed
-      .setDescription("Ping?")) as Message
+        .setDescription("Ping?")) as Message
         msg.edit(pingEmbed
-      .setDescription(`Latency is ${msg.createdTimestamp - message.createdTimestamp}ms. API Latency is /todo/ ms`))
+        .setTitle(`**Ping** ${discord.getEmoji("kannaHungry")}`)
+        .setDescription(`Ping is **${msg.createdTimestamp - message.createdTimestamp}ms**`))
     }
   }

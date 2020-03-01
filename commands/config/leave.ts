@@ -11,8 +11,25 @@ export default class Leave extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for leave messages.",
-            aliases: [],
-            cooldown: 3
+            help:
+            `
+            \`leave\` - Opens the leave prompt.
+            \`leave enable/disable\` - Enables or disables leave messages
+            \`leave msg\` - Sets the leave message
+            \`leave #channel\` - Sets the channel where messages are sent
+            \`leave url\` - Sets the image url
+            \`leave [msg]\` - Sets the background text
+            \`leave rainbow/#hexcolor\` - Sets the background text color
+            \`leave reset\` - Resets settings to the default
+            `,
+            examples:
+            `
+            \`=>leave user left guild! #channel [tag left!] rainbow\`
+            \`=>leave reset\`
+            `,
+            guildOnly: true,
+            aliases: ["farewell"],
+            cooldown: 10
         })
     }
 
@@ -42,41 +59,40 @@ export default class Leave extends Command {
         const attachment = await images.createCanvas(message.member!, leaveImage[0], leaveText[0], leaveColor[0]) as MessageAttachment
         const json = await axios.get(`https://is.gd/create.php?format=json&url=${leaveImage.join("")}`)
         const newImg = json.data.shorturl
-        console.log(attachment)
         leaveEmbed
         .setTitle(`**Leave Messages** ${discord.getEmoji("sagiriBleh")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .attachFiles([attachment])
         .setImage(`attachment://${attachment.name ? attachment.name : "animated.gif"}`)
-        .setDescription(
-            "View and edit the settings for leave messages!\n" +
-            "\n" +
-            "__Text Replacements:__\n" +
-            "**user** = member mention\n" +
-            "**tag** = member tag\n" +
-            "**name** = member name\n" +
-            "**guild** = guild name\n" +
-            "**count** = guild member count\n" +
-            "\n" +
-            "__Current Settings:__\n" +
-            `${star}_Leave Message:_ **${leaveMsg}**\n` +
-            `${star}_Leave Channel:_ **${leaveChannel.join("") ? `<#${leaveChannel}>` : "None"}**\n` +
-            `${star}_Leave Toggle:_ **${leaveToggle}**\n` +
-            `${star}_Background Image:_ **${newImg}**\n` +
-            `${star}_Background Text:_ **${leaveText}**\n` +
-            `${star}_Background Text Color:_ **${leaveColor}**\n` +
-            "\n" +
-            "__Edit Settings:__\n" +
-            `${star}_**Type any message** to set it as the leave message._\n` +
-            `${star}_Type **enable** or **disable** to enable or disable leave messages._\n` +
-            `${star}_**Mention a channel** to set it as the leave channel._\n` +
-            `${star}_Post an **image URL** (jpg, png, gif) to set the background image._\n` +
-            `${star}_Add brackets **[text]** to set the background text._\n` +
-            `${star}_Type **rainbow** or a **hex color** to set the background text color._\n` +
-            `${star}_**You can type multiple options** to set them at once._\n` +
-            `${star}_Type **reset** to reset settings._\n` +
-            `${star}_Type **cancel** to exit._\n`
-        )
+        .setDescription(Functions.multiTrim(`
+            View and edit the settings for leave messages!
+            newline
+            __Text Replacements:__
+            **user** = member mention
+            **tag** = member tag
+            **name** = member name
+            **guild** = guild name
+            **count** = guild member count
+            newline
+            __Current Settings:__
+            ${star}_Leave Message:_ **${leaveMsg}**
+            ${star}_Leave Channel:_ **${leaveChannel.join("") ?  `<#${leaveChannel}>`  :  "None"}**
+            ${star}_Leave Toggle:_ **${leaveToggle}**
+            ${star}_Background Image:_ **${newImg}**
+            ${star}_Background Text:_ **${leaveText}**
+            ${star}_Background Text Color:_ **${leaveColor}**
+            newline
+            __Edit Settings:__
+            ${star}_**Type any message** to set it as the leave message._
+            ${star}_Type **enable** or **disable** to enable or disable leave messages._
+            ${star}_**Mention a channel** to set it as the leave channel._
+            ${star}_Post an **image URL** (jpg, png, gif) to set the background image._
+            ${star}_Add brackets **[text]** to set the background text._
+            ${star}_Type **rainbow** or a **hex color** to set the background text color._
+            ${star}_**You can type multiple options** to set them at once._
+            ${star}_Type **reset** to reset settings._
+            ${star}_Type **cancel** to exit._
+        `))
         message.channel.send(leaveEmbed)
 
         async function leavePrompt(msg: Message) {
@@ -130,12 +146,12 @@ export default class Leave extends Command {
             }
             let description = ""
             if (setMsg) {
-                await sql.updateColumn("welcome leaves", "leave message", newMsg.trim())
+                await sql.updateColumn("welcome leaves", "leave message", String(newMsg.trim()))
                 description += `${star}Leave Message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
                 const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
-                await sql.updateColumn("welcome leaves", "leave channel", channel!.id)
+                await sql.updateColumn("welcome leaves", "leave channel", String(channel!.id))
                 setOn = true
                 description += `${star}Leave channel set to <#${channel!.id}>!\n`
             }
@@ -148,15 +164,15 @@ export default class Leave extends Command {
                 description += `${star}Leave Messages are **off**!\n`
             }
             if (setImage) {
-                await sql.updateColumn("welcome leaves", "leave bg image", newImage![0])
+                await sql.updateColumn("welcome leaves", "leave bg image", String(newImage![0]))
                 description += `${star}Background image set to **${newImage![0]}**!\n`
             }
             if (setBGText) {
-                await sql.updateColumn("welcome leaves", "leave bg text", newBGText![0].replace(/\[/g, "").replace(/\]/g, ""))
+                await sql.updateColumn("welcome leaves", "leave bg text", String(newBGText![0].replace(/\[/g, "").replace(/\]/g, "")))
                 description += `${star}Background text set to **${newBGText![0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
             }
             if (setBGColor) {
-                await sql.updateColumn("welcome leaves", "leave bg color", newBGColor![0])
+                await sql.updateColumn("welcome leaves", "leave bg color", String(newBGColor![0]))
                 description += `${star}Background color set to **${newBGColor![0]}**!\n`
             }
 

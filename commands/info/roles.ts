@@ -7,12 +7,23 @@ export default class Roles extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lists all roles in the guild.",
+            help:
+            `
+            \`roles\` - Posts all of the roles
+            `,
+            examples:
+            `
+            \`=>roles\`
+            `,
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const roles = message.guild!.roles
         const roleArray = roles.cache.map((r: Role) => r.name)
@@ -34,10 +45,11 @@ export default class Roles extends Command {
             userEmbed
             .setAuthor("discord", "https://pbs.twimg.com/profile_images/1148340875937718272/sBvqcUJl.jpg")
             .setTitle(`**${message.guild!.name}'s Roles** ${discord.getEmoji("vigneDead")}`)
-            .setThumbnail(message.guild!.iconURL() as string)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
             .setDescription(`${discord.getEmoji("star")}_Role Count:_ **${roleArray.length}**\n` + description)
             userEmbedArray.push(userEmbed)
         }
         embeds.createReactionEmbed(userEmbedArray)
+        return
     }
 }

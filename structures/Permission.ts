@@ -8,8 +8,8 @@ export class Permission {
 
     // Check Mod
     public checkMod = async (ignore?: boolean): Promise<boolean> => {
-        if (this.message.author!.id === process.env.OWNER_ID) return true
-        if (this.message.author!.id === this.discord.user!.id) return true
+        if (this.message.author.id === process.env.OWNER_ID) return true
+        if (this.message.author.id === this.discord.user!.id) return true
         const mod = await this.sql.fetchColumn("special roles", "mod role")
         if (!mod) {
             if (ignore) return false
@@ -30,8 +30,8 @@ export class Permission {
 
     // Check Admin
     public checkAdmin = async (ignore?: boolean): Promise<boolean> => {
-        if (this.message.author!.id === process.env.OWNER_ID) return true
-        if (this.message.author!.id === this.discord.user!.id) return true
+        if (this.message.author.id === process.env.OWNER_ID) return true
+        if (this.message.author.id === this.discord.user!.id) return true
         const admin = await this.sql.fetchColumn("special roles", "admin role")
         if (!admin) {
             if (ignore) return false
@@ -52,18 +52,18 @@ export class Permission {
 
     // Check Bot Dev
     public checkBotDev = (): boolean => {
-        if (this.message.author!.id === this.discord.user!.id) return true
-        if (this.message.author!.id === process.env.OWNER_ID) {
+        if (this.message.author.id === this.discord.user!.id) return true
+        if (this.message.author.id === process.env.OWNER_ID) {
             return true
         } else {
-            this.message.reply("Only the bot developer can use bot developer commands")
+            this.message.reply("Only the bot developer can use bot developer commands.")
             return false
         }
     }
 
     // Check Permission
     public checkPerm = (perm: string) => {
-        if (this.message.author!.id === process.env.OWNER_ID) return true
+        if (this.message.author.id === process.env.OWNER_ID) return true
         perm = perm.toUpperCase().replace(/\s+/g, "_")
         const permission =  new Permissions(perm as PermissionString)
         if (this.message.member!.hasPermission(permission)) {

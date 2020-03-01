@@ -13,7 +13,8 @@ export default class Test extends Command {
         })
     }
 
-    public run = (args: string[]) => {
+    public run = async (args: string[]) => {
         const message = this.message
+        return
     }
 }

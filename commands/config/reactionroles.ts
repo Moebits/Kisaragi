@@ -11,13 +11,16 @@ export default class ReactionRoles extends Command {
         super(discord, message, {
             description: "Configures reaction role settings.",
             aliases: [],
-            cooldown: 3
+            guildOnly: true,
+            cooldown: 3,
+            unlist: true
         })
     }
 
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
+        const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
@@ -58,9 +61,9 @@ export default class ReactionRoles extends Command {
                     })
                     const identifier = guildEmoji!.identifier
                     settings += `${i + 1} **=>**\n` +
-                    `${discord.getEmoji("star")}_Message:_ [Link](${foundMsg!.url})\n` +
-                    `${discord.getEmoji("star")}_Emoji:_ ${identifier}\n` +
-                    `${discord.getEmoji("star")}_Role:_ <@&${roles[value]}>\n`
+                    `${star}_Message:_ [Link](${foundMsg!.url})\n` +
+                    `${star}_Emoji:_ ${identifier}\n` +
+                    `${star}_Role:_ <@&${roles[value]}>\n`
                 } else {
                     settings = "None"
                 }
@@ -69,22 +72,22 @@ export default class ReactionRoles extends Command {
             reactEmbed
             .setTitle(`**Reaction Roles** ${discord.getEmoji("aquaUp")}`)
             .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-            .setDescription(
-                `Add and remove reaction roles.\n` +
-                "\n" +
-                "__Current Settings__\n" +
-                settings + "\n" +
-                "\n" +
-                "__Edit Settings__\n" +
-                `${discord.getEmoji("star")}Type a **message id** to set the message.\n` +
-                `${discord.getEmoji("star")}**Mention a role or type a role id** to set the role.\n` +
-                `${discord.getEmoji("star")}**Type an emoji or emoji name** to set the emoji.\n` +
-                `${discord.getEmoji("star")}Type **delete (setting number)** to delete a setting.\n` +
-                `${discord.getEmoji("star")}Type **edit (setting number)** to edit a setting.\n` +
-                `${discord.getEmoji("star")}Type **toggle (setting number)** to toggle the state.\n` +
-                `${discord.getEmoji("star")}Type **reset** to delete all settings.\n` +
-                `${discord.getEmoji("star")}Type **cancel** to exit.\n`
-            )
+            .setDescription(Functions.multiTrim(`
+                Add and remove reaction roles.
+                newline
+                __Current Settings__
+                ${settings}
+                newline
+                __Edit Settings__
+                ${star}Type a **message id** to set the message.
+                ${star}**Mention a role or type a role id** to set the role.
+                ${star}**Type an emoji or emoji name** to set the emoji.
+                ${star}Type **delete (setting number)** to delete a setting.
+                ${star}Type **edit (setting number)** to edit a setting.
+                ${star}Type **toggle (setting number)** to toggle the state.
+                ${star}Type **reset** to delete all settings.
+                ${star}Type **cancel** to exit.
+            `))
             reactArray.push(reactEmbed)
         }
 
@@ -99,14 +102,14 @@ export default class ReactionRoles extends Command {
 
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
+                .setDescription(`${star}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("special roles", "reaction roles", null)
                 responseEmbed
-                .setDescription(`${discord.getEmoji("star")}Reaction role settings were wiped!`)
+                .setDescription(`${star}Reaction role settings were wiped!`)
                 msg.channel.send(responseEmbed)
                 return
             }

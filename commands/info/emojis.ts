@@ -7,12 +7,23 @@ export default class Emojis extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lists all emojis in the guild.",
+            help:
+            `
+            \`emojis\` - Posts all of the emojis
+            `,
+            examples:
+            `
+            \`=>emojis\`
+            `,
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })
     }
 
-    public run = (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const embeds = new Embeds(discord, message)
         const emojis = message.guild!.emojis
         const emojiArray = emojis.cache.map((e: Emoji) => discord.emojis.cache.find((emoji: Emoji) => e.id === emoji.id))
@@ -36,10 +47,11 @@ export default class Emojis extends Command {
             userEmbed
             .setAuthor("discord", "https://pbs.twimg.com/profile_images/1148340875937718272/sBvqcUJl.jpg")
             .setTitle(`**${message.guild!.name}'s Emojis** ${discord.getEmoji("vigneDead")}`)
-            .setThumbnail(message.guild!.iconURL() as string)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
             .setDescription(`${discord.getEmoji("star")}_Emoji Count:_ **${emojiArray.length}**\n` + description)
             userEmbedArray.push(userEmbed)
         }
         embeds.createReactionEmbed(userEmbedArray)
+        return
     }
 }

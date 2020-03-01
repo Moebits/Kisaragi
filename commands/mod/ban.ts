@@ -7,7 +7,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Ban extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Bans users.",
+            description: "Bans the specified users.",
+            help:
+            `
+            \`ban @user1 @user2 reason?\` - Bans the user(s) with an optional reason
+            \`ban id1 id2 reason?\` - Bans by user id instead of mention
+            `,
+            examples:
+            `
+            \`=>ban @user spammer\`
+            `,
+            guildOnly: true,
             aliases: [],
             cooldown: 3
         })

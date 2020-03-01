@@ -12,11 +12,12 @@ export default class Give extends Command {
         })
     }
 
-    public run = (discord: Kisaragi, message: Message, args: string[]) => {
+    public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
 
         const giveEmbed = embeds.createEmbed()
 
         console.log(giveEmbed)
+        return
     }
 }

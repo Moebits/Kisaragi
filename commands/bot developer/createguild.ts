@@ -7,7 +7,7 @@ export default class CreateGuild extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Creates a new guild.",
-            aliases: [],
+            aliases: ["cg"],
             cooldown: 3
         })
     }
@@ -18,11 +18,9 @@ export default class CreateGuild extends Command {
 
         try {
             const guild = await discord.guilds.create(guildName, {region: guildRegion, icon: null})
-            const defaultChannel = guild.channels.cache.find((channel: GuildChannel) => channel.permissionsFor(guild.me!)!.has("SEND_MESSAGES"))
+            const defaultChannel = guild.channels.cache.find((c)=>c.name === "general")
             const invite = await defaultChannel!.createInvite()
-            await message.author!.send(invite.url)
             const role = await guild.roles.create({data: {name: "Administrator", permissions: ["ADMINISTRATOR"]}})
-            await message.author!.send(role.id)
             await message.channel.send(`I made a guild! The invite is ${invite.url} The Administrator role ID is ${role.id}.`)
 
         } catch (error) {

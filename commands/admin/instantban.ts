@@ -11,6 +11,7 @@ export default class InstantBan extends Command {
         super(discord, message, {
             description: "Configure settings for instant bans.",
             aliases: [],
+            guildOnly: true,
             cooldown: 3
         })
     }
