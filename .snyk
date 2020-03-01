@@ -1,0 +1,10 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-450202:
+    - app-store-scraper > cheerio > lodash:
+        patched: '2020-03-01T11:09:00.456Z'
+    - google-play-scraper > eslint > lodash:
+        patched: '2020-03-01T11:09:00.456Z'
