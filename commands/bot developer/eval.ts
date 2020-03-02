@@ -5,7 +5,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Clean extends Command {
+export default class Eval extends Command {
   constructor(discord: Kisaragi, message: Message) {
       super(discord, message, {
           description: "Evaluates Typescript code.",

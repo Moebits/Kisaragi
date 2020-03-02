@@ -36,7 +36,7 @@ export default class HelpInfo extends Command {
         } else if (fs.existsSync(`../assets/help images/${category}/${name}.gif`)) {
             image = `../assets/help images/${category}/${name}.gif`
         } else if (fs.existsSync(`../assets/help images/${category}/${name}.jpg`)) {
-            image = `../assets/help images/${category}/${name}.png`
+            image = `../assets/help images/${category}/${name}.jpg`
         }
         const helpInfoEmbed = embeds.createEmbed()
         if (image) {

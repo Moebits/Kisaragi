@@ -1,15 +1,15 @@
-import {Guild, Message} from "discord.js"
+import {Guild, Message, TextChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class DeleteGuild extends Command {
+export default class LeaveGuild extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Deletes a guild that the bot created.",
-            aliases: ["dg"],
-            cooldown: 3
+            description: "Leaves a guild.",
+            aliases: ["lg"],
+            cooldown: 10
         })
     }
 
@@ -24,14 +24,17 @@ export default class DeleteGuild extends Command {
         const guild = discord.guilds.cache.find((g: Guild) => g.id.toString() === guildID) as Guild
         const name = guild.name
 
+        const msg = await discord.fetchFirstMessage(guild)
+        await (msg?.channel as TextChannel).send(`I am leaving this guild at the request of the bot developer.`)
+
         try {
-            guild.delete()
+            guild.leave()
         } catch (err) {
             console.log(err)
         } finally {
             await sql.deleteGuild(guildID)
         }
 
-        message.channel.send(`Deleted the guild **${name}**!`)
+        message.channel.send(`Left the guild **${name}**!`)
     }
 }

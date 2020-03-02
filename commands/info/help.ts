@@ -36,10 +36,10 @@ export default class Help extends Command {
             await helpDir.run(args)
             return
         }
-        const unlistedDirs = ["bot developer", "heart", "logging", "music"]
+        // const unlistedDirs = ["bot developer", "heart", "logging", "music"]
         const subDir = fs.readdirSync("./commands")
         for (let i = 0; i < subDir.length; i++) {
-            if (unlistedDirs.includes(subDir[i])) continue
+            // if (unlistedDirs.includes(subDir[i])) continue
             let help = ""
             const commands = fs.readdirSync(`./commands/${subDir[i]}`)
             for (let j = 0; j < commands.length; j++) {
@@ -49,15 +49,35 @@ export default class Help extends Command {
                 if (cmdClass.options.unlist === true) continue
                 help += `${star}**${commands[j]}**\n` + `${cmdClass.options.description}\n`
             }
+            const emojiMap: any = {
+                "admin": discord.getEmoji("gabTired"),
+                "anime": discord.getEmoji("gabTired"),
+                "bot developer": discord.getEmoji("no"),
+                "config": discord.getEmoji("gabTired"),
+                "fun": discord.getEmoji("gabTired"),
+                "game": discord.getEmoji("gabTired"),
+                "heart": discord.getEmoji("gabTired"),
+                "hentai": discord.getEmoji("gabTired"),
+                "info": discord.getEmoji("gabTired"),
+                "japanese": discord.getEmoji("gabTired"),
+                "level": discord.getEmoji("gabTired"),
+                "logging": discord.getEmoji("gabTired"),
+                "misc": discord.getEmoji("gabTired"),
+                "mod": discord.getEmoji("gabTired"),
+                "music": discord.getEmoji("gabTired"),
+                "website": discord.getEmoji("gabTired"),
+                "website 2": discord.getEmoji("gabTired")
+            }
             const helpEmbed = embeds.createEmbed()
             helpEmbed
-            .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${discord.getEmoji("gabTired")}`)
+            .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${emojiMap[subDir[i]]}`)
             .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
             // .setImage("https://i.imgur.com/Av9RN7x.png")
             .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
-            .setDescription(help)
+            .setDescription(
+                `Type **help (command)** for detailed help info! ${discord.getEmoji("aquaUp")}\n` + help)
             helpEmbedArray.push(helpEmbed)
         }
-        embeds.createReactionEmbed(helpEmbedArray)
+        embeds.createHelpEmbed(helpEmbedArray)
     }
 }

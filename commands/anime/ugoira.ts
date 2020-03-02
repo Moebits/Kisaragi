@@ -81,13 +81,20 @@ export default class Ugoira extends Command {
             }
         }
 
-        await pixiv.util.downloadUgoira(String(pixivID), `assets/gifs/`, 50)
+        if (String(pixivID).length > 14) return
+        try {
+            await pixiv.util.downloadUgoira(String(pixivID), `assets/gifs/`, 50)
+        } catch {
+            return this.invalidQuery(embeds.createEmbed()
+            .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
+            .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("chinoSmug")}`), "The provided url is not a ugoira.")
+        }
 
         let details: PixivIllust
-        let ugoiraInfo: UgoiraMetaData
+        // let ugoiraInfo: UgoiraMetaData
         try {
             details = await pixiv.illust.detail({illust_id: pixivID as number}).then((i) => i.illust)
-            ugoiraInfo = await pixiv.ugoira.metadata({illust_id: pixivID as number})
+            // ugoiraInfo = await pixiv.ugoira.metadata({illust_id: pixivID as number})
         } catch {
             msg1.delete({timeout: 1000})
             return

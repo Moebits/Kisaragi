@@ -72,9 +72,9 @@ export class PixivApi {
         if (r18) {
             if (ugoira) {
                 if (en) {
-                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: true})
+                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: true, type: "ugoira"})
                 } else {
-                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, r18: true})
+                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, r18: true, type: "ugoira"})
                 }
             } else {
                 if (en) {
@@ -86,9 +86,9 @@ export class PixivApi {
         } else {
             if (ugoira) {
                 if (en) {
-                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: false})
+                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: false, type: "ugoira"})
                 } else {
-                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, r18: false})
+                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, r18: false, type: "ugoira"})
                 }
             } else {
                 if (en) {

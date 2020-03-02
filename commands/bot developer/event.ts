@@ -21,7 +21,39 @@ export default class Event extends Command {
       if (!perms.checkBotDev()) return
 
       const event = Functions.combineArgs(args, 1).trim()
-      discord.emit(event)
+      switch (event) {
+        case "guildCreate":
+            discord.emit(event, message.guild)
+            break
+        case "guildDelete":
+            discord.emit(event, message.guild)
+            break
+        case "guildMemberAdd":
+            discord.emit(event, message.member)
+            break
+        case "guildMemberRemove":
+            discord.emit(event, message.member)
+            break
+        case "message":
+            discord.emit(event, message)
+            break
+        case "messageDelete":
+            discord.emit(event, message)
+            break
+        case "messageUpdate":
+            discord.emit(event, message)
+            break
+        case "messageReactionAdd":
+            const reaction = await message.react(discord.getEmoji("aquaUp"))
+            discord.emit(event, reaction, message.author)
+            break
+        case "messageReactionRemove":
+            const reaction2 = await message.react(discord.getEmoji("aquaUp"))
+            discord.emit(event, reaction2, message.author)
+            break
+        default:
+            discord.emit(event)
+      }
       return
   }
 }

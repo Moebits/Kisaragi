@@ -29,6 +29,19 @@ export class Kisaragi extends Client {
         return msgFound
     }
 
+    // Get an Invite
+    public getInvite = async (guild: Guild | null) => {
+        if (!guild) return "None"
+        const invites = await guild.fetchInvites()
+        let invite
+        if (invites) {
+            invite = invites.find((i)=>i.temporary === false)?.url
+            if (!invite) invite = invites.first()?.url
+        }
+        if (!invite) invite = "None"
+        return invite
+    }
+
     // Fetch First Message in a Guild
     public fetchFirstMessage = async (guild: Guild) => {
         const channels = guild.channels.cache.filter((c: GuildChannel) => c.type === "text")

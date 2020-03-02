@@ -98,6 +98,19 @@ export class Functions {
         }
     }
 
+    // Remove duplicates
+    public static removeDuplicates<T>(array: T[]) {
+        return array.filter((a, b) => array.indexOf(a) === b)
+    }
+
+    // Fill Array
+    public static fillArray<T>(arr: T[], value: T, len: number) {
+        while (arr.length !== len) {
+          arr.push(value)
+        }
+        return arr
+      }
+
     // Remove from Array
     public static arrayRemove = (arr: string[], val: string) => {
         for (let i = 0; i < arr.length; i++) {

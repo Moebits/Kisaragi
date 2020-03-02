@@ -216,21 +216,7 @@ export class Embeds {
                     msg.edit(embeds[page])
                     break
             case "numberSelect":
-                    const self = this
-                    async function getPageNumber(response: Message) {
-                        if (Number.isNaN(Number(response.content))) {
-                            const rep = await response.reply("That page number is invalid.")
-                            await rep.delete({timeout: 2000})
-                        } else {
-                            page = Number(response.content) - 1
-                            await self.updateEmbed(embeds, page, response.author!, msg)
-                            msg.edit(embeds[Number(response.content) - 1])
-                        }
-                        await response.delete()
-                    }
-                    const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
-                    await this.createPrompt(getPageNumber)
-                    await numReply.delete()
+                    // Do nothing
                     break
             case "collapse":
                     for (let i = 0; i < embeds.length; i++) {
@@ -248,17 +234,20 @@ export class Embeds {
             default:
         }
 
+        const numReact = msg.reactions.cache.find((m)=> m.emoji === this.discord.getEmoji("numberSelect"))
+        await numReact?.remove()
+        await msg.react(this.discord.getEmoji("repost"))
         const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
         const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
         const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleLeft") && user.bot === false
-        const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
+        const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("repost") && user.bot === false
 
         const forward = msg.createReactionCollector(forwardCheck)
         const backward = msg.createReactionCollector(backwardCheck)
         const tripleForward = msg.createReactionCollector(tripleForwardCheck)
         const tripleBackward = msg.createReactionCollector(tripleBackwardCheck)
-        const numberSelect = msg.createReactionCollector(numberSelectCheck)
+        const repost = msg.createReactionCollector(repostCheck)
 
         if (collapseOn) {
             const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
@@ -333,31 +322,19 @@ export class Embeds {
             reaction.users.remove(user)
         })
 
-        numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
-            const self = this
-            async function getPageNumber(response: Message) {
-                if (Number.isNaN(Number(response.content)) || Number(response.content) > embeds.length) {
-                    const rep = await response.reply("That page number is invalid.")
-                    await rep.delete({timeout: 2000})
-                } else {
-                    page = Number(response.content) - 1
-                    await self.updateEmbed(embeds, page, user, msg)
-                    msg.edit(embeds[Number(response.content) - 1])
-                }
-                await response.delete()
-            }
-            await this.createPrompt(getPageNumber)
-            const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
+        repost.on("collect", async (reaction: MessageReaction, user: User) => {
+            await this.message.channel.send(`<@${user.id}>, I reposted this embed.`)
+            await this.createReactionEmbed(embeds)
             reaction.users.remove(user)
-            await numReply.delete()
         })
     }
 
     // Create Help Embed
     public createHelpEmbed = (embeds: MessageEmbed[]) => {
         let page = 8
+        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Hentai", "Info", "Japanese", "Level", "Logging", "Misc", "Mod", "Music", "Website", "Website 2"]
         for (let i = 0; i < embeds.length; i++) {
-            embeds[i].setFooter(`${embeds[i].title}Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
+            embeds[i].setFooter(`${titles[i]} Commands • Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
         }
         const reactions: Emoji[] = [
             this.discord.getEmoji("admin"),
