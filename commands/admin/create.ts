@@ -40,7 +40,7 @@ export default class Create extends Command {
         }
 
         if (args[1] === "role") {
-            //
+            // implement
         }
 
         if (args[1] === "emoji") {
