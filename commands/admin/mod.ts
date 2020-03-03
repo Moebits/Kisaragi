@@ -22,7 +22,6 @@ export default class Mod extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        const star = discord.getEmoji("star")
         if (!perms.checkPerm("administrator")) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -45,39 +44,39 @@ export default class Mod extends Command {
         modEmbed
         .setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-        .setDescription(
-            "Edit moderation settings for the server.\n" +
-            "\n" +
-            "**Restricted Role** = Can be any role with restricted Permission.\n" +
-            "**Warn Threshold** = How many warnings will trigger the punishment.\n" +
-            "**Warn Penalty** = The punishment after hitting the warn threshold.\n" +
-            "**Ascii Names** = Removes all non-ascii characters in usernames.\n" +
-            "\n" +
-            "__Current Settings__\n" +
-            `${star}Admin role: ${admin ? `<@&${admin}>` : "None"}\n` +
-            `${star}Mod role: ${mod ? `<@&${mod}>` : "None"}\n` +
-            `${star}Mute role: ${mute ? `<@&${mute}>` : "None"}\n` +
-            `${star}Restricted role: ${restrict ? `<@&${restrict}>` : "None"}\n` +
-            `${star}Warn One role: ${warnOne ? `<@&${warnOne}>` : "None"}\n` +
-            `${star}Warn Two role: ${warnTwo ? `<@&${warnTwo}>` : "None"}\n` +
-            `${star}Warn Threshold: **${warnThresh}**\n` +
-            `${star}Warn Penalty: **${warnPen ? warnPen : "none"}**\n` +
-            `${star}Ascii names are **${ascii}**\n` +
-            "\n" +
-            "__Edit Settings__\n" +
-            `${star}Type **ascii** to toggle ascii names on/off.\n` +
-            `${star}Type **any number** to set the warning threshold.\n` +
-            `${star}Type **ban**, **kick**, **mute**, or **none** to set the warn penalty.\n` +
-            `${star}**Mention a role or type a role id** to set the admin role.\n` +
-            `${star}Do the same **between exclamation points !role!** to set the mod role.\n` +
-            `${star}Do the same **between hashtags #role#** to set the mute role.\n` +
-            `${star}Do the same **between dollar signs $role$** to set the restricted role.\n` +
-            `${star}Do the same **between parentheses (role)** to set the role for warn one.\n` +
-            `${star}Do the same **between brackets [role]** to set the role for warn two.\n` +
-            `${star}**Type multiple settings** to set them at once.\n` +
-            `${star}Type **reset** to reset settings.\n` +
-            `${star}Type **cancel** to exit.\n`
-        )
+        .setDescription(Functions.multiTrim(`
+             Edit moderation settings for the server.
+
+             **Restricted Role** = Can be any role with restricted Permission.
+             **Warn Threshold** = How many warnings will trigger the punishment.
+             **Warn Penalty** = The punishment after hitting the warn threshold.
+             **Ascii Names** = Removes all non-ascii characters in usernames.
+
+             __Current Settings__
+             ${discord.getEmoji("star")}Admin role: ${admin ? `<@&${admin}>` : "None"}
+             ${discord.getEmoji("star")}Mod role: ${mod ? `<@&${mod}>` : "None"}
+             ${discord.getEmoji("star")}Mute role: ${mute ?  `<@&${mute}>` : "None"}
+             ${discord.getEmoji("star")}Restricted role: ${restrict ?  `<@&${restrict}>` : "None"}
+             ${discord.getEmoji("star")}Warn One role: ${warnOne ? `<@&${warnOne}>` : "None"}
+             ${discord.getEmoji("star")}Warn Two role: ${warnTwo ? `<@&${warnTwo}>` : "None"}
+             ${discord.getEmoji("star")}Warn Threshold: **${warnThresh}**
+             ${discord.getEmoji("star")}Warn Penalty: **${warnPen ? warnPen :  "None"}**
+             ${discord.getEmoji("star")}Ascii names are **${ascii}**
+
+             __Edit Settings__
+             ${discord.getEmoji("star")}Type **ascii** to toggle ascii names on/off.
+             ${discord.getEmoji("star")}Type **any number** to set the warning threshold.
+             ${discord.getEmoji("star")}Type **ban**, **kick**, **mute**, or **none** to set the warn penalty.
+             ${discord.getEmoji("star")}**Mention a role or type a role id** to set the admin role.
+             ${discord.getEmoji("star")}Do the same **between exclamation points !role!** to set the mod role.
+             ${discord.getEmoji("star")}Do the same **between hashtags #role#** to set the mute role.
+             ${discord.getEmoji("star")}Do the same **between dollar signs $role$** to set the restricted role.
+             ${discord.getEmoji("star")}Do the same **between parentheses (role)** to set the role for warn one.
+             ${discord.getEmoji("star")}Do the same **between brackets [role]** to set the role for warn two.
+             ${discord.getEmoji("star")}**Type multiple settings** to set them at once.
+             ${discord.getEmoji("star")}Type **reset** to reset settings.
+             ${discord.getEmoji("star")}Type **cancel** to exit.
+        `))
 
         message.channel.send(modEmbed)
 
@@ -88,7 +87,7 @@ export default class Mod extends Command {
             let [setAscii, setMute, setRestrict, setWarnOne, setWarnTwo, setWarnPenalty, setWarnThreshold, setAdmin, setMod] = [] as boolean[]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${star}Canceled the prompt!`)
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -101,7 +100,7 @@ export default class Mod extends Command {
                 await sql.updateColumn("warns", "warn penalty", "none")
                 await sql.updateColumn("warns", "warn threshold", null)
                 responseEmbed
-                .setDescription(`${star}All settings were reset!`)
+                .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -130,51 +129,51 @@ export default class Mod extends Command {
             if (setAscii) {
                 if (String(ascii) === "off") {
                     await sql.updateColumn("blocks", "ascii name toggle", "on")
-                    description += `${star}Ascii names are **on**!\n`
+                    description += `${discord.getEmoji("star")}Ascii names are **on**!\n`
                 } else {
                     await sql.updateColumn("blocks", "ascii name toggle", "off")
-                    description += `${star}Ascii names are **off**!\n`
+                    description += `${discord.getEmoji("star")}Ascii names are **off**!\n`
                 }
             }
 
             if (setAdmin) {
                 await sql.updateColumn("special roles", "admin role", String(adminRole!))
-                description += `${star}Admin role set to <@&${adminRole!}>!\n`
+                description += `${discord.getEmoji("star")}Admin role set to <@&${adminRole!}>!\n`
             }
 
             if (setMod) {
                 await sql.updateColumn("special roles", "mod role", String(modRole!))
-                description += `${star}Mod role set to <@&${modRole!}>!\n`
+                description += `${discord.getEmoji("star")}Mod role set to <@&${modRole!}>!\n`
             }
 
             if (setMute) {
                 await sql.updateColumn("special roles", "mute role", String(muteRole!))
-                description += `${star}Mute role set to <@&${muteRole!}>!\n`
+                description += `${discord.getEmoji("star")}Mute role set to <@&${muteRole!}>!\n`
             }
 
             if (setRestrict) {
                 await sql.updateColumn("special roles", "restricted role", String(restrictRole!))
-                description += `${star}Restricted role set to <@&${restrictRole!}>!\n`
+                description += `${discord.getEmoji("star")}Restricted role set to <@&${restrictRole!}>!\n`
             }
 
             if (setWarnOne) {
                 await sql.updateColumn("special roles", "warn one", String(warnOneRole!))
-                description += `${star}Warn one role set to <@&${warnOneRole!}>!\n`
+                description += `${discord.getEmoji("star")}Warn one role set to <@&${warnOneRole!}>!\n`
             }
 
             if (setWarnTwo) {
                 await sql.updateColumn("special roles", "warn two", String(warnTwoRole!))
-                description += `${star}Warn two role set to <@&${warnTwoRole!}>!\n`
+                description += `${discord.getEmoji("star")}Warn two role set to <@&${warnTwoRole!}>!\n`
             }
 
             if (setWarnThreshold) {
                 await sql.updateColumn("warns", "warn threshold", String(warnThreshold!))
-                description += `${star}Warn threshold set to **${warnThreshold!}**!\n`
+                description += `${discord.getEmoji("star")}Warn threshold set to **${warnThreshold!}**!\n`
             }
 
             if (setWarnPenalty) {
                 await sql.updateColumn("warns", "warn penalty", String(warnPenalty!))
-                description += `${star}Warn penalty set to **${warnPenalty!}**!\n`
+                description += `${discord.getEmoji("star")}Warn penalty set to **${warnPenalty!}**!\n`
             }
 
             responseEmbed

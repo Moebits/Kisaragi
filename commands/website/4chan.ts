@@ -73,7 +73,6 @@ export default class $4chan extends Command {
                 return this.noQuery(badChanEmbed, "The first parameter is the board name, the rest is the search query.")
             }
             if (this.nsfwBoards(board)) {
-                console.log("true")
                 if (!perms.checkNSFW()) return
             }
             const threads = await chan.threadsWithTopics(board, query.split(","))

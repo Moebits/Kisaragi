@@ -14,7 +14,7 @@ const download = require("image-downloader")
 export default class Ugoira extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Search for animated pixiv images (pixiv ugoira).",
+            description: "Searches for animated pixiv images (pixiv ugoira).",
             help:
             `
             _Note: Using the **pixiv** command on a ugoira link will run this command too!_
@@ -41,7 +41,6 @@ export default class Ugoira extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const star = discord.getEmoji("star")
         const images = new Images(discord, message)
         const embeds = new Embeds(discord, message)
         const pixivApi = new PixivApi(discord, message)
@@ -143,13 +142,13 @@ export default class Ugoira extends Command {
         .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("chinoSmug")}`)
         .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${pixivID}`)
         .setDescription(
-            `${star}_Title:_ **${details.title}**\n` +
-            `${star}_Artist:_ **${details.user.name}**\n` +
-            `${star}_Creation Date:_ **${Functions.formatDate(new Date(details.create_date))}**\n` +
-            `${star}_Views:_ **${details.total_view}**\n` +
-            `${star}_Bookmarks:_ **${details.total_bookmarks}**\n` +
-            `${star}_Description:_ ${cleanText ? cleanText : "None"}\n` +
-            `${star}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
+            `${discord.getEmoji("star")}_Title:_ **${details.title}**\n` +
+            `${discord.getEmoji("star")}_Artist:_ **${details.user.name}**\n` +
+            `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(details.create_date))}**\n` +
+            `${discord.getEmoji("star")}_Views:_ **${details.total_view}**\n` +
+            `${discord.getEmoji("star")}_Bookmarks:_ **${details.total_bookmarks}**\n` +
+            `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` +
+            `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
             )
         .attachFiles([outGif.attachment as string, authorAttachment])
         .setThumbnail(`attachment://author.png`)

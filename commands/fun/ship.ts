@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class $8ball extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Ship two users.",
+            description: "Ships two users.",
             help:
             `
             \`ship @user1 @user2\` - Ships two users.
@@ -25,7 +25,6 @@ export default class $8ball extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const star = discord.getEmoji("star")
         if (message.mentions.members?.size !== 2) {
             return message.reply(`You need to mention two users! ${discord.getEmoji("kannaWave")}`)
         }

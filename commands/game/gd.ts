@@ -11,7 +11,7 @@ const base64 = require("base-64")
 export default class GeometryDash extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for gd players and levels.",
+            description: "Searches for geometry dash players and levels.",
             help:
             `
             \`gd query\` - Searches for levels with the query
@@ -35,7 +35,6 @@ export default class GeometryDash extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
 
         const GD = new GDClient({
             userName: "Tenpi",
@@ -59,22 +58,22 @@ export default class GeometryDash extends Command {
             .setTitle(`**GD Profile** ${discord.getEmoji("raphi")}`)
             .setURL(`https://gdprofiles.com/${user.nick}`)
             .setDescription(
-                `${star}${discord.getEmoji("gdStar")} **${user.stars}** ` +
+                `${discord.getEmoji("star")}${discord.getEmoji("gdStar")} **${user.stars}** ` +
                 `${discord.getEmoji("gdDiamond")} **${user.diamonds}** ` +
                 `${discord.getEmoji("gdCoin")} **${user.coins}** ` +
                 `${discord.getEmoji("gdUserCoin")} **${user.userCoins}** ` +
                 `${discord.getEmoji("gdDemon")} **${user.demons}** ` +
                 `${discord.getEmoji("gdCP")} **${user.creatorPoints}** \n` +
-                `${star}_Name:_ **${user.nick}**\n` +
-                `${star}_Rank:_ **#${user.top}**\n` +
-                `${star}_User ID:_ **${user.userID}**\n` +
-                `${star}_Account ID:_ **${user.accountID}**\n` +
-                `${star}_Account Type:_ **${user.rightsString}**\n` +
-                `${star}_Youtube:_ **${user.youtube}**\n` +
-                `${star}_Twitter:_ **${user.twitter}**\n` +
-                `${star}_Twitch:_ **${user.twitch}**\n` +
-                `${star}_Description:_ ${gdUser.desc ? gdUser.desc : "None"}\n` +
-                `${star}_Levels:_ ${levelArray.join("") ? levelArray.join(",     ") : "None"}\n`
+                `${discord.getEmoji("star")}_Name:_ **${user.nick}**\n` +
+                `${discord.getEmoji("star")}_Rank:_ **#${user.top}**\n` +
+                `${discord.getEmoji("star")}_User ID:_ **${user.userID}**\n` +
+                `${discord.getEmoji("star")}_Account ID:_ **${user.accountID}**\n` +
+                `${discord.getEmoji("star")}_Account Type:_ **${user.rightsString}**\n` +
+                `${discord.getEmoji("star")}_Youtube:_ **${user.youtube}**\n` +
+                `${discord.getEmoji("star")}_Twitter:_ **${user.twitter}**\n` +
+                `${discord.getEmoji("star")}_Twitch:_ **${user.twitch}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${gdUser.desc ? gdUser.desc : "None"}\n` +
+                `${discord.getEmoji("star")}_Levels:_ ${levelArray.join("") ? levelArray.join(",     ") : "None"}\n`
             )
             .setImage(`https://img.youtube.com/vi/${gdUser.video.embed.replace(/www.youtube.com\/embed\//g, "")}/maxresdefault.jpg`)
             .setThumbnail(gdUser.img.player)
@@ -90,16 +89,16 @@ export default class GeometryDash extends Command {
             .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
-                `${star}_Name:_ **${level.name}**\n` +
-                `${star}_Creator:_ **${user ? user.nick : "Not Found"}**\n` +
-                `${star}_Level ID:_ **${level.levelID}**\n` +
-                `${star}_Song ID:_ **${level.songID}**\n` +
-                `${star}_Difficulty:_ **${level.diff}**\n` +
-                `${star}_Stars:_ **${level.stars}**\n` +
-                `${star}_Downloads:_ **${level.downloads}**\n` +
-                `${star}_Likes:_ **${level.likes}**\n` +
-                `${star}_Password:_ **${level.password ? level.password : "None"}**\n` +
-                `${star}_Description:_ ${base64.decode(level.desc)}\n`
+                `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
+                `${discord.getEmoji("star")}_Creator:_ **${user ? user.nick : "Not Found"}**\n` +
+                `${discord.getEmoji("star")}_Level ID:_ **${level.levelID}**\n` +
+                `${discord.getEmoji("star")}_Song ID:_ **${level.songID}**\n` +
+                `${discord.getEmoji("star")}_Difficulty:_ **${level.diff}**\n` +
+                `${discord.getEmoji("star")}_Stars:_ **${level.stars}**\n` +
+                `${discord.getEmoji("star")}_Downloads:_ **${level.downloads}**\n` +
+                `${discord.getEmoji("star")}_Likes:_ **${level.likes}**\n` +
+                `${discord.getEmoji("star")}_Password:_ **${level.password ? level.password : "None"}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${base64.decode(level.desc)}\n`
             )
             message.channel.send(gdEmbed)
             return
@@ -113,16 +112,16 @@ export default class GeometryDash extends Command {
             .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
-                `${star}_Name:_ **${level.name}**\n` +
-                `${star}_Creator:_ **${user ? user.nick : "Not Found"}**\n` +
-                `${star}_Level ID:_ **${level.levelID}**\n` +
-                `${star}_Song ID:_ **${level.songID}**\n` +
-                `${star}_Difficulty:_ **${level.diff}**\n` +
-                `${star}_Stars:_ **${level.stars}**\n` +
-                `${star}_Downloads:_ **${level.downloads}**\n` +
-                `${star}_Likes:_ **${level.likes}**\n` +
-                `${star}_Password:_ **${level.password ? level.password : "None"}**\n` +
-                `${star}_Description:_ ${base64.decode(level.desc)}\n`
+                `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
+                `${discord.getEmoji("star")}_Creator:_ **${user ? user.nick : "Not Found"}**\n` +
+                `${discord.getEmoji("star")}_Level ID:_ **${level.levelID}**\n` +
+                `${discord.getEmoji("star")}_Song ID:_ **${level.songID}**\n` +
+                `${discord.getEmoji("star")}_Difficulty:_ **${level.diff}**\n` +
+                `${discord.getEmoji("star")}_Stars:_ **${level.stars}**\n` +
+                `${discord.getEmoji("star")}_Downloads:_ **${level.downloads}**\n` +
+                `${discord.getEmoji("star")}_Likes:_ **${level.likes}**\n` +
+                `${discord.getEmoji("star")}_Password:_ **${level.password ? level.password : "None"}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${base64.decode(level.desc)}\n`
             )
             message.channel.send(gdEmbed)
             return
@@ -148,10 +147,10 @@ export default class GeometryDash extends Command {
                 .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
                 .setTitle(`**GD Leaderboard** ${discord.getEmoji("raphi")}`)
                 .setDescription(
-                    `${star}_Rank:_ **${users[i].top}**\n` +
-                    `${star}_User:_ **${users[i].nick}**\n` +
-                    `${star}_User ID:_ **${users[i].userID}**\n` +
-                    `${star}_Account ID:_ **${users[i].accountID}**\n`
+                    `${discord.getEmoji("star")}_Rank:_ **${users[i].top}**\n` +
+                    `${discord.getEmoji("star")}_User:_ **${users[i].nick}**\n` +
+                    `${discord.getEmoji("star")}_User ID:_ **${users[i].userID}**\n` +
+                    `${discord.getEmoji("star")}_Account ID:_ **${users[i].accountID}**\n`
                 )
                 topArray.push(topEmbed)
             }
@@ -169,16 +168,16 @@ export default class GeometryDash extends Command {
             .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
-                `${star}_Name:_ **${level.name}**\n` +
-                `${star}_Creator:_ **${user ? user.nick : "Not Found"}**\n` +
-                `${star}_Level ID:_ **${level.levelID}**\n` +
-                `${star}_Song ID:_ **${level.songID}**\n` +
-                `${star}_Difficulty:_ **${level.diff}**\n` +
-                `${star}_Stars:_ **${level.stars}**\n` +
-                `${star}_Downloads:_ **${level.downloads}**\n` +
-                `${star}_Likes:_ **${level.likes}**\n` +
-                `${star}_Password:_ **${level.password ? level.password : "None"}**\n` +
-                `${star}_Description:_ ${base64.decode(level.desc)}\n`
+                `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
+                `${discord.getEmoji("star")}_Creator:_ **${user ? user.nick : "Not Found"}**\n` +
+                `${discord.getEmoji("star")}_Level ID:_ **${level.levelID}**\n` +
+                `${discord.getEmoji("star")}_Song ID:_ **${level.songID}**\n` +
+                `${discord.getEmoji("star")}_Difficulty:_ **${level.diff}**\n` +
+                `${discord.getEmoji("star")}_Stars:_ **${level.stars}**\n` +
+                `${discord.getEmoji("star")}_Downloads:_ **${level.downloads}**\n` +
+                `${discord.getEmoji("star")}_Likes:_ **${level.likes}**\n` +
+                `${discord.getEmoji("star")}_Password:_ **${level.password ? level.password : "None"}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${base64.decode(level.desc)}\n`
 
             )
             return message.channel.send(gdEmbed)
@@ -194,16 +193,16 @@ export default class GeometryDash extends Command {
             .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
-                `${star}_Name:_ **${level.name}**\n` +
-                `${star}_Creator:_ **${user ? user.nick : "Not Found"}**\n` +
-                `${star}_Level ID:_ **${level.levelID}**\n` +
-                `${star}_Song ID:_ **${level.songID}**\n` +
-                `${star}_Difficulty:_ **${level.diff}**\n` +
-                `${star}_Stars:_ **${level.stars}**\n` +
-                `${star}_Downloads:_ **${level.downloads}**\n` +
-                `${star}_Likes:_ **${level.likes}**\n` +
-                `${star}_Password:_ **${level.password ? level.password : "None"}**\n` +
-                `${star}_Description:_ ${base64.decode(level.desc)}\n`
+                `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
+                `${discord.getEmoji("star")}_Creator:_ **${user ? user.nick : "Not Found"}**\n` +
+                `${discord.getEmoji("star")}_Level ID:_ **${level.levelID}**\n` +
+                `${discord.getEmoji("star")}_Song ID:_ **${level.songID}**\n` +
+                `${discord.getEmoji("star")}_Difficulty:_ **${level.diff}**\n` +
+                `${discord.getEmoji("star")}_Stars:_ **${level.stars}**\n` +
+                `${discord.getEmoji("star")}_Downloads:_ **${level.downloads}**\n` +
+                `${discord.getEmoji("star")}_Likes:_ **${level.likes}**\n` +
+                `${discord.getEmoji("star")}_Password:_ **${level.password ? level.password : "None"}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${base64.decode(level.desc)}\n`
 
             )
             gdArray.push(gdEmbed)

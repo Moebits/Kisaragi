@@ -8,7 +8,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Restrict extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Restricts users.",
+            description: "Adds a restricted role to the specified users.",
             guildOnly: true,
             aliases: [],
             cooldown: 3

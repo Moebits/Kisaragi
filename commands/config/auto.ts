@@ -37,7 +37,6 @@ export default class Auto extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -61,10 +60,10 @@ export default class Auto extends Command {
                     if (!command.join("")) settings = "None"
                     if (!command[value]) break
                     settings += `${i + 1} **=>**\n` +
-                    `${star}_Command:_ **${command[i] !== "0" ? command[i] : "None"}**\n`+
-                    `${star}_Channel:_ **${channel[i] !== "0" ? "<#" + channel[i] + ">" : "None"}**\n`+
-                    `${star}_Frequency:_ **${frequency[i] !== "0" ? frequency[i] : "None"}**\n` +
-                    `${star}_State:_ **${toggle[i]}**\n`
+                    `${discord.getEmoji("star")}_Command:_ **${command[i] !== "0" ? command[i] : "None"}**\n`+
+                    `${discord.getEmoji("star")}_Channel:_ **${channel[i] !== "0" ? "<#" + channel[i] + ">" : "None"}**\n`+
+                    `${discord.getEmoji("star")}_Frequency:_ **${frequency[i] !== "0" ? frequency[i] : "None"}**\n` +
+                    `${discord.getEmoji("star")}_State:_ **${toggle[i]}**\n`
                 } else {
                     settings = "None"
                 }
@@ -83,15 +82,15 @@ export default class Auto extends Command {
             ${settings}
             newline
             __Edit Settings:__
-            ${star}_Type **any command** to set the command._
-            ${star}_**Mention any channel** to set the channel._
-            ${star}_Type **any number** to set the frequency._
-            ${star}_You can set **multiple options at once**._
-            ${star}_Type **toggle (setting number)** to toggle the state._
-            ${star}_Type **edit (setting number)** to edit a setting._
-            ${star}_Type **delete (setting number)** to delete a setting._
-            ${star}_Type **reset** to delete all settings._
-            ${star}_Type **cancel** to exit._
+            ${discord.getEmoji("star")}_Type **any command** to set the command._
+            ${discord.getEmoji("star")}_**Mention any channel** to set the channel._
+            ${discord.getEmoji("star")}_Type **any number** to set the frequency._
+            ${discord.getEmoji("star")}_You can set **multiple options at once**._
+            ${discord.getEmoji("star")}_Type **toggle (setting number)** to toggle the state._
+            ${discord.getEmoji("star")}_Type **edit (setting number)** to edit a setting._
+            ${discord.getEmoji("star")}_Type **delete (setting number)** to delete a setting._
+            ${discord.getEmoji("star")}_Type **reset** to delete all settings._
+            ${discord.getEmoji("star")}_Type **cancel** to exit._
             `))
             autoArray.push(autoEmbed)
         }
@@ -170,17 +169,17 @@ export default class Auto extends Command {
                     if (tempCmd) {
                         cmd[num] = tempCmd
                         await sql.updateColumn("auto", "command", String(cmd))
-                        editDesc += `${star}Command set to **${tempCmd}**!\n`
+                        editDesc += `${discord.getEmoji("star")}Command set to **${tempCmd}**!\n`
                     }
                     if (tempChan) {
                         chan[num] = tempChan
                         await sql.updateColumn("auto", "channel", String(chan))
-                        editDesc += `${star}Channel set to **${tempChan}**!\n`
+                        editDesc += `${discord.getEmoji("star")}Channel set to **${tempChan}**!\n`
                     }
                     if (tempFreq) {
                         freq[num] = tempFreq
                         await sql.updateColumn("auto", "frequency", String(freq))
-                        editDesc += `${star}Command set to **${tempFreq}**!\n`
+                        editDesc += `${discord.getEmoji("star")}Command set to **${tempFreq}**!\n`
                     }
                     tim[num] = ""
                     await sql.updateColumn("auto", "timeout", String(tim))
@@ -190,11 +189,11 @@ export default class Auto extends Command {
                     if (testCmd[num] && testChan[num] && testFreq[num]) {
                         tog[num] = "active"
                         await sql.updateColumn("auto", "toggle", String(tog))
-                        editDesc += `${star}This setting is **active**!\n`
+                        editDesc += `${discord.getEmoji("star")}This setting is **active**!\n`
                     } else {
                         tog[num] = "inactive"
                         await sql.updateColumn("auto", "toggle", String(tog))
-                        editDesc += `${star}This setting is **inactive**!\n`
+                        editDesc += `${discord.getEmoji("star")}This setting is **inactive**!\n`
                     }
                     return msg.channel.send(responseEmbed.setDescription(editDesc))
                 } else {
@@ -203,7 +202,7 @@ export default class Auto extends Command {
             }
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${star}Canceled the prompt!`)
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -214,7 +213,7 @@ export default class Auto extends Command {
                 await sql.updateColumn("auto", "toggle", null)
                 await sql.updateColumn("auto", "timeout", null)
                 responseEmbed
-                .setDescription(`${star}Auto settings were wiped!`)
+                .setDescription(`${discord.getEmoji("star")}Auto settings were wiped!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -236,7 +235,7 @@ export default class Auto extends Command {
                     cmd.push(newCmd)
                     const arrCmd = cmd.filter(Boolean)
                     await sql.updateColumn("auto", "command", String(arrCmd))
-                    description += `${star}Command set to **${newCmd}**!\n`
+                    description += `${discord.getEmoji("star")}Command set to **${newCmd}**!\n`
                 }
             }
 
@@ -247,7 +246,7 @@ export default class Auto extends Command {
                     chan.push(newChan)
                     const arrChan = chan.filter(Boolean)
                     await sql.updateColumn("auto", "channel", String(arrChan))
-                    description += `${star}Channel set to <#${newChan}>!\n`
+                    description += `${discord.getEmoji("star")}Channel set to <#${newChan}>!\n`
                 }
             }
 
@@ -258,7 +257,7 @@ export default class Auto extends Command {
                     freq.push(newFreq)
                     const arrFreq = freq.filter(Boolean)
                     await sql.updateColumn("auto", "frequency", String(arrFreq))
-                    description += `${star}Frequency set to **${newFreq}**!\n`
+                    description += `${discord.getEmoji("star")}Frequency set to **${newFreq}**!\n`
                 }
             }
 
@@ -282,12 +281,12 @@ export default class Auto extends Command {
                 tog = tog.filter(Boolean)
                 tog.push("active")
                 await sql.updateColumn("auto", "toggle", String(tog))
-                description += `${star}This setting is **active**!\n`
+                description += `${discord.getEmoji("star")}This setting is **active**!\n`
             } else {
                 tog = tog.filter(Boolean)
                 tog.push("inactive")
                 await sql.updateColumn("auto", "toggle", String(tog))
-                description += `${star}This setting is **inactive**!\n`
+                description += `${discord.getEmoji("star")}This setting is **inactive**!\n`
             }
 
             responseEmbed

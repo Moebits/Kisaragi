@@ -8,7 +8,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Selfrole extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Add a role from the self assignable roles list.",
+            description: "Adds a role from the self assignable roles list.",
             help:
             `
             _Note:_ Add roles to the self assignable role list with **selfroles**.

@@ -1,13 +1,21 @@
-import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, TextChannel} from "discord.js"
+import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, TextChannel, User} from "discord.js"
 import {Embeds} from "./Embeds"
-
 export class Kisaragi extends Client {
+    private starIndex = 0
     constructor(options: ClientOptions) {
         super(options)
     }
 
     // Get Emoji
     public getEmoji = (name: string): GuildEmoji => {
+        if (name === "star") {
+            if (this.starIndex === 0) {
+                this.starIndex = 1
+            } else if (this.starIndex === 1) {
+                name += "Two"
+                this.starIndex = 0
+            }
+        }
         const emoji = this.emojis.cache.find((e) => (e.name === name) && (e.guild.ownerID === process.env.OWNER_ID))
         if (emoji) {
             return emoji as unknown as GuildEmoji
@@ -27,6 +35,14 @@ export class Kisaragi extends Client {
         }
         const msgFound = msgArray.find((m: Message) => m.id === messageID)
         return msgFound
+    }
+
+    // Fetch Last Attachment
+    public fetchLastAttachment = async <T extends boolean = false>(message: Message, author?: T) =>  {
+        const msg = await message.channel.messages.fetch({limit: 100}).then((i) => i.find((m)=>m.attachments.size > 0))
+        const image = msg?.attachments.first()?.url
+        if (author) return {image, author: msg?.author} as unknown as Promise<T extends true ? {image: string | undefined, author: User | undefined} : string | undefined>
+        return image as unknown as Promise<T extends true ? {image: string | undefined, author: User | undefined} : string | undefined>
     }
 
     // Get an Invite

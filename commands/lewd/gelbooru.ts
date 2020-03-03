@@ -34,7 +34,6 @@ export default class Gelbooru extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
         const gelbooru = Booru("gelbooru", process.env.GELBOORU_API_KEY)
         const perms = new Permission(discord, message)
@@ -87,10 +86,10 @@ export default class Gelbooru extends Command {
         gelbooruEmbed
         .setURL(url)
         .setDescription(
-            `${star}_Source:_ ${img.source}\n` +
-            `${star}_Uploader:_ **${img.owner}**\n` +
-            `${star}_Creation Date:_ **${Functions.formatDate(img.created_at)}**\n` +
-            `${star}_Tags:_ ${Functions.checkChar(String(img.tags), 1900, " ")}\n`
+            `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
+            `${discord.getEmoji("star")}_Uploader:_ **${img.owner}**\n` +
+            `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(img.created_at)}**\n` +
+            `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(String(img.tags), 1900, " ")}\n`
         )
         .setImage(img.file_url)
         // .setImage(`https://img2.gelbooru.com/samples/${img.directory}/sample_${img.image}`)

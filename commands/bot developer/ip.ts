@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class IP extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts the bots ip address.",
+            description: "Posts the bot's ip address.",
             aliases: [],
             cooldown: 3
         })

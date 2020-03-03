@@ -72,7 +72,7 @@ export class Embeds {
                 expand.on("collect", async (reaction: MessageReaction, user: User) => {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription(description[i])
-                        embeds[i].setThumbnail(thumbnail[i].url)
+                        embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
                     }
                     await this.updateEmbed(embeds, page, user)
                     msg.edit(embeds[page])
@@ -228,14 +228,12 @@ export class Embeds {
             case "expand":
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription(description[i])
-                        embeds[i].setThumbnail(thumbnail[i].url)
+                        embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
                     }
                     msg.edit(embeds[page])
             default:
         }
 
-        const numReact = msg.reactions.cache.find((m)=> m.emoji === this.discord.getEmoji("numberSelect"))
-        await numReact?.remove()
         await msg.react(this.discord.getEmoji("repost"))
         const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
@@ -268,7 +266,7 @@ export class Embeds {
             expand.on("collect", async (reaction: MessageReaction, user: User) => {
                 for (let i = 0; i < embeds.length; i++) {
                     embeds[i].setDescription(description[i])
-                    embeds[i].setThumbnail(thumbnail[i].url)
+                    embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
                 }
                 await this.updateEmbed(embeds, page, user)
                 msg.edit(embeds[page])
@@ -331,8 +329,8 @@ export class Embeds {
 
     // Create Help Embed
     public createHelpEmbed = (embeds: MessageEmbed[]) => {
-        let page = 8
-        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Hentai", "Info", "Japanese", "Level", "Logging", "Misc", "Mod", "Music", "Website", "Website 2"]
+        const page = 7
+        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Info", "Japanese", "Level", "Lewd", "Logging", "Misc", "Mod", "Music", "Website", "Website 2"]
         for (let i = 0; i < embeds.length; i++) {
             embeds[i].setFooter(`${titles[i]} Commands • Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
         }
@@ -344,17 +342,16 @@ export class Embeds {
             this.discord.getEmoji("fun"),
             this.discord.getEmoji("game"),
             this.discord.getEmoji("heart"),
-            this.discord.getEmoji("hentai"),
             this.discord.getEmoji("info"),
             this.discord.getEmoji("japanese"),
             this.discord.getEmoji("level"),
+            this.discord.getEmoji("lewd"),
             this.discord.getEmoji("logging"),
             this.discord.getEmoji("misc"),
             this.discord.getEmoji("mod"),
             this.discord.getEmoji("music"),
             this.discord.getEmoji("website"),
-            this.discord.getEmoji("websiteTwo"),
-            this.discord.getEmoji("numberSelect")
+            this.discord.getEmoji("websiteTwo")
         ]
         this.message.channel.send(embeds[page]).then(async (msg: Message) => {
             for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
@@ -362,6 +359,7 @@ export class Embeds {
             await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
             await this.sql.updateColumn("collectors", "collapse", false, "message", msg.id)
             await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+            await this.sql.updateColumn("collectors", "help", true, "message", msg.id)
 
             const adminCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("admin") && user.bot === false
             const animeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("anime") && user.bot === false
@@ -370,7 +368,7 @@ export class Embeds {
             const funCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fun") && user.bot === false
             const gameCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("game") && user.bot === false
             const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("heart") && user.bot === false
-            const hentaiCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("hentai") && user.bot === false
+            const lewdCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lewd") && user.bot === false
             const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("info") && user.bot === false
             const japaneseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("japanese") && user.bot === false
             const levelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("level") && user.bot === false
@@ -380,7 +378,6 @@ export class Embeds {
             const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
             const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
             const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
-            const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
 
             const admin = msg.createReactionCollector(adminCheck)
             const anime = msg.createReactionCollector(animeCheck)
@@ -389,7 +386,7 @@ export class Embeds {
             const fun = msg.createReactionCollector(funCheck)
             const game = msg.createReactionCollector(gameCheck)
             const heart = msg.createReactionCollector(heartCheck)
-            const hentai = msg.createReactionCollector(hentaiCheck)
+            const lewd = msg.createReactionCollector(lewdCheck)
             const info = msg.createReactionCollector(infoCheck)
             const japanese = msg.createReactionCollector(japaneseCheck)
             const level = msg.createReactionCollector(levelCheck)
@@ -399,9 +396,8 @@ export class Embeds {
             const music = msg.createReactionCollector(musicCheck)
             const web = msg.createReactionCollector(webCheck)
             const webTwo = msg.createReactionCollector(webTwoCheck)
-            const numberSelect = msg.createReactionCollector(numberSelectCheck)
 
-            const collectors = [admin, anime, botDev, config, fun, game, heart, hentai, info, japanese, level, logging, misc, mod, music, web, webTwo]
+            const collectors = [admin, anime, botDev, config, fun, game, heart, info, japanese, level, lewd, logging, misc, mod, music, web, webTwo]
 
             for (let i = 0; i < collectors.length; i++) {
                 collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
@@ -410,25 +406,6 @@ export class Embeds {
                     reaction.users.remove(user)
                 })
             }
-
-            numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
-                const self = this
-                async function getPageNumber(response: Message) {
-                    if (Number.isNaN(Number(response.content))) {
-                        const rep = await response.reply("That page number is invalid.")
-                        await rep.delete({timeout: 2000})
-                    } else {
-                        page = Number(response.content) - 1
-                        await self.updateEmbed(embeds, page, user, msg)
-                        msg.edit(embeds[Number(response.content) - 1])
-                    }
-                    await response.delete()
-                }
-                const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
-                reaction.users.remove(user)
-                await this.createPrompt(getPageNumber)
-                await numReply.delete()
-            })
         })
     }
 

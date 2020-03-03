@@ -29,7 +29,6 @@ export default class SoundCloud extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
 
         const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID, process.env.SOUNDCLOUD_OAUTH_TOKEN)
@@ -51,19 +50,19 @@ export default class SoundCloud extends Command {
                 .setURL(users[i].permalink_url)
                 .setImage(users[i].avatar_url)
                 .setDescription(
-                    `${star}_Name:_ **${users[i].username}**\n` +
-                    `${star}_Tracks:_ **${users[i].track_count}**\n` +
-                    `${star}_Following:_ **${users[i].followings_count}**\n`+
-                    `${star}_Followers:_ **${users[i].followers_count}**\n` +
-                    `${star}_Comments:_ **${users[i].comments_count}**\n` +
-                    `${star}_Description:_ ${Functions.checkChar(users[i].description, 500, " ")}`
+                    `${discord.getEmoji("star")}_Name:_ **${users[i].username}**\n` +
+                    `${discord.getEmoji("star")}_Tracks:_ **${users[i].track_count}**\n` +
+                    `${discord.getEmoji("star")}_Following:_ **${users[i].followings_count}**\n`+
+                    `${discord.getEmoji("star")}_Followers:_ **${users[i].followers_count}**\n` +
+                    `${discord.getEmoji("star")}_Comments:_ **${users[i].comments_count}**\n` +
+                    `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(users[i].description, 500, " ")}`
                 )
                 soundcloudArray.push(soundcloudEmbed)
             }
             if (soundcloudArray.length === 1) {
                 return message.channel.send(soundcloudArray[0])
             }
-            return embeds.createReactionEmbed(soundcloudArray)
+            return embeds.createReactionEmbed(soundcloudArray, true)
         }
 
         if (args[1] === "playlist") {
@@ -83,19 +82,19 @@ export default class SoundCloud extends Command {
                 .setURL(playlists[i].permalink_url)
                 .setImage(playlists[i].artwork_url!)
                 .setDescription(
-                    `${star}_Title:_ **${playlists[i].title}**\n` +
-                    `${star}_Genre:_ **${playlists[i].genre ? playlists[i].genre : "None"}**\n` +
-                    `${star}_Creation Date:_ **${Functions.formatDate(new Date(playlists[i].created_at))}**\n` +
-                    `${star}_Tracks:_ **${playlists[i].track_count}**\n` +
-                    `${star}_Duration:_ **${playlists[i].duration}**\n`+
-                    `${star}_Description:_ ${Functions.checkChar((playlists[i].description ? playlists[i].description! : "None"), 500, " ")}`
+                    `${discord.getEmoji("star")}_Title:_ **${playlists[i].title}**\n` +
+                    `${discord.getEmoji("star")}_Genre:_ **${playlists[i].genre ? playlists[i].genre : "None"}**\n` +
+                    `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(playlists[i].created_at))}**\n` +
+                    `${discord.getEmoji("star")}_Tracks:_ **${playlists[i].track_count}**\n` +
+                    `${discord.getEmoji("star")}_Duration:_ **${playlists[i].duration}**\n`+
+                    `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar((playlists[i].description ? playlists[i].description! : "None"), 500, " ")}`
                 )
                 soundcloudArray.push(soundcloudEmbed)
             }
             if (soundcloudArray.length === 1) {
                 return message.channel.send(soundcloudArray[0])
             }
-            return embeds.createReactionEmbed(soundcloudArray)
+            return embeds.createReactionEmbed(soundcloudArray, true)
         }
 
         const query = Functions.combineArgs(args, 1)
@@ -115,21 +114,21 @@ export default class SoundCloud extends Command {
             .setThumbnail(tracks[i].user.avatar_url)
             .setImage(tracks[i].artwork_url)
             .setDescription(
-                `${star}_Title:_ **${tracks[i].title}**\n` +
-                `${star}_Artist:_ **${tracks[i].user.username}**\n` +
-                `${star}_Genre:_ **${tracks[i].genre}**\n` +
-                `${star}_Creation Date:_ **${Functions.formatDate(new Date(tracks[i].created_at))}**\n` +
-                `${star}_Plays:_ **${tracks[i].playback_count}**\n` +
-                `${star}_Likes:_ **${tracks[i].likes_count}**\n` +
-                `${star}_Reposts:_ **${tracks[i].reposts_count}**\n` +
-                `${star}_Comments:_ **${tracks[i].comment_count}**\n`+
-                `${star}_Description:_ ${Functions.checkChar(tracks[i].description, 500, " ")}`
+                `${discord.getEmoji("star")}_Title:_ **${tracks[i].title}**\n` +
+                `${discord.getEmoji("star")}_Artist:_ **${tracks[i].user.username}**\n` +
+                `${discord.getEmoji("star")}_Genre:_ **${tracks[i].genre}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(tracks[i].created_at))}**\n` +
+                `${discord.getEmoji("star")}_Plays:_ **${tracks[i].playback_count}**\n` +
+                `${discord.getEmoji("star")}_Likes:_ **${tracks[i].likes_count}**\n` +
+                `${discord.getEmoji("star")}_Reposts:_ **${tracks[i].reposts_count}**\n` +
+                `${discord.getEmoji("star")}_Comments:_ **${tracks[i].comment_count}**\n`+
+                `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(tracks[i].description, 500, " ")}`
             )
             soundcloudArray.push(soundcloudEmbed)
         }
         if (soundcloudArray.length === 1) {
             return message.channel.send(soundcloudArray[0])
         }
-        return embeds.createReactionEmbed(soundcloudArray)
+        return embeds.createReactionEmbed(soundcloudArray, true)
     }
 }

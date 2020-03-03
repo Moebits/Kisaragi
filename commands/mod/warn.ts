@@ -8,7 +8,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Warn extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Warns users.",
+            description: "Gives users a warning.",
             guildOnly: true,
             aliases: [],
             cooldown: 3

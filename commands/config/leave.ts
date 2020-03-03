@@ -40,7 +40,6 @@ export default class Leave extends Command {
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
         const sql = new SQLQuery(message)
-        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const axios = require("axios")
         const input = Functions.combineArgs(args, 1)
@@ -75,23 +74,23 @@ export default class Leave extends Command {
             **count** = guild member count
             newline
             __Current Settings:__
-            ${star}_Leave Message:_ **${leaveMsg}**
-            ${star}_Leave Channel:_ **${leaveChannel.join("") ?  `<#${leaveChannel}>`  :  "None"}**
-            ${star}_Leave Toggle:_ **${leaveToggle}**
-            ${star}_Background Image:_ **${newImg}**
-            ${star}_Background Text:_ **${leaveText}**
-            ${star}_Background Text Color:_ **${leaveColor}**
+            ${discord.getEmoji("star")}_Leave Message:_ **${leaveMsg}**
+            ${discord.getEmoji("star")}_Leave Channel:_ **${leaveChannel.join("") ?  `<#${leaveChannel}>`  :  "None"}**
+            ${discord.getEmoji("star")}_Leave Toggle:_ **${leaveToggle}**
+            ${discord.getEmoji("star")}_Background Image:_ **${newImg}**
+            ${discord.getEmoji("star")}_Background Text:_ **${leaveText}**
+            ${discord.getEmoji("star")}_Background Text Color:_ **${leaveColor}**
             newline
             __Edit Settings:__
-            ${star}_**Type any message** to set it as the leave message._
-            ${star}_Type **enable** or **disable** to enable or disable leave messages._
-            ${star}_**Mention a channel** to set it as the leave channel._
-            ${star}_Post an **image URL** (jpg, png, gif) to set the background image._
-            ${star}_Add brackets **[text]** to set the background text._
-            ${star}_Type **rainbow** or a **hex color** to set the background text color._
-            ${star}_**You can type multiple options** to set them at once._
-            ${star}_Type **reset** to reset settings._
-            ${star}_Type **cancel** to exit._
+            ${discord.getEmoji("star")}_**Type any message** to set it as the leave message._
+            ${discord.getEmoji("star")}_Type **enable** or **disable** to enable or disable leave messages._
+            ${discord.getEmoji("star")}_**Mention a channel** to set it as the leave channel._
+            ${discord.getEmoji("star")}_Post an **image URL** (jpg, png, gif) to set the background image._
+            ${discord.getEmoji("star")}_Add brackets **[text]** to set the background text._
+            ${discord.getEmoji("star")}_Type **rainbow** or a **hex color** to set the background text color._
+            ${discord.getEmoji("star")}_**You can type multiple options** to set them at once._
+            ${discord.getEmoji("star")}_Type **reset** to reset settings._
+            ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
         message.channel.send(leaveEmbed)
 
@@ -106,7 +105,7 @@ export default class Leave extends Command {
             const newBGColor = (msg.content.match(/rainbow/g) || msg.content.match(/(\s|^)#[0-9a-f]{3,6}/ig))
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${star}Canceled the prompt!`)
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -118,7 +117,7 @@ export default class Leave extends Command {
                 await sql.updateColumn("welcome leaves", "leave bg text", "tag left! There are now count members.")
                 await sql.updateColumn("welcome leaves", "leave bg color", "rainbow")
                 responseEmbed
-                .setDescription(`${star}Leave settings were reset!`)
+                .setDescription(`${discord.getEmoji("star")}Leave settings were reset!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -133,47 +132,47 @@ export default class Leave extends Command {
 
             if (setOn && setOff) {
                 responseEmbed
-                    .setDescription(`${star}You cannot disable/enable at the same time.`)
+                    .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
                 msg.channel.send(responseEmbed)
                 return
             }
 
             if (!setChannel && setOn) {
                     responseEmbed
-                    .setDescription(`${star}In order to enable leave messages, you must specify a leave channel!`)
+                    .setDescription(`${discord.getEmoji("star")}In order to enable leave messages, you must specify a leave channel!`)
                     msg.channel.send(responseEmbed)
                     return
             }
             let description = ""
             if (setMsg) {
                 await sql.updateColumn("welcome leaves", "leave message", String(newMsg.trim()))
-                description += `${star}Leave Message set to **${newMsg.trim()}**\n`
+                description += `${discord.getEmoji("star")}Leave Message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
                 const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
                 await sql.updateColumn("welcome leaves", "leave channel", String(channel!.id))
                 setOn = true
-                description += `${star}Leave channel set to <#${channel!.id}>!\n`
+                description += `${discord.getEmoji("star")}Leave channel set to <#${channel!.id}>!\n`
             }
             if (setOn) {
                 await sql.updateColumn("welcome leaves", "leave toggle", "on")
-                description += `${star}Leave Messages are **on**!\n`
+                description += `${discord.getEmoji("star")}Leave Messages are **on**!\n`
             }
             if (setOff) {
                 await sql.updateColumn("welcome leaves", "leave toggle", "off")
-                description += `${star}Leave Messages are **off**!\n`
+                description += `${discord.getEmoji("star")}Leave Messages are **off**!\n`
             }
             if (setImage) {
                 await sql.updateColumn("welcome leaves", "leave bg image", String(newImage![0]))
-                description += `${star}Background image set to **${newImage![0]}**!\n`
+                description += `${discord.getEmoji("star")}Background image set to **${newImage![0]}**!\n`
             }
             if (setBGText) {
                 await sql.updateColumn("welcome leaves", "leave bg text", String(newBGText![0].replace(/\[/g, "").replace(/\]/g, "")))
-                description += `${star}Background text set to **${newBGText![0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
+                description += `${discord.getEmoji("star")}Background text set to **${newBGText![0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
             }
             if (setBGColor) {
                 await sql.updateColumn("welcome leaves", "leave bg color", String(newBGColor![0]))
-                description += `${star}Background color set to **${newBGColor![0]}**!\n`
+                description += `${discord.getEmoji("star")}Background color set to **${newBGColor![0]}**!\n`
             }
 
             responseEmbed

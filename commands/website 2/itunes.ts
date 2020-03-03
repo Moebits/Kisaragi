@@ -26,7 +26,6 @@ export default class Itunes extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
         const query = Functions.combineArgs(args, 1).trim()
 
         if (!query) {
@@ -49,13 +48,13 @@ export default class Itunes extends Command {
             .setImage(track.artworkUrl100)
             .setURL(track.trackViewUrl)
             .setDescription(
-                `${star}_Track:_ **[${track.trackName}](${track.trackViewUrl})**\n` +
-                `${star}_Artist:_ **[${track.artistName}](${track.artistViewUrl})**\n` +
-                `${star}_Collection:_ **[${track.collectionName}](${track.collectionViewUrl})**\n` +
-                `${star}_Genre:_ **${track.primaryGenreName}**\n` +
-                `${star}_Release Date:_ **${Functions.formatDate(track.releaseDate)}**\n` +
-                `${star}_Price:_ **$${track.trackPrice}**\n` +
-                `${star}_Length:_ **${minutes}m ${seconds}s**\n` +
+                `${discord.getEmoji("star")}_Track:_ **[${track.trackName}](${track.trackViewUrl})**\n` +
+                `${discord.getEmoji("star")}_Artist:_ **[${track.artistName}](${track.artistViewUrl})**\n` +
+                `${discord.getEmoji("star")}_Collection:_ **[${track.collectionName}](${track.collectionViewUrl})**\n` +
+                `${discord.getEmoji("star")}_Genre:_ **${track.primaryGenreName}**\n` +
+                `${discord.getEmoji("star")}_Release Date:_ **${Functions.formatDate(track.releaseDate)}**\n` +
+                `${discord.getEmoji("star")}_Price:_ **$${track.trackPrice}**\n` +
+                `${discord.getEmoji("star")}_Length:_ **${minutes}m ${seconds}s**\n` +
                 `[**Preview**](${track.previewUrl})`
             )
             itunesArray.push(itunesEmbed)

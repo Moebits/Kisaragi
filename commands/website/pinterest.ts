@@ -11,7 +11,7 @@ let pinArray: MessageEmbed[] = []
 export default class Pinterest extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches pinterest for pinned images.",
+            description: "Searches for images on pinterest.",
             help:
             `
             \`pinterest query\` - Searches pinterest for the query
@@ -66,7 +66,6 @@ export default class Pinterest extends Command {
         const embeds = new Embeds(discord, message)
         const accessToken = (process.env.PINTEREST_ACCESS_TOKEN)
         const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID!, process.env.GOOGLE_API_KEY!)
-        const star = discord.getEmoji("star")
         pinArray = []
 
         if (args[1] === "board") {
@@ -89,9 +88,9 @@ export default class Pinterest extends Command {
                 .setURL(pinUrl)
                 .setImage(pinImage ? pinImage : "")
                 .setDescription(
-                    `${star}_Title:_ **${pinTitle}**\n` +
-                    `${star}_Board:_ **${boardname}**\n` +
-                    `${star}_Date:_ **${Functions.formatDate(pinDate)}**\n`
+                    `${discord.getEmoji("star")}_Title:_ **${pinTitle}**\n` +
+                    `${discord.getEmoji("star")}_Board:_ **${boardname}**\n` +
+                    `${discord.getEmoji("star")}_Date:_ **${Functions.formatDate(pinDate)}**\n`
                 )
                 pinArray.push(pinEmbed)
             }
@@ -102,7 +101,7 @@ export default class Pinterest extends Command {
             if (pinArray.length === 1) {
                 message.channel.send(pinArray[0])
             } else {
-                embeds.createReactionEmbed(pinArray)
+                embeds.createReactionEmbed(pinArray, true)
             }
             return
         }
@@ -125,9 +124,9 @@ export default class Pinterest extends Command {
                 .setURL(pinUrl)
                 .setImage(pinImage ? pinImage : "")
                 .setDescription(
-                    `${star}_Title:_ **${pinTitle}**\n` +
-                    `${star}_Pinner:_ **${username}**\n` +
-                    `${star}_Date:_ **${Functions.formatDate(pinDate)}**\n`
+                    `${discord.getEmoji("star")}_Title:_ **${pinTitle}**\n` +
+                    `${discord.getEmoji("star")}_Pinner:_ **${username}**\n` +
+                    `${discord.getEmoji("star")}_Date:_ **${Functions.formatDate(pinDate)}**\n`
                 )
                 pinArray.push(pinEmbed)
             }
@@ -135,7 +134,7 @@ export default class Pinterest extends Command {
             if (pinArray.length === 1) {
                 message.channel.send(pinArray[0])
             } else {
-                embeds.createReactionEmbed(pinArray)
+                embeds.createReactionEmbed(pinArray, true)
             }
             return
         }
@@ -153,7 +152,7 @@ export default class Pinterest extends Command {
             .setURL(imageResult[i].parentPage)
             .setImage(imageResult[i].url)
             .setDescription(
-                `${star}_Description:_ ${imageResult[i].description}`
+                `${discord.getEmoji("star")}_Description:_ ${imageResult[i].description}`
             )
             pinArray.push(pinEmbed)
         }*/
@@ -193,9 +192,9 @@ export default class Pinterest extends Command {
                 .setURL(pinUrl)
                 .setImage(pinImage ? pinImage : "")
                 .setDescription(
-                    `${star}_Title:_ **${pinTitle}**\n` +
-                    `${star}_Pinner:_ **${username}**\n` +
-                    `${star}_Date:_ **${Functions.formatDate(pinDate)}**\n`
+                    `${discord.getEmoji("star")}_Title:_ **${pinTitle}**\n` +
+                    `${discord.getEmoji("star")}_Pinner:_ **${username}**\n` +
+                    `${discord.getEmoji("star")}_Date:_ **${Functions.formatDate(pinDate)}**\n`
                 )
                 pinArray.push(pinEmbed)
             }
@@ -207,7 +206,7 @@ export default class Pinterest extends Command {
         if (pinArray.length === 1) {
                 message.channel.send(pinArray[0])
         } else {
-                embeds.createReactionEmbed(pinArray)
+                embeds.createReactionEmbed(pinArray, true)
         }
         return
     }

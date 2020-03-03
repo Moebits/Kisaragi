@@ -26,7 +26,6 @@ export default class Patreon extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
 
         const query = Functions.combineArgs(args, 1).trim()
         if (!query) {
@@ -64,17 +63,17 @@ export default class Patreon extends Command {
         .setImage(cover)
         .setThumbnail(avatar)
         .setDescription(
-            `${star}_Creator:_ **${details.name}**\n` +
-            `${star}_Is Creating:_ **${creating}**\n` +
-            `${star}_Creation Date:_ **${created}**\n` +
-            `${star}_Posts:_ **${posts}**\n` +
-            `${star}_Patrons:_ **${patrons}**\n` +
-            `${star}_Monthly Earnings:_ **$${sum}**\n` +
-            `${star}_Youtube:_ ${yt ? yt : "None"}\n` +
-            `${star}_Twitter:_ ${tw ? `https://www.twitter.com/${tw}` : "None"}\n` +
-            `${star}_Twitch:_ ${tc ? tc : "None"}\n` +
-            `${star}_Facebook:_ ${fb ? fb : "None"}\n` +
-            `${star}_Description:_ ${Functions.checkChar(description, 1700, " ")}`
+            `${discord.getEmoji("star")}_Creator:_ **${details.name}**\n` +
+            `${discord.getEmoji("star")}_Is Creating:_ **${creating}**\n` +
+            `${discord.getEmoji("star")}_Creation Date:_ **${created}**\n` +
+            `${discord.getEmoji("star")}_Posts:_ **${posts}**\n` +
+            `${discord.getEmoji("star")}_Patrons:_ **${patrons}**\n` +
+            `${discord.getEmoji("star")}_Monthly Earnings:_ **$${sum}**\n` +
+            `${discord.getEmoji("star")}_Youtube:_ ${yt ? yt : "None"}\n` +
+            `${discord.getEmoji("star")}_Twitter:_ ${tw ? `https://www.twitter.com/${tw}` : "None"}\n` +
+            `${discord.getEmoji("star")}_Twitch:_ ${tc ? tc : "None"}\n` +
+            `${discord.getEmoji("star")}_Facebook:_ ${fb ? fb : "None"}\n` +
+            `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(description, 1700, " ")}`
         )
         return message.channel.send(patreonEmbed)
     }

@@ -50,7 +50,6 @@ export default class AnimeQuote extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
 
         const animeQuoteEmbed = embeds.createEmbed()
         .setAuthor("animequotes", "https://discordemoji.com/assets/emoji/KannaCurious.png")
@@ -60,10 +59,10 @@ export default class AnimeQuote extends Command {
             const quote = animeQuotes.randomQuote()
             animeQuoteEmbed
             .setDescription(
-            `${star}_ID:_ **${quote.id}**\n` +
-            `${star}_Anime:_ **${quote.anime}**\n` +
-            `${star}_Character:_ **${quote.name}**\n` +
-            `${star}_Quote:_ ${quote.quote}`
+            `${discord.getEmoji("star")}_ID:_ **${quote.id}**\n` +
+            `${discord.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
+            `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
+            `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
             )
             return message.channel.send(animeQuoteEmbed)
         } else {
@@ -76,10 +75,10 @@ export default class AnimeQuote extends Command {
                 }
                 animeQuoteEmbed
                 .setDescription(
-                `${star}_ID:_ **${quote.id}**\n` +
-                `${star}_Anime:_ **${quote.anime}**\n` +
-                `${star}_Character:_ **${quote.name}**\n` +
-                `${star}_Quote:_ ${quote.quote}`
+                `${discord.getEmoji("star")}_ID:_ **${quote.id}**\n` +
+                `${discord.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
+                `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
+                `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
                 )
                 return message.channel.send(animeQuoteEmbed)
             }
@@ -96,19 +95,19 @@ export default class AnimeQuote extends Command {
                     }
                     animeQuoteEmbed
                     .setDescription(
-                    `${star}_ID:_ **${aniQuote.id}**\n` +
-                    `${star}_Anime:_ **${aniQuote.anime}**\n` +
-                    `${star}_Character:_ **${aniQuote.name}**\n` +
-                    `${star}_Quote:_ ${aniQuote.quote}`
+                    `${discord.getEmoji("star")}_ID:_ **${aniQuote.id}**\n` +
+                    `${discord.getEmoji("star")}_Anime:_ **${aniQuote.anime}**\n` +
+                    `${discord.getEmoji("star")}_Character:_ **${aniQuote.name}**\n` +
+                    `${discord.getEmoji("star")}_Quote:_ ${aniQuote.quote}`
                     )
                     return message.channel.send(animeQuoteEmbed)
                 }
             animeQuoteEmbed
                 .setDescription(
-                `${star}_ID:_ **${quote.id}**\n` +
-                `${star}_Anime:_ **${quote.anime}**\n` +
-                `${star}_Character:_ **${quote.name}**\n` +
-                `${star}_Quote:_ ${quote.quote}`
+                `${discord.getEmoji("star")}_ID:_ **${quote.id}**\n` +
+                `${discord.getEmoji("star")}_Anime:_ **${quote.anime}**\n` +
+                `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
+                `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
                 )
             return message.channel.send(animeQuoteEmbed)
             }

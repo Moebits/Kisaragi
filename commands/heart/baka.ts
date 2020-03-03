@@ -7,9 +7,18 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Baka extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts a baka image",
+            description: "Calls someone a baka.",
+            help:
+            `
+            \`baka @user\` - Call someone a baka.
+            \`baka\` - Call no one a baka...
+            `,
+            examples:
+            `
+            \`=>baka @user\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 5
         })
     }
 
@@ -19,13 +28,27 @@ export default class Baka extends Command {
         const embeds = new Embeds(discord, message)
         const neko = new nekoClient()
 
+        let user = message.author
+        let name = "someone"
+        if (message.mentions.users.size) {
+            user = message.mentions.users.first()!
+            name = message.mentions.users.first()!.username
+            if (user.id === message.author.id) name = "themselves"
+            if (user.id === discord.user!.id) name = "me"
+        }
+
+        let flavorText = `${discord.getEmoji("smugFace")}`
+        if (name === "themselves") flavorText = `Alright ${discord.getEmoji("mexShrug")}`
+        if (name === "someone") flavorText = `Who knows ${discord.getEmoji("kannaCurious")}`
+        if (name === "me") flavorText = `How rude ${discord.getEmoji("kannaFU")}`
+
         const image = await neko.sfw.baka()
 
         const bakaEmbed = embeds.createEmbed()
         bakaEmbed
-        .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
         .setURL(image.url)
         .setTitle(`**Baka** ${discord.getEmoji("chinoSmug")}`)
+        .setDescription(`**${message.author.username}** called **${name}** a baka! ${flavorText}`)
         .setImage(image.url)
         message.channel.send(bakaEmbed)
     }

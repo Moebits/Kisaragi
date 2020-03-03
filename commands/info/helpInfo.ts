@@ -20,7 +20,6 @@ export default class HelpInfo extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const star = discord.getEmoji("star")
         const cmdFunctions = new CommandFunctions(discord, message)
         const embeds = new Embeds(discord, message)
         let cmdPath = await cmdFunctions.findCommand(args[1])
@@ -50,13 +49,13 @@ export default class HelpInfo extends Command {
         .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
         .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
         .setDescription(Functions.multiTrim(`
-            ${star}_Name:_ **${name}**
-            ${star}_Category:_ **${category}**
-            ${star}_Description:_ ${command.description}
-            ${star}_Aliases:_ ${aliases}
-            ${star}_Cooldown:_ **${command.cooldown}**
-            ${star}_Help:_ \n${Functions.multiTrim(command.help)}
-            ${star}_Examples:_ \n${Functions.multiTrim(command.examples)}
+            ${discord.getEmoji("star")}_Name:_ **${name}**
+            ${discord.getEmoji("star")}_Category:_ **${category}**
+            ${discord.getEmoji("star")}_Description:_ ${command.description}
+            ${discord.getEmoji("star")}_Aliases:_ ${aliases}
+            ${discord.getEmoji("star")}_Cooldown:_ **${command.cooldown}**
+            ${discord.getEmoji("star")}_Help:_ \n${Functions.multiTrim(command.help)}
+            ${discord.getEmoji("star")}_Examples:_ \n${Functions.multiTrim(command.examples)}
         `))
         message.channel.send(helpInfoEmbed)
     }

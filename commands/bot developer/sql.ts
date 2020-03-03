@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class SQL extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Runs an sql query.",
+            description: "Runs an sql query on the database.",
             aliases: [],
             cooldown: 3
         })

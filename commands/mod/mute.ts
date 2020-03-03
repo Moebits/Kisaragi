@@ -8,7 +8,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Mute extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Mutes users.",
+            description: "Mutes the specified users.",
             guildOnly: true,
             aliases: [],
             cooldown: 3

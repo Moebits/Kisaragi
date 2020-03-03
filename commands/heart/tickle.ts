@@ -7,7 +7,16 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Tickle extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts a tickle image.",
+            description: "Tickles someone.",
+            help:
+            `
+            \`tickle @user\` - Tickles the user.
+            \`tickle\` - Tickles no one...
+            `,
+            examples:
+            `
+            \`=>tickle @user\`
+            `,
             aliases: [],
             cooldown: 3
         })
@@ -19,13 +28,27 @@ export default class Tickle extends Command {
         const embeds = new Embeds(discord, message)
         const neko = new nekoClient()
 
+        let user = message.author
+        let name = "someone"
+        if (message.mentions.users.size) {
+            user = message.mentions.users.first()!
+            name = message.mentions.users.first()!.username
+            if (user.id === message.author.id) name = "themselves"
+            if (user.id === discord.user!.id) name = "me"
+        }
+
+        let flavorText = `${discord.getEmoji("cute")}`
+        if (name === "themselves") flavorText = `Cool... ${discord.getEmoji("tohruThink")}`
+        if (name === "someone") flavorText = `That's cute ${discord.getEmoji("vigneDead")}`
+        if (name === "me") flavorText = `I'm not a fan ${discord.getEmoji("karenAnger")}`
+
         const image = await neko.sfw.tickle()
 
         const tickleEmbed = embeds.createEmbed()
         tickleEmbed
-        .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
         .setURL(image.url)
-        .setTitle(`**Tickle** ${discord.getEmoji("chinoSmug")}`)
+        .setTitle(`**Tickle** ${discord.getEmoji("kannaSip")}`)
+        .setDescription(`**${message.author.username}** tickles **${name}**! ${flavorText}`)
         .setImage(image.url)
         message.channel.send(tickleEmbed)
     }

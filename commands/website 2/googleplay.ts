@@ -25,7 +25,6 @@ export default class GooglePlay extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
         const term = Functions.combineArgs(args, 1).trim()
 
         if (!term) {
@@ -48,18 +47,18 @@ export default class GooglePlay extends Command {
             .setThumbnail(app.icon)
             .setImage(app.headerImage)
             .setDescription(
-                `${star}_App:_ **${app.title}**\n` +
-                `${star}_Developer:_ **${app.developer}**\n` +
-                `${star}_Summary:_ **${app.summary.replace(/&lt;/g, "<").replace(/&gt;/g, ">")}**\n` +
-                `${star}_Release Date:_ **${app.released}**\n` +
-                `${star}_Installs:_ **${app.installs}**\n` +
-                `${star}_Ratings:_ **${app.ratings}**\n` +
-                `${star}_Reviews:_ **${app.reviews}**\n` +
-                `${star}_Price:_ **$${app.price}**\n` +
-                `${star}_Developer Website:_ ${app.developerWebsite}\n` +
-                `${star}_Description:_ ${Functions.checkChar(app.description, 600, " ")}\n` +
-                `${star}_Recent Changes:_ ${Functions.checkChar(Functions.cleanHTML(app.recentChanges), 300, " ")}\n` +
-                `${star}_Comments:_ ${Functions.checkChar(app.comments.join(" "), 100, " ")}`
+                `${discord.getEmoji("star")}_App:_ **${app.title}**\n` +
+                `${discord.getEmoji("star")}_Developer:_ **${app.developer}**\n` +
+                `${discord.getEmoji("star")}_Summary:_ **${app.summary.replace(/&lt;/g, "<").replace(/&gt;/g, ">")}**\n` +
+                `${discord.getEmoji("star")}_Release Date:_ **${app.released}**\n` +
+                `${discord.getEmoji("star")}_Installs:_ **${app.installs}**\n` +
+                `${discord.getEmoji("star")}_Ratings:_ **${app.ratings}**\n` +
+                `${discord.getEmoji("star")}_Reviews:_ **${app.reviews}**\n` +
+                `${discord.getEmoji("star")}_Price:_ **$${app.price}**\n` +
+                `${discord.getEmoji("star")}_Developer Website:_ ${app.developerWebsite}\n` +
+                `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(app.description, 600, " ")}\n` +
+                `${discord.getEmoji("star")}_Recent Changes:_ ${Functions.checkChar(Functions.cleanHTML(app.recentChanges), 300, " ")}\n` +
+                `${discord.getEmoji("star")}_Comments:_ ${Functions.checkChar(app.comments.join(" "), 100, " ")}`
             )
             playArray.push(playEmbed)
         }
@@ -73,7 +72,7 @@ export default class GooglePlay extends Command {
         if (playArray.length === 1) {
             message.channel.send(playArray[0])
         } else {
-            embeds.createReactionEmbed(playArray)
+            embeds.createReactionEmbed(playArray, true)
         }
         return
     }

@@ -12,13 +12,11 @@ export default class LoliCommand extends Command {
             description: "Posts a random loli image.",
             help:
             `
-            \`loli\` - Posts a sfw loli image.
-            \`loli hentai\` - Use at your own risk.
+            \`loli\` - Posts a loli image.
             `,
             examples:
             `
             \`=>loli\`
-            \`=>loli hentai\`
             `,
             aliases: ["l"],
             cooldown: 5,
@@ -34,7 +32,7 @@ export default class LoliCommand extends Command {
         const loli = new Loli()
         const loliEmbed = embeds.createEmbed()
         let result
-        if (args[1] === "hentai") {
+        if (args[1] === "lewd") {
             if (!perms.checkNSFW()) return
             result = await loli.getNSFWLoli()
         } else {

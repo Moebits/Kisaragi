@@ -8,7 +8,7 @@ import {PixivApi} from "./../../structures/PixivApi"
 export default class Pixiv extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Search for anime images on pixiv.",
+            description: "Searches for anime images on pixiv.",
             help:
             `
             \`pixiv\` - Gets a random pixiv image.

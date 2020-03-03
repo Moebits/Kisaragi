@@ -28,7 +28,6 @@ export default class Discordjs extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
         const srcOptions = ["master", "stable", "rpc", "commando", "akairo", "akairo-master", "collection"]
         let src = ""
         let query = Functions.combineArgs(args, 2)
@@ -53,7 +52,7 @@ export default class Discordjs extends Command {
             if (result.fields[i].value.startsWith("[View source]")) {
                 fields += `${result.fields[i].value.replace(/View source/, "**View Source**")}\n`
             } else {
-                fields += `${star}_${result.fields[i].name}:_ ${result.fields[i].value}\n`
+                fields += `${discord.getEmoji("star")}_${result.fields[i].name}:_ ${result.fields[i].value}\n`
             }
         }
         const discordjsEmbed = embeds.createEmbed()
@@ -63,7 +62,7 @@ export default class Discordjs extends Command {
         .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
         .setAuthor(`discord.js`, "https://discord.js.org/static/logo-square.png")
         .setDescription(
-        `${star}_Description:_ ${result.description.replace(/__/g, "**")}\n` +
+        `${discord.getEmoji("star")}_Description:_ ${result.description.replace(/__/g, "**")}\n` +
         fields
         )
         message.channel.send(discordjsEmbed)

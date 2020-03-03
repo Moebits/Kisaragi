@@ -22,7 +22,6 @@ export default class ChannelLink extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -37,9 +36,9 @@ export default class ChannelLink extends Command {
         let linkDescription = ""
         if (linkText) {
             for (let i = 0; i < linkText[0].length; i++) {
-                linkDescription += `**${i + 1} => **\n` + `${star}_Text:_ <#${linkText[i]}>\n` +
-                `${star}_Voice:_ **<#${linkVoice[i]}>**\n` +
-                `${star}_State:_ **${linkToggle[i]}**\n`
+                linkDescription += `**${i + 1} => **\n` + `${discord.getEmoji("star")}_Text:_ <#${linkText[i]}>\n` +
+                `${discord.getEmoji("star")}_Voice:_ **<#${linkVoice[i]}>**\n` +
+                `${discord.getEmoji("star")}_State:_ **${linkToggle[i]}**\n`
             }
         } else {
             linkDescription = "None"
@@ -48,24 +47,24 @@ export default class ChannelLink extends Command {
         linkEmbed
         .setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-        .setDescription(
-            "Configure settings for linked channels. You can link a text channel to a voice channel so that only people in the voice channel can access it.\n" +
-            "In order for this to work, you should disable the **read messages** permission on the text channel for all member roles.\n" +
-            "\n" +
-            "**Status** = Either on or off. In order for the status to be on, both the voice and text channel must be set.\n" +
-            "\n" +
-            "__Current Settings:__\n" +
-            linkDescription + "\n" +
-            "\n" +
-            "__Edit Settings:__\n" +
-            `${star}_**Mention a text channel** to set the text channel._\n` +
-            `${star}_**Type the name of the voice channel** to set the voice channel._\n` +
-            `${star}_Type **toggle (setting number)** to toggle the status._\n` +
-            `${star}_Type **edit (setting number)** to edit a setting._\n` +
-            `${star}_Type **delete (setting number)** to delete a setting._\n` +
-            `${star}_Type **reset** to delete all settings._\n` +
-            `${star}_Type **cancel** to exit._\n`
-        )
+        .setDescription(Functions.multiTrim(`
+            Configure settings for linked channels. You can link a text channel to a voice channel so that only people in the voice channel can access it.
+            In order for this to work, you should disable the **read messages** permission on the text channel for all member roles.
+            newline
+            **Status** = Either on or off. In order for the status to be on, both the voice and text channel must be set.
+            newline
+            __Current Settings:__
+            ${linkDescription}
+            newline
+            __Edit Settings:__
+            ${discord.getEmoji("star")}_**Mention a text channel** to set the text channel._
+            ${discord.getEmoji("star")}_**Type the name of the voice channel** to set the voice channel._
+            ${discord.getEmoji("star")}_Type **toggle (setting number)** to toggle the status._
+            ${discord.getEmoji("star")}_Type **edit (setting number)** to edit a setting._
+            ${discord.getEmoji("star")}_Type **delete (setting number)** to delete a setting._
+            ${discord.getEmoji("star")}_Type **reset** to delete all settings._
+            ${discord.getEmoji("star")}_Type **cancel** to exit._
+        `))
         message.channel.send(linkEmbed)
 
         async function linkPrompt(msg: Message) {
@@ -80,7 +79,7 @@ export default class ChannelLink extends Command {
             responseEmbed.setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`)
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${star}Canceled the prompt!`)
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -89,7 +88,7 @@ export default class ChannelLink extends Command {
                 await sql.updateColumn("links", "text", null)
                 await sql.updateColumn("links", "toggle", "off")
                 responseEmbed
-                .setDescription(`${star}All settings were reset!`)
+                .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -107,13 +106,13 @@ export default class ChannelLink extends Command {
                         await sql.updateColumn("links", "voice", voice)
                         await sql.updateColumn("links", "toggle", toggle)
                         responseEmbed
-                        .setDescription(`${star}Setting ${num} was deleted!`)
+                        .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                         msg.channel.send(responseEmbed)
                         return
                     }
                 } else {
                     responseEmbed
-                    .setDescription(`${star}Setting not found!`)
+                    .setDescription(`${discord.getEmoji("star")}Setting not found!`)
                     msg.channel.send(responseEmbed)
                     return
                 }
@@ -129,8 +128,8 @@ export default class ChannelLink extends Command {
             if (setText) {
                 text.push(String(newText!).replace(/<#/g, "").replace(/>/g, ""))
                 if (setInit) text = text.filter(Boolean)
-                await sql.updateColumn("links", "text", text)
-                description += `${star}Text channel set to **${newText!}**!\n`
+                await sql.updateColumn("links", "text", String(text))
+                description += `${discord.getEmoji("star")}Text channel set to **${newText!}**!\n`
             }
 
             if (setVoice) {
@@ -145,8 +144,8 @@ export default class ChannelLink extends Command {
                 if (channel) {
                     voice.push(channel.id)
                     if (setInit) voice = voice.filter(Boolean)
-                    await sql.updateColumn("links", "voice", voice)
-                    description += `${star}Voice channel set to **${channel.name}**!\n`
+                    await sql.updateColumn("links", "voice", String(voice))
+                    description += `${discord.getEmoji("star")}Voice channel set to **${channel.name}**!\n`
                 } else {
                     return msg.channel.send(responseEmbed.setDescription("Voice channel not found!"))
                 }
@@ -155,16 +154,16 @@ export default class ChannelLink extends Command {
             if (setText && setVoice) {
                 toggle.push("on")
                 if (setInit) toggle = toggle.filter(Boolean)
-                await sql.updateColumn("links", "toggle", toggle)
-                description += `${star}Status set to **on**!\n`
+                await sql.updateColumn("links", "toggle", String(toggle))
+                description += `${discord.getEmoji("star")}Status set to **on**!\n`
             } else {
                 toggle.push("off")
                 if (setInit) toggle = toggle.filter(Boolean)
-                await sql.updateColumn("links", "toggle", toggle)
-                description += `${star}Status set to **off**!\n`
+                await sql.updateColumn("links", "toggle", String(toggle))
+                description += `${discord.getEmoji("star")}Status set to **off**!\n`
             }
 
-            if (!description) description = `${star}Invalid arguments provided, canceled the prompt.`
+            if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             responseEmbed
             .setDescription(description)
             msg.channel.send(responseEmbed)

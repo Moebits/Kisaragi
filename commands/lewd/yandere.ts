@@ -34,7 +34,6 @@ export default class Yandere extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const yandere = Booru("yande.re", process.env.yandere_API_KEY)
@@ -83,10 +82,10 @@ export default class Yandere extends Command {
         yandereEmbed
         .setURL(url)
         .setDescription(
-            `${star}_Source:_ ${img.source}\n` +
-            `${star}_Uploader:_ **${img.author}**\n` +
-            `${star}_Creation Date:_ **${Functions.formatDate(new Date(img.created_at*1000))}**\n` +
-            `${star}_Tags:_ ${Functions.checkChar(img.tags, 1900, " ")}\n`
+            `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
+            `${discord.getEmoji("star")}_Uploader:_ **${img.author}**\n` +
+            `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(img.created_at*1000))}**\n` +
+            `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(img.tags, 1900, " ")}\n`
         )
         .setImage(img.sample_url.replace(/ /g, ""))
         message.channel.send(yandereEmbed)

@@ -39,15 +39,15 @@ export class Command {
   }
 
   public noQuery = (embed: MessageEmbed, text?: string) => {
-    const star = this.discord.getEmoji("star")
-    const desc = text ? `${star}You must provide a search query. ${text}` : `${star}You must provide a search query.`
+    const discord = this.discord
+    const desc = text ? `${discord.getEmoji("star")}You must provide a search query. ${text}` : `${discord.getEmoji("star")}You must provide a search query.`
     embed.setDescription(desc)
     this.message.reply({embed})
   }
 
   public invalidQuery = (embed: MessageEmbed, text?: string) => {
-    const star = this.discord.getEmoji("star")
-    const desc = text ? `${star}No results were found. ${text}` : `${star}No results were found.`
+    const discord = this.discord
+    const desc = text ? `${discord.getEmoji("star")}No results were found. ${text}` : `${discord.getEmoji("star")}No results were found.`
     embed.setDescription(desc)
     this.message.reply({embed})
   }

@@ -37,7 +37,6 @@ export default class OsuCommand extends Command {
         const osu = new Osu(process.env.OSU_API_KEY!)
         const sql = new SQLQuery(message)
         const osuEmbed = embeds.createEmbed()
-        const star = discord.getEmoji("star")
         const dbName = await sql.fetchColumn("misc", "osu name", "user id", message.author.id)
         console.log(dbName)
 
@@ -73,20 +72,20 @@ export default class OsuCommand extends Command {
             .setTitle(`**Osu Profile** ${discord.getEmoji("kannaSip")}`)
             .setURL(`https://osu.ppy.sh/users/${player.user_id}`)
             .setDescription(
-            `${star}_Player:_ **${player.username}**\n` +
-            `${star}_Join Date:_ **${Functions.formatDate(new Date(player.join_date))}**\n` +
-            `${star}_Play Time:_ **${hours}h ${minutes}m ${seconds}s**\n` +
-            `${star}_Play count:_ **${player.playcount}**\n` +
-            `${star}${discord.getEmoji("SSHrank")} **${player.count_rank_ssh}** ${discord.getEmoji("SSrank")}` +
+            `${discord.getEmoji("star")}_Player:_ **${player.username}**\n` +
+            `${discord.getEmoji("star")}_Join Date:_ **${Functions.formatDate(new Date(player.join_date))}**\n` +
+            `${discord.getEmoji("star")}_Play Time:_ **${hours}h ${minutes}m ${seconds}s**\n` +
+            `${discord.getEmoji("star")}_Play count:_ **${player.playcount}**\n` +
+            `${discord.getEmoji("star")}${discord.getEmoji("SSHrank")} **${player.count_rank_ssh}** ${discord.getEmoji("SSrank")}` +
             `**${player.count_rank_ss}** ${discord.getEmoji("SHrank")} **${player.count_rank_sh}** ${discord.getEmoji("Srank")} **${player.count_rank_s}**` +
             `${discord.getEmoji("Arank")} **${player.count_rank_a}**\n` +
-            `${star}${discord.getEmoji("300hit")} **${player.count300}** ${discord.getEmoji("100hit")} **${player.count100}**` +
+            `${discord.getEmoji("star")}${discord.getEmoji("300hit")} **${player.count300}** ${discord.getEmoji("100hit")} **${player.count100}**` +
             `${discord.getEmoji("50hit")} **${player.count50}**\n` +
-            `${star}_Level:_ **${player.level.slice(0, 5)}**\n` +
-            `${star}_Rank:_ **#${player.pp_rank} (:flag_${player.country.toLowerCase()}: #${player.pp_country_rank})**\n` +
-            `${star}_Score:_ **${player.ranked_score} (${player.total_score})**\n` +
-            `${star}_PP:_ **${player.pp_raw}**\n` +
-            `${star}_Accuracy:_ **${player.accuracy.slice(0, 5) + "%"}**\n`
+            `${discord.getEmoji("star")}_Level:_ **${player.level.slice(0, 5)}**\n` +
+            `${discord.getEmoji("star")}_Rank:_ **#${player.pp_rank} (:flag_${player.country.toLowerCase()}: #${player.pp_country_rank})**\n` +
+            `${discord.getEmoji("star")}_Score:_ **${player.ranked_score} (${player.total_score})**\n` +
+            `${discord.getEmoji("star")}_PP:_ **${player.pp_raw}**\n` +
+            `${discord.getEmoji("star")}_Accuracy:_ **${player.accuracy.slice(0, 5) + "%"}**\n`
             )
             .setImage(await osu.users.banner(playerName))
             .setThumbnail(`https://a.ppy.sh/${player.user_id}`)
@@ -113,13 +112,13 @@ export default class OsuCommand extends Command {
                 .setImage(`https://assets.ppy.sh/beatmaps/${beatmap[0].beatmapset_id}/covers/cover.jpg`)
                 .setURL(`https://osu.ppy.sh/beatmapsets/${beatmap[0].beatmapset_id}#osu/${beatmap[0].beatmap_id}`)
                 .setDescription(
-                    `${star}_Beatmap:_**${beatmap[0].title}**\n` +
-                    `${star}_Rank:_**${recent[i].rank}**\n` +
-                    `${star}_Max Combo:_**${recent[i].maxcombo}**\n` +
-                    `${star}_Perfect Combo:_**${recent[i].perfect === "1" ? "Yes" : "No"}**\n` +
-                    `${star}_Date:_**${Functions.formatDate(new Date(recent[i].date))}**\n` +
-                    `${star}${discord.getEmoji("300hit")} **${recent[i].count300}** ${discord.getEmoji("100hit")} **${recent[i].count100}** ${discord.getEmoji("50hit")} **${recent[i].count50}**\n` +
-                    `${star}_Misses:_ **${recent[i].countmiss}**`
+                    `${discord.getEmoji("star")}_Beatmap:_**${beatmap[0].title}**\n` +
+                    `${discord.getEmoji("star")}_Rank:_**${recent[i].rank}**\n` +
+                    `${discord.getEmoji("star")}_Max Combo:_**${recent[i].maxcombo}**\n` +
+                    `${discord.getEmoji("star")}_Perfect Combo:_**${recent[i].perfect === "1" ? "Yes" : "No"}**\n` +
+                    `${discord.getEmoji("star")}_Date:_**${Functions.formatDate(new Date(recent[i].date))}**\n` +
+                    `${discord.getEmoji("star")}${discord.getEmoji("300hit")} **${recent[i].count300}** ${discord.getEmoji("100hit")} **${recent[i].count100}** ${discord.getEmoji("50hit")} **${recent[i].count50}**\n` +
+                    `${discord.getEmoji("star")}_Misses:_ **${recent[i].countmiss}**`
                 )
                 osuArray.push(osuEmbed)
             }
@@ -159,14 +158,14 @@ export default class OsuCommand extends Command {
                 .setImage(`https://assets.ppy.sh/beatmaps/${beatmap[0].beatmapset_id}/covers/cover.jpg`)
                 .setURL(`https://osu.ppy.sh/beatmapsets/${beatmap[0].beatmapset_id}#osu/${beatmap[0].beatmap_id}`)
                 .setDescription(
-                    `${star}_Beatmap:_**${beatmap[0].title}**\n` +
-                    `${star}_PP:_**${best[i].pp}**\n` +
-                    `${star}_Rank:_**${best[i].rank}**\n` +
-                    `${star}_Max Combo:_**${best[i].maxcombo}**\n` +
-                    `${star}_Perfect Combo:_**${best[i].perfect === "1" ? "Yes" : "No"}**\n` +
-                    `${star}_Date:_**${Functions.formatDate(new Date(best[i].date))}**\n` +
-                    `${star}${discord.getEmoji("300hit")} **${best[i].count300}** ${discord.getEmoji("100hit")} **${best[i].count100}** ${discord.getEmoji("50hit")} **${best[i].count50}**\n` +
-                    `${star}_Misses:_ **${best[i].countmiss}**`
+                    `${discord.getEmoji("star")}_Beatmap:_**${beatmap[0].title}**\n` +
+                    `${discord.getEmoji("star")}_PP:_**${best[i].pp}**\n` +
+                    `${discord.getEmoji("star")}_Rank:_**${best[i].rank}**\n` +
+                    `${discord.getEmoji("star")}_Max Combo:_**${best[i].maxcombo}**\n` +
+                    `${discord.getEmoji("star")}_Perfect Combo:_**${best[i].perfect === "1" ? "Yes" : "No"}**\n` +
+                    `${discord.getEmoji("star")}_Date:_**${Functions.formatDate(new Date(best[i].date))}**\n` +
+                    `${discord.getEmoji("star")}${discord.getEmoji("300hit")} **${best[i].count300}** ${discord.getEmoji("100hit")} **${best[i].count100}** ${discord.getEmoji("50hit")} **${best[i].count50}**\n` +
+                    `${discord.getEmoji("star")}_Misses:_ **${best[i].countmiss}**`
                 )
                 osuArray.push(osuEmbed)
             }
@@ -200,18 +199,18 @@ export default class OsuCommand extends Command {
                 .setImage(`https://assets.ppy.sh/beatmaps/${beatmaps[i].beatmapset_id}/covers/cover.jpg`)
                 .setThumbnail(`http://s.ppy.sh/a/${beatmaps[i].creator_id}`)
                 .setDescription(
-                    `${star}_Beatmap:_ **${beatmaps[i].title}**\n` +
-                    `${star}_Artist:_ **${beatmaps[i].artist}**\n` +
-                    `${star}_Creator:_ **${beatmaps[i].creator}**\n` +
-                    `${star}_Difficulty:_ **${beatmaps[i].version}**\n` +
-                    `${star}_BPM:_ **${beatmaps[i].bpm}**\n` +
-                    `${star}_Length:_ **${minutes}m ${seconds}s**\n` +
-                    `${star}_Stars:_ **${beatmaps[i].difficultyrating}**\n` +
-                    `${star}_CS:_ **${beatmaps[i].diff_size}** _OD:_ **${beatmaps[i].diff_overall}** _AR:_ **${beatmaps[i].diff_approach}** _HP:_ **${beatmaps[i].diff_drain}**\n` +
-                    `${star}_Playcount:_ **${beatmaps[i].playcount}**\n` +
-                    `${star}_Passcount:_ **${beatmaps[i].passcount}**\n` +
-                    `${star}_Rating:_ **${beatmaps[i].rating}**\n` +
-                    `${star}_Tags:_ ${beatmaps[i].tags}\n`
+                    `${discord.getEmoji("star")}_Beatmap:_ **${beatmaps[i].title}**\n` +
+                    `${discord.getEmoji("star")}_Artist:_ **${beatmaps[i].artist}**\n` +
+                    `${discord.getEmoji("star")}_Creator:_ **${beatmaps[i].creator}**\n` +
+                    `${discord.getEmoji("star")}_Difficulty:_ **${beatmaps[i].version}**\n` +
+                    `${discord.getEmoji("star")}_BPM:_ **${beatmaps[i].bpm}**\n` +
+                    `${discord.getEmoji("star")}_Length:_ **${minutes}m ${seconds}s**\n` +
+                    `${discord.getEmoji("star")}_Stars:_ **${beatmaps[i].difficultyrating}**\n` +
+                    `${discord.getEmoji("star")}_CS:_ **${beatmaps[i].diff_size}** _OD:_ **${beatmaps[i].diff_overall}** _AR:_ **${beatmaps[i].diff_approach}** _HP:_ **${beatmaps[i].diff_drain}**\n` +
+                    `${discord.getEmoji("star")}_Playcount:_ **${beatmaps[i].playcount}**\n` +
+                    `${discord.getEmoji("star")}_Passcount:_ **${beatmaps[i].passcount}**\n` +
+                    `${discord.getEmoji("star")}_Rating:_ **${beatmaps[i].rating}**\n` +
+                    `${discord.getEmoji("star")}_Tags:_ ${beatmaps[i].tags}\n`
                 )
                 osuArray.push(osuEmbed)
             }
@@ -234,17 +233,17 @@ export default class OsuCommand extends Command {
                 .setImage(`https://assets.ppy.sh/beatmaps/${beatmaps[i].id}/covers/cover.jpg`)
                 .setThumbnail(`http://s.ppy.sh/a/${beatmaps[i].user_id}`)
                 .setDescription(
-                    `${star}_Beatmap:_ **${beatmaps[i].title}**\n` +
-                    `${star}_Artist:_ **${beatmaps[i].artist}**\n` +
-                    `${star}_Creator:_ **${beatmaps[i].creator}**\n` +
-                    `${star}_Difficulty:_ **${beatmaps[i].beatmaps[0].version}**\n` +
-                    `${star}_BPM:_ **${beatmaps[i].bpm}**\n` +
-                    `${star}_Length:_ **${minutes}m ${seconds}s**\n` +
-                    `${star}_Stars:_ **${beatmaps[i].beatmaps[0].difficulty_rating}**\n` +
-                    `${star}_CS:_ **${beatmaps[i].beatmaps[0].cs}** _OD:_ **${beatmaps[i].beatmaps[0].hit_length}** _AR:_ **${beatmaps[i].beatmaps[0].ar}** _HP:_ **${beatmaps[i].beatmaps[0].drain}**\n` +
-                    `${star}_Playcount:_ **${beatmaps[i].beatmaps[0].playcount}**\n` +
-                    `${star}_Passcount:_ **${beatmaps[i].beatmaps[0].passcount}**\n` +
-                    `${star}_Tags:_ ${beatmaps[i].tags}\n`
+                    `${discord.getEmoji("star")}_Beatmap:_ **${beatmaps[i].title}**\n` +
+                    `${discord.getEmoji("star")}_Artist:_ **${beatmaps[i].artist}**\n` +
+                    `${discord.getEmoji("star")}_Creator:_ **${beatmaps[i].creator}**\n` +
+                    `${discord.getEmoji("star")}_Difficulty:_ **${beatmaps[i].beatmaps[0].version}**\n` +
+                    `${discord.getEmoji("star")}_BPM:_ **${beatmaps[i].bpm}**\n` +
+                    `${discord.getEmoji("star")}_Length:_ **${minutes}m ${seconds}s**\n` +
+                    `${discord.getEmoji("star")}_Stars:_ **${beatmaps[i].beatmaps[0].difficulty_rating}**\n` +
+                    `${discord.getEmoji("star")}_CS:_ **${beatmaps[i].beatmaps[0].cs}** _OD:_ **${beatmaps[i].beatmaps[0].hit_length}** _AR:_ **${beatmaps[i].beatmaps[0].ar}** _HP:_ **${beatmaps[i].beatmaps[0].drain}**\n` +
+                    `${discord.getEmoji("star")}_Playcount:_ **${beatmaps[i].beatmaps[0].playcount}**\n` +
+                    `${discord.getEmoji("star")}_Passcount:_ **${beatmaps[i].beatmaps[0].passcount}**\n` +
+                    `${discord.getEmoji("star")}_Tags:_ ${beatmaps[i].tags}\n`
                 )
                 osuArray.push(osuEmbed)
             }

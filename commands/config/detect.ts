@@ -37,7 +37,6 @@ export default class Detect extends Command {
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -63,21 +62,21 @@ export default class Detect extends Command {
             **Pfp Detection** = Actively swaps members between the weeb role (anime pfp) and normie role (non anime pfp).
             newline
             __Current Settings__
-            ${star}Link detection is **${links ? links.join("") :  "off"}**
-            ${star}Anime detection is **${anime ? anime.join("") :  "off"}**
-            ${star}Pfp detection is **${pfp ? pfp.join("") :  "off"}**
-            ${star}Weeb role: **${weeb ? (weeb.join("") ?  `<@&${weeb.join("")}>` : "None") :  "None"}**
-            ${star}Normie role: **${normie ? (normie.join("") ?  `<@&${normie.join("")}>` : "None") : "None"}**
+            ${discord.getEmoji("star")}Link detection is **${links ? links.join("") :  "off"}**
+            ${discord.getEmoji("star")}Anime detection is **${anime ? anime.join("") :  "off"}**
+            ${discord.getEmoji("star")}Pfp detection is **${pfp ? pfp.join("") :  "off"}**
+            ${discord.getEmoji("star")}Weeb role: **${weeb ? (weeb.join("") ?  `<@&${weeb.join("")}>` : "None") :  "None"}**
+            ${discord.getEmoji("star")}Normie role: **${normie ? (normie.join("") ?  `<@&${normie.join("")}>` : "None") : "None"}**
             newline
             __Edit Settings__
-            ${star}Type **link** to toggle link detection on/off.
-            ${star}Type **anime** to toggle anime detection on/off.
-            ${star}Type **pfp** to toggle pfp detection on/off.
-            ${star}**Mention a role or type a role id** to set the weeb role.
-            ${star}Mention a role or type a role id **between brackets [role]** to set the normie role.
-            ${star}You can set **multiple options at the same time**.
-            ${star}Type **reset** to reset settings.
-            ${star}Type **cancel** to exit.
+            ${discord.getEmoji("star")}Type **link** to toggle link detection on/off.
+            ${discord.getEmoji("star")}Type **anime** to toggle anime detection on/off.
+            ${discord.getEmoji("star")}Type **pfp** to toggle pfp detection on/off.
+            ${discord.getEmoji("star")}**Mention a role or type a role id** to set the weeb role.
+            ${discord.getEmoji("star")}Mention a role or type a role id **between brackets [role]** to set the normie role.
+            ${discord.getEmoji("star")}You can set **multiple options at the same time**.
+            ${discord.getEmoji("star")}Type **reset** to reset settings.
+            ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
         message.channel.send(detectEmbed)
 
@@ -93,7 +92,7 @@ export default class Detect extends Command {
 
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${star}Canceled the prompt!`)
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -104,7 +103,7 @@ export default class Detect extends Command {
                 await sql.updateColumn("detection", "weeb", null)
                 await sql.updateColumn("detection", "normie", null)
                 responseEmbed
-                .setDescription(`${star}All settings were reset!`)
+                .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -123,20 +122,20 @@ export default class Detect extends Command {
             if (setLink) {
                 if (!dLinks || dLinks.join("") === "off") {
                     await sql.updateColumn("detection", "links", "on")
-                    description += `${star}Link detection is **on**!\n`
+                    description += `${discord.getEmoji("star")}Link detection is **on**!\n`
                 } else {
                     await sql.updateColumn("detection", "links", "off")
-                    description += `${star}Link detection is **off**!\n`
+                    description += `${discord.getEmoji("star")}Link detection is **off**!\n`
                 }
             }
 
             if (setAnime) {
                 if (!dAnime || dAnime.join("") === "off") {
                     await sql.updateColumn("detection", "anime", "on")
-                    description += `${star}Anime detection is **on**!\n`
+                    description += `${discord.getEmoji("star")}Anime detection is **on**!\n`
                 } else {
                     await sql.updateColumn("detection", "anime", "off")
-                    description += `${star}Anime detection is **off**!\n`
+                    description += `${discord.getEmoji("star")}Anime detection is **off**!\n`
                 }
             }
 
@@ -156,21 +155,21 @@ export default class Detect extends Command {
                         }
                     }
                     await sql.updateColumn("detection", "pfp", "on")
-                    description += `${star}Pfp detection is **on**!\n`
+                    description += `${discord.getEmoji("star")}Pfp detection is **on**!\n`
                 } else {
                     await sql.updateColumn("detection", "pfp", "off")
-                    description += `${star}Pfp detection is **off**!\n`
+                    description += `${discord.getEmoji("star")}Pfp detection is **off**!\n`
                 }
             }
 
             if (setWeeb) {
                 await sql.updateColumn("detection", "weeb", weebRole!.join(""))
-                description += `${star}Weeb role set to **<@&${weebRole!.join("")}>**!\n`
+                description += `${discord.getEmoji("star")}Weeb role set to **<@&${weebRole!.join("")}>**!\n`
             }
 
             if (setNormie) {
                 await sql.updateColumn("detection", "normie", normieRole!.join(""))
-                description += `${star}Normie role set to **<@&${normieRole!.join("")}>**!\n`
+                description += `${discord.getEmoji("star")}Normie role set to **<@&${normieRole!.join("")}>**!\n`
             }
 
             responseEmbed

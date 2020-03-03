@@ -65,7 +65,7 @@ export default class SpotifyCommand extends Command {
             if (spotifyArray.length === 1) {
                 return message.channel.send(spotifyArray[0])
             }
-            return embeds.createReactionEmbed(spotifyArray)
+            return embeds.createReactionEmbed(spotifyArray, true)
         }
 
         const query = Functions.combineArgs(args, 1)
@@ -99,6 +99,6 @@ export default class SpotifyCommand extends Command {
             )
             spotifyArray.push(spotifyEmbed)
         }
-        embeds.createReactionEmbed(spotifyArray)
+        embeds.createReactionEmbed(spotifyArray, true)
     }
 }

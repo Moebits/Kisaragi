@@ -93,6 +93,6 @@ export default class TwitterCommand extends Command {
             .setImage(tweets.statuses[i].entities.media ? tweets.statuses[i].entities.media[0].media_url : tweets.statuses[i].user.profile_banner_url)
             twitterArray.push(twitterEmbed)
         }
-        embeds.createReactionEmbed(twitterArray)
+        embeds.createReactionEmbed(twitterArray, true)
     }
 }

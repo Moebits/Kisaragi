@@ -41,7 +41,6 @@ export default class CaptchaCmd extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const captchaClass = new Captcha(discord, message)
-        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -70,21 +69,21 @@ export default class CaptchaCmd extends Command {
             **Captcha Difficulty** = Either easy, medium, hard, or extreme.
             newline
             __Current Settings:__
-            ${star}_Verify Role:_ **${String(vRole) ?  "<@&" + String(vRole) + ">" : "None"}**
-            ${star}_Verify Toggle:_ **${String(vToggle)}**
-            ${star}_Captcha Type:_ **${String(cType)}**
-            ${star}_Captcha Difficulty:_ **${String(difficulty)}**
-            ${star}_Background Color:_ **${String(color)}**
+            ${discord.getEmoji("star")}_Verify Role:_ **${String(vRole) ?  "<@&" + String(vRole) + ">" : "None"}**
+            ${discord.getEmoji("star")}_Verify Toggle:_ **${String(vToggle)}**
+            ${discord.getEmoji("star")}_Captcha Type:_ **${String(cType)}**
+            ${discord.getEmoji("star")}_Captcha Difficulty:_ **${String(difficulty)}**
+            ${discord.getEmoji("star")}_Background Color:_ **${String(color)}**
             newline
             __Edit Settings:__
-            ${star}_Type **enable** or **disable** to enable or disable verification._
-            ${star}_**Mention a role** or type the **role id** to set the verified role._
-            ${star}_Type **text** or **math** to set the captcha type._
-            ${star}_Type **easy**, **medium**, **hard**, or **extreme** to set the difficulty._
-            ${star}_Type a **hex color** to set the background color._
-            ${star}_**You can type multiple options** to enable all at once._
-            ${star}_Type **reset** to reset all settings._
-            ${star}_Type **cancel** to exit._
+            ${discord.getEmoji("star")}_Type **enable** or **disable** to enable or disable verification._
+            ${discord.getEmoji("star")}_**Mention a role** or type the **role id** to set the verified role._
+            ${discord.getEmoji("star")}_Type **text** or **math** to set the captcha type._
+            ${discord.getEmoji("star")}_Type **easy**, **medium**, **hard**, or **extreme** to set the difficulty._
+            ${discord.getEmoji("star")}_Type a **hex color** to set the background color._
+            ${discord.getEmoji("star")}_**You can type multiple options** to enable all at once._
+            ${discord.getEmoji("star")}_Type **reset** to reset all settings._
+            ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
         message.channel.send(captchaEmbed)
 
@@ -94,7 +93,7 @@ export default class CaptchaCmd extends Command {
             let [setOn, setOff, setRole, setText, setMath, setColor, setEasy, setMedium, setHard, setExtreme] = [] as boolean[]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${star}Canceled the prompt!`)
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -105,7 +104,7 @@ export default class CaptchaCmd extends Command {
                 await sql.updateColumn("captcha", "captcha color", "#ffffff")
                 await sql.updateColumn("captcha", "difficulty", "medium")
                 responseEmbed
-                .setDescription(`${star}All settings were reset!`)
+                .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -126,21 +125,21 @@ export default class CaptchaCmd extends Command {
 
             if (setOn && setOff) {
                 responseEmbed
-                    .setDescription(`${star}You cannot disable/enable at the same time.`)
+                    .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
                 msg.channel.send(responseEmbed)
                 return
             }
 
             if (setText && setMath) {
                 responseEmbed
-                    .setDescription(`${star}You cannot set both captcha types at the same time.`)
+                    .setDescription(`${discord.getEmoji("star")}You cannot set both captcha types at the same time.`)
                 msg.channel.send(responseEmbed)
                 return
             }
 
             if (setOn && !setRole) {
                 responseEmbed
-                    .setDescription(`${star}In order to enable verification, you must set the verify role.`)
+                    .setDescription(`${discord.getEmoji("star")}In order to enable verification, you must set the verify role.`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -152,35 +151,35 @@ export default class CaptchaCmd extends Command {
                     setHard ? "hard" : (
                     setMedium ? "medium" : "easy"))
                 await sql.updateColumn("captcha", "difficulty", diff)
-                description += `${star}Captcha difficulty set to **${diff}**!\n`
+                description += `${discord.getEmoji("star")}Captcha difficulty set to **${diff}**!\n`
             }
 
             if (setOn) {
                 await sql.updateColumn("captcha", "verify toggle", "on")
-                description += `${star}Captcha verification is **on**!\n`
+                description += `${discord.getEmoji("star")}Captcha verification is **on**!\n`
             }
             if (setOff) {
                 await sql.updateColumn("captcha", "verify toggle", "off")
-                description += `${star}Captcha verification is **off**!\n`
+                description += `${discord.getEmoji("star")}Captcha verification is **off**!\n`
             }
             if (setText) {
                 await sql.updateColumn("captcha", "captcha type", "text")
-                description += `${star}Captcha type set to **text**!\n`
+                description += `${discord.getEmoji("star")}Captcha type set to **text**!\n`
             }
             if (setMath) {
                 await sql.updateColumn("captcha", "captcha type", "math")
-                description += `${star}Captcha type set to **math**!\n`
+                description += `${discord.getEmoji("star")}Captcha type set to **math**!\n`
             }
             if (setRole) {
                 await sql.updateColumn("captcha", "verify role", String(newRole!))
-                description += `${star}Verify role set to <@&${String(newRole!)}>!\n`
+                description += `${discord.getEmoji("star")}Verify role set to <@&${String(newRole!)}>!\n`
             }
             if (setColor) {
                 await sql.updateColumn("captcha", "captcha color", String(newColor!))
-                description += `${star}Background color set to ${String(newColor!)}\n`
+                description += `${discord.getEmoji("star")}Background color set to ${String(newColor!)}\n`
             }
 
-            if (!description) description = `${star}Invalid arguments provided, canceled the prompt.`
+            if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             responseEmbed
             .setDescription(description)
             msg.channel.send(responseEmbed)

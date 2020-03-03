@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Shorten extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Shortens a url using is.gd.",
+            description: "Shortens an url using is.gd.",
             help:
             `
             \`shorten url\` - Shortens the url

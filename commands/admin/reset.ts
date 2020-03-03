@@ -8,10 +8,10 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Captcha extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Reset all settings to the default (no undo).",
+            description: "Deletes and resets all data on your guild (no undo).",
             help:
             `
-            \`reset\` - Resets all settings (no undo)
+            \`reset\` - Resets all data (no undo)
             `,
             examples:
             `

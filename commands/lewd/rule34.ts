@@ -10,6 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class Rule34 extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
+            description: `Searches for images on rule34.`,
             help:
             `
             \`rule34\` - Gets a random sfw image

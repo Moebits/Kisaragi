@@ -27,7 +27,6 @@ export default class Define extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
         const dictionary = new CollegiateDictionary(process.env.DICTIONARY_API_KEY)
         const word = Functions.combineArgs(args, 1)
         if (!word) {
@@ -81,10 +80,10 @@ export default class Define extends Command {
         let definitions = ""
         for (let i = 0; i < definArray.length; i++) {
             if (definArray[i]) {
-                definitions += `${star}_Definition:_ ${definArray[i]}\n`
+                definitions += `${discord.getEmoji("star")}_Definition:_ ${definArray[i]}\n`
             }
             if (exampleArray[i]) {
-                definitions += `${star}_Example:_ ${exampleArray[i]}\n`
+                definitions += `${discord.getEmoji("star")}_Example:_ ${exampleArray[i]}\n`
             }
         }
         defineEmbed
@@ -93,10 +92,10 @@ export default class Define extends Command {
         .setURL(`https://www.merriam-webster.com/dictionary/${result[0].word.replace(/ /g, "_")}`)
         .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
         .setDescription(
-            `${star}_Word:_ **${result[0].word}**\n` +
-            `${star}_Function:_ **${result[0].functional_label}**\n` +
-            `${star}_Popularity:_ **${result[0].popularity}**\n` +
-            `${star}_Etymology:_ ${result[0].etymology ? result[0].etymology : "None"}\n` +
+            `${discord.getEmoji("star")}_Word:_ **${result[0].word}**\n` +
+            `${discord.getEmoji("star")}_Function:_ **${result[0].functional_label}**\n` +
+            `${discord.getEmoji("star")}_Popularity:_ **${result[0].popularity}**\n` +
+            `${discord.getEmoji("star")}_Etymology:_ ${result[0].etymology ? result[0].etymology : "None"}\n` +
             `${Functions.checkChar(definitions, 2000, ".")}\n`
         )
         message.channel.send(defineEmbed)

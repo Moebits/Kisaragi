@@ -29,7 +29,6 @@ export default class Help extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
         const helpEmbedArray: MessageEmbed[] = []
         if (args[1]) {
             const helpDir = new (require("./helpInfo").default)(this.discord, this.message)
@@ -47,7 +46,7 @@ export default class Help extends Command {
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
                 const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
                 if (cmdClass.options.unlist === true) continue
-                help += `${star}**${commands[j]}**\n` + `${cmdClass.options.description}\n`
+                help += `${ discord.getEmoji("star")}\`${commands[j]}\`\n` + `_${cmdClass.options.description}_\n`
             }
             const emojiMap: any = {
                 "admin": discord.getEmoji("gabTired"),
@@ -57,7 +56,7 @@ export default class Help extends Command {
                 "fun": discord.getEmoji("gabTired"),
                 "game": discord.getEmoji("gabTired"),
                 "heart": discord.getEmoji("gabTired"),
-                "hentai": discord.getEmoji("gabTired"),
+                "lewd": discord.getEmoji("gabTired"),
                 "info": discord.getEmoji("gabTired"),
                 "japanese": discord.getEmoji("gabTired"),
                 "level": discord.getEmoji("gabTired"),
@@ -75,7 +74,7 @@ export default class Help extends Command {
             // .setImage("https://i.imgur.com/Av9RN7x.png")
             .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
             .setDescription(
-                `Type **help (command)** for detailed help info! ${discord.getEmoji("aquaUp")}\n` + help)
+                `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` + help)
             helpEmbedArray.push(helpEmbed)
         }
         embeds.createHelpEmbed(helpEmbedArray)

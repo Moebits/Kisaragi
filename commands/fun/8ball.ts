@@ -16,7 +16,7 @@ export default class $8ball extends Command {
             `
             \`=>8ball do you love me?\`
             `,
-            aliases: ["roll"],
+            aliases: ["eightball"],
             cooldown: 3
         })
     }

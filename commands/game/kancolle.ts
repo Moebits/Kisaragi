@@ -27,7 +27,6 @@ export default class Kancolle extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
 
         const query = Functions.combineArgs(args, 1)
         if (!query) {
@@ -61,7 +60,7 @@ export default class Kancolle extends Command {
                 index++
                 continue
             }
-            description += `${star}_${res2.data.sections[index]?.title}_: ${res2.data.sections[index]?.content[0]?.elements.map((c: any) => c.text).join("\n")}\n`
+            description += `${discord.getEmoji("star")}_${res2.data.sections[index]?.title}_: ${res2.data.sections[index]?.content[0]?.elements.map((c: any) => c.text).join("\n")}\n`
             index++
         }
         const kancolleArray: MessageEmbed[] = []
@@ -73,13 +72,13 @@ export default class Kancolle extends Command {
             .setURL(`https://kancolle.fandom.com/wiki/${girl}`)
             .setThumbnail(thumb)
             .setImage(filtered[i])
-            .setDescription(`${star}_Ship Girl:_ **${girl}**\n` + description)
+            .setDescription(`${discord.getEmoji("star")}_Ship Girl:_ **${girl}**\n` + description)
             kancolleArray.push(kancolleEmbed)
         }
         if (kancolleArray.length === 1) {
             message.channel.send(kancolleArray[0])
         } else {
-            embeds.createReactionEmbed(kancolleArray)
+            embeds.createReactionEmbed(kancolleArray, true)
         }
         return
     }

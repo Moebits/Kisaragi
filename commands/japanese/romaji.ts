@@ -19,7 +19,7 @@ export default class Romaji extends Command {
             `
             \`=>romaji 艦隊これくしょん\`
             `,
-            aliases: [],
+            aliases: ["romajinize"],
             cooldown: 5
         })
     }

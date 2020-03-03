@@ -116,7 +116,7 @@ const langs: any = {
 export default class Japanese extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Translates text to another language, english by default.",
+            description: "Translates text to another language.",
             help:
             `
             \`translate code text\` - Translates the text into the given language (2 letter code)

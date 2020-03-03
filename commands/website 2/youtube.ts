@@ -131,7 +131,7 @@ export default class Youtube extends Command {
                     }
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
-                embeds.createReactionEmbed(ytEmbeds)
+                embeds.createReactionEmbed(ytEmbeds, true)
                 msg.delete({timeout: 1000})
                 return
             }
@@ -158,7 +158,7 @@ export default class Youtube extends Command {
 
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
-                embeds.createReactionEmbed(ytEmbeds)
+                embeds.createReactionEmbed(ytEmbeds, true)
                 msg.delete({timeout: 1000})
                 return
             }
@@ -184,7 +184,7 @@ export default class Youtube extends Command {
 
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
-                embeds.createReactionEmbed(ytEmbeds)
+                embeds.createReactionEmbed(ytEmbeds, true)
                 msg.delete({timeout: 1000})
                 return
             }
@@ -210,7 +210,7 @@ export default class Youtube extends Command {
 
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
-                embeds.createReactionEmbed(ytEmbeds)
+                embeds.createReactionEmbed(ytEmbeds, true)
                 msg.delete({timeout: 1000})
                 return
             }

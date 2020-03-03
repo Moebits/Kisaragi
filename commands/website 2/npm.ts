@@ -35,7 +35,6 @@ export default class NPM extends Command {
             .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png"))
         }
         const result = await npm(query, {sortBy: "popularity"})
-        const star = discord.getEmoji("star")
         const npmArray: MessageEmbed[] = []
         for (let i = 0; i < result.length; i++) {
             const npmEmbed = embeds.createEmbed()
@@ -46,13 +45,13 @@ export default class NPM extends Command {
             .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png")
             .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
             .setDescription(
-            `${star}_Version:_ **${result[i].version}**\n` +
-            `${star}_Publisher:_ ${result[i].publisher.username}\n` +
-            `${star}_Email:_ ${result[i].publisher.email}\n` +
-            `${star}_Date:_ ${Functions.formatDate(result[i].date)}\n` +
-            `${star}_Repository:_ ${result[i].links.repository ? result[i].links.repository : "None"}\n` +
-            `${star}_Description:_ ${result[i].description ? result[i].description : "None"}\n` +
-            `${star}_Keywords:_ ${Functions.checkChar(keywords, 1000, ",")}\n`
+            `${discord.getEmoji("star")}_Version:_ **${result[i].version}**\n` +
+            `${discord.getEmoji("star")}_Publisher:_ ${result[i].publisher.username}\n` +
+            // `${discord.getEmoji("star")}_Email:_ ${result[i].publisher.email}\n` +
+            `${discord.getEmoji("star")}_Date:_ ${Functions.formatDate(result[i].date)}\n` +
+            `${discord.getEmoji("star")}_Repository:_ ${result[i].links.repository ? result[i].links.repository : "None"}\n` +
+            `${discord.getEmoji("star")}_Description:_ ${result[i].description ? result[i].description : "None"}\n` +
+            `${discord.getEmoji("star")}_Keywords:_ ${Functions.checkChar(keywords, 1000, ",")}\n`
             )
             npmArray.push(npmEmbed)
         }

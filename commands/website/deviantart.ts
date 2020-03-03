@@ -38,7 +38,6 @@ export default class Deviantart extends Command {
     }
 
     public createDeviantEmbed = async (deviantArt: DeviantArt, discord: Kisaragi, embeds: Embeds, result: DeviantArtSearchResults) => {
-        const star = discord.getEmoji("star")
         const perms = new Permission(discord, this.message)
         if (!result.results[0]) {
             const badDeviantEmbed = embeds.createEmbed()
@@ -62,13 +61,13 @@ export default class Deviantart extends Command {
             .setImage(deviation.content.src)
             .setThumbnail(deviation.author!.usericon)
             .setDescription(
-                `${star}_Title:_ **${deviation.title}**\n` +
-                `${star}_Author:_ **${deviation.author!.username}**\n` +
-                `${star}_Category:_ **${deviation.category}**\n` +
-                `${star}_Creation Date:_ **${Functions.formatDate(new Date((Number(deviation.published_time)) * 1000))}**\n` +
-                `${star}_Comments:_ **${deviation.stats!.comments}**\n` +
-                `${star}_Favorites:_ **${deviation.stats!.favourites ? deviation.stats!.favourites : 0}**\n` +
-                `${star}_Description:_ ${deviation.description ? Functions.checkChar(deviation.description, 700, ".") : "None"}\n`
+                `${discord.getEmoji("star")}_Title:_ **${deviation.title}**\n` +
+                `${discord.getEmoji("star")}_Author:_ **${deviation.author!.username}**\n` +
+                `${discord.getEmoji("star")}_Category:_ **${deviation.category}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date((Number(deviation.published_time)) * 1000))}**\n` +
+                `${discord.getEmoji("star")}_Comments:_ **${deviation.stats!.comments}**\n` +
+                `${discord.getEmoji("star")}_Favorites:_ **${deviation.stats!.favourites ? deviation.stats!.favourites : 0}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${deviation.description ? Functions.checkChar(deviation.description, 700, ".") : "None"}\n`
             )
             deviantArray.push(deviantEmbed)
         }
@@ -76,7 +75,6 @@ export default class Deviantart extends Command {
     }
 
     public createRSSDeviantEmbed = (discord: Kisaragi, embeds: Embeds, result: DeviationRSSExtended[]) => {
-        const star = discord.getEmoji("star")
         const perms = new Permission(discord, this.message)
         if (!result[0]) {
             const badDeviantEmbed = embeds.createEmbed()
@@ -99,11 +97,11 @@ export default class Deviantart extends Command {
             .setImage(deviation.content[0].url)
             .setThumbnail(deviation?.author?.user?.usericon)
             .setDescription(
-                `${star}_Title:_ **${deviation.title}**\n` +
-                `${star}_Author:_ **${deviation?.author?.user?.username}**\n` +
-                `${star}_Category:_ **${deviation.category}**\n` +
-                `${star}_Creation Date:_ **${Functions.formatDate(new Date((Number(deviation.date)) * 1000))}**\n` +
-                `${star}_Description:_ ${deviation.description ? Functions.checkChar(deviation.description, 1900, ".") : "None"}\n`
+                `${discord.getEmoji("star")}_Title:_ **${deviation.title}**\n` +
+                `${discord.getEmoji("star")}_Author:_ **${deviation?.author?.user?.username}**\n` +
+                `${discord.getEmoji("star")}_Category:_ **${deviation.category}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date((Number(deviation.date)) * 1000))}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${deviation.description ? Functions.checkChar(deviation.description, 1900, ".") : "None"}\n`
             )
             deviantArray.push(deviantEmbed)
         }
@@ -111,7 +109,7 @@ export default class Deviantart extends Command {
     }
 
     public deviantQuery = async (deviantArt: DeviantArt, embeds: Embeds, query: string) => {
-        const star = this.discord.getEmoji("star")
+        const discord = this.discord
         let rssDeviations: DeviationRSS[]
         if (query.includes(".com")) {
             rssDeviations = [await deviantArt.rss.get(query)]
@@ -138,18 +136,18 @@ export default class Deviantart extends Command {
                 .setURL(deviation.url)
                 .setImage(deviation.content[0].url)
                 .setDescription(
-                    `${star}_Title:_ **${deviation.title}**\n` +
-                    `${star}_Author:_ **${deviation.author.user.username}**\n` +
-                    `${star}_Category:_ **${deviation.category}**\n` +
-                    `${star}_Creation Date:_ **${Functions.formatDate(new Date(deviation.date))}**\n` +
-                    `${star}_Description:_ ${deviation.description ? Functions.checkChar(deviation.description, 1900, ".") : "None"}\n`
+                    `${discord.getEmoji("star")}_Title:_ **${deviation.title}**\n` +
+                    `${discord.getEmoji("star")}_Author:_ **${deviation.author.user.username}**\n` +
+                    `${discord.getEmoji("star")}_Category:_ **${deviation.category}**\n` +
+                    `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(deviation.date))}**\n` +
+                    `${discord.getEmoji("star")}_Description:_ ${deviation.description ? Functions.checkChar(deviation.description, 1900, ".") : "None"}\n`
                 )
             deviantArray.push(deviantEmbed)
         }
         if (deviantArray.length === 1) {
             this.message.channel.send(deviantArray[0])
         } else {
-            embeds.createReactionEmbed(deviantArray)
+            embeds.createReactionEmbed(deviantArray, true)
         }
         return true
     }
@@ -158,7 +156,6 @@ export default class Deviantart extends Command {
         deviantArray = []
         const discord = this.discord
         const message = this.message
-        const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
         const deviantArt = await DeviantArt.login(process.env.DEVIANTART_CLIENT_ID!, process.env.DEVIANTART_CLIENT_SECRET!)
         if (!args[1]) args[1] = "popular"
@@ -170,7 +167,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray)
+                embeds.createReactionEmbed(deviantArray, true)
             }
             return
         }
@@ -184,7 +181,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray)
+                embeds.createReactionEmbed(deviantArray, true)
             }
             return
         }
@@ -199,7 +196,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray)
+                embeds.createReactionEmbed(deviantArray, true)
             }
             return
         }
@@ -214,7 +211,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray)
+                embeds.createReactionEmbed(deviantArray, true)
             }
             return
         }
@@ -231,17 +228,17 @@ export default class Deviantart extends Command {
             .setThumbnail(result.user.usericon)
             .setImage(result.cover_photo ? result.cover_photo : result.user.usericon)
             .setDescription(
-                `${star}_User:_ **${result.user.username}**\n` +
-                `${star}_Specialty:_ **${result.artist_specialty}**\n` +
-                `${star}_Country:_ **${result.country}**\n` +
-                `${star}_Website:_ **${result.website ? result.website : "None"}**\n` +
-                `${star}_Deviations:_ **${result.stats.user_deviations}**\n` +
-                `${star}_User Favorites:_ **${result.stats.user_favourites}**\n` +
-                `${star}_User Comments:_ **${result.stats.user_comments}**\n` +
-                `${star}_Page Views:_ **${result.stats.profile_pageviews}**\n` +
-                `${star}_Profile Comments:_ **${result.stats.profile_comments}**\n` +
-                `${star}_Tag Line:_ ${result.tagline ? result.tagline : "None"}\n` +
-                `${star}_Description:_ ${Functions.checkChar(result.bio, 1800, ".")}\n`
+                `${discord.getEmoji("star")}_User:_ **${result.user.username}**\n` +
+                `${discord.getEmoji("star")}_Specialty:_ **${result.artist_specialty}**\n` +
+                `${discord.getEmoji("star")}_Country:_ **${result.country}**\n` +
+                `${discord.getEmoji("star")}_Website:_ **${result.website ? result.website : "None"}**\n` +
+                `${discord.getEmoji("star")}_Deviations:_ **${result.stats.user_deviations}**\n` +
+                `${discord.getEmoji("star")}_User Favorites:_ **${result.stats.user_favourites}**\n` +
+                `${discord.getEmoji("star")}_User Comments:_ **${result.stats.user_comments}**\n` +
+                `${discord.getEmoji("star")}_Page Views:_ **${result.stats.profile_pageviews}**\n` +
+                `${discord.getEmoji("star")}_Profile Comments:_ **${result.stats.profile_comments}**\n` +
+                `${discord.getEmoji("star")}_Tag Line:_ ${result.tagline ? result.tagline : "None"}\n` +
+                `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(result.bio, 1800, ".")}\n`
             )
             message.channel.send(deviantEmbed)
             return
@@ -259,7 +256,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray)
+                embeds.createReactionEmbed(deviantArray, true)
             }
             return
         }
@@ -274,7 +271,7 @@ export default class Deviantart extends Command {
         if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray)
+                embeds.createReactionEmbed(deviantArray, true)
             }
         return
     }

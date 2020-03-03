@@ -7,7 +7,16 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Slap extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts a slap image.",
+            description: "Slaps someone.",
+            help:
+            `
+            \`slap @user\` - Slaps the user.
+            \`slap\` - Slaps no one...
+            `,
+            examples:
+            `
+            \`=>slap @user\`
+            `,
             aliases: [],
             cooldown: 3
         })
@@ -19,13 +28,27 @@ export default class Slap extends Command {
         const embeds = new Embeds(discord, message)
         const neko = new nekoClient()
 
+        let user = message.author
+        let name = "someone"
+        if (message.mentions.users.size) {
+            user = message.mentions.users.first()!
+            name = message.mentions.users.first()!.username
+            if (user.id === message.author.id) name = "themselves"
+            if (user.id === discord.user!.id) name = "me"
+        }
+
+        let flavorText = `${discord.getEmoji("chinoSmug")}`
+        if (name === "themselves") flavorText = `Nice... ${discord.getEmoji("AquaWut")}`
+        if (name === "someone") flavorText = `Well ok ${discord.getEmoji("vigneDead")}`
+        if (name === "me") flavorText = `No thanks ${discord.getEmoji("ceaseBullying")}`
+
         const image = await neko.sfw.slap()
 
         const slapEmbed = embeds.createEmbed()
         slapEmbed
-        .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
         .setURL(image.url)
-        .setTitle(`**Slap** ${discord.getEmoji("chinoSmug")}`)
+        .setTitle(`**Slap** ${discord.getEmoji("kaosWTF")}`)
+        .setDescription(`**${message.author.username}** slaps **${name}**! ${flavorText}`)
         .setImage(image.url)
         message.channel.send(slapEmbed)
     }

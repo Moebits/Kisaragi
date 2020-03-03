@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Swap extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Swap all members to a weeb or normie role.",
+            description: "Swaps all members to a weeb or normie role.",
             help:
             `
             \`swap\` - Swaps all members to the weeb or normie role.
@@ -31,7 +31,6 @@ export default class Swap extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const detect = new Detector(discord, message)
-        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const pfp = await sql.fetchColumn("detection", "pfp")
         const weeb = await sql.fetchColumn("detection", "weeb")
@@ -58,8 +57,8 @@ export default class Swap extends Command {
         swapEmbed
         .setTitle(`**Role Swapping** ${discord.getEmoji("gabYes")}`)
         .setDescription(
-            `${star}**${weebCounter}** members were swapped into the <@&${weeb}> role.\n` +
-            `${star}**${normieCounter}** members were swapped into the <@&${normie}> role.\n`
+            `${discord.getEmoji("star")}**${weebCounter}** members were swapped into the <@&${weeb}> role.\n` +
+            `${discord.getEmoji("star")}**${normieCounter}** members were swapped into the <@&${normie}> role.\n`
         )
         message.channel.send(swapEmbed)
     }

@@ -20,7 +20,6 @@ export default class ReactionRoles extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
@@ -61,9 +60,9 @@ export default class ReactionRoles extends Command {
                     })
                     const identifier = guildEmoji!.identifier
                     settings += `${i + 1} **=>**\n` +
-                    `${star}_Message:_ [Link](${foundMsg!.url})\n` +
-                    `${star}_Emoji:_ ${identifier}\n` +
-                    `${star}_Role:_ <@&${roles[value]}>\n`
+                    `${discord.getEmoji("star")}_Message:_ [Link](${foundMsg!.url})\n` +
+                    `${discord.getEmoji("star")}_Emoji:_ ${identifier}\n` +
+                    `${discord.getEmoji("star")}_Role:_ <@&${roles[value]}>\n`
                 } else {
                     settings = "None"
                 }
@@ -79,14 +78,14 @@ export default class ReactionRoles extends Command {
                 ${settings}
                 newline
                 __Edit Settings__
-                ${star}Type a **message id** to set the message.
-                ${star}**Mention a role or type a role id** to set the role.
-                ${star}**Type an emoji or emoji name** to set the emoji.
-                ${star}Type **delete (setting number)** to delete a setting.
-                ${star}Type **edit (setting number)** to edit a setting.
-                ${star}Type **toggle (setting number)** to toggle the state.
-                ${star}Type **reset** to delete all settings.
-                ${star}Type **cancel** to exit.
+                ${discord.getEmoji("star")}Type a **message id** to set the message.
+                ${discord.getEmoji("star")}**Mention a role or type a role id** to set the role.
+                ${discord.getEmoji("star")}**Type an emoji or emoji name** to set the emoji.
+                ${discord.getEmoji("star")}Type **delete (setting number)** to delete a setting.
+                ${discord.getEmoji("star")}Type **edit (setting number)** to edit a setting.
+                ${discord.getEmoji("star")}Type **toggle (setting number)** to toggle the state.
+                ${discord.getEmoji("star")}Type **reset** to delete all settings.
+                ${discord.getEmoji("star")}Type **cancel** to exit.
             `))
             reactArray.push(reactEmbed)
         }
@@ -102,14 +101,14 @@ export default class ReactionRoles extends Command {
 
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${star}Canceled the prompt!`)
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("special roles", "reaction roles", null)
                 responseEmbed
-                .setDescription(`${star}Reaction role settings were wiped!`)
+                .setDescription(`${discord.getEmoji("star")}Reaction role settings were wiped!`)
                 msg.channel.send(responseEmbed)
                 return
             }

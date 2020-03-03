@@ -32,7 +32,6 @@ export default class DetectChannels extends Command {
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -52,7 +51,7 @@ export default class DetectChannels extends Command {
                     const value = (i*step)+j
                     if (!ignored[0][value]) break
                     description += `**${value + 1} =>**\n` +
-                    `${star}Channel: ${ignored[0] ? (ignored[0][value] ? `<#${ignored[0][value]}>` : "None") : "None"}\n`
+                    `${discord.getEmoji("star")}Channel: ${ignored[0] ? (ignored[0][value] ? `<#${ignored[0][value]}>` : "None") : "None"}\n`
                 } else {
                     description = "None"
                 }
@@ -68,9 +67,9 @@ export default class DetectChannels extends Command {
                 ${description}
                 newline
                 __Edit Settings__
-                ${star}**Mention channels** to add channels.
-                ${star}Type **reset** to delete all settings.
-                ${star}Type **cancel** to exit.
+                ${discord.getEmoji("star")}**Mention channels** to add channels.
+                ${discord.getEmoji("star")}Type **reset** to delete all settings.
+                ${discord.getEmoji("star")}Type **cancel** to exit.
             `))
             detectArray.push(detectEmbed)
         }
@@ -89,14 +88,14 @@ export default class DetectChannels extends Command {
             if (!dIgnored[0]) dIgnored = [""]; setInit = true
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${star}Canceled the prompt!`)
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("detection", "ignored", null)
                 responseEmbed
-                .setDescription(`${star}All settings were **reset**!`)
+                .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -110,7 +109,7 @@ export default class DetectChannels extends Command {
                 dIgnored.push(newChan![i])
                 if (setInit) dIgnored = dIgnored.filter(Boolean)
                 await sql.updateColumn("detection", "ignored", dIgnored)
-                description += `${star}Added <#${newChan![i]}>!\n`
+                description += `${discord.getEmoji("star")}Added <#${newChan![i]}>!\n`
             }
 
             responseEmbed

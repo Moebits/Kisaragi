@@ -37,7 +37,6 @@ export default class Danbooru extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const danbooru = Booru("danbooru", process.env.DANBOORU_API_KEY)
-        const star = discord.getEmoji("star")
         const danbooruEmbed = embeds.createEmbed()
         .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")
         .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
@@ -85,12 +84,12 @@ export default class Danbooru extends Command {
         danbooruEmbed
         .setURL(url)
         .setDescription(
-            `${star}_Character:_ **${img.tag_string_character ? Functions.toProperCase(img.tag_string_character.replace(/ /g, "\n").replace(/_/g, " ")) : "Original"}**\n` +
-            `${star}_Artist:_ **${Functions.toProperCase(img.tag_string_artist.replace(/_/g, " "))}**\n` +
-            `${star}_Source:_ ${img.source}\n` +
-            `${star}_Uploader:_ **${img.uploader_name}**\n` +
-            `${star}_Creation Date:_ **${Functions.formatDate(img.created_at)}**\n` +
-            `${star}_Tags:_ ${Functions.checkChar(img.tag_string_general, 2048, " ")}\n`
+            `${discord.getEmoji("star")}_Character:_ **${img.tag_string_character ? Functions.toProperCase(img.tag_string_character.replace(/ /g, "\n").replace(/_/g, " ")) : "Original"}**\n` +
+            `${discord.getEmoji("star")}_Artist:_ **${Functions.toProperCase(img.tag_string_artist.replace(/_/g, " "))}**\n` +
+            `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
+            `${discord.getEmoji("star")}_Uploader:_ **${img.uploader_name}**\n` +
+            `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(img.created_at)}**\n` +
+            `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(img.tag_string_general, 2048, " ")}\n`
         )
         .setImage(img.file_url)
         message.channel.send(danbooruEmbed)

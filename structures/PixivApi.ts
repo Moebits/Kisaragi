@@ -15,11 +15,11 @@ export class PixivApi {
 
     // Create Pixiv Embed
     public createPixivEmbed = async (image: PixivIllust) => {
+        const discord = this.discord
         const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         if (image.x_restrict !== 0) {
             if (!this.perms.checkNSFW()) return
         }
-        const star = this.discord.getEmoji("star")
         const pixivEmbed = this.embeds.createEmbed()
         if (!image) return this.pixivErrorEmbed
         const comments = await pixiv.illust.comments({illust_id: image.id})
@@ -39,13 +39,13 @@ export class PixivApi {
         .setTitle(`**Pixiv Image** ${this.discord.getEmoji("chinoSmug")}`)
         .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
         .setDescription(
-        `${star}_Title:_ **${image.title}**\n` +
-        `${star}_Artist:_ **${image.user.name}**\n` +
-        `${star}_Creation Date:_ **${Functions.formatDate(new Date(image.create_date))}**\n` +
-        `${star}_Views:_ **${image.total_view}**\n` +
-        `${star}_Bookmarks:_ **${image.total_bookmarks}**\n` +
-        `${star}_Description:_ ${cleanText ? cleanText : "None"}\n` +
-        `${star}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
+        `${discord.getEmoji("star")}_Title:_ **${image.title}**\n` +
+        `${discord.getEmoji("star")}_Artist:_ **${image.user.name}**\n` +
+        `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(image.create_date))}**\n` +
+        `${discord.getEmoji("star")}_Views:_ **${image.total_view}**\n` +
+        `${discord.getEmoji("star")}_Bookmarks:_ **${image.total_bookmarks}**\n` +
+        `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` +
+        `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
         )
         .attachFiles([authorAttachment, imageAttachment])
         .setThumbnail(`attachment://author.png`)

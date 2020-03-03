@@ -7,7 +7,16 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Pat extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Post a pat image",
+            description: "Pats someone.",
+            help:
+            `
+            \`pat @user\` - Pats the user.
+            \`pat\` - Pats no one...
+            `,
+            examples:
+            `
+            \`=>hug @user\`
+            `,
             aliases: [],
             cooldown: 3
         })
@@ -19,13 +28,27 @@ export default class Pat extends Command {
         const embeds = new Embeds(discord, message)
         const neko = new nekoClient()
 
+        let user = message.author
+        let name = "someone"
+        if (message.mentions.users.size) {
+            user = message.mentions.users.first()!
+            name = message.mentions.users.first()!.username
+            if (user.id === message.author.id) name = "themselves"
+            if (user.id === discord.user!.id) name = "me"
+        }
+
+        let flavorText = `${discord.getEmoji("kannaPat")}`
+        if (name === "themselves") flavorText = `It's ok... ${discord.getEmoji("kannaPat")}`
+        if (name === "someone") flavorText = `Free pats ${discord.getEmoji("AquaWut")}`
+        if (name === "me") flavorText = `Thanks ${discord.getEmoji("yes")}`
+
         const image = await neko.sfw.pat()
 
         const patEmbed = embeds.createEmbed()
         patEmbed
-        .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
         .setURL(image.url)
-        .setTitle(`**Pat** ${discord.getEmoji("chinoSmug")}`)
+        .setTitle(`**Pat** ${discord.getEmoji("kannaPatting")}`)
+        .setDescription(`**${message.author.username}** pats **${name}**! ${flavorText}`)
         .setImage(image.url)
         message.channel.send(patEmbed)
     }

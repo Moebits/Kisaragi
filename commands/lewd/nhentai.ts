@@ -32,6 +32,7 @@ export default class $nHentai extends Command {
 
     // nhentai Doujin
     public getNhentaiDoujin = (doujin: any, tag: string) => {
+        const discord = this.discord
         const checkArtists = doujin.details.artists ? Functions.checkChar(doujin.details.artists.join(" "), 50, ")") : "None"
         const checkCharacters = doujin.details.characters ? Functions.checkChar(doujin.details.characters.join(" "), 50, ")") : "None"
         const checkTags = doujin.details.tags ? Functions.checkChar(doujin.details.tags.join(" "), 50, ")") : "None"
@@ -39,7 +40,6 @@ export default class $nHentai extends Command {
         const checkGroups = doujin.details.groups ? Functions.checkChar(doujin.details.groups.join(" "), 50, ")") : "None"
         const checkLanguages = doujin.details.languages ? Functions.checkChar(doujin.details.languages.join(" "), 50, ")") : "None"
         const checkCategories = doujin.details.categories ? Functions.checkChar(doujin.details.categories.join(" "), 50, ")") : "None"
-        const star = this.discord.getEmoji("star")
         const doujinPages: MessageEmbed[] = []
         /*fs.mkdirSync(`../assets/pages/${tag}/`);
         fs.mkdirSync(`../assets/pagesCompressed/${tag}/`);
@@ -56,11 +56,11 @@ export default class $nHentai extends Command {
             .setTitle(`**${doujin.title}** ${this.discord.getEmoji("chinoSmug")}`)
             .setURL(doujin.link)
             .setDescription(
-            `${star}_Japanese Title:_ **${doujin.nativeTitle}**\n` +
-            `${star}_ID:_ **${tag}**\n` +
-            `${star}_Artists:_ ${checkArtists}\n` +
-            `${star}_Characters:_ ${checkCharacters}\n` +
-            `${star}_Tags:_ ${checkTags} ${checkParodies}` +
+            `${discord.getEmoji("star")}_Japanese Title:_ **${doujin.nativeTitle}**\n` +
+            `${discord.getEmoji("star")}_ID:_ **${tag}**\n` +
+            `${discord.getEmoji("star")}_Artists:_ ${checkArtists}\n` +
+            `${discord.getEmoji("star")}_Characters:_ ${checkCharacters}\n` +
+            `${discord.getEmoji("star")}_Tags:_ ${checkTags} ${checkParodies}` +
             `${checkGroups} ${checkLanguages} ${checkCategories}\n`
             )
             // .attachFiles([`../assets/pagesCompressed/${tag}/page${i}.jpg`])

@@ -7,7 +7,16 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Cuddle extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts a cuddle image.",
+            description: "Cuddles someone.",
+            help:
+            `
+            \`cuddle @user\` - Cuddles the user.
+            \`baka\` - Cuddle no one...
+            `,
+            examples:
+            `
+            \`=>cuddle @user\`
+            `,
             aliases: [],
             cooldown: 3
         })
@@ -19,13 +28,27 @@ export default class Cuddle extends Command {
         const embeds = new Embeds(discord, message)
         const neko = new nekoClient()
 
+        let user = message.author
+        let name = "someone"
+        if (message.mentions.users.size) {
+            user = message.mentions.users.first()!
+            name = message.mentions.users.first()!.username
+            if (user.id === message.author.id) name = "themselves"
+            if (user.id === discord.user!.id) name = "me"
+        }
+
+        let flavorText = `${discord.getEmoji("kannaBear")}`
+        if (name === "themselves") flavorText = `Aww... ${discord.getEmoji("umaruCry")}`
+        if (name === "someone") flavorText = `Who knows ${discord.getEmoji("kannaCurious")}`
+        if (name === "me") flavorText = `Thank you ${discord.getEmoji("kannaWave")}`
+
         const image = await neko.sfw.cuddle()
 
         const cuddleEmbed = embeds.createEmbed()
         cuddleEmbed
-        .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
         .setURL(image.url)
-        .setTitle(`**Cuddle** ${discord.getEmoji("chinoSmug")}`)
+        .setTitle(`**Cuddle** ${discord.getEmoji("kannaBear")}`)
+        .setDescription(`**${message.author.username}** cuddled **${name}**! ${flavorText}`)
         .setImage(image.url)
         message.channel.send(cuddleEmbed)
     }

@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 export default class RGB extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Posts the invite link and support server link.",
+          description: "Posts a visual representation of a color.",
           help:
           `
           \`rgb #color\` - Posts a color (word/hex/rgb)

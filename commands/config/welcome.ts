@@ -39,7 +39,6 @@ export default class Welcome extends Command {
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
         const perms = new Permission(discord, message)
-        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const axios = require("axios")
         const input = Functions.combineArgs(args, 1)
@@ -74,23 +73,23 @@ export default class Welcome extends Command {
             **count** = guild member count
             newline
             __Current Settings:__
-            ${star}_Welcome Message:_ **${welcomeMsg}**
-            ${star}_Welcome Channel:_ **${welcomeChannel.join("") ?  `<#${welcomeChannel}>`  :  "None"}**
-            ${star}_Welcome Toggle:_ **${welcomeToggle}**
-            ${star}_Background Image:_ **${newImage}**
-            ${star}_Background Text:_ **${welcomeText}**
-            ${star}_Background Text Color:_ **${welcomeColor}**
+            ${discord.getEmoji("star")}_Welcome Message:_ **${welcomeMsg}**
+            ${discord.getEmoji("star")}_Welcome Channel:_ **${welcomeChannel.join("") ?  `<#${welcomeChannel}>`  :  "None"}**
+            ${discord.getEmoji("star")}_Welcome Toggle:_ **${welcomeToggle}**
+            ${discord.getEmoji("star")}_Background Image:_ **${newImage}**
+            ${discord.getEmoji("star")}_Background Text:_ **${welcomeText}**
+            ${discord.getEmoji("star")}_Background Text Color:_ **${welcomeColor}**
             newline
             __Edit Settings:__
-            ${star}_**Type any message** to set it as the welcome message._
-            ${star}_Type **enable** or **disable** to enable or disable welcome messages._
-            ${star}_**Mention a channel** to set it as the welcome channel._
-            ${star}_Post an **image URL** (jpg, png, gif) to set the background image._
-            ${star}_Add brackets **[text]** to set the background text._
-            ${star}_Type **rainbow** or a **hex color** to set the background text color._
-            ${star}_**You can type multiple options** to set them at once._
-            ${star}_Type **reset** to reset settings._
-            ${star}_Type **cancel** to exit._
+            ${discord.getEmoji("star")}_**Type any message** to set it as the welcome message._
+            ${discord.getEmoji("star")}_Type **enable** or **disable** to enable or disable welcome messages._
+            ${discord.getEmoji("star")}_**Mention a channel** to set it as the welcome channel._
+            ${discord.getEmoji("star")}_Post an **image URL** (jpg, png, gif) to set the background image._
+            ${discord.getEmoji("star")}_Add brackets **[text]** to set the background text._
+            ${discord.getEmoji("star")}_Type **rainbow** or a **hex color** to set the background text color._
+            ${discord.getEmoji("star")}_**You can type multiple options** to set them at once._
+            ${discord.getEmoji("star")}_Type **reset** to reset settings._
+            ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
         message.channel.send(welcomeEmbed)
 

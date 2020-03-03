@@ -17,7 +17,7 @@ export default class MDN extends Command {
             `
             \`=>mdn array\`
             `,
-            aliases: [],
+            aliases: ["jsref"],
             cooldown: 5
         })
     }
@@ -48,7 +48,6 @@ export default class MDN extends Command {
             .setTitle(`**MDN Search** ${discord.getEmoji("gabStare")}`)
             .setAuthor(`mdn`, "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png"))
         }
-        const star = discord.getEmoji("star")
         const url = `https://mdn.pleb.xyz/search?local=en-US&q=${query}`
         const result = await axios.get(url).then((r) => r.data)
         let similar = ""
@@ -62,10 +61,10 @@ export default class MDN extends Command {
         .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
         .setURL(`https://developer.mozilla.org/${result.URL}`)
         .setDescription(
-        `${star}_Modified:_ ${Functions.formatDate(result.Modified)}\n` +
-        `${star}_Summary:_ ${Functions.cleanHTML(result.Summary)}\n` +
-        `${star}_Tags:_ ${this.mdnReplace(result.Tags.join(", "))}\n` +
-        `${star}_Similar:_ \n${Functions.checkChar(similar, 1000, "\n")}`
+        `${discord.getEmoji("star")}_Modified:_ ${Functions.formatDate(result.Modified)}\n` +
+        `${discord.getEmoji("star")}_Summary:_ ${Functions.cleanHTML(result.Summary)}\n` +
+        `${discord.getEmoji("star")}_Tags:_ ${this.mdnReplace(result.Tags.join(", "))}\n` +
+        `${discord.getEmoji("star")}_Similar:_ \n${Functions.checkChar(similar, 1000, "\n")}`
         )
 
         message.channel.send(mdnEmbed)

@@ -25,7 +25,6 @@ export default class AppStore extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
 
         const store = require("app-store-scraper")
         const term = Functions.combineArgs(args, 1).trim()
@@ -46,17 +45,17 @@ export default class AppStore extends Command {
             .setThumbnail(app.icon)
             .setImage(app.screenshots[0])
             .setDescription(
-                `${star}_App:_ **${app.title}**\n` +
-                `${star}_Developer_: **${app.developer}**\n` +
-                `${star}_Release Date:_ **${Functions.formatDate(app.released)}**\n` +
-                `${star}_Last Updated:_ **${Functions.formatDate(app.updated)}**\n` +
-                `${star}_Version:_ **${app.version}**\n` +
-                `${star}_Price:_ **$${app.price}**\n` +
-                `${star}_Score:_ **${app.score}**\n` +
-                `${star}_Reviews:_ **${app.reviews}**\n` +
-                `${star}_Developer Website:_ ${app.developerWebsite}\n` +
-                `${star}_Description:_ ${Functions.checkChar(app.description, 700, " ")}\n` +
-                `${star}_Release Notes:_ ${Functions.checkChar(app.releaseNotes, 300, " ")}`
+                `${discord.getEmoji("star")}_App:_ **${app.title}**\n` +
+                `${discord.getEmoji("star")}_Developer_: **${app.developer}**\n` +
+                `${discord.getEmoji("star")}_Release Date:_ **${Functions.formatDate(app.released)}**\n` +
+                `${discord.getEmoji("star")}_Last Updated:_ **${Functions.formatDate(app.updated)}**\n` +
+                `${discord.getEmoji("star")}_Version:_ **${app.version}**\n` +
+                `${discord.getEmoji("star")}_Price:_ **$${app.price}**\n` +
+                `${discord.getEmoji("star")}_Score:_ **${app.score}**\n` +
+                `${discord.getEmoji("star")}_Reviews:_ **${app.reviews}**\n` +
+                `${discord.getEmoji("star")}_Developer Website:_ ${app.developerWebsite}\n` +
+                `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(app.description, 700, " ")}\n` +
+                `${discord.getEmoji("star")}_Release Notes:_ ${Functions.checkChar(app.releaseNotes, 300, " ")}`
             )
             appArray.push(appEmbed)
         }
@@ -68,7 +67,7 @@ export default class AppStore extends Command {
         if (appArray.length === 1) {
             message.channel.send(appArray[0])
         } else {
-            embeds.createReactionEmbed(appArray)
+            embeds.createReactionEmbed(appArray, true)
         }
         return
     }

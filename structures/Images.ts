@@ -130,6 +130,21 @@ export class Images {
         }))
     }
 
+    // Parse Imgur Album
+    public parseImgurAlbum = async (albumID: string, max?: number) => {
+        const imgur = require("imgur")
+        await imgur.setClientId(process.env.IMGUR_discord_ID)
+        await imgur.setAPIUrl("https://api.imgur.com/3/")
+        const album = await imgur.getAlbumInfo(albumID)
+        let images = album.data.images.map((i: any) => i.link)
+        images = Functions.shuffleArray(images)
+        if (max) {
+            return images.slice(0, max)
+        } else {
+            return images
+        }
+    }
+
     // Fetch Channel Attachments
     public fetchChannelAttachments = async (channel: TextChannel) => {
         let beforeID = channel.lastMessageID

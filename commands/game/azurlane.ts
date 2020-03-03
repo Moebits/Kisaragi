@@ -49,7 +49,6 @@ export default class AzurLaneCommand extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
         const query = Functions.combineArgs(args, 1).trim().replace(/ +/g, "_")
         if (!query) {
             return this.noQuery(embeds.createEmbed()
@@ -84,12 +83,12 @@ export default class AzurLaneCommand extends Command {
             .setThumbnail(chibis[i])
             .setImage(pics[i])
             .setDescription(
-                `${star}_Ship Girl:_ **${Functions.toProperCase(query.replace(/_/g, " "))}**\n` +
-                `${star}_Nationality:_ **${nationality}**\n` +
-                `${star}_Artist:_ **${artist ? artist[0] : "Not found"}**\n` +
-                `${star}_Pixiv:_ ${pixivID ? `https://www.pixiv.net/member.php?id=${pixivID[0]}` : "None"}\n` +
-                `${star}_Twitter_: ${twitter ? `https://www.twitter.com/${twitter[0]}` : "None"}\n` +
-                `${star}_Historical References:_ ${Functions.checkChar(description, 1700, " ")}`
+                `${discord.getEmoji("star")}_Ship Girl:_ **${Functions.toProperCase(query.replace(/_/g, " "))}**\n` +
+                `${discord.getEmoji("star")}_Nationality:_ **${nationality}**\n` +
+                `${discord.getEmoji("star")}_Artist:_ **${artist ? artist[0] : "Not found"}**\n` +
+                `${discord.getEmoji("star")}_Pixiv:_ ${pixivID ? `https://www.pixiv.net/member.php?id=${pixivID[0]}` : "None"}\n` +
+                `${discord.getEmoji("star")}_Twitter_: ${twitter ? `https://www.twitter.com/${twitter[0]}` : "None"}\n` +
+                `${discord.getEmoji("star")}_Historical References:_ ${Functions.checkChar(description, 1700, " ")}`
             )
             azurArray.push(azurEmbed)
         }
@@ -97,7 +96,7 @@ export default class AzurLaneCommand extends Command {
         if (azurArray.length === 1) {
             message.channel.send(azurArray[0])
         } else {
-            embeds.createReactionEmbed(azurArray)
+            embeds.createReactionEmbed(azurArray, true)
         }
         return
     }

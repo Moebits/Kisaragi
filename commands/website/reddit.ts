@@ -157,7 +157,7 @@ export default class Reddit extends Command {
         if (redditArray.length === 1) {
             message.channel.send(redditArray[0])
         } else {
-            embeds.createReactionEmbed(redditArray)
+            embeds.createReactionEmbed(redditArray, true)
         }
     }
 }

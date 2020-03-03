@@ -34,7 +34,6 @@ export default class Config extends Command {
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
-        const star = discord.getEmoji("star")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -53,15 +52,15 @@ export default class Config extends Command {
         Configure bot settings.
         newline
         __Current Settings__
-        ${star}Embed color set to **${color}**
-        ${star}Permission checks set to **${permCheck}**
+        ${discord.getEmoji("star")}Embed color set to **${color}**
+        ${discord.getEmoji("star")}Permission checks set to **${permCheck}**
         newline
         __Edit Settings__
-        ${star}Type **default/random** or a **hexcolor** to set the embed color.
-        ${star}Type **role/perm** to set how permissions are checked.
-        ${star}Type **multiple settings** to set them at once.
-        ${star}Type **reset** to delete all settings.
-        ${star}Type **cancel** to exit.
+        ${discord.getEmoji("star")}Type **default/random** or a **hexcolor** to set the embed color.
+        ${discord.getEmoji("star")}Type **role/perm** to set how permissions are checked.
+        ${discord.getEmoji("star")}Type **multiple settings** to set them at once.
+        ${discord.getEmoji("star")}Type **reset** to delete all settings.
+        ${discord.getEmoji("star")}Type **cancel** to exit.
         `
         ))
 
@@ -74,7 +73,7 @@ export default class Config extends Command {
 
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
-                .setDescription(`${star}Canceled the prompt!`)
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -82,7 +81,7 @@ export default class Config extends Command {
                 await sql.updateColumn("config", "embed colors", "default")
                 await sql.updateColumn("config", "permissions", "role")
                 responseEmbed
-                .setDescription(`${star}All settings were reset!`)
+                .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 msg.channel.send(responseEmbed)
                 return
             }
@@ -98,15 +97,15 @@ export default class Config extends Command {
 
             if (setColor) {
                 await sql.updateColumn("config", "embed colors", String(newColor))
-                description += `${star}Embed color set to **${newColor}!**\n`
+                description += `${discord.getEmoji("star")}Embed color set to **${newColor}!**\n`
             }
 
             if (setPerm) {
                 await sql.updateColumn("config", "permissions", String(newPerm))
-                description += `${star}Permission check set to **${newPerm}!**\n`
+                description += `${discord.getEmoji("star")}Permission check set to **${newPerm}!**\n`
             }
 
-            if (!description) description = `${star}Invalid arguments provided, canceled the prompt.`
+            if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             responseEmbed
             .setDescription(description)
             msg.channel.send(responseEmbed)

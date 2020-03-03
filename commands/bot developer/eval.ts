@@ -36,7 +36,7 @@ export default class Eval extends Command {
           }
 
           evalEmbed
-          .setTitle(`**Javascript Code Eval** ${discord.getEmoji("kaosWTF")}`)
+          .setTitle(`**Typescript Code Eval** ${discord.getEmoji("kaosWTF")}`)
           .setDescription(this.clean(evaled))
           message.channel.send(evalEmbed)
 
