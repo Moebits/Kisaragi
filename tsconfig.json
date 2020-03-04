@@ -12,7 +12,8 @@
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"noUnusedLocals": false,
-		"noImplicitAny": true,
+		"noImplicitAny": false,
+		"strictNullChecks": false,
 		"strict": true
 	},
 	"exclude": [
