@@ -11,11 +11,11 @@ export default class Set extends Command {
             description: "Changes the bots avatar.",
             help:
             `
-            \`setavatar url?\` - Sets the avatar to the ru
+            \`setavatar url?\` - Sets the avatar.
             `,
             examples:
             `
-            \`=>set watching anime, dnd\`
+            \`=>setavatar\`
             `,
             aliases: ["setav"],
             cooldown: 5
@@ -29,6 +29,16 @@ export default class Set extends Command {
         const embeds = new Embeds(discord, message)
         if (!perms.checkBotDev()) return
 
-        W
+        let image: string | undefined
+        if (!args[1]) {
+            image = await discord.fetchLastAttachment(message)
+        } else {
+            image = args[1]
+        }
+
+        if (!image) return message.reply("No avatar found!")
+        await discord.user.setAvatar(image)
+
+        return message.reply(`Avatar successfully set! ${discord.getEmoji("aquaUp")}`)
     }
 }
