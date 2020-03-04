@@ -252,7 +252,6 @@ export default class Newgrounds extends Command {
             })
         })
         return data
-        //
     }
 
     public fetchUser = async (username: string) => {
