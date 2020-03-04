@@ -1,13 +1,11 @@
-import {WSEventType} from "discord.js"
-import * as fs from "fs"
+import fs from "fs"
 import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 
 const discord = new Kisaragi({
-    disableEveryone: true,
-    restTimeOffset: 0,
-    disabledEvents: ["TYPING_START", "TYPING_STOP"] as WSEventType[]
+    disableMentions: "everyone",
+    restTimeOffset: 0
 })
 
 const start = async (): Promise<void> => {

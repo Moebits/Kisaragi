@@ -13,7 +13,3 @@ declare module "pg" {
         release(err?: Error | boolean): void
     }    
 }
-
-declare module "syllable" {
-    export default function syllable(value: string): number
-}
