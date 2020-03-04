@@ -239,7 +239,6 @@ export default class Newgrounds extends Command {
 
     public userData = async (username: string) => {
         let data: any = ""
-        //
         await new Promise((resolve) => {
             osmosis.get(`https://${username}.newgrounds.com`)
             .find("body > div#outer-skin")
