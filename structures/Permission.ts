@@ -56,7 +56,7 @@ export class Permission {
         if (this.message.author.id === process.env.OWNER_ID) {
             return true
         } else {
-            this.message.reply("Only the bot developer can use bot developer commands.")
+            this.message.reply("Sorry, only the bot developer can use bot developer commands.")
             return false
         }
     }
@@ -80,7 +80,7 @@ export class Permission {
         if (channel.nsfw) {
             return true
         } else {
-            this.message.reply(`You can only use this command in NSFW channels!`)
+            this.message.reply(`You can only use this command in **NSFW channels**!`)
             return false
         }
     }

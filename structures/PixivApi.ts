@@ -6,6 +6,7 @@ import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 import {Permission} from "./Permission"
+const imgur = require("imgur")
 
 export class PixivApi {
     private readonly embeds = new Embeds(this.discord, this.message)
@@ -14,14 +15,16 @@ export class PixivApi {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Create Pixiv Embed
-    public createPixivEmbed = async (image: PixivIllust) => {
+    public createPixivEmbed = async (image: PixivIllust, noImgur?: boolean) => {
         const discord = this.discord
         const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         if (image.x_restrict !== 0) {
             if (!this.perms.checkNSFW()) return
         }
+        await imgur.setClientId(process.env.IMGUR_discord_ID)
+        await imgur.setAPIUrl("https://api.imgur.com/3/")
         const pixivEmbed = this.embeds.createEmbed()
-        if (!image) return this.pixivErrorEmbed
+        if (!image) return
         const comments = await pixiv.illust.comments({illust_id: image.id})
         const commentArray: string[] = []
         for (let i = 0; i <= 5; i++) {
@@ -31,8 +34,21 @@ export class PixivApi {
         const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
         const url = await pixiv.util.downloadIllust(image, `${topDir}assets/pixiv/illusts`)
         const authorUrl = await pixiv.util.downloadProfilePicture(image, `${topDir}assets/pixiv/profiles`)
-        const imageAttachment = new MessageAttachment(url, "image.png")
-        const authorAttachment = new MessageAttachment(authorUrl, "author.png")
+        if (noImgur) {
+            pixivEmbed
+            const imageAttachment = new MessageAttachment(url, "image.png")
+            const authorAttachment = new MessageAttachment(authorUrl, "author.png")
+            pixivEmbed
+            .attachFiles([authorAttachment, imageAttachment])
+            .setThumbnail(`attachment://author.png`)
+            .setImage(`attachment://image.png`)
+        } else {
+            const illustImage = await imgur.uploadFile(url).then((j: any) => j.data.link)
+            const authorImage = await imgur.uploadFile(authorUrl).then((j: any) => j.data.link)
+            pixivEmbed
+            .setThumbnail(authorImage)
+            .setImage(illustImage)
+        }
         const cleanText = image.caption.replace(/<\/?[^>]+(>|$)/g, "")
         pixivEmbed
         .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
@@ -47,9 +63,6 @@ export class PixivApi {
         `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` +
         `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
         )
-        .attachFiles([authorAttachment, imageAttachment])
-        .setThumbnail(`attachment://author.png`)
-        .setImage(`attachment://image.png`)
         return pixivEmbed
     }
 
@@ -99,14 +112,37 @@ export class PixivApi {
             }
         }
         const illusts = pixiv.util.sort(json.illusts)
-        const index = Math.floor(Math.random() * (illusts.length - illusts.length/2) + illusts.length/2)
-        const image = illusts[index]
-        if (!image) return this.pixivErrorEmbed()
-        if (noEmbed) return image
+        if (!illusts[0]) return this.pixivErrorEmbed()
+        if (noEmbed) {
+            const index = Math.floor(Math.random() * (illusts.length - illusts.length/2) + illusts.length/2)
+            const image = illusts[index]
+            if (!image) return this.pixivErrorEmbed()
+            return image
+        }
 
-        const pixivEmbed = await this.createPixivEmbed(image)
-        if (!pixivEmbed) return
-        return this.message.channel.send(pixivEmbed)
+        const pixivArray: MessageEmbed[] = []
+        const max = illusts.length > 10 ? 10 : illusts.length
+        for (let i = 0; i < max; i++) {
+            let pixivEmbed: MessageEmbed | undefined
+            try {
+                pixivEmbed = await this.createPixivEmbed(illusts[i])
+                if (!pixivEmbed) continue
+                pixivArray.push(pixivEmbed)
+            } catch {
+                pixivEmbed = await this.createPixivEmbed(illusts[i], true)
+                if (!pixivEmbed) break
+                pixivArray.push(pixivEmbed)
+                break
+            }
+        }
+
+        if (!pixivArray[0]) return this.pixivErrorEmbed()
+        if (pixivArray.length === 1) {
+            this.message.channel.send(pixivArray[0])
+        } else {
+            this.embeds.createReactionEmbed(pixivArray, true)
+        }
+        return
     }
 
     // Pixiv Image ID
@@ -123,7 +159,7 @@ export class PixivApi {
             return
         }
         const pixivEmbed = await this.createPixivEmbed(image)
-        if (!pixivEmbed) return
+        if (!pixivEmbed) return this.pixivErrorEmbed()
         return this.message.channel.send(pixivEmbed)
     }
 
@@ -133,12 +169,30 @@ export class PixivApi {
         const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         const json = await pixiv.illust.ranking({mode})
         const illusts = pixiv.util.sort(json.illusts)
-        const index = Math.floor(Math.random() * (illusts.length - illusts.length/2) + illusts.length/2)
-        const image = illusts[index]
+        if (!illusts[0]) return this.pixivErrorEmbed()
+        const pixivArray: MessageEmbed[] = []
+        const max = illusts.length > 10 ? 10 : illusts.length
+        for (let i = 0; i < max; i++) {
+            let pixivEmbed: MessageEmbed | undefined
+            try {
+                pixivEmbed = await this.createPixivEmbed(illusts[i])
+                if (!pixivEmbed) continue
+                pixivArray.push(pixivEmbed)
+            } catch {
+                pixivEmbed = await this.createPixivEmbed(illusts[i], true)
+                if (!pixivEmbed) break
+                pixivArray.push(pixivEmbed)
+                break
+            }
+        }
 
-        const pixivEmbed = await this.createPixivEmbed(image)
-        if (!pixivEmbed) return
-        return this.message.channel.send(pixivEmbed)
+        if (!pixivArray[0]) return this.pixivErrorEmbed()
+        if (pixivArray.length === 1) {
+            this.message.channel.send(pixivArray[0])
+        } else {
+            this.embeds.createReactionEmbed(pixivArray, true)
+        }
+        return
     }
 
     // Pixiv Popular R18 Image
@@ -147,11 +201,29 @@ export class PixivApi {
         const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         const json = await pixiv.illust.ranking({mode})
         const illusts = pixiv.util.sort(json.illusts)
-        const index = Math.floor(Math.random() * (illusts.length - illusts.length/2) + illusts.length/2)
-        const image = illusts[index]
+        if (!illusts[0]) return this.pixivErrorEmbed()
+        const pixivArray: MessageEmbed[] = []
+        const max = illusts.length > 10 ? 10 : illusts.length
+        for (let i = 0; i < max; i++) {
+            let pixivEmbed: MessageEmbed | undefined
+            try {
+                pixivEmbed = await this.createPixivEmbed(illusts[i])
+                if (!pixivEmbed) continue
+                pixivArray.push(pixivEmbed)
+            } catch {
+                pixivEmbed = await this.createPixivEmbed(illusts[i], true)
+                if (!pixivEmbed) break
+                pixivArray.push(pixivEmbed)
+                break
+            }
+        }
 
-        const pixivEmbed = await this.createPixivEmbed(image)
-        if (!pixivEmbed) return
-        return this.message.channel.send(pixivEmbed)
+        if (!pixivArray[0]) return this.pixivErrorEmbed()
+        if (pixivArray.length === 1) {
+            this.message.channel.send(pixivArray[0])
+        } else {
+            this.embeds.createReactionEmbed(pixivArray, true)
+        }
+        return
     }
 }

@@ -9,16 +9,27 @@ export default class Create extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Create channels, roles, and emojis.",
+            help:
+            `
+            \`create channel name above? reason?\` - Creates a new channel with the name above the current one, or above the "above" channel.
+            \`create role Role_Name? #color? position? hoisted? mentionable?\` - Creates a role with these properties. Dashes and underscores in the name are replaced by spaces.
+            \`create emoji name imageLink? reason?\` - Creates a new emoji with the name, if no image link is provided the last sent image is used (if found).
+            `,
+            examples:
+            `
+            \`=>create channel anime-chat gamer-chat\`
+            \`=>create role Members #bf4dff 10 true true\`
+            \`=>create emoji smugFace\`
+            `,
             aliases: [],
             guildOnly: true,
-            cooldown: 30
+            cooldown: 10
         })
     }
 
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const channel = message.channel as TextChannel
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         embeds
@@ -26,25 +37,63 @@ export default class Create extends Command {
         if (!args[1]) return message.reply(`You need to specify whether you are creating a **channel**, **role**, or **emoji** ${discord.getEmoji("kannaCurious")}`)
 
         if (args[1] === "channel") {
+            const channel = message.channel as TextChannel
             let position = (channel.position === 0) ? channel.position - 1 : 0
             const parent = channel.parent ? channel.parent : undefined
-            const newArgs = Functions.combineArgs(args, 2).split(",")
+            const newArgs = Functions.combineArgs(args, 2).split(" ")
             const name = newArgs[0]
-            const above = newArgs[1].toLowerCase()
+            const above = newArgs[1]?.toLowerCase()
+            const reason = newArgs[2] ? Functions.combineArgs(newArgs, 2).trim() : "None provided!"
             if (above) {
-                position = message.guild!.channels.cache.find((c) => c.name.toLowerCase().includes(above))!.position - 1
+                position = message.guild!.channels.cache.find((c) => c.name.toLowerCase().includes(above))!.position + 1
             }
-            if (!name) return message.reply("You did not provide a name!")
-            await message.guild!.channels.create(name, {position, parent, type: "text"})
-            return message.reply(`The channel **${name}** was created! ${discord.getEmoji("gabYes")}`)
+            if (position < 0) position = 0
+            if (!name) return message.reply("You must provide a name for the channel.")
+            const nChannel = await message.guild!.channels.create(name, {position, parent, reason, type: "text"})
+            const createEmbed = embeds.createEmbed()
+            createEmbed
+            .setAuthor("create", "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png")
+            .setTitle(`**Channel Creation** ${discord.getEmoji("gabYes")}`)
+            .setDescription(`The channel **<#${nChannel.id}>** was created for reason: **${reason}**`)
+            return message.reply(createEmbed)
         }
 
         if (args[1] === "role") {
-            // implement
+            let name = "New Role"
+            let color = "#ff4dde"
+            let position =  1
+            let hoist = false
+            let mentionable = false
+            const newArgs = Functions.combineArgs(args, 2).split(" ")
+            if (newArgs[0]) name = newArgs[0]
+            if (newArgs[1]) color = newArgs[1]
+            if (newArgs[2]) position = Number(newArgs[2])
+            if (newArgs[3]) hoist = Boolean(newArgs[3])
+            if (newArgs[4]) mentionable = Boolean(newArgs[4])
+            const nRole = await message.guild!.roles.create({data: {name, position, color, hoist, mentionable}})
+            const createEmbed = embeds.createEmbed()
+            createEmbed
+            .setAuthor("create", "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png")
+            .setTitle(`**Role Creation** ${discord.getEmoji("gabYes")}`)
+            .setDescription(`The role **<@&${nRole.id}>** was created!`)
+            return message.reply(createEmbed)
         }
 
         if (args[1] === "emoji") {
-            //
+            const newArgs = Functions.combineArgs(args, 2).split(" ")
+            const name = newArgs[0]
+            let image: string | undefined = newArgs[1]
+            const reason = newArgs[2] ? Functions.combineArgs(newArgs, 2).trim() : "None provided!"
+            if (!image) image = await discord.fetchLastAttachment(message)
+            if (!name || !image) return message.reply(`You must provide a name for the emoji and an image link (I will also try searching for recently sent images.)`)
+            const nEmoji = await message.guild!.emojis.create(image, name, {reason})
+            const emojiTag = nEmoji.animated ? `<${nEmoji.identifier}>` : `<:${nEmoji.identifier}>`
+            const createEmbed = embeds.createEmbed()
+            createEmbed
+            .setAuthor("create", "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png")
+            .setTitle(`**Emoji Creation** ${discord.getEmoji("gabYes")}`)
+            .setDescription(`The emoji **${emojiTag}** was created for reason: **${reason}**`)
+            return message.reply(createEmbed)
         }
     }
 }

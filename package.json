@@ -14,7 +14,8 @@
     "preinstall": "npx npm-force-resolutions"
   },
   "resolutions": {
-    "graceful-fs": "4.2.3"
+    "graceful-fs": "4.2.3",
+    "needle": "2.3.0"
   },
   "engines": {
     "node": "^12.x",
@@ -84,6 +85,7 @@
     "image-size": "^0.7.4",
     "imagemin": "^7.0.0",
     "imagemin-gifsicle": "^6.0.1",
+    "imdb-api": "^4.0.3",
     "imgur": "^0.3.1",
     "inversify": "^5.0.1",
     "ip": "^1.1.5",
@@ -107,6 +109,7 @@
     "moment": "^2.24.0",
     "mw-dict": "^3.0.0",
     "nasa-sdk": "^1.1.10",
+    "needle": "^2.3.0",
     "nekos.life": "^2.0.4",
     "nhentai-js": "^3.2.0",
     "node-gyp": "^5.0.1",
@@ -119,12 +122,14 @@
     "node-weeb": "^1.0.4",
     "npm-api": "^1.0.0",
     "opencv4nodejs": "^5.5.0",
+    "openweather-apis": "^4.2.0",
+    "osmosis": "^1.1.10",
     "osu.ts": "0.0.8",
     "pg": "^7.11.0",
     "pinterest-node-api": "0.0.3",
     "pixiv-app-api": "github:Tenpi/pixiv-app-api#fork",
     "pixiv-img": "^1.0.0",
-    "pixiv.ts": "^0.1.9",
+    "pixiv.ts": "^0.2.0",
     "pm2": "^3.5.1",
     "png-file-stream": "^1.2.1",
     "postgres-redis": "^0.1.0",
@@ -160,6 +165,7 @@
     "@types/chai": "^4.1.7",
     "@types/mathjs": "^6.0.2",
     "@types/mocha": "^5.2.7",
+    "@types/osmosis": "^1.1.1",
     "@types/puppeteer": "^1.20.0",
     "@types/redis": "^2.8.13",
     "chai": "^4.2.0",

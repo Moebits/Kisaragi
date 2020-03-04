@@ -18,7 +18,7 @@ export default class Imgur extends Command {
             `
             \`=>imgur anime\`
             `,
-            aliases: ["im"],
+            aliases: ["img", "image"],
             cooldown: 5
         })
     }

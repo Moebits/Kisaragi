@@ -12,6 +12,22 @@ export class Functions {
         return new Promise((resolve) => setTimeout(resolve, ms))
     }
 
+    // Reject Promise after timeout
+    public static promiseTimeout = (ms: number, promise: Promise<any>) => {
+
+        const timeout = new Promise((resolve, reject) => {
+          const id = setTimeout(() => {
+            clearTimeout(id)
+            reject("Timed out in "+ ms + "ms.")
+          }, ms)
+        })
+
+        return Promise.race([
+          promise,
+          timeout
+        ])
+    }
+
     // Await Pipe
     public static awaitPipe = async (readStream: stream.Readable, writeStream: stream.Writable) => {
         return new Promise((resolve) => {
@@ -99,8 +115,16 @@ export class Functions {
     }
 
     // Remove duplicates
-    public static removeDuplicates<T>(array: T[]) {
+    public static removeDuplicates = <T>(array: T[]) => {
         return array.filter((a, b) => array.indexOf(a) === b)
+    }
+
+    // Remove duplicate object keys
+    public static removeDuplicateObjectKeys = <T>(array: any[], key: string): T[] => {
+        return Array.from(new Set(array.map((a) => a[key])))
+        .map((k) => {
+          return array.find((a: any) => a[key] === k)
+        })
     }
 
     // Fill Array
@@ -155,6 +179,38 @@ export class Functions {
             }
             default: return false
         }
+    }
+
+    // Sort object array
+    public static sortObjectArray = (array: any[], key: string, order: "desc" | "asc", type?: "number" | "string") => {
+        if (!type) type = "number"
+        const compare = (key: string, order = "asc", type = "number") => {
+            return function innerSort(a: any, b: any) {
+              if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+                return 0
+              }
+              let varA: any
+              let varB: any
+              if (type === "number") {
+                varA = a[key].match(/\d+/) ? Number(a[key].replace(/,/g, "").match(/\d+/)[0]) : 0
+                varB = b[key].match(/\d+/) ? Number(b[key].replace(/,/g, "").match(/\d+/)[0]) : 0
+              } else {
+                varA = a[key].toUpperCase()
+                varB = b[key].toUpperCase()
+              }
+
+              let comparison = 0
+              if (varA > varB) {
+                comparison = 1
+              } else if (varA < varB) {
+                comparison = -1
+              }
+              return (
+                (order === "desc") ? (comparison * -1) : comparison
+              )
+            }
+        }
+        return array.sort(compare(key, order, type))
     }
 
 }
