@@ -213,4 +213,28 @@ export class Functions {
         return array.sort(compare(key, order, type))
     }
 
+    // Create 2-dimensional array
+    public static create2DArray(rows: number, columns: number) {
+        const array = new Array(rows)
+        for (let i = 0; i < array.length; i++) {
+            array[i] = new Array(columns)
+        }
+        return array
+    }
+
+    // Clone array with nested arrays
+    public static cloneArray(arr: any) {
+        if (Array.isArray(arr)) {
+            const copy = arr.slice(0)
+            for (let i = 0; i < copy.length; i++) {
+                copy[i] = Functions.cloneArray(copy[i])
+            }
+            return copy
+        } else if (typeof arr === "object") {
+            throw new Error("Cannot clone array containing an object!")
+        } else {
+            return arr
+        }
+    }
+
 }

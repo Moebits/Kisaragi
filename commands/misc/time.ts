@@ -17,7 +17,7 @@ export default class Time extends Command {
             `
             \`=>time new york\`
             `,
-            aliases: [],
+            aliases: ["clock"],
             cooldown: 5
         })
     }

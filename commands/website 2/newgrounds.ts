@@ -238,19 +238,25 @@ export default class Newgrounds extends Command {
     }
 
     public userData = async (username: string) => {
-        let data: any = ""
-        await new Promise((resolve) => {
-            osmosis.get(`https://${username}.newgrounds.com`)
-            .find("body > div#outer-skin")
-            .set({banner: "div > div > div > img > @src", avatar: "div.user-header-bg > div > a > @style",
-                  about: "div > div > div > div.userbody-guts > div > div > div > blockquote", age: "div > div > div > div.userbody-guts > div > div > div > div > div > p",
-                  social: "div > div > div > div.userbody-guts > div > div > div > ul", fans: "div > div > a > nav > div > div > a:nth-child(1) > div > strong", header2: "div > div > a > nav > div > div > a:nth-child(2) > div",
-                  header3: "div > div > a > nav > div > div > a:nth-child(3) > div", header4: "div > div > a > nav > div > div > a:nth-child(4) > div", header5: "div > div > a > nav > div > div > a:nth-child(5) > div"})
-            .data(function(d) {
-                data = d
-                resolve()
-            })
-        })
+        const html = await axios.get(`https://${username}.newgrounds.com`).then((r) => r.data)
+        const images = html.match(/(?<=\/)(u?img.ngfiles.com)(.*?)(.(png|jpg|gif))/g) as string[]
+        const banner = "https://" + images.find((i: string) => i.includes("banner"))
+        const avatar = "https://" + images.find((i: string) => i.includes("profile"))
+        const text = html.match(/(?<=<blockquote class="general fill-space text-content">)(.*?)(?=<\/blockquote>)/gm)[0]
+        const rawHead = html.match(/(?<=div class="user-header-buttons">)((.|\n)*?)(?=<div class="body-main userbody">)/gm)[0]
+        const categories = rawHead.match(/(?<=<span>)((.|\n)*?)(?=<\/span>)/gm).map((m: string) => m)
+        const categoriesValue = rawHead.match(/(?<=<strong>)((.|\n)*?)(?=<\/strong>)/gm).map((m: string) => m)
+        const rawLinks = html.match(/(?<=<div class="pod-body" id="user_links">)((.|\n)*?)(?=<div class="pod-body">)/gm)[0]
+        const links = rawLinks.match(/(?<=href=")((.|\n)*?)(?=")/gm).map((m: string) => m)
+        const linkNames = rawLinks.match(/(?<=<strong class="link">)((.|\n)*?)(?=<\/strong>)/gm).map((m: string) => m)
+        const data = {} as any
+        data.banner = banner.replace(/\\/g, "")
+        data.avatar = avatar
+        data.text = text
+        data.categories = categories
+        data.categoriesValue = categoriesValue
+        data.links = links
+        data.linkNames = linkNames
         return data
     }
 
@@ -263,7 +269,28 @@ export default class Newgrounds extends Command {
             .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
             .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`))
         }) as any
-        console.log(result)
+        let categoryDesc = ""
+        for (let i = 0; i < result.categories.length; i++) {
+            categoryDesc += `${discord.getEmoji("star")}_${Functions.toProperCase(result.categories[i])}:_ **${result.categoriesValue[i]}**\n`
+        }
+        let linkDesc = ""
+        for (let i = 0; i < result.links.length; i++) {
+            linkDesc += `[**${result.linkNames[i]}**](${result.links[i]})\n`
+        }
+        const ngEmbed = embeds.createEmbed()
+        ngEmbed
+        .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+        .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`)
+        .setImage(result.banner)
+        .setURL(`https://${username}.newgrounds.com`)
+        .setThumbnail(result.avatar)
+        .setDescription(
+            `${discord.getEmoji("star")}_User:_ **${Functions.toProperCase(username)}**\n` +
+            categoryDesc +
+            `${discord.getEmoji("star")}_Links:_ \n${Functions.checkChar(linkDesc, 500, "\n")}` +
+            `${discord.getEmoji("star")}_About:_ ${Functions.checkChar(result.text, 1000, " ")}\n`
+        )
+        return this.message.channel.send(ngEmbed)
     }
 
     public run = async (args: string[]) => {
