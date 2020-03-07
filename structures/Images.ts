@@ -1,10 +1,14 @@
+import axios from "axios"
 import * as Canvas from "canvas"
+import concat from "concat-stream"
 import {GuildMember, Message, MessageAttachment, TextChannel} from "discord.js"
+import FormData from "form-data"
 import * as fs from "fs"
 import gifFrames from "gif-frames"
 import sizeOf from "image-size"
 import imagemin from "imagemin"
 import imageminGifsicle from "imagemin-gifsicle"
+import path from "path"
 import request from "request"
 import stream from "stream"
 import unzip from "unzip"
@@ -114,18 +118,19 @@ export class Images {
     }
 
     // Download Pages
-    public downloadPages = async (array: string[], dest: string) => {
-        await Promise.all(array.map(async (url, i) => {
+    public downloadImages = async (images: string[], dest: string) => {
+        await Promise.all(images.map(async (url, i) => {
+            let name = path.basename(images[i])
+            name = name.length > 15 ? name.slice(0, 15) : name
             const options = {
                 url,
-                dest: `${dest}page${i}.jpg`
+                dest: `${dest}${name}`
             }
 
             try {
                 const {filename} = await download.image(options)
-                console.log(filename)
             } catch (e) {
-                console.log(e)
+                // console.log(e)
             }
         }))
     }
@@ -296,5 +301,20 @@ export class Images {
             const attachment = new MessageAttachment(canvas.toBuffer(), `welcome.jpg`)
             return attachment
         }
+    }
+
+    // file.io upload
+    public fileIOUpload = async (file: string) => {
+        const fd = new FormData()
+        let res: any
+        await new Promise((resolve) => {
+            fd.append("file", fs.createReadStream(file))
+            fd.pipe(concat({encoding: "buffer"}, async (data: any) => {
+                const result = await axios.post("https://file.io/?expires=1w", data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)
+                res = result.link
+                resolve()
+            }))
+        })
+        return res
     }
 }

@@ -99,6 +99,6 @@ export default class Twitch extends Command {
             twitchArray.push(twitchEmbed)
         }
 
-        embeds.createReactionEmbed(twitchArray, true)
+        embeds.createReactionEmbed(twitchArray, true, true)
     }
 }

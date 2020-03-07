@@ -73,7 +73,7 @@ export default class GooglePlay extends Command {
         if (playArray.length === 1) {
             message.channel.send(playArray[0])
         } else {
-            embeds.createReactionEmbed(playArray, true)
+            embeds.createReactionEmbed(playArray, true, true)
         }
         return
     }

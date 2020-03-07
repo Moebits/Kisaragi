@@ -113,7 +113,7 @@ export default class Pinterest extends Command {
             if (pinArray.length === 1) {
                 message.channel.send(pinArray[0])
             } else {
-                embeds.createReactionEmbed(pinArray, true)
+                embeds.createReactionEmbed(pinArray, true, true)
             }
             return
         }
@@ -146,7 +146,7 @@ export default class Pinterest extends Command {
             if (pinArray.length === 1) {
                 message.channel.send(pinArray[0])
             } else {
-                embeds.createReactionEmbed(pinArray, true)
+                embeds.createReactionEmbed(pinArray, true, true)
             }
             return
         }
@@ -218,7 +218,7 @@ export default class Pinterest extends Command {
         if (pinArray.length === 1) {
                 message.channel.send(pinArray[0])
         } else {
-                embeds.createReactionEmbed(pinArray, true)
+                embeds.createReactionEmbed(pinArray, true, true)
         }
         return
     }

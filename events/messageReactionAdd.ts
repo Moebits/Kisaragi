@@ -29,15 +29,16 @@ export default class MessageReactionAdd {
                     const collapse = await sql.fetchColumn("collectors", "collapse", "message", reaction.message.id)
                     const page = await sql.fetchColumn("collectors", "page", "message", reaction.message.id)
                     const help = await sql.fetchColumn("collectors", "help", "message", reaction.message.id)
+                    const download = await sql.fetchColumn("collectors", "download", "message", reaction.message.id)
                     const newEmbeds: MessageEmbed[] = []
                     for (let i = 0; i < cachedEmbeds[0].length; i++) {
                         newEmbeds.push(new MessageEmbed(JSON.parse(cachedEmbeds[0][i])))
                     }
                     active.add(reaction.message.id)
                     if (Boolean(help)) {
-                        // 
+                        embeds.editHelpEmbed(reaction.message, reaction.emoji.name, user, newEmbeds)
                     } else {
-                        embeds.editReactionCollector(reaction.message, reaction.emoji.name, user, newEmbeds, Boolean(collapse), Number(page))
+                        embeds.editReactionCollector(reaction.message, reaction.emoji.name, user, newEmbeds, Boolean(collapse), Boolean(download), Number(page))
                     }
                 }
             } else {

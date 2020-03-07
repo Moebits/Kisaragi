@@ -69,7 +69,7 @@ export default class TenorCommand extends Command {
         if (tenorArray.length === 1) {
             message.channel.send(tenorArray[0])
         } else {
-            embeds.createReactionEmbed(tenorArray, true)
+            embeds.createReactionEmbed(tenorArray, true, true)
         }
         return
     }

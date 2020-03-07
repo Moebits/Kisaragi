@@ -72,7 +72,7 @@ export default class AppStore extends Command {
         if (appArray.length === 1) {
             message.channel.send(appArray[0])
         } else {
-            embeds.createReactionEmbed(appArray, true)
+            embeds.createReactionEmbed(appArray, true, true)
         }
         return
     }

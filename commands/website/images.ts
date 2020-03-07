@@ -60,6 +60,6 @@ export default class GoogleImageCommand extends Command {
             .setImage(result[i].url)
             imagesArray.push(imageEmbed)
         }
-        embeds.createReactionEmbed(imagesArray)
+        embeds.createReactionEmbed(imagesArray, true, true)
     }
 }

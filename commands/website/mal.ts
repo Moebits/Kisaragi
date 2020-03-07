@@ -75,7 +75,7 @@ export default class Mal extends Command {
                 )
                 malArray.push(malEmbed)
             }
-            embeds.createReactionEmbed(malArray)
+            embeds.createReactionEmbed(malArray, true, true)
             return
         }
 
@@ -150,6 +150,6 @@ export default class Mal extends Command {
             )
             malArray.push(malEmbed)
         }
-        embeds.createReactionEmbed(malArray)
+        embeds.createReactionEmbed(malArray, true, true)
     }
 }

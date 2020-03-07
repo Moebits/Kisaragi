@@ -110,7 +110,7 @@ export default class AzurLane extends Command {
         if (azurArray.length === 1) {
             message.channel.send(azurArray[0])
         } else {
-            embeds.createReactionEmbed(azurArray, true)
+            embeds.createReactionEmbed(azurArray, true, true)
         }
         return
     }

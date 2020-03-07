@@ -87,7 +87,7 @@ export default class Kancolle extends Command {
         if (kancolleArray.length === 1) {
             message.channel.send(kancolleArray[0])
         } else {
-            embeds.createReactionEmbed(kancolleArray, true)
+            embeds.createReactionEmbed(kancolleArray, true, true)
         }
         return
     }

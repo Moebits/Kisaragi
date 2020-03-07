@@ -1,8 +1,10 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, MessageAttachment, MessageEmbed} from "discord.js"
+import fs from "fs"
 import Soundcloud from "soundcloud.ts"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
 import {Embeds} from "./../../structures/Embeds"
+import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class SoundCloud extends Command {
@@ -18,14 +20,16 @@ export default class SoundCloud extends Command {
             \`soundcloud user query\` - Searches for users with the query
             \`soundcloud playlist query\` - Searches for playlists with the query
             \`soundcloud url\` - Fetches the resource from the url
+            \`soundcloud download/dl query\` - Downloads all the tracks matching the query and uploads them
             `,
             examples:
             `
             \`=>soundcloud anime\`
             \`=>soundcloud user synthion\`
             \`=>soundcloud playlist kawaii\`
+            \`=>soundcloud download virtual riot troublemaker\`
             `,
-            aliases: ["s"],
+            aliases: ["sc"],
             random: "string",
             cooldown: 10
         })
@@ -35,6 +39,7 @@ export default class SoundCloud extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const images = new Images(discord, message)
 
         if (args[1]?.match(/soundcloud.com/)) {
             const matches = args[1].replace("www.", "").replace("https://soundcloud.com", "").match(/(?<=\/)(.*?)(?=$|\/)/g)
@@ -77,7 +82,7 @@ export default class SoundCloud extends Command {
             if (soundcloudArray.length === 1) {
                 return message.channel.send(soundcloudArray[0])
             }
-            return embeds.createReactionEmbed(soundcloudArray, true)
+            return embeds.createReactionEmbed(soundcloudArray, true, true)
         }
 
         if (this.playlist || args[1] === "playlist") {
@@ -109,7 +114,41 @@ export default class SoundCloud extends Command {
             if (soundcloudArray.length === 1) {
                 return message.channel.send(soundcloudArray[0])
             }
-            return embeds.createReactionEmbed(soundcloudArray, true)
+            return embeds.createReactionEmbed(soundcloudArray, true, true)
+        }
+
+        if (args[1] === "download" || args[1]  === "dl") {
+            const query = Functions.combineArgs(args, 2).trim()
+            if (!query) {
+                return this.noQuery(embeds.createEmbed()
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
+            }
+            const rand = Math.floor(Math.random()*10000)
+            const src = `../assets/images/${rand}/`
+            if (!fs.existsSync(src)) fs.mkdirSync(src)
+            const tracks = await soundcloud.tracks.search({q: query})
+            const files = await soundcloud.util.downloadTracks(tracks, src, 30)
+            if (!files[0]) {
+                return this.invalidQuery(embeds.createEmbed()
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
+            }
+            const dest = `../assets/images/${rand}/${query.replace(/ +/g, "_")}.zip`
+            await Functions.createZip(files, dest)
+            const link = await images.fileIOUpload(dest)
+            const soundcloudEmbed = embeds.createEmbed()
+            soundcloudEmbed
+            .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+            .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
+            .setDescription(
+                `${discord.getEmoji("star")}Downloaded **${files.length}** tracks for the query **${query}**!\n` +
+                `${discord.getEmoji("star")}This file is too large for attachments. Please note that the following link **will get deleted after someone downloads it**.\n` +
+                link
+            )
+            await message.channel.send(soundcloudEmbed)
+            Functions.removeDirectory(src)
+            return
         }
 
         const query = this.track || Functions.combineArgs(args, 1)
@@ -144,6 +183,6 @@ export default class SoundCloud extends Command {
         if (soundcloudArray.length === 1) {
             return message.channel.send(soundcloudArray[0])
         }
-        return embeds.createReactionEmbed(soundcloudArray, true)
+        return embeds.createReactionEmbed(soundcloudArray, true, true)
     }
 }

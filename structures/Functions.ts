@@ -260,4 +260,20 @@ export class Functions {
         return dest
     }
 
+    // Remove directory recursively
+    public static removeDirectory(dir: string) {
+        if (dir === "/" || dir === "./") return
+        if (fs.existsSync(dir)) {
+            fs.readdirSync(dir).forEach(function(entry) {
+                const entryPath = path.join(dir, entry)
+                if (fs.lstatSync(entryPath).isDirectory()) {
+                    Functions.removeDirectory(entryPath)
+                } else {
+                    fs.unlinkSync(entryPath)
+                }
+            })
+            fs.rmdirSync(dir)
+        }
+    }
+
 }

@@ -150,7 +150,7 @@ export default class Deviantart extends Command {
         if (deviantArray.length === 1) {
             this.message.channel.send(deviantArray[0])
         } else {
-            embeds.createReactionEmbed(deviantArray, true)
+            embeds.createReactionEmbed(deviantArray, true, true)
         }
         return true
     }
@@ -179,7 +179,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true)
+                embeds.createReactionEmbed(deviantArray, true, true)
             }
             return
         }
@@ -193,7 +193,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true)
+                embeds.createReactionEmbed(deviantArray, true, true)
             }
             return
         }
@@ -208,7 +208,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true)
+                embeds.createReactionEmbed(deviantArray, true, true)
             }
             return
         }
@@ -223,7 +223,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true)
+                embeds.createReactionEmbed(deviantArray, true, true)
             }
             return
         }
@@ -268,7 +268,7 @@ export default class Deviantart extends Command {
             if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true)
+                embeds.createReactionEmbed(deviantArray, true, true)
             }
             return
         }
@@ -283,7 +283,7 @@ export default class Deviantart extends Command {
         if (deviantArray.length === 1) {
                 message.channel.send(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true)
+                embeds.createReactionEmbed(deviantArray, true, true)
             }
         return
     }

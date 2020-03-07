@@ -18,7 +18,7 @@ export default class Changelog extends Command {
             `
             \`=>changelog\`
             `,
-            aliases: [],
+            aliases: ["updates"],
             random: "none",
             cooldown: 10
         })
@@ -29,8 +29,11 @@ export default class Changelog extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
 
+        // {num: 1, date: "", changes: ""},
         const changelog = [
-            {num: 1, date: "3/6/2020", changes: "This is the initial release."}
+            {num: 3, date: "3/6/2020", changes: "Added a download option for reaction embeds. There are also download commands for \`pixiv\`, \`soundcloud\`, and \`youtube\`, as well as a new command \`download\`."},
+            {num: 2, date: "3/6/2020", changes: "The \`kancolle\` and \`azurlane\` commands can now be used without providing any arguments (added handpicked ship girls) :)"},
+            {num: 1, date: "3/6/2020", changes: "This is the initial release. Added the new game command \`minesweeper\` that can be played with reactions or spoilers. Obviously, \`changelog\` as well for posting updates."}
         ]
 
         if (Number(args[1])) {

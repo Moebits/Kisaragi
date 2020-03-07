@@ -40,7 +40,7 @@ export default class Stockings extends Command {
                 .setImage(links[i])
                 imageArray.push(imageEmbed)
             }
-            return embeds.createReactionEmbed(imageArray)
+            return embeds.createReactionEmbed(imageArray, false, true)
         }
 
         const links = await images.parseImgurAlbum("f4s1dt0", 10)
@@ -52,6 +52,6 @@ export default class Stockings extends Command {
             .setImage(links[i])
             imageArray.push(imageEmbed)
         }
-        return embeds.createReactionEmbed(imageArray)
+        return embeds.createReactionEmbed(imageArray, false, true)
     }
 }

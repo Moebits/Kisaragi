@@ -130,7 +130,7 @@ export default class Imgur extends Command {
                 .setImage(cover)
                 imageArray.push(imgurEmbed)
             }
-            embeds.createReactionEmbed(imageArray, true)
+            embeds.createReactionEmbed(imageArray, true, true)
         }
     }
 }

@@ -1,8 +1,10 @@
 import {Message, MessageEmbed} from "discord.js"
+import fs from "fs"
 import yt from "youtube.ts"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
+import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 let ytEmbeds: MessageEmbed[] = []
@@ -19,12 +21,15 @@ export default class Youtube extends Command {
             \`youtube channel query\` - Searches for youtube channels
             \`youtube playlist query\` - Searches for youtube playlists
             \`youtube video query\` - Searches for videos (long form)
+            \`youtube download/dl query\` - Downloads the videos from the query
+            \`youtube download/dl mp3 query\` - Downloads the videos as mp3 files
             `,
             examples:
             `
             \`=>youtube anime\`
             \`=>youtube channel tenpi\`
             \`=>youtube playlist kawaii music\`
+            \`=>youtube download mp3 energy drink\`
             `,
             aliases: ["yt"],
             random: "string",
@@ -115,6 +120,7 @@ export default class Youtube extends Command {
         const message = this.message
 
         const embeds = new Embeds(discord, message)
+        const images = new Images(discord, message)
         const youtube = new yt(process.env.GOOGLE_API_KEY!)
         if (!args[1]) {
             return this.noQuery(embeds.createEmbed()
@@ -150,7 +156,7 @@ export default class Youtube extends Command {
                     }
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
-                embeds.createReactionEmbed(ytEmbeds, true)
+                embeds.createReactionEmbed(ytEmbeds, true, true)
                 msg.delete({timeout: 1000})
                 return
             }
@@ -177,7 +183,7 @@ export default class Youtube extends Command {
 
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
-                embeds.createReactionEmbed(ytEmbeds, true)
+                embeds.createReactionEmbed(ytEmbeds, true, true)
                 msg.delete({timeout: 1000})
                 return
             }
@@ -185,6 +191,70 @@ export default class Youtube extends Command {
             message.channel.send(ytEmbeds[0])
             msg.delete({timeout: 1000})
             return
+        }
+
+        if (args[1] === "download" || args[1] === "dl") {
+            msg.delete({timeout: 1000})
+            const rand = Math.floor(Math.random()*10000)
+            if (args[2] === "mp3") {
+                const query = Functions.combineArgs(args, 3).trim()
+                const videos = await youtube.videos.search({q: query, maxResults: 10}).then((v) => v.items.map((i) => i.id.videoId))
+                const src = `../assets/images/${rand}/`
+                if (!fs.existsSync(src)) fs.mkdirSync(src)
+                const dest = `../assets/images/${rand}/${query.replace(/ +/g, "_")}.zip`
+                const msg2 = await message.channel.send(`**Downloading MP3 files, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
+                let files: string[]
+                try {
+                    files = await youtube.util.downloadMP3s(videos, src)
+                } catch {
+                    msg2.delete({timeout: 1000})
+                    return message.reply(`There was an error in processing this request. Try again later.`)
+                }
+                await Functions.createZip(files, dest)
+                const link = await images.fileIOUpload(dest)
+                const youtubeEmbed = embeds.createEmbed()
+                youtubeEmbed
+                .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+                .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
+                .setDescription(
+                    `${discord.getEmoji("star")}Downloaded **${files.length}** videos as mp3 files for the query **${query}**!\n` +
+                    `${discord.getEmoji("star")}This file is too large for attachments. Please note that the following link **will get deleted after someone downloads it**.\n` +
+                    link
+                )
+                await message.channel.send(youtubeEmbed)
+                Functions.removeDirectory(src)
+                msg2.delete({timeout: 1000})
+                return
+            } else {
+                const query = Functions.combineArgs(args, 2).trim()
+                const videos = await youtube.videos.search({q: query, maxResults: 10}).then((v) => v.items.map((i) => i.id.videoId))
+                const src = `../assets/images/${rand}/`
+                if (!fs.existsSync(src)) fs.mkdirSync(src)
+                const dest = `../assets/images/${rand}/${query.replace(/ +/g, "_")}.zip`
+                const msg2 = await message.channel.send(`**Downloading video files, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
+                let files: string[]
+                try {
+                    files = await youtube.util.downloadVideos(videos, src)
+                } catch {
+                    msg2.delete({timeout: 1000})
+                    return message.reply(`There was an error in processing this request. Try again later.`)
+                }
+                await Functions.createZip(files, dest)
+                const link = await images.fileIOUpload(dest)
+                const youtubeEmbed = embeds.createEmbed()
+                youtubeEmbed
+                .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+                .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
+                .setDescription(
+                    `${discord.getEmoji("star")}Downloaded **${files.length}** videos for the query **${query}**!\n` +
+                    `${discord.getEmoji("star")}This file is too large for attachments. Please note that the following link **will get deleted after someone downloads it**.\n` +
+                    link
+                )
+                await message.channel.send(youtubeEmbed)
+                Functions.removeDirectory(src)
+                msg2.delete({timeout: 1000})
+                return
+            }
         }
 
         ytEmbeds = []
@@ -203,7 +273,7 @@ export default class Youtube extends Command {
 
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
-                embeds.createReactionEmbed(ytEmbeds, true)
+                embeds.createReactionEmbed(ytEmbeds, true, true)
                 msg.delete({timeout: 1000})
                 return
             }

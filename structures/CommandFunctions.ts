@@ -14,8 +14,8 @@ export class CommandFunctions {
     // Run Command
     public runCommand = async (msg: Message, args: string[]) => {
         args = args.filter(Boolean)
-        const cmdPath = await this.findCommand(args[0])
-        if (!cmdPath) return this.noCommand(args[0])
+        const cmdPath = await this.findCommand(args?.[0])
+        if (!cmdPath) return this.noCommand(args?.[0])
         const cp = new (require(`${topDir}${cmdPath.slice(0, -3)}`).default)(this.discord, msg)
         return new Promise(async (resolve, reject) => {
             await cp.run(args).then(() => resolve())
@@ -33,7 +33,7 @@ export class CommandFunctions {
         const channel = await sql.fetchColumn("auto", "channel")
         const frequency = await sql.fetchColumn("auto", "frequency")
         const toggle = await sql.fetchColumn("auto", "toggle")
-        if (!command[0]) return
+        if (!command?.[0]) return
         for (let i = 0; i < command.length; i++) {
             if (toggle[i] === "inactive") continue
             const guildChannel = (this.message.guild!.channels.cache.find((c) => c.id === channel[i])) as TextChannel
@@ -116,9 +116,9 @@ export class CommandFunctions {
         const channel = this.message.channel as TextChannel
         if (channel.nsfw === false) await channel.setNSFW(true)
         const lastMsg = await this.message.channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
-        if (lastMsg!.embeds[0]) {
-            if (test === true) return lastMsg!.embeds[0].description!.length as unknown as assertLast
-            return lastMsg!.embeds[0].description!.includes(String(test)) as unknown as assertLast
+        if (lastMsg!.embeds?.[0]) {
+            if (test === true) return lastMsg!.embeds?.[0].description!.length as unknown as assertLast
+            return lastMsg!.embeds?.[0].description!.includes(String(test)) as unknown as assertLast
         } else {
             if (test === true) return lastMsg!.content.length as unknown as assertLast
             return lastMsg!.content.includes(String(test)) as unknown as assertLast
@@ -146,8 +146,8 @@ export class CommandFunctions {
         await this.runCommand(this.message, cmd)
         await Functions.timeout(timeout)
         const lastMsg = await this.message.channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
-        if (lastMsg!.embeds[0]) {
-            const check = lastMsg!.embeds[0].image ? true : false
+        if (lastMsg!.embeds?.[0]) {
+            const check = lastMsg!.embeds?.[0].image ? true : false
             return check
         } else {
             const check = lastMsg!.attachments.first() ? true : false

@@ -40,6 +40,6 @@ export default class Kawaii extends Command {
             .setImage(links[i])
             imageArray.push(imageEmbed)
         }
-        return embeds.createReactionEmbed(imageArray)
+        return embeds.createReactionEmbed(imageArray, false, true)
     }
 }

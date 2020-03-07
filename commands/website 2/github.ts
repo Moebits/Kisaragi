@@ -114,6 +114,6 @@ export default class Github extends Command {
             .setImage(url ? url[0] : "")
             githubArray.push(githubEmbed)
         }
-        embeds.createReactionEmbed(githubArray)
+        embeds.createReactionEmbed(githubArray, false, true)
     }
 }

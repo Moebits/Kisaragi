@@ -144,7 +144,7 @@ export default class OsuCommand extends Command {
             if (osuArray.length === 1) {
                 return message.channel.send(osuArray[0])
             } else {
-                return embeds.createReactionEmbed(osuArray)
+                return embeds.createReactionEmbed(osuArray, false, true)
             }
         }
 
@@ -190,7 +190,7 @@ export default class OsuCommand extends Command {
             if (osuArray.length === 1) {
                 return message.channel.send(osuArray[0])
             } else {
-                return embeds.createReactionEmbed(osuArray)
+                return embeds.createReactionEmbed(osuArray, false, true)
             }
         }
 
@@ -227,7 +227,7 @@ export default class OsuCommand extends Command {
             if (osuArray.length === 1) {
                 return message.channel.send(osuArray)
             } else {
-                return embeds.createReactionEmbed(osuArray)
+                return embeds.createReactionEmbed(osuArray, false, true)
             }
         } else {
             const beatmaps = await osu.beatmaps.search(query)
@@ -260,7 +260,7 @@ export default class OsuCommand extends Command {
             if (osuArray.length === 1) {
                 return message.channel.send(osuArray)
             } else {
-                return embeds.createReactionEmbed(osuArray)
+                return embeds.createReactionEmbed(osuArray, false, true)
             }
         }
 

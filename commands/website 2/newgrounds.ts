@@ -233,7 +233,7 @@ export default class Newgrounds extends Command {
         if (ngArray.length === 1) {
             this.message.channel.send(ngArray[0])
         } else {
-            embeds.createReactionEmbed(ngArray, true)
+            embeds.createReactionEmbed(ngArray, true, true)
         }
         return
     }
@@ -384,7 +384,7 @@ export default class Newgrounds extends Command {
         if (ngArray.length === 1) {
             message.channel.send(ngArray[0])
         } else {
-            embeds.createReactionEmbed(ngArray)
+            embeds.createReactionEmbed(ngArray, false, true)
         }
         return
   }

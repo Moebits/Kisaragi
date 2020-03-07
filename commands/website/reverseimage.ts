@@ -131,7 +131,7 @@ export default class ReverseImage extends Command {
         if (revArray.length === 1) {
             message.channel.send(revArray[0])
         } else {
-            embeds.createReactionEmbed(revArray, true)
+            embeds.createReactionEmbed(revArray, true, true)
         }
     }
 }

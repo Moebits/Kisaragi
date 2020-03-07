@@ -97,7 +97,7 @@ export default class $4chan extends Command {
             if (imageArray.length === 1) {
                 message.channel.send(imageArray[0])
             } else {
-                embeds.createReactionEmbed(imageArray)
+                embeds.createReactionEmbed(imageArray, false, true)
             }
             return
         }
@@ -128,7 +128,7 @@ export default class $4chan extends Command {
             if (chanArray.length === 1) {
                 message.channel.send(chanArray[0])
             } else {
-                embeds.createReactionEmbed(chanArray)
+                embeds.createReactionEmbed(chanArray, false, true)
             }
             return
         }
@@ -168,7 +168,7 @@ export default class $4chan extends Command {
         if (chanArray.length === 1) {
             message.channel.send(chanArray[0])
         } else {
-            embeds.createReactionEmbed(chanArray)
+            embeds.createReactionEmbed(chanArray, false, true)
         }
     }
 }
