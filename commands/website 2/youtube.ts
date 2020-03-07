@@ -7,6 +7,9 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 
 let ytEmbeds: MessageEmbed[] = []
 export default class Youtube extends Command {
+    private video = null as any
+    private channel = null as any
+    private playlist = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for youtube videos, channels, and playlists.",
@@ -24,6 +27,7 @@ export default class Youtube extends Command {
             \`=>youtube playlist kawaii music\`
             `,
             aliases: ["yt"],
+            random: "string",
             cooldown: 10
         })
     }
@@ -42,7 +46,8 @@ export default class Youtube extends Command {
         `${discord.getEmoji("star")}_Keywords:_ ${keywords ? keywords : "None"}\n` +
         `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(channel.snippet.publishedAt))}**\n` +
         `${discord.getEmoji("star")}_Country:_ ${channel.brandingSettings.channel.country}\n` +
-        `${discord.getEmoji("star")}_Subscribers:_ **${channel.statistics.subscriberCount}** _Views:_ **${channel.statistics.viewCount}**\n` +
+        `${discord.getEmoji("star")}_Subscribers:_ **${channel.statistics.subscriberCount}**\n` +
+        `${discord.getEmoji("star")}_Views:_ **${channel.statistics.viewCount}**\n` +
         `${discord.getEmoji("star")}_Videos:_ **${channel.statistics.videoCount}**\n` +
         `${discord.getEmoji("star")}_About:_ ${Functions.checkChar(channel.snippet.description, 1800, ".")}\n`
         )
@@ -111,13 +116,27 @@ export default class Youtube extends Command {
 
         const embeds = new Embeds(discord, message)
         const youtube = new yt(process.env.GOOGLE_API_KEY!)
-        if (!args[1]) return this.noQuery(embeds.createEmbed())
+        if (!args[1]) {
+            return this.noQuery(embeds.createEmbed()
+            .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+            .setTitle(`**Youtube Search** ${discord.getEmoji("kannaWave")}`))
+        }
+
+        if (args[1].match(/youtube.com/) || args[1].match(/youtube/)) {
+            if (args[1].includes("youtube.com/channel") || args[1].includes("youtube.com/c")) {
+                this.channel = args[1]
+            } else if (args[1].includes("youtube.com/watch") || args[1].includes("youtu.be")) {
+                this.video = args[1]
+            } else if (args[1].includes("youtube.com/playlist")) {
+                this.playlist = args[1]
+            }
+        }
 
         const msg = await message.channel.send(`**Searching youtube** ${discord.getEmoji("gabCircle")}`) as Message
 
-        if (args[1].toLowerCase() === "channel") {
+        if (this.channel || args[1].toLowerCase() === "channel") {
             ytEmbeds = []
-            let channelLink = Functions.combineArgs(args, 2)
+            let channelLink = this.channel || Functions.combineArgs(args, 2)
             if (!channelLink.startsWith("https")) {
                 const channelResult = await youtube.channels.search({q: channelLink, maxResults: 20})
                 const length = channelResult.items.length < 10 ? channelResult.items.length : 10
@@ -141,9 +160,9 @@ export default class Youtube extends Command {
             return
         }
 
-        if (args[1].toLowerCase() === "playlist") {
+        if (this.playlist || args[1].toLowerCase() === "playlist") {
             ytEmbeds = []
-            let playLink = Functions.combineArgs(args, 2)
+            let playLink = this.playlist || Functions.combineArgs(args, 2)
             if (!playLink.startsWith("https")) {
                 const playlistResult = await youtube.playlists.search({q: playLink, maxResults: 20})
                 const length = playlistResult.items.length < 10 ? playlistResult.items.length : 10
@@ -168,35 +187,9 @@ export default class Youtube extends Command {
             return
         }
 
-        if (args[1].toLowerCase() === "video") {
-            ytEmbeds = []
-            let videoLink = Functions.combineArgs(args, 2)
-            if (!videoLink.startsWith("https")) {
-                const videoResult = await youtube.videos.search({q: videoLink, maxResults: 20})
-                for (let i = 0; i < videoResult.items.length; i++) {
-                    if (!videoResult.items[i]) break
-                    videoLink = videoResult.items[i].id.videoId
-                    try {
-                        await this.ytVideoEmbed(discord, embeds, youtube, videoLink)
-                    } catch {
-                        continue
-                    }
-
-                }
-                if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
-                embeds.createReactionEmbed(ytEmbeds, true)
-                msg.delete({timeout: 1000})
-                return
-            }
-            await this.ytVideoEmbed(discord, embeds, youtube, videoLink)
-            message.channel.send(ytEmbeds[0])
-            msg.delete({timeout: 1000})
-            return
-        }
-
-        // Default is to search for videos if no args are provided
         ytEmbeds = []
-        let videoLink = Functions.combineArgs(args, 1)
+        let videoLink = this.video || Functions.combineArgs(args, 1)
+        if (args[1].toLowerCase() === "video") videoLink = Functions.combineArgs(args, 2)
         if (!videoLink.startsWith("https")) {
                 const videoResult = await youtube.videos.search({q: videoLink, maxResults: 20})
                 for (let i = 0; i < videoResult.items.length; i++) {

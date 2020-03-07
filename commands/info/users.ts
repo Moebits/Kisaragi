@@ -17,6 +17,7 @@ export default class Users extends Command {
             `,
             guildOnly: true,
             aliases: ["members"],
+            random: "none",
             cooldown: 3
         })
     }

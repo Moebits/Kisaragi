@@ -1,5 +1,5 @@
 import DeviantArt, {DeviantArtSearchResults, DeviationRSS, DeviationRSSExtended} from "deviantart.ts"
-import {Message, MessageEmbed} from "discord.js"
+import type {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -9,6 +9,8 @@ import {Permission} from "./../../structures/Permission"
 let deviantArray: MessageEmbed[] = []
 
 export default class Deviantart extends Command {
+    private user = null as any
+    private deviation = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for deviantart deviations and users.",
@@ -33,6 +35,7 @@ export default class Deviantart extends Command {
             \`=>deviantart hot manga\`
             `,
             aliases: ["da", "deviant"],
+            random: "none",
             cooldown: 30
         })
     }
@@ -159,6 +162,15 @@ export default class Deviantart extends Command {
         const embeds = new Embeds(discord, message)
         const deviantArt = await DeviantArt.login(process.env.DEVIANTART_CLIENT_ID!, process.env.DEVIANTART_CLIENT_SECRET!)
         if (!args[1]) args[1] = "popular"
+
+        if (args[1].match(/deviantart.com/)) {
+            const matches = args[1].replace("www.", "").replace("https://deviantart.com", "").match(/(?<=\/)(.*?)(?=$|\/)/g)
+            if (matches?.[1] === "art") {
+                this.deviation = args[1]
+            } else {
+                this.user = matches?.[0]
+            }
+        }
         if (args[1] === "daily") {
             const result = (args[2]) ? await deviantArt.browse.daily({date: args[2]}) as DeviantArtSearchResults
             : await deviantArt.browse.daily() as DeviantArtSearchResults
@@ -216,13 +228,13 @@ export default class Deviantart extends Command {
             return
         }
 
-        if (args[1] === "user") {
+        if (this.user || args[1] === "user") {
             const deviantEmbed = embeds.createEmbed()
             deviantEmbed
             .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png")
             .setTitle(`**DeviantArt User** ${discord.getEmoji("aquaUp")}`)
-            if (!args[2]) return this.noQuery(deviantEmbed, "You must provide a username.")
-            const result = await deviantArt.user.profile({username: args[2]})
+            if (!this.user && !args[2]) return this.noQuery(deviantEmbed, "You must provide a username.")
+            const result = await deviantArt.user.profile({username: this.user || args[2]})
             deviantEmbed
             .setURL(result.profile_url)
             .setThumbnail(result.user.usericon)

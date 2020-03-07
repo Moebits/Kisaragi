@@ -6,12 +6,19 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Kancolle extends Command {
+    private readonly defaults = [
+        "Fubuki", "Yuudachi", "Hibiki", "Shimakaze", "Akagi", "Kisaragi",
+        "Kongou", "Kashima", "Ikazuchi", "Akatsuki", "Inazuma", "Yayoi",
+        "Uzuki", "Urakaze", "Amatsukaze", "Kawakaze", "Tokitsukaze", "Harusame",
+        "Etorofu", "Matsuwa", "Tsushima"
+    ]
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets information on a kancolle ship girl.",
             help:
             `
             \`kancolle shipgirl\` - Gets information on the shipgirl.
+            \`kancolle\` - Gets some handpicked girls
             `,
             examples:
             `
@@ -19,6 +26,7 @@ export default class Kancolle extends Command {
             \`=>kancolle hibiki\`
             `,
             aliases: ["kc", "kantai", "kantaicollection"],
+            random: "none",
             cooldown: 10
         })
     }
@@ -28,11 +36,12 @@ export default class Kancolle extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
 
-        const query = Functions.combineArgs(args, 1)
+        let query = Functions.combineArgs(args, 1)
         if (!query) {
-            return this.noQuery(embeds.createEmbed()
-            .setAuthor("kancolle", "https://upload.wikimedia.org/wikipedia/en/0/02/Kantai_Collection_logo.png")
-            .setTitle(`**Kancolle Search** ${discord.getEmoji("PoiHug")}`))
+            query = this.defaults[Math.floor(Math.random()*this.defaults.length)]
+        }
+        if (query.match(/kancolle.fandom.com/)) {
+            query = query.replace("https://kancolle.fandom.com/wiki/", "")
         }
         const res = await axios.get(`https://kancolle.fandom.com/api/v1/Search/List?query=${query}&limit=25&minArticleQuality=10`)
         const id = res.data?.items[0]?.id

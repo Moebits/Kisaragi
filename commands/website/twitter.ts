@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import type {Message, MessageEmbed} from "discord.js"
 import Twitter from "twitter"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -6,6 +6,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class TwitterCommand extends Command {
+    private user = null as any
+    private search = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for twitter tweets and users.",
@@ -13,6 +15,7 @@ export default class TwitterCommand extends Command {
             `
             \`twitter query\` - Searches for tweets with the query
             \`twitter user query\` - Searches for a user
+            \`twitter url\` - Gets the resource from the url
             `,
             examples:
             `
@@ -20,6 +23,7 @@ export default class TwitterCommand extends Command {
             \`=>twitter user imtenpi\`
             `,
             aliases: ["t"],
+            random: "string",
             cooldown: 10
         })
     }
@@ -36,8 +40,17 @@ export default class TwitterCommand extends Command {
             access_token_secret: process.env.TWITTER_ACCESS_SECRET!
         })
 
-        if (args[1] === "user") {
-            const name = Functions.combineArgs(args, 2)
+        if (args[1]?.match(/twitter.com/)) {
+            const matches = args[1].replace("www.", "").replace("https://twitter.com", "").match(/(?<=\/)(.*?)(?=$|\/)/g)
+            this.user = matches?.[0]
+            if (this.user.includes("search")) {
+                this.search = matches?.[0].match(/(?<=search\?q=)(.*?)(?=&)/)?.[0]
+                this.user = null
+            }
+        }
+
+        if (this.user || args[1] === "user") {
+            const name = this.user || Functions.combineArgs(args, 2)
             if (!name) {
                 return this.noQuery(embeds.createEmbed()
                 .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png")
@@ -67,7 +80,7 @@ export default class TwitterCommand extends Command {
             return
         }
 
-        const query = Functions.combineArgs(args, 1)
+        const query = this.search || Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png")

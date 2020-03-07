@@ -20,6 +20,7 @@ export default class Twitch extends Command {
             \`=>trello https://trello.com/b/boardID\`
             `,
             aliases: [],
+            random: "string",
             cooldown: 10
         })
     }

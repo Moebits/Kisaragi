@@ -1,4 +1,4 @@
-import {GuildEmoji, Message} from "discord.js"
+import type {GuildEmoji, Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -45,7 +45,7 @@ export default class ReactionRoles extends Command {
         states = JSON.parse(states[0])
         const step = 3.0
         const increment = Math.ceil((messages[0] ? messages.length : 1) / step)
-        const reactArray = []
+        const reactArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {

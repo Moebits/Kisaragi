@@ -27,11 +27,14 @@ export default class Patreon extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
 
-        const query = Functions.combineArgs(args, 1).trim()
+        let query = Functions.combineArgs(args, 1).trim()
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("patreon", "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg")
             .setTitle(`**Patreon Search** ${discord.getEmoji("raphi")}`), "You must provide a creator name.")
+        }
+        if (query.match(/patreon.com/)) {
+            query = query.match(/(?<=\/)(?:.(?!\/))+$/)![0]
         }
         const response = await axios.get(`https://www.patreon.com/${query}`)
         if (!response.data.match(/(?<="related": "https:\/\/www.patreon.com\/api\/campaigns\/)(.*?)(?=")/)) {

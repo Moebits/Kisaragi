@@ -23,6 +23,7 @@ export default class Rule34 extends Command {
             \`=>rule34\`
             `,
             aliases: ["r34"],
+            random: "none",
             cooldown: 10
         })
     }

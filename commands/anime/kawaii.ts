@@ -18,6 +18,7 @@ export default class Kawaii extends Command {
             \`=>kawaii\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 10
         })
     }

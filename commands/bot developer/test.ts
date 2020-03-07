@@ -15,6 +15,6 @@ export default class Test extends Command {
 
     public run = async (args: string[]) => {
         const message = this.message
-        return
+        return message.channel.send("hi")
     }
 }

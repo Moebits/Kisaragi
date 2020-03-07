@@ -27,6 +27,7 @@ export default class Yandere extends Command {
             \`=>yandere r18 azur lane\`
             `,
             aliases: ["y", "ydere"],
+            random: "none",
             cooldown: 20
         })
     }

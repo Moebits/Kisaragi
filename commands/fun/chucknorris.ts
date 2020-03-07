@@ -19,6 +19,7 @@ export default class ChuckNorris extends Command {
             \`=>chucknorris\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 5
         })
     }

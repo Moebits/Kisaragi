@@ -1,5 +1,6 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import * as config from "./../../config.json"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
@@ -16,6 +17,7 @@ export default class Invite extends Command {
           \`=>invite\`
           `,
           aliases: ["support"],
+          random: "none",
           cooldown: 5
         })
     }
@@ -29,8 +31,8 @@ export default class Invite extends Command {
         .setTitle(`**Invite Links** ${discord.getEmoji("kannaHungry")}`)
         .setDescription(
             `Here is the bot invite link and support server invite link!\n` +
-            `[**Invite Link**](https://discordapp.com/api/oauth2/authorize?client_id=593838271650332672&permissions=2113793271&scope=bot)\n` +
-            `[**Support Server**](https://discord.gg/77yGmWM)`
+            `[**Invite Link**](${config.invite})\n` +
+            `[**Support Server**](${config.support})`
         )
         return message.channel.send(inviteEmbed)
     }

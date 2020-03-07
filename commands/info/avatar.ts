@@ -17,6 +17,7 @@ export default class Avatar extends Command {
           \`=>avatar\`
           `,
           aliases: ["av"],
+          random: "none",
           cooldown: 5
         })
     }

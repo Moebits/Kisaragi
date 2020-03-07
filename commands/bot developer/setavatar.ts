@@ -37,7 +37,7 @@ export default class Set extends Command {
         }
 
         if (!image) return message.reply("No avatar found!")
-        await discord.user.setAvatar(image)
+        await discord.user!.setAvatar(image)
 
         return message.reply(`Avatar successfully set! ${discord.getEmoji("aquaUp")}`)
     }

@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import type {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -8,6 +8,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const GitHub = require("github-api")
 
 export default class Github extends Command {
+    private user = null as any
+    private repo = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for github repositories and users.",
@@ -22,6 +24,7 @@ export default class Github extends Command {
             \`=>github user tenpi\`
             `,
             aliases: ["gh"],
+            random: "string",
             cooldown: 10
         })
     }
@@ -34,8 +37,17 @@ export default class Github extends Command {
             token: process.env.GITHUB_ACCESS_TOKEN
         })
 
-        if (args[1] && args[1].toLowerCase() === "user") {
-            const input = Functions.combineArgs(args, 2)
+        if (args[1]?.match(/github.com/)) {
+            const matches = args[1].replace("www.", "").replace("https://github.com", "").match(/(?<=\/)(.*?)(?=$|\/)/g)
+            this.user = matches?.[0]
+            this.repo = matches?.[1]
+            if (this.user.includes("search")) {
+                this.repo = matches?.[0].replace("search?q=", "")
+            }
+        }
+
+        if ((this.user && !this.repo) || args[1]?.toLowerCase() === "user") {
+            const input = this.user || Functions.combineArgs(args, 2)
             if (!input) {
                 return this.noQuery(embeds.createEmbed()
                 .setAuthor("github", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png")
@@ -66,7 +78,7 @@ export default class Github extends Command {
             return
         }
 
-        const input = Functions.combineArgs(args, 1)
+        const input = this.repo || Functions.combineArgs(args, 1)
         if (!input) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("github", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png")

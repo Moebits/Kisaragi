@@ -17,6 +17,7 @@ export default class GooglePlay extends Command {
             \`=>googleplay discord\`
             `,
             aliases: ["gplay", "playstore"],
+            random: "string",
             cooldown: 15
         })
     }

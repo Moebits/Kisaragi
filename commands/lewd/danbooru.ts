@@ -27,6 +27,7 @@ export default class Danbooru extends Command {
             \`=>danbooru r18 gabriel dropout\`
             `,
             aliases: ["d", "dan"],
+            random: "none",
             cooldown: 20
         })
     }

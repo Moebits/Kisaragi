@@ -1,3 +1,4 @@
+import child_process from "child_process"
 import {Message} from "discord.js"
 import fs from "fs"
 import {Command} from "../../structures/Command"
@@ -8,7 +9,7 @@ import {Permission} from "../../structures/Permission"
 export default class Reload extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Refreshes a command.",
+          description: "Refreshes all commands and events.",
           aliases: ["reload"],
           cooldown: 50
         })
@@ -20,15 +21,52 @@ export default class Reload extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         if (!perms.checkBotDev()) return
-        const commandName = args[1]
-
         const subDir = fs.readdirSync("commands")
+        const events = fs.readdirSync("events")
+        const structures = fs.readdirSync("structures")
+
+        if (!args[1]) {
+          child_process.execSync("cd ../ && npm run build")
+          for (let i = 0; i < subDir.length; i++) {
+            const commands = fs.readdirSync(`commands/${subDir[i]}`)
+            for (let j = 0; j < commands.length; j++) {
+              try {
+                delete require.cache[require.resolve(`../${subDir[i]}/${commands[j].slice(0, -3)}`)]
+                new (require(`../${subDir[i]}/${commands[j].slice(0, -3)}`).default)(this.discord, this.message)
+              } catch {
+                continue
+              }
+            }
+          }
+          for (let i = 0; i < events.length; i++) {
+            try {
+              delete require.cache[require.resolve(`../../events/${events[i].slice(0, -3)}`)]
+              new (require(`../../events/${events[i].slice(0, -3)}`).default)(this.discord)
+            } catch {
+              continue
+            }
+          }
+          for (let i = 0; i < structures.length; i++) {
+            try {
+              delete require.cache[require.resolve(`../../structures/${structures[i].slice(0, -3)}`)]
+            } catch {
+              continue
+            }
+          }
+          const reloadEmbed = embeds.createEmbed()
+          .setTitle(`**Refresh** ${discord.getEmoji("gabStare")}`)
+          .setDescription(`All commands and events were refreshed!`)
+          return message.channel.send(reloadEmbed)
+
+        }
+        const commandName = args[1]
         let found = false
         cdLoop:
         for (let i = 0; i < subDir.length; i++) {
           const commands = fs.readdirSync(`commands/${subDir[i]}`)
           for (let j = 0; j < commands.length; j++) {
             if (commands[j].slice(0, -3) === commandName) {
+              child_process.execSync(`cd ../ && tsc commands/${subDir[i]}/${commands[j].slice(0, -3)}.ts`)
               delete require.cache[require.resolve(`../${subDir[i]}/${commands[j]}`)]
               new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
               found = true
@@ -38,7 +76,7 @@ export default class Reload extends Command {
         }
         if (!found) return message.reply(`The command ${commandName} was not found.`)
         const reloadEmbed = embeds.createEmbed()
-        .setTitle(`**Reload** ${discord.getEmoji("gabStare")}`)
+        .setTitle(`**Refresh** ${discord.getEmoji("gabStare")}`)
         .setDescription(`The command **${commandName}** has been reloaded!`)
         return message.channel.send(reloadEmbed)
   }

@@ -1,3 +1,4 @@
+import child_process from "child_process"
 import {Message} from "discord.js"
 import fs from "fs"
 import {Command} from "../../structures/Command"
@@ -29,11 +30,15 @@ export default class Reboot extends Command {
           }
         }
 
+        const loading = message.channel.lastMessage
+        await loading?.delete()
+
         const rebootEmbed = embeds.createEmbed()
         .setTitle(`**Reboot** ${discord.getEmoji("gabStare")}`)
         .setDescription("Rebooting bot!")
 
         await message.channel.send(rebootEmbed)
+        child_process.execSync("cd ../ && npm run build")
         process.exit(0)
       }
     }

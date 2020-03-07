@@ -103,6 +103,35 @@ export default class $4chan extends Command {
         }
 
         const board = args[1]
+        if (board.match(/boards.4channel.org/)) {
+            const b = board.match(/(?<=boards.4channel.org\/)(.*?)(?=\/)/)?.[0]
+            const id =  board.match(/\d{5,}/)?.[0]
+            const apiURL = `https://a.4cdn.org/${b}/thread/${id}.json`
+            const json = await axios.get(apiURL)
+            const posts = json.data.posts
+            const url = `https://boards.4channel.org/${b}/thread/${id}`
+            const chanArray: MessageEmbed[] = []
+            for (const i in posts) {
+                const chanEmbed = embeds.createEmbed()
+                .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png")
+                chanEmbed
+                .setTitle(`${posts[0].sub ? posts[0].sub : `**4chan Search**`} ${discord.getEmoji("vigneDead")}`)
+                .setURL(`${url}#p${posts[i].no}`)
+                .setImage(posts[i].tim ? `https://i.4cdn.org/${b}/${posts[i].tim}${posts[i].ext}` : url)
+                .setDescription(
+                    `${discord.getEmoji("star")}_Author:_ **${posts[i].name} ${posts[i].now} No. ${posts[i].no}**\n` +
+                    `${discord.getEmoji("star")}_Image Info:_ ${posts[i].tim ? `File: ${posts[i].filename}${posts[i].ext} (${Math.floor(posts[i].fsize/1024)} KB, ${posts[i].w}x${posts[i].h})`: "None"}\n` +
+                    `${discord.getEmoji("star")}_Comment:_ ${posts[i].com ? this.formatComment(posts[i].com, `${url}#p${posts[i].no}`) : "None"}\n`
+                )
+                chanArray.push(chanEmbed)
+            }
+            if (chanArray.length === 1) {
+                message.channel.send(chanArray[0])
+            } else {
+                embeds.createReactionEmbed(chanArray)
+            }
+            return
+        }
         const query = Functions.combineArgs(args, 2)
         if (!board || !query) {
             return this.noQuery(badChanEmbed, "The first parameter is the board name, the rest is the search query. Try looking at the [**4chan Website**](https://www.4chan.org/)")

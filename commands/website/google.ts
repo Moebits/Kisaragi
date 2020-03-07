@@ -20,6 +20,7 @@ export default class Google extends Command {
             \`=>google anime\`
             `,
             aliases: ["g"],
+            random: "string",
             cooldown: 10
         })
     }
@@ -29,11 +30,15 @@ export default class Google extends Command {
         const message = this.message
         const commands = new CommandFunctions(discord, message)
         const embeds = new Embeds(discord, message)
-        const query = Functions.combineArgs(args, 1)
+        let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("google", "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png")
             .setTitle(`**Google Search** ${discord.getEmoji("raphi")}`))
+        }
+
+        if (query.match(/google.com/)) {
+            query = query.match(/(?<=search\?q=)(.*?)(?=&)/)?.[0].replace(/\+/g, " ")!
         }
 
         const resultArray: string[] = []

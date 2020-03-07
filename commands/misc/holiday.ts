@@ -21,6 +21,7 @@ export default class Holiday extends Command {
             \`=>holiday 7/3\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 10
         })
     }
@@ -34,6 +35,27 @@ export default class Holiday extends Command {
         ]
         let inputMonth, inputDay
         if (args[1]) {
+            if (args[1].match(/daysoftheyear.com/)) {
+                const holidayName = Functions.toProperCase(args[1].replace("https://www.daysoftheyear.com/days/", "").replace(/\//g, "").replace(/-/g, " "))
+                const holidayData = await axios.get(args[1])
+                const imageRegex = /(?<=image" content=")(.*?)(?=(\s))/gm
+                const pg2Regex = /(?<=description" content=")(.*?)(?="(\s))/gm
+                const rawDescription = holidayData.data.match(pg2Regex)[0]
+                const description = rawDescription.replace(/&hellip;/g, "...").replace(/&#8217;/g, "'").replace(/&#8211;/g, "-").trim()
+                const image = holidayData.data.match(imageRegex)[0].replace(/"/g, "")
+                const holidayEmbed = embeds.createEmbed()
+                holidayEmbed
+                .setAuthor("days of the year", "https://media.daysoftheyear.com/20181228141243/logo.jpg")
+                .setTitle(`**Daily Holiday** ${discord.getEmoji("padoruPadoru")}`)
+                .setURL(args[1])
+                .setThumbnail(image.trim())
+                .setDescription(
+                    `${discord.getEmoji("star")}_Holiday:_ **${holidayName}**\n` +
+                    `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(description, 2000, ".")}`
+                    )
+                return message.channel.send(holidayEmbed)
+            }
+
             for (let i = 0; i < monthNames.length; i++) {
                 if (monthNames[i].toLowerCase() === args[1].toLowerCase()) {
                     inputMonth = i + 1

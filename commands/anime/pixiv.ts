@@ -11,7 +11,7 @@ export default class Pixiv extends Command {
             description: "Searches for anime images on pixiv.",
             help:
             `
-            \`pixiv\` - Gets a random pixiv image.
+            \`pixiv\` - Gets a pixiv image with some defaults.
             \`pixiv link/id\` - Gets the pixiv or ugoira image from the link.
             \`pixiv tag\` - Gets a pixiv image with the tag (translated to japanese).
             \`pixiv en tag\` - Gets a pixiv image with the tag (not translated).
@@ -19,18 +19,20 @@ export default class Pixiv extends Command {
             \`pixiv r18 tag\` - Gets an R-18 pixiv image from the tag (translated to japanese).
             \`pixiv r18 en tag\` - Gets an R-18 pixiv image from the tag (not translated).
             \`pixiv r18 popular\` - Gets a random image from the R-18 daily rankings.
-            \`all\` - Add this to include illusts with under 100 bookmarks.
+            \`pixiv download/dl query\` - Downloads images on pixiv and uploads the zip file.
+            \`pixiv r18 download/dl query\` - Downloads R-18 images and uploads the zip file.
             `,
             examples:
             `
             \`=>pixiv\`
             \`=>pixiv azur lane\`
-            \`=>pixiv black tights\`
+            \`=>pixiv download black tights\`
             \`=>pixiv r18 sagiri izumi\`
             \`=>pixiv r18 megumin\`
             \`=>pixiv r18 popular\`
             `,
             aliases: ["p"],
+            random: "none",
             cooldown: 30
         })
     }
@@ -41,42 +43,46 @@ export default class Pixiv extends Command {
         const pixivApi = new PixivApi(discord, message)
         const perms = new Permission(discord, message)
 
-        let tags = Functions.combineArgs(args, 1)
-        if (!tags) tags = "女の子"
+        const tags = Functions.combineArgs(args, 1)
 
         if (tags.match(/\d\d\d+/g)) {
             await pixivApi.getPixivImageID(String(tags.match(/\d+/g)))
             return
         }
 
-        if (args[1] && args[1].toLowerCase() === "r18") {
+        if (args[1]?.toLowerCase() === "r18") {
             if (!perms.checkNSFW()) return
-            if (args[2] && args[2].toLowerCase() === "en") {
-                let r18Tags = Functions.combineArgs(args, 3)
-                if (!r18Tags) r18Tags = "女の子"
+            if (args[2] === "en") {
+                const r18Tags = Functions.combineArgs(args, 3)
                 await pixivApi.getPixivImage(r18Tags, true, true)
                 return
-            } else if (args[2] && args[2] === "popular") {
+            } else if (args[2] === "popular") {
                 await pixivApi.getPopularPixivR18Image()
                 return
+            } else if (args[2] === "download" || args[2] === "dl") {
+                const r18Tags = Functions.combineArgs(args, 3)
+                await pixivApi.downloadPixivImages(r18Tags, true)
+                return
             } else {
-                let r18Tags = Functions.combineArgs(args, 2)
-                if (!r18Tags) r18Tags = "女の子"
+                const r18Tags = Functions.combineArgs(args, 2)
                 await pixivApi.getPixivImage(r18Tags, true)
                 return
             }
         }
 
-        if (args[1] && args[1].toLowerCase() === "en") {
-            let enTags = Functions.combineArgs(args, 2)
-            if (!enTags) enTags = "女の子"
+        if (args[1] === "en") {
+            const enTags = Functions.combineArgs(args, 2)
             await pixivApi.getPixivImage(enTags, false, true)
             return
-        } else if (args[1] && args[1].toLowerCase() === "popular") {
+        } else if (args[1] === "download" || args[1] === "dl") {
+            const tags = Functions.combineArgs(args, 2)
+            await pixivApi.downloadPixivImages(tags)
+            return
+        } else if (args[1] === "popular") {
             await pixivApi.getPopularPixivImage()
             return
         }
 
-        await pixivApi.getPixivImage(tags)
+        await pixivApi.getPixivImage()
     }
 }

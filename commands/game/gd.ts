@@ -27,6 +27,7 @@ export default class GeometryDash extends Command {
             \`=>gd top creators\`
             `,
             aliases: [],
+            random: "string",
             cooldown: 10
         })
     }
@@ -45,7 +46,10 @@ export default class GeometryDash extends Command {
         await GD.login()
 
         if (args[1] === "user") {
-            const nick = Functions.combineArgs(args, 2)
+            let nick = Functions.combineArgs(args, 2)
+            if (nick.match(/gdprofiles.com/)) {
+                nick = nick.replace("https://gdprofiles.com/", "")
+            }
             const user = await api.users.getByNick(nick)
             const gdUser = await gd.search(nick)
             const levelArray: MessageEmbed[] = []

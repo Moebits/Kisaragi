@@ -84,7 +84,8 @@ export default class Pickle extends Command {
             str = `It's a draw... I chose **${botPick}** too. ${discord.getEmoji("raphi")}`
         }
 
-        message.channel.send(`**Rock, Paper, Scissors** ${discord.getEmoji("miyanoTrippin")}\n` + str)
+        message.channel.send(// `**Rock, Paper, Scissors** ${discord.getEmoji("miyanoTrippin")}\n` +
+        str)
         return
     }
 }

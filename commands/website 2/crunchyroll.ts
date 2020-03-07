@@ -19,8 +19,32 @@ export default class Crunchyroll extends Command {
             \`=>crunchyroll is the order a rabbit\`
             `,
             aliases: ["cr"],
+            random: "string",
             cooldown: 10
         })
+    }
+
+    public getEmbed = async (link: string) => {
+        const discord = this.discord
+        const embeds = new Embeds(discord, this.message)
+        const data = await this.getLinkData(link)
+        const episodes = await this.getEpisodeNames(link)
+        const title = Functions.toProperCase(link.replace("https://www.crunchyroll.com/", "").replace(/-/g, " "))
+        const eps = episodes.join("\n")
+        const crunchyEmbed = embeds.createEmbed()
+        crunchyEmbed
+        .setAuthor("crunchyroll", "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png")
+        .setTitle(`**Crunchyroll Search** ${discord.getEmoji("himeHappy")}`)
+        .setImage(data.image)
+        .setURL(link)
+        .setDescription(
+            `${discord.getEmoji("star")}_Anime:_ **${title}**\n` +
+            `${discord.getEmoji("star")}_Publisher:_ **${data.publisher}**\n` +
+            `${discord.getEmoji("star")}_Rating:_ **${data.rating}**\n` +
+            `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(data.desc, 1300, " ")}\n` +
+            `${discord.getEmoji("star")}_Episodes:_ ${Functions.checkChar(eps, 500, "\n")}\n`
+        )
+        return crunchyEmbed
     }
 
     public getEpisodeNames = async (link: string) => {
@@ -96,6 +120,11 @@ export default class Crunchyroll extends Command {
             return this.noQuery(embeds.createEmbed())
         }
 
+        if (query.match(/crunchyroll.com/)) {
+            const crunchyEmbed = await this.getEmbed(query)
+            return message.channel.send(crunchyEmbed)
+        }
+
         const links = await Functions.promiseTimeout(30000, this.getSearchLinks(query)).catch(() => {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor("crunchyroll", "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png")
@@ -106,23 +135,7 @@ export default class Crunchyroll extends Command {
             .setAuthor("crunchyroll", "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png")
             .setTitle(`**Crunchyroll Search** ${discord.getEmoji("himeHappy")}`))
         }
-        const data = await this.getLinkData(links[0])
-        const episodes = await this.getEpisodeNames(links[0])
-        const title = Functions.toProperCase(links[0].replace("https://www.crunchyroll.com/", "").replace(/-/g, " "))
-        const eps = episodes.join("\n")
-        const crunchyEmbed = embeds.createEmbed()
-        crunchyEmbed
-        .setAuthor("crunchyroll", "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png")
-        .setTitle(`**Crunchyroll Search** ${discord.getEmoji("himeHappy")}`)
-        .setImage(data.image)
-        .setURL(links[0])
-        .setDescription(
-            `${discord.getEmoji("star")}_Anime:_ **${title}**\n` +
-            `${discord.getEmoji("star")}_Publisher:_ **${data.publisher}**\n` +
-            `${discord.getEmoji("star")}_Rating:_ **${data.rating}**\n` +
-            `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(data.desc, 1300, " ")}\n` +
-            `${discord.getEmoji("star")}_Episodes:_ ${Functions.checkChar(eps, 500, "\n")}\n`
-        )
+        const crunchyEmbed = await this.getEmbed(links[0])
         message.channel.send(crunchyEmbed)
         return
     }

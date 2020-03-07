@@ -7,12 +7,14 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class OsuCommand extends Command {
+    private user = null as any
+    private beatmap = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for osu beatmaps, players, and scores.",
             help:
             `
-            \`osu query\` - Searches for beatmaps
+            \`osu query?\` - Searches for beatmaps
             \`osu url\` - Gets the beatmap from the url
             \`osu user name\` - Gets a user profile
             \`osu set name\` - Links your account with your osu name, used for the recent/best sub commands
@@ -26,6 +28,7 @@ export default class OsuCommand extends Command {
             \`=>osu set tenpii\` _then_ \`=>osu best\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 10
         })
     }
@@ -38,7 +41,14 @@ export default class OsuCommand extends Command {
         const sql = new SQLQuery(message)
         const osuEmbed = embeds.createEmbed()
         const dbName = await sql.fetchColumn("misc", "osu name", "user id", message.author.id)
-        console.log(dbName)
+
+        if (args[1]?.match(/osu.ppy.sh/)) {
+            if (args[1].includes("osu.ppy.sh/users")) {
+                this.user = args[1]
+            } else if (args[1].includes("osu.ppy.sh/beatmapsets")) {
+                this.beatmap = args[1]
+            }
+        }
 
         if (args[1] === "set") {
             const playerName = args[2]
@@ -56,8 +66,8 @@ export default class OsuCommand extends Command {
             return
         }
 
-        if (args[1] === "user") {
-            const playerName = args[2]
+        if (this.user || args[1] === "user") {
+            const playerName = this.user || args[2]
             if (!playerName) {
                 return this.noQuery(osuEmbed
                     .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
@@ -184,8 +194,8 @@ export default class OsuCommand extends Command {
             }
         }
 
-        const query = Functions.combineArgs(args, 1)
-        if (query?.includes("osu.ppy.sh")) {
+        const query = this.beatmap || Functions.combineArgs(args, 1)
+        if (this.beatmap) {
             const beatmaps = await osu.beatmaps.get(query)
             const osuArray: MessageEmbed[] = []
             for (let i = 0; i < beatmaps.length; i++) {

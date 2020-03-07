@@ -1,5 +1,5 @@
-import {Message} from "discord.js"
-import Giphy from "giphy-api"
+import type {Message} from "discord.js"
+import Giphy, {MultiResponse} from "giphy-api"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -20,6 +20,7 @@ export default class GiphyCommand extends Command {
             \`=>giphy anime\`
             `,
             aliases: ["gif"],
+            random: "none",
             cooldown: 5
         })
     }
@@ -33,14 +34,18 @@ export default class GiphyCommand extends Command {
         const giphyEmbed = embeds.createEmbed()
         let gif
         if (query) {
-            const result = await giphy.random(query)
-            gif = result.data
+            if (query.match(/giphy.com/)) {
+                const id = query.match(/-(?:.(?!-))+$/)?.[0].replace(/-/g, "")
+                gif = await giphy.id(id!).then((r: MultiResponse) => r.data[0])
+            } else {
+                const result = await giphy.random(query)
+                gif = result.data
+            }
         } else {
             const result = await giphy.trending()
             const random = Math.floor(Math.random() * result.data.length)
             gif = result.data[random]
         }
-
         giphyEmbed
         .setAuthor("giphy", "https://media0.giphy.com/media/YJBNjrvG5Ctmo/giphy.gif")
         .setTitle(`**Giphy Gif** ${discord.getEmoji("raphi")}`)
@@ -50,7 +55,7 @@ export default class GiphyCommand extends Command {
             `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(gif.import_datetime))}**\n` +
             `${discord.getEmoji("star")}_Source Post:_ ${gif.source_post_url ? gif.source_post_url : "None"}\n`
         )
-        .setImage(gif.images.original.url)
+        .setImage(gif?.images?.original?.url ?? "")
         message.channel.send(giphyEmbed)
     }
 }

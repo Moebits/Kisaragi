@@ -19,6 +19,7 @@ export default class Pickle extends Command {
             \`=>pickle\`
             `,
             aliases: ["pp", "peepee", "hotdog", "dong", "cock", "dick", "penis", "sausage", "fun stick", "schlong", "willy", "ding dong", "peen", "meat stick"],
+            random: "none",
             cooldown: 3
         })
     }

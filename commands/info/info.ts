@@ -1,11 +1,12 @@
 import {Message} from "discord.js"
 import fs from "fs"
 import {Command} from "../../structures/Command"
+import * as config from "./../../config.json"
 import * as pack from "./../../package.json"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-
+import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Info extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -19,6 +20,7 @@ export default class Info extends Command {
           \`=>info\`
           `,
           aliases: ["about"],
+          random: "none",
           cooldown: 5
         })
     }
@@ -45,7 +47,7 @@ export default class Info extends Command {
 
         const infoEmbed = embeds.createEmbed()
         .setTitle(`**Kisaragi Bot Info** ${discord.getEmoji("tohruSmug")}`)
-        .setURL(`https://discord.gg/77yGmWM`)
+        .setURL(config.repo)
         .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
         .setDescription(
             `${discord.getEmoji("star")}_Description:_ ${description}\n` +
@@ -60,9 +62,10 @@ export default class Info extends Command {
             `${discord.getEmoji("star")}_Users:_ **${discord.users.cache.size}**\n` +
             `${discord.getEmoji("star")}_Emojis:_ **${discord.emojis.cache.size}**\n` +
             `${discord.getEmoji("star")}_Commands_: **${cmdCount}**\n`+
-            `[**Invite Link**](https://discordapp.com/api/oauth2/authorize?client_id=593838271650332672&permissions=2113793271&scope=bot)\n` +
-            `[**Support Server**](https://discord.gg/77yGmWM)\n` +
-            `[**Github Repository**](https://github.com/Tenpi/Kisaragi)`
+            `${discord.getEmoji("star")}_Prefix_: Your prefix is set to **${await SQLQuery.fetchPrefix(message)}**.\n`+
+            `[**Invite Link**](${config.invite})\n` +
+            `[**Support Server**](${config.support})\n` +
+            `[**Github Repository**](${config.repo})`
         )
         return message.channel.send(infoEmbed)
     }

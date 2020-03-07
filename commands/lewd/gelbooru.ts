@@ -27,6 +27,7 @@ export default class Gelbooru extends Command {
             \`=>gelbooru r18 gabriel dropout\`
             `,
             aliases: ["gel"],
+            random: "none",
             cooldown: 20
         })
     }

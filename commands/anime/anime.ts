@@ -21,6 +21,7 @@ export default class Anime extends Command {
             \`=>anime rezero\`
             `,
             aliases: ["a"],
+            random: "string",
             cooldown: 30
         })
     }
@@ -29,7 +30,7 @@ export default class Anime extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const query = Functions.combineArgs(args, 1)
+        let query = Functions.combineArgs(args, 1)
         const animeEmbed = embeds.createEmbed()
         .setAuthor("kitsu", "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4")
         .setTitle(`**Anime** ${discord.getEmoji("gabYes")}`)
@@ -38,6 +39,10 @@ export default class Anime extends Command {
             return this.noQuery(animeEmbed,
             `This has to be the name of an anime series. If you are unsure, ` +
             `try searching on the [**Kitsu Website**](https://kitsu.io/anime)`)
+        }
+
+        if (query.match(/kitsu.io/)) {
+            query = query.replace("https://kitsu.io/anime/", "").replace(/-/g, " ")
         }
 
         const result = await weeb.anime(query)

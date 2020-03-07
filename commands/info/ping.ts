@@ -16,6 +16,7 @@ export default class Ping extends Command {
           \`=>ping\`
           `,
           aliases: [],
+          random: "none",
           cooldown: 3
         })
     }

@@ -22,6 +22,7 @@ export default class Kitsune extends Command {
             \`=>kitsune lewd\`
             `,
             aliases: ["k", "foxgirl"],
+            random: "none",
             cooldown: 10
         })
     }

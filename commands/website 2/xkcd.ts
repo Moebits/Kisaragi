@@ -13,7 +13,7 @@ export default class Xkcd extends Command {
             help:
             `
             \`xkcd\` - Posts the most recent comic
-            \`xkcd number\` - Gets a comic by id
+            \`xkcd id/url\` - Gets a comic by id or url
             `,
             examples:
             `
@@ -21,6 +21,7 @@ export default class Xkcd extends Command {
             \`=>xkcd 42\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 5
         })
     }
@@ -38,7 +39,11 @@ export default class Xkcd extends Command {
         ]
 
         if (args[1]) {
-            await xkcd(Number(args[1]), (comic: any) => {
+            let id = args[1]
+            if (args[1].match(/xkcd.com/)) {
+                id = args[1].match(/\d+/)![0]
+            }
+            await xkcd(Number(id), (comic: any) => {
                 const cleanText = comic.transcript.replace(/\[\[/g, "**").replace(/\]\]/g, "**").replace(/{{/g, "_").replace(/}}/g, "_")
                 const checkedText = Functions.checkChar(cleanText, 2000, ",")
                 xkcdEmbed

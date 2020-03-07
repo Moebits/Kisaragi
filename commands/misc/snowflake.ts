@@ -19,6 +19,7 @@ export default class Snowflake extends Command {
             \`=>snowflake 579720679612612608\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 5
         })
     }

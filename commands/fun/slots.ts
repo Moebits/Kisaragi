@@ -17,6 +17,7 @@ export default class Slots extends Command {
             \`=>slots\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 3
         })
     }
@@ -25,11 +26,11 @@ export default class Slots extends Command {
         const discord = this.discord
         const message = this.message
         const emojiList = ["tohruSmug", "vigneXD", "kaosWTF", "gabYes", "RaphiSmile", "PoiHug", "kannaAngry"]
-        const randList = []
+        const randList: any[] = []
         for (let i = 0; i < 5; i++) {
             randList.push(emojiList[Math.floor(Math.random() * emojiList.length)])
         }
-        const slotArray = []
+        const slotArray: any[] = []
         for (let i = 0; i < 9; i++) {
             slotArray.push(randList[Math.floor(Math.random() * 5)])
         }

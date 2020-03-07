@@ -16,6 +16,7 @@ export default class Roles extends Command {
             \`=>roles\`
             `,
             guildOnly: true,
+            random: "none",
             aliases: [],
             cooldown: 3
         })

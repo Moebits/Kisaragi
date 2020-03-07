@@ -21,6 +21,7 @@ export default class Jisho extends Command {
             \`=>jisho cute\`
             `,
             aliases: ["kanji"],
+            random: "string",
             cooldown: 5
         })
     }
@@ -31,11 +32,15 @@ export default class Jisho extends Command {
         const embeds = new Embeds(discord, message)
         const kuroshiro = new Kuroshiro()
         await kuroshiro.init(new KuromojiAnalyzer())
-        const query = Functions.combineArgs(args, 1).trim()
+        let query = Functions.combineArgs(args, 1).trim()
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("jisho", "https://d2.alternativeto.net/dist/icons/denshi-jisho_107085.png?width=200&height=200&mode=crop&upscale=false")
             .setTitle(`**Jisho Lookup** ${discord.getEmoji("kannaBear")}`))
+        }
+
+        if (query.match(/jisho.org/)) {
+            query = query.replace("https://jisho.org/search/", "").replace(/%20/g, " ")
         }
         const result = await axios.get(`https://jisho.org/api/v1/search/words?keyword=${query}`).then((r) => r.data.data)
         if (!result[0]) {

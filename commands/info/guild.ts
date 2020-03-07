@@ -18,6 +18,7 @@ export default class Guild extends Command {
             `,
             guildOnly: true,
             aliases: ["server"],
+            random: "none",
             cooldown: 5
         })
     }

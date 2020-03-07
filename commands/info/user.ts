@@ -10,14 +10,15 @@ export default class User extends Command {
             description: "Gets information on a user or on yourself.",
             help:
             `
-            \`users\` - Posts all of the users
+            \`user @user?\` - Gets info on a user
             `,
             examples:
             `
-            \`=>users\`
+            \`=>user\`
             `,
             guildOnly: true,
             aliases: ["member", "whois"],
+            random: "none",
             cooldown: 5
         })
     }

@@ -11,14 +11,19 @@ export default class Saucenao extends Command {
             description: "Finds the source of an anime picture.",
             help:
             `
-            \`saucenao\` - Searches the last posted image
+            \`saucenao\` - Searches the last posted image (or your avatar)
             \`sauceno url\` - Searches the linked image
+            \`saucenao @user/id\` - Searches a user's avatar
+            \`saucenao guild\` - Searches the guild icon
+            \`saucenao me\` - Searches for your icon
             `,
             examples:
             `
             \`=>saucenao\`
+            \`=>saucenao @user\`
             `,
             aliases: ["sn"],
+            random: "none",
             cooldown: 10
         })
     }
@@ -60,16 +65,34 @@ export default class Saucenao extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const sagiri = Sagiri(process.env.SAUCENAO_API_KEY!)
-        let image: string | undefined
-        let author: User | undefined
+        let image: string | undefined | null
+        let author: User | undefined | null
 
         if (args[1]) {
-            image = args[1]
-            author = message.author
+            if (args[1] === "guild") {
+                image = message.guild?.iconURL({format: "png", dynamic: true})
+                author = message.author
+            } else if (args[1] === "me") {
+                image = message.author.displayAvatarURL({format: "png", dynamic: true})
+                author = message.author
+            } else if (args[1].match(/\d{15,}/)) {
+                const id = args[1].match(/\d{15,}/)?.[0]
+                const user = message.guild?.members.cache.find((m) => m.id === id)
+                image = user?.user.displayAvatarURL({format: "png", dynamic: true})
+                author = user?.user
+            } else {
+                image = args[1]
+                author = message.author
+            }
         } else {
             const result = await discord.fetchLastAttachment(message, true)
-            image = result.image
-            author = result.author
+            if (!result) {
+                author = message.author
+                image = message.author.displayAvatarURL({format: "png", dynamic: true})
+            } else {
+                image = result.image
+                author = result.author
+            }
         }
 
         if (!image) {

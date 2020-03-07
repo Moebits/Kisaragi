@@ -18,7 +18,8 @@ export default class Define extends Command {
             `
             \`=>define energy\`
             `,
-            aliases: ["def", "definition", "word"],
+            aliases: ["def", "definition", "word", "dictionary"],
+            random: "string",
             cooldown: 10
         })
     }
@@ -28,11 +29,15 @@ export default class Define extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const dictionary = new CollegiateDictionary(process.env.DICTIONARY_API_KEY)
-        const word = Functions.combineArgs(args, 1)
+        let word = Functions.combineArgs(args, 1)
         if (!word) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
             .setTitle(`**Dictionary** ${discord.getEmoji("raphi")}`))
+        }
+
+        if (word.match(/merriam-webster.com/)) {
+            word = word.replace("https://www.merriam-webster.com/dictionary/", "").replace(/%20/g, " ")
         }
         const defineEmbed = embeds.createEmbed()
         let result

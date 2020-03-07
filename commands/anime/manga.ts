@@ -21,6 +21,7 @@ export default class Manga extends Command {
             \`=>manga himouto umaru chan\`
             `,
             aliases: ["m"],
+            random: "string",
             cooldown: 10
         })
     }
@@ -29,7 +30,7 @@ export default class Manga extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const query = Functions.combineArgs(args, 1)
+        let query = Functions.combineArgs(args, 1)
         const mangaEmbed = embeds.createEmbed()
         .setAuthor("kitsu", "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4")
         .setTitle(`**Manga** ${discord.getEmoji("gabYes")}`)
@@ -38,6 +39,10 @@ export default class Manga extends Command {
             return this.noQuery(mangaEmbed,
             `This has to be the name of a manga series. If you are unsure, ` +
             `try searching on the [**Kitsu Website**](https://kitsu.io/anime)`)
+        }
+
+        if (query.match(/kitsu.io/)) {
+            query = query.replace("https://kitsu.io/manga/", "").replace(/-/g, " ")
         }
 
         const result = await weeb.manga(query)

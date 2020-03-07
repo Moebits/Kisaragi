@@ -17,6 +17,7 @@ export default class GuildIcon extends Command {
             `,
             guildOnly: true,
             aliases: ["gicon", "guildicon"],
+            random: "none",
             cooldown: 5
         })
     }

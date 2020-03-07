@@ -18,6 +18,7 @@ export default class Stockings extends Command {
             \`=>stockings\`
             `,
             aliases: ["leggings", "tights"],
+            random: "none",
             cooldown: 10
         })
     }

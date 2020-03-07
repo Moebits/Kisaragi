@@ -18,13 +18,12 @@ export default class Ugoira extends Command {
             help:
             `
             _Note: Using the **pixiv** command on a ugoira link will run this command too!_
-            \`ugoira\` - Gets a random pixiv ugoira.
+            \`ugoira\` - Gets a pixiv ugoira with some defaults.
             \`ugoira link/id\` - Gets the pixiv ugoira from the link.
             \`ugoira tag\` - Gets a pixiv ugoira from the tag (translated to japanese).
             \`ugoira en tag\` - Gets a pixiv ugoira from the tag (not translated).
             \`ugoira r18 tag\` - Gets an R-18 ugoira from the tag (translated to japanese).
             \`ugoira r18 en tag\` - Gets an R-18 ugoira from the tag (not translated).
-            \`all\` - Add this to include illusts with under 100 bookmarks.
             `,
             examples:
             `
@@ -34,6 +33,7 @@ export default class Ugoira extends Command {
             \`=>ugoira popular\`
             `,
             aliases: ["u"],
+            random: "none",
             cooldown: 30
         })
     }

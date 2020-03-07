@@ -11,6 +11,7 @@ interface CommandOptions {
   cooldown: number
   permission: string
   botPermission: string
+  random: "none" | "string" | "specific" | "ignore"
   unlist: boolean
 }
 
@@ -29,9 +30,10 @@ export class Command {
       cooldown = 3,
       permission = "SEND_MESSAGES",
       botPermission = "SEND_MESSAGES",
+      random = "ignore" as "none" | "string" | "specific" | "ignore",
       unlist = false
     }) {
-      this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, unlist}
+      this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, random, unlist}
     }
 
   get help() {

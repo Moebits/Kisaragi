@@ -17,6 +17,7 @@ export default class Channels extends Command {
             `,
             guildOnly: true,
             aliases: [],
+            random: "none",
             cooldown: 3
         })
     }

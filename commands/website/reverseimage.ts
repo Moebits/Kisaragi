@@ -25,6 +25,7 @@ export default class ReverseImage extends Command {
             \`=>reverseimage guild\`
             `,
             aliases: ["revimg", "reverseimg"],
+            random: "none",
             cooldown: 10
         })
     }
@@ -61,7 +62,7 @@ export default class ReverseImage extends Command {
                 resolve()
             })
         })
-        const newArray = []
+        const newArray: any[] = []
         for (let i = 0; i < data.length; i++) {
             const obj = {} as any
             obj.url = data[i].url

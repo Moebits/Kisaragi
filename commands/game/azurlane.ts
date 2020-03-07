@@ -5,13 +5,24 @@ import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
-export default class AzurLaneCommand extends Command {
+export default class AzurLane extends Command {
+    private readonly defaults = [
+        "Kisaragi", "Laffey", "Helena", "Javelin",
+        "Warspite", "Unicorn", "Hibiki", "Akatsuki", "Fubuki",
+        "Yuudachi", "Yukikaze", "Akashi", "Mutsuki", "Jenkins",
+        "Urakaze", "Kizuna AI", "Belfast", "Gridley", "Sims", "Hammann",
+        "Eldridge", "Omaha", "Portland", "Crescent", "Juno", "Vampire",
+        "Cygnet", "Uzuki", "Shigure", "Bailey", "Minazuki", "Mikazuki",
+        "Nicholas", "Radford", "Little Bel", "Agano", "Z18", "22", "Noire", "33",
+        "HDN Neptune", "Ayanami", "Murasaki Shion"
+    ]
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets information on an azur lane ship girl.",
             help:
             `
             \`azurlane shipgirl\` - Gets information on the shipgirl.
+            \`azurlane\` - Gets some handpicked girls.
             `,
             examples:
             `
@@ -19,6 +30,7 @@ export default class AzurLaneCommand extends Command {
             \`=>azurlane laffey\`
             `,
             aliases: ["al"],
+            random: "none",
             cooldown: 10
         })
     }
@@ -49,11 +61,13 @@ export default class AzurLaneCommand extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const query = Functions.combineArgs(args, 1).trim().replace(/ +/g, "_")
+        let query = Functions.combineArgs(args, 1).trim().replace(/ +/g, "_")
         if (!query) {
-            return this.noQuery(embeds.createEmbed()
-            .setAuthor("azur lane", "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSnDHW2kyLtkaqi2aYDs4wpv_RrBrzEepOq-6snciOE7TM9Rift")
-            .setTitle(`**Azur Lane Search** ${discord.getEmoji("kisaragiBawls")}`))
+            query = this.defaults[Math.floor(Math.random()*this.defaults.length)]
+        }
+
+        if (query.match(/azurlane.koumakan.jp/)) {
+            query = query.replace("https://azurlane.koumakan.jp/", "")
         }
         const headers = {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"

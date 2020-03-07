@@ -21,6 +21,7 @@ export default class Urban extends Command {
             \`=>urban loli\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 5
         })
     }
@@ -28,20 +29,22 @@ export default class Urban extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!perms.checkNSFW()) return
         const urbanEmbed = embeds.createEmbed()
 
         if (args[1]) {
-            const word = args[1]
+            let word = args[1]
+            if (args[1].match(/urbandictionary.com/)) {
+                word = args[1].match(/(?<=\/)(?:.(?!\/))+$/)![0].replace("define.php?term=", "")
+            }
             const result = await urban(word)
             const cleanDef = result.definition.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "")
             const cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "")
             const checkedExample = Functions.checkChar(cleanExample, 1700, ".")
             urbanEmbed
-            .setAuthor("Urban Dictionary", "https://firebounty.com/image/635-urban-dictionary")
+            .setAuthor("Urban Dictionary", "https://i.imgur.com/iXnNjPc.png")
             .setURL(result.URL)
             .setTitle(`**Urban Dictionary** ${discord.getEmoji("smugFace")}`)
             .setDescription(
@@ -61,7 +64,7 @@ export default class Urban extends Command {
         const cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "")
         const checkedExample = Functions.checkChar(cleanExample, 1700, ".")
         urbanEmbed
-            .setAuthor("Urban Dictionary", "https://firebounty.com/image/635-urban-dictionary")
+            .setAuthor("Urban Dictionary", "https://i.imgur.com/iXnNjPc.png")
             .setURL(result.URL)
             .setTitle(`**Urban Dictionary** ${discord.getEmoji("smugFace")}`)
             .setDescription(

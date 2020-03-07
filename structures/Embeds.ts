@@ -1,4 +1,4 @@
-import {Emoji, Message, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, User} from "discord.js"
+import {Emoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, User} from "discord.js"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 import {SQLQuery} from "./SQLQuery"
@@ -36,7 +36,7 @@ export class Embeds {
     }
 
     // Create Reaction Embed
-    public createReactionEmbed = async (embeds: MessageEmbed[], collapseOn?: boolean, startPage?: number) => {
+    public createReactionEmbed = async (embeds: MessageEmbed[], collapseOn?: boolean, download?: boolean, startPage?: number) => {
         let page = 0
         if (startPage) page = startPage
         const insertEmbeds = embeds
@@ -79,7 +79,33 @@ export class Embeds {
                 reaction.users.remove(user)
             })
         }
+
+        if (download) {
+            const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("download") && user.bot === false
+            const download = msg.createReactionCollector(downloadCheck)
+
+            download.on("collect", async (reaction: MessageReaction, user: User) => {
+                const images: string[] = []
+                for (let i = 0; i < embeds.length; i++) {
+                    if (embeds[i].image?.url) {
+                        images.push(embeds[i].image?.url!)
+                    }
+                }
+                const rand = Math.floor(Math.random()*10000)
+                const dest = `../assets/images/${rand}.zip`
+                reaction.users.remove(user)
+                const rep = await msg.channel.send(`<@${user.id}>, Downloading the images ${this.discord.getEmoji("gabCircle")}`)
+                await Functions.createZip(images, dest)
+                if (rep) rep.delete()
+                const attachment = new MessageAttachment(dest, `${embeds[0].title}.zip`)
+                await msg.channel.send(`<@${user.id}>, downloaded **${images.length}** images from this embed.`)
+                await msg.channel.send(attachment)
+                download.stop()
+            })
+
+        }
         await msg.react(this.discord.getEmoji("numberSelect"))
+        if (download) await msg.react(this.discord.getEmoji("download"))
         const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
         const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false

@@ -6,7 +6,7 @@
         "0xFF3EFE", 
         "0xEC69FF"  
     ],
-    "stars": [
-        
-    ]
+    "support": "https://discord.gg/77yGmWM",
+    "invite": "https://discordapp.com/api/oauth2/authorize?client_id=593838271650332672&permissions=2113793271&scope=bot",
+    "repo": "https://github.com/Tenpi/Kisaragi"
 }

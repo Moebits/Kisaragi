@@ -18,6 +18,7 @@ export default class Chibi extends Command {
             \`=>chibi\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 10
         })
     }

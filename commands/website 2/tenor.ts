@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -14,6 +14,7 @@ export default class TenorCommand extends Command {
             `
             \`tenor\` - Posts a random gif
             \`tenor query\` - Searches for a gif with the query
+            \`tenor url\` - Gets the gif from the url
             `,
             examples:
             `
@@ -21,6 +22,7 @@ export default class TenorCommand extends Command {
             \`=>tenor anime\`
             `,
             aliases: ["ten"],
+            random: "none",
             cooldown: 5
         })
     }
@@ -38,21 +40,37 @@ export default class TenorCommand extends Command {
         })
 
         const query = Functions.combineArgs(args, 1)
-        const tenorEmbed = embeds.createEmbed()
-        const result = query ? await tenor.Search.Random(query, "1")
-        : await tenor.Trending.GIFs("10")
+        let result
+        if (query) {
+            if (query.match(/tenor.com/)) {
+                const id = query.match(/(?<=-)(?:.(?!-))+$/)
+                result = tenor.Search.Find([id])
+            } else {
+                result = await tenor.Search.Query(query, "1")
+            }
+        } else {
+            result = await tenor.Trending.GIFs("10")
+        }
+        const tenorArray: MessageEmbed[] = []
+        for (let i = 0; i < result.length; i++) {
+            const tenorEmbed = embeds.createEmbed()
+            tenorEmbed
+            .setAuthor("tenor", "https://tenor.com/assets/img/tenor-app-icon.png")
+            .setTitle(`**Tenor Gif** ${discord.getEmoji("raphi")}`)
+            .setURL(result[i].itemurl)
+            .setDescription(
+                `${discord.getEmoji("star")}_Title:_ **${result[i].title}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(result[i].created)}**`
+            )
+            .setImage(result[i].media[0].gif.url)
+            tenorArray.push(tenorEmbed)
+        }
 
-        const random = Math.floor(Math.random() * result.length)
-        tenorEmbed
-        .setAuthor("tenor", "https://tenor.com/assets/img/tenor-app-icon.png")
-        .setTitle(`**Tenor Gif** ${discord.getEmoji("raphi")}`)
-        .setURL(result[random].itemurl)
-        .setDescription(
-            `${discord.getEmoji("star")}_Title:_ **${result[random].title}**\n` +
-            `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(result[random].created)}**`
-        )
-        .setImage(result[random].media[0].gif.url)
-        message.channel.send(tenorEmbed)
-
+        if (tenorArray.length === 1) {
+            message.channel.send(tenorArray[0])
+        } else {
+            embeds.createReactionEmbed(tenorArray, true)
+        }
+        return
     }
 }

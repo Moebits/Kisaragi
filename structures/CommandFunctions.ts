@@ -69,15 +69,14 @@ export class CommandFunctions {
         if (noCmdCool.has(this.message.guild!.id)) return
         const commands = await sql.fetchColumn("commands", "command")
         for (let i = 0; i < commands.length; i++) {
-            if (commands[i].includes(input)) {
+            if (commands[i].toLowerCase().includes(input.toLowerCase())) {
                 noCmdCool.add(this.message.guild!.id)
-                setTimeout(() => {noCmdCool.delete(this.message.guild!.id)}, 100000)
+                setTimeout(() => {noCmdCool.delete(this.message.guild!.id)}, 10000)
                 return this.message.reply(`This is not a command! Did you mean **${commands[i]}**?`)
-
             }
         }
         noCmdCool.add(this.message.guild!.id)
-        setTimeout(() => {noCmdCool.delete(this.message.guild!.id)}, 100000)
+        setTimeout(() => {noCmdCool.delete(this.message.guild!.id)}, 10000)
         return this.message.reply(`This is not a command, type **help** for help!`)
     }
 

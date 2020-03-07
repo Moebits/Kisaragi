@@ -19,6 +19,7 @@ export default class Imgur extends Command {
             \`=>imgur anime\`
             `,
             aliases: ["img", "image"],
+            random: "string",
             cooldown: 5
         })
     }
@@ -37,9 +38,39 @@ export default class Imgur extends Command {
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             )
         }
-        const json = await imgur.search(query)
-        const random = Math.floor(Math.random() * json.data.length)
-        const image = json.data[random]
+
+        let image: any
+        if (query.match(/imgur.com/)) {
+            const id = query.match(/(?<=\/)(?:.(?!\/))+$/)![0].replace(/.(png|jpg|gif)/, "")
+            image = await imgur.getInfo(id).then((i: any) => i.data)
+            const imgurEmbed = embeds.createEmbed()
+            let extension
+            switch (image.type.slice(-3)) {
+                case "mp4": extension = "gif"; break
+                case "peg": extension = "jpeg"; break
+                default: extension = image.type.slice(-3)
+            }
+            const cover = `https://imgur.com/${image.id}.${extension}`
+            imgurEmbed
+            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg")
+            .setURL(image.link)
+            .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
+            .setDescription(
+                `${discord.getEmoji("star")}_Title:_ **${image.title ?? "None"}**\n` +
+                `${discord.getEmoji("star")}_Account:_ **${image.account_url ?? "None"}**\n` +
+                `${discord.getEmoji("star")}**${image.ups ?? 0}** ${discord.getEmoji("up")} **${image.downs ?? 0}** ${discord.getEmoji("down")}\n` +
+                `${discord.getEmoji("star")}_Views:_ **${image.views}**\n` +
+                `${discord.getEmoji("star")}_Animated:_ **${image.animated ? "Yes" : "No"}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${image.description ? image.description : "None"}\n`
+            )
+            .setImage(cover)
+            message.channel.send(imgurEmbed)
+            return
+        } else {
+            const json = await imgur.search(query)
+            const random = Math.floor(Math.random() * json.data.length)
+            image = json.data[random]
+        }
         if (!image) {
             const imgurEmbed = embeds.createEmbed()
             imgurEmbed
@@ -63,9 +94,9 @@ export default class Imgur extends Command {
             .setURL(image.link)
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription(
-                `${discord.getEmoji("star")}_Title:_ **${image.title}**\n` +
-                `${discord.getEmoji("star")}_Account:_ **${image.account_url}**\n` +
-                `${discord.getEmoji("star")}**${image.ups}** ${discord.getEmoji("up")} **${image.downs}** ${discord.getEmoji("down")}\n` +
+                `${discord.getEmoji("star")}_Title:_ **${image.title ?? "None"}**\n` +
+                `${discord.getEmoji("star")}_Account:_ **${image.account_url ?? "None"}**\n` +
+                `${discord.getEmoji("star")}**${image.ups ?? 0}** ${discord.getEmoji("up")} **${image.downs ?? 0}** ${discord.getEmoji("down")}\n` +
                 `${discord.getEmoji("star")}_Views:_ **${image.views}**\n` +
                 `${discord.getEmoji("star")}_Animated:_ **${image.images[0].animated ? "Yes" : "No"}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${image.description ? image.description : "None"}\n`
@@ -89,9 +120,9 @@ export default class Imgur extends Command {
                 .setURL(image.link)
                 .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
                 .setDescription(
-                    `${discord.getEmoji("star")}_Title:_ **${image.title}**\n` +
-                    `${discord.getEmoji("star")}_Account:_ **${image.account_url}**\n` +
-                    `${discord.getEmoji("star")}**${image.ups}** ${discord.getEmoji("up")} **${image.downs}** ${discord.getEmoji("down")}\n` +
+                    `${discord.getEmoji("star")}_Title:_ **${image.title ?? "None"}**\n` +
+                    `${discord.getEmoji("star")}_Account:_ **${image.account_url ?? "None"}**\n` +
+                    `${discord.getEmoji("star")}**${image.ups ?? 0}** ${discord.getEmoji("up")} **${image.downs ?? 0}** ${discord.getEmoji("down")}\n` +
                     `${discord.getEmoji("star")}_Views:_ **${image.views}**\n` +
                     `${discord.getEmoji("star")}_Animated:_ **${image.images[i].animated ? "Yes" : "No"}**\n` +
                     `${discord.getEmoji("star")}_Description:_ ${image.description ? image.description : "None"}\n`

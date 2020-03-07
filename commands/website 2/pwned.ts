@@ -8,18 +8,19 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Pwned extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for data breaches/pwned websites.",
+            description: "Searches have i been pwned.",
             help:
             `
             \`pwned\` - Posts pwned websites
-            \`pwned query\` - Searches for a data breach
+            \`pwned query\` - Searches for a specific data breach
             `,
             examples:
             `
             \`=>pwned\`
             \`=>pwned myspace\`
             `,
-            aliases: [],
+            aliases: ["haveibeenpwned"],
+            random: "none",
             cooldown: 5
         })
     }

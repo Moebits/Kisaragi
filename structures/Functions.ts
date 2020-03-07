@@ -1,5 +1,8 @@
+import archiver from "archiver"
 import child_process from "child_process"
 import {Message, Util} from "discord.js"
+import fs from "fs"
+import path from "path"
 import * as stream from "stream"
 import * as config from "../config.json"
 
@@ -235,6 +238,26 @@ export class Functions {
         } else {
             return arr
         }
+    }
+
+    // Create a zip file
+    public static createZip = async (files: string[], dest: string) => {
+        dest = dest.endsWith(".zip") ? dest : dest + ".zip"
+        await new Promise((resolve) => {
+            const stream = fs.createWriteStream(dest)
+            const zip = archiver("zip")
+
+            zip.pipe(stream)
+            for (let i = 0; i < files.length; i++) {
+                zip.file(files[i], {name: path.basename(files[i])})
+            }
+            zip.finalize()
+
+            stream.on("close", function() {
+                resolve()
+            })
+        })
+        return dest
     }
 
 }

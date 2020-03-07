@@ -16,6 +16,7 @@ export default class Wikipedia extends Command {
             `
             \`wikipedia\` - Gets a random article
             \`wikipedia query\` - Searches for an article
+            \`wikipedia url\` - Gets the article from the url
             `,
             examples:
             `
@@ -23,6 +24,7 @@ export default class Wikipedia extends Command {
             \`=>wikipedia anime\`
             `,
             aliases: ["w", "wiki"],
+            random: "none",
             cooldown: 10
         })
     }
@@ -38,7 +40,10 @@ export default class Wikipedia extends Command {
         if (!args[1]) {
             title = await wikipedia.random(1)
         } else {
-            const query = Functions.combineArgs(args, 1)
+            let query = Functions.combineArgs(args, 1)
+            if (query.match(/en.wikipedia.org/)) {
+                query = query.match(/(?<=\/)(?:.(?!\/))+$/)?.[0].replace(/_/g, " ")!
+            }
             const result = await wikipedia.search(query, 1)
             title = result.results
         }

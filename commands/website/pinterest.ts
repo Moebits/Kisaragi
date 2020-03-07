@@ -9,6 +9,8 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 let pinArray: MessageEmbed[] = []
 
 export default class Pinterest extends Command {
+    private user = null as any
+    private board = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for images on pinterest.",
@@ -25,6 +27,7 @@ export default class Pinterest extends Command {
             \`=>pinterest board tenpimusic anime\`
             `,
             aliases: ["pint"],
+            random: "string",
             cooldown: 15
         })
     }
@@ -67,11 +70,20 @@ export default class Pinterest extends Command {
         const accessToken = (process.env.PINTEREST_ACCESS_TOKEN)
         const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID!, process.env.GOOGLE_API_KEY!)
         pinArray = []
+        if (args[1]) {
+            if (args[1].match(/pinterest.com/)) {
+                const matches = args[1].replace("www.", "").replace("https://pinterest.com", "").match(/(?<=\/)(.*?)(?=\/)/g)
+                if (matches?.[0] && matches[0] !== "pin") {
+                    this.user = matches[0]
+                    if (matches[1]) this.board = matches[1]
+                }
+            }
+        }
 
-        if (args[1] === "board") {
-            const user = args[2]
-            const board = args[3]
-            if (!user || !board) return this.pinterestError(discord, message, embeds, "You need to specify a user and a board ")
+        if (this.board || args[1] === "board") {
+            const user = this.user || args[2]
+            const board = this.board || args[3]
+            if (!user || !board) return this.pinterestError(discord, message, embeds, "You need to specify a user and a board. ")
             // const json = await axios.get(`https://api.pinterest.com/v1/boards/${user}/${board}/pins/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`)
             const json = await axios.get(`https://feed2json.org/convert?url=https://www.pinterest.com/${user}/${board}.rss`)
             const response = json.data
@@ -106,9 +118,9 @@ export default class Pinterest extends Command {
             return
         }
 
-        if (args[1] === "user") {
-            const user = args[2]
-            if (!args[2]) return this.pinterestError(discord, message, embeds, "You need to specify the user ")
+        if (this.user || args[1] === "user") {
+            const user = this.user || args[2]
+            if (!args[2]) return this.pinterestError(discord, message, embeds, "You need to specify the user. ")
             const json = await axios.get(`https://feed2json.org/convert?url=https://www.pinterest.com/${user}/feed.rss`)
             const response = json.data
             const username = response.title

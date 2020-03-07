@@ -26,6 +26,7 @@ export default class $nHentai extends Command {
             \`=>nhentai\`
             `,
             aliases: ["nh"],
+            random: "none",
             cooldown: 15
         })
     }
@@ -69,7 +70,7 @@ export default class $nHentai extends Command {
             .setImage(doujin.pages[i])
             doujinPages.push(nhentaiEmbed)
         }
-        this.embeds.createReactionEmbed(doujinPages, true)
+        this.embeds.createReactionEmbed(doujinPages, true, true)
     }
 
     public nhentaiRandom = async (filter?: boolean) => {

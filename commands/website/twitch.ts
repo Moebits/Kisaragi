@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import type {Message, MessageEmbed} from "discord.js"
 import TwitchClient from "twitch"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -6,6 +6,8 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Twitch extends Command {
+    private channel = null as any
+    private search = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for twitch streams and channels.",
@@ -13,6 +15,7 @@ export default class Twitch extends Command {
             `
             \`twitch query\` - Searches for streams with the query
             \`twitch channel query\` - Searches for a channel
+            \`twitch url\` - Gets the resource from the url
             `,
             examples:
             `
@@ -20,6 +23,7 @@ export default class Twitch extends Command {
             \`=>twitch channel imtenpi\`
             `,
             aliases: ["tw"],
+            random: "string",
             cooldown: 10
         })
     }
@@ -30,8 +34,17 @@ export default class Twitch extends Command {
         const embeds = new Embeds(discord, message)
         const twitch = TwitchClient.withCredentials(process.env.TWITCH_CLIENT_ID!, process.env.TWITCH_ACCESS_TOKEN!)
 
-        if (args[1] === "channel") {
-            const term = args[2]
+        if (args[1]?.match(/twitch.tv/)) {
+            const matches = args[1].replace("https://www.twitch.tv", "").match(/(?<=\/)(.*?)(?=$|\/)/g)
+            this.channel = matches?.[0]
+            if (this.channel.includes("search")) {
+                this.search = matches?.[0].replace("search?term=", "")
+                this.channel = null
+            }
+        }
+
+        if (this.channel || args[1] === "channel") {
+            const term = this.channel || args[2]
             if (!term) {
                 return this.noQuery(embeds.createEmbed()
                 .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg")
@@ -58,7 +71,7 @@ export default class Twitch extends Command {
             return
         }
 
-        const term = Functions.combineArgs(args, 1)
+        const term = this.search || Functions.combineArgs(args, 1)
         if (!term) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg")

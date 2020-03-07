@@ -6,6 +6,9 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class SoundCloud extends Command {
+    private user = null as any
+    private playlist = null as any
+    private track = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for soundcloud tracks, users, and playlists.",
@@ -14,6 +17,7 @@ export default class SoundCloud extends Command {
             \`soundcloud query\` - Searches for tracks with the query
             \`soundcloud user query\` - Searches for users with the query
             \`soundcloud playlist query\` - Searches for playlists with the query
+            \`soundcloud url\` - Fetches the resource from the url
             `,
             examples:
             `
@@ -22,6 +26,7 @@ export default class SoundCloud extends Command {
             \`=>soundcloud playlist kawaii\`
             `,
             aliases: ["s"],
+            random: "string",
             cooldown: 10
         })
     }
@@ -31,10 +36,20 @@ export default class SoundCloud extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
 
+        if (args[1]?.match(/soundcloud.com/)) {
+            const matches = args[1].replace("www.", "").replace("https://soundcloud.com", "").match(/(?<=\/)(.*?)(?=$|\/)/g)
+            this.user = matches?.[0]
+            this.track = matches?.[1]?.replace(/-/g, " ")
+            if (this.track === "sets") this.playlist = matches?.[2]?.replace(/-/g, " ")
+            if (this.track?.includes("search")) this.track = matches?.[1]?.replace("search?q=", "").replace(/%20/g, " ")
+            const bad = ["tracks", "popular-tracks", "albums", "sets", "reposts"]
+            if (bad.includes(this.track)) this.track = null
+        }
+
         const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID, process.env.SOUNDCLOUD_OAUTH_TOKEN)
 
-        if (args[1] === "user") {
-            const query = Functions.combineArgs(args, 2)
+        if ((this.user && !this.track) || args[1] === "user") {
+            const query = this.user || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
                 .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
@@ -65,8 +80,8 @@ export default class SoundCloud extends Command {
             return embeds.createReactionEmbed(soundcloudArray, true)
         }
 
-        if (args[1] === "playlist") {
-            const query = Functions.combineArgs(args, 2)
+        if (this.playlist || args[1] === "playlist") {
+            const query = this.playlist || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
                 .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
@@ -97,7 +112,7 @@ export default class SoundCloud extends Command {
             return embeds.createReactionEmbed(soundcloudArray, true)
         }
 
-        const query = Functions.combineArgs(args, 1)
+        const query = this.track || Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")

@@ -17,6 +17,7 @@ export default class Dice extends Command {
             \`=>dice\`
             `,
             aliases: ["roll"],
+            random: "none",
             cooldown: 3
         })
     }
@@ -33,13 +34,13 @@ export default class Dice extends Command {
         const loading = message.channel.lastMessage
 
         const msg = await message.channel.send(
-            `**Dice Roll** ${discord.getEmoji("smugFace")}\n` +
+            // `**Dice Roll** ${discord.getEmoji("smugFace")}\n` +
             `**Rolling the dice...** ${discord.getEmoji("diceRoll")}`)
 
         loading?.delete()
         await Functions.timeout(700)
         msg.edit(
-            `**Dice Roll** ${discord.getEmoji("chinoSmug")}\n` +
+            // `**Dice Roll** ${discord.getEmoji("chinoSmug")}\n` +
             `**Rolled ${roll}!** ${discord.getEmoji(dices[roll-1])}`)
     }
 }

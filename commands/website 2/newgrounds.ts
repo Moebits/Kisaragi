@@ -27,6 +27,7 @@ export default class Newgrounds extends Command {
             \`=>newgrounds user tenpi\`
             `,
             aliases: ["ng"],
+            random: "string",
             cooldown: 10
         })
     }

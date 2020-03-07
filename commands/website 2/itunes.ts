@@ -18,6 +18,7 @@ export default class Itunes extends Command {
             \`=>itunes tenpi\`
             `,
             aliases: [],
+            random: "string",
             cooldown: 15
         })
     }

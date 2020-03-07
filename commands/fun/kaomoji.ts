@@ -20,6 +20,7 @@ export default class Kaomoji extends Command {
             \`=>kaomoji kawaii\`
             `,
             aliases: ["kmoji"],
+            random: "none",
             cooldown: 3
         })
     }

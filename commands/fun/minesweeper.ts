@@ -7,11 +7,11 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Minesweeper extends Command {
     private done = false
-    private original: string[][] = null
+    private original = null as any
     private revealed = false
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: `Plays a game of minesweeper`,
+            description: `Starts a new game of minesweeper.`,
             help:
             `
             \`minesweeper rows? columns?\` - Starts a new game, defaults to 5x5.
@@ -23,6 +23,7 @@ export default class Minesweeper extends Command {
             \`=>minesweeper spoiler\`
             `,
             aliases: ["mine"],
+            random: "none",
             cooldown: 5
         })
     }
@@ -179,12 +180,12 @@ export default class Minesweeper extends Command {
         const reveal = msg.createReactionCollector(revealCheck)
 
         array.on("collect", async (reaction: MessageReaction, user: User) => {
-            let row: number
-            let column: number
+            let row = 1
+            let column = 1
             const self = this
             async function getRowsColumns(response: Message) {
-                row = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)[0] : NaN)
-                column = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)[1] : NaN)
+                row = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)?.[0] : NaN)
+                column = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)?.[1] : NaN)
                 if (Number.isNaN(row) || Number.isNaN(column) || row-1 > rows || column-1 > columns) {
                     const rep = await response.reply("The row or column is invalid.")
                     await rep.delete({timeout: 2000})
@@ -209,8 +210,8 @@ export default class Minesweeper extends Command {
         flag.on("collect", async (reaction: MessageReaction, user: User) => {
             const self = this
             async function getRowsColumns(response: Message) {
-                let row = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)[0] : NaN)
-                let column = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)[1] : NaN)
+                let row = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)?.[0] : NaN)
+                let column = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)?.[1] : NaN)
                 if (Number.isNaN(row) || Number.isNaN(column) || row-1 > rows || column-1 > columns) {
                     const rep = await response.reply("The row or column is invalid.")
                     await rep.delete({timeout: 2000})

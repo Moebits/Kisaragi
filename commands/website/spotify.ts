@@ -22,6 +22,7 @@ export default class SpotifyCommand extends Command {
             \`=>spotify artist synthion\`
             `,
             aliases: [],
+            random: "string",
             cooldown: 10
         })
     }

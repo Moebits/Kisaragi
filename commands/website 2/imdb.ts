@@ -18,6 +18,7 @@ export default class IMDB extends Command {
             \`=>imdb konosuba\`
             `,
             aliases: ["movie", "film"],
+            random: "string",
             cooldown: 10
         })
     }

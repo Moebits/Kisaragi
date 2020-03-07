@@ -16,6 +16,7 @@ export default class Guilds extends Command {
             \`=>guilds\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 3
         })
     }

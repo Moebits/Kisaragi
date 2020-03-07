@@ -20,6 +20,7 @@ export default class NPM extends Command {
             \`=>npm pixiv.ts\`
             `,
             aliases: [],
+            random: "string",
             cooldown: 5
         })
     }
@@ -28,11 +29,14 @@ export default class NPM extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const query = Functions.combineArgs(args, 1)
+        let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setTitle(`**NPM Search** ${discord.getEmoji("gabStare")}`)
             .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png"))
+        }
+        if (query.match(/npmjs.com/)) {
+            query = query.match(/(?<=\/)(?:.(?!\/))+$/)![0].replace("search?q=", "")
         }
         const result = await npm(query, {sortBy: "popularity"})
         const npmArray: MessageEmbed[] = []

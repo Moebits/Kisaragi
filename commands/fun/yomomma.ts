@@ -18,6 +18,7 @@ export default class YoMomma extends Command {
             \`=>yomomma\`
             `,
             aliases: ["yomom", "yomama"],
+            random: "none",
             cooldown: 5
         })
     }

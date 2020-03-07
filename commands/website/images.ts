@@ -18,6 +18,7 @@ export default class GoogleImageCommand extends Command {
             \`=>images anime\`
             `,
             aliases: ["i", "image", "googleimages"],
+            random: "string",
             cooldown: 10
         })
     }
@@ -27,13 +28,18 @@ export default class GoogleImageCommand extends Command {
         const message = this.message
 
         const embeds = new Embeds(discord, message)
-        const query = Functions.combineArgs(args, 1)
+        let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("google images", "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png")
             .setTitle(`**Image Search** ${discord.getEmoji("raphi")}`)
             )
         }
+
+        if (query.match(/google.com/)) {
+            query = query.match(/(?<=search\?q=)(.*?)(?=&)/)?.[0].replace(/\+/g, " ")!
+        }
+
         const images = new GoogleImages(process.env.GOOGLE_IMAGES_ID!, process.env.GOOGLE_API_KEY!)
 
         const result = await images.search(query)

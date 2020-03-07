@@ -8,6 +8,9 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 let redditArray: MessageEmbed[] = []
 
 export default class Reddit extends Command {
+    private sub = null as any
+    private postID = null as any
+    private user = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches posts on a reddit subreddit.",
@@ -17,6 +20,7 @@ export default class Reddit extends Command {
             \`reddit board query?\` - Searches for posts in the board or gets random ones
             \`reddit board hot/new/top/rising/controversial\` - Gets hot, new, top, etc. posts in the board
             \`reddit user query\` - Searches for users
+            \`reddit url\` - Gets the post from the url
             `,
             examples:
             `
@@ -26,6 +30,7 @@ export default class Reddit extends Command {
             \`=>reddit user imtenpi\`
             `,
             aliases: ["r"],
+            random: "none",
             cooldown: 10
         })
     }
@@ -73,8 +78,18 @@ export default class Reddit extends Command {
             password: process.env.REDDIT_PASSWORD
         })
 
-        if (args[1] === "user") {
-            const query = Functions.combineArgs(args, 2)
+        if (args[1]?.match(/reddit.com/)) {
+            this.sub = args[1].match(/(?<=r\/)(.*?)(?=\/)/) ? args[1].match(/(?<=r\/)(.*?)(?=\/)/)?.[0] : null
+            this.postID = args[1].match(/(?<=comments\/)(.*?)(?=\/)/) ? args[1].match(/(?<=comments\/)(.*?)(?=\/)/)?.[0] : null
+            this.user = args[1].match(/(?<=user\/)(.*?)(?=$|\/)/) ? args[1].match(/(?<=user\/)(.*?)(?=$|\/)/)?.[0] : null
+            if (this.postID) {
+                await this.getSubmissions(discord, reddit, embeds, [this.postID])
+                return message.channel.send(redditArray[0])
+            }
+        }
+
+        if (this.user || args[1] === "user") {
+            const query = this.user || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
                 .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
@@ -106,7 +121,7 @@ export default class Reddit extends Command {
             // @ts-ignore
             posts = [await reddit.getRandomSubmission()] as snoowrap.Listing<snoowrap.Submission>
         } else {
-            subreddit = args[1]
+            subreddit = this.sub || args[1]
         }
         if (subreddit) {
             if (args[2]) {

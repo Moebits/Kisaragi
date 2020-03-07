@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import type {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -7,6 +7,9 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const Jikan = require("jikan-node")
 
 export default class Mal extends Command {
+    private anime = null as any
+    private character = null as any
+    private user = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for listings on my anime list.",
@@ -24,6 +27,7 @@ export default class Mal extends Command {
             \`=>mal tenpi\`
             `,
             aliases: ["animelist", "anilist"],
+            random: "none",
             cooldown: 10
         })
     }
@@ -34,8 +38,14 @@ export default class Mal extends Command {
         const embeds = new Embeds(discord, message)
         const mal = new Jikan()
 
-        if (args[1] === "character") {
-            const query = Functions.combineArgs(args, 2)
+        if (args[1]?.match(/myanimelist.net/)) {
+            this.character = args[1].match(/myanimelist.net\/character/) && args[1].match(/(?<=\/)(?:.(?!\/))+$/) ? args[1].match(/(?<=\/)(?:.(?!\/))+$/)?.[0].replace(/_/g, " ") : null
+            this.user = args[1].match(/myanimelist.net\/profile/) ? args[1].replace("https://myanimelist.net/profile/", "") : null
+            this.anime = args[1].match(/myanimelist.net\/anime/) && args[1].match(/(?<=\/)(?:.(?!\/))+$/) ? args[1].match(/(?<=\/)(?:.(?!\/))+$/)?.[0].replace(/_/g, " ") : null
+        }
+
+        if (this.character || args[1] === "character") {
+            const query = this.character || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
                 .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")
@@ -69,12 +79,13 @@ export default class Mal extends Command {
             return
         }
 
-        if (args[1] === "user") {
+        if (this.user || args[1] === "user") {
+            const user = this.user || args[2]
             const malEmbed = embeds.createEmbed()
             .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png")
             .setTitle(`**My Anime List User** ${discord.getEmoji("raphi")}`)
-            if (!args[2]) return this.noQuery(malEmbed)
-            const result = await mal.findUser(args[2])
+            if (!user) return this.noQuery(malEmbed)
+            const result = await mal.findUser(user)
             const anime = result.favorites.anime.map((a: any) => a.name)
             const characters = result.favorites.characters.map((c: any) => c.name)
             const cleanText = result.about.replace(/<\/?[^>]+(>|$)/g, "")
@@ -101,11 +112,14 @@ export default class Mal extends Command {
         }
 
         let result
-        const query = Functions.combineArgs(args, 1)
+        let query = this.anime || Functions.combineArgs(args, 1)
         if (!query) {
             const raw = await mal.findTop("anime")
             result = raw.top
         } else {
+            if (query.match(/myanimelist.net/)) {
+                query = query.match(/(?<=\/)(?:.(?!\/))+$/)[0].replace(/_/g, " ")
+            }
             const raw = await mal.search("anime", query.trim())
             result = raw.results
         }

@@ -27,6 +27,7 @@ export default class AnimeQuote extends Command {
             \`=>animequote rem\`
             `,
             aliases: ["aq"],
+            random: "none",
             cooldown: 5
         })
     }

@@ -1,4 +1,5 @@
 import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, TextChannel, User} from "discord.js"
+import * as config from "./../config.json"
 import {Embeds} from "./Embeds"
 export class Kisaragi extends Client {
     private starIndex = 0
@@ -12,7 +13,7 @@ export class Kisaragi extends Client {
             if (this.starIndex === 0) {
                 this.starIndex = 1
             } else if (this.starIndex === 1) {
-                name += "Two"
+                name += "2"
                 this.starIndex = 0
             }
         }
@@ -60,7 +61,20 @@ export class Kisaragi extends Client {
 
     // Fetch First Message in a Guild
     public fetchFirstMessage = async (guild: Guild) => {
-        const channels = guild.channels.cache.filter((c: GuildChannel) => c.type === "text")
+        const channels = guild.channels.cache.filter((c: GuildChannel) => {
+            if (c.type === "text") {
+                let perms = c.permissionsFor(guild.id)!
+                if (perms?.has("SEND_MESSAGES")) {
+                    return true
+                } else {
+                    perms = c.permissionsFor(this.user?.id!)!
+                    if (perms?.has("SEND_MESSAGES")) {
+                        return true
+                    }
+                }
+            }
+            return false
+        })
         const channel = channels.first() as TextChannel
         const lastMsg = await channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
         return lastMsg
@@ -68,8 +82,9 @@ export class Kisaragi extends Client {
 
     // Check for Bot Mention
     public checkBotMention = (message: Message) => {
-        if (message.author!.id === this.user!.id) return false
-        if (message.content.startsWith(this.user!.id)) return true
+        if (message.author.id === this.user?.id) return false
+        const regex = new RegExp(`<@!${this.user?.id}>`)
+        if (message.content.match(regex)) return true
     }
 
     // Errors
@@ -81,7 +96,7 @@ export class Kisaragi extends Client {
         .setTitle(`**Command Error** ${this.getEmoji("maikaWut")}`)
         .setDescription(`There was an error executing this command:\n` +
         `**${error.name}: ${error.message}**\n` + `Please report this through the following links:\n` +
-        `[Support Server](https://discord.gg/77yGmWM), [Github Repository](https://github.com/Tenpi/Kisaragi)`)
+        `[Support Server](${config.support}), [Github Repository](${config.repo})`)
         return messageErrorEmbed
     }
 

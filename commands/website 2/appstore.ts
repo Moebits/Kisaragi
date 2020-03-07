@@ -11,12 +11,14 @@ export default class AppStore extends Command {
             help:
             `
             \`appstore query\` - Searches the app store with the query.
+            \`appstore url\` - Searches for the url
             `,
             examples:
             `
             \`=>appstore geometry dash\`
             `,
             aliases: ["app", "istore"],
+            random: "string",
             cooldown: 15
         })
     }
@@ -27,11 +29,14 @@ export default class AppStore extends Command {
         const embeds = new Embeds(discord, message)
 
         const store = require("app-store-scraper")
-        const term = Functions.combineArgs(args, 1).trim()
+        let term = Functions.combineArgs(args, 1).trim()
         if (!term) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg")
             .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`))
+        }
+        if (term.match(/apps.apple.com/)) {
+            term = term.match(/(?<=app\/)(.*?)(?=\/)/)?.[0].replace(/-/g, " ")!
         }
         const response = await store.search({term})
         const appArray: MessageEmbed[] = []

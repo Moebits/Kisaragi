@@ -5,11 +5,11 @@
   "main": "bin/shard.js",
   "scripts": {
     "start": "npm run build && npm run compile && npm run pm2",
-    "build": "tsc -p ./",
+    "build": "tsc -p tsconfig.json",
     "compile": "cd dist && node --max-old-space-size=4096 ./shard.js",
     "test": "ts-mocha --timeout 100000 -p tsconfig.json 'test/**/*.spec.ts'",
     "pm2": "pm2-runtime start ecosystem.config.js --env production",
-    "watch": "tsc -w -p ./",
+    "watch": "tsc -w -p tsconfig.json",
     "debug": "cd dist && node --nolazy --inspect-brk=9229 ./index.js",
     "preinstall": "npx npm-force-resolutions"
   },
@@ -49,6 +49,7 @@
     "anifetch": "^3.0.0",
     "animequotes": "^1.0.0",
     "app-store-scraper": "^0.16.2",
+    "archiver": "^3.1.1",
     "ascii-art": "^1.5.1",
     "async-redis": "^1.1.7",
     "axios": "^0.19.0",
@@ -133,7 +134,7 @@
     "pinterest-node-api": "0.0.3",
     "pixiv-app-api": "github:Tenpi/pixiv-app-api#fork",
     "pixiv-img": "^1.0.0",
-    "pixiv.ts": "^0.2.3",
+    "pixiv.ts": "^0.2.7",
     "pm2": "^3.5.1",
     "png-file-stream": "^1.2.1",
     "postgres-redis": "^0.1.0",
@@ -154,6 +155,7 @@
     "trello-for-wolves": "^2.0.2",
     "twitch": "^4.0.5",
     "twitter": "^1.7.1",
+    "typescript": "^3.8.3",
     "unzip": "^0.1.11",
     "unzip2": "^0.2.5",
     "upload-gphotos": "^3.1.0",
@@ -166,6 +168,7 @@
   },
   "devDependencies": {
     "@tenpi/tslint": "^1.0.5",
+    "@types/archiver": "^3.1.0",
     "@types/chai": "^4.1.7",
     "@types/mathjs": "^6.0.2",
     "@types/mocha": "^5.2.7",
@@ -177,7 +180,6 @@
     "ts-mockito": "^2.3.1",
     "ts-node": "^8.3.0",
     "tslint": "^5.20.0",
-    "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.7.2"
+    "tslint-eslint-rules": "^5.4.0"
   }
 }

@@ -23,6 +23,7 @@ export default class Neko extends Command {
             \`=>neko lewd\`
             `,
             aliases: ["catgirl"],
+            random: "none",
             cooldown: 10
         })
     }

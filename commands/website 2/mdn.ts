@@ -12,6 +12,7 @@ export default class MDN extends Command {
             help:
             `
             \`mdn query\` - Searches mdn for the query
+            \`mdn url\` - Searches the url
             `,
             examples:
             `
@@ -42,11 +43,15 @@ export default class MDN extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const query = Functions.combineArgs(args, 1)
+        let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setTitle(`**MDN Search** ${discord.getEmoji("gabStare")}`)
             .setAuthor(`mdn`, "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png"))
+        }
+
+        if (query.match(/developer.mozilla.org/)) {
+            query =  query.match(/(?<=\/)(?:.(?!\/))+$/)![0].replace(/_/g, " ")
         }
         const url = `https://mdn.pleb.xyz/search?local=en-US&q=${query}`
         const result = await axios.get(url).then((r) => r.data)

@@ -21,6 +21,7 @@ export default class Lenny extends Command {
             \`=>lenny shrug\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 3
         })
     }

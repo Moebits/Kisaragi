@@ -25,26 +25,11 @@ export default class MessageEvent {
       const detect = new Detector(this.discord, message)
       const links = new Link(this.discord, message)
 
-      /*let guildIDs = [
-        "594616328351121419"
-      ]
-      for (let i in guildIDs) {
-        let guild = discord.guilds.find(g => guildIDs[i] === g.id.toString())
-        await guild.delete()
-      }*/
-
       const prefix = await SQLQuery.fetchPrefix(message)
-
-      /*const letterNames = [
-        "numberSelect"
-      ]
-      const {Generate} = require("../structures/Generate")
-      const generate = new Generate(this.discord)
-      generate.generateEmojis(letterNames)*/
 
       if (message.author!.bot) return
 
-      /*if (message.guild) {
+      if (message.guild) {
         const sql = new SQLQuery(message)
         const pointTimeout = await sql.fetchColumn("points", "point timeout")
         setTimeout(() => {
@@ -55,7 +40,7 @@ export default class MessageEvent {
         detect.swapRoles()
         haiku.haiku()
         cmdFunctions.autoCommand()
-    }*/
+    }
 
       const responseText: any = {
       kisaragi: "Kisaragi is the best girl!",
@@ -116,11 +101,9 @@ export default class MessageEvent {
     }
 
       if (this.discord.checkBotMention(message)) {
-        const args = message.content.slice(`<@!${this.discord.user!.id}>`.length).trim().split(/ +/g)
+        const args = message.content.slice(`<@!${this.discord.user?.id}>`.length).trim().split(/ +/g)
         message.reply(`My prefix is set to "${prefix}"!\n`)
-        if (!args[0]) {
-          cmdFunctions.runCommand(message, ["help"])
-        } else {
+        if (args[0]) {
           cmdFunctions.runCommand(message, args)
         }
     }

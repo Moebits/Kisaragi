@@ -19,6 +19,7 @@ export default class Nasa extends Command {
             \`=>nasa\`
             `,
             aliases: [],
+            random: "none",
             cooldown: 10
         })
     }
