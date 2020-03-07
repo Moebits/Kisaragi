@@ -98,7 +98,7 @@
     "isomorphic-fetch": "^2.2.1",
     "jikan-node": "^1.2.0",
     "jpg-stream": "^1.1.2",
-    "jsdom": "^15.1.1",
+    "jsdom": "^15.2.0",
     "kaomojilib": "^1.1.4",
     "kuroshiro": "^1.1.2",
     "kuroshiro-analyzer-kuromoji": "^1.1.0",
