@@ -58,7 +58,7 @@ export default class Imgur extends Command {
             .setDescription(
                 `${discord.getEmoji("star")}_Title:_ **${image.title ?? "None"}**\n` +
                 `${discord.getEmoji("star")}_Account:_ **${image.account_url ?? "None"}**\n` +
-                `${discord.getEmoji("star")}**${image.ups ?? 0}** ${discord.getEmoji("up")} **${image.downs ?? 0}** ${discord.getEmoji("down")}\n` +
+                `${discord.getEmoji("star")}**${image.ups ?? 0}** ${discord.getEmoji("thumbsUp")} **${image.downs ?? 0}** ${discord.getEmoji("thumbsDown")}\n` +
                 `${discord.getEmoji("star")}_Views:_ **${image.views}**\n` +
                 `${discord.getEmoji("star")}_Animated:_ **${image.animated ? "Yes" : "No"}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${image.description ? image.description : "None"}\n`
@@ -96,7 +96,7 @@ export default class Imgur extends Command {
             .setDescription(
                 `${discord.getEmoji("star")}_Title:_ **${image.title ?? "None"}**\n` +
                 `${discord.getEmoji("star")}_Account:_ **${image.account_url ?? "None"}**\n` +
-                `${discord.getEmoji("star")}**${image.ups ?? 0}** ${discord.getEmoji("up")} **${image.downs ?? 0}** ${discord.getEmoji("down")}\n` +
+                `${discord.getEmoji("star")}**${image.ups ?? 0}** ${discord.getEmoji("thumbsUp")} **${image.downs ?? 0}** ${discord.getEmoji("thumbsDown")}\n` +
                 `${discord.getEmoji("star")}_Views:_ **${image.views}**\n` +
                 `${discord.getEmoji("star")}_Animated:_ **${image.images[0].animated ? "Yes" : "No"}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${image.description ? image.description : "None"}\n`
@@ -122,7 +122,7 @@ export default class Imgur extends Command {
                 .setDescription(
                     `${discord.getEmoji("star")}_Title:_ **${image.title ?? "None"}**\n` +
                     `${discord.getEmoji("star")}_Account:_ **${image.account_url ?? "None"}**\n` +
-                    `${discord.getEmoji("star")}**${image.ups ?? 0}** ${discord.getEmoji("up")} **${image.downs ?? 0}** ${discord.getEmoji("down")}\n` +
+                    `${discord.getEmoji("star")}**${image.ups ?? 0}** ${discord.getEmoji("thumbsUp")} **${image.downs ?? 0}** ${discord.getEmoji("thumbsDown")}\n` +
                     `${discord.getEmoji("star")}_Views:_ **${image.views}**\n` +
                     `${discord.getEmoji("star")}_Animated:_ **${image.images[i].animated ? "Yes" : "No"}**\n` +
                     `${discord.getEmoji("star")}_Description:_ ${image.description ? image.description : "None"}\n`

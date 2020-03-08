@@ -57,6 +57,8 @@ export default class Ugoira extends Command {
         } else {
             input = Functions.combineArgs(args, 1)
         }
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const msg1 = await message.channel.send(`**Fetching Ugoira** ${discord.getEmoji("gabCircle")}`) as Message
         let pixivID
         if (input.match(/\d\d\d+/g)) {

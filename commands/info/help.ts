@@ -46,32 +46,51 @@ export default class Help extends Command {
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
                 const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
                 if (cmdClass.options.unlist === true) continue
-                help += `${ discord.getEmoji("star")}\`${commands[j]}\`\n` + `_${cmdClass.options.description}_\n`
+                help += `${discord.getEmoji("star")}\`${commands[j]}\`` + ` -> _${cmdClass.options.description}_\n`
             }
             const emojiMap: any = {
-                "admin": discord.getEmoji("gabTired"),
-                "anime": discord.getEmoji("gabTired"),
+                "admin": discord.getEmoji("chikaYay"),
+                "anime": discord.getEmoji("gabYes"),
                 "bot developer": discord.getEmoji("no"),
-                "config": discord.getEmoji("gabTired"),
-                "fun": discord.getEmoji("gabTired"),
-                "game": discord.getEmoji("gabTired"),
-                "heart": discord.getEmoji("gabTired"),
-                "lewd": discord.getEmoji("gabTired"),
-                "info": discord.getEmoji("gabTired"),
-                "japanese": discord.getEmoji("gabTired"),
-                "level": discord.getEmoji("gabTired"),
-                "logging": discord.getEmoji("gabTired"),
-                "misc": discord.getEmoji("gabTired"),
-                "mod": discord.getEmoji("gabTired"),
-                "music": discord.getEmoji("gabTired"),
-                "website": discord.getEmoji("gabTired"),
-                "website 2": discord.getEmoji("gabTired")
+                "config": discord.getEmoji("akariLurk"),
+                "fun": discord.getEmoji("chinoSmug"),
+                "game": discord.getEmoji("yaoi"),
+                "heart": discord.getEmoji("kannaPatting"),
+                "lewd": discord.getEmoji("madokaLewd"),
+                "info": discord.getEmoji("kannaCurious"),
+                "japanese": discord.getEmoji("kannaHungry"),
+                "level": discord.getEmoji("KannaXD"),
+                "logging": discord.getEmoji("tohruSmug"),
+                "misc": discord.getEmoji("karenXmas"),
+                "mod": discord.getEmoji("kannaFreeze"),
+                "music": discord.getEmoji("PoiHug"),
+                "website": discord.getEmoji("tohruThumbsUp2"),
+                "website 2": discord.getEmoji("mexShrug")
+            }
+            const imageMap: any = {
+                "admin": "https://i.imgur.com/mMXKOPW.png",
+                "anime": "https://i.imgur.com/uqasXLs.png",
+                "bot developer": "https://i.imgur.com/wfEfC4w.png",
+                "config": "https://i.imgur.com/WoRVPR0.png",
+                "fun": "https://i.imgur.com/Qt2aZ4E.png",
+                "game": "https://i.imgur.com/0BmKykD.png",
+                "heart": "https://i.imgur.com/uKNjZcb.png",
+                "lewd": "https://i.imgur.com/alKtET3.png",
+                "info": "https://i.imgur.com/BR5OtIE.png",
+                "japanese": "https://i.imgur.com/7DpFyuL.png",
+                "level": "https://i.imgur.com/HvIgETT.png",
+                "logging": "https://i.imgur.com/2zGUmJN.png",
+                "misc": "https://i.imgur.com/Rd9U6tc.png",
+                "mod": "https://i.imgur.com/x3Y108l.png",
+                "music": "https://i.imgur.com/eZ2IphP.png",
+                "website": "https://i.imgur.com/ftVh8jx.png",
+                "website 2": "https://i.imgur.com/0bUmQ7F.png"
             }
             const helpEmbed = embeds.createEmbed()
             helpEmbed
             .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${emojiMap[subDir[i]]}`)
             .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
-            // .setImage("https://i.imgur.com/Av9RN7x.png")
+            .setImage(imageMap[subDir[i]])
             .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
             .setDescription(
                 `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` + help)

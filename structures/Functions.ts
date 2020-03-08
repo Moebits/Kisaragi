@@ -52,6 +52,11 @@ export class Functions {
         return Math.random() * (max - min) + min
     }
 
+    // Random Date
+    public static randomDate(start: Date, end: Date) {
+        return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+    }
+
     // Response Time
     public responseTime = () => {
         if (this.message) {
@@ -272,7 +277,11 @@ export class Functions {
                     fs.unlinkSync(entryPath)
                 }
             })
-            fs.rmdirSync(dir)
+            try {
+                fs.rmdirSync(dir)
+            } catch (e) {
+                console.log(e)
+            }
         }
     }
 

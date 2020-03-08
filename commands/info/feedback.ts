@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Help extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Sends feedback or suggestions to the developer.",
+            description: "Sends feedback, bug reports, or suggestions to the developer.",
             help:
             `
             \`feedback msg\` - Sends feedback to the developer
@@ -17,7 +17,7 @@ export default class Help extends Command {
             `
             \`=>feedback some feedback\`
             `,
-            aliases: ["suggest", "suggestion"],
+            aliases: ["suggest", "suggestion", "bug", "report"],
             cooldown: 10
         })
     }

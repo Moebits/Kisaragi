@@ -54,7 +54,7 @@ export default class Reddit extends Command {
                 `${discord.getEmoji("star")}_Subreddit:_ **${post.subreddit.display_name}**\n` +
                 `${discord.getEmoji("star")}_Subscribers:_ **${post.subreddit_subscribers}**\n` +
                 `${discord.getEmoji("star")}_Author:_ **${post.author ? post.author.name : "Deleted"}**\n` +
-                `${discord.getEmoji("star")}${discord.getEmoji("up")} **${Math.ceil(post.ups / post.upvote_ratio)}** ${discord.getEmoji("down")} **${Math.ceil(post.ups / post.upvote_ratio) - post.ups}**\n` +
+                `${discord.getEmoji("star")}${discord.getEmoji("thumbsUp")} **${Math.ceil(post.ups / post.upvote_ratio)}** ${discord.getEmoji("thumbsDown")} **${Math.ceil(post.ups / post.upvote_ratio) - post.ups}**\n` +
                 `${discord.getEmoji("star")}_Selftext:_ ${post.selftext ? (Functions.checkChar(post.selftext, 800, ".") as string).replace(/(\r\n|\n|\r)/gm, " ") : "None"}\n` +
                 `${discord.getEmoji("star")}_Comments:_ ${commentArray.join("") ? commentArray.join("\n") : "None"}\n`
             )

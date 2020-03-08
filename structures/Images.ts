@@ -1,9 +1,9 @@
 import axios from "axios"
 import * as Canvas from "canvas"
 import concat from "concat-stream"
-import {GuildMember, Message, MessageAttachment, TextChannel} from "discord.js"
+import {DMChannel, GuildMember, Message, MessageAttachment, TextChannel} from "discord.js"
 import FormData from "form-data"
-import * as fs from "fs"
+import fs from "fs"
 import gifFrames from "gif-frames"
 import sizeOf from "image-size"
 import imagemin from "imagemin"
@@ -19,7 +19,6 @@ const compressImages = require("compress-images")
 const getPixels = require("get-pixels")
 const GifEncoder = require("gif-encoder")
 const imageDataURI = require("image-data-uri")
-const download = require("image-downloader")
 
 export class Images {
     // let blacklist = require("../blacklist.json");
@@ -117,18 +116,31 @@ export class Images {
         })
     }
 
-    // Download Pages
+    // Download gif
+    public downloadGif = async (url: string, dest: string) => {
+        const bin = await axios.get(url, {responseType: "arraybuffer"}).then((r) => r.data)
+        fs.writeFileSync(dest, Buffer.from(bin, "binary"))
+        return
+    }
+
+    // Download image
+    public downloadImage = async (url: string, dest: string) => {
+        if (dest.endsWith(".gif")) return this.downloadGif(url, dest)
+        const writeStream = fs.createWriteStream(dest)
+        await axios.get(url, {responseType: "stream"}).then((r) => r.data.pipe(writeStream))
+        return new Promise((resolve, reject) => {
+            writeStream.on("finish", resolve)
+            writeStream.on("error", reject)
+        })
+    }
+
+    // Download Images
     public downloadImages = async (images: string[], dest: string) => {
         await Promise.all(images.map(async (url, i) => {
             let name = path.basename(images[i])
             name = name.length > 15 ? name.slice(0, 15) : name
-            const options = {
-                url,
-                dest: `${dest}${name}`
-            }
-
             try {
-                const {filename} = await download.image(options)
+                await this.downloadImage(images[i], dest + name)
             } catch (e) {
                 // console.log(e)
             }
@@ -151,20 +163,42 @@ export class Images {
     }
 
     // Fetch Channel Attachments
-    public fetchChannelAttachments = async (channel: TextChannel) => {
-        let beforeID = channel.lastMessageID
-        const attachmentArray: string[] = []
-        while (beforeID !== undefined || null) {
-            setTimeout(async () => {
-                const messages = await channel.messages.fetch({limit: 100, before: beforeID!})
-                beforeID = messages.lastKey()!
-                const filteredArray = messages.map((msg: Message) => msg.attachments.map((a: MessageAttachment) => a.url)).flat(1)
+    public fetchChannelAttachments = async (channel: TextChannel | DMChannel, limit?: number, gif?: boolean, messageID?: string) => {
+        if (!limit) limit = Infinity
+        let last = messageID || channel.lastMessageID
+        let attachments: string[] = []
+        let counter = 0
+        const amount = limit < 100 ? limit : 100
+        while (counter < limit) {
+                const messages = await channel.messages.fetch({limit: amount, before: last!})
+                last = messages.lastKey()!
+                if (!last) break
+                const aArray = messages.map((msg) => msg.attachments.map((a) => a.url))
+                const eArray = messages.map((msg: Message) => msg.embeds.map(((e) => e.image?.url)))
+                const filteredArray = [...aArray, ...eArray].flat(Infinity)
                 for (let i = 0; i < filteredArray.length; i++) {
-                    attachmentArray.push(filteredArray[i])
+                    if (filteredArray[i]) {
+                        const url = filteredArray[i].match(/.(png|jpg|gif)/) ? filteredArray[i] : filteredArray[i] + ".png"
+                        attachments.push(url)
+                    }
                 }
-            }, 120000)
+                counter += 100
+                await Functions.timeout(100)
         }
-        return attachmentArray
+        attachments = attachments.filter((a) => {
+            if (a.endsWith(".jpg") || a.endsWith(".png")) {
+                return true
+            } else if (a.endsWith(".gif")) {
+                if (gif) {
+                    return true
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        })
+        return {attachments, last}
     }
 
     public colorStops = [

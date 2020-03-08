@@ -12,7 +12,6 @@ export default class Wattpad extends Command {
             help:
             `
             \`wattpad query\` - Searches for stories
-            \`wattpad url\` - Fetches the story from the url
             `,
             examples:
             `
@@ -95,7 +94,7 @@ export default class Wattpad extends Command {
                 .setURL(partURLS[i])
                 .setImage(partPhotos[i])
                 .setThumbnail(story.user.avatar)
-                .setDescription(`${splits[j]}`)
+                .setDescription(splits[j].trim())
                 wattpadArray.push(wattpadEmbed)
             }
         }

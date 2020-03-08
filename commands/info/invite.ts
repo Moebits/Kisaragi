@@ -16,7 +16,7 @@ export default class Invite extends Command {
           `
           \`=>invite\`
           `,
-          aliases: ["support"],
+          aliases: ["support", "contact"],
           random: "none",
           cooldown: 5
         })

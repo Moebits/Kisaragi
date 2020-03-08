@@ -22,12 +22,12 @@ export class Embeds {
     }
 
     // Update Embed
-    public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean) => {
+    public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean, cmdCount?: number[]) => {
         if (!embeds[page]) return
         if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         if (help) {
-            const name = embeds[page].title!.replace(/(?<=<)(.*?)(?=>)/g, "").replace(/commands/i, "help")
-            embeds[page].setFooter(`${name} ・ Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+            const name = embeds[page].title!.replace(/(<)(.*?)(>)/g, "").replace(/\*/g, "")
+            embeds[page].setFooter(`${name} (${cmdCount?.[page]}) • Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
         } else {
             embeds[page].setFooter(`Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
         }
@@ -45,37 +45,34 @@ export class Embeds {
         const insertEmbeds = embeds
         await this.updateEmbed(embeds, page, this.message.author!)
         const reactions: Emoji[] = [this.discord.getEmoji("right"), this.discord.getEmoji("left"), this.discord.getEmoji("tripleRight"), this.discord.getEmoji("tripleLeft")]
-        const reactionsCollapse: Emoji[] = [this.discord.getEmoji("collapse"), this.discord.getEmoji("expand")]
         const msg = await this.message.channel.send(embeds[page])
         for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
 
         if (collapseOn) {
             const description: string[] = []
             const thumbnail: MessageEmbedThumbnail[] = []
+            let collapsed = false
             for (let i = 0; i < embeds.length; i++) {
                 description.push(embeds[i].description!)
                 thumbnail.push((embeds[i].thumbnail!))
             }
-            for (let i = 0; i < reactionsCollapse.length; i++) await msg.react(reactionsCollapse[i] as ReactionEmoji)
+            await msg.react(this.discord.getEmoji("collapse"))
             const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
-            const expandCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("expand") && user.bot === false
             const collapse = msg.createReactionCollector(collapseCheck)
-            const expand = msg.createReactionCollector(expandCheck)
 
             collapse.on("collect", async (reaction: MessageReaction, user: User) => {
+                if (!collapsed) {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription("")
                         embeds[i].setThumbnail("")
                     }
-                    await this.updateEmbed(embeds, page, user)
-                    msg.edit(embeds[page])
-                    reaction.users.remove(user)
-            })
-
-            expand.on("collect", async (reaction: MessageReaction, user: User) => {
-                for (let i = 0; i < embeds.length; i++) {
-                    embeds[i].setDescription(description[i])
-                    embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
+                    collapsed = true
+                } else {
+                    for (let i = 0; i < embeds.length; i++) {
+                        embeds[i].setDescription(description[i])
+                        embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
+                    }
+                    collapsed = false
                 }
                 await this.updateEmbed(embeds, page, user)
                 msg.edit(embeds[page])
@@ -84,7 +81,6 @@ export class Embeds {
         }
 
         if (download) {
-            await msg.react(this.discord.getEmoji("download"))
             const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("download") && user.bot === false
             const download = msg.createReactionCollector(downloadCheck)
 
@@ -113,6 +109,7 @@ export class Embeds {
             })
         }
         await msg.react(this.discord.getEmoji("numberSelect"))
+        await msg.react(this.discord.getEmoji("download"))
         const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
         const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
@@ -256,17 +253,11 @@ export class Embeds {
                     break
             case "collapse":
                     for (let i = 0; i < embeds.length; i++) {
-                        embeds[i].setDescription("")
-                        embeds[i].setThumbnail("")
-                    }
-                    msg.edit(embeds[page])
-                    break
-            case "expand":
-                    for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription(description[i])
                         embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
                     }
                     msg.edit(embeds[page])
+                    break
             default:
         }
 
@@ -285,24 +276,22 @@ export class Embeds {
 
         if (collapseOn) {
             const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
-            const expandCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("expand") && user.bot === false
             const collapse = msg.createReactionCollector(collapseCheck)
-            const expand = msg.createReactionCollector(expandCheck)
+            let collapsed = false
 
             collapse.on("collect", async (reaction: MessageReaction, user: User) => {
+                if (!collapsed) {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription("")
                         embeds[i].setThumbnail("")
                     }
-                    await this.updateEmbed(embeds, page, user)
-                    msg.edit(embeds[page])
-                    reaction.users.remove(user)
-            })
-
-            expand.on("collect", async (reaction: MessageReaction, user: User) => {
-                for (let i = 0; i < embeds.length; i++) {
-                    embeds[i].setDescription(description[i])
-                    embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
+                    collapsed = true
+                } else {
+                    for (let i = 0; i < embeds.length; i++) {
+                        embeds[i].setDescription(description[i])
+                        embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
+                    }
+                    collapsed = false
                 }
                 await this.updateEmbed(embeds, page, user)
                 msg.edit(embeds[page])
@@ -393,10 +382,25 @@ export class Embeds {
 
     // Create Help Embed
     public createHelpEmbed = async (embeds: MessageEmbed[]) => {
-        const page = 7
+        let page = 7
         const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Info", "Japanese", "Level", "Lewd", "Logging", "Misc", "Mod", "Music", "Website", "Website 2"]
+        let compressed = false
+        const longDescription: string[] = []
+        const commandCount: number[] = []
         for (let i = 0; i < embeds.length; i++) {
-            embeds[i].setFooter(`${titles[i]} Commands • Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
+            longDescription.push(embeds[i].description!)
+        }
+        const shortDescription: string[] = []
+        for (let i = 0; i < longDescription.length; i++) {
+            const top = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
+            const text = longDescription[i].replace(top!, "")
+            const commands = text.match(/(`)(.*?)(`)/gm)
+            commandCount.push(commands?.map((c)=>c)?.length ?? 0)
+            const desc = `${top}\n${commands?.map((c) => c).join(", ")}`
+            shortDescription.push(desc)
+        }
+        for (let i = 0; i < embeds.length; i++) {
+            embeds[i].setFooter(`${titles[i]} Commands (${commandCount[i]}) • Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
         }
         const reactions: Emoji[] = [
             this.discord.getEmoji("admin"),
@@ -418,10 +422,11 @@ export class Embeds {
             this.discord.getEmoji("websiteTwo")
         ]
         const msg = await this.message.channel.send(embeds[page])
+        await msg.react(this.discord.getEmoji("compress"))
         for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
         await this.sql.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
-        await this.sql.updateColumn("collectors", "collapse", false, "message", msg.id)
+        await this.sql.updateColumn("collectors", "collapse", true, "message", msg.id)
         await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         await this.sql.updateColumn("collectors", "help", true, "message", msg.id)
 
@@ -442,6 +447,7 @@ export class Embeds {
         const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
         const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
+        const compressCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("compress") && user.bot === false
 
         const admin = msg.createReactionCollector(adminCheck)
         const anime = msg.createReactionCollector(animeCheck)
@@ -460,17 +466,36 @@ export class Embeds {
         const music = msg.createReactionCollector(musicCheck)
         const web = msg.createReactionCollector(webCheck)
         const webTwo = msg.createReactionCollector(webTwoCheck)
+        const compress = msg.createReactionCollector(compressCheck)
         await this.redisAddEmbed(msg)
 
         const collectors = [admin, anime, botDev, config, fun, game, heart, info, japanese, level, lewd, logging, misc, mod, music, web, webTwo]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
-                await this.updateEmbed(embeds, page, user, msg, true)
-                msg.edit(embeds[i])
+                await this.updateEmbed(embeds, page, user, msg, true, commandCount)
+                page = i
+                msg.edit(embeds[page])
                 reaction.users.remove(user)
             })
         }
+
+        compress.on("collect", async (reaction: MessageReaction, user: User) => {
+            if (!compressed) {
+                for (let i = 0; i < embeds.length; i++) {
+                    embeds[i].setDescription(shortDescription[i])
+                }
+                compressed = true
+            } else {
+                for (let i = 0; i < embeds.length; i++) {
+                    embeds[i].setDescription(longDescription[i])
+                }
+                compressed = false
+            }
+            await this.updateEmbed(embeds, page, user, msg, true, commandCount)
+            msg.edit(embeds[page])
+            reaction.users.remove(user)
+        })
     }
 
     // Re-trigger Help Embed
@@ -481,6 +506,21 @@ export class Embeds {
             "japanese", "level", "lewd", "logging",
             "misc", "mod", "music", "website", "websiteTwo"
         ]
+        let compressed = false
+        const longDescription: string[] = []
+        const commandCount: number[] = []
+        for (let i = 0; i < embeds.length; i++) {
+            longDescription.push(embeds[i].description!)
+        }
+        const shortDescription: string[] = []
+        for (let i = 0; i < longDescription.length; i++) {
+            const top = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
+            const text = longDescription[i].replace(top!, "")
+            const commands = text.match(/(`)(.*?)(`)/gm)
+            commandCount.push(commands?.map((c)=>c)?.length ?? 0)
+            const desc = `${top}\n${commands?.map((c) => c).join(",  ")}`
+            shortDescription.push(desc)
+        }
         const page = emojiMap.indexOf(emoji) || 0
         msg.edit(embeds[page])
         await msg.react(this.discord.getEmoji("repost"))
@@ -502,6 +542,7 @@ export class Embeds {
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
         const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
         const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("repost") && user.bot === false
+        const compressCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("compress") && user.bot === false
 
         const admin = msg.createReactionCollector(adminCheck)
         const anime = msg.createReactionCollector(animeCheck)
@@ -521,12 +562,13 @@ export class Embeds {
         const web = msg.createReactionCollector(webCheck)
         const webTwo = msg.createReactionCollector(webTwoCheck)
         const repost = msg.createReactionCollector(repostCheck)
+        const compress = msg.createReactionCollector(compressCheck)
 
         const collectors = [admin, anime, botDev, config, fun, game, heart, info, japanese, level, lewd, logging, misc, mod, music, web, webTwo]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
-                await this.updateEmbed(embeds, page, user, msg, true)
+                await this.updateEmbed(embeds, page, user, msg, true, commandCount)
                 msg.edit(embeds[i])
                 reaction.users.remove(user)
             })
@@ -535,6 +577,23 @@ export class Embeds {
         repost.on("collect", async (reaction: MessageReaction, user: User) => {
             await this.message.channel.send(`<@${user.id}>, I reposted this embed.`)
             await this.createHelpEmbed(embeds)
+            reaction.users.remove(user)
+        })
+
+        compress.on("collect", async (reaction: MessageReaction, user: User) => {
+            if (!compressed) {
+                for (let i = 0; i < embeds.length; i++) {
+                    embeds[i].setDescription(shortDescription[i])
+                }
+                compressed = true
+            } else {
+                for (let i = 0; i < embeds.length; i++) {
+                    embeds[i].setDescription(longDescription[i])
+                }
+                compressed = false
+            }
+            await this.updateEmbed(embeds, page, user, msg, true, commandCount)
+            msg.edit(embeds[page])
             reaction.users.remove(user)
         })
     }

@@ -105,7 +105,7 @@ export default class Youtube extends Command {
         .setDescription(
         `${discord.getEmoji("star")}_Channel:_ **${ytChannel.snippet.title}**\n` +
         `${discord.getEmoji("star")}_Views:_ **${video.statistics.viewCount}**\n` +
-        `${discord.getEmoji("star")} ${discord.getEmoji("up")} **${video.statistics.likeCount}** ${discord.getEmoji("down")} **${video.statistics.dislikeCount}**\n` +
+        `${discord.getEmoji("star")} ${discord.getEmoji("thumbsUp")} **${video.statistics.likeCount}** ${discord.getEmoji("thumbsDown")} **${video.statistics.dislikeCount}**\n` +
         `${discord.getEmoji("star")}_Date Published:_ **${Functions.formatDate(new Date(video.snippet.publishedAt))}**\n` +
         `${discord.getEmoji("star")}_Description:_ ${video.snippet.description ? Functions.checkChar(video.snippet.description, 1500, ".") : "None"}\n` +
         `${discord.getEmoji("star")}_Comments:_ ${commentArray.join(" ") ? Functions.checkChar(commentArray.join(" "), 200, " ") : "None"}\n`

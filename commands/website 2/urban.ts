@@ -50,7 +50,7 @@ export default class Urban extends Command {
             .setDescription(
             `${discord.getEmoji("star")}**Word**: ${result.word}\n` +
             `${discord.getEmoji("star")}**Author**: ${result.author ? result.author : "None"}\n` +
-            `${discord.getEmoji("star")}${discord.getEmoji("up")} ${result.thumbsUp} ${discord.getEmoji("down")} ${result.thumbsDown}\n` +
+            `${discord.getEmoji("star")}${discord.getEmoji("thumbsUp")} ${result.thumbsUp} ${discord.getEmoji("thumbsDown")} ${result.thumbsDown}\n` +
             `${discord.getEmoji("star")}**Definition**: ${cleanDef ? cleanDef : "None"}\n` +
             `${discord.getEmoji("star")}**Example**: ${checkedExample ? checkedExample : "None"}`
             )
