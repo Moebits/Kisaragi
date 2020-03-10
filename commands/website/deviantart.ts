@@ -89,7 +89,7 @@ export default class Deviantart extends Command {
         for (let i = 0; i < result.length; i++) {
             const deviation = result[i]
             if (deviation.rating !== "nonadult") {
-                if (!perms.checkNSFW()) continue
+                if (!perms.checkNSFW(true)) continue
             }
             if (!deviation.content) continue
             const deviantEmbed = embeds.createEmbed()

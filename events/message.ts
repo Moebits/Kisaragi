@@ -21,24 +21,30 @@ export default class MessageEvent {
       const letters = new Letters(this.discord)
       const points = new Points(this.discord, message)
       const haiku = new Haiku(this.discord, message)
-      const cmdFunctions = new CommandFunctions(this.discord, message)
       const detect = new Detector(this.discord, message)
+      const cmdFunctions = new CommandFunctions(this.discord, message)
       const links = new Link(this.discord, message)
 
-      const prefix = await SQLQuery.fetchPrefix(message)
+      let prefix = "=>"
+      try {
+        prefix = await SQLQuery.fetchPrefix(message)
+      } catch {
+        // Do nothing
+      }
 
       if (message.author!.bot) return
 
       if (message.guild) {
         const sql = new SQLQuery(message)
         const pointTimeout = await sql.fetchColumn("points", "point timeout")
+        /*
         setTimeout(() => {
         points.calcScore()
         }, pointTimeout ? Number(pointTimeout) : 60000)
         Block.blockWord(message)
         detect.detectAnime()
         detect.swapRoles()
-        haiku.haiku()
+        haiku.haiku()*/
         cmdFunctions.autoCommand()
     }
 
@@ -70,33 +76,37 @@ export default class MessageEvent {
 
       if (responseText[message.content.trim().toLowerCase()]) {
       if (!message.author!.bot) {
-        if (this.responseTextCool.has(message.guild!.id)) {
-          const reply = await message.reply("This command is under a 3 second cooldown!") as Message
+        if (this.responseTextCool.has(message.author.id || message.guild?.id)) {
+          const reply = await message.channel.send(`<@${message.author.id}>, This command is under a 3 second cooldown!`) as Message
           reply.delete({timeout: 3000})
+          return
         }
-        this.responseTextCool.add(message.guild!.id)
-        setTimeout(() => this.responseTextCool.delete(message.guild!.id), 3000)
+        const id = message.guild?.id ?? message.author.id
+        this.responseTextCool.add(id)
+        setTimeout(() => this.responseTextCool.delete(id), 3000)
         return message.channel.send(responseText[message.content.toLowerCase()])
       }
     }
 
       if (responseImage[message.content.trim().toLowerCase()]) {
       if (!message.author!.bot) {
-        if (this.responseImageCool.has(message.guild!.id)) {
-          const reply = await message.reply("This command is under a 10 second cooldown!") as Message
+        if (this.responseImageCool.has(message.author.id || message.guild?.id)) {
+          const reply = await message.channel.send(`<@${message.author.id}>, This command is under a 10 second cooldown!`) as Message
           reply.delete({timeout: 3000})
+          return
         }
-        this.responseImageCool.add(message.guild!.id)
-        setTimeout(() => this.responseImageCool.delete(message.guild!.id), 10000)
+        const id = message.guild?.id ?? message.author.id
+        this.responseImageCool.add(id)
+        setTimeout(() => this.responseImageCool.delete(id), 10000)
         return message.channel.send(new MessageAttachment(responseImage[message.content.toLowerCase()]))
       }
     }
 
       if (message.content.trim().toLowerCase() === "i love you") {
-      if (message.author!.id === process.env.OWNER_ID) {
-        message.channel.send(`I love you more, <@${message.author!.id}>!`)
+      if (message.author.id === process.env.OWNER_ID) {
+        message.channel.send(`I love you more, <@${message.author.id}>!`)
       } else {
-        message.channel.send(`Sorry <@${message.author!.id}>, but I don't share the same feelings. We can still be friends though!`)
+        message.channel.send(`Sorry <@${message.author.id}>, but I don't share the same feelings. We can still be friends though!`)
       }
     }
 
@@ -108,14 +118,14 @@ export default class MessageEvent {
         }
     }
 
-      if (message.content.startsWith("http")) {
+      if (message.content.trim().startsWith("http")) {
         await links.postLink()
         return
       }
 
-      if (!message.content.startsWith(prefix[0])) return
+      if (!message.content.trim().startsWith(prefix)) return
 
-      const args = message.content.slice(prefix.length).trim().split(/ +/g)
+      const args = message.content.trim().slice(prefix.length).split(/ +/g)
       if (args[0] === undefined) return
       const cmd = args[0].toLowerCase()
       const pathFind = await cmdFunctions.findCommand(cmd)

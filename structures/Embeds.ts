@@ -35,7 +35,7 @@ export class Embeds {
 
     // Add active embed to Redis
     public redisAddEmbed = async (msg: Message) => {
-        await this.sql.redisSet(msg.id, "true", 600)
+        await this.sql.redisSet(msg.id, "true", 3600)
     }
 
     // Create Reaction Embed
@@ -102,14 +102,14 @@ export class Embeds {
                 const downloads = fs.readdirSync(src).map((m) => src + m)
                 await Functions.createZip(downloads, dest)
                 if (rep) rep.delete()
-                const cleanTitle = embeds[0].title?.replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "") || "None"
+                const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "") || "None"
                 const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
                 await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
                 Functions.removeDirectory(src)
             })
         }
         await msg.react(this.discord.getEmoji("numberSelect"))
-        await msg.react(this.discord.getEmoji("download"))
+        if (download) await msg.react(this.discord.getEmoji("download"))
         const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
         const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false

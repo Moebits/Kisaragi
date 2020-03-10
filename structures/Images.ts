@@ -271,7 +271,7 @@ export class Images {
             for (let i = 0; i < frames.length; i++) {
                 const readStream = frames[i].getImage()
                 const writeStream = fs.createWriteStream(`../assets/images/${random}/image${frames[i].frameIndex}.jpg`)
-                await Functions.awaitPipe(readStream, writeStream)
+                await Functions.awaitStream(readStream, writeStream)
                 files.push(`../assets/images/${random}/image${frames[i].frameIndex}.jpg`)
             }
 

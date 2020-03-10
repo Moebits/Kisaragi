@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import * as lewdme from "../../assets/links/lewdme.json"
+import * as lewdme from "../../assets/json/lewdme.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"

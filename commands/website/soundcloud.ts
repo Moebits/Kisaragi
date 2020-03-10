@@ -51,7 +51,7 @@ export default class SoundCloud extends Command {
             if (bad.includes(this.track)) this.track = null
         }
 
-        const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID, process.env.SOUNDCLOUD_OAUTH_TOKEN)
+        const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID)
 
         if ((this.user && !this.track) || args[1] === "user") {
             const query = this.user || Functions.combineArgs(args, 2)

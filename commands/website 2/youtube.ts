@@ -43,7 +43,7 @@ export default class Youtube extends Command {
         const keywords = channel.brandingSettings.channel.keywords
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed
-        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
         .setTitle(`**${channel.snippet.title}** ${discord.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/channel/${channel.id}`)
         .setDescription(

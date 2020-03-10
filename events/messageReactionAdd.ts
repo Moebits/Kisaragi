@@ -35,7 +35,7 @@ export default class MessageReactionAdd {
                         newEmbeds.push(new MessageEmbed(JSON.parse(cachedEmbeds[0][i])))
                     }
                     active.add(reaction.message.id)
-                    if (Boolean(help)) {
+                    if (!help?.[0] && !download?.[0]) {
                         embeds.editHelpEmbed(reaction.message, reaction.emoji.name, user, newEmbeds)
                     } else {
                         embeds.editReactionCollector(reaction.message, reaction.emoji.name, user, newEmbeds, Boolean(collapse), Boolean(download), Number(page))

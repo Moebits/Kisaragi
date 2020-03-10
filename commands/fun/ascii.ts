@@ -26,17 +26,15 @@ export default class Ascii extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const ascii = require("ascii-art")
-        const asciiEmbed = embeds.createEmbed()
+        const figlet = require("figlet")
 
         const text = Functions.combineArgs(args, 1)
         if (!text) return message.reply("You did not provide any text.")
-
-        ascii.font(text, "Doom", (asciiText: string) => {
-            asciiEmbed
-            .setTitle(`**Ascii Art** ${discord.getEmoji("kannaSip")}`)
-            .setDescription("```" + Functions.checkChar(asciiText, 2000, "|") + "```")
-            message.channel.send(asciiEmbed)
-        })
+        const asciiText = figlet.textSync(text)
+        const asciiEmbed = embeds.createEmbed()
+        asciiEmbed
+        .setTitle(`**Ascii Art** ${discord.getEmoji("kannaSip")}`)
+        .setDescription("```" + Functions.checkChar(asciiText, 2000, "|") + "```")
+        message.channel.send(asciiEmbed)
     }
 }

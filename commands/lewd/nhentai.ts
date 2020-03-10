@@ -1,5 +1,5 @@
 import {Message, MessageEmbed} from "discord.js"
-import * as blacklist from "../../blacklist.json"
+import * as blacklist from "../../assets/json/blacklist.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"

@@ -12,8 +12,8 @@ export class Points {
         const sql = new SQLQuery(this.message)
         const rawScoreList = await sql.fetchColumn("points", "score list", false, false, true)
         const rawUserList = await sql.fetchColumn("points", "user id list", false, false, true)
-        const scoreList = rawScoreList.map((num: string) => Number(num))
-        const userList = rawUserList.map((num: string) => Number(num))
+        const scoreList = rawScoreList?.map((num: string) => Number(num))
+        const userList = rawUserList?.map((num: string) => Number(num))
         for (let i = 0; i < userList.length; i++) {
             if (userList[i] === Number(this.message.author!.id)) {
                 const userScore: number = scoreList[i]
@@ -27,8 +27,8 @@ export class Points {
         const sql = new SQLQuery(this.message)
         const rawLevelList = await sql.fetchColumn("points", "level list", false, false, true)
         const rawUserList = await sql.fetchColumn("points", "user id list", false, false, true)
-        const levelList = rawLevelList.map((num: string) => Number(num))
-        const userList = rawUserList.map((num: string) => Number(num))
+        const levelList = rawLevelList?.map((num: string) => Number(num))
+        const userList = rawUserList?.map((num: string) => Number(num))
         for (let i = 0; i < userList.length; i++) {
             if (userList[i] === Number(this.message.author!.id)) {
                 const userLevel: number = levelList[i]
@@ -48,7 +48,7 @@ export class Points {
         const rawPointThreshold = await sql.fetchColumn("points", "point threshold", false, false, true)
         const rawUserList = await sql.fetchColumn("points", "user id list", false, false, true)
         const levelUpMessage = await sql.fetchColumn("points", "level message", false, false, true)
-        const userList = rawUserList.map((num: string) => Number(num))
+        const userList = rawUserList?.map((num: string) => Number(num))
 
         if (!rawScoreList[0]) {
             const initList: number[] = []
@@ -60,9 +60,9 @@ export class Points {
             return
         }
 
-        const scoreList = rawScoreList.map((num: string) => Number(num))
-        const levelList = rawLevelList.map((num: string) => Number(num))
-        const pointRange = rawPointRange.map((num: string) => Number(num))
+        const scoreList = rawScoreList?.map((num: string) => Number(num))
+        const levelList = rawLevelList?.map((num: string) => Number(num))
+        const pointRange = rawPointRange?.map((num: string) => Number(num))
         const pointThreshold = Number(rawPointThreshold)
         const userStr = levelUpMessage.join("").replace("user", `<@${this.message.author!.id}>`)
 

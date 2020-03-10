@@ -11,6 +11,7 @@ export default class Pixiv extends Command {
             description: "Searches for anime images on pixiv.",
             help:
             `
+            _Note:_ Add the tag \`all\` to remove the bookmark filter.
             \`pixiv\` - Gets a pixiv image with some defaults.
             \`pixiv link/id\` - Gets the pixiv or ugoira image from the link.
             \`pixiv tag\` - Gets a pixiv image with the tag (translated to japanese).
@@ -33,7 +34,7 @@ export default class Pixiv extends Command {
             `,
             aliases: ["p"],
             random: "none",
-            cooldown: 30
+            cooldown: 60
         })
     }
 
@@ -42,6 +43,9 @@ export default class Pixiv extends Command {
         const message = this.message
         const pixivApi = new PixivApi(discord, message)
         const perms = new Permission(discord, message)
+
+        const loading = message.channel.lastMessage
+        loading?.delete()
 
         const tags = Functions.combineArgs(args, 1)
 

@@ -31,14 +31,26 @@ export class Functions {
         ])
     }
 
-    // Await Pipe
-    public static awaitPipe = async (readStream: stream.Readable, writeStream: stream.Writable) => {
+    // Await Stream
+    public static awaitStream = async (readStream: stream.Readable, writeStream: stream.Writable) => {
         return new Promise((resolve) => {
             readStream.pipe(writeStream)
             readStream.on("end", () => {
                 resolve()
             })
+            readStream.on("close", () => {
+                resolve()
+            })
+            readStream.on("finish", () => {
+                resolve()
+            })
         })
+    }
+
+    // Copy file
+    public static copyFile = (original: string, copy: string) => {
+        const read = fs.readFileSync(original, null).buffer
+        fs.writeFileSync(copy, Buffer.from(read), "binary")
     }
 
     // Execute File

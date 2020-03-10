@@ -22,7 +22,7 @@ export default class Anime extends Command {
             `,
             aliases: ["a"],
             random: "string",
-            cooldown: 30
+            cooldown: 10
         })
     }
 

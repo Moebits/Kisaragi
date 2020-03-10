@@ -75,11 +75,12 @@ export class Permission {
     }
 
     // Check NSFW
-    public checkNSFW = () => {
+    public checkNSFW = (noMsg?: boolean) => {
         const channel = this.message.channel as TextChannel
         if (channel.nsfw) {
             return true
         } else {
+            if (noMsg) return false
             this.message.reply(`You can only use this command in **NSFW channels**!`)
             return false
         }

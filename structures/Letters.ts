@@ -1,5 +1,5 @@
 import {GuildEmoji} from "discord.js"
-import * as letters from "../letters.json"
+import * as letters from "../assets/json/letters.json"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 

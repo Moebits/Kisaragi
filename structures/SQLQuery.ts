@@ -103,8 +103,9 @@ export class SQLQuery {
   // Fetch a row
   public fetchRow = async (table: string, update?: boolean): Promise<string[]> => {
         const query: QueryArrayConfig = {
-          text: `SELECT * FROM "${table}" WHERE "guild id" = ${this.message.guild!.id}`,
-          rowMode:"array"
+          text: `SELECT * FROM "${table}" WHERE "guild id" = $1`,
+          rowMode:"array",
+          values: [this.message.guild?.id]
         }
         const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
         return result[0]
@@ -132,24 +133,27 @@ export class SQLQuery {
     }
 
   // Fetch Prefix
-  public static fetchPrefix = async (message: Message, update?: boolean): Promise<string[]> => {
+  public static fetchPrefix = async (message: Message, update?: boolean): Promise<string> => {
         const query: QueryArrayConfig = {
-          text: `SELECT prefix FROM prefixes WHERE "guild id" = ${message.guild!.id}`,
-          rowMode: "array"
+          text: `SELECT prefix FROM prefixes WHERE "guild id" = $1`,
+          rowMode: "array",
+          values: [message.guild?.id]
         }
         const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
-        if (!result) return ["=>"]
-        return result[0]
+        if (!result) return "=>"
+        return String(result[0])
     }
 
   // Fetch a column
   public fetchColumn = async (table: string, column: string, key?: string | boolean, value?: string | boolean, update?: boolean): Promise<string[]> => {
       const query: QueryArrayConfig = key ? {
-        text: `SELECT "${column}" FROM "${table}" WHERE "${key}" = ${value}`,
-        rowMode: "array"
+        text: `SELECT "${column}" FROM "${table}" WHERE "${key}" = $1`,
+        rowMode: "array",
+        values: [value]
       } : {
-        text: `SELECT "${column}" FROM "${table}" WHERE "guild id" = ${this.message.guild!.id}`,
-        rowMode: "array"
+        text: `SELECT "${column}" FROM "${table}" WHERE "guild id" = $1`,
+        rowMode: "array",
+        values: [this.message.guild?.id]
       }
       const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
       return result[0]
@@ -186,8 +190,8 @@ export class SQLQuery {
   // Update Prefix
   public static updatePrefix = async (message: Message, prefix: string): Promise<void> => {
     const query: QueryConfig = {
-        text: `UPDATE "prefixes" SET "prefix" = $1 WHERE "guild id" = ${message.guild!.id}`,
-        values: [prefix]
+        text: `UPDATE "prefixes" SET "prefix" = $1 WHERE "guild id" = $2`,
+        values: [prefix, message.guild?.id]
       }
     await SQLQuery.runQuery(query, true)
     SQLQuery.fetchPrefix(message, true)
@@ -203,8 +207,8 @@ export class SQLQuery {
           }
         } else {
           query = {
-            text: `UPDATE "${table}" SET "${column}" = $1 WHERE "guild id" = ${this.message.guild!.id}`,
-            values: [value]
+            text: `UPDATE "${table}" SET "${column}" = $1 WHERE "guild id" = $2`,
+            values: [value, this.message.guild?.id]
           }
         }
         await SQLQuery.runQuery(query, true)
@@ -266,10 +270,10 @@ export class SQLQuery {
             rowMode: "array"
           }
       const result = await SQLQuery.runQuery(query, true)
-      const found = result.find((id: string[]) => id[0] === this.message.guild!.id.toString())
+      const found = result.find((id: string[]) => id[0] === this.message.guild?.id.toString())
       if (!found) {
             for (let i = 0; i < tableList.length; i++) {
-              await this.insertInto(tableList[i], "guild id", this.message.guild!.id)
+              await this.insertInto(tableList[i], "guild id", this.message.guild?.id)
             }
             await settings.initAll()
             await SQLQuery.orderTables()

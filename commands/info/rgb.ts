@@ -19,7 +19,7 @@ export default class RGB extends Command {
           \`=>rgb #FFFFFF\`
           \`=>rgb 50 50 50\`
           `,
-          aliases: ["color", "hex"],
+          aliases: ["color"],
           cooldown: 5
         })
     }

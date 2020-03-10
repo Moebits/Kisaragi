@@ -9,32 +9,32 @@ import {Permission} from "./Permission"
 const imgur = require("imgur")
 
 export class PixivApi {
-    private readonly defaults = ["黒タイツ", "白タイツ", "アズールレーン", "艦隊これくしょん", "如月(アズールレーン)"]
     private readonly embeds = new Embeds(this.discord, this.message)
     private readonly cmd = new CommandFunctions(this.discord, this.message)
     private readonly perms = new Permission(this.discord, this.message)
+    private pixiv: Pixiv | null = null
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Create Pixiv Embed
     public createPixivEmbed = async (image: PixivIllust, noImgur?: boolean) => {
         const discord = this.discord
-        const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         if (image.x_restrict !== 0) {
-            if (!this.perms.checkNSFW()) return
+            if (!this.perms.checkNSFW(true)) return
         }
-        await imgur.setClientId(process.env.IMGUR_discord_ID)
-        await imgur.setAPIUrl("https://api.imgur.com/3/")
         const pixivEmbed = this.embeds.createEmbed()
         if (!image) return
-        const comments = await pixiv.illust.comments({illust_id: image.id})
+        const comments = await this.pixiv.illust.comments({illust_id: image.id})
         const commentArray: string[] = []
         for (let i = 0; i <= 5; i++) {
                 if (!comments.comments[i]) break
                 commentArray.push(comments.comments[i].comment)
             }
         const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
-        const url = await pixiv.util.downloadIllust(image, `${topDir}assets/pixiv/illusts`)
-        const authorUrl = await pixiv.util.downloadProfilePicture(image, `${topDir}assets/pixiv/profiles`)
+        const viewLink = await this.pixiv.util.viewLink(String(image.id))
+        const url = viewLink ? viewLink : await this.pixiv.util.downloadIllust(image, `${topDir}assets/pixiv/illusts`)
+        const authorUrl = await this.pixiv.util.downloadProfilePicture(image, `${topDir}assets/pixiv/profiles`)
+        const viewLinkAppend = viewLink ? `_Image not showing? Click_ [**here**](${viewLink}).` : ""
         if (noImgur) {
             pixivEmbed
             const imageAttachment = new MessageAttachment(url, "image.png")
@@ -45,14 +45,16 @@ export class PixivApi {
             .setImage(`attachment://image.png`)
         } else {
             const illustImage = await imgur.uploadFile(url).then((j: any) => j.data.link)
+            await Functions.timeout(30)
             const authorImage = await imgur.uploadFile(authorUrl).then((j: any) => j.data.link)
+            await Functions.timeout(30)
             pixivEmbed
-            .setThumbnail(authorImage)
             .setImage(illustImage)
+            .setThumbnail(authorImage)
         }
         const cleanText = image.caption.replace(/<\/?[^>]+(>|$)/g, "")
         pixivEmbed
-        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
+        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814", "https://www.pixiv.net/en/")
         .setTitle(`**Pixiv Image** ${this.discord.getEmoji("chinoSmug")}`)
         .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
         .setDescription(
@@ -62,7 +64,8 @@ export class PixivApi {
         `${discord.getEmoji("star")}_Views:_ **${image.total_view}**\n` +
         `${discord.getEmoji("star")}_Bookmarks:_ **${image.total_bookmarks}**\n` +
         `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` +
-        `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
+        `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n` +
+        viewLinkAppend
         )
         return pixivEmbed
     }
@@ -71,102 +74,54 @@ export class PixivApi {
     public pixivErrorEmbed = () => {
         const pixivEmbed = this.embeds.createEmbed()
         pixivEmbed
-        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
+        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814", "https://www.pixiv.net/en/")
         .setTitle(`**Pixiv Image** ${this.discord.getEmoji("chinoSmug")}`)
         .setDescription("No results were found. You can turn off the bookmark filter by adding **all**. Also, try searching for the japanese tag on the " +
         "[**Pixiv Website**](https://www.pixiv.net/), as some tags can't be translated to english.")
         return this.message.reply({embed: pixivEmbed})
     }
 
-    // Pixiv Moe Search
-    public getPixivMoe = async (r18?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
-        const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
-        let illusts: PixivIllust[]
-        if (r18) {
-            if (ugoira) {
-                illusts = await pixiv.search.moe({r18: true, ugoira: true})
-            } else {
-                illusts = await pixiv.search.moe({r18: true})
-            }
-        } else {
-            if (ugoira) {
-                illusts = await pixiv.search.moe({ugoira: true})
-            } else {
-                illusts = await pixiv.search.moe()
-            }
-        }
-        illusts = pixiv.util.sort(illusts)
-        if (!illusts[0]) return this.pixivErrorEmbed()
-        if (noEmbed) {
-            const index = Math.floor(Math.random() * (illusts.length - illusts.length/2) + illusts.length/2)
-            const image = illusts[index]
-            if (!image) return this.pixivErrorEmbed()
-            return image
-        }
-
-        const pixivArray: MessageEmbed[] = []
-        const max = illusts.length > 10 ? 10 : illusts.length
-        for (let i = 0; i < max; i++) {
-            let pixivEmbed: MessageEmbed | undefined
-            try {
-                pixivEmbed = await this.createPixivEmbed(illusts[i])
-                if (!pixivEmbed) continue
-                pixivArray.push(pixivEmbed)
-            } catch {
-                pixivEmbed = await this.createPixivEmbed(illusts[i], true)
-                if (!pixivEmbed) break
-                pixivArray.push(pixivEmbed)
-                break
-            }
-        }
-
-        if (!pixivArray[0]) return this.pixivErrorEmbed()
-        if (pixivArray.length === 1) {
-            this.message.channel.send(pixivArray[0])
-        } else {
-            this.embeds.createReactionEmbed(pixivArray, true)
-        }
-        return
-    }
-
     // Pixiv Image
     public getPixivImage = async (tag?: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
-        if (!tag) {
-            return this.getPixivMoe(r18, ugoira, noEmbed)
+        const msg1 = await this.message.channel.send(`**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
+        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        let setFast = false
+        if (tag?.match(/fast/)) {
+            tag = tag.replace("fast", "").trim()
+            setFast = true
         }
-        tag = tag.match(/all/gi) ? tag : tag += " 00"
-        const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
-        let json
+        let json: PixivIllust[]
         if (r18) {
             if (ugoira) {
                 if (en) {
-                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: true, type: "ugoira"})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: true, type: "ugoira", moe: true})
                 } else {
-                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, r18: true, type: "ugoira"})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, r18: true, type: "ugoira", moe: true})
                 }
             } else {
                 if (en) {
-                    json = await pixiv.search.illusts({word: tag, en: true, r18: true})
+                    json = await this.pixiv.search.illusts({word: tag, en: true, r18: true, moe: true})
                 } else {
-                    json = await pixiv.search.illusts({word: tag, r18: true})
+                    json = await this.pixiv.search.illusts({word: tag, r18: true, moe: true})
                 }
             }
         } else {
             if (ugoira) {
                 if (en) {
-                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: false, type: "ugoira"})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: false, type: "ugoira", moe: true})
                 } else {
-                    json = await pixiv.search.illusts({word: `うごイラ ${tag}`, r18: false, type: "ugoira"})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, r18: false, type: "ugoira", moe: true})
                 }
             } else {
                 if (en) {
-                    json = await pixiv.search.illusts({word: tag, en: true, r18: false})
+                    json = await this.pixiv.search.illusts({word: tag, en: true, r18: false, moe: true})
                 } else {
-                    json = await pixiv.search.illusts({word: tag, r18: false})
+                    json = await this.pixiv.search.illusts({word: tag, r18: false, moe: true})
                 }
             }
         }
-        const illusts = pixiv.util.sort(json.illusts)
+        if (msg1) msg1.delete()
+        const illusts = json
         if (!illusts[0]) return this.pixivErrorEmbed()
         if (noEmbed) {
             const index = Math.floor(Math.random() * (illusts.length - illusts.length/2) + illusts.length/2)
@@ -174,11 +129,21 @@ export class PixivApi {
             if (!image) return this.pixivErrorEmbed()
             return image
         }
+        await imgur.setClientId(process.env.IMGUR_discord_ID)
+        await imgur.setAPIUrl("https://api.imgur.com/3/")
 
+        const msg2 = await this.message.channel.send(`**Uploading pictures to imgur...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: MessageEmbed[] = []
         const max = illusts.length > 10 ? 10 : illusts.length
         for (let i = 0; i < max; i++) {
             let pixivEmbed: MessageEmbed | undefined
+            if (setFast) {
+                pixivEmbed = await this.createPixivEmbed(illusts[i], true)
+                if (!pixivEmbed) break
+                pixivArray.push(pixivEmbed)
+                break
+            }
+            if (msg2) msg2.edit(`**Uploading pictures to imgur... (${i+1})** ${this.discord.getEmoji("gabCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
             try {
                 pixivEmbed = await this.createPixivEmbed(illusts[i])
                 if (!pixivEmbed) continue
@@ -191,21 +156,22 @@ export class PixivApi {
             }
         }
 
+        msg2.delete()
         if (!pixivArray[0]) return this.pixivErrorEmbed()
         if (pixivArray.length === 1) {
             this.message.channel.send(pixivArray[0])
         } else {
-            this.embeds.createReactionEmbed(pixivArray, true)
+            this.embeds.createReactionEmbed(pixivArray, true, true)
         }
         return
     }
 
     // Pixiv Image ID
     public getPixivImageID = async (tags: string) => {
-        const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         let image: PixivIllust
         try {
-            image = await pixiv.illust.detail({illust_id: Number(tags)}).then((i) => i.illust)
+            image = await this.pixiv.illust.detail({illust_id: Number(tags)})
         } catch {
             return this.pixivErrorEmbed()
         }
@@ -220,14 +186,20 @@ export class PixivApi {
 
     // Pixiv Popular Image
     public getPopularPixivImage = async () => {
+        const msg1 = await this.message.channel.send(`**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
         const mode = "day_male"
-        const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
-        const json = await pixiv.illust.ranking({mode})
-        const illusts = pixiv.util.sort(json.illusts)
+        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        const json = await this.pixiv.illust.ranking({mode})
+        const illusts = this.pixiv.util.sort(json)
+        if (msg1) msg1.delete()
         if (!illusts[0]) return this.pixivErrorEmbed()
+        await imgur.setClientId(process.env.IMGUR_discord_ID)
+        await imgur.setAPIUrl("https://api.imgur.com/3/")
+        const msg2 = await this.message.channel.send(`**Uploading pictures to imgur...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: MessageEmbed[] = []
         const max = illusts.length > 10 ? 10 : illusts.length
         for (let i = 0; i < max; i++) {
+            if (msg2) msg2.edit(`**Uploading pictures to imgur... (${i+1})** ${this.discord.getEmoji("gabCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
             let pixivEmbed: MessageEmbed | undefined
             try {
                 pixivEmbed = await this.createPixivEmbed(illusts[i])
@@ -240,26 +212,32 @@ export class PixivApi {
                 break
             }
         }
-
+        if (msg2) msg2.delete()
         if (!pixivArray[0]) return this.pixivErrorEmbed()
         if (pixivArray.length === 1) {
             this.message.channel.send(pixivArray[0])
         } else {
-            this.embeds.createReactionEmbed(pixivArray, true)
+            this.embeds.createReactionEmbed(pixivArray, true, true)
         }
         return
     }
 
     // Pixiv Popular R18 Image
     public getPopularPixivR18Image = async () => {
+        const msg1 = await this.message.channel.send(`**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
         const mode = "day_male_r18"
-        const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
-        const json = await pixiv.illust.ranking({mode})
-        const illusts = pixiv.util.sort(json.illusts)
+        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        const json = await this.pixiv.illust.ranking({mode})
+        const illusts = this.pixiv.util.sort(json)
+        if (msg1) msg1.delete()
         if (!illusts[0]) return this.pixivErrorEmbed()
+        await imgur.setClientId(process.env.IMGUR_discord_ID)
+        await imgur.setAPIUrl("https://api.imgur.com/3/")
+        const msg2 = await this.message.channel.send(`**Uploading pictures to imgur...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: MessageEmbed[] = []
         const max = illusts.length > 10 ? 10 : illusts.length
         for (let i = 0; i < max; i++) {
+            if (msg2) msg2.edit(`**Uploading pictures to imgur... (${i+1})** ${this.discord.getEmoji("gabCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
             let pixivEmbed: MessageEmbed | undefined
             try {
                 pixivEmbed = await this.createPixivEmbed(illusts[i])
@@ -272,12 +250,12 @@ export class PixivApi {
                 break
             }
         }
-
+        if (msg2) msg2.delete()
         if (!pixivArray[0]) return this.pixivErrorEmbed()
         if (pixivArray.length === 1) {
             this.message.channel.send(pixivArray[0])
         } else {
-            this.embeds.createReactionEmbed(pixivArray, true)
+            this.embeds.createReactionEmbed(pixivArray, true, true)
         }
         return
     }
@@ -285,7 +263,8 @@ export class PixivApi {
     // Download pixiv images
     public downloadPixivImages = async (tag: string, r18?: boolean) => {
         const embeds = new Embeds(this.discord, this.message)
-        const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        const msg1 = await this.message.channel.send(`**Downloading the pictures, please wait...** ${this.discord.getEmoji("gabCircle")}`)
         const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
         if (r18) tag += " R-18"
         tag = tag.trim()
@@ -293,21 +272,42 @@ export class PixivApi {
         const src = `${topDir}assets/pixiv/zip/${rand}/`
         let files: string[] = []
         try {
-            files = await pixiv.util.downloadIllusts(tag, src) as any
+            files = await this.pixiv.util.downloadIllusts(tag, src) as any
         } catch {
             return this.pixivErrorEmbed()
         }
+        if (msg1) msg1.delete()
         if (!files?.[0]) return this.pixivErrorEmbed()
-        const dest = `../${topDir}assets/pixiv/zip/${rand}/${tag.replace(/ +/g, "-")}.zip`
+        const msg2 = await this.message.channel.send(`**Creating a zip file...** ${this.discord.getEmoji("gabCircle")}`)
+        const name = tag.trim() ? tag.replace(/ +/g, "-") : "pixiv_dl_default"
+        const dest = `../${topDir}assets/pixiv/zip/${rand}/${name}.zip`
         await Functions.createZip(files, dest)
-        const attachment = new MessageAttachment(dest, `${tag}.zip`)
-        const downloadEmbed = embeds.createEmbed()
-        downloadEmbed
-        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
-        .setTitle(`**Pixiv Download** ${this.discord.getEmoji("chinoSmug")}`)
-        .setDescription(`${this.discord.getEmoji("star")}Downloaded **${files.length}** images for the tag **${tag}**`)
-        await this.message.channel.send(downloadEmbed)
-        this.message.channel.send(attachment)
+        const attachment = new MessageAttachment(dest, `${name}.zip`)
+        const images = await Promise.all(files.map((f) => this.pixiv!.util.viewLink(path.basename(f).match(/\d{4,}/)?.[0] ?? ""))).then((r) => r.filter(Boolean))
+        const downloadArray: MessageEmbed[] = []
+        // let att = false
+        // if (images.length < 1) images.length = 1; att = true
+        for (let i = 0; i < images.length; i++) {
+            const downloadEmbed = embeds.createEmbed()
+            .setImage(images[i])
+            .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814", "https://www.pixiv.net/en/")
+            .setTitle(`**Pixiv Download** ${this.discord.getEmoji("chinoSmug")}`)
+            .setDescription(`${this.discord.getEmoji("star")}Downloaded **${files.length}** images for the tag **${tag ? tag : "default"}**! Not every image has a viewable direct link.`)
+            /*if (att) {
+                downloadEmbed
+                .attachFiles([files[0]])
+                .setImage(`attachment://${path.basename(files[0])}`)
+            }*/
+            downloadArray.push(downloadEmbed)
+        }
+        if (msg2) msg2.delete()
+        if (downloadArray.length === 1) {
+            await this.message.channel.send(downloadArray[0])
+        } else {
+            await this.embeds.createReactionEmbed(downloadArray)
+        }
+        await this.message.channel.send(attachment)
+        Functions.removeDirectory(src)
         return
     }
 }

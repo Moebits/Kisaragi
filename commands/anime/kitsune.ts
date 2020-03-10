@@ -41,6 +41,7 @@ export default class Kitsune extends Command {
             image = await neko.nsfw.kitsune()
             title = "Lewd Kitsune"
         } else if (args[1] === "ecchi") {
+            if (!perms.checkNSFW()) return
             image = await neko.nsfw.eroKitsune()
             title = "Ecchi Kitsune"
         } else {
@@ -50,8 +51,6 @@ export default class Kitsune extends Command {
 
         const nekoEmbed = embeds.createEmbed()
         nekoEmbed
-        .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
-        .setURL(image.url)
         .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)
         .setImage(image.url)
         message.channel.send(nekoEmbed)

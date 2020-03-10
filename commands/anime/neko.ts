@@ -56,8 +56,6 @@ export default class Neko extends Command {
 
         const nekoEmbed = embeds.createEmbed()
         nekoEmbed
-        .setAuthor("nekos.life", "https://avatars2.githubusercontent.com/u/34457007?s=200&v=4")
-        .setURL(image.url)
         .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)
         .setImage(image.url)
         message.channel.send(nekoEmbed)

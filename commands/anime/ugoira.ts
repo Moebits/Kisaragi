@@ -94,7 +94,7 @@ export default class Ugoira extends Command {
         let details: PixivIllust
         // let ugoiraInfo: UgoiraMetaData
         try {
-            details = await pixiv.illust.detail({illust_id: pixivID as number}).then((i) => i.illust)
+            details = await pixiv.illust.detail({illust_id: pixivID as number})
             // ugoiraInfo = await pixiv.ugoira.metadata({illust_id: pixivID as number})
         } catch {
             msg1.delete({timeout: 1000})
