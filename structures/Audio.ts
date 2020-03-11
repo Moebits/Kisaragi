@@ -81,7 +81,7 @@ export class Audio {
             return this.play(mp3Dest, this.time())
         }
         this.init()
-        console.log("third")
+        console.log("third lol")
         const wavFile = await this.mp3ToWav(filepath)
         const arraybuffer = fs.readFileSync(wavFile, null).buffer
         const array = new Uint8Array(arraybuffer)
