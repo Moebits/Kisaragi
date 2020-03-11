@@ -5,7 +5,7 @@ import fs from "fs"
 import path from "path"
 import {FFmpeg} from "prism-media"
 import Soundcloud, {SoundCloudTrack} from "soundcloud.ts"
-import {WaveFile} from "wavefile"
+// @ts-ignore
 import Youtube from "youtube.ts"
 import {message} from "../test/login"
 import * as defaults from "./../assets/json/defaultSongs.json"
@@ -23,8 +23,6 @@ const numMap = {
 const queues = new Collection()
 
 export class Audio {
-    private readonly wav = require("wav")
-    private readonly lame = require("@suldashi/lame")
     private readonly video = new Video(this.discord, this.message)
     private readonly youtube = new Youtube(process.env.GOOGLE_API_KEY!)
     private readonly soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID)

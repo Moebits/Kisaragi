@@ -1,5 +1,6 @@
 import {Message, MessageEmbed} from "discord.js"
 import fs from "fs"
+// @ts-ignore
 import yt from "youtube.ts"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -8,7 +9,7 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 let ytEmbeds: MessageEmbed[] = []
-export default class Youtube extends Command {
+export default class YoutubeCommand extends Command {
     private video = null as any
     private channel = null as any
     private playlist = null as any
