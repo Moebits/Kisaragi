@@ -1,13 +1,12 @@
-/* Probably move this elsewhere.
 import {GuildMember, Message, Role} from "discord.js"
 import * as fs from "fs"
 import gifFrames from "gif-frames"
-import * as cv from "opencv4nodejs"
+// import * as cv from "opencv4nodejs"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 import {SQLQuery} from "./SQLQuery"
 
-const classifier = new cv.CascadeClassifier("../assets/cascades/animeface.xml")
+// const classifier = new cv.CascadeClassifier("../assets/cascades/animeface.xml")
 const download = require("image-downloader")
 
 export class Detector {
@@ -23,7 +22,9 @@ export class Detector {
         }
         return false
     }
+} // Remove this bracket
 
+/*
     public detectAnime = async () => {
         const sql = new SQLQuery(this.message)
         const anime = await sql.fetchColumn("detection", "pfp") as unknown as string
