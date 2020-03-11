@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Reverse extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Reverses the song.",
+            description: "Reverses the song that is playing.",
             help:
             `
             \`reverse\` - Reverses the song that is playing.

@@ -1,5 +1,6 @@
 import axios from "axios"
 import {Collection, Message, MessageEmbed, MessageReaction, StreamDispatcher, User, VoiceConnection} from "discord.js"
+import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
 import path from "path"
 import {FFmpeg} from "prism-media"
@@ -34,59 +35,94 @@ export class Audio {
         if (!fs.existsSync(`./tracks/transform`)) fs.mkdirSync(`./tracks/transform`, {recursive: true})
     }
 
-    public convertToWav = async (filepath: string) => {
-        const filename = path.basename(filepath).slice(0, -4)
+    public mp3ToWav = async (filepath: string) => {
         this.init()
+        const filename = path.basename(filepath).slice(0, -4)
         const newDest = `./tracks/transform/${filename}.wav`
-        const input = fs.createReadStream(filepath)
-        const output = fs.createWriteStream(newDest)
-        const ffmpeg = new FFmpeg({args: ["-i", filepath, newDest]})
-        ffmpeg.pipe(output)
-        await Functions.awaitStream(input, output)
+        await new Promise((resolve) => {
+            ffmpeg(filepath).toFormat("wav").outputOptions("-bitexact").save(newDest)
+            .on("end", () => {
+                resolve()
+            })
+        })
         return newDest
     }
 
-    public convertToMp3 = async (filepath: string) => {
+    public WavToMp3 = async (filepath: string) => {
+        this.init()
         const filename = path.basename(filepath).slice(0, -4)
         const newDest = `./tracks/transform/${filename}.mp3`
-        this.init()
-        const input = fs.createReadStream(filepath)
-        const output = fs.createWriteStream(newDest)
-        const ffmpeg = new FFmpeg({args: ["-i", filepath, newDest]})
-        input.pipe(ffmpeg).pipe(output)
-        await Functions.awaitStream(input, output)
+        await new Promise((resolve) => {
+            ffmpeg(filepath).toFormat("mp3").save(newDest)
+            .on("end", () => {
+                resolve()
+            })
+        })
         return newDest
     }
 
+    // This took forever to make...
     public reverse = async (filepath: string) => {
-        const filename = path.basename(filepath).slice(0, -4)
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_reversed", "")).slice(0, -4)
+        const newDest = `./tracks/transform/${filename}_reversed.wav`
+        const mp3Dest = `./tracks/transform/${filename}_reversed.mp3`
+        const original = `./tracks/${filename}.mp3`
+        if (queue[0].reverse) {
+            queue[0].reverse = false
+            return this.play(original, this.time())
+        } else if (fs.existsSync(mp3Dest)) {
+            queue[0].reverse = true
+            return this.play(mp3Dest, this.time())
+        }
         this.init()
-        const vidDest = await this.video.createImgVideo(filepath)
-        const reverseDest = await this.video.reverseVideo(vidDest)
-        const reverseAudio = await this.video.extractAudio(reverseDest)
-        console.log(reverseAudio)
-        await this.play(reverseAudio)
+        const wavFile = await this.mp3ToWav(filepath)
+        const arraybuffer = fs.readFileSync(wavFile, null).buffer
+        const array = new Uint8Array(arraybuffer)
+        const header = array.slice(0, 44)
+        const samples = array.slice(44)
+        const byteDepth = this.getByteDepth(header)
+        let identifier = 0
+        const reversed = samples.slice()
+        for (let i = 0; i < samples.length; i++) {
+            if (i !== 0 && (i % byteDepth === 0)) {
+                identifier += 2 * byteDepth
+            }
+            const index = samples.length - byteDepth - identifier + i
+            reversed[i] = samples[index]
+        }
+        const reversedArray = [...header, ...reversed]
+        console.log(reversedArray)
+        fs.writeFileSync(newDest, Buffer.from(new Uint8Array(reversedArray)))
+        const mp3File = await this.WavToMp3(newDest)
+        queue[0].reverse = true
+        return this.play(mp3File, this.time())
     }
 
-    public getWaveData = (header: Float64Array) => {
+    public getByteDepth = (header: Uint8Array) => {
         let littleEndian = false
-        let bitDepth = 2
-        let channels = 2
-        let sampleRate = 44100
-        if (header.slice(0, 4).join("") === "RIFF") {
+        let bitDepth = 0
+        let topCode = ""
+        for (let i = 0; i < 4; i++) {
+            topCode += String.fromCharCode(header[i])
+        }
+        if (topCode === "RIFF") {
             littleEndian = true
         }
         if (littleEndian) {
             bitDepth = Number(`${header[35]}${header[34]}`)
-            channels = Number(`${header[23]}${header[22]}`)
-            sampleRate = Number(`${header[27]}${header[26]}${header[25]}${header[24]}`)
         } else {
             bitDepth = Number(`${header[34]}${header[35]}`)
-            channels = Number(`${header[22]}${header[23]}`)
-            sampleRate = Number(`${header[24]}${header[25]}${header[26]}${header[27]}`)
         }
-        const byteDepth = (bitDepth) / 4
-        return {byteDepth, bitDepth, sampleRate, channels}
+        const byteDepth = (bitDepth) / 8
+        return byteDepth
+    }
+
+    public time = () => {
+        const dispatcher = this.message.guild?.voice?.connection?.dispatcher
+        console.log(dispatcher?.streamTime)
+        console.log(dispatcher?.totalStreamTime)
+        return dispatcher?.streamTime
     }
 
     public getQueue = () => {
@@ -111,7 +147,8 @@ export class Audio {
             details: "None",
             file: "None",
             playing: false,
-            looping: false
+            looping: false,
+            reverse: false
         }
         if (link?.match(/youtube.com|youtu.be/)) {
             const info = await this.youtube.videos.get(link)
@@ -222,7 +259,7 @@ export class Audio {
         .setThumbnail(now.image ?? "")
         .setDescription(`${loopText}${now.details}\n_You have been playing music for \`${this.parseSCDuration(Number(player?.streamTime))}\`._`)
         const msg = await this.message.channel.send(nowEmbed)
-        const reactions = ["pause", "resume", "scrub", "loop", "skip", "reverse", "timestretch", "volume", "eq"]
+        const reactions = ["resume", "pause", "reverse", "scrub", "loop", "skip", "timestretch", "volume", "eq"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
         const resumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("resume") && user.bot === false
         const pauseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("pause") && user.bot === false
@@ -243,9 +280,16 @@ export class Audio {
         const timestretch = msg.createReactionCollector(timestretchCheck)
         const volume = msg.createReactionCollector(volumeCheck)
         const eq = msg.createReactionCollector(eqCheck)
-        const reactors = [pause, resume, scrub, loop, skip, reverse, timestretch, volume, eq]
+        const reactors = [resume, pause, reverse, scrub, loop, skip, timestretch, volume, eq]
         for (let i = 0; i < reactors.length; i++) {
             reactors[i].on("collect", async (reaction, user) => {
+                if (reaction.emoji.name === "reverse") {
+                    await reaction.users.remove(user)
+                    const rep = await this.message.channel.send(`<@${user.id}>, _Please wait, reversing the file..._`)
+                    await this.reverse(now.file)
+                    if (rep) await rep.delete()
+                    return
+                }
                 await reaction.users.remove(user)
                 return this[reactions[i]]()
             })
@@ -271,12 +315,16 @@ export class Audio {
         return file
     }
 
-    public play = async (file: string, loop?: boolean) => {
+    public play = async (file: string, start?: number) => {
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
         let player = connection.dispatcher
         if (!player) {
-            player = connection.play(file)
+            if (start) {
+                connection.play(file, {seek: start})
+            } else {
+                player = connection.play(file)
+            }
         } else {
             connection?.play(file)
         }
