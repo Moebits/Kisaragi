@@ -32,7 +32,6 @@
   "dependencies": {
     "4chanapi.js": "^1.1.1",
     "@discordjs/opus": "^0.1.0",
-    "@discordjs/uws": "^11.149.1",
     "@suldashi/lame": "^1.2.5",
     "@types/bluebird": "^3.5.27",
     "@types/dotenv": "^6.1.1",
