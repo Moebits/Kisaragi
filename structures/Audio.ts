@@ -7,6 +7,7 @@ import {FFmpeg} from "prism-media"
 import Soundcloud, {SoundCloudTrack} from "soundcloud.ts"
 import {WaveFile} from "wavefile"
 import Youtube from "youtube.ts"
+import {message} from "../test/login"
 import * as defaults from "./../assets/json/defaultSongs.json"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
@@ -64,18 +65,25 @@ export class Audio {
     // This took forever to make...
     public reverse = async (filepath: string) => {
         const queue = this.getQueue() as any
+        const setReverse = queue?.[0].reverse ? true : false
         const filename = path.basename(filepath.replace("_reversed", "")).slice(0, -4)
         const newDest = `./tracks/transform/${filename}_reversed.wav`
         const mp3Dest = `./tracks/transform/${filename}_reversed.mp3`
         const original = `./tracks/${filename}.mp3`
-        if (queue[0].reverse) {
-            queue[0].reverse = false
-            return this.play(original, this.time())
-        } else if (fs.existsSync(mp3Dest)) {
+        console.log(queue[0].file)
+        if (!setReverse && queue[0].file.includes("_reversed.mp3")) {
+            console.log("first")
+            queue[0].file = original
             queue[0].reverse = true
+            return this.play(original, this.time())
+        } else if (setReverse && fs.existsSync(mp3Dest)) {
+            console.log("second")
+            queue[0].file = mp3Dest
+            queue[0].reverse = false
             return this.play(mp3Dest, this.time())
         }
         this.init()
+        console.log("third")
         const wavFile = await this.mp3ToWav(filepath)
         const arraybuffer = fs.readFileSync(wavFile, null).buffer
         const array = new Uint8Array(arraybuffer)
@@ -92,10 +100,10 @@ export class Audio {
             reversed[i] = samples[index]
         }
         const reversedArray = [...header, ...reversed]
-        console.log(reversedArray)
         fs.writeFileSync(newDest, Buffer.from(new Uint8Array(reversedArray)))
         const mp3File = await this.WavToMp3(newDest)
-        queue[0].reverse = true
+        queue[0].file = mp3File
+        queue[0].reverse = false
         return this.play(mp3File, this.time())
     }
 
@@ -134,12 +142,12 @@ export class Audio {
         }
     }
 
-    public queueAdd = async (link: string, file: string) => {
+    public queueAdd = async (link: string, file: string, setReverse?: boolean) => {
         const discord = this.discord
         let kind: "youtube" | "soundcloud" | "link"
         const queueObj = {
             title: "None",
-            author: "None",
+            artist: "None",
             url: "None",
             image: "",
             duration: "None",
@@ -148,7 +156,7 @@ export class Audio {
             file: "None",
             playing: false,
             looping: false,
-            reverse: false
+            reverse: setReverse ? true : false
         }
         if (link?.match(/youtube.com|youtu.be/)) {
             const info = await this.youtube.videos.get(link)
@@ -158,12 +166,12 @@ export class Audio {
             const duration = this.parseYTDuration(info.contentDetails.duration)
             const url = `https://www.youtube.com/watch?v=${info.id}`
             const details = `${discord.getEmoji("star")}_Title:_ [**${title}**](${url})\n` +
-            `${discord.getEmoji("star")}_Channel:_ **${channel}**\n` +
+            `${discord.getEmoji("star")}_Artist:_ **${channel}**\n` +
             `${discord.getEmoji("star")}_Duration:_ \`${duration}\`\n` +
             `_Added by ${this.message.author.tag}_`
             kind = "youtube"
             queueObj.title = title
-            queueObj.author = channel
+            queueObj.artist = channel
             queueObj.url = url
             queueObj.image = image
             queueObj.duration = duration
@@ -182,7 +190,7 @@ export class Audio {
             `_Added by ${this.message.author.tag}_`
             kind = "soundcloud"
             queueObj.title = title
-            queueObj.author = artist
+            queueObj.artist = artist
             queueObj.url = url
             queueObj.image = image
             queueObj.duration = String(duration)
@@ -196,9 +204,9 @@ export class Audio {
             queueObj.details = details
         }
         queueObj.file = file
+        console.log(queueObj)
         const queue = this.getQueue() as any
         const pos = queue.push(queueObj)
-        console.log(queue)
         const topImg = kind === "youtube" ? "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png" :
         (kind === "soundcloud" ? "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg" : "https://clipartmag.com/images/musical-notes-png-11.png")
         const queueEmbed = this.embeds.createEmbed()
@@ -235,10 +243,11 @@ export class Audio {
     }
 
     public volume = (num: number) => {
-        if (num < 0 || num > 1000) return this.message.reply("The volume must be between 0 and 1000.")
+        if (num < 0 || num > 200) return this.message.reply("The volume must be between 0 and 200.")
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
         const player = connection.dispatcher
+        console.log(num/100.0)
         player.setVolumeLogarithmic(num/100.0)
         return true
     }
@@ -250,14 +259,16 @@ export class Audio {
         if (!queue) return "It looks like you aren't playing anything..."
         const now = queue[0]
         let loopText = ""
-        if (now.looping === true) loopText = `_This song is in loop mode ${discord.getEmoji("aquaUp")}\nTo exit, use_ \`loop\` _or_ \`skip\`.\n`
+        let reverseText = ""
+        if (now.looping === true) loopText = `_Loop mode is_ **on!** ${discord.getEmoji("aquaUp")}\n`
+        if (now.reverse === true) reverseText = `_Reverse mode is_ **on!** ${discord.getEmoji("gabYes")}\n`
         const nowEmbed = this.embeds.createEmbed()
         nowEmbed
         .setAuthor("playing", "https://clipartmag.com/images/musical-notes-png-11.png")
         .setTitle(`**Now Playing** ${discord.getEmoji("chinoSmug")}`)
         .setURL(now.url)
         .setThumbnail(now.image ?? "")
-        .setDescription(`${loopText}${now.details}\n_You have been playing music for \`${this.parseSCDuration(Number(player?.streamTime))}\`._`)
+        .setDescription(`${loopText}${reverseText}${now.details}\n_Current song position:_ \`${this.parseSCDuration(Number(player?.streamTime))}\`.`)
         const msg = await this.message.channel.send(nowEmbed)
         const reactions = ["resume", "pause", "reverse", "scrub", "loop", "skip", "timestretch", "volume", "eq"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
@@ -289,6 +300,23 @@ export class Audio {
                     await this.reverse(now.file)
                     if (rep) await rep.delete()
                     return
+                } else if (reaction.emoji.name === "volume") {
+                    let vol = 100
+                    await reaction.users.remove(user)
+                    async function getVolumeChange(response: Message) {
+                        if (Number.isNaN(parseInt(response.content, 10)) || parseInt(response.content, 10) < 0 || parseInt(response.content, 10) > 200) {
+                            const rep = await response.reply("You must pass a number between 0 and 200.")
+                            rep.delete({timeout: 3000})
+                        } else {
+                            vol = parseInt(response.content, 10)
+                        }
+                        response.delete()
+                    }
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter a volume scaling factor \`0-200%\`.`)
+                    await this.embeds.createPrompt(getVolumeChange)
+                    console.log(vol)
+                    if (rep) rep.delete()
+                    return this.volume(vol)
                 }
                 await reaction.users.remove(user)
                 return this[reactions[i]]()
@@ -316,27 +344,27 @@ export class Audio {
     }
 
     public play = async (file: string, start?: number) => {
+        const queue = this.getQueue() as any
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
         let player = connection.dispatcher
         if (!player) {
             if (start) {
-                connection.play(file, {seek: start})
+                player = connection.play(file, {seek: start, highWaterMark: 1})
             } else {
-                player = connection.play(file)
+                player = connection.play(file, {highWaterMark: 1})
             }
         } else {
-            connection?.play(file)
+            player = connection?.play(file, {highWaterMark: 1})
         }
         player.setBitrate(128)
         player.setFEC(false)
+        player.setPLP(1)
         if (player.paused) player.resume()
-        const queue = this.getQueue() as any
         queue[0].playing = true
 
         player.on("finish", async () => {
             const queue = this.getQueue() as any
-            console.log(queue)
             let next: string
             if (queue[0]?.looping === true) {
                 next = file
@@ -361,20 +389,31 @@ export class Audio {
 
     public skip = async (num?: number) => {
         let amount = num ? num : 1
-        const queue = this.getQueue() as any
+        let queue = this.getQueue() as any
         if (amount > queue.length - 1) amount = queue.length - 1
         for (let i = 0; i < amount; i++) {
             queue.shift(num)
         }
+        queue = this.getQueue() as any
+        const setReverse = queue?.[0]?.reverse ? true : false
+        console.log(this.next())
         if (this.next()) {
-            this.play(this.next())
+            if (setReverse) {
+                this.reverse(this.next())
+            } else {
+                this.play(this.next())
+            }
             const nowPlaying = await this.nowPlaying()
             if (nowPlaying) await this.message.channel.send(nowPlaying)
         } else {
             const defSong = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
             const file = await this.download(defSong)
-            await this.queueAdd(defSong, file)
-            await this.play(file)
+            await this.queueAdd(defSong, file, setReverse)
+            if (setReverse) {
+                this.reverse(this.next())
+            } else {
+                this.play(this.next())
+            }
             const nowPlaying = await this.nowPlaying()
             if (nowPlaying) await this.message.channel.send(nowPlaying)
         }
@@ -417,7 +456,7 @@ export class Audio {
             .setFooter(`Page ${Math.floor(i/3) + 1}/${Math.ceil(links.length / 3)}`, message.author.displayAvatarURL({format: "png", dynamic: true}))
             songArray.push(songEmbed)
         }
-        return this.playReactionEmbed(songArray, links)
+        return this.playReactionEmbed(songArray, links, "youtube", query)
     }
 
     public songPickerSC = async (query: string, first?: boolean) => {
@@ -445,10 +484,10 @@ export class Audio {
             .setFooter(`Page ${Math.floor(i/3) + 1}/${Math.ceil(links.length / 3)}`, message.author.displayAvatarURL({format: "png", dynamic: true}))
             songArray.push(songEmbed)
         }
-        return this.playReactionEmbed(songArray, links)
+        return this.playReactionEmbed(songArray, links, "soundcloud", query)
     }
 
-    public playReactionEmbed = async (songArray: MessageEmbed[], links: string[]) => {
+    public playReactionEmbed = async (songArray: MessageEmbed[], links: string[], kind: string, query: string) => {
         const message = this.message
         const discord = this.discord
         if (!songArray[0]) return null
@@ -460,12 +499,16 @@ export class Audio {
         if (links[1]) await msg.react(discord.getEmoji(reactions[3]))
         if (links[2]) await msg.react(discord.getEmoji(reactions[4]))
         await msg.react(discord.getEmoji(reactions[5]))
+        if (kind === "soundcloud") await msg.react(discord.getEmoji("youtube"))
+        if (kind === "youtube") await msg.react(discord.getEmoji("soundcloud"))
         const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const leftCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
         const oneCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("1n") && user.bot === false
         const twoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("2n") && user.bot === false
         const threeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("3n") && user.bot === false
         const randomCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("random") && user.bot === false
+        const soundcloudCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("soundcloud") && user.bot === false
+        const youtubeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("youtube") && user.bot === false
 
         const right = msg.createReactionCollector(rightCheck)
         const left = msg.createReactionCollector(leftCheck)
@@ -473,6 +516,8 @@ export class Audio {
         const two = msg.createReactionCollector(twoCheck)
         const three = msg.createReactionCollector(threeCheck)
         const random = msg.createReactionCollector(randomCheck)
+        const soundcloud = msg.createReactionCollector(soundcloudCheck)
+        const youtube = msg.createReactionCollector(youtubeCheck)
         const numCollectors = [one, two, three]
 
         let page = 0
@@ -493,6 +538,16 @@ export class Audio {
             }
             msg.edit(songArray[page])
             await reaction.users.remove(user)
+        })
+        soundcloud.on("collect", async (reaction, user) => {
+            soundcloud.stop()
+            await reaction.users.remove(user)
+            await this.songPickerSC(query)
+        })
+        youtube.on("collect", async (reaction, user) => {
+            youtube.stop()
+            await reaction.users.remove(user)
+            await this.songPickerYT(query)
         })
         let finalLink = ""
         await new Promise((resolve) => {

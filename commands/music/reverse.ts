@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Reverse extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Reverses the song that is playing.",
+            description: "Reverses the song that is playing (or downloads a reversed song).",
             help:
             `
             \`reverse\` - Reverses the song that is playing.
@@ -30,7 +30,7 @@ export default class Reverse extends Command {
         const queue = audio.getQueue() as any
         const file = queue?.[0].file
         await audio.reverse(file)
-        message.channel.send("Reversed the file!")
+        message.reply("Reversed the file!")
         return
     }
 }

@@ -1,6 +1,7 @@
-import {Message, MessageEmbed, TextChannel} from "discord.js"
+import {Message, MessageEmbed, MessageReaction, TextChannel, User} from "discord.js"
 import {Command} from "../../structures/Command"
 import * as config from "./../../config.json"
+import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -28,6 +29,7 @@ export default class GettingStarted extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const cmd = new CommandFunctions(discord, message)
         const prefix = message ? await SQLQuery.fetchPrefix(message) : "=>"
         const joinEmbed = embeds.createEmbed()
         joinEmbed
@@ -50,17 +52,28 @@ export default class GettingStarted extends Command {
             `I hope that you enjoy using the bot! ${discord.getEmoji("aquaUp")}\n` +
             `If you need additional help, you can always join my [**support server**](${config.support})`
         )
+        let msg
         try {
             if (args[1]) {
                 const chan = message.guild?.channels.cache.find((c) => c.id === args[1].match(/\d{15,}/)?.[0]) as TextChannel
-                if (chan) await chan.send(joinEmbed)
+                if (chan) msg = await chan.send(joinEmbed)
             } else {
-                await message.channel.send(joinEmbed)
+                msg = await message.channel.send(joinEmbed)
             }
         } catch {
             const m = await discord.fetchFirstMessage(message.guild!)
-            if (m) await m?.channel.send(joinEmbed)
+            if (m) msg = await m?.channel.send(joinEmbed)
         }
+
+        if (msg) await msg.react(discord.getEmoji("help"))
+        const helpCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("help") && user.bot === false
+        const help = msg.createReactionCollector(helpCheck)
+
+        help.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            await message.channel.send(`<@${user.id}>, here is the help command!`)
+            await cmd.runCommand(msg, ["help"])
+        })
         return
     }
 }

@@ -17,12 +17,14 @@ export default class Play extends Command {
             \`play song\` - Searches for songs on soundcloud and plays the one that you pick.
             \`play yt song\` - Searches for songs on youtube and plays the one that you pick.
             \`play first yt? song\` - Plays the first result automatically.
+            \`play reverse yt? song\` - Starts the playback in reverse mode.
+            \`play sc song\` - You don't need to specify soundcloud, since it's the default.
             `,
             examples:
             `
-            \`=>play\`
+            \`=>play reverse first synthion comet\`
             \`=>play virtual riot\`
-            \`=>play tenpi snowflake\`
+            \`=>play yt virtual riot\`
             `,
             guildOnly: true,
             aliases: ["stream"],
@@ -51,26 +53,31 @@ export default class Play extends Command {
 
         let queue = audio.getQueue() as any
         let setYT = false
-        let song: string
-        if (args[1] === "yt") {
-            song = Functions.combineArgs(args, 2).trim()
+        let song = Functions.combineArgs(args, 1).trim()
+        if (song.match(/yt/)) {
             setYT = true
-        } else {
-            song = Functions.combineArgs(args, 1).trim()
+            song = song.replace("yt", "")
+        } else if (song.match(/sc/)) {
+            song = song.replace("sc", "")
         }
         if (!song) song = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
 
         let queueEmbed: MessageEmbed
         let file: string
+        let setReverse = false
+        if (song?.match(/reverse/)) {
+            song = song.replace("reverse", "")
+            setReverse = true
+        }
         if (song?.match(/youtube.com|youtu.be/)) {
             file = await audio.download(song)
-            queueEmbed = await audio.queueAdd(song, file)
+            queueEmbed = await audio.queueAdd(song, file, setReverse)
         } else if (song?.match(/soundcloud.com/)) {
             file = await audio.download(song)
-            queueEmbed = await audio.queueAdd(song, file)
+            queueEmbed = await audio.queueAdd(song, file, setReverse)
         } else if (song?.match(/.(mp3|wav|ogg|webm)/) || song?.includes("http")) {
                 file = await audio.download(song)
-                queueEmbed = await audio.queueAdd(song, file)
+                queueEmbed = await audio.queueAdd(song, file, setReverse)
         } else {
             let setFirst = false
             if (song?.match(/first/)) {
@@ -82,19 +89,24 @@ export default class Play extends Command {
                 if (!link) return message.reply("No results were found for your query!")
                 song = link
                 file = await audio.download(link)
-                queueEmbed = await audio.queueAdd(link, file)
+                queueEmbed = await audio.queueAdd(link, file, setReverse)
             } else {
                 const link = await audio.songPickerSC(song, setFirst)
                 if (!link) return message.reply("No results were found for your query!")
                 song = link
                 file = await audio.download(link)
-                queueEmbed = await audio.queueAdd(link, file)
+                queueEmbed = await audio.queueAdd(link, file, setReverse)
             }
         }
-        queue = audio.getQueue() as any
+        console.log(setReverse)
         await message.channel.send(queueEmbed)
+        queue = audio.getQueue() as any
         if (queue.length === 1 && !queue[0].playing) {
-            await audio.play(audio.next())
+            if (setReverse) {
+                await audio.reverse(audio.next())
+            } else {
+                await audio.play(audio.next())
+            }
             const nowPlaying = await audio.nowPlaying()
             if (nowPlaying) await message.channel.send(nowPlaying)
         }
