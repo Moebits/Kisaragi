@@ -114,7 +114,6 @@
     "node-pre-gyp": "^0.13.0",
     "node-spotify-api": "^1.1.1",
     "node-weeb": "^1.0.4",
-    "opencv4nodejs": "^5.5.0",
     "openweather-apis": "^4.2.0",
     "opusscript": "0.0.7",
     "osmosis": "^1.1.10",

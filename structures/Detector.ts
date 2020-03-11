@@ -1,3 +1,4 @@
+/* Probably move this elsewhere.
 import {GuildMember, Message, Role} from "discord.js"
 import * as fs from "fs"
 import gifFrames from "gif-frames"
@@ -101,3 +102,4 @@ export class Detector {
         }
     }
 }
+*/
