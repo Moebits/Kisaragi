@@ -43,6 +43,7 @@ export default class MDN extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
@@ -54,7 +55,7 @@ export default class MDN extends Command {
             query =  query.match(/(?<=\/)(?:.(?!\/))+$/)![0].replace(/_/g, " ")
         }
         const url = `https://mdn.pleb.xyz/search?local=en-US&q=${query}`
-        const result = await axios.get(url).then((r) => r.data)
+        const result = await axios.get(url, {headers}).then((r) => r.data)
         let similar = ""
         for (let i = 0; i < result.Subpages.length; i++) {
             similar += `[**${result.Subpages[i].Label}**](https://developer.mozilla.org/${result.Subpages[i].URL})\n`

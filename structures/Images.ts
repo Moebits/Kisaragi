@@ -22,7 +22,7 @@ const imageDataURI = require("image-data-uri")
 
 export class Images {
     // let blacklist = require("../blacklist.json");
-
+    private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Compress Gif
@@ -118,7 +118,7 @@ export class Images {
 
     // Download gif
     public downloadGif = async (url: string, dest: string) => {
-        const bin = await axios.get(url, {responseType: "arraybuffer"}).then((r) => r.data)
+        const bin = await axios.get(url, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
         fs.writeFileSync(dest, Buffer.from(bin, "binary"))
         return
     }
@@ -127,7 +127,7 @@ export class Images {
     public downloadImage = async (url: string, dest: string) => {
         if (dest.endsWith(".gif")) return this.downloadGif(url, dest)
         const writeStream = fs.createWriteStream(dest)
-        await axios.get(url, {responseType: "stream"}).then((r) => r.data.pipe(writeStream))
+        await axios.get(url, {responseType: "stream", headers: this.headers}).then((r) => r.data.pipe(writeStream))
         return new Promise((resolve, reject) => {
             writeStream.on("finish", resolve)
             writeStream.on("error", reject)

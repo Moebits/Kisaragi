@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Collection, Message, MessageEmbed, MessageReaction, StreamDispatcher, User, VoiceConnection} from "discord.js"
+import {Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, StreamDispatcher, User, VoiceConnection} from "discord.js"
 import fs from "fs"
 import path from "path"
 import Soundcloud, {SoundCloudTrack} from "soundcloud.ts"
@@ -21,6 +21,7 @@ const numMap = {
 const queues = new Collection()
 
 export class Audio {
+    private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     private readonly fx = new AudioEffects(this.discord, this.message)
     private readonly video = new Video(this.discord, this.message)
     private readonly youtube = new Youtube(process.env.GOOGLE_API_KEY!)
@@ -28,37 +29,83 @@ export class Audio {
     private readonly embeds = new Embeds(this.discord, this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
-    public reverse = async (filepath: string) => {
+    public speed = async (filepath: string, factor: number, pitch?: boolean, dl?: boolean) => {
         const queue = this.getQueue() as any
-        const setReverse = queue?.[0].reverse ? true : false
-        const filename = path.basename(filepath.replace("_reversed", "")).slice(0, -4)
-        const wavDest = `./tracks/transform/${filename}_reversed.wav`
-        const mp3Dest = `./tracks/transform/${filename}_reversed.mp3`
-        const original = `./tracks/${filename}.mp3`
-        console.log(queue[0].file)
-        if (!setReverse && queue[0].file.includes("_reversed.mp3")) {
-            console.log("first")
-            queue[0].file = original
-            queue[0].reverse = true
-            return this.play(original, this.time())
-        } else if (setReverse && fs.existsSync(mp3Dest)) {
-            console.log("second")
-            queue[0].file = mp3Dest
-            queue[0].reverse = false
-            return this.play(mp3Dest, this.time())
+        if (!pitch) pitch = false
+        const filename = path.basename(filepath.replace("_speed", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_speed`
+        const mp3File = await this.fx.speed(factor, pitch, filepath, fileDest)
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("speed", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
         }
-        console.log("third lol")
-        const mp3File = await this.fx.reverse(filepath, wavDest)
-        queue[0].file = mp3File
-        queue[0].reverse = false
+    }
+
+    public pitch = async (filepath: string, semitones: number, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_pitch", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_pitch`
+        const mp3File = await this.fx.pitch(semitones, filepath, fileDest)
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("pitch", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public reverse = async (filepath: string, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_reverse", "")).slice(0, -4)
+        const mp3Dest = `./tracks/transform/${filename}_reverse`
+        const mp3File = await this.fx.reverse(filepath, mp3Dest)
+        if (queue[0]) queue[0].file = mp3File
+        if (queue[0]) queue[0].reverse = queue[0].reverse === true ? false : true
+        if (dl) {
+            return this.fx.downloadEffect("reverse", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public reverb = async (filepath: string, reverb: number, damping: number, room: number, stereo: number, preDelay: number, wetGain: number, reverse: boolean, dl?: boolean) => {
+        const filename = path.basename(filepath.replace("_reverb", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_reverb`
+        const mp3File = await this.fx.reverb(reverb, damping, room, stereo, preDelay, wetGain, reverse, filepath, fileDest)
+        if (dl) {
+            return this.fx.downloadEffect("reverb", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public combFilter = async (filepath: string, delay?: number, decay?: number) => {
+        if (!delay) delay = 80
+        if (!decay) decay = 0.5
+        const filename = path.basename(filepath.replace("_comb", "")).slice(0, -4)
+        const wavDest = `./tracks/transform/${filename}_comb.wav`
+        const mp3File = await this.fx.combFilter(delay, decay, filepath, wavDest) as string
         return this.play(mp3File, this.time())
+    }
+
+    public allPass = async (freq: number, width: number, filepath: string, dl?: boolean) => {
+        const filename = path.basename(filepath.replace("_allpass", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_allpass`
+        const mp3File = await this.fx.allPass(freq, width, filepath, fileDest)
+        if (dl) {
+            return this.fx.downloadEffect("allpass", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
     }
 
     public time = () => {
         const dispatcher = this.message.guild?.voice?.connection?.dispatcher
-        console.log(dispatcher?.streamTime)
-        console.log(dispatcher?.totalStreamTime)
-        return dispatcher?.streamTime
+        const time = Math.floor(Number(dispatcher?.totalStreamTime) / 1000)
+        if (Number.isNaN(time)) return 0
+        return time
     }
 
     public getQueue = () => {
@@ -82,8 +129,14 @@ export class Audio {
             requester: "None",
             details: "None",
             file: "None",
+            originalFile: "None",
             playing: false,
             looping: false,
+            ablooping: false,
+            speed: "1.0",
+            pitch: "0",
+            filters: [],
+            fx: [],
             reverse: setReverse ? true : false
         }
         if (link?.match(/youtube.com|youtu.be/)) {
@@ -93,10 +146,6 @@ export class Audio {
             const channel = info.snippet.channelTitle
             const duration = this.parseYTDuration(info.contentDetails.duration)
             const url = `https://www.youtube.com/watch?v=${info.id}`
-            const details = `${discord.getEmoji("star")}_Title:_ [**${title}**](${url})\n` +
-            `${discord.getEmoji("star")}_Artist:_ **${channel}**\n` +
-            `${discord.getEmoji("star")}_Duration:_ \`${duration}\`\n` +
-            `_Added by ${this.message.author.tag}_`
             kind = "youtube"
             queueObj.title = title
             queueObj.artist = channel
@@ -104,7 +153,6 @@ export class Audio {
             queueObj.image = image
             queueObj.duration = duration
             queueObj.requester = this.message.author.tag
-            queueObj.details = details
         } else if (link?.match(/soundcloud.com/)) {
             const info = await this.soundcloud.tracks.get(link) as SoundCloudTrack
             const image = info.artwork_url
@@ -112,10 +160,6 @@ export class Audio {
             const artist = info.user.username
             const duration = this.parseSCDuration(info.duration)
             const url = info.permalink_url
-            const details = `${discord.getEmoji("star")}_Title:_ [**${title}**](${url})\n` +
-            `${discord.getEmoji("star")}_Artist:_ **${artist}**\n` +
-            `${discord.getEmoji("star")}_Duration:_ \`${duration}\`\n` +
-            `_Added by ${this.message.author.tag}_`
             kind = "soundcloud"
             queueObj.title = title
             queueObj.artist = artist
@@ -123,15 +167,40 @@ export class Audio {
             queueObj.image = image
             queueObj.duration = String(duration)
             queueObj.requester = this.message.author.tag
-            queueObj.details = details
         } else {
-            const details = `${discord.getEmoji("star")}_Link:_ ${link}\n`
             kind = "link"
             queueObj.title = link
             queueObj.url = link
-            queueObj.details = details
         }
         queueObj.file = file
+        queueObj.originalFile = file
+        if (kind === "link") {
+            queueObj.details =
+            `${discord.getEmoji("star")}_Link:_ ${link}\n` +
+            `${discord.getEmoji("star")}_Loop Mode:_ **${queueObj.looping ? "Infinite" : (queueObj.ablooping ? "Point A-B" : "One Shot")}**\n` +
+            `${discord.getEmoji("star")}_Reverse Mode:_ **${queueObj.reverse ? "On" : "Off"}**\n` +
+            `${discord.getEmoji("star")}_Playback Speed:_ **${queueObj.speed}x**\n` +
+            `${discord.getEmoji("star")}_Frequency Shift:_ **${queueObj.pitch} semitones**\n` +
+            `${discord.getEmoji("star")}_Filters:_ _${queueObj.filters[0] ? "None" : queueObj.filters.join(", ")}_\n` +
+            `${discord.getEmoji("star")}_Effects:_ _${queueObj.fx[0] ? "None" : queueObj.fx.join(", ")}_\n` +
+            `_Current song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
+            `_Click on any reaction to refresh._\n` +
+            `_Added by ${this.message.author.tag}_`
+        } else {
+            queueObj.details =
+            `${discord.getEmoji("star")}_Title:_ [**${queueObj.title}**](${queueObj.url})\n` +
+            `${discord.getEmoji("star")}_Artist:_ **${queueObj.artist}**\n` +
+            `${discord.getEmoji("star")}_Duration:_ \`${queueObj.duration}\`\n` +
+            `${discord.getEmoji("star")}_Loop Mode:_ **${queueObj.looping ? "Infinite" : (queueObj.ablooping ? "Point A-B" : "One Shot")}**\n` +
+            `${discord.getEmoji("star")}_Reverse Mode:_ **${queueObj.reverse ? "On" : "Off"}**\n` +
+            `${discord.getEmoji("star")}_Playback Speed:_ **${queueObj.speed}x**\n` +
+            `${discord.getEmoji("star")}_Frequency Shift:_ **${queueObj.pitch} semitones**\n` +
+            `${discord.getEmoji("star")}_Filters:_ _${queueObj.filters[0] ? "None" : queueObj.filters.join(", ")}_\n` +
+            `${discord.getEmoji("star")}_Effects:_ _${queueObj.fx[0] ? "None" : queueObj.fx.join(", ")}_\n` +
+            `_Current song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
+            `_Click on any reaction to refresh._\n` +
+            `_Added by ${this.message.author.tag}_`
+        }
         console.log(queueObj)
         const queue = this.getQueue() as any
         const pos = queue.push(queueObj)
@@ -152,6 +221,17 @@ export class Audio {
         const file = queue[0]?.file
         if (!file) return null
         return file
+    }
+
+    public loop = () => {
+        const queue = this.getQueue() as any
+        const looping = queue[0]?.looping
+        console.log(queue[0].looping)
+        if (looping) {
+            queue[0].looping = false
+        } else {
+            queue[0].looping = true
+        }
     }
 
     public pause = () => {
@@ -175,58 +255,58 @@ export class Audio {
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
         const player = connection.dispatcher
-        console.log(num/100.0)
         player.setVolumeLogarithmic(num/100.0)
         return true
     }
 
     public nowPlaying = async () => {
-        const player = this.message.guild?.voice?.connection?.dispatcher
         const discord = this.discord
         const queue = this.getQueue() as any
         if (!queue) return "It looks like you aren't playing anything..."
         const now = queue[0]
-        let loopText = ""
-        let reverseText = ""
-        if (now.looping === true) loopText = `_Loop mode is_ **on!** ${discord.getEmoji("aquaUp")}\n`
-        if (now.reverse === true) reverseText = `_Reverse mode is_ **on!** ${discord.getEmoji("gabYes")}\n`
-        const nowEmbed = this.embeds.createEmbed()
-        nowEmbed
-        .setAuthor("playing", "https://clipartmag.com/images/musical-notes-png-11.png")
-        .setTitle(`**Now Playing** ${discord.getEmoji("chinoSmug")}`)
-        .setURL(now.url)
-        .setThumbnail(now.image ?? "")
-        .setDescription(`${loopText}${reverseText}${now.details}\n_Current song position:_ \`${this.parseSCDuration(Number(player?.streamTime))}\`.`)
+        const nowEmbed = this.updateNowPlaying()
         const msg = await this.message.channel.send(nowEmbed)
-        const reactions = ["resume", "pause", "reverse", "scrub", "loop", "skip", "timestretch", "volume", "eq"]
+        const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear", "mp3"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
         const resumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("resume") && user.bot === false
         const pauseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("pause") && user.bot === false
         const scrubCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("scrub") && user.bot === false
         const skipCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("skip") && user.bot === false
         const loopCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("loop") && user.bot === false
+        const abLoopCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("abloop") && user.bot === false
         const reverseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reverse") && user.bot === false
-        const timestretchCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("timestretch") && user.bot === false
+        const speedCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("speed") && user.bot === false
+        const pitchCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("pitch") && user.bot === false
         const volumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("volume") && user.bot === false
         const eqCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("eq") && user.bot === false
+        const fxCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fx") && user.bot === false
+        const clearCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("clear") && user.bot === false
+        const mp3Check = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mp3") && user.bot === false
 
         const resume = msg.createReactionCollector(resumeCheck)
         const pause = msg.createReactionCollector(pauseCheck)
         const scrub = msg.createReactionCollector(scrubCheck)
         const skip = msg.createReactionCollector(skipCheck)
         const loop = msg.createReactionCollector(loopCheck)
+        const abloop = msg.createReactionCollector(abLoopCheck)
         const reverse = msg.createReactionCollector(reverseCheck)
-        const timestretch = msg.createReactionCollector(timestretchCheck)
+        const speed = msg.createReactionCollector(speedCheck)
+        const pitch = msg.createReactionCollector(pitchCheck)
         const volume = msg.createReactionCollector(volumeCheck)
         const eq = msg.createReactionCollector(eqCheck)
-        const reactors = [resume, pause, reverse, scrub, loop, skip, timestretch, volume, eq]
+        const fx = msg.createReactionCollector(fxCheck)
+        const clear = msg.createReactionCollector(clearCheck)
+        const mp3 = msg.createReactionCollector(mp3Check)
+        const reactors = [resume, pause, scrub, reverse, speed, pitch, loop, abloop, skip, volume, eq, fx, clear, mp3]
         for (let i = 0; i < reactors.length; i++) {
             reactors[i].on("collect", async (reaction, user) => {
+                await msg.edit(this.updateNowPlaying())
                 if (reaction.emoji.name === "reverse") {
                     await reaction.users.remove(user)
                     const rep = await this.message.channel.send(`<@${user.id}>, _Please wait, reversing the file..._`)
                     await this.reverse(now.file)
                     if (rep) await rep.delete()
+                    await msg.edit(this.updateNowPlaying())
                     return
                 } else if (reaction.emoji.name === "volume") {
                     let vol = 100
@@ -238,19 +318,157 @@ export class Audio {
                         } else {
                             vol = parseInt(response.content, 10)
                         }
-                        response.delete()
+                        await response.delete()
                     }
                     const rep = await this.message.channel.send(`<@${user.id}>, Enter a volume scaling factor \`0-200%\`.`)
                     await this.embeds.createPrompt(getVolumeChange)
-                    console.log(vol)
-                    if (rep) rep.delete()
+                    if (rep) await rep.delete()
                     return this.volume(vol)
+                } else if (reaction.emoji.name === "speed") {
+                    let factor = 1.0
+                    let setPitch = false
+                    await reaction.users.remove(user)
+                    async function getSpeedChange(response: Message) {
+                        if (response.content.includes("pitch")) {
+                            setPitch = true
+                            response.content = response.content.replace("pitch", "")
+                        }
+                        if (response.content?.trim() && Number.isNaN(Number(response.content))) {
+                            const rep = await response.reply("You must pass a valid speed factor, eg. \`1.5\` or \`0.5\`.")
+                            rep.delete({timeout: 3000})
+                        } else {
+                            factor = Number(response.content)
+                        }
+                        await response.delete()
+                    }
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new speed. Add \`pitch\` to also change the pitch along with the speed.`)
+                    await this.embeds.createPrompt(getSpeedChange)
+                    if (rep) rep.delete()
+                    const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the speed of the file..._`)
+                    await this.speed(now.file, factor, setPitch)
+                    if (rep2) await rep2.delete()
+                    return
+                } else if (reaction.emoji.name === "loop") {
+                    await reaction.users.remove(user)
+                    const queue = this.getQueue() as any
+                    const loopText = queue[0]?.looping === true ? "Disabled looping!" : "Enabled looping!"
+                    const rep = await this.message.channel.send(`<@${user.id}>, ${loopText}`)
+                    this.loop()
+                    if (rep) await rep.delete({timeout: 3000})
+                    await msg.edit(this.updateNowPlaying())
+                    return
+                } else if (reaction.emoji.name === "skip") {
+                    await reaction.users.remove(user)
+                    await this.skip()
+                    const rep = await this.message.channel.send(`<@${user.id}>, Skipped this track!`)
+                    if (rep) await rep.delete({timeout: 3000})
+                    return
+                } else if (reaction.emoji.name === "pitch") {
+                    let semitones = 0
+                    await reaction.users.remove(user)
+                    async function getPitchChange(response: Message) {
+                        if (response.content?.trim() && Number.isNaN(Number(response.content))) {
+                            const rep = await response.reply("You must pass in the amount of semitones, eg. \`12\` or \`-12\`.")
+                            rep.delete({timeout: 3000})
+                        } else {
+                            semitones = Number(response.content)
+                        }
+                        await response.delete()
+                    }
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new pitch in semitones. 12 semitones = 1 octave.`)
+                    await this.embeds.createPrompt(getPitchChange)
+                    if (rep) await rep.delete()
+                    const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the pitch of the file..._`)
+                    await this.pitch(now.file, semitones)
+                    if (rep2) await rep2.delete()
+                    return
+                } else if (reaction.emoji.name === "scrub") {
+                    let position = "0"
+                    await reaction.users.remove(user)
+                    async function getPositionChange(response: Message) {
+                        position = response.content
+                        await response.delete()
+                    }
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new song position, eg. \`1:00\`.`)
+                    await this.embeds.createPrompt(getPositionChange)
+                    if (rep) await rep.delete()
+                    await this.scrub(position)
+                    return
+                } else if (reaction.emoji.name === "abloop") {
+                    await reaction.users.remove(user)
+                    let start = "0"
+                    let end = now.duration
+                    async function getABLoop(response: Message) {
+                        const repArgs = response.content.split(" ")
+                        start = repArgs[0]
+                        end = repArgs[1]
+                        await response.delete()
+                    }
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the starting time and the ending time for the A-B loop. eg \`1:00 1:30\`.`)
+                    await this.embeds.createPrompt(getABLoop)
+                    if (rep) await rep.delete()
+                    await this.abloop(start, end)
+                    const abText = queue[0].ablooping === true ? "Disabled A-B looping!" : "Enabled A-B looping!"
+                    const rep2 = await this.message.channel.send(`<@${user.id}>, ${abText}`)
+                    if (rep2) await rep.delete({timeout: 3000})
+                    return
+                } else if (reaction.emoji.name === "clear") {
+                    await reaction.users.remove(user)
+                    await this.clear()
+                    const rep = await this.message.channel.send(`<@${user.id}>, Cleared all effects athat were applied to this song!`)
+                    if (rep) await rep.delete({timeout: 3000})
+                    return
+                } else if (reaction.emoji.name === "mp3") {
+                    await reaction.users.remove(user)
+                    await this.mp3Download(user.id)
+                    return
                 }
                 await reaction.users.remove(user)
                 return this[reactions[i]]()
             })
         }
+    }
 
+    public updateNowPlaying = () => {
+        const discord = this.discord
+        const queue = this.getQueue() as any
+        const now = queue[0]
+        let details = ""
+        if (now.kind === "link") {
+            details =
+            `${discord.getEmoji("star")}_Link:_ ${now.link}\n` +
+            `${discord.getEmoji("star")}_Loop Mode:_ **${now.looping ? "Infinite" : (now.ablooping ? "Point A-B" : "One Shot")}**\n` +
+            `${discord.getEmoji("star")}_Reverse Mode:_ **${now.reverse ? "On" : "Off"}**\n` +
+            `${discord.getEmoji("star")}_Playback Speed:_ **${now.speed}x**\n` +
+            `${discord.getEmoji("star")}_Frequency Shift:_ **${now.pitch} semitones**\n` +
+            `${discord.getEmoji("star")}_Filters:_ _${now.filters[0] ? "None" : now.filters.join(", ")}_\n` +
+            `${discord.getEmoji("star")}_Effects:_ _${now.fx[0] ? "None" : now.fx.join(", ")}_\n` +
+            `_Current song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
+            `_Click on any reaction to refresh._\n` +
+            `_Added by ${this.message.author.tag}_`
+        } else {
+            details =
+            `${discord.getEmoji("star")}_Title:_ [**${now.title}**](${now.url})\n` +
+            `${discord.getEmoji("star")}_Artist:_ **${now.artist}**\n` +
+            `${discord.getEmoji("star")}_Duration:_ \`${now.duration}\`\n` +
+            `${discord.getEmoji("star")}_Loop Mode:_ **${now.looping ? "Infinite" : (now.ablooping ? "Point A-B" : "One Shot")}**\n` +
+            `${discord.getEmoji("star")}_Reverse Mode:_ **${now.reverse ? "On" : "Off"}**\n` +
+            `${discord.getEmoji("star")}_Playback Speed:_ **${now.speed}x**\n` +
+            `${discord.getEmoji("star")}_Frequency Shift:_ **${now.pitch} semitones**\n` +
+            `${discord.getEmoji("star")}_Filters:_ _${now.filters[0] ? "None" : now.filters.join(", ")}_\n` +
+            `${discord.getEmoji("star")}_Effects:_ _${now.fx[0] ? "None" : now.fx.join(", ")}_\n` +
+            `_Current song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
+            `_Click on any reaction to refresh._\n` +
+            `_Added by ${this.message.author.tag}_`
+        }
+        const nowEmbed = this.embeds.createEmbed()
+        nowEmbed
+        .setAuthor("playing", "https://clipartmag.com/images/musical-notes-png-11.png")
+        .setTitle(`**Now Playing** ${this.discord.getEmoji("chinoSmug")}`)
+        .setURL(now.url)
+        .setThumbnail(now.image ?? "")
+        .setDescription(details)
+        return nowEmbed
     }
 
     public download = async (song: string) => {
@@ -263,7 +481,7 @@ export class Audio {
             let name = song.split("#").shift()?.split("?").shift()?.split("/").pop()
             name = name?.match(/.(mp3|wav|ogg|webm)/) ? name : name + ".mp3"
             if (name === ".mp3") name = "noname.mp3"
-            const data = await axios.get(song, {responseType: "arraybuffer"}).then((r) => r.data)
+            const data = await axios.get(song, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
             const dest = `./tracks/${name}`
             fs.writeFileSync(dest, Buffer.from(data, "binary"))
             file = dest
@@ -272,16 +490,11 @@ export class Audio {
     }
 
     public play = async (file: string, start?: number) => {
-        const queue = this.getQueue() as any
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
         let player = connection.dispatcher
-        if (!player) {
-            if (start) {
-                player = connection.play(file, {seek: start, highWaterMark: 1})
-            } else {
-                player = connection.play(file, {highWaterMark: 1})
-            }
+        if (start) {
+            player = connection?.play(file, {seek: start, highWaterMark: 1})
         } else {
             player = connection?.play(file, {highWaterMark: 1})
         }
@@ -289,10 +502,14 @@ export class Audio {
         player.setFEC(false)
         player.setPLP(1)
         if (player.paused) player.resume()
+        const queue = this.getQueue() as any
+        if (!queue[0]) await this.queueAdd(file, file)
         queue[0].playing = true
 
         player.on("finish", async () => {
             const queue = this.getQueue() as any
+            console.log("finish")
+            console.log(queue)
             let next: string
             if (queue[0]?.looping === true) {
                 next = file
@@ -324,7 +541,6 @@ export class Audio {
         }
         queue = this.getQueue() as any
         const setReverse = queue?.[0]?.reverse ? true : false
-        console.log(this.next())
         if (this.next()) {
             if (setReverse) {
                 this.reverse(this.next())
@@ -347,16 +563,61 @@ export class Audio {
         }
     }
 
-    public loop = () => {
+    public scrub = (position: string) => {
+        const connection = this.message.guild?.voice?.connection
+        if (!connection) return
+        const seconds = this.parseSeconds(position)
+        if (Number.isNaN(seconds)) return this.message.reply("Try again, provide the time in \`00:00\` format...")
         const queue = this.getQueue() as any
-        console.log(queue[0]?.looping)
-        if (queue?.[0]) {
-            if (queue[0]?.looping === false) {
-                queue[0]?.looping === true
-            } else {
-                queue[0]?.looping === false
-            }
+        return this.play(queue[0].file, seconds)
+    }
+
+    public abloop = async (start: string, end: string) => {
+        const startSec = this.parseSeconds(start)
+        const endSec = this.parseSeconds(end)
+        if (Number.isNaN(startSec) || Number.isNaN(endSec)) return this.message.reply("Try again, provide the time in \`00:00\` format...")
+        const diff = endSec - startSec
+        const queue = this.getQueue() as any
+        if (queue[0].ablooping === false) {
+            queue[0].ablooping = true
+        } else {
+            queue[0].ablooping = false
         }
+        while (queue[0].ablooping) {
+            this.play(queue[0].file, startSec)
+            await Functions.timeout(diff * 1000)
+        }
+    }
+
+    public clear = () => {
+        const queue = this.getQueue() as any
+        return this.play(queue[0].originalFile, this.time())
+    }
+
+    public mp3Download = async (userID: string) => {
+        const queue = this.getQueue() as any
+        const file = queue[0].file
+        const attachment = new MessageAttachment(file, `${path.basename(file)}`)
+        await this.message.channel.send(`<@${userID}>, Here is the download for this file!`)
+        await this.message.channel.send(attachment)
+        return
+    }
+
+    public parseSeconds = (input: string) => {
+        let seconds = 0
+        if (input.match(/:/g)?.length === 2) {
+            const arr = input.split(":")
+            seconds += Number(arr[0]) * 60 * 60
+            seconds += Number(arr[1]) * 60
+            seconds += Number(arr[2])
+        } else if (input.match(/:/g)?.length === 1) {
+            const arr = input.split(":")
+            seconds += Number(arr[0]) * 60
+            seconds += Number(arr[1])
+        } else {
+            seconds = Number(input)
+        }
+        return seconds
     }
 
     public songPickerYT = async (query: string, first?: boolean) => {

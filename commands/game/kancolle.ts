@@ -35,6 +35,7 @@ export default class Kancolle extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
 
         let query = Functions.combineArgs(args, 1)
         if (!query) {
@@ -43,17 +44,17 @@ export default class Kancolle extends Command {
         if (query.match(/kancolle.fandom.com/)) {
             query = query.replace("https://kancolle.fandom.com/wiki/", "")
         }
-        const res = await axios.get(`https://kancolle.fandom.com/api/v1/Search/List?query=${query}&limit=25&minArticleQuality=10`)
+        const res = await axios.get(`https://kancolle.fandom.com/api/v1/Search/List?query=${query}&limit=25&minArticleQuality=10`, {headers})
         const id = res.data?.items[0]?.id
         if (!id) {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor("kancolle", "https://upload.wikimedia.org/wikipedia/en/0/02/Kantai_Collection_logo.png")
             .setTitle(`**Kancolle Search** ${discord.getEmoji("PoiHug")}`))
         }
-        const res2 = await axios.get(`https://kancolle.fandom.com/api/v1/Articles/AsSimpleJson?id=${id}`)
-        const thumb = await axios.get(`https://kancolle.fandom.com/api/v1/Articles/Details?ids=${id}`).then((r: any) => r.data.items[id].thumbnail)
+        const res2 = await axios.get(`https://kancolle.fandom.com/api/v1/Articles/AsSimpleJson?id=${id}`, {headers})
+        const thumb = await axios.get(`https://kancolle.fandom.com/api/v1/Articles/Details?ids=${id}`, {headers}).then((r: any) => r.data.items[id].thumbnail)
         const girl = res2.data.sections[0]?.title
-        const rawGallery = await axios.get(`https://kancolle.fandom.com/wiki/${girl}/Gallery`).then((r)=>r.data)
+        const rawGallery = await axios.get(`https://kancolle.fandom.com/wiki/${girl}/Gallery`, {headers}).then((r)=>r.data)
         const matches = rawGallery.match(/(https:\/\/vignette.wikia.nocookie.net\/kancolle\/images\/)(.*?)(.png)/g)
         let filtered = matches.filter((m: any)=> m.includes(girl))
         filtered = Functions.removeDuplicates(filtered)

@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class Konachan extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Search for images on konachan.",
+            description: "Search for anime pictures on konachan.",
             help:
             `
             _Note: Underscores are not required._
@@ -37,6 +37,7 @@ export default class Konachan extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const konachan = Booru("konachan.com", process.env.KONACHAN_API_KEY)
         const konachanEmbed = embeds.createEmbed()
         .setTitle(`**Konachan Image** ${discord.getEmoji("gabLewd")}`)
@@ -74,7 +75,7 @@ export default class Konachan extends Command {
         }
 
         const id = url.match(/\d\d+/g)!.join("")
-        const result = await axios.get(`https://konachan.com/post.json?tags=id:${id}`)
+        const result = await axios.get(`https://konachan.com/post.json?tags=id:${id}`, {headers})
         const img = result.data[0]
         if (!img) return this.invalidQuery(konachanEmbed, "The url is invalid.")
         if (img.rating !== "s") {

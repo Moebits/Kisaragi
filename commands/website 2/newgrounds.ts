@@ -7,6 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Newgrounds extends Command {
+    private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for audio, art, movies, games, and users on newgrounds.",
@@ -38,11 +39,11 @@ export default class Newgrounds extends Command {
         if (!id || !args) return thumbnail
         const link = `https://art.ngfiles.com/images/${id}_${args[0]}_${args[1]}`
         try {
-            await axios.get(`${link}.png`)
+            await axios.get(`${link}.png`, {headers: this.headers})
             return `${link}.png`
         } catch {
             try {
-                await axios.get(`${link}.jpg`)
+                await axios.get(`${link}.jpg`, {headers: this.headers})
                 return `${link}.jpg`
             } catch {
                 return `${link}.gif`
@@ -239,7 +240,7 @@ export default class Newgrounds extends Command {
     }
 
     public userData = async (username: string) => {
-        const html = await axios.get(`https://${username}.newgrounds.com`).then((r) => r.data)
+        const html = await axios.get(`https://${username}.newgrounds.com`, {headers: this.headers}).then((r) => r.data)
         const images = html.match(/(?<=\/)(u?img.ngfiles.com)(.*?)(.(png|jpg|gif))/g) as string[]
         const banner = "https://" + images.find((i: string) => i.includes("banner"))
         const avatar = "https://" + images.find((i: string) => i.includes("profile"))

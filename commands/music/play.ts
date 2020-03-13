@@ -1,4 +1,7 @@
+import axios from "axios"
 import {Collection, Message, MessageEmbed, MessageReaction, StreamDispatcher, User} from "discord.js"
+import fs from "fs"
+import path from "path"
 import {Command} from "../../structures/Command"
 import * as defaults from "./../../assets/json/defaultSongs.json"
 import {Audio} from "./../../structures/Audio"
@@ -9,7 +12,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Play extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Plays any song on soundcloud, youtube, or from a link.",
+            description: "Plays any song from soundcloud, youtube, a link, or an attachment.",
             help:
             `
             _Note: You must be in a voice channel._
@@ -49,27 +52,35 @@ export default class Play extends Command {
         }
 
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (loading) await loading?.delete()
 
         let queue = audio.getQueue() as any
         let setYT = false
         let song = Functions.combineArgs(args, 1).trim()
+        let file: string
+        let queueEmbed: MessageEmbed
+        let setReverse = false
         if (song.match(/yt/)) {
             setYT = true
             song = song.replace("yt", "")
         } else if (song.match(/sc/)) {
             song = song.replace("sc", "")
-        }
-        if (!song) song = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
-
-        let queueEmbed: MessageEmbed
-        let file: string
-        let setReverse = false
-        if (song?.match(/reverse/)) {
+        } else if (song?.match(/reverse/)) {
             song = song.replace("reverse", "")
             setReverse = true
         }
-        if (song?.match(/youtube.com|youtu.be/)) {
+        if (!song) {
+            const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
+            const filepath = await discord.fetchLastAttachment(message, false, regex)
+            if (!filepath) {
+                song = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
+                file = await audio.download(song)
+                queueEmbed = await audio.queueAdd(song, file, setReverse)
+            } else {
+                file = await audio.download(filepath)
+                queueEmbed = await audio.queueAdd(filepath, file, setReverse)
+            }
+        } else if (song?.match(/youtube.com|youtu.be/)) {
             file = await audio.download(song)
             queueEmbed = await audio.queueAdd(song, file, setReverse)
         } else if (song?.match(/soundcloud.com/)) {
@@ -98,7 +109,6 @@ export default class Play extends Command {
                 queueEmbed = await audio.queueAdd(link, file, setReverse)
             }
         }
-        console.log(setReverse)
         await message.channel.send(queueEmbed)
         queue = audio.getQueue() as any
         if (queue.length === 1 && !queue[0].playing) {

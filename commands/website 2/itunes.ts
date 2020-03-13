@@ -27,6 +27,7 @@ export default class Itunes extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const query = Functions.combineArgs(args, 1).trim()
 
         if (!query) {
@@ -36,7 +37,7 @@ export default class Itunes extends Command {
         }
 
         const url = `https://itunes.apple.com/search?country=US&entity=song&explicit=no&lang=en&media=music&term=${query}`
-        const response = await axios.get(url).then((r) => r.data)
+        const response = await axios.get(url, {headers}).then((r) => r.data)
         const itunesArray: MessageEmbed[] = []
         for (let i = 0; i < response.results.length; i++) {
             const track = response.results[i]

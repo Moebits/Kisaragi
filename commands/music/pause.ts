@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Pause extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Pauses a music stream. But don't pause for too long...",
+            description: "Pauses a music stream.",
             help:
             `
             \`pause\` - Pauses the stream

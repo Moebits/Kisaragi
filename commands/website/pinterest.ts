@@ -67,6 +67,7 @@ export default class Pinterest extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const accessToken = (process.env.PINTEREST_ACCESS_TOKEN)
         const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID!, process.env.GOOGLE_API_KEY!)
         pinArray = []
@@ -85,7 +86,7 @@ export default class Pinterest extends Command {
             const board = this.board || args[3]
             if (!user || !board) return this.pinterestError(discord, message, embeds, "You need to specify a user and a board. ")
             // const json = await axios.get(`https://api.pinterest.com/v1/boards/${user}/${board}/pins/?access_token=${accessToken}&fields=id,link,url,creator,board,created_at,note,color,counts,media,attribution,image,metadata`)
-            const json = await axios.get(`https://feed2json.org/convert?url=https://www.pinterest.com/${user}/${board}.rss`)
+            const json = await axios.get(`https://feed2json.org/convert?url=https://www.pinterest.com/${user}/${board}.rss`, {headers})
             const response = json.data
             const boardname = response.title
             for (let i = 0; i < response.items.length; i++) {
@@ -121,7 +122,7 @@ export default class Pinterest extends Command {
         if (this.user || args[1] === "user") {
             const user = this.user || args[2]
             if (!args[2]) return this.pinterestError(discord, message, embeds, "You need to specify the user. ")
-            const json = await axios.get(`https://feed2json.org/convert?url=https://www.pinterest.com/${user}/feed.rss`)
+            const json = await axios.get(`https://feed2json.org/convert?url=https://www.pinterest.com/${user}/feed.rss`, {headers})
             const response = json.data
             const username = response.title
             for (let i = 0; i < response.items.length; i++) {
@@ -178,7 +179,7 @@ export default class Pinterest extends Command {
         this.pinterestPin(discord, message, response2.data[random2])
         */
 
-        const res = await axios.get(randPin)
+        const res = await axios.get(randPin, {headers})
         const usernames = res.data.match(/(?<="username":")(.*?)(?=",")/g)
 
         for (let j = 0; j < usernames.length; j++) {

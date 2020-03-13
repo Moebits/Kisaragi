@@ -30,6 +30,7 @@ export default class Holiday extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
         ]
@@ -37,7 +38,7 @@ export default class Holiday extends Command {
         if (args[1]) {
             if (args[1].match(/daysoftheyear.com/)) {
                 const holidayName = Functions.toProperCase(args[1].replace("https://www.daysoftheyear.com/days/", "").replace(/\//g, "").replace(/-/g, " "))
-                const holidayData = await axios.get(args[1])
+                const holidayData = await axios.get(args[1], {headers})
                 const imageRegex = /(?<=image" content=")(.*?)(?=(\s))/gm
                 const pg2Regex = /(?<=description" content=")(.*?)(?="(\s))/gm
                 const rawDescription = holidayData.data.match(pg2Regex)[0]
@@ -77,12 +78,12 @@ export default class Holiday extends Command {
         const day = inputDay ? inputDay : now.getUTCDate()
         const year = now.getUTCFullYear()
         const url = `https://www.daysoftheyear.com/days/${year}/${month < 10 ? `0${month}` : month}/${day < 10 ? `0${day}` : day}/`
-        const data = await axios.get(url)
+        const data = await axios.get(url, {headers})
         const matchArray = data.data.match(pg1Regex)
         const holidayName = Functions.toProperCase(matchArray[0].replace(/-/g, " ").replace(/\//g, ""))
         const date = `${monthNames[month - 1]} ${day}`
         const url2 = `https://www.daysoftheyear.com/days/${matchArray[0]}`
-        const holidayData = await axios.get(url2)
+        const holidayData = await axios.get(url2, {headers})
         const rawDescription = holidayData.data.match(pg2Regex)[0]
         const description = rawDescription.replace(/&hellip;/g, "...").replace(/&#8217;/g, "'").replace(/&#8211;/g, "-").trim()
         const image = holidayData.data.match(imageRegex)[0].replace(/"/g, "")

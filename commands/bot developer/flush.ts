@@ -8,7 +8,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Flush extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Flushes the redis database.",
+            description: "Flushes the database cache.",
             aliases: [],
             cooldown: 3
         })

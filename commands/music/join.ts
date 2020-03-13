@@ -17,8 +17,8 @@ export default class Join extends Command {
             `
             \`=>join\`
             `,
-            aliases: [],
-            cooldown: 5
+            aliases: ["connect"],
+            cooldown: 10
         })
     }
 

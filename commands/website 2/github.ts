@@ -33,6 +33,7 @@ export default class Github extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const github = new GitHub({
             token: process.env.GITHUB_ACCESS_TOKEN
         })
@@ -89,7 +90,7 @@ export default class Github extends Command {
         const result = json.data
         const githubArray: MessageEmbed[] = []
         for (let i = 0; i < 10; i++) {
-            const source = await axios.get(result[i].html_url)
+            const source = await axios.get(result[i].html_url, {headers})
             const regex = /(?<=name="twitter:image:src" content=")(.*?)(?=" \/\>)/
             const url = regex.exec(source.data)
             const githubEmbed = embeds.createEmbed()

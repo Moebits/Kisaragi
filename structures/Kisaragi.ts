@@ -39,9 +39,10 @@ export class Kisaragi extends Client {
     }
 
     // Fetch Last Attachment
-    public fetchLastAttachment = async <T extends boolean = false>(message: Message, author?: T) =>  {
+    public fetchLastAttachment = async <T extends boolean = false>(message: Message, author?: T, fileExt?: RegExp) =>  {
+        if (!fileExt) fileExt = new RegExp(/.(png|jpg|gif)/)
         const msg = await message.channel.messages.fetch({limit: 100}).then((i) => i.find((m)=>m.attachments.size > 0))
-        const image = msg?.attachments.first()?.url
+        const image = msg?.attachments.find((a) => a.url.match(fileExt!) !== null)?.url
         if (author) return {image, author: msg?.author} as unknown as Promise<T extends true ? {image: string | undefined, author: User | undefined} : string | undefined>
         return image as unknown as Promise<T extends true ? {image: string | undefined, author: User | undefined} : string | undefined>
     }

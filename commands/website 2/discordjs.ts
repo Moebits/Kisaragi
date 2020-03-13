@@ -31,6 +31,7 @@ export default class Discordjs extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const srcOptions = ["master", "stable", "rpc", "commando", "akairo", "akairo-master", "collection"]
         if (args[1]?.match(/discord.js.org/)) {
             this.src = args[1].match(/(?<=docs\/)(.*?)(?=\/)/)
@@ -55,9 +56,9 @@ export default class Discordjs extends Command {
             .setTitle(`**Discord.js Docs** ${discord.getEmoji("gabStare")}`)
             .setAuthor(`discord.js`, "https://discord.js.org/static/logo-square.png"))
         }
-        let result = await axios.get(`https://djsdocs.sorta.moe/v2/embed?src=${src}&q=${query}`).then((r) => r.data)
+        let result = await axios.get(`https://djsdocs.sorta.moe/v2/embed?src=${src}&q=${query}`, {headers}).then((r) => r.data)
         if (result.title === "Search results:") {
-            result = await axios.get(`https://djsdocs.sorta.moe/v2/embed?src=${src}&q=${result.description.match(/(?<=\[)(.*?)(?=\])/)[0].replace(/#/, ".")}`).then((r) => r.data)
+            result = await axios.get(`https://djsdocs.sorta.moe/v2/embed?src=${src}&q=${result.description.match(/(?<=\[)(.*?)(?=\])/)[0].replace(/#/, ".")}`, {headers}).then((r) => r.data)
         }
         if (!result.fields) return message.reply("Nothing was found.")
         let fields = ""

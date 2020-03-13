@@ -14,7 +14,7 @@ const nsfwBoards = ["b", "r9k", "pol", "bant", "soc", "s4s", "s", "hc", "hm", "h
 export default class $4chan extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for posts and images on 4chan boards.",
+            description: "Searches for posts and images on 4chan.",
             help:
             `
             \`4chan board query\` - Searches the specified board with the query.
@@ -61,6 +61,7 @@ export default class $4chan extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const perms = new Permission(discord, message)
         const badChanEmbed = embeds.createEmbed()
         .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png")
@@ -107,7 +108,7 @@ export default class $4chan extends Command {
             const b = board.match(/(?<=boards.4channel.org\/)(.*?)(?=\/)/)?.[0]
             const id =  board.match(/\d{5,}/)?.[0]
             const apiURL = `https://a.4cdn.org/${b}/thread/${id}.json`
-            const json = await axios.get(apiURL)
+            const json = await axios.get(apiURL, {headers})
             const posts = json.data.posts
             const url = `https://boards.4channel.org/${b}/thread/${id}`
             const chanArray: MessageEmbed[] = []
@@ -146,7 +147,7 @@ export default class $4chan extends Command {
             this.invalidQuery(badChanEmbed, "Try searching for a different tag.")
             return
         }
-        const json = await axios.get(threads[random].url)
+        const json = await axios.get(threads[random].url, {headers})
         const posts = json.data.posts
         const rawUrl = `https://boards.4channel.org/${board}/thread/${threads[random].url.match(/\d+/g)}`
         const url = rawUrl.replace(/4,/g, "")

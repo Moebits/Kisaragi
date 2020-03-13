@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class Yandere extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for images on yandere.",
+            description: "Searches for anime pictures on yandere.",
             help:
             `
             _Note: Underscores are not required._
@@ -37,6 +37,7 @@ export default class Yandere extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const yandere = Booru("yande.re", process.env.yandere_API_KEY)
         const yandereEmbed = embeds.createEmbed()
         .setAuthor("yandere", "https://i.imgur.com/5DiQTnW.png")
@@ -74,7 +75,7 @@ export default class Yandere extends Command {
         }
 
         const id = url.match(/\d+/g)!.join("")
-        const result = await axios.get(`https://yande.re/post/index.json?tags=id:${id}`)
+        const result = await axios.get(`https://yande.re/post/index.json?tags=id:${id}`, {headers})
         const img = result.data[0]
         if (!img) return this.invalidQuery(yandereEmbed, "The url is invalid.")
         if (img.rating !== "s") {

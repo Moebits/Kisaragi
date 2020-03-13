@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Saucenao extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Finds the source of an anime picture.",
+            description: "Finds the source of an anime picture, avatar, or guild icon.",
             help:
             `
             \`saucenao\` - Searches the last posted image (or your avatar)

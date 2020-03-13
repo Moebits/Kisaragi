@@ -38,6 +38,7 @@ export default class Gelbooru extends Command {
         const embeds = new Embeds(discord, message)
         const gelbooru = Booru("gelbooru", process.env.GELBOORU_API_KEY)
         const perms = new Permission(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const gelbooruEmbed = embeds.createEmbed()
         .setAuthor("gelbooru", "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png")
         .setTitle(`**Gelbooru Search** ${discord.getEmoji("gabLewd")}`)
@@ -78,7 +79,7 @@ export default class Gelbooru extends Command {
         } else {
             id = url.match(/\d+/g)!.join("")
         }
-        const result = await axios.get(`https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&id=${id}${process.env.GELBOORU_API_KEY}`).then((r) => r.data)
+        const result = await axios.get(`https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&id=${id}${process.env.GELBOORU_API_KEY}`, {headers}).then((r) => r.data)
         const img = result[0]
         if (!img) return this.invalidQuery(gelbooruEmbed, "The url is invalid.")
         if (img.rating !== "s") {

@@ -34,6 +34,7 @@ export default class Waifu2x extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const deepai = require("deepai")
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         deepai.setApiKey(process.env.DEEP_API_KEY)
 
         if (args[1] === "list") {
@@ -71,7 +72,7 @@ export default class Waifu2x extends Command {
             imgUrl = args[1]
         }
 
-        const raw = await axios.get(imgUrl, {responseType: "arraybuffer"}).then((r) => r.data)
+        const raw = await axios.get(imgUrl, {responseType: "arraybuffer", headers}).then((r) => r.data)
         const hash = md5(raw)
         console.log(imgUrl)
         console.log(hash)

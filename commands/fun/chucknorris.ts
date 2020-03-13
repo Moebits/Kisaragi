@@ -28,9 +28,10 @@ export default class ChuckNorris extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
 
         if (args[1]) {
-            const joke = await axios.get(`http://api.icndb.com/jokes/${args[1]}`)
+            const joke = await axios.get(`http://api.icndb.com/jokes/${args[1]}`, {headers})
             if (!joke.data) {
                 return this.invalidQuery(embeds.createEmbed()
                 .setAuthor("chuck norris", "https://assets.chucknorris.host/img/avatar/chuck-norris.png")
@@ -46,7 +47,7 @@ export default class ChuckNorris extends Command {
             return message.channel.send(chuckEmbed)
         }
 
-        const jokes = await axios.get(`http://api.icndb.com/jokes/random/20`)
+        const jokes = await axios.get(`http://api.icndb.com/jokes/random/20`, {headers})
         const chuckArray: MessageEmbed[] = []
         for (let i = 0; i < jokes.data.value.length; i++) {
             const chuckEmbed = embeds.createEmbed()

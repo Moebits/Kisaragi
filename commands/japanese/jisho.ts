@@ -1,9 +1,9 @@
 import axios from "axios"
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
 
 const Kuroshiro = require("kuroshiro")
 const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
@@ -30,6 +30,7 @@ export default class Jisho extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const kuroshiro = new Kuroshiro()
         await kuroshiro.init(new KuromojiAnalyzer())
         let query = Functions.combineArgs(args, 1).trim()
@@ -42,7 +43,7 @@ export default class Jisho extends Command {
         if (query.match(/jisho.org/)) {
             query = query.replace("https://jisho.org/search/", "").replace(/%20/g, " ")
         }
-        const result = await axios.get(`https://jisho.org/api/v1/search/words?keyword=${query}`).then((r) => r.data.data)
+        const result = await axios.get(`https://jisho.org/api/v1/search/words?keyword=${query}`, {headers}).then((r) => r.data.data)
         if (!result[0]) {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor("jisho", "https://d2.alternativeto.net/dist/icons/denshi-jisho_107085.png?width=200&height=200&mode=crop&upscale=false")

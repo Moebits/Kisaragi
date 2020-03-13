@@ -26,6 +26,7 @@ export default class Patreon extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
 
         let query = Functions.combineArgs(args, 1).trim()
         if (!query) {
@@ -36,14 +37,14 @@ export default class Patreon extends Command {
         if (query.match(/patreon.com/)) {
             query = query.match(/(?<=\/)(?:.(?!\/))+$/)![0]
         }
-        const response = await axios.get(`https://www.patreon.com/${query}`)
+        const response = await axios.get(`https://www.patreon.com/${query}`, {headers})
         if (!response.data.match(/(?<="related": "https:\/\/www.patreon.com\/api\/campaigns\/)(.*?)(?=")/)) {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor("patreon", "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg")
             .setTitle(`**Patreon Search** ${discord.getEmoji("raphi")}`))
         }
         const id = response.data.match(/(?<="related": "https:\/\/www.patreon.com\/api\/campaigns\/)(.*?)(?=")/)[0]
-        const json = await axios.get(`https://www.patreon.com/api/campaigns/${id}`)
+        const json = await axios.get(`https://www.patreon.com/api/campaigns/${id}`, {headers})
         const details = json.data.data.attributes
         const avatar = details.avatar_photo_url
         const cover = details.cover_photo_url

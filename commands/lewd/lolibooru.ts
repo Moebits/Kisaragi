@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class Lolibooru extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for images on lolibooru",
+            description: "Searches for anime pictures on lolibooru",
             help:
             `
             _Note: Underscores are not required._
@@ -38,6 +38,7 @@ export default class Lolibooru extends Command {
         const message = this.message
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const lolibooru = Booru("lolibooru")
         const lolibooruEmbed = embeds.createEmbed()
         .setAuthor("lolibooru", "https://i.imgur.com/vayyvC4.png")
@@ -77,7 +78,7 @@ export default class Lolibooru extends Command {
 
         const id = url.match(/\d+/g)!.join("")
 
-        const result = await axios.get(`https://lolibooru.moe/post/index.json?tags=id:${id}`)
+        const result = await axios.get(`https://lolibooru.moe/post/index.json?tags=id:${id}`, {headers})
         const img = result.data[0]
         if (!img) return this.invalidQuery(lolibooruEmbed, "The url is invalid.")
         if (img.rating !== "s") {

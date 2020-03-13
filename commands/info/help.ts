@@ -58,7 +58,7 @@ export default class Help extends Command {
                 "heart": discord.getEmoji("kannaPatting"),
                 "lewd": discord.getEmoji("madokaLewd"),
                 "info": discord.getEmoji("kannaCurious"),
-                "japanese": discord.getEmoji("kannaHungry"),
+                "weeb": discord.getEmoji("kannaHungry"),
                 "level": discord.getEmoji("KannaXD"),
                 "logging": discord.getEmoji("tohruSmug"),
                 "misc": discord.getEmoji("karenXmas"),
@@ -77,7 +77,7 @@ export default class Help extends Command {
                 "heart": "https://i.imgur.com/uKNjZcb.png",
                 "lewd": "https://i.imgur.com/alKtET3.png",
                 "info": "https://i.imgur.com/BR5OtIE.png",
-                "japanese": "https://i.imgur.com/7DpFyuL.png",
+                "weeb": "https://i.imgur.com/7DpFyuL.png",
                 "level": "https://i.imgur.com/HvIgETT.png",
                 "logging": "https://i.imgur.com/2zGUmJN.png",
                 "misc": "https://i.imgur.com/Rd9U6tc.png",
@@ -86,6 +86,7 @@ export default class Help extends Command {
                 "website": "https://i.imgur.com/ftVh8jx.png",
                 "website 2": "https://i.imgur.com/0bUmQ7F.png"
             }
+            if (subDir[i] === "japanese") subDir[i] = "weeb"
             const helpEmbed = embeds.createEmbed()
             helpEmbed
             .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${emojiMap[subDir[i]]}`)

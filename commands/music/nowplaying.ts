@@ -8,10 +8,10 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class NowPlaying extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Displays the entire queue of songs.",
+            description: "Displays the currently playing song.",
             help:
             `
-            \`nowplaying\` - Displays the queue.
+            \`nowplaying\` - Displays the song that is now playing.
             `,
             examples:
             `

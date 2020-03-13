@@ -26,16 +26,17 @@ export default class Time extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
 
         const city = Functions.combineArgs(args, 1)?.trim()
         if (!city) return message.reply(`What city do you want to search for ${discord.getEmoji("kannaCurious")}`)
 
-        const timezones = await axios.get(`http://worldtimeapi.org/api/timezone`).then((r) => r.data)
+        const timezones = await axios.get(`http://worldtimeapi.org/api/timezone`, {headers}).then((r) => r.data)
 
         const zone = timezones.find((z: any) => z.toLowerCase().includes(city.toLowerCase().replace(/ +/g, "_")))
         if (!zone) return message.reply("Could not find that city!")
 
-        const time = await axios.get(`http://worldtimeapi.org/api/timezone/${zone}`).then((r) => r.data)
+        const time = await axios.get(`http://worldtimeapi.org/api/timezone/${zone}`, {headers}).then((r) => r.data)
         const utc = time.utc_offset
         const date = new Date(time.datetime)
         const day = Functions.formatDate(date)

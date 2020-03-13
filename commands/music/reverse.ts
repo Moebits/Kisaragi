@@ -8,17 +8,18 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Reverse extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Reverses the song that is playing (or downloads a reversed song).",
+            description: "Reverses an audio file (this one is awesome).",
             help:
             `
             \`reverse\` - Reverses the song that is playing.
+            \`reverse download/dl\` - Applies the effect on an mp3 attachment and uploads it.
             `,
             examples:
             `
             \`=>reverse\`
             `,
             aliases: [],
-            cooldown: 10
+            cooldown: 20
         })
     }
 
@@ -28,9 +29,25 @@ export default class Reverse extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const queue = audio.getQueue() as any
-        const file = queue?.[0].file
-        await audio.reverse(file)
-        message.reply("Reversed the file!")
+        let setDownload = false
+        if (args[1] === "download" || args[1] === "dl") {
+            setDownload = true
+            args.shift()
+        }
+        const rep = await message.reply("_Reversing the file, please wait..._")
+        let file = ""
+        if (setDownload) {
+            const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
+            const attachment = await discord.fetchLastAttachment(message, false, regex)
+            if (!attachment) return message.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
+            file = attachment
+        } else {
+            const queue = audio.getQueue() as any
+            file = queue?.[0].file
+        }
+        await audio.reverse(file, setDownload)
+        if (rep) rep.delete()
+        if (!setDownload) message.reply("Reversed the file!")
         return
     }
 }

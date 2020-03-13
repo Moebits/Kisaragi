@@ -1,4 +1,3 @@
-import axios from "axios"
 import {Message, MessageAttachment, TextChannel} from "discord.js"
 import fs from "fs"
 import {Command} from "../../structures/Command"

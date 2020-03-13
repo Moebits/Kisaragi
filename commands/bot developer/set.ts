@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Set extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Sets the bots presence.",
+            description: "Sets the bot's activity text.",
             help:
             `
             \`set type activity, status\`

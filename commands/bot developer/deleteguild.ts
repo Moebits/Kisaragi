@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class DeleteGuild extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Deletes a guild that the bot created.",
+            description: "Deletes a guild (created by the bot).",
             aliases: ["dg"],
             cooldown: 3
         })

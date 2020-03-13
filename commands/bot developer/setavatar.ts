@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Set extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Changes the bots avatar.",
+            description: "Changes the bot's avatar.",
             help:
             `
             \`setavatar url?\` - Sets the avatar.

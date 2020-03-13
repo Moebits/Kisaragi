@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class Rule34 extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: `Searches for images on rule34.`,
+            description: `Searches for anime pictures on rule34.`,
             help:
             `
             \`rule34\` - Gets a random sfw image
@@ -33,6 +33,7 @@ export default class Rule34 extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const rule34 = Booru("rule34")
         const rule34Embed = embeds.createEmbed()
         .setAuthor("rule34", "https://cdn.imgbin.com/18/6/2/imgbin-rule-34-internet-mpeg-4-part-14-rule-34-Eg19BPJrNiThRQmqwVpTJsZAw.jpg")
@@ -69,7 +70,7 @@ export default class Rule34 extends Command {
         const id = rawID.slice(2)
         let result
         try {
-            result = await axios.get(`https://rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&id=${id}`)
+            result = await axios.get(`https://rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&id=${id}`, {headers})
         } catch {
             return this.invalidQuery(rule34Embed, "The url is invalid.")
         }
