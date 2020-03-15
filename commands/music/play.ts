@@ -20,14 +20,15 @@ export default class Play extends Command {
             \`play song\` - Searches for songs on soundcloud and plays the one that you pick.
             \`play yt song\` - Searches for songs on youtube and plays the one that you pick.
             \`play first yt? song\` - Plays the first result automatically.
-            \`play reverse yt? song\` - Starts the playback in reverse mode.
+            \`play reverse yt? song\` - Starts playback in reverse mode.
+            \`play loop yt? song\` - Starts playback in loop mode.
             \`play sc song\` - You don't need to specify soundcloud, since it's the default.
             `,
             examples:
             `
             \`=>play reverse first synthion comet\`
             \`=>play virtual riot\`
-            \`=>play yt virtual riot\`
+            \`=>play yt tenpi moonlight\`
             `,
             guildOnly: true,
             aliases: ["stream"],
@@ -60,6 +61,7 @@ export default class Play extends Command {
         let file: string
         let queueEmbed: MessageEmbed
         let setReverse = false
+        let setLoop = false
         if (song.match(/yt/)) {
             setYT = true
             song = song.replace("yt", "")
@@ -68,6 +70,9 @@ export default class Play extends Command {
         } else if (song?.match(/reverse/)) {
             song = song.replace("reverse", "")
             setReverse = true
+        } else if (song?.match(/loop/)) {
+            song = song.replace("loop", "")
+            setLoop = true
         }
         if (!song) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
@@ -75,20 +80,20 @@ export default class Play extends Command {
             if (!filepath) {
                 song = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
                 file = await audio.download(song)
-                queueEmbed = await audio.queueAdd(song, file, setReverse)
+                queueEmbed = await audio.queueAdd(song, file)
             } else {
                 file = await audio.download(filepath)
-                queueEmbed = await audio.queueAdd(filepath, file, setReverse)
+                queueEmbed = await audio.queueAdd(filepath, file)
             }
         } else if (song?.match(/youtube.com|youtu.be/)) {
             file = await audio.download(song)
-            queueEmbed = await audio.queueAdd(song, file, setReverse)
+            queueEmbed = await audio.queueAdd(song, file)
         } else if (song?.match(/soundcloud.com/)) {
             file = await audio.download(song)
-            queueEmbed = await audio.queueAdd(song, file, setReverse)
+            queueEmbed = await audio.queueAdd(song, file)
         } else if (song?.match(/.(mp3|wav|ogg|webm)/) || song?.includes("http")) {
                 file = await audio.download(song)
-                queueEmbed = await audio.queueAdd(song, file, setReverse)
+                queueEmbed = await audio.queueAdd(song, file)
         } else {
             let setFirst = false
             if (song?.match(/first/)) {
@@ -100,17 +105,18 @@ export default class Play extends Command {
                 if (!link) return message.reply("No results were found for your query!")
                 song = link
                 file = await audio.download(link)
-                queueEmbed = await audio.queueAdd(link, file, setReverse)
+                queueEmbed = await audio.queueAdd(link, file)
             } else {
                 const link = await audio.songPickerSC(song, setFirst)
                 if (!link) return message.reply("No results were found for your query!")
                 song = link
                 file = await audio.download(link)
-                queueEmbed = await audio.queueAdd(link, file, setReverse)
+                queueEmbed = await audio.queueAdd(link, file)
             }
         }
         await message.channel.send(queueEmbed)
         queue = audio.getQueue() as any
+        if (setLoop) queue[0].looping = true
         if (queue.length === 1 && !queue[0].playing) {
             if (setReverse) {
                 await audio.reverse(audio.next())

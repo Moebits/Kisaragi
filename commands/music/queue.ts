@@ -1,24 +1,24 @@
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Skip extends Command {
+export default class Queue extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Skips a song, or skips to a song.",
+            description: "Displays the full queue of songs.",
             help:
             `
-            \`skip num?\` - Skips to the song at the position (default is next).
+            \`queue\` - Shows the queue of songs.
             `,
             examples:
             `
-            \`=>skip 3\`
+            \`=>queue\`
             `,
             aliases: [],
-            cooldown: 5
+            cooldown: 10
         })
     }
 
@@ -27,14 +27,16 @@ export default class Skip extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
-
-        let amount = 1
-        if (Number(args[1])) {
-            amount = Number(args[1])
+        const queue = audio.getQueue() as any
+        const queueArray: MessageEmbed[] = []
+        for (let i = 0; i < queue.length; i++) {
+            const embed = await audio.updateNowPlaying(i)
+            embed
+            .setAuthor("queue", "https://clipartmag.com/images/musical-notes-png-11.png")
+            .setTitle(`**Position #${i+1}** ${discord.getEmoji("gabYes")}`)
+            queueArray.push(embed)
         }
-        const rep = await message.reply("Skipped this song!")
-        await audio.skip(amount)
-        rep.delete({timeout: 3000})
+        embeds.createReactionEmbed(queueArray)
         return
     }
 }

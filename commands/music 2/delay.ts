@@ -5,23 +5,23 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Pitch extends Command {
+export default class Delay extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Changes the pitch of an audio file (in semitones).",
+            description: "Applies a delay effect to an audio file.",
             help:
             `
-            _Note: Negative values will decrease pitch 12 semitones = 1 octave._
-            \`pitch semitones\` - Changes the pitch of the song
-            \`pitch download/dl semitones\` - Applies the effect to an attachment and uploads it.
+            _Note: You can add a variable number of delay and decay pairs. An odd amount of arguments is invalid. The unit is milliseconds._
+            \`delay delay decay ...delay decay pairs?\` - Applies delay to the audio file with the parameters.
+            \`delay download/dl\` - Applies delay to an attachment and uploads it.
             `,
             examples:
             `
-            \`=>pitch 12\`
-            \`=>pitch -12\`
+            \`=>delay 80 0.4 60 0.5\`
+            \`=>delay download 1000 0.5 400 0.7\`
             `,
-            aliases: ["pitchshift", "semitones"],
-            cooldown: 10
+            aliases: [],
+            cooldown: 20
         })
     }
 
@@ -36,8 +36,15 @@ export default class Pitch extends Command {
             setDownload = true
             args.shift()
         }
-        const semitones = Number(args[1]) ? Number(args[1]) : 0
-        const rep = await message.reply("_Changing the pitch of the file, please wait..._")
+        let delaysDecays: number[] = []
+        for (let i = 0; i < args.length; i++) {
+            if (Number(args[i])) {
+                delaysDecays.push(Number(args[i]))
+            }
+        }
+        if (!delaysDecays[0]) delaysDecays = [60, 0.4]
+        if (delaysDecays.length % 2 === 1) return message.reply(`There must be an even amount of arguments (delay and decay pairs).`)
+        const rep = await message.reply("_Adding delay to the file, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
@@ -48,10 +55,14 @@ export default class Pitch extends Command {
             const queue = audio.getQueue() as any
             file = queue?.[0].file
         }
-        await audio.pitch(file, semitones, setDownload)
-        rep.delete()
+        try {
+            await audio.delay(file, delaysDecays, setDownload)
+        } catch {
+            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+        }
+        if (rep) rep.delete()
         if (!setDownload) {
-            const rep = await message.reply("Changed the pitch of the file!")
+            const rep = await message.reply("Added delay to the file!")
             rep.delete({timeout: 3000})
         }
         return

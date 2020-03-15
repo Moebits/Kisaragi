@@ -31,7 +31,8 @@ export default class Scrub extends Command {
 
         const scrub = args[1] ? args[1] : "0"
         await audio.scrub(scrub)
-        await message.reply(`Changed the position of the song!`)
+        const rep = await message.reply(`Changed the position of the song!`)
+        rep.delete({timeout: 3000})
         return
     }
 }

@@ -29,6 +29,7 @@ export default class CombFilter extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const queue = audio.getQueue() as any
+        return message.reply("This command is currently disabled.")
         const file = queue?.[0].file
         let delay = parseInt(args[1], 10)
         let decay = parseInt(args[2], 10)

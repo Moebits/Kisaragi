@@ -1,6 +1,7 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
+import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -12,6 +13,7 @@ export default class Reverse extends Command {
             help:
             `
             \`reverse\` - Reverses the song that is playing.
+            \`reverse link/query\` - An alias for \`play reverse\`
             \`reverse download/dl\` - Applies the effect on an mp3 attachment and uploads it.
             `,
             examples:
@@ -28,11 +30,16 @@ export default class Reverse extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        const cmd = new CommandFunctions(discord, message)
         const queue = audio.getQueue() as any
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {
             setDownload = true
             args.shift()
+        }
+        if (Functions.combineArgs(args, 1).trim()) {
+            args.shift()
+            return cmd.runCommand(message, ["play", "reverse", ...args])
         }
         const rep = await message.reply("_Reversing the file, please wait..._")
         let file = ""
@@ -47,7 +54,10 @@ export default class Reverse extends Command {
         }
         await audio.reverse(file, setDownload)
         if (rep) rep.delete()
-        if (!setDownload) message.reply("Reversed the file!")
+        if (!setDownload) {
+            const rep = await message.reply("Reversed the file!")
+            rep.delete({timeout: 3000})
+        }
         return
     }
 }

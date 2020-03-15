@@ -1,24 +1,25 @@
 import {Message} from "discord.js"
+import fs from "fs"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Resume extends Command {
+export default class Effects extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Resumes a paused music stream.",
+            description: "Applies special audio effects.",
             help:
             `
-            \`resume\` - Resumes the stream
+            \`effects\` - Opens the effects menu.
             `,
             examples:
             `
-            \`=>resume\`
+            \`=>effects\`
             `,
-            aliases: [],
-            cooldown: 5
+            aliases: ["fx"],
+            cooldown: 20
         })
     }
 
@@ -27,9 +28,8 @@ export default class Resume extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
-        audio.resume()
-        const rep = await message.reply("Resumed the song!")
-        rep.delete({timeout: 3000})
+        const msg = await audio.fxMenu()
+        msg.delete()
         return
     }
 }

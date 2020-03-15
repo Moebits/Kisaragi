@@ -17,7 +17,7 @@ export default class NowPlaying extends Command {
             `
             \`=>nowplaying\`
             `,
-            aliases: ["np", "queue", "playing"],
+            aliases: ["np", "playing"],
             cooldown: 10
         })
     }
@@ -27,8 +27,7 @@ export default class NowPlaying extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
-        const np = await audio.nowPlaying()
-        if (np) message.channel.send(np)
+        await audio.nowPlaying()
         return
     }
 }

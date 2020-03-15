@@ -5,23 +5,22 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Pitch extends Command {
+export default class Highshelf extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Changes the pitch of an audio file (in semitones).",
+            description: "Applies a highshelf filter to an audio file (boosts treble).",
             help:
             `
-            _Note: Negative values will decrease pitch 12 semitones = 1 octave._
-            \`pitch semitones\` - Changes the pitch of the song
-            \`pitch download/dl semitones\` - Applies the effect to an attachment and uploads it.
+            \`highshelf gain? freq? width?\` - Applies a highshelf filter to the audio file with the parameters.
+            \`highshelf download/dl gain? freq? width?\` - Applies a highshelf filter to an attachment and uploads it.
             `,
             examples:
             `
-            \`=>pitch 12\`
-            \`=>pitch -12\`
+            \`=>highshelf 4 3000 100\`
+            \`=>highshelf 2 1000 50\`
             `,
-            aliases: ["pitchshift", "semitones"],
-            cooldown: 10
+            aliases: ["treble"],
+            cooldown: 20
         })
     }
 
@@ -36,8 +35,10 @@ export default class Pitch extends Command {
             setDownload = true
             args.shift()
         }
-        const semitones = Number(args[1]) ? Number(args[1]) : 0
-        const rep = await message.reply("_Changing the pitch of the file, please wait..._")
+        const gain = Number(args[1]) ? Number(args[1]) : 3
+        const freq = Number(args[2]) ? Number(args[2]) : 1000
+        const width = Number(args[3]) ? Number(args[3]) : 100
+        const rep = await message.reply("_Adding a highshelf filter to the file, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
@@ -48,10 +49,14 @@ export default class Pitch extends Command {
             const queue = audio.getQueue() as any
             file = queue?.[0].file
         }
-        await audio.pitch(file, semitones, setDownload)
-        rep.delete()
+        try {
+            await audio.highshelf(file, gain, freq, width, setDownload)
+        } catch {
+            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+        }
+        if (rep) rep.delete()
         if (!setDownload) {
-            const rep = await message.reply("Changed the pitch of the file!")
+            const rep = await message.reply("Added a highshelf filter to the file!")
             rep.delete({timeout: 3000})
         }
         return

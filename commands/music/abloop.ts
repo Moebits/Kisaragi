@@ -32,7 +32,8 @@ export default class ABLoop extends Command {
         const start = args[1] ? args[1] : "0"
         const end = args[2] ? args[2] : queue[0]?.duration
         audio.abloop(start, end)
-        await message.reply("Enabled A-B looping!")
+        const rep = await message.reply("Enabled A-B looping!")
+        rep.delete({timeout: 3000})
         return
     }
 }

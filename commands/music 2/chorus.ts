@@ -5,19 +5,19 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class AllPass extends Command {
+export default class Chorus extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Applies an allpass filter to an audio file.",
+            description: "Applies a chorus effect to an audio file.",
             help:
             `
-            _Note: Frequency and width are in Hz._
-            \`allpass freq? width?\` - Adds an allpass filter with the specified parameters.
-            \`allpass download/dl freq? width?\` - Applies the effect on an mp3 attachment andploads it.
+            \`chorus delay? decay? speed? depth?\` - Applies chorus to the audio file with the parameters.
+            \`chorus download/dl delay? decay? speed? depth?\` - Applies chorus to an attachment and uploads it.
             `,
             examples:
             `
-            \`=>allpass 600 100\`
+            \`=>chorus 55 0.3 25 3\`
+            \`=>chorus download 50 0.5 30 2\`
             `,
             aliases: [],
             cooldown: 20
@@ -29,17 +29,17 @@ export default class AllPass extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        const queue = audio.getQueue() as any
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {
             setDownload = true
             args.shift()
         }
-        let freq = parseInt(args[1], 10)
-        let width = parseInt(args[2], 10)
-        if (!freq) freq = 600
-        if (!width) width = 100
-        if (Number.isNaN(freq) || Number.isNaN(width)) return message.reply(`The parameters must be numbers ${discord.getEmoji("kannaCurious")}`)
-        const rep = await message.reply("_Applying an allpass filter, please wait..._")
+        const delay = Number(args[1]) ? Number(args[1]) : 50
+        const decay = Number(args[2]) ? Number(args[2]) : 0.3
+        const speed = Number(args[3]) ? Number(args[3]) : 2
+        const depth = Number(args[4]) ? Number(args[4]) : 2
+        const rep = await message.reply("_Adding chorus to the file, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
@@ -50,9 +50,16 @@ export default class AllPass extends Command {
             const queue = audio.getQueue() as any
             file = queue?.[0].file
         }
-        await audio.allPass(freq, width, file, setDownload)
+        try {
+            await audio.chorus(file, delay, decay, speed, depth, setDownload)
+        } catch {
+            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+        }
         if (rep) rep.delete()
-        if (!setDownload) message.reply("Applied an allpass filter!")
+        if (!setDownload) {
+            const rep = await message.reply("Added chorus to the file!")
+            rep.delete({timeout: 3000})
+        }
         return
     }
 }

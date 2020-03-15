@@ -42,14 +42,15 @@ export class AudioEffects {
         let outDest = fileDest + `.${ext}`
         let index = 0
         while (fs.existsSync(outDest)) {
-            outDest = index === 0 ? `${fileDest}.${ext}` : `${fileDest}${index}.${ext}`
+            outDest = index <= 1 ? `${fileDest}.${ext}` : `${fileDest}${index}.${ext}`
             index++
         }
+        console.log([...effect.split(" ")])
         const input = fs.createReadStream(filepath)
         const output = fs.createWriteStream(outDest)
         const transform = sox({
             global: {
-                "temp": "./temp",
+                "temp": "./tracks/transform",
                 "replay-gain": "off"
             },
             input: {type: ext},
@@ -57,7 +58,12 @@ export class AudioEffects {
             effects: ["gain", "-h", ...effect.split(" ")]
         })
         await new Promise((resolve) => {
-            input.pipe(transform).pipe(output)
+            input
+            .on("error", (err) => console.log(err))
+            .pipe(transform)
+            .on("error", (err) => console.log(err))
+            .pipe(output)
+            .on("error", (err) => console.log(err))
             .on("finish", () => resolve())
         })
         return outDest
@@ -94,16 +100,8 @@ export class AudioEffects {
         }
     }
 
-    public multibandcompressor = async (attacks: number[], decays: number[], knees: number[], gains: number[], crossovers: number[], filepath: string, fileDest: string) => {
-        let effect = ""
-        for (let i = 0; i < attacks.length; i++) {
-            effect += `"${attacks[i]} ${decays[i]} ${knees[i]} ${gains[i]}" ${crossovers[i]} \\\n`
-        }
-        return this.processEffect(`mcompand ${effect}`, filepath, fileDest)
-    }
-
     public compress = async (amount: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`contrast ${amount}`, filepath, fileDest)
+        return this.processEffect(`gain -50 contrast ${amount} gain -n`, filepath, fileDest)
     }
 
     public tremolo = async (speed: number, depth: number, filepath: string, fileDest: string) => {
@@ -111,59 +109,59 @@ export class AudioEffects {
     }
 
     public lowpass = async (freq: number, width: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`highpass ${freq} ${width}`, filepath, fileDest)
+        return this.processEffect(`gain -50 lowpass ${freq} ${width}h gain -n`, filepath, fileDest)
     }
 
     public highpass = async (freq: number, width: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`highpass ${freq} ${width}`, filepath, fileDest)
+        return this.processEffect(`gain -50 highpass ${freq} ${width}h gain -n`, filepath, fileDest)
     }
 
-    public equalizer = async (freq: number, resonance: number, gain: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`equalizer ${freq} ${resonance} ${gain}`, filepath, fileDest)
+    public peak = async (freq: number, resonance: number, gain: number, filepath: string, fileDest: string) => {
+        return this.processEffect(`gain -50 equalizer ${freq} ${resonance} ${gain} gain -n`, filepath, fileDest)
     }
 
-    public bass = async (gain: number, freq: number, width: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`bass ${gain} ${freq} ${width}`, filepath, fileDest)
+    public lowshelf = async (gain: number, freq: number, width: number, filepath: string, fileDest: string) => {
+        return this.processEffect(`gain -50 bass ${gain} ${freq} ${width}h gain -n`, filepath, fileDest)
     }
 
-    public treble = async (gain: number, freq: number, width: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`treble ${gain} ${freq} ${width}`, filepath, fileDest)
+    public highshelf = async (gain: number, freq: number, width: number, filepath: string, fileDest: string) => {
+        return this.processEffect(`gain -50 treble ${gain} ${freq} ${width}h gain -n`, filepath, fileDest)
     }
 
     public bandpass = async (freq: number, width: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`bandpass ${freq} ${width}`, filepath, fileDest)
+        return this.processEffect(`gain -50 bandpass ${freq} ${width} gain -n`, filepath, fileDest)
     }
 
     public bandreject = async (freq: number, width: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`bandreject ${freq} ${width}`, filepath, fileDest)
+        return this.processEffect(`gain -50 bandreject ${freq} ${width} gain -n`, filepath, fileDest)
     }
 
     public upsample = async (factor: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`upsample ${factor}`, filepath, fileDest)
+        return this.processEffect(`gain -50 upsample ${factor} gain -n`, filepath, fileDest)
     }
 
     public bitcrush = async (factor: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`downsample ${factor}`, filepath, fileDest)
+        return this.processEffect(`gain -50 downsample ${factor} gain -n`, filepath, fileDest)
     }
 
     public distortion = async (gain: number, color: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`overdrive ${gain} ${color}`, filepath, fileDest)
+        return this.processEffect(`gain -50 overdrive ${gain} ${color} gain -n`, filepath, fileDest)
     }
 
     public chorus = async (delay: number, decay: number, speed: number, depth: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`chorus 0.9 0.87 ${delay} ${decay} ${speed} ${depth}`, filepath, fileDest)
+        return this.processEffect(`gain -50 chorus 0.9 0.8 ${delay} ${decay} ${speed} ${depth} -t gain -n`, filepath, fileDest)
     }
 
     public phaser = async (delay: number, decay: number, speed: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`phaser 0.9 0.87 ${delay} ${decay} ${speed}`, filepath, fileDest)
+        return this.processEffect(`gain -50 phaser 0.9 0.8 ${delay} ${decay} ${speed} -t gain -n`, filepath, fileDest)
     }
 
-    public flanger = async (delay: number, depth: number, regen: number, width: number, speed: number, shape: number, phase: number, interp: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`flanger ${delay} ${depth} ${regen} ${width} ${speed} ${shape} ${phase} ${interp}`, filepath, fileDest)
+    public flanger = async (delay: number, depth: number, regen: number, width: number, speed: number, shape: "sin" | "tri", phase: number, interp: "lin" | "quad", filepath: string, fileDest: string) => {
+        return this.processEffect(`gain -50 flanger ${delay} ${depth} ${regen} ${width} ${speed} ${shape} ${phase} ${interp} gain -n`, filepath, fileDest)
     }
 
     public delay = async (delaysDecays: number[], filepath: string, fileDest: string) => {
-        return this.processEffect(`echo ${delaysDecays.join(" ")}`, filepath, fileDest)
+        return this.processEffect(`gain -50 echo 0.9 0.8 ${delaysDecays.join(" ")} gain -n`, filepath, fileDest)
     }
 
     public pitch = async (pitch: number, filepath: string, fileDest: string) => {
@@ -182,7 +180,7 @@ export class AudioEffects {
     }
 
     public reverb = async (reverb: number, damping: number, room: number, stereo: number, preDelay: number, wetGain: number, reverse: boolean, filepath: string, fileDest: string) => {
-        let effect = `pad 0 3 reverb ${reverb} ${damping} ${room} ${stereo} ${preDelay} ${wetGain}`
+        let effect = `gain -50 pad 0 3 reverb ${reverb} ${damping} ${room} ${stereo} ${preDelay} ${wetGain} gain -n`
         if (reverse) {
             effect = `"|sox ${filepath} -p reverse reverb -w ${reverb} ${damping} ${room} ${stereo} ${preDelay} ${wetGain} reverse`
         }
@@ -190,7 +188,7 @@ export class AudioEffects {
     }
 
     public allPass = async (freq: number, width: number, filepath: string, fileDest: string) => {
-        return this.processEffect(`gain -12 allpass ${freq} ${width} gain -n`, filepath, fileDest)
+        return this.processEffect(`gain -50 allpass ${freq} ${width} gain -n`, filepath, fileDest)
     }
 
     public combFilter = async (delay: number, decay: number, filepath: string, wavDest?: string) => {
@@ -200,24 +198,23 @@ export class AudioEffects {
         const array = new Uint8Array(arraybuffer)
         const header = array.slice(0, 44)
         const samples = array.slice(44)
-        const {sampleRate, byteDepth} = this.getWavInfo(header)
-        const bufferSize = samples.length * byteDepth
-        const delaySamples = Math.floor(delay * (sampleRate/1000))
-        const combSamples = [...samples.slice()]
-        for (let i = 0; i < bufferSize; i++) {
-            if (combSamples.length === bufferSize) break
-            combSamples.push(0)
+        const {sampleRate} = this.getWavInfo(header)
+        const delayedSamples = Math.floor(delay * (sampleRate/1000))
+        const combSamples = samples.slice()
+        for (let i = 0; i < samples.length - delayedSamples; i++) {
+            combSamples[i + delayedSamples] += combSamples[i] * decay
         }
-        for (let i = 0; i < bufferSize - delaySamples; i++) {
-            combSamples[i + delaySamples] += Number(combSamples[i] * decay)
-        }
+        /*for (let i = 0; i < samples.length; i++) {
+            combSamples[i] = (combSamples[i] + (decay*combSamples[i-delay]))
+        }*/
         if (!wavDest) return combSamples
         const combArray = [...header, ...combSamples]
+        console.log(combArray)
         fs.writeFileSync(wavDest, Buffer.from(new Uint8Array(combArray)))
-        const mp3File = await this.WavToMp3(wavDest)
+        // const mp3File = await this.WavToMp3(wavDest)
         fs.unlink(wavFile, (err) => console.log(err))
-        fs.unlink(wavDest, (err) => console.log(err))
-        return mp3File
+        // fs.unlink(wavDest, (err) => console.log(err))
+        return wavDest
     }
 
     public mp3ToWav = async (filepath: string) => {

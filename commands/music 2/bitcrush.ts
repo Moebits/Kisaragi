@@ -5,23 +5,22 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Pitch extends Command {
+export default class Bitcrush extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Changes the pitch of an audio file (in semitones).",
+            description: "Applies bitcrushing (downsampling) to an audio file.",
             help:
             `
-            _Note: Negative values will decrease pitch 12 semitones = 1 octave._
-            \`pitch semitones\` - Changes the pitch of the song
-            \`pitch download/dl semitones\` - Applies the effect to an attachment and uploads it.
+            \`bitcrush factor?\` - Applies bitcrush to the audio file with the parameters.
+            \`bitcrush download/dl factor?\` - Applies bitcrush to an attachment and uploads it.
             `,
             examples:
             `
-            \`=>pitch 12\`
-            \`=>pitch -12\`
+            \`=>bitcrush 2\`
+            \`=>bitcrush download 4\`
             `,
-            aliases: ["pitchshift", "semitones"],
-            cooldown: 10
+            aliases: ["downsample"],
+            cooldown: 20
         })
     }
 
@@ -36,8 +35,8 @@ export default class Pitch extends Command {
             setDownload = true
             args.shift()
         }
-        const semitones = Number(args[1]) ? Number(args[1]) : 0
-        const rep = await message.reply("_Changing the pitch of the file, please wait..._")
+        const factor = Number(args[1]) ? Number(args[1]) : 2
+        const rep = await message.reply("_Adding bitcrushing to the file, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
@@ -48,10 +47,14 @@ export default class Pitch extends Command {
             const queue = audio.getQueue() as any
             file = queue?.[0].file
         }
-        await audio.pitch(file, semitones, setDownload)
-        rep.delete()
+        try {
+            await audio.bitcrush(file, factor, setDownload)
+        } catch {
+            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+        }
+        if (rep) rep.delete()
         if (!setDownload) {
-            const rep = await message.reply("Changed the pitch of the file!")
+            const rep = await message.reply("Added bitcrushing to the file!")
             rep.delete({timeout: 3000})
         }
         return

@@ -1,6 +1,7 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
+import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -12,6 +13,7 @@ export default class Loop extends Command {
             help:
             `
             \`loop\` - Loops the current track.
+            \`loop link/query\` - An alias for \`play loop\`.
             `,
             examples:
             `
@@ -26,9 +28,15 @@ export default class Loop extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const cmd = new CommandFunctions(discord, message)
         const audio = new Audio(discord, message)
+        if (Functions.combineArgs(args, 1).trim()) {
+            args.shift()
+            return cmd.runCommand(message, ["play", "loop", ...args])
+        }
         audio.loop()
-        message.channel.send("Enabled looping!")
+        const rep = await message.reply("Enabled looping!")
+        rep.delete({timeout: 3000})
         return
     }
 }

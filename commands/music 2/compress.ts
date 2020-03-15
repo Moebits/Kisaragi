@@ -5,23 +5,23 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Pitch extends Command {
+export default class Tremolo extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Changes the pitch of an audio file (in semitones).",
+            description: "Applies compression to an audio file (reduces dynamic range).",
             help:
             `
-            _Note: Negative values will decrease pitch 12 semitones = 1 octave._
-            \`pitch semitones\` - Changes the pitch of the song
-            \`pitch download/dl semitones\` - Applies the effect to an attachment and uploads it.
+            _Note: This is a simple compression effect, set the amount from 0-100._
+            \`compress amount?\` - Applies compression to the audio file with the parameters.
+            \`compress download/dl amount?\` - Applies compression to an attachment and uploads it.
             `,
             examples:
             `
-            \`=>pitch 12\`
-            \`=>pitch -12\`
+            \`=>compress 75\`
+            \`=>compress 90\`
             `,
-            aliases: ["pitchshift", "semitones"],
-            cooldown: 10
+            aliases: [],
+            cooldown: 20
         })
     }
 
@@ -36,8 +36,8 @@ export default class Pitch extends Command {
             setDownload = true
             args.shift()
         }
-        const semitones = Number(args[1]) ? Number(args[1]) : 0
-        const rep = await message.reply("_Changing the pitch of the file, please wait..._")
+        const amount = Number(args[1]) ? Number(args[1]) : 80
+        const rep = await message.reply("_Applying compression to the file, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
@@ -48,10 +48,14 @@ export default class Pitch extends Command {
             const queue = audio.getQueue() as any
             file = queue?.[0].file
         }
-        await audio.pitch(file, semitones, setDownload)
-        rep.delete()
+        try {
+            await audio.compress(file, amount, setDownload)
+        } catch {
+            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+        }
+        if (rep) rep.delete()
         if (!setDownload) {
-            const rep = await message.reply("Changed the pitch of the file!")
+            const rep = await message.reply("Applied compression to the file!")
             rep.delete({timeout: 3000})
         }
         return

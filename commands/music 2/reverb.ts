@@ -14,7 +14,7 @@ export default class Reverb extends Command {
             _Note: The first four parameters are percentages, pre-delay is in milliseconds and gain is in decibels._
             \`reverb amount? damping? room? stereo? pre-delay? wet-gain?\` - Applies a reverb with the specified parameters.
             \`reverb reverse amount? damping? room? stereo? pre-delay? wet-gain?\` - Applies a reverse reverb effect.
-            \`reverb download/dl reverse? amount? damping? room? stereo? pre-delay? wet-gain?\` - Applies the effect to an mp3 attachment and uploads it.
+            \`reverb download/dl reverse? amount? damping? room? stereo? pre-delay? wet-gain?\` - Applies the effect to an attachment and uploads it.
             `,
             examples:
             `
@@ -43,8 +43,6 @@ export default class Reverb extends Command {
             setDownload = true
             args.shift()
         }
-        console.log(setDownload)
-        console.log(newArgs)
         const amount = Number(newArgs[0]) ? Number(newArgs[0]) : 50
         const damping = Number(newArgs[1]) ? Number(newArgs[1]) : 50
         const room = Number(newArgs[2]) ? Number(newArgs[2]) : 100
@@ -62,9 +60,16 @@ export default class Reverb extends Command {
             const queue = audio.getQueue() as any
             file = queue[0]?.file
         }
-        await audio.reverb(file, amount, damping, room, stereo, preDelay, wetGain, setReverse)
+        try {
+            await audio.reverb(file, amount, damping, room, stereo, preDelay, wetGain, setReverse)
+        } catch {
+            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+        }
         if (rep) rep.delete()
-        if (!setDownload) message.reply("Applied reverb to the file!")
+        if (!setDownload) {
+            const rep = await message.reply("Applied reverb to the file!")
+            rep.delete({timeout: 3000})
+        }
         return
     }
 }

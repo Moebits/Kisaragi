@@ -28,7 +28,8 @@ export default class Clear extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         audio.clear()
-        await message.reply("Cleared all effects!")
+        const rep = await message.reply("Cleared all effects!")
+        rep.delete({timeout: 3000})
         return
     }
 }

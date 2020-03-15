@@ -12,14 +12,14 @@ export default class Equalizer extends Command {
             description: "Changes the volume of specific frequencies.",
             help:
             `
-            \`equalizer\` - Open the equalizer
+            \`equalizer\` - Opens the equalizer.
             `,
             examples:
             `
             \`=>equalizer\`
             `,
             aliases: ["eq"],
-            cooldown: 5
+            cooldown: 20
         })
     }
 
@@ -27,11 +27,9 @@ export default class Equalizer extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-
-        const player = message.guild?.voice?.connection?.dispatcher
-        if (!player) return message.reply(`It seems as if you aren't playing any audio ${discord.getEmoji("kannaCurious")}`)
-        const dest = `./tracks/eq.mp3`
-
+        const audio = new Audio(discord, message)
+        const msg = await audio.equalizerMenu()
+        msg.delete()
         return
     }
 }

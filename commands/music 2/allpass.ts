@@ -5,23 +5,22 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Pitch extends Command {
+export default class AllPass extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Changes the pitch of an audio file (in semitones).",
+            description: "Applies an allpass filter to an audio file.",
             help:
             `
-            _Note: Negative values will decrease pitch 12 semitones = 1 octave._
-            \`pitch semitones\` - Changes the pitch of the song
-            \`pitch download/dl semitones\` - Applies the effect to an attachment and uploads it.
+            _Note: Frequency and width are in Hz._
+            \`allpass freq? width?\` - Adds an allpass filter with the specified parameters.
+            \`allpass download/dl freq? width?\` - Applies the effect to an attachment and uploads it.
             `,
             examples:
             `
-            \`=>pitch 12\`
-            \`=>pitch -12\`
+            \`=>allpass 600 100\`
             `,
-            aliases: ["pitchshift", "semitones"],
-            cooldown: 10
+            aliases: [],
+            cooldown: 20
         })
     }
 
@@ -30,14 +29,17 @@ export default class Pitch extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
-        const queue = audio.getQueue() as any
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {
             setDownload = true
             args.shift()
         }
-        const semitones = Number(args[1]) ? Number(args[1]) : 0
-        const rep = await message.reply("_Changing the pitch of the file, please wait..._")
+        let freq = parseInt(args[1], 10)
+        let width = parseInt(args[2], 10)
+        if (!freq) freq = 600
+        if (!width) width = 100
+        if (Number.isNaN(freq) || Number.isNaN(width)) return message.reply(`The parameters must be numbers ${discord.getEmoji("kannaCurious")}`)
+        const rep = await message.reply("_Applying an allpass filter, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
@@ -48,10 +50,14 @@ export default class Pitch extends Command {
             const queue = audio.getQueue() as any
             file = queue?.[0].file
         }
-        await audio.pitch(file, semitones, setDownload)
-        rep.delete()
+        try {
+            await audio.allPass(freq, width, file, setDownload)
+        } catch {
+            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+        }
+        if (rep) rep.delete()
         if (!setDownload) {
-            const rep = await message.reply("Changed the pitch of the file!")
+            const rep = await message.reply("Applied an allpass filter!")
             rep.delete({timeout: 3000})
         }
         return

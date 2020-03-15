@@ -383,7 +383,7 @@ export class Embeds {
     // Create Help Embed
     public createHelpEmbed = async (embeds: MessageEmbed[]) => {
         let page = 7
-        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Info", "Weeb", "Level", "Lewd", "Logging", "Misc", "Mod", "Music", "Website", "Website 2"]
+        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Mod", "Music", "Music 2", "Website", "Website 2"]
         let compressed = false
         const longDescription: string[] = []
         const commandCount: number[] = []
@@ -410,14 +410,15 @@ export class Embeds {
             this.discord.getEmoji("fun"),
             this.discord.getEmoji("game"),
             this.discord.getEmoji("heart"),
+            this.discord.getEmoji("image"),
             this.discord.getEmoji("info"),
             this.discord.getEmoji("japanese"),
             this.discord.getEmoji("level"),
             this.discord.getEmoji("lewd"),
-            this.discord.getEmoji("logging"),
             this.discord.getEmoji("misc"),
             this.discord.getEmoji("mod"),
             this.discord.getEmoji("music"),
+            this.discord.getEmoji("musicTwo"),
             this.discord.getEmoji("website"),
             this.discord.getEmoji("websiteTwo")
         ]
@@ -441,10 +442,11 @@ export class Embeds {
         const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("info") && user.bot === false
         const japaneseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("japanese") && user.bot === false
         const levelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("level") && user.bot === false
-        const loggingCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("logging") && user.bot === false
+        const imageCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("image") && user.bot === false
         const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("misc") && user.bot === false
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
         const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
+        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
         const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
         const compressCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("compress") && user.bot === false
@@ -460,16 +462,17 @@ export class Embeds {
         const info = msg.createReactionCollector(infoCheck)
         const japanese = msg.createReactionCollector(japaneseCheck)
         const level = msg.createReactionCollector(levelCheck)
-        const logging = msg.createReactionCollector(loggingCheck)
+        const image = msg.createReactionCollector(imageCheck)
         const misc = msg.createReactionCollector(miscCheck)
         const mod = msg.createReactionCollector(modCheck)
         const music = msg.createReactionCollector(musicCheck)
+        const musicTwo = msg.createReactionCollector(musicTwoCheck)
         const web = msg.createReactionCollector(webCheck)
         const webTwo = msg.createReactionCollector(webTwoCheck)
         const compress = msg.createReactionCollector(compressCheck)
         await this.redisAddEmbed(msg)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, info, japanese, level, lewd, logging, misc, mod, music, web, webTwo]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, web, webTwo]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
@@ -502,9 +505,9 @@ export class Embeds {
     public editHelpEmbed = async (msg: Message, emoji: string, user: User, embeds: MessageEmbed[]) => {
         const emojiMap: string[] = [
             "admin", "anime", "botDeveloper",
-            "config", "fun", "game", "heart", "info",
-            "japanese", "level", "lewd", "logging",
-            "misc", "mod", "music", "website", "websiteTwo"
+            "config", "fun", "game", "heart", "image", "info",
+            "japanese", "level", "lewd",
+            "misc", "mod", "music", "musicTwo", "website", "websiteTwo"
         ]
         let compressed = false
         const longDescription: string[] = []
@@ -535,10 +538,11 @@ export class Embeds {
         const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("info") && user.bot === false
         const japaneseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("japanese") && user.bot === false
         const levelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("level") && user.bot === false
-        const loggingCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("logging") && user.bot === false
+        const imageCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("image") && user.bot === false
         const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("misc") && user.bot === false
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
         const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
+        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
         const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
         const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("repost") && user.bot === false
@@ -555,16 +559,17 @@ export class Embeds {
         const info = msg.createReactionCollector(infoCheck)
         const japanese = msg.createReactionCollector(japaneseCheck)
         const level = msg.createReactionCollector(levelCheck)
-        const logging = msg.createReactionCollector(loggingCheck)
+        const image = msg.createReactionCollector(imageCheck)
         const misc = msg.createReactionCollector(miscCheck)
         const mod = msg.createReactionCollector(modCheck)
         const music = msg.createReactionCollector(musicCheck)
+        const musicTwo = msg.createReactionCollector(musicTwoCheck)
         const web = msg.createReactionCollector(webCheck)
         const webTwo = msg.createReactionCollector(webTwoCheck)
         const repost = msg.createReactionCollector(repostCheck)
         const compress = msg.createReactionCollector(compressCheck)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, info, japanese, level, lewd, logging, misc, mod, music, web, webTwo]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, web, webTwo]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {

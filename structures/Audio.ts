@@ -1,6 +1,7 @@
 import axios from "axios"
 import {Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, StreamDispatcher, User, VoiceConnection} from "discord.js"
 import fs from "fs"
+import mp3Duration from "mp3-duration"
 import path from "path"
 import Soundcloud, {SoundCloudTrack} from "soundcloud.ts"
 // @ts-ignore
@@ -29,12 +30,327 @@ export class Audio {
     private readonly embeds = new Embeds(this.discord, this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
+    public compress = async (filepath: string, amount: number, dl?: boolean) => {
+        if (amount < 0) amount = 0
+        if (amount > 100) amount = 100
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_compress", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_compress`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.compress(amount, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("compress", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public tremolo = async (filepath: string, speed: number, depth: number, dl?: boolean) => {
+        if (depth < 0) depth = 0
+        if (depth > 100) depth = 100
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_tremolo", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_tremolo`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.tremolo(speed, depth, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("tremolo", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public lowpass = async (filepath: string, freq: number, width: number, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_lowpass", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_lowpass`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.lowpass(freq, width, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("lowpass", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public highpass = async (filepath: string, freq: number, width: number, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_highpass", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_highpass`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.highpass(freq, width, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("highpass", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public peak = async (filepath: string, freq: number, resonance: number, gain: number, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_peak", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_peak`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.peak(freq, resonance, gain, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("peak", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public lowshelf = async (filepath: string, gain: number, freq: number, width: number, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_lowshelf", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_lowshelf`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.lowshelf(gain, freq, width, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("lowshelf", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public highshelf = async (filepath: string, gain: number, freq: number, width: number, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_highshelf", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_highshelf`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.highshelf(gain, freq, width, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("highshelf", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public bandpass = async (filepath: string, freq: number, width: number, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_bandpass", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_bandpass`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.bandpass(freq, width, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("bandpass", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public bandreject = async (filepath: string, freq: number, width: number, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_bandreject", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_bandreject`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.bandreject(freq, width, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("bandreject", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public upsample = async (filepath: string, factor: number, dl?: boolean) => {
+        if (factor > 5) factor = 5
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_upsample", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_upsample`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.upsample(factor, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("upsample", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public bitcrush = async (filepath: string, factor: number, dl?: boolean) => {
+        if (factor > 5) factor = 5
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_bitcrush", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_bitcrush`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.bitcrush(factor, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("bitcrush", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public distortion = async (filepath: string, gain: number, color: number, dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_distortion", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_distortion`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.distortion(gain, color, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("distortion", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public chorus = async (filepath: string, delay: number, decay: number, speed: number, depth: number, dl?: boolean) => {
+        if (speed > 5) speed = 5
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_chorus", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_chorus`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.chorus(delay, decay, speed, depth, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("chorus", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public phaser = async (filepath: string, delay: number, decay: number, speed: number, dl?: boolean) => {
+        if (speed > 5) speed = 5
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_phaser", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_phaser`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.phaser(delay, decay, speed, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("phaser", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public flanger = async (filepath: string, delay: number, depth: number, regen: number, width: number, speed: number, shape: "sin" | "tri", phase: number, interp: "lin" | "quad", dl?: boolean) => {
+        if (delay > 30) delay = 30
+        if (depth > 10) depth = 10
+        if (regen < -95) regen = -95
+        if (regen > 95) regen = 95
+        if (width < 0) width = 0
+        if (width > 100) width = 100
+        if (speed < 0.1) speed = 0.1
+        if (speed > 10) speed = 10
+        if (shape !== "sin" && shape !== "tri") shape = "sin"
+        if (phase < 0) phase = 0
+        if (phase > 100) phase = 100
+        if (interp !== "lin" && interp !== "quad") interp = "lin"
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_flanger", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_flanger`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.flanger(delay, depth, regen, width, speed, shape, phase, interp, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("flanger", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public delay = async (filepath: string, delaysDecays: number[], dl?: boolean) => {
+        const queue = this.getQueue() as any
+        const filename = path.basename(filepath.replace("_delay", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_delay`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.delay(delaysDecays, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (queue[0]) queue[0].file = mp3File
+        if (dl) {
+            return this.fx.downloadEffect("delay", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
     public speed = async (filepath: string, factor: number, pitch?: boolean, dl?: boolean) => {
+        if (factor < 0.1) factor = 0.1
+        if (factor > 100) factor = 100
         const queue = this.getQueue() as any
         if (!pitch) pitch = false
         const filename = path.basename(filepath.replace("_speed", "")).slice(0, -4)
         const fileDest = `./tracks/transform/${filename}_speed`
-        const mp3File = await this.fx.speed(factor, pitch, filepath, fileDest)
+        let mp3File: string
+        try {
+            mp3File = await this.fx.speed(factor, pitch, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
         if (queue[0]) queue[0].file = mp3File
         if (dl) {
             return this.fx.downloadEffect("speed", mp3File)
@@ -47,7 +363,12 @@ export class Audio {
         const queue = this.getQueue() as any
         const filename = path.basename(filepath.replace("_pitch", "")).slice(0, -4)
         const fileDest = `./tracks/transform/${filename}_pitch`
-        const mp3File = await this.fx.pitch(semitones, filepath, fileDest)
+        let mp3File: string
+        try {
+            mp3File = await this.fx.pitch(semitones, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
         if (queue[0]) queue[0].file = mp3File
         if (dl) {
             return this.fx.downloadEffect("pitch", mp3File)
@@ -59,8 +380,13 @@ export class Audio {
     public reverse = async (filepath: string, dl?: boolean) => {
         const queue = this.getQueue() as any
         const filename = path.basename(filepath.replace("_reverse", "")).slice(0, -4)
-        const mp3Dest = `./tracks/transform/${filename}_reverse`
-        const mp3File = await this.fx.reverse(filepath, mp3Dest)
+        const fileDest = `./tracks/transform/${filename}_reverse`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.reverse(filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
         if (queue[0]) queue[0].file = mp3File
         if (queue[0]) queue[0].reverse = queue[0].reverse === true ? false : true
         if (dl) {
@@ -71,11 +397,34 @@ export class Audio {
     }
 
     public reverb = async (filepath: string, reverb: number, damping: number, room: number, stereo: number, preDelay: number, wetGain: number, reverse: boolean, dl?: boolean) => {
+        if (stereo < 0) stereo = 0
+        if (stereo > 100) stereo = 100
         const filename = path.basename(filepath.replace("_reverb", "")).slice(0, -4)
         const fileDest = `./tracks/transform/${filename}_reverb`
-        const mp3File = await this.fx.reverb(reverb, damping, room, stereo, preDelay, wetGain, reverse, filepath, fileDest)
+        let mp3File: string
+        try {
+            mp3File = await this.fx.reverb(reverb, damping, room, stereo, preDelay, wetGain, reverse, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
         if (dl) {
             return this.fx.downloadEffect("reverb", mp3File)
+        } else {
+            return this.play(mp3File, this.time())
+        }
+    }
+
+    public allPass = async (freq: number, width: number, filepath: string, dl?: boolean) => {
+        const filename = path.basename(filepath.replace("_allpass", "")).slice(0, -4)
+        const fileDest = `./tracks/transform/${filename}_allpass`
+        let mp3File: string
+        try {
+            mp3File = await this.fx.allPass(freq, width, filepath, fileDest)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        if (dl) {
+            return this.fx.downloadEffect("allpass", mp3File)
         } else {
             return this.play(mp3File, this.time())
         }
@@ -90,20 +439,9 @@ export class Audio {
         return this.play(mp3File, this.time())
     }
 
-    public allPass = async (freq: number, width: number, filepath: string, dl?: boolean) => {
-        const filename = path.basename(filepath.replace("_allpass", "")).slice(0, -4)
-        const fileDest = `./tracks/transform/${filename}_allpass`
-        const mp3File = await this.fx.allPass(freq, width, filepath, fileDest)
-        if (dl) {
-            return this.fx.downloadEffect("allpass", mp3File)
-        } else {
-            return this.play(mp3File, this.time())
-        }
-    }
-
     public time = () => {
         const dispatcher = this.message.guild?.voice?.connection?.dispatcher
-        const time = Math.floor(Number(dispatcher?.totalStreamTime) / 1000)
+        const time = Math.floor(Number(dispatcher?.streamTime) / 1000)
         if (Number.isNaN(time)) return 0
         return time
     }
@@ -117,7 +455,7 @@ export class Audio {
         }
     }
 
-    public queueAdd = async (link: string, file: string, setReverse?: boolean) => {
+    public queueAdd = async (link: string, file: string) => {
         const discord = this.discord
         let kind: "youtube" | "soundcloud" | "link"
         const queueObj = {
@@ -133,11 +471,11 @@ export class Audio {
             playing: false,
             looping: false,
             ablooping: false,
-            speed: "1.0",
-            pitch: "0",
+            speed: 1.0,
+            pitch: 0,
             filters: [],
-            fx: [],
-            reverse: setReverse ? true : false
+            effects: [],
+            reverse: false
         }
         if (link?.match(/youtube.com|youtu.be/)) {
             const info = await this.youtube.videos.get(link)
@@ -152,7 +490,6 @@ export class Audio {
             queueObj.url = url
             queueObj.image = image
             queueObj.duration = duration
-            queueObj.requester = this.message.author.tag
         } else if (link?.match(/soundcloud.com/)) {
             const info = await this.soundcloud.tracks.get(link) as SoundCloudTrack
             const image = info.artwork_url
@@ -166,7 +503,6 @@ export class Audio {
             queueObj.url = url
             queueObj.image = image
             queueObj.duration = String(duration)
-            queueObj.requester = this.message.author.tag
         } else {
             kind = "link"
             queueObj.title = link
@@ -174,34 +510,18 @@ export class Audio {
         }
         queueObj.file = file
         queueObj.originalFile = file
+        queueObj.requester = this.message.author.tag
         if (kind === "link") {
             queueObj.details =
             `${discord.getEmoji("star")}_Link:_ ${link}\n` +
-            `${discord.getEmoji("star")}_Loop Mode:_ **${queueObj.looping ? "Infinite" : (queueObj.ablooping ? "Point A-B" : "One Shot")}**\n` +
-            `${discord.getEmoji("star")}_Reverse Mode:_ **${queueObj.reverse ? "On" : "Off"}**\n` +
-            `${discord.getEmoji("star")}_Playback Speed:_ **${queueObj.speed}x**\n` +
-            `${discord.getEmoji("star")}_Frequency Shift:_ **${queueObj.pitch} semitones**\n` +
-            `${discord.getEmoji("star")}_Filters:_ _${queueObj.filters[0] ? "None" : queueObj.filters.join(", ")}_\n` +
-            `${discord.getEmoji("star")}_Effects:_ _${queueObj.fx[0] ? "None" : queueObj.fx.join(", ")}_\n` +
-            `_Current song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
-            `_Click on any reaction to refresh._\n` +
             `_Added by ${this.message.author.tag}_`
         } else {
             queueObj.details =
             `${discord.getEmoji("star")}_Title:_ [**${queueObj.title}**](${queueObj.url})\n` +
             `${discord.getEmoji("star")}_Artist:_ **${queueObj.artist}**\n` +
             `${discord.getEmoji("star")}_Duration:_ \`${queueObj.duration}\`\n` +
-            `${discord.getEmoji("star")}_Loop Mode:_ **${queueObj.looping ? "Infinite" : (queueObj.ablooping ? "Point A-B" : "One Shot")}**\n` +
-            `${discord.getEmoji("star")}_Reverse Mode:_ **${queueObj.reverse ? "On" : "Off"}**\n` +
-            `${discord.getEmoji("star")}_Playback Speed:_ **${queueObj.speed}x**\n` +
-            `${discord.getEmoji("star")}_Frequency Shift:_ **${queueObj.pitch} semitones**\n` +
-            `${discord.getEmoji("star")}_Filters:_ _${queueObj.filters[0] ? "None" : queueObj.filters.join(", ")}_\n` +
-            `${discord.getEmoji("star")}_Effects:_ _${queueObj.fx[0] ? "None" : queueObj.fx.join(", ")}_\n` +
-            `_Current song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
-            `_Click on any reaction to refresh._\n` +
             `_Added by ${this.message.author.tag}_`
         }
-        console.log(queueObj)
         const queue = this.getQueue() as any
         const pos = queue.push(queueObj)
         const topImg = kind === "youtube" ? "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png" :
@@ -226,7 +546,6 @@ export class Audio {
     public loop = () => {
         const queue = this.getQueue() as any
         const looping = queue[0]?.looping
-        console.log(queue[0].looping)
         if (looping) {
             queue[0].looping = false
         } else {
@@ -264,9 +583,9 @@ export class Audio {
         const queue = this.getQueue() as any
         if (!queue) return "It looks like you aren't playing anything..."
         const now = queue[0]
-        const nowEmbed = this.updateNowPlaying()
+        const nowEmbed = await this.updateNowPlaying()
         const msg = await this.message.channel.send(nowEmbed)
-        const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear", "mp3"]
+        const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "reset", "save"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
         const resumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("resume") && user.bot === false
         const pauseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("pause") && user.bot === false
@@ -280,8 +599,8 @@ export class Audio {
         const volumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("volume") && user.bot === false
         const eqCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("eq") && user.bot === false
         const fxCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fx") && user.bot === false
-        const clearCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("clear") && user.bot === false
-        const mp3Check = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mp3") && user.bot === false
+        const clearCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reset") && user.bot === false
+        const mp3Check = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("save") && user.bot === false
 
         const resume = msg.createReactionCollector(resumeCheck)
         const pause = msg.createReactionCollector(pauseCheck)
@@ -300,13 +619,13 @@ export class Audio {
         const reactors = [resume, pause, scrub, reverse, speed, pitch, loop, abloop, skip, volume, eq, fx, clear, mp3]
         for (let i = 0; i < reactors.length; i++) {
             reactors[i].on("collect", async (reaction, user) => {
-                await msg.edit(this.updateNowPlaying())
+                await msg.edit(await this.updateNowPlaying())
                 if (reaction.emoji.name === "reverse") {
                     await reaction.users.remove(user)
                     const rep = await this.message.channel.send(`<@${user.id}>, _Please wait, reversing the file..._`)
                     await this.reverse(now.file)
-                    if (rep) await rep.delete()
-                    await msg.edit(this.updateNowPlaying())
+                    rep.delete()
+                    await msg.edit(await this.updateNowPlaying())
                     return
                 } else if (reaction.emoji.name === "volume") {
                     let vol = 100
@@ -322,7 +641,7 @@ export class Audio {
                     }
                     const rep = await this.message.channel.send(`<@${user.id}>, Enter a volume scaling factor \`0-200%\`.`)
                     await this.embeds.createPrompt(getVolumeChange)
-                    if (rep) await rep.delete()
+                    rep.delete()
                     return this.volume(vol)
                 } else if (reaction.emoji.name === "speed") {
                     let factor = 1.0
@@ -343,10 +662,16 @@ export class Audio {
                     }
                     const rep = await this.message.channel.send(`<@${user.id}>, Enter the new speed. Add \`pitch\` to also change the pitch along with the speed.`)
                     await this.embeds.createPrompt(getSpeedChange)
-                    if (rep) rep.delete()
+                    rep.delete()
                     const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the speed of the file..._`)
                     await this.speed(now.file, factor, setPitch)
-                    if (rep2) await rep2.delete()
+                    rep2.delete()
+                    if (factor < 0) {
+                        now.speed /= factor
+                    } else {
+                        now.speed *= factor
+                    }
+                    await msg.edit(await this.updateNowPlaying())
                     return
                 } else if (reaction.emoji.name === "loop") {
                     await reaction.users.remove(user)
@@ -354,14 +679,14 @@ export class Audio {
                     const loopText = queue[0]?.looping === true ? "Disabled looping!" : "Enabled looping!"
                     const rep = await this.message.channel.send(`<@${user.id}>, ${loopText}`)
                     this.loop()
-                    if (rep) await rep.delete({timeout: 3000})
-                    await msg.edit(this.updateNowPlaying())
+                    await msg.edit(await this.updateNowPlaying())
+                    rep.delete({timeout: 1000})
                     return
                 } else if (reaction.emoji.name === "skip") {
                     await reaction.users.remove(user)
-                    await this.skip()
                     const rep = await this.message.channel.send(`<@${user.id}>, Skipped this track!`)
-                    if (rep) await rep.delete({timeout: 3000})
+                    rep.delete({timeout: 3000})
+                    await this.skip()
                     return
                 } else if (reaction.emoji.name === "pitch") {
                     let semitones = 0
@@ -377,10 +702,12 @@ export class Audio {
                     }
                     const rep = await this.message.channel.send(`<@${user.id}>, Enter the new pitch in semitones. 12 semitones = 1 octave.`)
                     await this.embeds.createPrompt(getPitchChange)
-                    if (rep) await rep.delete()
+                    rep.delete()
                     const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the pitch of the file..._`)
                     await this.pitch(now.file, semitones)
-                    if (rep2) await rep2.delete()
+                    rep2.delete()
+                    now.pitch += semitones
+                    await msg.edit(await this.updateNowPlaying())
                     return
                 } else if (reaction.emoji.name === "scrub") {
                     let position = "0"
@@ -391,11 +718,20 @@ export class Audio {
                     }
                     const rep = await this.message.channel.send(`<@${user.id}>, Enter the new song position, eg. \`1:00\`.`)
                     await this.embeds.createPrompt(getPositionChange)
-                    if (rep) await rep.delete()
+                    rep.delete()
                     await this.scrub(position)
+                    await msg.edit(await this.updateNowPlaying())
                     return
                 } else if (reaction.emoji.name === "abloop") {
                     await reaction.users.remove(user)
+                    if (queue[0].ablooping === true) {
+                        queue[0].ablooping = false
+                        await this.play(queue[0].file)
+                        await msg.edit(await this.updateNowPlaying())
+                        const rep = await this.message.channel.send(`<@${user.id}>, Disabled A-B looping!`)
+                        rep.delete({timeout: 3000})
+                        return
+                    }
                     let start = "0"
                     let end = now.duration
                     async function getABLoop(response: Message) {
@@ -406,21 +742,35 @@ export class Audio {
                     }
                     const rep = await this.message.channel.send(`<@${user.id}>, Enter the starting time and the ending time for the A-B loop. eg \`1:00 1:30\`.`)
                     await this.embeds.createPrompt(getABLoop)
-                    if (rep) await rep.delete()
+                    rep.delete()
+                    const rep2 = await this.message.channel.send(`<@${user.id}>, Enabled A-B Looping!`)
+                    rep2.delete({timeout: 3000})
+                    queue[0].ablooping = true
+                    await msg.edit(await this.updateNowPlaying())
                     await this.abloop(start, end)
-                    const abText = queue[0].ablooping === true ? "Disabled A-B looping!" : "Enabled A-B looping!"
-                    const rep2 = await this.message.channel.send(`<@${user.id}>, ${abText}`)
-                    if (rep2) await rep.delete({timeout: 3000})
                     return
                 } else if (reaction.emoji.name === "clear") {
                     await reaction.users.remove(user)
                     await this.clear()
-                    const rep = await this.message.channel.send(`<@${user.id}>, Cleared all effects athat were applied to this song!`)
-                    if (rep) await rep.delete({timeout: 3000})
+                    const rep = await this.message.channel.send(`<@${user.id}>, Cleared all effects that were applied to this song!`)
+                    rep.delete({timeout: 3000})
+                    await msg.edit(await this.updateNowPlaying())
                     return
                 } else if (reaction.emoji.name === "mp3") {
                     await reaction.users.remove(user)
                     await this.mp3Download(user.id)
+                    return
+                } else if (reaction.emoji.name === "eq") {
+                    await reaction.users.remove(user)
+                    const m = await this.equalizerMenu()
+                    await msg.edit(await this.updateNowPlaying())
+                    m.delete()
+                    return
+                } else if (reaction.emoji.name === "fx") {
+                    await reaction.users.remove(user)
+                    const m = await this.fxMenu()
+                    await msg.edit(await this.updateNowPlaying())
+                    m.delete()
                     return
                 }
                 await reaction.users.remove(user)
@@ -429,37 +779,39 @@ export class Audio {
         }
     }
 
-    public updateNowPlaying = () => {
+    public updateNowPlaying = async (position?: number) => {
+        if (!position) position = 0
+        const duration = await this.getDuration()
+        const durationStr = this.parseSCDuration(duration*1000)
         const discord = this.discord
         const queue = this.getQueue() as any
-        const now = queue[0]
+        const now = queue[position]
         let details = ""
         if (now.kind === "link") {
             details =
-            `${discord.getEmoji("star")}_Link:_ ${now.link}\n` +
-            `${discord.getEmoji("star")}_Loop Mode:_ **${now.looping ? "Infinite" : (now.ablooping ? "Point A-B" : "One Shot")}**\n` +
-            `${discord.getEmoji("star")}_Reverse Mode:_ **${now.reverse ? "On" : "Off"}**\n` +
-            `${discord.getEmoji("star")}_Playback Speed:_ **${now.speed}x**\n` +
-            `${discord.getEmoji("star")}_Frequency Shift:_ **${now.pitch} semitones**\n` +
-            `${discord.getEmoji("star")}_Filters:_ _${now.filters[0] ? "None" : now.filters.join(", ")}_\n` +
-            `${discord.getEmoji("star")}_Effects:_ _${now.fx[0] ? "None" : now.fx.join(", ")}_\n` +
-            `_Current song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
-            `_Click on any reaction to refresh._\n` +
-            `_Added by ${this.message.author.tag}_`
+            `${now.looping || now.ablooping ? `${discord.getEmoji("loop")}Loop mode is **on**! ${discord.getEmoji("aquaUp")}\n` : ""}` +
+            `${now.reverse ? `${discord.getEmoji("reverse")}Reverse mode is **on**! ${discord.getEmoji("gabYes")}\n` : ""}` +
+            `${discord.getEmoji("star")}_Duration:_ \`${durationStr}\`\n` +
+            `${discord.getEmoji("star")}_Link:_ ${now.link.length < 1000 ? now.link : "Link is too long"}\n` +
+            `${discord.getEmoji("speed")}_Speed:_ **${now.speed}x**  ` +
+            `${discord.getEmoji("pitch")}_Freq:_ **${Number(now.pitch) > -1 ? `+${now.pitch}` : now.pitch}**\n` +
+            `${discord.getEmoji("highpass")}_Filters:_ _${now.filters[0] ? now.filters.map((f: string) => Functions.toProperCase(f)).join(", ") : "None"}_  ` +
+            `${discord.getEmoji("delay")}_Effects:_ _${now.effects[0] ? now.effects.map((e: string) => Functions.toProperCase(e)).join(", ") : "None"}_\n` +
+            `${discord.getEmoji("position")}_Song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
+            `_Added by **${now.requester}**_`
         } else {
             details =
+            `${now.looping || now.ablooping ? `${discord.getEmoji("loop")}Loop mode is **on**! ${discord.getEmoji("aquaUp")}\n` : ""}` +
+            `${now.reverse ? `${discord.getEmoji("reverse")}Reverse mode is **on**! ${discord.getEmoji("gabYes")}\n` : ""}` +
             `${discord.getEmoji("star")}_Title:_ [**${now.title}**](${now.url})\n` +
             `${discord.getEmoji("star")}_Artist:_ **${now.artist}**\n` +
-            `${discord.getEmoji("star")}_Duration:_ \`${now.duration}\`\n` +
-            `${discord.getEmoji("star")}_Loop Mode:_ **${now.looping ? "Infinite" : (now.ablooping ? "Point A-B" : "One Shot")}**\n` +
-            `${discord.getEmoji("star")}_Reverse Mode:_ **${now.reverse ? "On" : "Off"}**\n` +
-            `${discord.getEmoji("star")}_Playback Speed:_ **${now.speed}x**\n` +
-            `${discord.getEmoji("star")}_Frequency Shift:_ **${now.pitch} semitones**\n` +
-            `${discord.getEmoji("star")}_Filters:_ _${now.filters[0] ? "None" : now.filters.join(", ")}_\n` +
-            `${discord.getEmoji("star")}_Effects:_ _${now.fx[0] ? "None" : now.fx.join(", ")}_\n` +
-            `_Current song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
-            `_Click on any reaction to refresh._\n` +
-            `_Added by ${this.message.author.tag}_`
+            `${discord.getEmoji("star")}_Duration:_ \`${durationStr}\`\n` +
+            `${discord.getEmoji("speed")}_Speed:_ **${now.speed}x**  ` +
+            `${discord.getEmoji("pitch")}_Freq:_ **${Number(now.pitch) > -1 ? `+${now.pitch}` : now.pitch}**\n` +
+            `${discord.getEmoji("highpass")}_Filters:_ _${now.filters[0] ? now.filters.map((f: string) => Functions.toProperCase(f)).join(", ") : "None"}_  ` +
+            `${discord.getEmoji("delay")}_Effects:_ _${now.effects[0] ? now.effects.map((e: string) => Functions.toProperCase(e)).join(", ") : "None"}_\n` +
+            `${discord.getEmoji("position")}_Song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
+            `_Added by **${now.requester}**_`
         }
         const nowEmbed = this.embeds.createEmbed()
         nowEmbed
@@ -469,6 +821,18 @@ export class Audio {
         .setThumbnail(now.image ?? "")
         .setDescription(details)
         return nowEmbed
+    }
+
+    public getDuration = async () => {
+        const queue = this.getQueue() as any
+        let duration = 0
+        await new Promise((resolve) => {
+            mp3Duration(queue[0].file, function(err: Error, d: number) {
+                duration = d
+                resolve()
+            })
+        })
+        return Math.round(duration)
     }
 
     public download = async (song: string) => {
@@ -489,6 +853,23 @@ export class Audio {
         return file
     }
 
+    public applyEffects = async (newFile: string) => {
+        const queue = this.getQueue() as any
+        if (queue[0].reverse) {
+            queue[1].reverse = true
+            await this.reverse(newFile)
+        }
+        if (Number(queue[0].pitch) !== 0) {
+            queue[1].pitch = queue[0].pitch
+            await this.pitch(newFile, Number(queue[0].pitch))
+        }
+        if ((queue[0].speed) !== 1) {
+            queue[1].speed = queue[0].speed
+            await this.speed(newFile, Number(queue[0].speed))
+        }
+        return newFile
+    }
+
     public play = async (file: string, start?: number) => {
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
@@ -505,26 +886,36 @@ export class Audio {
         const queue = this.getQueue() as any
         if (!queue[0]) await this.queueAdd(file, file)
         queue[0].playing = true
+        if (queue[0].looping) {
+            const duration = await this.getDuration()
+            if (duration < 30) {
+                queue[0].looping = false
+                this.message.channel.send("Disabled looping because the file is too short.")
+            }
+        }
 
         player.on("finish", async () => {
             const queue = this.getQueue() as any
-            console.log("finish")
-            console.log(queue)
             let next: string
+            let skipPlaying = false
             if (queue[0]?.looping === true) {
                 next = file
+                skipPlaying = true
             } else {
                 queue.shift()
                 next = this.next()
             }
             if (next) {
+                await this.applyEffects(next)
                 await this.play(next)
-                const nowPlaying = await this.nowPlaying()
+                let nowPlaying: string | undefined
+                if (!skipPlaying) nowPlaying = await this.nowPlaying()
                 if (nowPlaying) await this.message.channel.send(nowPlaying)
             } else {
                 const defSong = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
                 const file = await this.download(defSong)
                 await this.queueAdd(defSong, file)
+                await this.applyEffects(file)
                 await this.play(file)
                 const nowPlaying = await this.nowPlaying()
                 if (nowPlaying) await this.message.channel.send(nowPlaying)
@@ -534,30 +925,26 @@ export class Audio {
 
     public skip = async (num?: number) => {
         let amount = num ? num : 1
-        let queue = this.getQueue() as any
-        if (amount > queue.length - 1) amount = queue.length - 1
-        for (let i = 0; i < amount; i++) {
-            queue.shift(num)
-        }
-        queue = this.getQueue() as any
-        const setReverse = queue?.[0]?.reverse ? true : false
+        const queue = this.getQueue() as any
+        queue[0].looping = false
+        queue[0].ablooping = false
+        if (amount > queue.length) amount = queue.length
+        let i = 0
+        do {
+            queue.shift()
+            i++
+        } while (i < amount - 1)
         if (this.next()) {
-            if (setReverse) {
-                this.reverse(this.next())
-            } else {
-                this.play(this.next())
-            }
+            await this.applyEffects(this.next())
+            await this.play(this.next())
             const nowPlaying = await this.nowPlaying()
             if (nowPlaying) await this.message.channel.send(nowPlaying)
         } else {
             const defSong = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
             const file = await this.download(defSong)
-            await this.queueAdd(defSong, file, setReverse)
-            if (setReverse) {
-                this.reverse(this.next())
-            } else {
-                this.play(this.next())
-            }
+            await this.queueAdd(defSong, file)
+            await this.applyEffects(this.next())
+            await this.play(this.next())
             const nowPlaying = await this.nowPlaying()
             if (nowPlaying) await this.message.channel.send(nowPlaying)
         }
@@ -573,16 +960,15 @@ export class Audio {
     }
 
     public abloop = async (start: string, end: string) => {
+        const queue = this.getQueue() as any
         const startSec = this.parseSeconds(start)
         const endSec = this.parseSeconds(end)
-        if (Number.isNaN(startSec) || Number.isNaN(endSec)) return this.message.reply("Try again, provide the time in \`00:00\` format...")
-        const diff = endSec - startSec
-        const queue = this.getQueue() as any
-        if (queue[0].ablooping === false) {
-            queue[0].ablooping = true
-        } else {
-            queue[0].ablooping = false
+        if (Number.isNaN(startSec) || Number.isNaN(endSec)) {
+            const rep = await this.message.reply("Try again, provide the time in \`00:00\` format...")
+            rep.delete({timeout: 3000})
+            return
         }
+        const diff = endSec - startSec
         while (queue[0].ablooping) {
             this.play(queue[0].file, startSec)
             await Functions.timeout(diff * 1000)
@@ -591,7 +977,15 @@ export class Audio {
 
     public clear = () => {
         const queue = this.getQueue() as any
-        return this.play(queue[0].originalFile, this.time())
+        queue[0].speed = "1.0"
+        queue[0].pitch = "0"
+        queue[0].filters = []
+        queue[0].effects = []
+        queue[0].reverse = false
+        queue[0].looping = false
+        queue[0].ablooping = false
+        queue[0].file = queue[0].originalFile
+        return this.play(queue[0].originalFile)
     }
 
     public mp3Download = async (userID: string) => {
@@ -605,12 +999,12 @@ export class Audio {
 
     public parseSeconds = (input: string) => {
         let seconds = 0
-        if (input.match(/:/g)?.length === 2) {
+        if (input?.match(/:/g)?.length === 2) {
             const arr = input.split(":")
             seconds += Number(arr[0]) * 60 * 60
             seconds += Number(arr[1]) * 60
             seconds += Number(arr[2])
-        } else if (input.match(/:/g)?.length === 1) {
+        } else if (input?.match(/:/g)?.length === 1) {
             const arr = input.split(":")
             seconds += Number(arr[0]) * 60
             seconds += Number(arr[1])
@@ -698,7 +1092,6 @@ export class Audio {
         const randomCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("random") && user.bot === false
         const soundcloudCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("soundcloud") && user.bot === false
         const youtubeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("youtube") && user.bot === false
-
         const right = msg.createReactionCollector(rightCheck)
         const left = msg.createReactionCollector(leftCheck)
         const one = msg.createReactionCollector(oneCheck)
@@ -761,7 +1154,7 @@ export class Audio {
     }
 
     public parseYTDuration = (duration: string) => {
-        const matches = duration.match(/[0-9]+[HMS]/g)
+        const matches = duration?.match(/[0-9]+[HMS]/g)
         if (!matches) return "0:00"
         let hours = "0"
         let minutes = "00"
@@ -787,7 +1180,7 @@ export class Audio {
         return text
     }
 
-    public parseSCDuration(duration: number) {
+    public parseSCDuration = (duration: number) => {
         duration = Number(duration)
         let seconds = Math.floor((duration / 1000) % 60) as any
         let minutes = Math.floor((duration / (1000 * 60)) % 60) as any
@@ -797,5 +1190,410 @@ export class Audio {
         minutes = (minutes < 10) ? "0" + minutes : minutes
         seconds = (seconds < 10) ? "0" + seconds : seconds
         return `${hours}${minutes}:${seconds}`
+    }
+
+    public equalizerMenu = async () => {
+        const discord = this.discord
+        const eqEmbed = this.embeds.createEmbed()
+        eqEmbed
+        .setAuthor("equalizer", "https://clipartmag.com/images/musical-notes-png-11.png")
+        .setTitle(`**Audio Equalizer** ${discord.getEmoji("RaphiSmile")}`)
+        .setDescription(
+            `_These are the 7 different filter types that you can choose from:_\n` +
+            `${discord.getEmoji("highpass")}_Highpass Filter_ -> _Removes low frequencies._\n` +
+            `${discord.getEmoji("highshelf")}_Highshelf Filter_ -> _Boosts/attenuates all frequencies above the cutoff frequency._\n` +
+            `${discord.getEmoji("bandpass")}_Bandpass Filter_ -> _Removes both low frequencies and high frequencies._\n` +
+            `${discord.getEmoji("peak")}_Peak Filter_ -> _Carves boosts/cuts in a certain frequency range._\n` +
+            `${discord.getEmoji("bandreject")}_Bandreject Filter_ -> _An inverted bandpass filter, use a high Q factor to get a notch filter._\n` +
+            `${discord.getEmoji("lowshelf")}_Lowshelf Filter_ -> _Boosts/attenuates all frequencies below the cutoff frequency._\n` +
+            `${discord.getEmoji("lowpass")}_Lowpass Filter_ -> _Removes high frequencies._\n` +
+            `_Frequency and width are in Hz. If applicable, resonance is a Q factor and gain is in decibels._`
+        )
+        const msg = await this.message.channel.send(eqEmbed)
+        const reactions = ["highpass", "highshelf", "bandpass", "peak", "bandreject", "lowshelf", "lowpass"]
+        for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
+
+        const highpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("highpass") && user.bot === false
+        const highshelfCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("highshelf") && user.bot === false
+        const bandpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("bandpass") && user.bot === false
+        const peakCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("peak") && user.bot === false
+        const bandrejectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("bandreject") && user.bot === false
+        const lowshelfCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lowshelf") && user.bot === false
+        const lowpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lowpass") && user.bot === false
+        const highpass = msg.createReactionCollector(highpassCheck)
+        const highshelf = msg.createReactionCollector(highshelfCheck)
+        const bandpass = msg.createReactionCollector(bandpassCheck)
+        const peak = msg.createReactionCollector(peakCheck)
+        const bandreject = msg.createReactionCollector(bandrejectCheck)
+        const lowshelf = msg.createReactionCollector(lowshelfCheck)
+        const lowpass = msg.createReactionCollector(lowpassCheck)
+
+        const pass = ["highpass", "bandpass", "bandreject", "lowpass"]
+        const passCol = [highpass, bandpass, bandreject, lowpass]
+        const shelf = ["highshelf", "lowshelf"]
+        const shelfCol = [highshelf, lowshelf]
+
+        await new Promise((resolve) => {
+        for (let i = 0; i < pass.length; i++) {
+            passCol[i].on("collect", async (reaction, user) => {
+                await reaction.users.remove(user)
+                let freq = 600
+                let width = 100
+                async function getParams(response: Message) {
+                    const rArgs = response.content.split(" ")
+                    freq = Number(rArgs[0])
+                    width = Number(rArgs[1])
+                    await response.delete()
+                }
+                const rep = await this.message.channel.send(`<@${user.id}>, Enter the cutoff frequency and filter width (in Hz).`)
+                await this.embeds.createPrompt(getParams)
+                rep.delete()
+                if (Number.isNaN(freq)) {
+                    const badrep = this.message.channel.send(`<@${user.id}>, Those are not valid parameters.`)
+                    await (await badrep).delete({timeout: 3000})
+                    return
+                }
+                if (Number.isNaN(width)) width = 100
+                const queue = this.getQueue() as any
+                queue[0].filters.push(pass[i])
+                const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a ${pass[i]} filter, please wait...`)
+                await this[pass[i]](queue[0].file, freq, width, false)
+                rep3.delete()
+                const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${pass[i]} filter!`)
+                rep2.delete({timeout: 3000})
+                resolve()
+            })
+        }
+
+        for (let i = 0; i < shelf.length; i++) {
+            shelfCol[i].on("collect", async (reaction, user) => {
+                await reaction.users.remove(user)
+                let gain = 3
+                let freq = 600
+                let width = 100
+                async function getParams(response: Message) {
+                    const rArgs = response.content.split(" ")
+                    gain = Number(rArgs[0])
+                    freq = Number(rArgs[1])
+                    width = Number(rArgs[2])
+                    await response.delete()
+                }
+                const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency, and the filter width (in Hz).`)
+                await this.embeds.createPrompt(getParams)
+                rep.delete()
+                if (Number.isNaN(gain) || Number.isNaN(freq)) {
+                    const badrep = this.message.channel.send(`<@${user.id}>, Those are not valid parameters.`)
+                    await (await badrep).delete({timeout: 3000})
+                    return
+                }
+                if (Number.isNaN(width)) width = 100
+                const queue = this.getQueue() as any
+                queue[0].filters.push(shelf[i])
+                const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a ${shelf[i]} filter, please wait...`)
+                await this[pass[i]](queue[0].file, gain, freq, width, false)
+                rep3.delete()
+                const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${shelf[i]} filter!`)
+                rep2.delete({timeout: 3000})
+                resolve()
+            })
+        }
+
+        peak.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            let freq = 1000
+            let resonance = 2
+            let gain = 3
+            async function getParams(response: Message) {
+                const rArgs = response.content.split(" ")
+                gain= Number(rArgs[0])
+                freq = Number(rArgs[1])
+                resonance = Number(rArgs[2])
+                await response.delete()
+            }
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency (in Hz), and the resonance (Q Factor).`)
+            await this.embeds.createPrompt(getParams)
+            rep.delete()
+            if (Number.isNaN(gain) || Number.isNaN(freq)) {
+                const badrep = this.message.channel.send(`<@${user.id}>, Those are not valid parameters.`)
+                await (await badrep).delete({timeout: 3000})
+                return
+            }
+            if (Number.isNaN(resonance)) resonance = 2
+            const queue = this.getQueue() as any
+            queue[0].filters.push("peak")
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a peak filter, please wait...`)
+            await this.peak(queue[0].file, freq, resonance, gain)
+            rep3.delete()
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Added a peak filter!`)
+            rep2.delete({timeout: 3000})
+            resolve()
+        })
+        })
+        return msg
+    }
+
+    public fxMenu = async () => {
+        const discord = this.discord
+        const fxEmbed = this.embeds.createEmbed()
+        .setAuthor("effects", "https://clipartmag.com/images/musical-notes-png-11.png")
+        .setTitle(`**Special Effects** ${discord.getEmoji("RaphiSmile")}`)
+        .setDescription(
+            `_There are 11 different audio effects that you can add:_\n` +
+            `${discord.getEmoji("reverb")}_Reverb_ -> _Emulates room reflections._\n` +
+            `${discord.getEmoji("delay")}_Delay_ -> _Repeatedly replays the signal after a certain delay._\n` +
+            `${discord.getEmoji("chorus")}_Chorus_ -> _Mixes the signal with delayed, pitch modulated copies._\n` +
+            `${discord.getEmoji("phaser")}_Phaser_ -> _Modulates allpass filters for a phase cancellation effect._\n` +
+            `${discord.getEmoji("flanger")}_Flanger_ -> _Modulates comb filters with a very short delay time._\n` +
+            `${discord.getEmoji("bitcrush")}_Bitcrush_ -> _Decreases the sample rate._\n` +
+            `${discord.getEmoji("upsample")}_Upsample_ -> _Increases the sample rate._\n` +
+            `${discord.getEmoji("distortion")}_Distortion_ -> _Soft clips the audio._\n` +
+            `${discord.getEmoji("compression")}_Compression_ -> _Reduces the dynamic range._\n` +
+            `${discord.getEmoji("allpass")}_Allpass Filter_ -> _Changes the phase relationship of frequencies._\n` +
+            `${discord.getEmoji("tremolo")}_Tremelo_ -> _Amplitude modulation with an LFO._`
+        )
+        const reactions = ["reverb", "delay", "chorus", "phaser", "flanger", "bitcrush", "upsample", "distortion", "compression", "allpass", "tremolo"]
+        const msg = await this.message.channel.send(fxEmbed)
+        for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
+
+        const reverbCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reverb") && user.bot === false
+        const delayCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("delay") && user.bot === false
+        const chorusCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("chorus") && user.bot === false
+        const phaserCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("phaser") && user.bot === false
+        const flangerCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("flanger") && user.bot === false
+        const bitcrushCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("bitcrush") && user.bot === false
+        const upsampleCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("upsample") && user.bot === false
+        const distortionCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("distortion") && user.bot === false
+        const compressionCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("compression") && user.bot === false
+        const allpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("allpass") && user.bot === false
+        const tremoloCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tremolo") && user.bot === false
+        const reverb = msg.createReactionCollector(reverbCheck)
+        const delay = msg.createReactionCollector(delayCheck)
+        const chorus = msg.createReactionCollector(chorusCheck)
+        const phaser = msg.createReactionCollector(phaserCheck)
+        const flanger = msg.createReactionCollector(flangerCheck)
+        const bitcrush = msg.createReactionCollector(bitcrushCheck)
+        const upsample = msg.createReactionCollector(upsampleCheck)
+        const distortion = msg.createReactionCollector(distortionCheck)
+        const compression = msg.createReactionCollector(compressionCheck)
+        const allpass = msg.createReactionCollector(allpassCheck)
+        const tremolo = msg.createReactionCollector(tremoloCheck)
+        let argArray: any[] = []
+        async function parseArgs(response: Message) {
+            const rArgs = response.content.split(" ")
+            argArray = rArgs
+            await response.delete()
+            return rArgs
+        }
+        await new Promise((resolve) => {
+        reverb.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the amount, damping, room, stereo, pre-delay, and wet-gain.`)
+            await this.embeds.createPrompt(parseArgs)
+            const amount = Number(argArray[0]) ? Number(argArray[0]) : 50
+            const damping = Number(argArray[1]) ? Number(argArray[1]) : 50
+            const room = Number(argArray[2]) ? Number(argArray[2]) : 100
+            const stereo = Number(argArray[3]) ? Number(argArray[3]) : 100
+            const preDelay = Number(argArray[4]) ? Number(argArray[4]) : 0
+            const wetGain = Number(argArray[5]) ? Number(argArray[5]) : 0
+            const reverse = Boolean(argArray[6]) ? Boolean(argArray[6]) : false
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("reverb")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding reverb, please wait...`)
+            await this.reverb(file, amount, damping, room, stereo, preDelay, wetGain, reverse, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added reverb!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        delay.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter pairs of delay and decay times.`)
+            await this.embeds.createPrompt(parseArgs)
+            const delaysDecays = argArray.map((a) => Number(a) ? Number(a) : 0)
+            if (delaysDecays.length % 2 === 1) delaysDecays.push(0)
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("delay")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding delay, please wait...`)
+            await this.delay(file, delaysDecays, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added delay!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        chorus.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, speed, and depth.`)
+            await this.embeds.createPrompt(parseArgs)
+            const delay = Number(argArray[0]) ? Number(argArray[0]) : 50
+            const decay = Number(argArray[1]) ? Number(argArray[1]) : 0.3
+            const speed = Number(argArray[2]) ? Number(argArray[2]) : 2
+            const depth = Number(argArray[3]) ? Number(argArray[3]) : 2
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("chorus")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding chorus, please wait...`)
+            await this.chorus(file, delay, decay, speed, depth, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added chorus!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        phaser.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, and speed.`)
+            await this.embeds.createPrompt(parseArgs)
+            const delay = Number(argArray[0]) ? Number(argArray[0]) : 3
+            const decay = Number(argArray[1]) ? Number(argArray[1]) : 0.5
+            const speed = Number(argArray[2]) ? Number(argArray[2]) : 0.5
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("phaser")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding phaser, please wait...`)
+            await this.phaser(file, delay, decay, speed, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added phaser!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        flanger.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, depth, regen, width, speed, shape, phase, and interp.`)
+            await this.embeds.createPrompt(parseArgs)
+            const delay = Number(argArray[0]) ? Number(argArray[0]) : 0
+            const depth = Number(argArray[1]) ? Number(argArray[1]) : 2
+            const regen = Number(argArray[2]) ? Number(argArray[2]) : 0
+            const width = Number(argArray[3]) ? Number(argArray[3]) : 71
+            const speed = Number(argArray[4]) ? Number(argArray[4]) : 0.5
+            const shape = argArray[5] ? argArray[5] : "sin" as "sin" | "tri"
+            const phase = Number(argArray[6]) ? Number(argArray[6]) : 25
+            const interp = argArray[7] ? argArray[7] : "lin" as "lin" | "quad"
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("flanger")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding flanger, please wait...`)
+            await this.flanger(file, delay, depth, regen, width, speed, shape, phase, interp, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added flanger!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        bitcrush.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the bitcrush factor.`)
+            await this.embeds.createPrompt(parseArgs)
+            const factor = Number(argArray[0]) ? Number(argArray[0]) : 2
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("bitcrush")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding bitcrushing, please wait...`)
+            await this.bitcrush(file, factor, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added bitcrushing!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        upsample.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the upsample factor.`)
+            await this.embeds.createPrompt(parseArgs)
+            const factor = Number(argArray[0]) ? Number(argArray[0]) : 2
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("upsample")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding upsampling, please wait...`)
+            await this.upsample(file, factor, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added upsampling!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        distortion.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain and color.`)
+            await this.embeds.createPrompt(parseArgs)
+            const gain = Number(argArray[0]) ? Number(argArray[0]) : 20
+            const color = Number(argArray[1]) ? Number(argArray[1]) : 10
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("distortion")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding distortion, please wait...`)
+            await this.distortion(file, gain, color, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added distortion!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        compression.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the compression amount (0-100).`)
+            await this.embeds.createPrompt(parseArgs)
+            const amount = Number(argArray[0]) ? Number(argArray[0]) : 80
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("compression")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding compression, please wait...`)
+            await this.compress(file, amount, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added compression!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        allpass.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the frequency and width.`)
+            await this.embeds.createPrompt(parseArgs)
+            const freq = Number(argArray[0]) ? Number(argArray[0]) : 600
+            const width = Number(argArray[1]) ? Number(argArray[1]) : 100
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("allpass")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding an allpass filter, please wait...`)
+            await this.allPass(freq, width, file, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added an allpass filter!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+
+        tremolo.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the speed and depth.`)
+            await this.embeds.createPrompt(parseArgs)
+            const speed = Number(argArray[0]) ? Number(argArray[0]) : 10
+            const depth = Number(argArray[1]) ? Number(argArray[1]) : 70
+            rep.delete()
+            const queue = this.getQueue() as any
+            queue[0].effects.push("tremolo")
+            const file = queue[0].file
+            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding tremolo, please wait...`)
+            await this.tremolo(file, speed, depth, false)
+            rep2.delete()
+            const rep3 = await this.message.channel.send(`<@${user.id}>, Added tremolo!`)
+            rep3.delete({timeout: 3000})
+            resolve()
+        })
+        })
+        return msg
     }
 }

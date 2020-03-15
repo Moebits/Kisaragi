@@ -96,7 +96,8 @@ export class Kisaragi extends Client {
         messageErrorEmbed
         .setTitle(`**Command Error** ${this.getEmoji("maikaWut")}`)
         .setDescription(`There was an error executing this command:\n` +
-        `**${error.name}: ${error.message}**\n` + `Please report this through the following links:\n` +
+        `**${error.name}: ${error.message}**\n` +
+        `Please report this with the \`feedback\` command, or through any of the following links:\n` +
         `[Support Server](${config.support}), [Github Repository](${config.repo})`)
         return messageErrorEmbed
     }
