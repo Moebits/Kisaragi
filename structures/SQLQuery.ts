@@ -9,7 +9,7 @@ import {Settings} from "./Settings"
 const RedisAsync = bluebird.promisifyAll(Redis)
 const redis = RedisAsync.createClient({
   url: process.env.REDIS_URL
-})
+}) as any
 const pgPool = new Pool({
   connectionString: process.env.PG_URL,
   ssl: true,
@@ -64,6 +64,7 @@ export class SQLQuery {
             console.log(error.stack)
             return [["Error"]]
           } finally {
+            // @ts-ignore
             pgClient.release(true)
           }
       }
@@ -170,7 +171,7 @@ export class SQLQuery {
     }
 
   // Insert row into a table
-  public insertInto = async (table: string, column: string, value: unknown): Promise<void> => {
+  public insertInto = async (table: string, column: string, value: any): Promise<void> => {
         const query: QueryConfig = {
           text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
           values: [value]
@@ -198,7 +199,7 @@ export class SQLQuery {
 }
 
   // Update a row in a table
-  public updateColumn = async (table: string, column: string, value: unknown, key?: string, keyVal?: string): Promise<void> => {
+  public updateColumn = async (table: string, column: string, value: any, key?: string, keyVal?: string): Promise<void> => {
         let query: QueryConfig
         if (key) {
           query = {
@@ -235,7 +236,7 @@ export class SQLQuery {
     }
 
   // Delete row
-  public deleteRow = async (table: string, column: string, value: unknown): Promise<void> => {
+  public deleteRow = async (table: string, column: string, value: any): Promise<void> => {
       const query: QueryConfig = {
         text: `DELETE FROM ${table} WHERE ${column} = $1`,
         values: [value]
