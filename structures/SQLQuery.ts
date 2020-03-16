@@ -71,7 +71,7 @@ export class SQLQuery {
     }
 
   // Log Query
-  public static logQuery = (text: string, start: number, blue?: boolean): void => {
+  public static logQuery = (text: any, start: number, blue?: boolean): void => {
 
       const duration = Date.now() - start
       const color = blue ? "cyanBright" : "magentaBright"
