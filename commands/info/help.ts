@@ -1,5 +1,6 @@
 import {Message, MessageEmbed} from "discord.js"
 import fs from "fs"
+import path from "path"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -31,16 +32,16 @@ export default class Help extends Command {
         const embeds = new Embeds(discord, message)
         const helpEmbedArray: MessageEmbed[] = []
         if (args[1]) {
-            const helpDir = new (require("./helpInfo").default)(this.discord, this.message)
+            const helpDir = new (require(path.join(__dirname, "./helpInfo")).default)(this.discord, this.message)
             await helpDir.run(args)
             return
         }
         // const unlistedDirs = ["bot developer", "heart", "logging", "music"]
-        const subDir = fs.readdirSync("./commands")
+        const subDir = fs.readdirSync(path.join(__dirname, "../../commands"))
         for (let i = 0; i < subDir.length; i++) {
             // if (unlistedDirs.includes(subDir[i])) continue
             let help = ""
-            const commands = fs.readdirSync(`./commands/${subDir[i]}`)
+            const commands = fs.readdirSync(path.join(__dirname, `../../commands/${subDir[i]}`))
             for (let j = 0; j < commands.length; j++) {
                 commands[j] = commands[j].slice(0, -3)
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue

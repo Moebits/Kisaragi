@@ -120,14 +120,14 @@ export class Images {
     // Download gif
     public downloadGif = async (url: string, dest: string) => {
         const bin = await axios.get(url, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
-        fs.writeFileSync(dest, Buffer.from(bin, "binary"))
+        fs.writeFileSync(path.join(__dirname, dest), Buffer.from(bin, "binary"))
         return
     }
 
     // Download image
     public downloadImage = async (url: string, dest: string) => {
         if (dest.endsWith(".gif")) return this.downloadGif(url, dest)
-        const writeStream = fs.createWriteStream(dest)
+        const writeStream = fs.createWriteStream(path.join(__dirname, dest))
         await axios.get(url, {responseType: "stream", headers: this.headers}).then((r) => r.data.pipe(writeStream))
         return new Promise((resolve, reject) => {
             writeStream.on("finish", resolve)
@@ -261,8 +261,8 @@ export class Images {
         let background: Canvas.Image
         const random  = Math.floor(Math.random() * 1000000)
         if (image.includes("gif")) {
-            if (!fs.existsSync(`../assets/images/dump/${random}/`)) {
-                fs.mkdirSync(`../assets/images/dump/${random}/`, {recursive: true})
+            if (!fs.existsSync(path.join(__dirname, `../assets/images/dump/${random}/`))) {
+                fs.mkdirSync(path.join(__dirname, `../assets/images/dump/${random}/`), {recursive: true})
             }
 
             const files: string[] = []
@@ -271,7 +271,7 @@ export class Images {
 
             for (let i = 0; i < frames.length; i++) {
                 const readStream = frames[i].getImage()
-                const writeStream = fs.createWriteStream(`../assets/images/dump/${random}/image${frames[i].frameIndex}.jpg`)
+                const writeStream = fs.createWriteStream(path.join(__dirname, `../assets/images/dump/${random}/image${frames[i].frameIndex}.jpg`))
                 await Functions.awaitStream(readStream, writeStream)
                 files.push(`../assets/images/dump/${random}/image${frames[i].frameIndex}.jpg`)
             }
@@ -284,15 +284,15 @@ export class Images {
                     rIterator = 0
                 }
                 const dataURI = await this.createCanvas(member, files[i], text, color, true, rIterator)
-                await imageDataURI.outputFile(dataURI, `../assets/images/dump/${random}/image${i}`)
+                await imageDataURI.outputFile(dataURI, path.join(__dirname, `../assets/images/dump/${random}/image${i}`))
                 attachmentArray.push(`image${i}.jpeg`)
                 rIterator++
             }
 
-            const file = fs.createWriteStream(`../assets/images/dump/${random}/animated.gif`)
+            const file = fs.createWriteStream(path.join(__dirname, `../assets/images/dump/${random}/animated.gif`))
             await this.encodeGif(attachmentArray, `../assets/images/dump/${random}/`, file)
             msg2.delete()
-            const attachment = new MessageAttachment(`../assets/images/dump/${random}/animated.gif`)
+            const attachment = new MessageAttachment(path.join(__dirname, `../assets/images/dump/${random}/animated.gif`))
             return attachment
 
         } else {

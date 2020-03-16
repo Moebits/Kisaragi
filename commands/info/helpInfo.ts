@@ -30,16 +30,16 @@ export default class HelpInfo extends Command {
         const name = path.basename(cmdPath)
         const aliases = command.aliases.join("") ? `**${command.aliases.join(", ")}**` : "_None_"
         let image
-        if (fs.existsSync(`../assets/help/${category}/${name}.png`)) {
+        if (fs.existsSync(path.join(__dirname, `../../assets/help/${category}/${name}.png`))) {
             image = `../assets/help/${category}/${name}.png`
-        } else if (fs.existsSync(`../assets/help/${category}/${name}.gif`)) {
+        } else if (fs.existsSync(path.join(__dirname, `../../assets/help/${category}/${name}.gif`))) {
             image = `../assets/help/${category}/${name}.gif`
-        } else if (fs.existsSync(`../assets/help/${category}/${name}.jpg`)) {
+        } else if (fs.existsSync(path.join(__dirname, `../../assets/help/${category}/${name}.jpg`))) {
             image = `../assets/help/${category}/${name}.jpg`
         }
         const helpInfoEmbed = embeds.createEmbed()
         if (image) {
-            const img = new MessageAttachment(image).attachment as string
+            const img = new MessageAttachment(path.join(__dirname, image)).attachment as string
             helpInfoEmbed
             .attachFiles([img])
             .setImage(`attachment://${path.basename(img)}`)

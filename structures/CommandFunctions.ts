@@ -84,13 +84,13 @@ export class CommandFunctions {
         let cmdPath = await SQLQuery.fetchCommand(cmd, "path")
         loop1:
         if (!cmdPath) {
-            const directories = fs.readdirSync(`../commands/`)
+            const directories = fs.readdirSync(path.join(__dirname, `../commands/`))
             for (let i = 0; i < directories.length; i++) {
-                const commands = fs.readdirSync(`../commands/${directories[i]}`)
+                const commands = fs.readdirSync(path.join(__dirname, `../commands/${directories[i]}`))
                 for (let j = 0; j < commands.length; j++) {
                     commands[j] = commands[j].slice(0, -3)
                     if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
-                    const cmdClass = new (require(`${topDir}../commands/${directories[i]}/${commands[j]}.js`).default)(this.discord, this.message)
+                    const cmdClass = new (require(path.join(__dirname, `../commands/${directories[i]}/${commands[j]}.js`)).default)(this.discord, this.message)
                     const aliases = cmdClass.options.aliases
                     for (let k = 0; k < aliases.length; k++) {
                         if (aliases[k] === cmd) {

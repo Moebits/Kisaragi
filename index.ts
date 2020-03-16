@@ -1,4 +1,5 @@
 import fs from "fs"
+import path from "path"
 import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
@@ -11,23 +12,23 @@ const discord = new Kisaragi({
 const start = async (): Promise<void> => {
 
     const cmdFiles: string[][] = []
-    const subDirectory = fs.readdirSync("./commands/")
+    const subDirectory = fs.readdirSync(path.join(__dirname, "./commands/"))
 
     for (let i = 0; i < subDirectory.length; i++) {
         const currDir = subDirectory[i]
-        const addFiles = fs.readdirSync(`./commands/${currDir}`)
+        const addFiles = fs.readdirSync(path.join(__dirname, `./commands/${currDir}`))
         if (addFiles !== null) cmdFiles.push(addFiles)
 
         await Promise.all(addFiles.map(async (file: string) => {
             if (!file.endsWith(".ts") && !file.endsWith(".js")) return
-            const path = `../commands/${currDir}/${file}`
+            const p = `../commands/${currDir}/${file}`
             const commandName = file.split(".")[0]
             if (commandName === "empty" || commandName === "tempCodeRunnerFile") return
             const cmdFind = await SQLQuery.fetchCommand(commandName, "command")
-            const command = new (require(`./commands/${currDir}/${file}`).default)(discord, null)
+            const command = new (require(path.join(__dirname, `./commands/${currDir}/${file}`)).default)(discord, null)
 
             if (!cmdFind) {
-                await SQLQuery.insertCommand(commandName, command.aliases, path, command.cooldown)
+                await SQLQuery.insertCommand(commandName, command.aliases, p, command.cooldown)
             } else {
                 await SQLQuery.updateCommand(commandName, command.aliases, command.cooldown)
             }
@@ -43,7 +44,7 @@ const start = async (): Promise<void> => {
             if (!file.endsWith(".ts") && !file.endsWith(".js")) return
             const eventName = file.split(".")[0]
             Logger.log(`Loading Event: ${eventName}`)
-            const event = new (require(`./events/${eventName}.js`).default)(discord)
+            const event = new (require(path.join(__dirname, `./events/${eventName}.js`)).default)(discord)
             discord.on(eventName, (...args: any) => event.run(...args))
         })
 

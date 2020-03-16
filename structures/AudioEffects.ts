@@ -46,8 +46,8 @@ export class AudioEffects {
             index++
         }
         console.log([...effect.split(" ")])
-        const input = fs.createReadStream(filepath)
-        const output = fs.createWriteStream(outDest)
+        const input = fs.createReadStream(path.join(__dirname, filepath))
+        const output = fs.createWriteStream(path.join(__dirname, outDest))
         const transform = sox({
             global: {
                 "temp": "./tracks/transform",
@@ -66,7 +66,7 @@ export class AudioEffects {
             .on("error", (err) => console.log(err))
             .on("finish", () => resolve())
         })
-        return outDest
+        return path.join(__dirname, outDest)
     }
 
     public downloadEffect = async (effect: string, filepath: string) => {
@@ -87,7 +87,7 @@ export class AudioEffects {
             return this.message.channel.send(effectEmbed)
         } else {
             const attachName = path.basename(fileDest)
-            const attachment = new MessageAttachment(fileDest, `${attachName}`)
+            const attachment = new MessageAttachment(path.join(__dirname, fileDest), `${attachName}`)
             const effectEmbed = this.embeds.createEmbed()
             effectEmbed
             .setAuthor("audio effect", "https://clipartmag.com/images/musical-notes-png-11.png")
