@@ -154,7 +154,7 @@
     "waifu2x": "^0.1.3",
     "wikijs": "^6.0.0",
     "xkcd": "^1.1.3",
-    "youtube.ts": "^0.1.0",
+    "youtube.ts": "^0.1.1",
     "zlib-sync": "^0.1.5"
   },
   "devDependencies": {
