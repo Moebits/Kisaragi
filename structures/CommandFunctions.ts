@@ -16,7 +16,7 @@ export class CommandFunctions {
         args = args.filter(Boolean)
         const cmdPath = await this.findCommand(args?.[0])
         if (!cmdPath) return this.noCommand(args?.[0])
-        const cp = new (require(`${topDir}${cmdPath.slice(0, -3)}`).default)(this.discord, msg)
+        const cp = new (require(path.join(__dirname, `${cmdPath.slice(0, -3)}`)).default)(this.discord, msg)
         return new Promise(async (resolve, reject) => {
             await cp.run(args).then(() => resolve())
             .catch((err: Error) => {

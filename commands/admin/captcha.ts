@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import path from "path"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Captcha} from "./../../structures/Captcha"
@@ -58,7 +59,7 @@ export default class CaptchaCmd extends Command {
         captchaEmbed
         .setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)
         .attachFiles(captcha.files)
-        .setImage(captcha.image!.url)
+        .setImage(path.join(__dirname, "../../", captcha.image!.url))
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .setDescription(Functions.multiTrim(`
             Configure settings for captcha verification. In order for this to function, you should create a role for verified members

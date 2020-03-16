@@ -25,8 +25,8 @@ export class AudioEffects {
     }
 
     public init = (remove?: boolean) => {
-        if (remove) Functions.removeDirectory(`./tracks/transform`)
-        if (!fs.existsSync(`./tracks/transform`)) fs.mkdirSync(`./tracks/transform`, {recursive: true})
+        if (remove) Functions.removeDirectory(path.join(__dirname, `../tracks/transform`))
+        if (!fs.existsSync(path.join(__dirname, `../tracks/transform`))) fs.mkdirSync(path.join(__dirname, `../tracks/transform`), {recursive: true})
     }
 
     public processEffect = async (effect: string, filepath: string, fileDest: string) => {
@@ -38,16 +38,18 @@ export class AudioEffects {
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
-        const ext = path.extname(filepath).replace(".", "")
         let outDest = fileDest + `.${ext}`
+        filepath = path.join(__dirname, filepath)
+        outDest = path.join(__dirname, outDest)
+        const ext = path.extname(filepath).replace(".", "")
         let index = 0
         while (fs.existsSync(outDest)) {
             outDest = index <= 1 ? `${fileDest}.${ext}` : `${fileDest}${index}.${ext}`
             index++
         }
         console.log([...effect.split(" ")])
-        const input = fs.createReadStream(path.join(__dirname, filepath))
-        const output = fs.createWriteStream(path.join(__dirname, outDest))
+        const input = fs.createReadStream(filepath)
+        const output = fs.createWriteStream(outDest)
         const transform = sox({
             global: {
                 "temp": "./tracks/transform",
@@ -70,9 +72,10 @@ export class AudioEffects {
     }
 
     public downloadEffect = async (effect: string, filepath: string) => {
+        this.init()
         const ext = path.extname(filepath)
         const filename = path.basename(filepath.replace(`_${effect}`, "")).slice(0, -4)
-        const fileDest = `./tracks/transform/${filename}_${effect}${ext}`
+        const fileDest = path.join(__dirname, `../tracks/transform/${filename}_${effect}${ext}`)
         const stats = fs.statSync(fileDest)
         if (stats.size > 8000000) {
             const link = await this.images.fileIOUpload(fileDest)

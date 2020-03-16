@@ -45,7 +45,6 @@ export default class Ugoira extends Command {
         const embeds = new Embeds(discord, message)
         const pixivApi = new PixivApi(discord, message)
         const perms = new Permission(discord, message)
-        const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
         const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         let input
         if (args[1] && (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en" || args[1].toLowerCase() === "popular")) {
@@ -84,7 +83,7 @@ export default class Ugoira extends Command {
 
         if (String(pixivID).length > 14) return
         try {
-            await pixiv.util.downloadUgoira(String(pixivID), path.join(__dirname, `../../assets/images/gifs/`), 50)
+            await pixiv.util.downloadUgoira(String(pixivID), path.join(__dirname, `../../../assets/images/gifs/`), 50)
         } catch {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
@@ -129,10 +128,10 @@ export default class Ugoira extends Command {
 
         msg1.delete({timeout: 1000})
         const ugoiraEmbed = embeds.createEmbed()
-        const outGif = new MessageAttachment(path.join(__dirname, `../../assets/images/gifs/${pixivID}.gif`))
+        const outGif = new MessageAttachment(path.join(__dirname, `../../../assets/images/gifs/${pixivID}.gif`))
         const comments = await pixiv.illust.comments({illust_id: pixivID as number})
         const cleanText = details.caption.replace(/<\/?[^>]+(>|$)/g, "")
-        const authorUrl = await pixiv.util.downloadProfilePicture(details, path.join(__dirname, `../../assets/images/pixiv/profiles`))
+        const authorUrl = await pixiv.util.downloadProfilePicture(details, path.join(__dirname, `../../../assets/images/pixiv/profiles`))
         const authorAttachment = new MessageAttachment(authorUrl, "author.png")
         const commentArray: string[] = []
         for (let i = 0; i <= 5; i++) {

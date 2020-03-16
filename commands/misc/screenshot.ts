@@ -1,4 +1,5 @@
 import {Message, MessageAttachment} from "discord.js"
+import path from "path"
 // import puppeteer from "puppeteer"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -31,7 +32,7 @@ export default class Screenshot extends Command {
         const input = (args[1] === "return") ? Functions.combineArgs(args, 2) : Functions.combineArgs(args, 1)
 
         const website = (input.startsWith("http")) ? input.trim() : `https://${input.trim}`
-        const dest = `../assets/dump/images/screenshot.png`
+        const dest = path.join(__dirname, `../../../assets/dump/images/screenshot.png`)
 /*
         const browser = await puppeteer.launch({
           headless: true,

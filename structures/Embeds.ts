@@ -1,5 +1,6 @@
 import {Emoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, User} from "discord.js"
 import fs from "fs"
+import path from "path"
 import {Functions} from "./Functions"
 import {Images} from "./Images"
 import {Kisaragi} from "./Kisaragi.js"
@@ -95,8 +96,8 @@ export class Embeds {
                 download.stop()
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
-                const src = `../assets/images/${rand}/`
-                const dest = `../assets/images/${rand}.zip`
+                const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
+                const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src)
                 await this.images.downloadImages(images, src)
                 const downloads = fs.readdirSync(src).map((m) => src + m)
@@ -314,8 +315,8 @@ export class Embeds {
                 download.stop()
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
-                const src = `../assets/images/${rand}/`
-                const dest = `../assets/images/${rand}.zip`
+                const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
+                const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src)
                 await this.images.downloadImages(images, src)
                 const downloads = fs.readdirSync(src).map((m) => src + m)

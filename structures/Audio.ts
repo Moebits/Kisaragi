@@ -4,7 +4,6 @@ import fs from "fs"
 import mp3Duration from "mp3-duration"
 import path from "path"
 import Soundcloud, {SoundCloudTrack} from "soundcloud.ts"
-// @ts-ignore
 import Youtube from "youtube.ts"
 import * as defaults from "./../assets/json/defaultSongs.json"
 import {AudioEffects} from "./AudioEffects"
@@ -990,7 +989,7 @@ export class Audio {
 
     public mp3Download = async (userID: string) => {
         const queue = this.getQueue() as any
-        const file = queue[0].file
+        const file = path.join(__dirname, "..", queue[0].file)
         const attachment = new MessageAttachment(file, `${path.basename(file)}`)
         await this.message.channel.send(`<@${userID}>, Here is the download for this file!`)
         await this.message.channel.send(attachment)

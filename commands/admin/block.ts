@@ -31,7 +31,7 @@ export default class Block extends Command {
             `,
             guildOnly: true,
             aliases: ["filter"],
-            permission: "MANAGE_CHANNELS",
+            permission: "MANAGE_MESSAGES",
             botPermission: "MANAGE_MESSAGES",
             cooldown: 10
         })

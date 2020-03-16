@@ -1,6 +1,7 @@
 import {Message, MessageReaction, User} from "discord.js"
 import fs from "fs"
 import jimp from "jimp"
+import path from "path"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Images} from "../../structures/Images"
@@ -83,8 +84,8 @@ export default class Edit extends Command {
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
         const hsvEmbed = embeds.createEmbed()
-        if (!fs.existsSync("./images")) fs.mkdirSync("./images")
-        const dest = `./images/${seed}.jpg`
+        if (!fs.existsSync(path.join(__dirname, "../../images"))) fs.mkdirSync(path.join(__dirname, "../../images"))
+        const dest = path.join(__dirname, `../../images/${seed}.jpg`)
         await image.writeAsync(dest)
         const {link} = await images.cloudUpload(dest, "image edits")
         this.original = link
@@ -163,7 +164,7 @@ export default class Edit extends Command {
             }
             const image = await jimp.read(current)
             image.brightness(factor)
-            let newDest = `./images/${seed}_brightness`
+            let newDest = path.join(__dirname, `../../images/${seed}_brightness`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -193,7 +194,7 @@ export default class Edit extends Command {
             console.log(current)
             const image = await jimp.read(current)
             image.contrast(factor)
-            let newDest = `./images/${seed}_constrast`
+            let newDest = path.join(__dirname, `../../images/${seed}_contrast`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -221,7 +222,7 @@ export default class Edit extends Command {
             }
             const image = await jimp.read(current)
             image.color([{apply: "hue", params: [factor]}])
-            let newDest = `./images/${seed}_hue`
+            let newDest = path.join(__dirname, `../../images/${seed}_hue`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -258,7 +259,7 @@ export default class Edit extends Command {
                 // @ts-ignore
                 image.color([{apply: "saturate", params: [factor]}])
             }
-            let newDest = `./images/${seed}_saturation`
+            let newDest = path.join(__dirname, `../../images/${seed}_saturation`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -295,7 +296,7 @@ export default class Edit extends Command {
                 // @ts-ignore
                 image.color([{apply: "lighten", params: [factor]}])
             }
-            let newDest = `./images/${seed}_lightness`
+            let newDest = path.join(__dirname, `../../images/${seed}_lightness`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -332,7 +333,7 @@ export default class Edit extends Command {
             } else if (setVertical) {
                 image.flip(false, true)
             }
-            let newDest = `./images/${seed}_flip`
+            let newDest = path.join(__dirname, `../../images/${seed}_flip`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -359,7 +360,7 @@ export default class Edit extends Command {
             }
             const image = await jimp.read(current)
             image.color([{apply: "mix", params: [color, opacity]}])
-            let newDest = `./images/${seed}_tint`
+            let newDest = path.join(__dirname, `../../images/${seed}_tint`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -380,7 +381,7 @@ export default class Edit extends Command {
             }
             const image = await jimp.read(current)
             image.invert()
-            let newDest = `./images/${seed}_invert`
+            let newDest = path.join(__dirname, `../../images/${seed}_invert`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
