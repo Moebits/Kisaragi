@@ -5,10 +5,10 @@ import md5 from "md5"
 import * as path from "path"
 import waifu2x from "waifu2x"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
+import {SQLQuery} from "../../structures/SQLQuery"
 export default class Waifu2x extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {

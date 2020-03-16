@@ -1,16 +1,12 @@
 #Sensitive data
 .env
 dist/.env
-latest.dump
 
 #Node modules
 node_modules
 
 #Compiled folder
 dist
-
-#Linter settings
-eslintrc.json
 
 #VS Code settings
 .vscode
@@ -19,13 +15,9 @@ eslintrc.json
 declarations
 
 #Downloaded Files
-assets/gifs/*
-assets/pages/*
-assets/pagesCompressed/*
-assets/images/*
-assets/detection/*
-assets/pixiv/illusts/*
-assets/pixiv/profiles/*
-assets/pixiv/zip/*
-assets/ugoira/*
-assets/waifu2x/*
+assets/images/gifs/*
+assets/images/pages/*
+assets/images/pixiv/*
+assets/images/misc/*
+assets/images/dump/*
+assets/images/waifu2x/*

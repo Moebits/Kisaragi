@@ -1,5 +1,5 @@
 import {Message, MessageAttachment} from "discord.js"
-import sharp from "sharp"
+import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -32,9 +32,9 @@ export default class Greyscale extends Command {
             url = await discord.fetchLastAttachment(message)
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
-        const image = sharp(url)
+        const image = await jimp.read(url)
         image.greyscale()
-        const buffer = await image.toBuffer()
+        const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new MessageAttachment(buffer)
         await message.reply(`Made the image greyscale!`, attachment)
         return

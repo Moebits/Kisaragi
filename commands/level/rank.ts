@@ -45,8 +45,8 @@ export default class Rank extends Command {
             ctx.fillStyle = "#ff3d9b"
             ctx.fillRect(0, 0, width, 5)
             const dataUrl = canvas.toDataURL()
-            await imageDataURI.outputFile(dataUrl, `../assets/images/rankBar.jpg`)
-            const attachment = new MessageAttachment(`../assets/images/rankBar.jpg`)
+            await imageDataURI.outputFile(dataUrl, `../assets/images/dump/rankBar.jpg`)
+            const attachment = new MessageAttachment(`../assets/images/dump/rankBar.jpg`)
             message.channel.send(rankEmbed
                 .setTitle(`**${message.author!.username}'s Rank ${discord.getEmoji("kannaXD")}**`)
                 .setDescription(

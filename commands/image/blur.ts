@@ -1,5 +1,5 @@
 import {Message, MessageAttachment} from "discord.js"
-import sharp from "sharp"
+import gm from "gm"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -10,9 +10,8 @@ export default class Blur extends Command {
           description: "Applies a gaussian blur to an image.",
           help:
           `
-          _Note: The range is 0.3 to 1000._
-          \`blur factor\` - Blurs the last posted image
-          \`blur factor url\` - Blurs the linked image
+          \`blur radius\` - Blurs the last posted image
+          \`blur radius url\` - Blurs the linked image
           `,
           examples:
           `
@@ -38,10 +37,18 @@ export default class Blur extends Command {
         if (!factor) factor = 30
         if (factor < 0.3) factor = 0.3
         if (factor > 1000) factor = 1000
-        const image = sharp(url)
+        console.log(url)
+        const image = gm(url)
         image.blur(factor)
-        const buffer = await image.toBuffer()
-        const attachment = new MessageAttachment(buffer)
+        let buffer: Buffer
+        await new Promise((resolve) => {
+            image.toBuffer((err, buf) => {
+                buffer = buf
+                resolve()
+            })
+        })
+        console.log(buffer!)
+        const attachment = new MessageAttachment(buffer!)
         await message.reply(`Blurred the image by a factor of **${factor}**!`, attachment)
         return
     }

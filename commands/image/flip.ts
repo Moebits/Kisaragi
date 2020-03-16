@@ -1,5 +1,5 @@
 import {Message, MessageAttachment} from "discord.js"
-import sharp from "sharp"
+import gm from "gm"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -11,9 +11,9 @@ export default class Brightness extends Command {
           description: "Flips an image horizontally, vertically, or both.",
           help:
           `
-          _Note: Flip = horizontal flip, flop = vertical flip, flipflop = both._
-          \`flip\` - Flips the image horizontally.
-          \`flop\` - Flops the image vertically.
+          _Note: Flip = vertical flip, flop = horizontal flip, flipflop = both._
+          \`flip\` - Flips the image vertically.
+          \`flop\` - Flops the image horizontally.
           \`flipflop\` - Flips the image in both directions.
           \`flip/flop horizontal/h? vertical/v?\` Alternative aliases.
           `,
@@ -43,7 +43,7 @@ export default class Brightness extends Command {
             url = await discord.fetchLastAttachment(message)
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
-        const image = sharp(url)
+        const image = gm(url)
         const input = Functions.combineArgs(args, 1).replace(url, "").trim()
         let setHorizontal = true
         let setVertical = false
@@ -62,10 +62,16 @@ export default class Brightness extends Command {
             setHorizontal = true
             setVertical = true
         }
-        if (setHorizontal) image.flip()
-        if (setVertical) image.flop()
-        const buffer = await image.toBuffer()
-        const attachment = new MessageAttachment(buffer)
+        if (setHorizontal) image.flop()
+        if (setVertical) image.flip()
+        let buffer: Buffer
+        await new Promise((resolve) => {
+            image.toBuffer((err, buf) => {
+                buffer = buf
+                resolve()
+            })
+        })
+        const attachment = new MessageAttachment(buffer!)
         let text = "Flipped the image!"
         if (setHorizontal && setHorizontal) {
             text = "Flipped the image **horizontally** and **vertically**!"

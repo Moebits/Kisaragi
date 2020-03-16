@@ -1,4 +1,5 @@
 import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, TextChannel, User} from "discord.js"
+import {message} from "../test/login"
 import * as config from "./../config.json"
 import {Embeds} from "./Embeds"
 export class Kisaragi extends Client {
@@ -58,6 +59,16 @@ export class Kisaragi extends Client {
         }
         if (!invite) invite = "None"
         return invite
+    }
+
+    // Prune Prompt Responses
+    public pruneResponses = async (msg: Message) => {
+        const messages = await msg.channel.messages.fetch({limit: 10}).then((m) => m.map((m) => m))
+        let i = 0
+        while (messages[i].author.id !== this.user?.id) {
+            await messages[i].delete()
+            i++
+        }
     }
 
     // Fetch First Message in a Guild

@@ -1,5 +1,6 @@
 import axios from "axios"
 import * as Canvas from "canvas"
+import {v2 as cloudinary} from "cloudinary"
 import concat from "concat-stream"
 import {DMChannel, GuildMember, Message, MessageAttachment, TextChannel} from "discord.js"
 import FormData from "form-data"
@@ -260,8 +261,8 @@ export class Images {
         let background: Canvas.Image
         const random  = Math.floor(Math.random() * 1000000)
         if (image.includes("gif")) {
-            if (!fs.existsSync(`../assets/images/${random}/`)) {
-                fs.mkdirSync(`../assets/images/${random}/`)
+            if (!fs.existsSync(`../assets/images/dump/${random}/`)) {
+                fs.mkdirSync(`../assets/images/dump/${random}/`, {recursive: true})
             }
 
             const files: string[] = []
@@ -270,9 +271,9 @@ export class Images {
 
             for (let i = 0; i < frames.length; i++) {
                 const readStream = frames[i].getImage()
-                const writeStream = fs.createWriteStream(`../assets/images/${random}/image${frames[i].frameIndex}.jpg`)
+                const writeStream = fs.createWriteStream(`../assets/images/dump/${random}/image${frames[i].frameIndex}.jpg`)
                 await Functions.awaitStream(readStream, writeStream)
-                files.push(`../assets/images/${random}/image${frames[i].frameIndex}.jpg`)
+                files.push(`../assets/images/dump/${random}/image${frames[i].frameIndex}.jpg`)
             }
 
             await Functions.timeout(500)
@@ -283,15 +284,15 @@ export class Images {
                     rIterator = 0
                 }
                 const dataURI = await this.createCanvas(member, files[i], text, color, true, rIterator)
-                await imageDataURI.outputFile(dataURI, `../assets/images/${random}/image${i}`)
+                await imageDataURI.outputFile(dataURI, `../assets/images/dump/${random}/image${i}`)
                 attachmentArray.push(`image${i}.jpeg`)
                 rIterator++
             }
 
-            const file = fs.createWriteStream(`../assets/images/${random}/animated.gif`)
-            await this.encodeGif(attachmentArray, `../assets/images/${random}/`, file)
+            const file = fs.createWriteStream(`../assets/images/dump/${random}/animated.gif`)
+            await this.encodeGif(attachmentArray, `../assets/images/dump/${random}/`, file)
             msg2.delete()
-            const attachment = new MessageAttachment(`../assets/images/${random}/animated.gif`)
+            const attachment = new MessageAttachment(`../assets/images/dump/${random}/animated.gif`)
             return attachment
 
         } else {
@@ -350,5 +351,56 @@ export class Images {
             }))
         })
         return res
+    }
+
+    // Cloudinary upload
+    public cloudUpload = async (file: string, folder: string) => {
+        cloudinary.config({
+            cloud_name: "kisaragi" ,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET
+        })
+        const link = await cloudinary.uploader.upload(file, {folder})
+        return {link: link.url, publicID: link.public_id}
+    }
+
+    // Cloudinary queued deletion
+    public cloudDelete = async (publicIDs: string[]) => {
+        cloudinary.config({
+            cloud_name: "kisaragi" ,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET
+        })
+        if (publicIDs.length > 20) {
+            const deletionQueue: string[] = []
+            do {
+                const popped = publicIDs.shift()
+                if (!popped) break
+                deletionQueue.push(popped)
+            } while (publicIDs.length > 10)
+            await cloudinary.api.delete_resources(deletionQueue)
+        }
+    }
+
+    // Local queued deletion
+    public queuedDelete = async (files: string[]) => {
+        if (files.length > 20) {
+            const deletionQueue: string[] = []
+            do {
+                const popped = files.shift()
+                if (!popped) break
+                deletionQueue.push(popped)
+            } while (files.length > 10)
+            const promiseArray: any[] = []
+            for (let i = 0; i < deletionQueue.length; i++) {
+                const promise = new Promise((resolve)=> {
+                    fs.unlink(deletionQueue[i], () => resolve())
+                })
+                promiseArray.push(promise)
+            }
+            await Promise.all(promiseArray)
+            return deletionQueue.length
+        }
+        return 0
     }
 }

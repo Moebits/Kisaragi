@@ -1,5 +1,5 @@
 import {Message, MessageAttachment} from "discord.js"
-import puppeteer from "puppeteer"
+// import puppeteer from "puppeteer"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -31,7 +31,8 @@ export default class Screenshot extends Command {
         const input = (args[1] === "return") ? Functions.combineArgs(args, 2) : Functions.combineArgs(args, 1)
 
         const website = (input.startsWith("http")) ? input.trim() : `https://${input.trim}`
-
+        const dest = `../assets/dump/images/screenshot.png`
+/*
         const browser = await puppeteer.launch({
           headless: true,
           args: [
@@ -42,7 +43,7 @@ export default class Screenshot extends Command {
         })
         const page = await browser.newPage()
         await page.goto(website)
-        await page.screenshot({path: "../assets/images/screenshot.png", omitBackground: true, clip: {
+        await page.screenshot({path: "../assets/images/dump/screenshot.png", omitBackground: true, clip: {
         x: 0,
         y: 0,
         width: 1280,
@@ -50,8 +51,9 @@ export default class Screenshot extends Command {
       }})
         await browser.close()
         if (args[1] === "return") return
+        */
 
-        const attachment = new MessageAttachment("../assets/images/screenshot.png")
+        const attachment = new MessageAttachment("")
         const screenEmbed = embeds.createEmbed()
         screenEmbed
       .setAuthor("google chrome", "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png")

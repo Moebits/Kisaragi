@@ -53,10 +53,10 @@ export class Captcha {
             })
 
         await svg2img(captcha.data, function(error: Error, buffer: Buffer) {
-            fs.writeFileSync("../assets/images/captcha.png", buffer)
+            fs.writeFileSync("../assets/images/misc/captcha.png", buffer)
         })
 
-        const attachment = new MessageAttachment("../assets/images/captcha.png")
+        const attachment = new MessageAttachment("../assets/images/misc/captcha.png")
 
         const captchaEmbed = this.embeds.createEmbed()
         captchaEmbed

@@ -84,7 +84,7 @@ export default class Ugoira extends Command {
 
         if (String(pixivID).length > 14) return
         try {
-            await pixiv.util.downloadUgoira(String(pixivID), `assets/gifs/`, 50)
+            await pixiv.util.downloadUgoira(String(pixivID), `assets/images/gifs/`, 50)
         } catch {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
@@ -129,10 +129,10 @@ export default class Ugoira extends Command {
 
         msg1.delete({timeout: 1000})
         const ugoiraEmbed = embeds.createEmbed()
-        const outGif = new MessageAttachment(`../assets/gifs/${pixivID}.gif`)
+        const outGif = new MessageAttachment(`../assets/images/gifs/${pixivID}.gif`)
         const comments = await pixiv.illust.comments({illust_id: pixivID as number})
         const cleanText = details.caption.replace(/<\/?[^>]+(>|$)/g, "")
-        const authorUrl = await pixiv.util.downloadProfilePicture(details, `assets/pixiv/profiles`)
+        const authorUrl = await pixiv.util.downloadProfilePicture(details, `assets/images/pixiv/profiles`)
         const authorAttachment = new MessageAttachment(authorUrl, "author.png")
         const commentArray: string[] = []
         for (let i = 0; i <= 5; i++) {

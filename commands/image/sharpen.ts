@@ -1,5 +1,5 @@
 import {Message, MessageAttachment} from "discord.js"
-import sharp from "sharp"
+import gm from "gm"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -35,10 +35,16 @@ export default class Sharpen extends Command {
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         if (!factor) factor = 30
-        const image = sharp(url)
+        const image = gm(url)
         image.sharpen(factor)
-        const buffer = await image.toBuffer()
-        const attachment = new MessageAttachment(buffer)
+        let buffer: Buffer
+        await new Promise((resolve) => {
+            image.toBuffer((err, buf) => {
+                buffer = buf
+                resolve()
+            })
+        })
+        const attachment = new MessageAttachment(buffer!)
         await message.reply(`Sharpened the image by a factor of **${factor}**!`, attachment)
         return
     }

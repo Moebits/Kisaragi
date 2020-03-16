@@ -38,7 +38,7 @@ export default class GeometryDash extends Command {
         const embeds = new Embeds(discord, message)
 
         const GD = new GDClient({
-            userName: "Tenpi",
+            userName: process.env.GD_NAME,
             password: process.env.GD_PASSWORD
         })
 

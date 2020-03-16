@@ -1,12 +1,12 @@
 import {GuildMember, Message, Role} from "discord.js"
 import * as fs from "fs"
 import gifFrames from "gif-frames"
-// import * as cv from "opencv4nodejs"
+// import cv, {CascadeClassifier} from "opencv4nodejs"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 import {SQLQuery} from "./SQLQuery"
 
-// const classifier = new cv.CascadeClassifier("../assets/cascades/animeface.xml")
+// const classifier = new CascadeClassifier("../assets/cascades/animeface.xml")
 const download = require("image-downloader")
 
 export class Detector {
@@ -22,9 +22,10 @@ export class Detector {
         }
         return false
     }
-} // Remove this bracket
+} // Delete bracket
 
 /*
+
     public detectAnime = async () => {
         const sql = new SQLQuery(this.message)
         const anime = await sql.fetchColumn("detection", "pfp") as unknown as string
@@ -35,8 +36,8 @@ export class Detector {
         if (this.message.attachments.size) {
             const urls = this.message.attachments.map((a) => a.url)
             for (let i = 0; i < urls.length; i++) {
-                await download.image({url: urls[i], dest: `../assets/detection/image${i}.jpg`})
-                const img = await cv.imreadAsync(`../assets/detection/image${i}.jpg`)
+                await download.image({url: urls[i], dest: `../assets/images/dump/image${i}.jpg`})
+                const img = await cv.imreadAsync(`../assets/images/dump/image${i}.jpg`)
                 const grayImg = await img.bgrToGrayAsync()
                 const {numDetections} = await classifier.detectMultiScaleAsync(grayImg)
                 if (!numDetections.join("")) {

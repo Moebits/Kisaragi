@@ -53,12 +53,6 @@ export class Functions {
         fs.writeFileSync(copy, Buffer.from(read), "binary")
     }
 
-    // Execute File
-    public static execFile = async (file: string, args?: string[]) => {
-        child_process.execFile(`../assets/tools/${file}`, args)
-        return console.log("finished")
-    }
-
     // Random Number
     public static getRandomNum = (min: number, max: number) => {
         return Math.random() * (max - min) + min

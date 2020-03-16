@@ -382,7 +382,7 @@ export class Embeds {
 
     // Create Help Embed
     public createHelpEmbed = async (embeds: MessageEmbed[]) => {
-        let page = 7
+        let page = 8
         const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Mod", "Music", "Music 2", "Website", "Website 2"]
         let compressed = false
         const longDescription: string[] = []
