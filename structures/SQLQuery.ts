@@ -48,7 +48,7 @@ export class SQLQuery {
   // Run Query
   public static runQuery = async (query: QueryConfig | QueryArrayConfig, newData?: boolean): Promise<string[][]> => {
       const start = Date.now()
-      let redisResult = await redis.getAsync(JSON.stringify(query))
+      let redisResult = await redis.getAsync(JSON.stringify(query)) as any
       if (newData) redisResult = null
       if (redisResult) {
         SQLQuery.logQuery(Object.values(query)[0], start, true)
@@ -97,7 +97,7 @@ export class SQLQuery {
 
   // Redis Get
   public redisGet = async (key: string) => {
-    const result = await redis.getAsync(key)
+    const result = await redis.getAsync(key) as any
     return result
   }
 
