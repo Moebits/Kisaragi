@@ -167,7 +167,7 @@ export class SQLQuery {
         rowMode: "array"
       }
       const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
-      return result as unknown as string[]
+      return result as any as string[]
     }
 
   // Insert row into a table
@@ -271,7 +271,7 @@ export class SQLQuery {
             rowMode: "array"
           }
       const result = await SQLQuery.runQuery(query, true)
-      const found = result.find((id: string[]) => id[0] === this.message.guild?.id.toString())
+      const found = result.find((id: string[]) => id[0] === this.message.guild?.id.toString()) as any
       if (!found) {
             for (let i = 0; i < tableList.length; i++) {
               await this.insertInto(tableList[i], "guild id", this.message.guild?.id)
