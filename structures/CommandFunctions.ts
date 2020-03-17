@@ -17,13 +17,18 @@ export class CommandFunctions {
         const cmdPath = await this.findCommand(args?.[0])
         if (!cmdPath) return this.noCommand(args?.[0])
         const cp = new (require(path.join(__dirname, `${cmdPath.slice(0, -3)}`)).default)(this.discord, msg)
-        return new Promise(async (resolve, reject) => {
-            await cp.run(args).then(() => resolve())
+        let data: any
+        await new Promise(async (resolve, reject) => {
+            await cp.run(args).then((d: any) => {
+                data = d
+                resolve()
+            })
             .catch((err: Error) => {
                 if (msg) msg.channel.send(this.discord.cmdError(msg, err))
                 reject()
             })
         })
+        return data
     }
 
     // Auto Command

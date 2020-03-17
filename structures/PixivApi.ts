@@ -32,8 +32,8 @@ export class PixivApi {
             }
         const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
         const viewLink = await this.pixiv.util.viewLink(String(image.id))
-        const url = viewLink ? viewLink : await this.pixiv.util.downloadIllust(image, path.join(__dirname, `../../assets/images/pixiv/illusts`))
-        const authorUrl = await this.pixiv.util.downloadProfilePicture(image, path.join(__dirname, `../../assets/images/pixiv/profiles`))
+        const url = viewLink ? viewLink : await this.pixiv.util.downloadIllust(image, `assets/images/pixiv/illusts`)
+        const authorUrl = await this.pixiv.util.downloadProfilePicture(image, `assets/images/pixiv/profiles`)
         const viewLinkAppend = viewLink ? `_Image not showing? Click_ [**here**](${viewLink}).` : ""
         if (noImgur) {
             pixivEmbed
@@ -268,7 +268,7 @@ export class PixivApi {
         if (r18) tag += " R-18"
         tag = tag.trim()
         const rand = Math.floor(Math.random()*10000)
-        const src = path.join(__dirname, `../../assets/images/pixiv/zip/${rand}/`)
+        const src = `assets/images/pixiv/zip/${rand}/`
         let files: string[] = []
         try {
             files = await this.pixiv.util.downloadIllusts(tag, src) as any
@@ -279,7 +279,7 @@ export class PixivApi {
         if (!files?.[0]) return this.pixivErrorEmbed()
         const msg2 = await this.message.channel.send(`**Creating a zip file...** ${this.discord.getEmoji("gabCircle")}`)
         const name = tag.trim() ? tag.replace(/ +/g, "-") : "pixiv_dl_default"
-        const dest = path.join(__dirname, `../../assets/images/pixiv/zip/${rand}/${name}.zip`)
+        const dest = `assets/images/pixiv/zip/${rand}/${name}.zip`
         await Functions.createZip(files, dest)
         const attachment = new MessageAttachment(dest, `${name}.zip`)
         const images = await Promise.all(files.map((f) => this.pixiv!.util.viewLink(path.basename(f).match(/\d{4,}/)?.[0] ?? ""))).then((r) => r.filter(Boolean))

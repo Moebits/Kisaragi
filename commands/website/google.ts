@@ -49,12 +49,11 @@ export default class Google extends Command {
             resultArray.push(`${discord.getEmoji("star")}_Link:_ ${result[i].link}`)
         }
         const googleEmbedArray: MessageEmbed[] = []
-        let attachment: MessageAttachment | null
+        let link: string
         try {
-            await commands.runCommand(message, ["screenshot", "return", `https://www.google.com/search?q=${query.trim().replace(/ /g, "+")}`])
-            attachment = new MessageAttachment("../assets/images/screenshot.png")
+            link = await commands.runCommand(message, ["screenshot", "return", `https://www.google.com/search?q=${query.trim().replace(/ /g, "+")}`]) as any
         } catch {
-            attachment = null
+            link = ""
         }
         for (let i = 0; i < resultArray.length; i+=10) {
             const googleEmbed = embeds.createEmbed()
@@ -62,8 +61,7 @@ export default class Google extends Command {
             .setAuthor("google", "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png")
             .setTitle(`**Google Search** ${discord.getEmoji("raphi")}`)
             .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
-            .attachFiles([attachment ? attachment : ""])
-            .setImage(attachment ? `attachment://screenshot.png` : "")
+            .setImage(link)
             .setDescription(resultArray.slice(i, i+10).join("\n"))
             googleEmbedArray.push(googleEmbed)
         }

@@ -31,7 +31,7 @@ export default class Verify extends Command {
         const captchaClass = new Captcha(discord, message)
         const sql = new SQLQuery(message)
         const vToggle = await sql.fetchColumn("captcha", "verify toggle")
-        if (vToggle.join("") === "off") return
+        if (vToggle.join("") === "off") return message.reply(`Looks like verification is disabled. Enable it in the **captcha** command.`)
         const vRole = await sql.fetchColumn("captcha", "verify role")
         const cType = await sql.fetchColumn("captcha", "captcha type")
         const color = await sql.fetchColumn("captcha", "captcha color")

@@ -36,15 +36,16 @@ export default class MessageEvent {
 
       if (message.guild) {
         const sql = new SQLQuery(message)
+        Block.blockWord(message)
+        detect.detectAnime()
+        detect.swapRoles()
+        haiku.haiku()
         const pointTimeout = await sql.fetchColumn("points", "point timeout")
         /*
         setTimeout(() => {
         points.calcScore()
         }, pointTimeout ? Number(pointTimeout) : 60000)
-        Block.blockWord(message)
-        detect.detectAnime()
-        detect.swapRoles()
-        haiku.haiku()*/
+        */
         cmdFunctions.autoCommand()
     }
 

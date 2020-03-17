@@ -55,7 +55,7 @@ export default class Block extends Command {
         const toggle = await sql.fetchColumn("blocks", "block toggle")
         const asterisk = await sql.fetchColumn("blocks", "asterisk")
         let wordList = ""
-        if (words) {
+        if (words?.[0]) {
             for (let i = 0; i < words.length; i++) {
                 wordList += `**${i + 1} - ${words[i]}**\n`
             }

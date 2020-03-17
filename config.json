@@ -8,5 +8,7 @@
     ],
     "support": "https://discord.gg/77yGmWM",
     "invite": "https://discordapp.com/api/oauth2/authorize?client_id=593838271650332672&permissions=2113793271&scope=bot",
-    "repo": "https://github.com/Tenpi/Kisaragi"
+    "repo": "https://github.com/Tenpi/Kisaragi",
+    "screenshotAPI": "http://tenpi-screenshot.herokuapp.com",
+    "openCVAPI": "https://tenpi-opencv.herokuapp.com"
 }

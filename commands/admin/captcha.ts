@@ -59,7 +59,7 @@ export default class CaptchaCmd extends Command {
         captchaEmbed
         .setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)
         .attachFiles(captcha.files)
-        .setImage(path.join(__dirname, "../../", captcha.image!.url))
+        .setImage(captcha.image!.url)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .setDescription(Functions.multiTrim(`
             Configure settings for captcha verification. In order for this to function, you should create a role for verified members
@@ -89,6 +89,7 @@ export default class CaptchaCmd extends Command {
         message.channel.send(captchaEmbed)
 
         async function captchaPrompt(msg: Message) {
+            const vRole = await sql.fetchColumn("captcha", "verify role")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)
             let [setOn, setOff, setRole, setText, setMath, setColor, setEasy, setMedium, setHard, setExtreme] = [] as boolean[]
@@ -138,7 +139,7 @@ export default class CaptchaCmd extends Command {
                 return
             }
 
-            if (setOn && !setRole) {
+            if (setOn && !setRole && !vRole?.[0]) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}In order to enable verification, you must set the verify role.`)
                 msg.channel.send(responseEmbed)

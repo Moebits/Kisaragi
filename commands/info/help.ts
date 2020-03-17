@@ -30,14 +30,15 @@ export default class Help extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const subDir = fs.readdirSync(path.join(__dirname, "../../commands"))
         const helpEmbedArray: MessageEmbed[] = []
-        if (args[1]) {
+        if (args[1] && !args[1].startsWith("!")) {
             const helpDir = new (require(path.join(__dirname, "./helpInfo")).default)(this.discord, this.message)
             await helpDir.run(args)
             return
         }
         // const unlistedDirs = ["bot developer", "heart", "logging", "music"]
-        const subDir = fs.readdirSync(path.join(__dirname, "../../commands"))
+        let setIndex = -1
         for (let i = 0; i < subDir.length; i++) {
             // if (unlistedDirs.includes(subDir[i])) continue
             let help = ""
@@ -89,17 +90,45 @@ export default class Help extends Command {
                 "website": "https://i.imgur.com/ftVh8jx.png",
                 "website 2": "https://i.imgur.com/0bUmQ7F.png"
             }
+
+            const thumbMap: any = {
+                "admin": "https://cdn.discordapp.com/emojis/684279514125172744.gif",
+                "anime": "https://cdn.discordapp.com/emojis/684275759157870602.gif",
+                "bot developer": "https://cdn.discordapp.com/emojis/684256668598403100.gif",
+                "config": "https://cdn.discordapp.com/emojis/684275301756174338.gif",
+                "fun": "https://cdn.discordapp.com/emojis/684279343609937930.gif",
+                "game": "https://cdn.discordapp.com/emojis/684262253289406479.gif",
+                "heart": "https://cdn.discordapp.com/emojis/684263535488139321.gif",
+                "lewd": "https://cdn.discordapp.com/emojis/684268240377348116.gif",
+                "info": "https://cdn.discordapp.com/emojis/684264132832133127.gif",
+                "weeb": "https://cdn.discordapp.com/emojis/684264672798441483.gif",
+                "level": "https://cdn.discordapp.com/emojis/684265359137570846.gif",
+                "image": "https://cdn.discordapp.com/emojis/688250178268037120.gif",
+                "misc": "https://cdn.discordapp.com/emojis/684269087857311908.gif",
+                "mod": "https://cdn.discordapp.com/emojis/684270341689835591.gif",
+                "music": "https://cdn.discordapp.com/emojis/684270605134200857.gif",
+                "music 2": "https://cdn.discordapp.com/emojis/687861928781021214.gif",
+                "website": "https://cdn.discordapp.com/emojis/684270969417760779.gif",
+                "website 2": "https://cdn.discordapp.com/emojis/684271413284175902.gif"
+            }
             if (subDir[i] === "japanese") subDir[i] = "weeb"
+            if (args[1]?.startsWith("!")) {
+                setIndex = subDir.indexOf(args[1].replace("!", ""))
+            }
             const helpEmbed = embeds.createEmbed()
             helpEmbed
             .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${emojiMap[subDir[i]]}`)
             .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
             .setImage(imageMap[subDir[i]])
-            .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
+            .setThumbnail(thumbMap[subDir[i]])
             .setDescription(
-                `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` + help)
+                `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n To display a single module, use \`help !(module)\` ${discord.getEmoji("vigneWink")}\n` + help)
             helpEmbedArray.push(helpEmbed)
         }
-        embeds.createHelpEmbed(helpEmbedArray)
+        if (setIndex > -1) {
+            return message.channel.send(helpEmbedArray[setIndex])
+        } else {
+            embeds.createHelpEmbed(helpEmbedArray)
+        }
     }
 }

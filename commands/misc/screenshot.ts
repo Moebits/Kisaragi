@@ -1,6 +1,7 @@
+import axios from "axios"
 import {Message, MessageAttachment} from "discord.js"
 import path from "path"
-// import puppeteer from "puppeteer"
+import * as config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -12,14 +13,15 @@ export default class Screenshot extends Command {
           description: "Posts a website screenshot.",
           help:
             `
-            Note: If the bot doesn't have a chrome installation this command won't work.
             \`screenshot url\` - Posts the screenshot of the webpage
+            \`screenshot mobile url\` - Posts the screenshot of the mobile version of the site
             `,
           examples:
             `
-            \`=>screenshot https://www.youtube.com/\`
+            \`=>screenshot https://www.youtube.com/c/Tenpi\`
+            \`=>screenshot mobile https://www.youtube.com/c/Tenpi\`
             `,
-          aliases: [],
+          aliases: ["screencap"],
           cooldown: 15
         })
     }
@@ -29,38 +31,28 @@ export default class Screenshot extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
 
-        const input = (args[1] === "return") ? Functions.combineArgs(args, 2) : Functions.combineArgs(args, 1)
+        let input = (args[1] === "return") ? Functions.combineArgs(args, 2) : Functions.combineArgs(args, 1)
+        let setMobile = false
+        if (/mobile/.test(input)) {
+          setMobile = true
+          input = input.replace("mobile", "").trim()
+        }
+        const website = (input.startsWith("http")) ? input.trim() : `https://${input.trim()}`
+        const baseURL = config.screenshotAPI
+        let url = `${baseURL}/screenshot?links=${website}`
+        if (setMobile) url += `&mobile=1`
 
-        const website = (input.startsWith("http")) ? input.trim() : `https://${input.trim}`
-        const dest = path.join(__dirname, `../../../assets/dump/images/screenshot.png`)
-/*
-        const browser = await puppeteer.launch({
-          headless: true,
-          args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbo",
-            "--disable-dev-shm-usage"
-          ]
-        })
-        const page = await browser.newPage()
-        await page.goto(website)
-        await page.screenshot({path: "../assets/images/dump/screenshot.png", omitBackground: true, clip: {
-        x: 0,
-        y: 0,
-        width: 1280,
-        height: 720
-      }})
-        await browser.close()
-        if (args[1] === "return") return
-        */
+        console.log(url)
 
-        const attachment = new MessageAttachment("")
+        const link = await axios.get(url).then((r) => r.data?.[0])
+        if (!link) return message.reply("Could not find this webpage!")
+        if (args[1] === "return") return link
+
         const screenEmbed = embeds.createEmbed()
         screenEmbed
-      .setAuthor("google chrome", "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png")
-      .setTitle(`**Website Screenshot** ${discord.getEmoji("kannaXD")}`)
-      .attachFiles([attachment])
-      .setImage("attachment://screenshot.png")
+        .setAuthor("google chrome", "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png")
+        .setTitle(`**Website Screenshot** ${discord.getEmoji("KannaXD")}`)
+        .setImage(link)
         message.channel.send(screenEmbed)
   }
 }

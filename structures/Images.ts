@@ -120,14 +120,14 @@ export class Images {
     // Download gif
     public downloadGif = async (url: string, dest: string) => {
         const bin = await axios.get(url, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
-        fs.writeFileSync(path.join(__dirname, dest), Buffer.from(bin, "binary"))
+        fs.writeFileSync((dest), Buffer.from(bin, "binary"))
         return
     }
 
     // Download image
     public downloadImage = async (url: string, dest: string) => {
         if (dest.endsWith(".gif")) return this.downloadGif(url, dest)
-        const writeStream = fs.createWriteStream(path.join(__dirname, dest))
+        const writeStream = fs.createWriteStream(dest)
         await axios.get(url, {responseType: "stream", headers: this.headers}).then((r) => r.data.pipe(writeStream))
         return new Promise((resolve, reject) => {
             writeStream.on("finish", resolve)
@@ -272,11 +272,11 @@ export class Images {
             for (let i = 0; i < frames.length; i++) {
                 const readStream = frames[i].getImage()
                 const writeStream = fs.createWriteStream(path.join(__dirname, `../../assets/images/dump/${random}/image${frames[i].frameIndex}.jpg`))
-                await Functions.awaitStream(readStream, writeStream)
+                await new Promise((resolve) => {
+                    readStream.pipe(writeStream).on("finish", () => resolve())
+                })
                 files.push(path.join(__dirname, `../../assets/images/dump/${random}/image${frames[i].frameIndex}.jpg`))
             }
-
-            await Functions.timeout(500)
             let rIterator = 0
             const msg2 = await this.message.channel.send(`**Encoding Gif. This might take awhile** ${this.discord.getEmoji("gabCircle")}`) as Message
             for (let i = 0; i < 6; i++) {

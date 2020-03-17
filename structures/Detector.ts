@@ -1,15 +1,15 @@
+import axios from "axios"
 import {GuildMember, Message, Role} from "discord.js"
 import * as fs from "fs"
-import gifFrames from "gif-frames"
-// import cv, {CascadeClassifier} from "opencv4nodejs"
+import * as config from "../config.json"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 import {SQLQuery} from "./SQLQuery"
 
-// const classifier = new CascadeClassifier("../assets/cascades/animeface.xml")
 const download = require("image-downloader")
 
 export class Detector {
+    private readonly openCVURL = `${config.openCVAPI}/animedetect?link=`
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
     public detectIgnore = async () => {
         const sql = new SQLQuery(this.message)
@@ -22,9 +22,6 @@ export class Detector {
         }
         return false
     }
-} // Delete bracket
-
-/*
 
     public detectAnime = async () => {
         const sql = new SQLQuery(this.message)
@@ -36,11 +33,8 @@ export class Detector {
         if (this.message.attachments.size) {
             const urls = this.message.attachments.map((a) => a.url)
             for (let i = 0; i < urls.length; i++) {
-                await download.image({url: urls[i], dest: `../assets/images/dump/image${i}.jpg`})
-                const img = await cv.imreadAsync(`../assets/images/dump/image${i}.jpg`)
-                const grayImg = await img.bgrToGrayAsync()
-                const {numDetections} = await classifier.detectMultiScaleAsync(grayImg)
-                if (!numDetections.join("")) {
+                const data = await axios.get(`${this.openCVURL}${urls[i]}`).then((r) => r.data)
+                if (!data.numDetections.join("")) {
                     const reply = await this.message.reply("You can only post anime pictures!")
                     await this.message.delete()
                     reply.delete({timeout: 10000})
@@ -60,18 +54,8 @@ export class Detector {
         const normie = await sql.fetchColumn("detection", "normie") as unknown as string
         const weebRole = this.message.guild!.roles.cache.find((r: Role) => r.id === weeb)
         const normieRole = this.message.guild!.roles.cache.find((r: Role) => r.id === normie)
-        if (member!.user.displayAvatarURL().slice(-3) === "gif") {
-            gifFrames({url: member!.user.displayAvatarURL(), frames: 1}).then((frameData) => {
-                frameData[0].getImage().pipe(fs.createWriteStream("../assets/detection/user.jpg"))
-            })
-            await Functions.timeout(1000)
-        } else {
-            await download.image({url: member!.user.displayAvatarURL(), dest: `../assets/detection/user.jpg`})
-        }
-        const img = await cv.imreadAsync(`../assets/detection/user.jpg`)
-        const grayImg = await img.bgrToGrayAsync()
-        const {numDetections} = await classifier.detectMultiScaleAsync(grayImg)
-        if (!numDetections.join("")) {
+        const data = await axios.get(`${this.openCVURL}${member.user.displayAvatarURL({format: "png"})}`).then((r) => r.data)
+        if (!data.numDetections.join("")) {
             const found = member!.roles.cache.find((r: Role) => r === normieRole)
             if (found) {
                 return
@@ -104,4 +88,3 @@ export class Detector {
         }
     }
 }
-*/

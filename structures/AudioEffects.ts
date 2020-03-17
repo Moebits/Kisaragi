@@ -38,10 +38,10 @@ export class AudioEffects {
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
-        let outDest = fileDest + `.${ext}`
         filepath = path.join(__dirname, filepath)
-        outDest = path.join(__dirname, outDest)
         const ext = path.extname(filepath).replace(".", "")
+        let outDest = fileDest + `.${ext}`
+        outDest = path.join(__dirname, outDest)
         let index = 0
         while (fs.existsSync(outDest)) {
             outDest = index <= 1 ? `${fileDest}.${ext}` : `${fileDest}${index}.${ext}`

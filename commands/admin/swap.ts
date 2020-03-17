@@ -36,7 +36,6 @@ export default class Swap extends Command {
         const weeb = await sql.fetchColumn("detection", "weeb")
         const normie = await sql.fetchColumn("detection", "normie")
         if (String(pfp) === "off") return message.reply("Cannot use this command, have not set the weeb and normie roles!")
-        /*
         let weebCounter = 0
         let normieCounter = 0
 
@@ -53,7 +52,6 @@ export default class Swap extends Command {
         }
 
         await wait.delete({timeout: 1000})
-
         const swapEmbed = embeds.createEmbed()
         swapEmbed
         .setTitle(`**Role Swapping** ${discord.getEmoji("gabYes")}`)
@@ -62,6 +60,5 @@ export default class Swap extends Command {
             `${discord.getEmoji("star")}**${normieCounter}** members were swapped into the <@&${normie}> role.\n`
         )
         message.channel.send(swapEmbed)
-        */
     }
 }

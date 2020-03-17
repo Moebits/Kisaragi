@@ -1,5 +1,6 @@
 import {Message, MessageAttachment} from "discord.js"
 import * as fs from "fs"
+import path from "path"
 import svgCaptcha from "svg-captcha"
 import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
@@ -53,10 +54,10 @@ export class Captcha {
             })
 
         await svg2img(captcha.data, function(error: Error, buffer: Buffer) {
-            fs.writeFileSync("../assets/images/misc/captcha.png", buffer)
+            fs.writeFileSync(path.join(__dirname, "../../assets/images/misc/captcha.png"), buffer)
         })
 
-        const attachment = new MessageAttachment("../assets/images/misc/captcha.png")
+        const attachment = new MessageAttachment(path.join(__dirname, "../../assets/images/misc/captcha.png"), "captcha.png")
 
         const captchaEmbed = this.embeds.createEmbed()
         captchaEmbed

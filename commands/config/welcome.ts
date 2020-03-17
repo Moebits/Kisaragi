@@ -66,11 +66,11 @@ export default class Welcome extends Command {
             View and edit the settings for welcome messages!
             newline
             __Text Replacements:__
-            **user** = member mention
-            **tag** = member tag
-            **name** = member name
-            **guild** = guild name
-            **count** = guild member count
+            **user** - member mention
+            **tag** - member tag
+            **name** - member name
+            **guild** - guild name
+            **count** - guild member count
             newline
             __Current Settings:__
             ${discord.getEmoji("star")}_Welcome Message:_ **${welcomeMsg}**
