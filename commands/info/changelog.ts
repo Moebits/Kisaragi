@@ -31,6 +31,8 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 12, date: "3/19/2020", changes: "Added the command \`crunchydl\` which can download anime episodes from crunchyroll or their subtitiles."},
+            {num: 11, date: "3/18/2020", changes: "Added new video commands, for speeding up/reversing videos or for converting them to mp3/gif files."},
             {num: 10, date: "3/17/2020", changes: "I moved opencv (anime detection), chrome (website screenshots), and image uploading to a seperate api to reduce the file size on the bot and to make them easier to maintain."},
             {num: 9, date: "3/17/2020", changes: "The pixiv download command now supports folder mapping (organizing pictures into subfolders within the zip file)."},
             {num: 8, date: "3/17/2020", changes: "There are now image manipulation commands as well, such as brightness, contrast, flip, hsv, etc. I added an editor with an undo/redo system for ease of use."},
