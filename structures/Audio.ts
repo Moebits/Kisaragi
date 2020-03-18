@@ -488,7 +488,7 @@ export class Audio {
             queueObj.artist = channel
             queueObj.url = url
             queueObj.image = image
-            queueObj.duration = duration
+            queueObj.duration = duration as string
         } else if (link?.match(/soundcloud.com/)) {
             const info = await this.soundcloud.tracks.get(link) as SoundCloudTrack
             const image = info.artwork_url
@@ -1152,7 +1152,7 @@ export class Audio {
         return finalLink
     }
 
-    public parseYTDuration = (duration: string) => {
+    public parseYTDuration = (duration: string, returnSeconds?: boolean) => {
         const matches = duration?.match(/[0-9]+[HMS]/g)
         if (!matches) return "0:00"
         let hours = "0"
@@ -1174,7 +1174,13 @@ export class Audio {
                 default:
             }
         })
-
+        if (returnSeconds) {
+            let s = 0
+            s += Number(hours) * 60 * 60
+            s += Number(minutes) * 60
+            s+= Number(seconds)
+            return s
+        }
         const text = `${hours === "0" ? "" : `${hours}:`}${minutes}:${seconds}`
         return text
     }

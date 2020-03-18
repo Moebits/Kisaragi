@@ -19,7 +19,6 @@ export default class Edit extends Command {
           description: "Opens the image editor to apply multiple edits to an image.",
           help:
           `
-          _Note: The undo max is 10 (to save storage space)._
           \`edit\` - Edits the last posted image
           \`edit url\` - Edits the linked image
           `,
@@ -37,13 +36,15 @@ export default class Edit extends Command {
         const embeds = new Embeds(this.discord, this.message)
         let url: string
         if (!exists) {
-            const {link, publicID} = await images.cloudUpload(image, "image edits")
-            await images.cloudDelete(this.publicIDs)
-            const deleted = await images.queuedDelete(this.historyStates)
-            this.historyIndex -= deleted
+            // const {link, publicID} = await images.cloudUpload(image, "image edits")
+            // await images.cloudDelete(this.publicIDs)
+            // const deleted = await images.queuedDelete(this.historyStates)
+            // this.historyIndex -= deleted
+            const link = await images.upload([image]).then((l) => l[0])
+            console.log(link)
             this.historyIndex++
             this.historyStates.splice(this.historyIndex, Infinity, image)
-            this.publicIDs.splice(this.historyIndex, Infinity, publicID)
+            // this.publicIDs.splice(this.historyIndex, Infinity, publicID)
             this.links.splice(this.historyIndex, Infinity, link)
             url = link
         } else {
@@ -82,12 +83,13 @@ export default class Edit extends Command {
             url = await discord.fetchLastAttachment(message)
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
-        const image = await jimp.read(url)
+        // const image = await jimp.read(url)
         const hsvEmbed = embeds.createEmbed()
         if (!fs.existsSync(path.join(__dirname, "../../images"))) fs.mkdirSync(path.join(__dirname, "../../images"))
-        const dest = path.join(__dirname, `../../images/${seed}.jpg`)
-        await image.writeAsync(dest)
-        const {link} = await images.cloudUpload(dest, "image edits")
+        // const dest = path.join(__dirname, `../../images/${seed}.jpg`)
+        // await image.writeAsync(dest)
+        const link = await images.upload([url]).then((l) => l[0])
+        console.log(link)
         this.original = link
         hsvEmbed
         .setAuthor("edit", "https://cdn4.iconfinder.com/data/icons/app-ui/100/images-512.png")
@@ -102,7 +104,7 @@ export default class Edit extends Command {
             `${this.discord.getEmoji("value")}_Lightness:_ -> _Changes the lightness of the image._`
         )
         const msg = await message.channel.send(hsvEmbed)
-        const reactions = ["brightness", "contrast", "hue", "saturation", "value", "flip", "undo", "redo", "reset"]
+        const reactions = ["brightness", "contrast", "hue", "saturation", "value", "flip", "tint", "invert", "crop", "scale", "rotate", "undo", "redo", "reset", "save"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
         const brightnessCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("brightness") && user.bot === false
@@ -113,6 +115,9 @@ export default class Edit extends Command {
         const flipCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("flip") && user.bot === false
         const tintCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tint") && user.bot === false
         const invertCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("invert") && user.bot === false
+        const cropCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("crop") && user.bot === false
+        const scaleCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("scale") && user.bot === false
+        const rotateCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("rotate") && user.bot === false
         const undoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("undo") && user.bot === false
         const redoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("redo") && user.bot === false
         const resetCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reset") && user.bot === false
@@ -125,6 +130,9 @@ export default class Edit extends Command {
         const flip = msg.createReactionCollector(flipCheck)
         const tint = msg.createReactionCollector(tintCheck)
         const invert = msg.createReactionCollector(invertCheck)
+        const crop = msg.createReactionCollector(cropCheck)
+        const scale = msg.createReactionCollector(scaleCheck)
+        const rotate = msg.createReactionCollector(rotateCheck)
         const undo = msg.createReactionCollector(undoCheck)
         const redo = msg.createReactionCollector(redoCheck)
         const reset = msg.createReactionCollector(resetCheck)
@@ -350,8 +358,8 @@ export default class Edit extends Command {
             await embeds.createPrompt(getArgs)
             await promise
             await rep.delete()
-            const color = args[1] ? args[1] : "#ff0fd3"
-            const opacity = Number(args[2]) ? Number(args[2]) : 60
+            const color = argArray[0] ? argArray[0] : "#ff0fd3"
+            const opacity = Number(argArray[1]) ? Number(argArray[1]) : 60
             let current: string
             if (this.historyIndex < 0) {
                 current = this.original
@@ -382,6 +390,94 @@ export default class Edit extends Command {
             const image = await jimp.read(current)
             image.invert()
             let newDest = path.join(__dirname, `../../images/${seed}_invert`)
+            let i = 0
+            while (fs.existsSync(`${newDest}.jpg`)) {
+                newDest = `${newDest}${i}`
+                i++
+            }
+            await image.writeAsync(`${newDest}.jpg`)
+            const newEmbed = await this.hsvEmbed(`${newDest}.jpg`)
+            msg.edit(newEmbed)
+        })
+
+        crop.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await message.channel.send(`<@${user.id}>, Enter the x offset, y offset, width, and height (in pixels).`)
+            await embeds.createPrompt(getArgs)
+            await promise
+            await rep.delete()
+            let current: string
+            if (this.historyIndex < 0) {
+                current = this.original
+            } else {
+                current = this.historyStates[this.historyIndex]
+            }
+            const image = await jimp.read(current)
+            const x = Number(argArray[0]) ? Number(argArray[0]) : 0
+            const y = Number(argArray[1]) ? Number(argArray[1]) : 0
+            const width = Number(argArray[2]) ? Number(argArray[2]) : image.bitmap.width
+            const height = Number(argArray[3]) ? Number(argArray[3]) : Math.floor(image.bitmap.height / (image.bitmap.width / width * 1.0))
+            image.crop(x, y, width, height)
+            let newDest = path.join(__dirname, `../../images/${seed}_crop`)
+            let i = 0
+            while (fs.existsSync(`${newDest}.jpg`)) {
+                newDest = `${newDest}${i}`
+                i++
+            }
+            await image.writeAsync(`${newDest}.jpg`)
+            const newEmbed = await this.hsvEmbed(`${newDest}.jpg`)
+            msg.edit(newEmbed)
+        })
+
+        scale.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await message.channel.send(`<@${user.id}>, Enter the width and height. Type \`scale\` if you want to use a scale factor instead (eg. 1.5x).`)
+            await embeds.createPrompt(getArgs)
+            await promise
+            await rep.delete()
+            let current: string
+            if (this.historyIndex < 0) {
+                current = this.original
+            } else {
+                current = this.historyStates[this.historyIndex]
+            }
+            const image = await jimp.read(current)
+            if (/scale/.test(argArray.join(" "))) {
+                const input = argArray.join(" ").replace("scale", "").trim().split("")
+                const factor = Number(input[0]) ? Number(input[0]) : 1
+                image.scale(factor)
+            } else {
+                const width = Number(argArray[0]) ? Number(argArray[0]) : jimp.AUTO
+                const height = Number(argArray[1]) ? Number(argArray[1]) : jimp.AUTO
+                image.resize(width, height)
+            }
+            let newDest = path.join(__dirname, `../../images/${seed}_scale`)
+            let i = 0
+            while (fs.existsSync(`${newDest}.jpg`)) {
+                newDest = `${newDest}${i}`
+                i++
+            }
+            await image.writeAsync(`${newDest}.jpg`)
+            const newEmbed = await this.hsvEmbed(`${newDest}.jpg`)
+            msg.edit(newEmbed)
+        })
+
+        rotate.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await message.channel.send(`<@${user.id}>, Enter the the amount of degrees to rotate (clockwise).`)
+            await embeds.createPrompt(getArgs)
+            await promise
+            await rep.delete()
+            let current: string
+            if (this.historyIndex < 0) {
+                current = this.original
+            } else {
+                current = this.historyStates[this.historyIndex]
+            }
+            const image = await jimp.read(current)
+            const degrees = Number(argArray[0]) ? Number(argArray[0]) : 0
+            image.rotate(degrees, false)
+            let newDest = path.join(__dirname, `../../images/${seed}_rotate`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`

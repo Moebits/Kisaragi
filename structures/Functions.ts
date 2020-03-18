@@ -251,6 +251,16 @@ export class Functions {
         }
     }
 
+    // Constrain Array
+    public static constrain = <T>(frames: T[], constrain: number) => {
+        const step = Math.ceil(frames.length*1.0/constrain)
+        const newFrames: T[] = []
+        for (let i = 0; i < frames.length; i+=step) {
+            newFrames.push(frames[i])
+        }
+        return newFrames
+    }
+
     // Create a zip file
     public static createZip = async (files: string[], dest: string) => {
         dest = dest.endsWith(".zip") ? dest : dest + ".zip"
@@ -264,6 +274,22 @@ export class Functions {
             }
             zip.finalize()
 
+            stream.on("close", function() {
+                resolve()
+            })
+        })
+        return dest
+    }
+
+    // Zip a directory
+    public static zipDir = async (dir: string, dest: string) => {
+        dest = dest.endsWith(".zip") ? dest : dest + ".zip"
+        await new Promise((resolve) => {
+            const stream = fs.createWriteStream(dest)
+            const zip = archiver("zip")
+            zip.pipe(stream)
+            zip.directory(dir, false)
+            zip.finalize()
             stream.on("close", function() {
                 resolve()
             })
@@ -289,6 +315,32 @@ export class Functions {
                 console.log(e)
             }
         }
+    }
+
+    /** Parses seconds string */
+    public static parseSeconds = (str: string) => {
+        const split = str.split(":")
+        let seconds = 0
+        if (split.length === 3) {
+            seconds += Number(split[0]) * 60 * 60
+            seconds += Number(split[1]) * 60
+            seconds += Number(split[2])
+        } else if (split.length === 2) {
+            seconds += Number(split[0]) * 60
+            seconds += Number(split[1])
+        } else if (split.length === 1) {
+            seconds += Number(split[0])
+        }
+        return seconds
+    }
+
+    /** Parse video m3u8 */
+    public static parsem3u8 = (manifest: any) => {
+            const m3u8Parser = require("m3u8-parser")
+            const parser = new m3u8Parser.Parser()
+            parser.push(manifest)
+            parser.end()
+            return parser.manifest
     }
 
 }

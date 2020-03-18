@@ -1,6 +1,5 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, MessageAttachment, MessageEmbed} from "discord.js"
 import fs from "fs"
-// @ts-ignore
 import yt from "youtube.ts"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -15,15 +14,16 @@ export default class YoutubeCommand extends Command {
     private playlist = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for youtube videos, channels, and playlists.",
+            description: "Searches for youtube videos, channels, and playlists or downloads them.",
             help:
             `
+            _Note: If a query is provided for the download, the first search result is downloaded._
             \`youtube query\` - Searches for youtube videos
             \`youtube channel query\` - Searches for youtube channels
             \`youtube playlist query\` - Searches for youtube playlists
             \`youtube video query\` - Searches for videos (long form)
-            \`youtube download/dl query\` - Downloads the videos from the query
-            \`youtube download/dl mp3 query\` - Downloads the videos as mp3 files
+            \`youtube download/dl url/query\` - Downloads the video from the url
+            \`youtube download/dl mp3 url/query\` - Downloads and converts the video to an mp3 file
             `,
             examples:
             `
@@ -199,57 +199,74 @@ export default class YoutubeCommand extends Command {
             const rand = Math.floor(Math.random()*10000)
             if (args[2] === "mp3") {
                 const query = Functions.combineArgs(args, 3).trim()
-                const videos = await youtube.videos.search({q: query, maxResults: 10}).then((v) => v.items.map((i) => i.id.videoId))
-                const src = `../assets/images/${rand}/`
-                if (!fs.existsSync(src)) fs.mkdirSync(src)
-                const dest = `../assets/images/${rand}/${query.replace(/ +/g, "_")}.zip`
-                const msg2 = await message.channel.send(`**Downloading MP3 files, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
-                let files: string[]
+                let video: string
+                if (/youtube.com/.test(query) || /youtu.be/.test(query)) {
+                    video = query
+                } else {
+                    video = await youtube.videos.search({q: query, maxResults: 1}).then((v) => v.items.map((i) => i.id.videoId))?.[0]
+                }
+                const src = `../assets/misc/videos/${rand}/`
+                if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
+                const msg2 = await message.channel.send(`**Downloading MP3, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
+                let file: string
                 try {
-                    files = await youtube.util.downloadMP3s(videos, src)
+                    file = await youtube.util.downloadMP3(video, src)
                 } catch {
                     msg2.delete({timeout: 1000})
                     return message.reply(`There was an error in processing this request. Try again later.`)
                 }
-                await Functions.createZip(files, dest)
-                const link = await images.fileIOUpload(dest)
-                const youtubeEmbed = embeds.createEmbed()
-                youtubeEmbed
-                .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
-                .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
-                .setDescription(
-                    `${discord.getEmoji("star")}Downloaded **${files.length}** videos as mp3 files for the query **${query}**!\n` +
-                    `${discord.getEmoji("star")}This file is too large for attachments. Please note that the following link **will get deleted after someone downloads it**.\n` +
-                    link
-                )
-                await message.channel.send(youtubeEmbed)
+                const stats = fs.statSync(file)
+                if (stats.size > 8000000) {
+                    let link = await images.upload([file]).then((l) => l[0])
+                    link = encodeURI(link).replace("http", "https")
+                    const youtubeEmbed = embeds.createEmbed()
+                    youtubeEmbed
+                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+                    .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
+                    .setURL(link)
+                    .setDescription(`${discord.getEmoji("star")}Converted the video to an mp3 file! This file is too large for attachments. Download the file [**here**](${link}).\n`)
+                    await message.channel.send(youtubeEmbed)
+                } else {
+                    const attachment = new MessageAttachment(file)
+                    const youtubeEmbed = embeds.createEmbed()
+                    youtubeEmbed
+                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+                    .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
+                    .setDescription(`${discord.getEmoji("star")}Converted the video to an mp3 file!`)
+                    await message.channel.send(youtubeEmbed)
+                    await message.channel.send(attachment)
+                }
                 Functions.removeDirectory(src)
                 msg2.delete({timeout: 1000})
                 return
             } else {
                 const query = Functions.combineArgs(args, 2).trim()
-                const videos = await youtube.videos.search({q: query, maxResults: 10}).then((v) => v.items.map((i) => i.id.videoId))
-                const src = `../assets/images/${rand}/`
-                if (!fs.existsSync(src)) fs.mkdirSync(src)
-                const dest = `../assets/images/${rand}/${query.replace(/ +/g, "_")}.zip`
-                const msg2 = await message.channel.send(`**Downloading video files, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
-                let files: string[]
+                let video: string
+                if (/youtube.com/.test(query) || /youtu.be/.test(query)) {
+                    video = query
+                } else {
+                    video = await youtube.videos.search({q: query, maxResults: 1}).then((v) => v.items.map((i) => i.id.videoId))?.[0]
+                }
+                const src = `../assets/misc/videos/${rand}/`
+                if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
+                const msg2 = await message.channel.send(`**Downloading video, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
+                let file: string
                 try {
-                    files = await youtube.util.downloadVideos(videos, src)
+                    file = await youtube.util.downloadVideo(video, src)
                 } catch {
                     msg2.delete({timeout: 1000})
                     return message.reply(`There was an error in processing this request. Try again later.`)
                 }
-                await Functions.createZip(files, dest)
-                const link = await images.fileIOUpload(dest)
+                let link = await images.upload([file]).then((l) => l[0])
+                link = encodeURI(link).replace("http", "https")
+                console.log(link)
                 const youtubeEmbed = embeds.createEmbed()
                 youtubeEmbed
                 .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+                .setURL(link)
                 .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
                 .setDescription(
-                    `${discord.getEmoji("star")}Downloaded **${files.length}** videos for the query **${query}**!\n` +
-                    `${discord.getEmoji("star")}This file is too large for attachments. Please note that the following link **will get deleted after someone downloads it**.\n` +
-                    link
+                    `${discord.getEmoji("star")}Downloaded the video! This file is too large for attachments. Download the file [**here**](${link}).\n`
                 )
                 await message.channel.send(youtubeEmbed)
                 Functions.removeDirectory(src)

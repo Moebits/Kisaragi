@@ -13,6 +13,7 @@ import path from "path"
 import request from "request"
 import stream from "stream"
 import unzip from "unzip"
+import * as config from "../config.json"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 
@@ -26,42 +27,19 @@ export class Images {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
-    // Compress Gif
+    /** Compresses a gif. */
     public compressGif = async (input: string[]) => {
         const file = await imagemin(input,
-        {destination: path.join(__dirname, "../../assets/gifs"),
+        {destination: path.join(__dirname, "../../assets/images/gifs"),
          plugins: [imageminGifsicle({interlaced: false, optimizationLevel: 2, colors: 512})]
         })
         return file
     }
 
-    // Encode Gif
-    public encodeGif = async (fileNames: string[], path: string, file: string | stream.Writable) => {
-        const images: string[] = []
-        if (fileNames.length > 500) {
-            for (let i = 0; i < fileNames.length; i+=5) {
-                images.push(fileNames[i])
-            }
-        } else if (fileNames.length > 300) {
-            for (let i = 0; i < fileNames.length; i+=4) {
-                images.push(fileNames[i])
-            }
-        } else if (fileNames.length > 80) {
-            for (let i = 0; i < fileNames.length; i+=3) {
-                images.push(fileNames[i])
-            }
-        } else if (fileNames.length > 40) {
-            for (let i = 0; i < fileNames.length; i+=2) {
-                images.push(fileNames[i])
-            }
-        } else {
-            for (let i = 0; i < fileNames.length; i++) {
-                images.push(fileNames[i])
-            }
-        }
+    /** Encodes a new gif. */
+    public encodeGif = async (images: string[], folder: string, file: string | stream.Writable) => {
         return new Promise((resolve) => {
-
-        const dimensions = sizeOf(`${path}${images[0]}`)
+        const dimensions = sizeOf(`${folder}${path.basename(images[0])}`)
         const gif = new GifEncoder(dimensions.width, dimensions.height)
         gif.pipe(file)
         gif.setQuality(20)
@@ -69,20 +47,18 @@ export class Images {
         gif.setRepeat(0)
         gif.writeHeader()
         let counter = 0
-
         const addToGif = (frames: string[]) => {
-                getPixels(`${path}${frames[counter]}`, function(err: Error, pixels: any) {
-                    gif.addFrame(pixels.data)
-                    gif.read()
-                    if (counter >= frames.length - 1) {
-                            gif.finish()
-                        } else {
-                                counter++
-                                addToGif(images)
-                            }
-                })
-            }
-
+            getPixels(`${folder}${path.basename(frames[counter])}`, function(err: Error, pixels: any) {
+                gif.addFrame(pixels.data)
+                gif.read()
+                if (counter >= frames.length - 1) {
+                    gif.finish()
+                } else {
+                    counter++
+                    addToGif(images)
+                }
+            })
+        }
         addToGif(images)
         gif.on("end", () => {
                 resolve()
@@ -90,43 +66,43 @@ export class Images {
         })
     }
 
-    // Compress Images
+    /** Compresses images and gifs. */
     public compressImages = (src: string, dest: string) => {
         return new Promise((resolve) => {
             const imgInput = src
             const imgOutput = dest
             compressImages(imgInput, imgOutput, {compress_force: true, statistic: false, autoupdate: true}, false,
-                {jpg: {engine: "mozjpeg", command: ["-quality", "10"]}},
-                {png: {engine: "pngquant", command: ["--quality=20-50"]}},
-                {svg: {engine: "svgo", command: "--multipass"}},
-                {gif: {engine: "gifsicle", command: ["--colors", "64", "--use-col=web"]}}, function(error: Error, completed: boolean) {
-                    if (completed === true) {
-                        resolve()
-                    }
-                })
+            {jpg: {engine: "mozjpeg", command: ["-quality", "10"]}},
+            {png: {engine: "pngquant", command: ["--quality=20-50"]}},
+            {svg: {engine: "svgo", command: "--multipass"}},
+            {gif: {engine: "gifsicle", command: ["--colors", "64", "--use-col=web"]}}, function(error: Error, completed: boolean) {
+                if (completed === true) {
+                    resolve()
+                }
+            })
         })
     }
 
-    // Download Zip
+    /** Downloads and extracts a zip file. */
     public downloadZip = async (url: string, path: string) => {
         return new Promise((resolve) => {
-            const writeStream = request({url, headers: {Referer: "https://www.pixiv.net/"}}).pipe(unzip.Extract({path}))
+            const writeStream = request({url, headers: this.headers}).pipe(unzip.Extract({path}))
             writeStream.on("finish", () => {
                 resolve()
             })
         })
     }
 
-    // Download gif
-    public downloadGif = async (url: string, dest: string) => {
+    /** Download any binary data (gif, video, etc.) */
+    public download = async (url: string, dest: string) => {
         const bin = await axios.get(url, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
         fs.writeFileSync((dest), Buffer.from(bin, "binary"))
         return
     }
 
-    // Download image
+    /** Download image */
     public downloadImage = async (url: string, dest: string) => {
-        if (dest.endsWith(".gif")) return this.downloadGif(url, dest)
+        if (dest.endsWith(".gif")) return this.download(url, dest)
         const writeStream = fs.createWriteStream(dest)
         await axios.get(url, {responseType: "stream", headers: this.headers}).then((r) => r.data.pipe(writeStream))
         return new Promise((resolve, reject) => {
@@ -135,7 +111,7 @@ export class Images {
         })
     }
 
-    // Download Images
+    /** Download images */
     public downloadImages = async (images: string[], dest: string) => {
         await Promise.all(images.map(async (url, i) => {
             let name = path.basename(images[i])
@@ -148,7 +124,7 @@ export class Images {
         }))
     }
 
-    // Parse Imgur Album
+    /** Parse Imgur Album */
     public parseImgurAlbum = async (albumID: string, max?: number) => {
         const imgur = require("imgur")
         await imgur.setClientId(process.env.IMGUR_discord_ID)
@@ -163,7 +139,7 @@ export class Images {
         }
     }
 
-    // Fetch Channel Attachments
+    /** Fetch channel attachments */
     public fetchChannelAttachments = async (channel: TextChannel | DMChannel, limit?: number, gif?: boolean, messageID?: string) => {
         if (!limit) limit = Infinity
         let last = messageID || channel.lastMessageID
@@ -211,9 +187,9 @@ export class Images {
         "#FF8AD8"
     ]
 
+    /** Creates a welcome/leave canvas */
     public createCanvas = async (member: GuildMember, image: string, text: string, color: string, uri?: boolean, iterator?: number) => {
         const colorStops = this.colorStops
-
         const newText = text.replace(/user/g, `@${member.user.tag}`).replace(/guild/g, member.guild.name)
         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, String(member.guild.memberCount))
 
@@ -261,21 +237,21 @@ export class Images {
         let background: Canvas.Image
         const random  = Math.floor(Math.random() * 1000000)
         if (image.includes("gif")) {
-            if (!fs.existsSync(path.join(__dirname, `../../assets/images/dump/${random}/`))) {
-                fs.mkdirSync(path.join(__dirname, `../../assets/images/dump/${random}/`), {recursive: true})
-            }
+            const dir = path.join(__dirname, `../../../assets/images/dump/${random}/`)
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir, {recursive: true})
 
             const files: string[] = []
             const attachmentArray: string[] = []
-            const frames = await gifFrames({url: image, frames: "all", cumulative: true})
+            let frames = await gifFrames({url: image, frames: "all", cumulative: true})
+            frames = Functions.constrain(frames, 50)
 
             for (let i = 0; i < frames.length; i++) {
                 const readStream = frames[i].getImage()
-                const writeStream = fs.createWriteStream(path.join(__dirname, `../../assets/images/dump/${random}/image${frames[i].frameIndex}.jpg`))
+                const writeStream = fs.createWriteStream(path.join(dir, `./image${frames[i].frameIndex}.jpg`))
                 await new Promise((resolve) => {
                     readStream.pipe(writeStream).on("finish", () => resolve())
                 })
-                files.push(path.join(__dirname, `../../assets/images/dump/${random}/image${frames[i].frameIndex}.jpg`))
+                files.push(path.join(dir, `./image${frames[i].frameIndex}.jpg`))
             }
             let rIterator = 0
             const msg2 = await this.message.channel.send(`**Encoding Gif. This might take awhile** ${this.discord.getEmoji("gabCircle")}`) as Message
@@ -284,22 +260,20 @@ export class Images {
                     rIterator = 0
                 }
                 const dataURI = await this.createCanvas(member, files[i], text, color, true, rIterator)
-                await imageDataURI.outputFile(dataURI, path.join(__dirname, `../../assets/images/dump/${random}/image${i}`))
+                await imageDataURI.outputFile(dataURI, path.join(dir, `./image${i}`))
                 attachmentArray.push(`image${i}.jpeg`)
                 rIterator++
             }
 
-            const file = fs.createWriteStream(path.join(__dirname, `../../assets/images/dump/${random}/animated.gif`))
-            await this.encodeGif(attachmentArray, path.join(__dirname, `../../assets/images/dump/${random}/`), file)
+            const file = fs.createWriteStream(path.join(dir, `./animated.gif`))
+            await this.encodeGif(attachmentArray, dir, file)
             msg2.delete()
-            const attachment = new MessageAttachment(path.join(__dirname, `../../assets/images/dump/${random}/animated.gif`))
+            const attachment = new MessageAttachment(path.join(dir, `./animated.gif`), "animated.gif")
             return attachment
 
         } else {
             background = await Canvas.loadImage(image)
-
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
-
             ctx.font = applyText(canvas, newText)
             ctx.strokeStyle= "black"
             ctx.lineWidth = 4
@@ -338,7 +312,7 @@ export class Images {
         }
     }
 
-    // file.io upload
+    /** Uploads to file.io */
     public fileIOUpload = async (file: string) => {
         const fd = new FormData()
         let res: any
@@ -353,7 +327,7 @@ export class Images {
         return res
     }
 
-    // Cloudinary upload
+    /** Uploads to cloudinary */
     public cloudUpload = async (file: string, folder: string) => {
         cloudinary.config({
             cloud_name: "kisaragi" ,
@@ -364,7 +338,7 @@ export class Images {
         return {link: link.url, publicID: link.public_id}
     }
 
-    // Cloudinary queued deletion
+    /** Deletes files from cloudinary in a queue */
     public cloudDelete = async (publicIDs: string[]) => {
         cloudinary.config({
             cloud_name: "kisaragi" ,
@@ -382,7 +356,7 @@ export class Images {
         }
     }
 
-    // Local queued deletion
+    /** Deletes local files in a queue */
     public queuedDelete = async (files: string[]) => {
         if (files.length > 20) {
             const deletionQueue: string[] = []
@@ -402,5 +376,28 @@ export class Images {
             return deletionQueue.length
         }
         return 0
+    }
+
+    /** Uploads files to my api */
+    public upload = async (files: string[]) => {
+        const links: string[] = []
+        const url = `${config.imagesAPI}/upload`
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].includes("http")) {
+                const result = await axios.post(url, {images: files[i]}).then((r: any) => r.data)
+                links.push(result)
+            } else {
+                const fd = new FormData()
+                await new Promise((resolve) => {
+                    fd.append("images", fs.createReadStream(files[i]))
+                    fd.pipe(concat({encoding: "buffer"}, async (data: any) => {
+                        const result = await axios.post(url, data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)
+                        links.push(result)
+                        resolve()
+                    }))
+                })
+            }
+        }
+        return links.flat(Infinity)
     }
 }

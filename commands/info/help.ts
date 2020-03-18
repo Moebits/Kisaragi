@@ -67,26 +67,28 @@ export default class Help extends Command {
                 "mod": discord.getEmoji("kannaFreeze"),
                 "music": discord.getEmoji("PoiHug"),
                 "music 2": discord.getEmoji("yes"),
+                "video": discord.getEmoji("vigneXD"),
                 "website": discord.getEmoji("tohruThumbsUp2"),
                 "website 2": discord.getEmoji("mexShrug")
             }
             const imageMap: any = {
                 "admin": "https://i.imgur.com/mMXKOPW.png",
-                "anime": "https://i.imgur.com/uqasXLs.png",
+                "anime": "https://i.imgur.com/JvuBhSL.png",
                 "bot developer": "https://i.imgur.com/pc9syrB.png",
-                "config": "https://i.imgur.com/qkmBzpf.png",
+                "config": "https://i.imgur.com/wWolBwY.png",
                 "fun": "https://i.imgur.com/lTRD9J0.png",
-                "game": "https://i.imgur.com/0BmKykD.png",
-                "heart": "https://i.imgur.com/uKNjZcb.png",
+                "game": "https://i.imgur.com/WCbOnxm.png",
+                "heart": "https://i.imgur.com/UC8XPVE.png",
                 "lewd": "https://i.imgur.com/alKtET3.png",
                 "info": "https://i.imgur.com/BR5OtIE.png",
                 "weeb": "https://i.imgur.com/7DpFyuL.png",
-                "level": "https://i.imgur.com/HvIgETT.png",
-                "image": "https://i.imgur.com/1JfpQPd.png",
+                "level": "https://i.imgur.com/fxLI1df.png",
+                "image": "https://i.imgur.com/eR3k5Ur.png",
                 "misc": "https://i.imgur.com/Rd9U6tc.png",
                 "mod": "https://i.imgur.com/x3Y108l.png",
                 "music": "https://i.imgur.com/eZ2IphP.png",
                 "music 2": "https://i.imgur.com/fADrzzB.png",
+                "video": "https://i.imgur.com/qqUFolE.png",
                 "website": "https://i.imgur.com/ftVh8jx.png",
                 "website 2": "https://i.imgur.com/0bUmQ7F.png"
             }
@@ -108,12 +110,15 @@ export default class Help extends Command {
                 "mod": "https://cdn.discordapp.com/emojis/684270341689835591.gif",
                 "music": "https://cdn.discordapp.com/emojis/684270605134200857.gif",
                 "music 2": "https://cdn.discordapp.com/emojis/687861928781021214.gif",
+                "video": "https://cdn.discordapp.com/emojis/689575172130209814.gif",
                 "website": "https://cdn.discordapp.com/emojis/684270969417760779.gif",
                 "website 2": "https://cdn.discordapp.com/emojis/684271413284175902.gif"
             }
             if (subDir[i] === "japanese") subDir[i] = "weeb"
             if (args[1]?.startsWith("!")) {
-                setIndex = subDir.indexOf(args[1].replace("!", ""))
+                let input = Functions.combineArgs(args, 1).replace("!", "").trim().toLowerCase()
+                if (input === "japanese") input = "weeb"
+                setIndex = subDir.indexOf(input)
             }
             const helpEmbed = embeds.createEmbed()
             helpEmbed

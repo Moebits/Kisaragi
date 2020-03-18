@@ -38,8 +38,7 @@ export default class Screenshot extends Command {
           input = input.replace("mobile", "").trim()
         }
         const website = (input.startsWith("http")) ? input.trim() : `https://${input.trim()}`
-        const baseURL = config.screenshotAPI
-        let url = `${baseURL}/screenshot?links=${website}`
+        let url = `${config.imagesAPI}/screenshot?links=${website}`
         if (setMobile) url += `&mobile=1`
 
         console.log(url)

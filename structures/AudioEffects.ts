@@ -25,8 +25,9 @@ export class AudioEffects {
     }
 
     public init = (remove?: boolean) => {
-        if (remove) Functions.removeDirectory(path.join(__dirname, `../tracks/transform`))
-        if (!fs.existsSync(path.join(__dirname, `../tracks/transform`))) fs.mkdirSync(path.join(__dirname, `../tracks/transform`), {recursive: true})
+        const dir = path.join(__dirname, `../tracks/transform`)
+        if (remove) Functions.removeDirectory(dir)
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, {recursive: true})
     }
 
     public processEffect = async (effect: string, filepath: string, fileDest: string) => {

@@ -384,7 +384,7 @@ export class Embeds {
     // Create Help Embed
     public createHelpEmbed = async (embeds: MessageEmbed[]) => {
         let page = 8
-        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Mod", "Music", "Music 2", "Website", "Website 2"]
+        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Mod", "Music", "Music 2", "Video", "Website", "Website 2"]
         let compressed = false
         const longDescription: string[] = []
         const commandCount: number[] = []
@@ -420,6 +420,7 @@ export class Embeds {
             this.discord.getEmoji("mod"),
             this.discord.getEmoji("music"),
             this.discord.getEmoji("musicTwo"),
+            this.discord.getEmoji("video"),
             this.discord.getEmoji("website"),
             this.discord.getEmoji("websiteTwo")
         ]
@@ -448,6 +449,7 @@ export class Embeds {
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
         const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
         const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
+        const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
         const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
         const compressCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("compress") && user.bot === false
@@ -468,12 +470,13 @@ export class Embeds {
         const mod = msg.createReactionCollector(modCheck)
         const music = msg.createReactionCollector(musicCheck)
         const musicTwo = msg.createReactionCollector(musicTwoCheck)
+        const video = msg.createReactionCollector(videoCheck)
         const web = msg.createReactionCollector(webCheck)
         const webTwo = msg.createReactionCollector(webTwoCheck)
         const compress = msg.createReactionCollector(compressCheck)
         await this.redisAddEmbed(msg)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, web, webTwo]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, video, web, webTwo]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
@@ -508,7 +511,7 @@ export class Embeds {
             "admin", "anime", "botDeveloper",
             "config", "fun", "game", "heart", "image", "info",
             "japanese", "level", "lewd",
-            "misc", "mod", "music", "musicTwo", "website", "websiteTwo"
+            "misc", "mod", "music", "musicTwo", "video", "website", "websiteTwo"
         ]
         let compressed = false
         const longDescription: string[] = []
@@ -544,6 +547,7 @@ export class Embeds {
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
         const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
         const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
+        const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
         const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
         const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("repost") && user.bot === false
@@ -565,12 +569,13 @@ export class Embeds {
         const mod = msg.createReactionCollector(modCheck)
         const music = msg.createReactionCollector(musicCheck)
         const musicTwo = msg.createReactionCollector(musicTwoCheck)
+        const video = msg.createReactionCollector(videoCheck)
         const web = msg.createReactionCollector(webCheck)
         const webTwo = msg.createReactionCollector(webTwoCheck)
         const repost = msg.createReactionCollector(repostCheck)
         const compress = msg.createReactionCollector(compressCheck)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, web, webTwo]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, video, web, webTwo]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {

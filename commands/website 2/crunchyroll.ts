@@ -1,6 +1,7 @@
 import {Message, MessageEmbed} from "discord.js"
 import osmosis from "osmosis"
 import {Command} from "../../structures/Command"
+import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -11,14 +12,16 @@ export default class Crunchyroll extends Command {
             description: "Searches for an anime on crunchyroll.",
             help:
             `
-            \`crunchyroll query\` - Searches crunchyroll with the query.
+            \`crunchyroll url/query\` - Searches crunchyroll for the url/query.
+            \`crunchyroll download/dl dub/mp3/subs? url/query\` - Downloads an anime episode. This is an alias, see \`crunchydl\`.
             `,
             examples:
             `
             \`=>crunchyroll kiniro mosaic\`
-            \`=>crunchyroll is the order a rabbit\`
+            \`=>crunchyroll konosuba\`
+            \`=>crunchyroll download mp3 is the order a rabbit 3\`
             `,
-            aliases: ["cr"],
+            aliases: ["cr", "crunchy"],
             random: "string",
             cooldown: 10
         })
@@ -114,7 +117,12 @@ export default class Crunchyroll extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const cmd = new CommandFunctions(discord, message)
         const query = Functions.combineArgs(args, 1).trim()
+
+        if (args[1] === "download" || args[1] === "dl") {
+            return cmd.runCommand(message, ["crunchydl", ...Functions.combineArgs(args, 2).split(" ")])
+        }
 
         if (!query) {
             return this.noQuery(embeds.createEmbed())

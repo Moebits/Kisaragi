@@ -31,6 +31,11 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 10, date: "3/17/2020", changes: "I moved opencv (anime detection), chrome (website screenshots), and image uploading to a seperate api to reduce the file size on the bot and to make them easier to maintain."},
+            {num: 9, date: "3/17/2020", changes: "The pixiv download command now supports folder mapping (organizing pictures into subfolders within the zip file)."},
+            {num: 8, date: "3/17/2020", changes: "There are now image manipulation commands as well, such as brightness, contrast, flip, hsv, etc. I added an editor with an undo/redo system for ease of use."},
+            {num: 7, date: "3/17/2020", changes: "I also added support for audio effects and filters, such as: reverse, speed, pitch, highpass, highshelf, etc."},
+            {num: 6, date: "3/17/2020", changes: "There are a ton of updates so get ready. I added music playback commands with a queue system. You can play tracks from youtube, soundcloud, links, and attachments."},
             {num: 5, date: "3/8/2020", changes: "Added \`binary/hexadecimal/base64/md5/bcrypt\` commands. They are kind of pointless but whatever."},
             {num: 4, date: "3/7/2020", changes: "Added bandcamp, wattpad, pokemon, and nasa commands. Help embeds can now be collapsed, as well."},
             {num: 3, date: "3/6/2020", changes: "Added a download option for reaction embeds. There are also download commands for \`pixiv\`, \`soundcloud\`, and \`youtube\`, as well as a new command \`download\`."},

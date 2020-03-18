@@ -13,14 +13,15 @@ export default class SoundCloud extends Command {
     private track = null as any
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for soundcloud tracks, users, and playlists.",
+            description: "Searches for soundcloud tracks, users, and playlists or downloads them.",
             help:
             `
+            _Note: The first search result is downloaded if you provide a query for the download._
             \`soundcloud query\` - Searches for tracks with the query
             \`soundcloud user query\` - Searches for users with the query
             \`soundcloud playlist query\` - Searches for playlists with the query
             \`soundcloud url\` - Fetches the resource from the url
-            \`soundcloud download/dl query\` - Downloads all the tracks matching the query and uploads them
+            \`soundcloud download/dl url/query\` - Downloads the track from url/query
             `,
             examples:
             `
@@ -51,7 +52,7 @@ export default class SoundCloud extends Command {
             if (bad.includes(this.track)) this.track = null
         }
 
-        const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID)
+        const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID, process.env.SOUNDCLOUD_AUTH_TOKEN)
 
         if ((this.user && !this.track) || args[1] === "user") {
             const query = this.user || Functions.combineArgs(args, 2)
@@ -125,28 +126,40 @@ export default class SoundCloud extends Command {
                 .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
             }
             const rand = Math.floor(Math.random()*10000)
-            const src = `../assets/images/${rand}/`
-            if (!fs.existsSync(src)) fs.mkdirSync(src)
-            const tracks = await soundcloud.tracks.search({q: query})
-            const files = await soundcloud.util.downloadTracks(tracks, src, 30)
-            if (!files[0]) {
+            const src = `../assets/misc/tracks/${rand}/`
+            if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
+            let track: string
+            if (/soundcloud.com/.test(query)) {
+                track = query
+            } else {
+                track = await soundcloud.tracks.search({q: query}).then((r) => r[0].permalink_url)
+            }
+            if (!track) {
                 return this.invalidQuery(embeds.createEmbed()
                 .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
                 .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
             }
-            const dest = `../assets/images/${rand}/${query.replace(/ +/g, "_")}.zip`
-            await Functions.createZip(files, dest)
-            const link = await images.fileIOUpload(dest)
-            const soundcloudEmbed = embeds.createEmbed()
-            soundcloudEmbed
-            .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
-            .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
-            .setDescription(
-                `${discord.getEmoji("star")}Downloaded **${files.length}** tracks for the query **${query}**!\n` +
-                `${discord.getEmoji("star")}This file is too large for attachments. Please note that the following link **will get deleted after someone downloads it**.\n` +
-                link
-            )
-            await message.channel.send(soundcloudEmbed)
+            const file = await soundcloud.util.downloadTrack(track, src)
+            const stats = fs.statSync(file)
+            if (stats.size > 8000000) {
+                const link = await images.upload([file]).then((l) => l[0])
+                const soundcloudEmbed = embeds.createEmbed()
+                soundcloudEmbed
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setURL(link)
+                .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
+                .setDescription(`${discord.getEmoji("star")}Downloaded the track! This file is too large for attachments. Download the file [**here**](${link}).\n`)
+                await message.channel.send(soundcloudEmbed)
+            } else {
+                const attachment = new MessageAttachment(file)
+                const soundcloudEmbed = embeds.createEmbed()
+                soundcloudEmbed
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
+                .setDescription(`${discord.getEmoji("star")}Downloaded the track!\n`)
+                await message.channel.send(soundcloudEmbed)
+                await message.channel.send(attachment)
+            }
             Functions.removeDirectory(src)
             return
         }
