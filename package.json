@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm i && npm run build && npm run compile && npm run pm2",
     "build": "tsc -p tsconfig.json",
-    "compile": "cd dist && node --max-old-space-size=4096 ./shard.js",
+    "compile": "cd dist && node --max-old-space-size=8192 --optimize-for-size --max-executable-size=8192 ./shard.js",
     "test": "ts-mocha --timeout 100000 -p tsconfig.json 'test/**/*.spec.ts'",
     "pm2": "pm2-runtime start ecosystem.config.js --env production",
     "watch": "tsc -w -p tsconfig.json",

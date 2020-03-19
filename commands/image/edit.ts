@@ -476,7 +476,12 @@ export default class Edit extends Command {
                 current = this.historyStates[this.historyIndex]
             }
             const image = await jimp.read(current)
-            const degrees = Number(argArray[0]) ? Number(argArray[0]) : 0
+            let degrees = Number(argArray[0]) ? Number(argArray[0]) : 0
+            if (degrees < 0) {
+                degrees = Math.abs(degrees)
+            } else {
+                degrees = -degrees
+            }
             image.rotate(degrees)
             let newDest = path.join(__dirname, `../../images/${seed}_rotate`)
             let i = 0

@@ -15,7 +15,7 @@ export default class Rotate extends Command {
           `,
           examples:
           `
-          \`=>rotate 60\`
+          \`=>rotate 90\`
           `,
           aliases: [],
           cooldown: 10
@@ -27,7 +27,12 @@ export default class Rotate extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         let url: string | undefined
-        const degrees = Number(args[1])
+        let degrees = Number(args[1])
+        if (degrees < 0) {
+            degrees = Math.abs(degrees)
+        } else {
+            degrees = -degrees
+        }
         if (args[2]) {
             url = args[2]
         } else {
