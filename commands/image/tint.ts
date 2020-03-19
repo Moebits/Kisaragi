@@ -28,7 +28,7 @@ export default class Tint extends Command {
         const embeds = new Embeds(discord, message)
         let url: string | undefined
         const color = args[1] ? args[1] : "#ff0fd3"
-        const opacity = Number(args[2]) ? Number(args[2]) : 60
+        const opacity = Number(args[2]) ? Number(args[2]) : 20
         if (args[3]) {
             url = args[3]
         } else if (args[2] && Number.isNaN(Number(args[2]))) {

@@ -81,12 +81,12 @@ export default class SpotifyCommand extends Command {
             const track = response.tracks.items[i]
             const artists = track.artists.map((a: any) => a.name)
             const artistResponse = await spotify.search({type: "artist", query: artists[0]})
-            const image = artistResponse.artists.items[0].images[0].url
+            const image = artistResponse.artists.items[0].images[0]?.url
             const spotifyEmbed = embeds.createEmbed()
             spotifyEmbed
             .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
             .setTitle(`**Spotify Search** ${discord.getEmoji("aquaUp")}`)
-            .setImage(track.album.images[0].url)
+            .setImage(track.album.images[0]?.url)
             .setThumbnail(image)
             .setURL(track.external_urls.spotify)
             .setDescription(

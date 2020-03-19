@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class Konachan extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Search for anime pictures on konachan.",
+            description: "Searches for anime pictures on konachan.",
             help:
             `
             _Note: Underscores are not required._

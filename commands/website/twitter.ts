@@ -106,6 +106,11 @@ export default class TwitterCommand extends Command {
             .setImage(tweets.statuses[i].entities.media ? tweets.statuses[i].entities.media[0].media_url : tweets.statuses[i].user.profile_banner_url)
             twitterArray.push(twitterEmbed)
         }
+        if (!twitterArray[0]) {
+            return this.invalidQuery(embeds.createEmbed()
+            .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png")
+            .setTitle(`**Twitter Search** ${discord.getEmoji("aquaUp")}`))
+        }
         embeds.createReactionEmbed(twitterArray, true, true)
     }
 }

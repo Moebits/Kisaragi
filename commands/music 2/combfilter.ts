@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class CombFilter extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Applies a comb filter to an audio file.",
+            description: "Applies a comb filter to an audio file (disabled).",
             help:
             `
             _Note: Delay is in milliseconds, decay is in seconds._

@@ -1,7 +1,9 @@
+import axios from "axios"
 import {Message, MessageReaction, User} from "discord.js"
 import fs from "fs"
 import jimp from "jimp"
 import path from "path"
+import * as config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Images} from "../../structures/Images"
@@ -26,7 +28,7 @@ export default class Edit extends Command {
           `
           \`=>edit\`
           `,
-          aliases: ["editor", "adjustment"],
+          aliases: ["editor", "adjustment", "hsv", "hsb"],
           cooldown: 10
         })
     }
@@ -36,15 +38,15 @@ export default class Edit extends Command {
         const embeds = new Embeds(this.discord, this.message)
         let url: string
         if (!exists) {
-            // const {link, publicID} = await images.cloudUpload(image, "image edits")
-            // await images.cloudDelete(this.publicIDs)
-            // const deleted = await images.queuedDelete(this.historyStates)
-            // this.historyIndex -= deleted
-            const link = await images.upload([image]).then((l) => l[0])
+            let link = ""
+            if (image.includes("http")) {
+                link = image
+            } else {
+                link = await images.upload([image]).then((l) => l[0])
+            }
             console.log(link)
             this.historyIndex++
             this.historyStates.splice(this.historyIndex, Infinity, image)
-            // this.publicIDs.splice(this.historyIndex, Infinity, publicID)
             this.links.splice(this.historyIndex, Infinity, link)
             url = link
         } else {
@@ -83,11 +85,8 @@ export default class Edit extends Command {
             url = await discord.fetchLastAttachment(message)
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
-        // const image = await jimp.read(url)
         const hsvEmbed = embeds.createEmbed()
         if (!fs.existsSync(path.join(__dirname, "../../images"))) fs.mkdirSync(path.join(__dirname, "../../images"))
-        // const dest = path.join(__dirname, `../../images/${seed}.jpg`)
-        // await image.writeAsync(dest)
         const link = await images.upload([url]).then((l) => l[0])
         console.log(link)
         this.original = link
@@ -104,7 +103,7 @@ export default class Edit extends Command {
             `${this.discord.getEmoji("value")}_Lightness:_ -> _Changes the lightness of the image._`
         )
         const msg = await message.channel.send(hsvEmbed)
-        const reactions = ["brightness", "contrast", "hue", "saturation", "value", "flip", "tint", "invert", "crop", "scale", "rotate", "undo", "redo", "reset", "save"]
+        const reactions = ["brightness", "contrast", "hue", "saturation", "value", "flip", "tint", "invert", "crop", "scale", "rotate", "blur", "sharpen", "undo", "redo", "reset"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
         const brightnessCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("brightness") && user.bot === false
@@ -118,10 +117,11 @@ export default class Edit extends Command {
         const cropCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("crop") && user.bot === false
         const scaleCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("scale") && user.bot === false
         const rotateCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("rotate") && user.bot === false
+        const blurCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("blur") && user.bot === false
+        const sharpenCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("sharpen") && user.bot === false
         const undoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("undo") && user.bot === false
         const redoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("redo") && user.bot === false
         const resetCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reset") && user.bot === false
-        const saveCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("save") && user.bot === false
         const brightness = msg.createReactionCollector(brightnessCheck)
         const contrast = msg.createReactionCollector(contrastCheck)
         const hue = msg.createReactionCollector(hueCheck)
@@ -133,10 +133,11 @@ export default class Edit extends Command {
         const crop = msg.createReactionCollector(cropCheck)
         const scale = msg.createReactionCollector(scaleCheck)
         const rotate = msg.createReactionCollector(rotateCheck)
+        const blur = msg.createReactionCollector(blurCheck)
+        const sharpen = msg.createReactionCollector(sharpenCheck)
         const undo = msg.createReactionCollector(undoCheck)
         const redo = msg.createReactionCollector(redoCheck)
         const reset = msg.createReactionCollector(resetCheck)
-        const save = msg.createReactionCollector(saveCheck)
         let argArray: string[] = []
         let argTest = false
         async function getArgs(response: Message) {
@@ -476,7 +477,7 @@ export default class Edit extends Command {
             }
             const image = await jimp.read(current)
             const degrees = Number(argArray[0]) ? Number(argArray[0]) : 0
-            image.rotate(degrees, false)
+            image.rotate(degrees)
             let newDest = path.join(__dirname, `../../images/${seed}_rotate`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
@@ -485,6 +486,60 @@ export default class Edit extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`)
+            msg.edit(newEmbed)
+        })
+
+        blur.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await message.channel.send(`<@${user.id}>, Enter the blur radius in pixels. Add \`gaussian\` to use a gaussian blur instead of a fast blur.`)
+            await embeds.createPrompt(getArgs)
+            await promise
+            await rep.delete()
+            let current: string
+            if (this.historyIndex < 0) {
+                current = this.original
+            } else {
+                current = this.historyStates[this.historyIndex]
+            }
+            const image = await jimp.read(current)
+            let setGaussian = false
+            if (/gaussian/.test(argArray.join(""))) {
+                setGaussian = true
+                argArray = argArray.join(" ").replace("gaussian", "").trim().split(" ")
+            }
+            const radius = Number(argArray[0]) ? Number(argArray[0]) : 30
+            if (setGaussian) {
+                image.gaussian(radius)
+            } else {
+                image.blur(radius)
+            }
+            let newDest = path.join(__dirname, `../../images/${seed}_blur`)
+            let i = 0
+            while (fs.existsSync(`${newDest}.jpg`)) {
+                newDest = `${newDest}${i}`
+                i++
+            }
+            await image.writeAsync(`${newDest}.jpg`)
+            const newEmbed = await this.hsvEmbed(`${newDest}.jpg`)
+            msg.edit(newEmbed)
+        })
+
+        sharpen.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user)
+            const rep = await message.channel.send(`<@${user.id}>, Enter the the sharpen amount and sigma.`)
+            await embeds.createPrompt(getArgs)
+            await promise
+            await rep.delete()
+            let current: string
+            if (this.historyIndex < 0) {
+                current = this.original
+            } else {
+                current = this.historyStates[this.historyIndex]
+            }
+            const amount = Number(argArray[0]) ? Number(argArray[0]) : 1
+            const sigma = Number(argArray[1]) ? Number(argArray[1]) : 1
+            const link = await axios.get(`${config.openCVAPI}/sharpen?link=${url}&amount=${amount}&sigma=${sigma}`).then((r) => r.data)
+            const newEmbed = await this.hsvEmbed(link)
             msg.edit(newEmbed)
         })
 
@@ -522,6 +577,5 @@ export default class Edit extends Command {
             const newEmbed = await this.hsvEmbed(this.original, true)
             msg.edit(newEmbed)
         })
-
     }
 }

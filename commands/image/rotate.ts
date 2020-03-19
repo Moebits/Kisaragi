@@ -35,7 +35,7 @@ export default class Rotate extends Command {
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
-        image.rotate(degrees, false)
+        image.rotate(degrees)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new MessageAttachment(buffer)
         await message.reply(`Rotated the image **${degrees}** degrees!`, attachment)

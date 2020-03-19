@@ -129,7 +129,7 @@ export class PixivApi {
         }
         const msg2 = await this.message.channel.send(`**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: MessageEmbed[] = []
-        const max = illusts.length > 10 ? 10 : illusts.length
+        const max = illusts.length > 5 ? 5 : illusts.length
         for (let i = 0; i < max; i++) {
             let pixivEmbed: MessageEmbed | undefined
             if (setFast) {
@@ -190,7 +190,7 @@ export class PixivApi {
         if (!illusts[0]) return this.pixivErrorEmbed()
         const msg2 = await this.message.channel.send(`**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: MessageEmbed[] = []
-        const max = illusts.length > 10 ? 10 : illusts.length
+        const max = illusts.length > 5 ? 5 : illusts.length
         for (let i = 0; i < max; i++) {
             if (msg2) msg2.edit(`**Uploading pictures... (${i+1})** ${this.discord.getEmoji("gabCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
             let pixivEmbed: MessageEmbed | undefined
@@ -226,7 +226,7 @@ export class PixivApi {
         if (!illusts[0]) return this.pixivErrorEmbed()
         const msg2 = await this.message.channel.send(`**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: MessageEmbed[] = []
-        const max = illusts.length > 10 ? 10 : illusts.length
+        const max = illusts.length > 5 ? 5 : illusts.length
         for (let i = 0; i < max; i++) {
             if (msg2) msg2.edit(`**Uploading pictures... (${i+1})** ${this.discord.getEmoji("gabCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
             let pixivEmbed: MessageEmbed | undefined

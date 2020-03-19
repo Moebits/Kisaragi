@@ -50,7 +50,7 @@ export default class GooglePlay extends Command {
             .setDescription(
                 `${discord.getEmoji("star")}_App:_ **${app.title}**\n` +
                 `${discord.getEmoji("star")}_Developer:_ **${app.developer}**\n` +
-                `${discord.getEmoji("star")}_Summary:_ **${app.summary.replace(/&lt;/g, "<").replace(/&gt;/g, ">")}**\n` +
+                `${discord.getEmoji("star")}_Summary:_ **${app.summary?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">")}**\n` +
                 `${discord.getEmoji("star")}_Release Date:_ **${app.released}**\n` +
                 `${discord.getEmoji("star")}_Installs:_ **${app.installs}**\n` +
                 `${discord.getEmoji("star")}_Ratings:_ **${app.ratings}**\n` +

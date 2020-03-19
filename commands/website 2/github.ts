@@ -86,7 +86,11 @@ export default class Github extends Command {
             .setTitle(`**Github Search** ${discord.getEmoji("raphi")}`))
         }
         const search = github.search({q: input.trim()})
-        const json = await search.forRepositories()
+        const json = await search.forRepositories().catch(() => {
+            return this.invalidQuery(embeds.createEmbed()
+            .setAuthor("github", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png")
+            .setTitle(`**Github Search** ${discord.getEmoji("raphi")}`))
+        })
         const result = json.data
         const githubArray: MessageEmbed[] = []
         for (let i = 0; i < 10; i++) {

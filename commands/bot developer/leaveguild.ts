@@ -2,12 +2,13 @@ import {Guild, Message, TextChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
+import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class LeaveGuild extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Leaves a guild.",
+            description: "Forcefully leaves a guild.",
             aliases: ["lg"],
             cooldown: 10
         })
@@ -21,11 +22,12 @@ export default class LeaveGuild extends Command {
         if (!perms.checkBotDev()) return
 
         const guildID = args[1]
+        const reason = Functions.combineArgs(args, 2)
         const guild = discord.guilds.cache.find((g: Guild) => g.id.toString() === guildID) as Guild
         const name = guild.name
 
         const msg = await discord.fetchFirstMessage(guild)
-        await (msg?.channel as TextChannel).send(`I am leaving this guild at the request of the bot developer.`)
+        await (msg?.channel as TextChannel).send(`I am leaving this guild at the request of the bot developer. Message sent: **${reason ? reason : "None provided!"}** ${discord.getEmoji("kannaFU")}`)
 
         try {
             guild.leave()

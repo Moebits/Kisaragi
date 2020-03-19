@@ -48,7 +48,7 @@ export default class Reddit extends Command {
             const redditEmbed = embeds.createEmbed()
             redditEmbed
             .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
-            .setTitle(`**${post.title}** ${discord.getEmoji("aquaUp")}`)
+            .setTitle(`**${Functions.checkChar(post.title, 200, " ")}** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://www.reddit.com/${post.permalink}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Subreddit:_ **${post.subreddit.display_name}**\n` +
@@ -108,7 +108,7 @@ export default class Reddit extends Command {
             .setDescription(
                 `${discord.getEmoji("star")}_Link Karma:_ **${user.link_karma}**\n` +
                 `${discord.getEmoji("star")}_Comment Karma:_ **${user.comment_karma}**\n` +
-                `${discord.getEmoji("star")}_Friends:_ **${user.num_friends}**\n` +
+                `${discord.getEmoji("star")}_Friends:_ **${user.num_friends ?? "None"}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${user.subreddit.display_name.public_description}\n`
             )
             message.channel.send(redditEmbed)

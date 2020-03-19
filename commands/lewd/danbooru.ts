@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class Danbooru extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Search for anime pictures on danbooru.",
+            description: "Searches for anime pictures on danbooru.",
             help:
             `
             _Note: Underscores are not required._

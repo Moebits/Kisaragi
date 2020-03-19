@@ -27,8 +27,8 @@ export default class InRole extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         let role: Role | undefined
-        if (args[1].match(/\d{17,}/)) {
-            role = message.guild?.roles.cache.find((r) => r.id === args[1].match(/\d{17,}/)![0])
+        if (args[1]?.match(/\d{17,}/)) {
+            role = message.guild?.roles.cache.find((r) => r.id === args[1]?.match(/\d{17,}/)![0])
         } else {
             const query = Functions.combineArgs(args, 1)?.trim()
             role = message.guild?.roles.cache.find((r) => r.name.toLowerCase().includes(query.toLowerCase()))

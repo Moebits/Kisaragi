@@ -33,11 +33,11 @@ export default class GettingStarted extends Command {
         const prefix = message ? await SQLQuery.fetchPrefix(message) : "=>"
         const joinEmbed = embeds.createEmbed()
         joinEmbed
-        .setAuthor("getting started", "https://avatar.dmzj.com/f7/fc/f7fc47bd0a36ddc2d9f4184a85b1824b.png")
-        .setTitle(`**Getting Started** ${discord.getEmoji("akariYay")}`)
-        .setThumbnail("https://www.pngfind.com/pngs/m/609-6093943_anime-surprised-background-hifumi-new-game-hd-png.png")
+        .setAuthor("getting started", "https://i.kym-cdn.com/photos/images/facebook/001/415/932/f20.png")
+        .setTitle(`**Getting Started** ${discord.getEmoji("tohruThumbsUp")}`)
+        .setThumbnail("https://i.pixiv.cat/c/600x1200_90/img-master/img/2020/01/14/02/09/16/78891347_p4_master1200.jpg")
         .setDescription(
-            `Thanks for adding me to your guild${message.guild?.owner?.user.username ? `, **${message.guild.owner.user.username}**` : ""}! ${discord.getEmoji("tohruThumbsUp2")}\n\n` +
+            `Thanks for adding me to your guild${message.guild?.owner?.user.username ? `, **${message.guild.owner.user.username}**` : ""}! ${discord.getEmoji("chinoSmug")}\n\n` +
             `${discord.getEmoji("star")}The current prefix is set to \`${prefix}\`. Use \`${prefix}help\` at anytime to display the list of commands.\n` +
             `${discord.getEmoji("star")}For detailed command help, use \`${prefix}help (command)\`.\n` +
             `${discord.getEmoji("star")}If you would like to change the bot prefix, use \`${prefix}prefix\`. If you forget your prefix you can always tag me.\n` +
@@ -46,11 +46,11 @@ export default class GettingStarted extends Command {
             `${discord.getEmoji("star")}Set selfroles and reactionroles with \`${prefix}selfroles\` and \`${prefix}reactionroles\`, respectively.\n` +
             `${discord.getEmoji("star")}A lot of commands run automatically when a link is posted, such as \`youtube\` for youtube links. If you don't want this behavior, change it in \`${prefix}detect\`.\n` +
             `${discord.getEmoji("star")}You can use \`${prefix}info\` to show my info, \`${prefix}changelog\` to show new changes, and \`${prefix}invite\` to show the invite links.\n` +
-            `${discord.getEmoji("star")}Send some feedback and suggestions to the developer using \`${prefix}feedback\`, they are always welcome!\n` +
+            `${discord.getEmoji("star")}Send feedback, bug reports, and suggestions to the developer using \`${prefix}feedback\`!\n` +
             `${discord.getEmoji("star")}Are you bored? Try using \`${prefix}random\` to run a random command. \`${prefix}minesweeper\` is also fun!\n` +
             `\n` +
-            `I hope that you enjoy using the bot! ${discord.getEmoji("aquaUp")}\n` +
-            `If you need additional help, you can always join my [**support server**](${config.support})`
+            `I hope that you enjoy using this bot! ${discord.getEmoji("aquaUp")}\n` +
+            `If you need additional help, you can always join my [**support server**](${config.support}).`
         )
         let msg
         try {

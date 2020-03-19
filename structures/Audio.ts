@@ -1021,7 +1021,8 @@ export class Audio {
         const links = results.map((r) => `https://www.youtube.com/watch?v=${r.id.videoId}`)
         if (first) return links[0]
         const titles = results.map((r) => r.snippet.title)
-        const images = results.map((r) => r.snippet.thumbnails.high.url)
+        // @ts-ignore
+        const images = results.map((r) => r.snippet.thumbnails?.maxres?.url ?? r.snippet.thumbnails.high.url)
         const songArray: MessageEmbed[] = []
         for (let i = 0; i < links.length; i+=3) {
             let description = ""

@@ -7,12 +7,10 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Remdash extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Remove dashes from channel names.",
+            description: "Removes dashes from channel names (disabled).",
             aliases: ["delhyphen"],
             guildOnly: true,
-            cooldown: 5,
-            // doesn't work anymore
-            unlist: true
+            cooldown: 5
         })
     }
 
@@ -21,6 +19,7 @@ export default class Remdash extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        return message.reply("This command no longer works, it is disabled! (Discord patched unicode spaces in channel names.)")
         if (!await perms.checkMod()) return
         const remEmbed = embeds.createEmbed()
         const nameArray = message.guild!.channels.cache.map((c: GuildChannel) => c.name)

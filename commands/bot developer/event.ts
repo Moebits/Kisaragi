@@ -54,6 +54,6 @@ export default class Event extends Command {
         default:
             discord.emit(event)
       }
-      return
+      return message.reply("Triggered the event!")
   }
 }

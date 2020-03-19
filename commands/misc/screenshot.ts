@@ -41,8 +41,6 @@ export default class Screenshot extends Command {
         let url = `${config.imagesAPI}/screenshot?links=${website}`
         if (setMobile) url += `&mobile=1`
 
-        console.log(url)
-
         const link = await axios.get(url).then((r) => r.data?.[0])
         if (!link) return message.reply("Could not find this webpage!")
         if (args[1] === "return") return link

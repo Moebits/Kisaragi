@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class Gelbooru extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Search for anime images on gelbooru.",
+            description: "Searches for anime pictures on gelbooru.",
             help:
             `
             _Note: Underscores are not required._

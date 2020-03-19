@@ -44,7 +44,7 @@ export default class Users extends Command {
                 `${discord.getEmoji("star")}_Join Date:_ ${joinArray[value]}\n`
             }
             userEmbed
-            .setAuthor("discord", "https://pbs.twimg.com/profile_images/1148340875937718272/sBvqcUJl.jpg")
+            .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
             .setTitle(`**${message.guild!.name}'s Members** ${discord.getEmoji("vigneDead")}`)
             .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
             .setDescription(`${discord.getEmoji("star")}_Member Count:_ **${message.guild!.memberCount}**\n` + description)

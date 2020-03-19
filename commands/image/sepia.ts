@@ -10,7 +10,7 @@ export default class Sepia extends Command {
           description: "Apply a sepia wash to an image.",
           help:
           `
-          \`sepia\` - Apply a sepia
+          \`sepia url?\` - Apply a sepia
           `,
           examples:
           `
@@ -26,8 +26,8 @@ export default class Sepia extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         let url: string | undefined
-        if (args[2]) {
-            url = args[2]
+        if (args[1]) {
+            url = args[1]
         } else {
             url = await discord.fetchLastAttachment(message)
         }
@@ -36,7 +36,7 @@ export default class Sepia extends Command {
         image.sepia()
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new MessageAttachment(buffer)
-        await message.reply(`Applied a sepia!`, attachment)
+        await message.reply(`Applied a sepia effect!`, attachment)
         return
     }
 }

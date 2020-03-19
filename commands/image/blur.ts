@@ -1,5 +1,5 @@
 import {Message, MessageAttachment} from "discord.js"
-import gm from "gm"
+import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -7,17 +7,19 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Blur extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Applies a gaussian blur to an image.",
+          description: "Applies a fast or gaussian blur to an image.",
           help:
           `
           \`blur radius\` - Blurs the last posted image
           \`blur radius url\` - Blurs the linked image
+          \`gaussian radius url?\` - Applies a gaussian blur instead of a fast blur.
           `,
           examples:
           `
           \`=>blur 30\`
+          \`=>gaussian 40\`
           `,
-          aliases: ["gaussian"],
+          aliases: ["gaussian", "blurry", "blurriness"],
           cooldown: 10
         })
     }
@@ -35,18 +37,13 @@ export default class Blur extends Command {
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         if (!factor) factor = 30
-        if (factor < 0.3) factor = 0.3
-        if (factor > 1000) factor = 1000
-        console.log(url)
-        const image = gm(url)
-        image.blur(factor)
-        let buffer: Buffer
-        await new Promise((resolve) => {
-            image.toBuffer((err, buf) => {
-                buffer = buf
-                resolve()
-            })
-        })
+        const image = await jimp.read(url)
+        if (args[0] === "gaussian") {
+            image.gaussian(factor)
+        } else {
+            image.blur(factor)
+        }
+        const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         console.log(buffer!)
         const attachment = new MessageAttachment(buffer!)
         await message.reply(`Blurred the image by a factor of **${factor}**!`, attachment)

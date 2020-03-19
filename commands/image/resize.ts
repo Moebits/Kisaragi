@@ -42,7 +42,9 @@ export default class Resize extends Command {
         } else if (Number(args[1]) && args[2]) {
             width = Number(args[1])
             url = args[2]
-        } else if (args[1]) {
+        } else if (Number(args[1])) {
+            width = Number(args[1])
+        } else {
             url = args[1]
         }
         if (!url) url = await discord.fetchLastAttachment(message)

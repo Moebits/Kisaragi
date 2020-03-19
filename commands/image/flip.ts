@@ -1,5 +1,5 @@
 import {Message, MessageAttachment} from "discord.js"
-import gm from "gm"
+import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -11,17 +11,17 @@ export default class Brightness extends Command {
           description: "Flips an image horizontally, vertically, or both.",
           help:
           `
-          _Note: Flip = vertical flip, flop = horizontal flip, flipflop = both._
-          \`flip\` - Flips the image vertically.
-          \`flop\` - Flops the image horizontally.
-          \`flipflop\` - Flips the image in both directions.
-          \`flip/flop horizontal/h? vertical/v?\` Alternative aliases.
+          _Note: Some param aliases that can be used are horizontal, h, vertical, and v._
+          \`flip x?\` - Flips the image horizontally (the default)
+          \`flip y\` - Flips an image vertically.
+          \`flip xy\` - Flips the image in both directions.
+          \`flop yx\` - Inverse of flip (vertical becomes the default).
+          \`flipflop\` - Alias for flipping in both directions.
           `,
           examples:
           `
           \`=>flip\`
-          \`=>flop\`
-          \`=>flipflop\`
+          \`=>flip y\`
           `,
           aliases: ["flop", "flipflop"],
           cooldown: 10
@@ -33,44 +33,38 @@ export default class Brightness extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         let url: string | undefined
-        if (args[4] && !args[4].match(/vertical|horizontal|h|v/)) {
+        if (args[4] && !args[4].match(/x|y|vertical|horizontal|h|v/)) {
             url = args[4]
-        } else if (args[3] && !args[3].match(/vertical|horizontal|h|v/)) {
+        } else if (args[3] && !args[3].match(/x|y|vertical|horizontal|h|v/)) {
             url = args[3]
-        } else if (args[2] && !args[2].match(/vertical|horizontal|h|v/)) {
+        } else if (args[2] && !args[2].match(/x|y|vertical|horizontal|h|v/)) {
             url = args[2]
         } else {
             url = await discord.fetchLastAttachment(message)
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
-        const image = gm(url)
+        const image = await jimp.read(url)
         const input = Functions.combineArgs(args, 1).replace(url, "").trim()
         let setHorizontal = true
         let setVertical = false
         if (args[0] === "flop") {
+            setHorizontal = false
+            setVertical = true
+        }
+        if (input.match(/vertical|v|y/)) {
             setVertical = true
             setHorizontal = false
         }
-        if (input.match(/vertical|v/)) {
-            setVertical = true
-            setHorizontal = false
-        }
-        if (input.match(/horizontal|h/)) {
+        if (input.match(/horizontal|h|x/)) {
             setHorizontal = true
         }
         if (args[0] === "flipflop") {
             setHorizontal = true
             setVertical = true
         }
-        if (setHorizontal) image.flop()
-        if (setVertical) image.flip()
-        let buffer: Buffer
-        await new Promise((resolve) => {
-            image.toBuffer((err, buf) => {
-                buffer = buf
-                resolve()
-            })
-        })
+        if (setHorizontal) image.flip(true, false)
+        if (setVertical) image.flip(false, true)
+        const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new MessageAttachment(buffer!)
         let text = "Flipped the image!"
         if (setHorizontal && setHorizontal) {

@@ -1,8 +1,8 @@
 import {Message, MessageAttachment} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Kisaragi} from "./../../structures/Kisaragi"
+import {Embeds} from "../../structures/Embeds"
+import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Saturation extends Command {
     constructor(discord: Kisaragi, message: Message) {

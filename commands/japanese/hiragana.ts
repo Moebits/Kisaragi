@@ -18,7 +18,6 @@ export default class Hiragana extends Command {
             examples:
             `
             \`=>hiragana 艦隊これくしょん\`
-            \`=>hiragana senpai\`
             `,
             aliases: [],
             cooldown: 5

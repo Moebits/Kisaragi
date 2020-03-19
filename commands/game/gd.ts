@@ -79,7 +79,7 @@ export default class GeometryDash extends Command {
                 `${discord.getEmoji("star")}_Description:_ ${gdUser.desc ? gdUser.desc : "None"}\n` +
                 `${discord.getEmoji("star")}_Levels:_ ${levelArray.join("") ? levelArray.join(",     ") : "None"}\n`
             )
-            .setImage(`https://img.youtube.com/vi/${gdUser.video.embed.replace(/www.youtube.com\/embed\//g, "")}/maxresdefault.jpg`)
+            .setImage(`https://img.youtube.com/vi/${gdUser.video?.embed?.replace(/www.youtube.com\/embed\//g, "")}/maxresdefault.jpg`)
             .setThumbnail(gdUser.img.player)
             message.channel.send(gdEmbed)
             return

@@ -18,7 +18,7 @@ export default class CrunchyDL extends Command {
     public readonly baseURL = "https://api.crunchyroll.com/"
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Downloads an anime episode from Crunchyroll or just the subs.",
+            description: "Downloads an anime episode from Crunchyroll (or just the subs).",
             help:
             `
             _Note: Due to massive file sizes, I only support downloading one episode at a time. Add \`dub\` to download the dub version, if it is available._

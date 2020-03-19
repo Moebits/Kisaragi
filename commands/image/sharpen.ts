@@ -1,5 +1,6 @@
+import axios from "axios"
 import {Message, MessageAttachment} from "discord.js"
-import gm from "gm"
+import * as config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -10,14 +11,14 @@ export default class Sharpen extends Command {
           description: "Sharpens an image.",
           help:
           `
-          \`sharpen factor\` - Sharpens the last posted image
-          \`sharpen factor url\` - Sharpens the linked image
+          \`sharpen amount? sigma?\` - Sharpens the last posted image
+          \`sharpen amount? sigma? url\` - Sharpens the linked image
           `,
           examples:
           `
-          \`=>sharpen 50\`
+          \`=>sharpen 5\`
           `,
-          aliases: ["sharp"],
+          aliases: ["sharp", "sharpness"],
           cooldown: 10
         })
     }
@@ -26,26 +27,25 @@ export default class Sharpen extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        let amount = 1
+        let sigma = 1
         let url: string | undefined
-        let factor = Number(args[1])
-        if (args[2]) {
+        if (args[3]) {
+            url = args[3]
+        } else if (Number(args[2])) {
+            sigma = Number(args[2])
+        } else if (args[2]) {
             url = args[2]
-        } else {
-            url = await discord.fetchLastAttachment(message)
+        } else if (Number(args[1])) {
+            amount = Number(args[1])
+        } else if (args[1]) {
+            url = args[1]
         }
+        if (!url) url = await discord.fetchLastAttachment(message)
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
-        if (!factor) factor = 30
-        const image = gm(url)
-        image.sharpen(factor)
-        let buffer: Buffer
-        await new Promise((resolve) => {
-            image.toBuffer((err, buf) => {
-                buffer = buf
-                resolve()
-            })
-        })
-        const attachment = new MessageAttachment(buffer!)
-        await message.reply(`Sharpened the image by a factor of **${factor}**!`, attachment)
+        const link = await axios.get(`${config.openCVAPI}/sharpen?link=${url}&amount=${amount}&sigma=${sigma}`).then((r) => r.data)
+        const attachment = new MessageAttachment(link)
+        await message.reply(`Sharpened the image with an amount of **${amount}** and sigma of **${sigma}**!`, attachment)
         return
     }
 }

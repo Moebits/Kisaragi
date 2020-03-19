@@ -10,7 +10,7 @@ const discord = new Kisaragi({
 })
 
 const start = async (): Promise<void> => {
-
+    let commandCounter = 0
     const cmdFiles: string[][] = []
     const subDirectory = fs.readdirSync(path.join(__dirname, "./commands/"))
 
@@ -32,6 +32,7 @@ const start = async (): Promise<void> => {
             } else {
                 await SQLQuery.updateCommand(commandName, command.aliases, command.cooldown)
             }
+            commandCounter++
             Logger.log(`Loading Command: ${commandName}`)
         }))
     }
@@ -48,7 +49,7 @@ const start = async (): Promise<void> => {
             discord.on(eventName, (...args: any) => event.run(...args))
         })
 
-        Logger.log(`Loaded a total of ${cmdFiles.length} commands.`)
+        Logger.log(`Loaded a total of ${commandCounter} commands.`)
         Logger.log(`Loaded a total of ${evtFiles.length} events.`)
 
         await discord.login(process.env.TOKEN)

@@ -80,7 +80,6 @@ export default class Ugoira extends Command {
                 pixivID = image!.id
             }
         }
-        console.log(pixivID)
         if (String(pixivID).length > 14) return
         try {
             await pixiv.util.downloadUgoira(String(pixivID), `assets/images/gifs/`, 50)

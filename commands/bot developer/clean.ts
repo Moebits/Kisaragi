@@ -8,7 +8,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Clean extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Deletes cached data in the database.",
+            description: "Deletes cached embeds from the database.",
             aliases: [],
             cooldown: 3
         })

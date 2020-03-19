@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Chain extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Runs multiple commands, one after another.",
+            description: "Runs multiple commands in succession.",
             help:
             `
             \`chain cmd1 & cmd2\` - Run multiple commands separated by "&"
@@ -15,9 +15,10 @@ export default class Chain extends Command {
             examples:
             `
             \`=>chain holiday & mention kurisumasu\`
+            \`=>chain kawaii & kitsune & neko\`
             `,
             aliases: [],
-            cooldown: 30
+            cooldown: 100
         })
     }
 
