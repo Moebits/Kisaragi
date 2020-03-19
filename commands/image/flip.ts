@@ -67,7 +67,7 @@ export default class Brightness extends Command {
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new MessageAttachment(buffer!)
         let text = "Flipped the image!"
-        if (setHorizontal && setHorizontal) {
+        if (setHorizontal && setVertical) {
             text = "Flipped the image **horizontally** and **vertically**!"
         } else if (setHorizontal) {
             text = "Flipped the image **horizontally**!"
