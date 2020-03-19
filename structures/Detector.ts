@@ -28,7 +28,7 @@ export class Detector {
         const anime = await sql.fetchColumn("detection", "pfp") as unknown as string
         if (await this.detectIgnore()) return
         if (!anime) return
-        if (anime === "off") return
+        if (anime?.[0] === "off") return
         if (this.message.author!.id === this.discord.user!.id) return
         if (this.message.attachments.size) {
             const urls = this.message.attachments.map((a) => a.url)
