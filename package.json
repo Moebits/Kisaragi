@@ -2,7 +2,7 @@
   "name": "kisaragi",
   "version": "1.0.0",
   "description": "Kisaragi is the best girl",
-  "main": "bin/shard.js",
+  "main": "dist/shard.js",
   "scripts": {
     "start": "npm i && npm run build && npm run compile && npm run pm2",
     "build": "tsc -p tsconfig.json",

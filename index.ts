@@ -52,7 +52,7 @@ const start = async (): Promise<void> => {
         Logger.log(`Loaded a total of ${commandCounter} commands.`)
         Logger.log(`Loaded a total of ${evtFiles.length} events.`)
 
-        await discord.login(process.env.TEST_TOKEN)
+        await discord.login(process.env.TOKEN)
 
     }, 1000)
 }
