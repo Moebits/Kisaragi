@@ -52,13 +52,14 @@ export default class GeometryDash extends Command {
             }
             const user = await api.users.getByNick(nick)
             const gdUser = await gd.search(nick)
+            const image =  gdUser.video?.embed ? `https://img.youtube.com/vi/${gdUser.video?.embed?.replace(/www.youtube.com\/embed\//g, "")}/maxresdefault.jpg` : `http://card.gdprofiles.com/${user.nick}_hd.png`
             const levelArray: MessageEmbed[] = []
             for (const i in gdUser.lastLevels) {
                 levelArray.push(gdUser.lastLevels[i].name)
             }
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
+            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
             .setTitle(`**GD Profile** ${discord.getEmoji("raphi")}`)
             .setURL(`https://gdprofiles.com/${user.nick}`)
             .setDescription(
@@ -79,7 +80,7 @@ export default class GeometryDash extends Command {
                 `${discord.getEmoji("star")}_Description:_ ${gdUser.desc ? gdUser.desc : "None"}\n` +
                 `${discord.getEmoji("star")}_Levels:_ ${levelArray.join("") ? levelArray.join(",     ") : "None"}\n`
             )
-            .setImage(`https://img.youtube.com/vi/${gdUser.video?.embed?.replace(/www.youtube.com\/embed\//g, "")}/maxresdefault.jpg`)
+            .setImage(image)
             .setThumbnail(gdUser.img.player)
             message.channel.send(gdEmbed)
             return
@@ -90,7 +91,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(level.creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
+            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
@@ -113,7 +114,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(level.creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
+            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
@@ -148,7 +149,7 @@ export default class GeometryDash extends Command {
             for (let i = 0; i < users.length; i++) {
                 const topEmbed = embeds.createEmbed()
                 topEmbed
-                .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
+                .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
                 .setTitle(`**GD Leaderboard** ${discord.getEmoji("raphi")}`)
                 .setDescription(
                     `${discord.getEmoji("star")}_Rank:_ **${users[i].top}**\n` +
@@ -169,7 +170,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(level.creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
+            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
@@ -194,7 +195,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(result.levels[i].creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://lh3.googleusercontent.com/proxy/XzuG9dGBQdSXtgSoJhsArCiWST2yCQXKi7iAo0uqmYhE3Rw5jbQxadeGUO-JGI3g9XPckukJgCBOGuHWstAsWNruu7GheTF4")
+            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +

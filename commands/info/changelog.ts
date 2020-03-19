@@ -31,7 +31,8 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
-            {num: 12, date: "3/19/2020", changes: "Added the command \`crunchydl\` which can download anime episodes from crunchyroll or their subtitiles."},
+            {num: 13, date: "3/19/2020", changes: "Fixed some image commands such as \`sharpen\`."},
+            {num: 12, date: "3/18/2020", changes: "Added the command \`crunchydl\` which can download anime episodes from crunchyroll or their subtitiles."},
             {num: 11, date: "3/18/2020", changes: "Added new video commands, for speeding up/reversing videos or for converting them to mp3/gif files."},
             {num: 10, date: "3/17/2020", changes: "I moved opencv (anime detection), chrome (website screenshots), and image uploading to a seperate api to reduce the file size on the bot and to make them easier to maintain."},
             {num: 9, date: "3/17/2020", changes: "The pixiv download command now supports folder mapping (organizing pictures into subfolders within the zip file)."},
@@ -65,7 +66,7 @@ export default class Changelog extends Command {
             changeDesc += `${discord.getEmoji("star")}**${changelog[i].num}** \`(${changelog[i].date})\` -> ${changelog[i].changes}\n`
         }
 
-        const splits = Util.splitMessage(changeDesc, {maxLength: 2000, char: "\n"})
+        const splits = Util.splitMessage(changeDesc, {maxLength: 1800, char: "\n"})
 
         const changeArray: MessageEmbed[] = []
         for (let i = 0; i < splits.length; i++) {
@@ -73,7 +74,7 @@ export default class Changelog extends Command {
             changeEmbed
             .setAuthor("changelog", "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg")
             .setTitle(`**Changelog** ${discord.getEmoji("tohruThumbsUp2")}`)
-            .setDescription(changeDesc)
+            .setDescription(splits[i])
             changeArray.push(changeEmbed)
         }
 

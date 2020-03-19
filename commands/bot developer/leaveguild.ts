@@ -27,7 +27,7 @@ export default class LeaveGuild extends Command {
         const name = guild.name
 
         const msg = await discord.fetchFirstMessage(guild)
-        await (msg?.channel as TextChannel).send(`I am leaving this guild at the request of the bot developer. Message sent: **${reason ? reason : "None provided!"}** ${discord.getEmoji("kannaFU")}`)
+        await (msg?.channel as TextChannel).send(`I am leaving this guild at the request of the bot developer. Message sent: **${reason ? reason : "None provided!"}**`)
 
         try {
             guild.leave()

@@ -46,7 +46,7 @@ export default class TenorCommand extends Command {
                 const id = query.match(/(?<=-)(?:.(?!-))+$/)
                 result = tenor.Search.Find([id])
             } else {
-                result = await tenor.Search.Query(query, "1")
+                result = await tenor.Search.Query(query, "10")
             }
         } else {
             result = await tenor.Trending.GIFs("10")
@@ -69,7 +69,7 @@ export default class TenorCommand extends Command {
         if (tenorArray.length === 1) {
             message.channel.send(tenorArray[0])
         } else {
-            embeds.createReactionEmbed(tenorArray, true, true)
+            embeds.createReactionEmbed(Functions.shuffleArray(tenorArray), true, true)
         }
         return
     }

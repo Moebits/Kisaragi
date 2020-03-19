@@ -37,8 +37,8 @@ export default class GiphyCommand extends Command {
                 const id = query.match(/-(?:.(?!-))+$/)?.[0].replace(/-/g, "")
                 gif = await giphy.id(id!).then((r: MultiResponse) => r.data)
             } else {
-                const result = await giphy.random(query)
-                gif = [result.data]
+                const result = await giphy.search(query)
+                gif = result.data
             }
         } else {
             const result = await giphy.trending()
@@ -63,7 +63,7 @@ export default class GiphyCommand extends Command {
         if (giphyArray.length === 1) {
             message.channel.send(giphyArray[0])
         } else {
-            embeds.createReactionEmbed(giphyArray, true, true)
+            embeds.createReactionEmbed(Functions.shuffleArray(giphyArray), true, true)
         }
         return
     }

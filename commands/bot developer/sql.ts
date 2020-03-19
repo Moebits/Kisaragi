@@ -26,7 +26,6 @@ export default class SQL extends Command {
         let result
         try {
             result = await SQLQuery.runQuery(query, true)
-            console.log(result)
         } catch (err) {
             message.channel.send(`\`ERROR\` \`\`\`xl\n${err}\n\`\`\``)
         }
@@ -36,7 +35,7 @@ export default class SQL extends Command {
         "\n" +
         `**${result ? (result[0][0] ? result[0].length : result.length) : 0}** rows were selected!\n` +
         "\n" +
-        `\`\`\`${Functions.checkChar(JSON.stringify(result), 2000, ",")}\`\`\``)
+        `\`\`\`${Functions.checkChar(JSON.stringify(result), 1500, ",")}\`\`\``)
         message.channel.send(sqlEmbed)
 
     }

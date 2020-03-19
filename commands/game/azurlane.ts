@@ -63,8 +63,9 @@ export default class AzurLane extends Command {
         const embeds = new Embeds(discord, message)
         let query = Functions.combineArgs(args, 1).trim().replace(/ +/g, "_")
         if (!query) {
-            query = this.defaults[Math.floor(Math.random()*this.defaults.length)]
+            query = this.defaults[Math.floor(Math.random()*this.defaults.length)].trim().replace(/ +/g, "_")
         }
+        query = query.split("_").map((q) => Functions.toProperCase(q)).join("_")
 
         if (query.match(/azurlane.koumakan.jp/)) {
             query = query.replace("https://azurlane.koumakan.jp/", "")
@@ -80,8 +81,13 @@ export default class AzurLane extends Command {
         const nationality = this.findNationality(res.data)
         let chibis = matches.filter((m: any) => m.toLowerCase().includes("chibi"))
         const pics = matches.filter((m: any) => m.toLowerCase().includes(query.toLowerCase()) && !m.toLowerCase().includes("banner") && !m.toLowerCase().includes("chibi"))
-        const history = await axios.get(`https://azurlane.koumakan.jp/${query}/History`, {headers})
-        const matches2 = history.data.match(/(?<=Historical References)((.|\n)*?)(?=<!--)/gm)
+        let history = null as any
+        try {
+            history = await axios.get(`https://azurlane.koumakan.jp/${query}/History`, {headers}).then((r) => r.data)
+        } catch {
+            // Do nothing
+        }
+        const matches2 = history ? history.match(/(?<=Historical References)((.|\n)*?)(?=<!--)/gm) : "None available!"
         const description = Functions.cleanHTML(String(matches2))
         if (chibis.length < pics.length) {
             chibis = Functions.fillArray(chibis, chibis[length-1], pics.length)
