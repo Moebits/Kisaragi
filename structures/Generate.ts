@@ -1,24 +1,27 @@
-import {GuildEmoji} from "discord.js"
+import {GuildEmoji, Message} from "discord.js"
+import fs from "fs"
+import path from "path"
 import {Kisaragi} from "./Kisaragi"
 
 export class Generate {
-    constructor(private readonly discord: Kisaragi) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
-    // Generate Commands for commands.json
-    public generateCommands = (cmdFiles: string[]) => {
-        const newFiles = cmdFiles.flat(Infinity)
-        const addedFiles: string[] = []
-        loop1:
-        for (let i = 0; i < newFiles.length; i++) {
-            const commandName = newFiles[i].split(".")[0]
-            for (let j = 0; j < addedFiles.length; j++) {
-                if (addedFiles[j] === commandName) {
-                    continue loop1
-                }
+    // Generate Commands and info
+    public generateCommands = () => {
+        let commandDesc = ""
+        const commandDir = path.join(__dirname, `../commands`)
+        const subDir = fs.readdirSync(commandDir)
+        for (let i = 0; i < subDir.length; i++) {
+            const commands = fs.readdirSync(path.join(__dirname, `../commands/${subDir[i]}`))
+            for (let j = 0; j < commands.length; j++) {
+                commands[j] = commands[j].slice(0, -3)
+                if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
+                const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
+                if (cmdClass.options.unlist === true) continue
+                commandDesc += `\`${commands[j]}\`` + ` -> _${cmdClass.options.description}_\n`
             }
-            addedFiles.push(commandName)
-            console.log(`"${commandName}": {"name": "${commandName}", "aliases": [], "cooldown": ""},`)
         }
+        return commandDesc
     }
 
     // Generate Emojis for config.json
