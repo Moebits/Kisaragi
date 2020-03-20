@@ -45,7 +45,7 @@
     "base-64": "^0.1.0",
     "bcrypt": "^4.0.1",
     "bluebird": "^3.5.5",
-    "booru": "^2.0.3",
+    "booru": "^2.2.1",
     "bufferutil": "^4.0.1",
     "canvas": "^2.6.1",
     "canvas-text-wrapper": "^0.10.2",

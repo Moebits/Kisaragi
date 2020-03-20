@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -61,35 +61,49 @@ export default class Konachan extends Command {
             tagArray.push(tags[i].trim().replace(/ /g, "_"))
         }
 
-        let url
+        let images: any[] = []
         if (tags.join("").match(/\d\d+/g)) {
-            url = `https://konachan.net/post/show/${tags.join("").match(/\d\d+/g)}/`
+            try {
+                images = [await axios.get(`https://konachan.com/post.json?tags=id:${tags.join("").match(/\d\d+/g)}`, {headers}).then((r) => r.data)]
+            } catch {
+                return this.invalidQuery(konachanEmbed, "The url is invalid.")
+            }
         } else {
-            const image = await konachan.search(tagArray, {limit: 1, random: true})
-            if (!image[0]) {
+            const rawImages = await konachan.search(tagArray, {limit: 50})
+            if (!rawImages[0]) {
                 return this.invalidQuery(konachanEmbed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name, try looking up your tag " +
                 "on the [**Konachan Website**](https://konachan.com//)")
             }
-            url = konachan.postView(image[0].id)
+            // @ts-ignore
+            images = rawImages.map((i) => i.data)
         }
-
-        const id = url.match(/\d\d+/g)!.join("")
-        const result = await axios.get(`https://konachan.com/post.json?tags=id:${id}`, {headers})
-        const img = result.data[0]
-        if (!img) return this.invalidQuery(konachanEmbed, "The url is invalid.")
-        if (img.rating !== "s") {
-            if (!perms.checkNSFW()) return
+        const konachanArray: MessageEmbed[] = []
+        for (let i = 0; i < images.length; i++) {
+            const img = images[i]
+            if (img.rating !== "s") {
+                if (!perms.checkNSFW(true)) continue
+            }
+            const konachanEmbed = embeds.createEmbed()
+            .setTitle(`**Konachan Image** ${discord.getEmoji("gabLewd")}`)
+            .setAuthor("konachan", "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE")
+            .setURL(`https://konachan.com/post/show/${img.id}`)
+            .setDescription(
+                `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
+                `${discord.getEmoji("star")}_Uploader:_ **${img.author}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(img.created_at*1000))}**\n` +
+                `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(img.tags, 1900, " ")}\n`
+            )
+            .setImage(img.sample_url)
+            konachanArray.push(konachanEmbed)
         }
-        konachanEmbed
-        .setURL(url)
-        .setDescription(
-            `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
-            `${discord.getEmoji("star")}_Uploader:_ **${img.author}**\n` +
-            `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(img.created_at*1000))}**\n` +
-            `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(img.tags, 1900, " ")}\n`
-        )
-        .setImage(img.sample_url)
-        message.channel.send(konachanEmbed)
+        if (!konachanArray[0]) {
+            return this.invalidQuery(konachanEmbed)
+        }
+        if (konachanArray.length === 1) {
+            message.channel.send(konachanArray[0])
+        } else {
+            embeds.createReactionEmbed(konachanArray, true, true)
+        }
     }
 }

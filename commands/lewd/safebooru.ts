@@ -1,0 +1,103 @@
+import axios from "axios"
+import Booru from "booru"
+import {Message, MessageEmbed} from "discord.js"
+import {Command} from "../../structures/Command"
+import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
+import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
+
+export default class Safebooru extends Command {
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Searches for anime pictures on safebooru.",
+            help:
+            `
+            _Note: Underscores are not required. This is safebooru, so r18 only gets you "questionable" images._
+            \`safebooru\` - Get a random image.
+            \`safebooru link/id\` - Gets the image from the link.
+            \`safebooru tag\` - Gets an image with the tag.
+            \`safebooru r18\` - Get a random questionable image.
+            \`safebooru r18 tag\` - Get a questionable image with the tag.
+            `,
+            examples:
+            `
+            \`=>safebooru\`
+            \`=>safebooru tenma gabriel white\`
+            \`=>safebooru r18 gabriel dropout\`
+            `,
+            aliases: ["safe"],
+            random: "none",
+            cooldown: 20
+        })
+    }
+
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
+        const embeds = new Embeds(discord, message)
+        const safebooru = Booru("safebooru")
+        const perms = new Permission(discord, message)
+        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
+        const safebooruEmbed = embeds.createEmbed()
+        .setAuthor("safebooru", "https://safebooru.org/images/safechibi.png")
+        .setTitle(`**Safebooru Search** ${discord.getEmoji("gabLewd")}`)
+
+        let tags
+        if (!args[1]) {
+            tags = ["loli", "rating:safe"]
+        } else if (args[1].toLowerCase() === "r18") {
+            tags = Functions.combineArgs(args, 2).split(",")
+            if (!tags.join("")) tags = ["loli"]
+            tags.push("-rating:safe")
+        } else {
+            tags = Functions.combineArgs(args, 1).split(",")
+            tags.push("rating:safe")
+        }
+
+        const tagArray: string[] = []
+        for (let i = 0; i < tags.length; i++) {
+            tagArray.push(tags[i].trim().replace(/ /g, "_"))
+        }
+
+        let images: any[] = []
+        if (tags.join("").match(/\d\d+/g)) {
+            try {
+                images = [await axios.get(`https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&id=${tags.join("").match(/\d\d+/g)}`, {headers}).then((r) => r.data)]
+            } catch {
+                return this.invalidQuery(safebooruEmbed, "The url is invalid.")
+            }
+        } else {
+            const rawImages = await safebooru.search(tagArray, {limit: 50})
+            if (!rawImages[0]) {
+                return this.invalidQuery(safebooruEmbed, "Underscores are not required, " +
+                "if you want to search multiple terms separate them with a comma. Tags usually start with a last name; try looking up your tag " +
+                "on the [**Safebooru Website**](https://safebooru.org/)")
+            }
+            // @ts-ignore
+            images = rawImages.map((i) => i.data)
+        }
+        const safebooruArray: MessageEmbed[] = []
+        for (let i = 0; i < images.length; i++) {
+            const img = images[i]
+            const safebooruEmbed = embeds.createEmbed()
+            .setAuthor("safebooru", "https://safebooru.org/images/safechibi.png")
+            .setTitle(`**Safebooru Search** ${discord.getEmoji("gabLewd")}`)
+            .setURL(`https://safebooru.org/index.php?page=post&s=view&id=${img.id}`)
+            .setDescription(
+                `${discord.getEmoji("star")}_Uploader:_ **${img.owner}**\n` +
+                `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(String(img.tags), 1900, " ")}\n`
+            )
+            .setImage(`https://safebooru.org//samples/${img.directory}/sample_${img.image}`)
+            safebooruArray.push(safebooruEmbed)
+        }
+        if (!safebooruArray[0]) {
+            return this.invalidQuery(safebooruEmbed)
+        }
+        if (safebooruArray.length === 1) {
+            message.channel.send(safebooruArray[0])
+        } else {
+            embeds.createReactionEmbed(safebooruArray, true, true)
+        }
+    }
+}

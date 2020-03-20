@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message} from "discord.js"
+import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -60,41 +60,49 @@ export default class Gelbooru extends Command {
             tagArray.push(tags[i].trim().replace(/ /g, "_"))
         }
 
-        let url
+        let images: any[] = []
         if (tags.join("").match(/\d\d+/g)) {
-            url = `https://gelbooru.com/index.php?page=post&s=view&json=1&id=${tags.join("").match(/\d\d+/g)}`
+            try {
+                images = [await axios.get(`https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&id=${tags.join("").match(/\d\d+/g)}${process.env.GELBOORU_API_KEY}`, {headers}).then((r) => r.data)]
+            } catch {
+                return this.invalidQuery(gelbooruEmbed, "The url is invalid.")
+            }
         } else {
-            const image = await gelbooru.search(tagArray, {limit: 1, random: true})
-            if (!image[0]) {
+            const rawImages = await gelbooru.search(tagArray, {limit: 50})
+            if (!rawImages[0]) {
                 return this.invalidQuery(gelbooruEmbed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name; try looking up your tag " +
                 "on the [**Gelbooru Website**](https://gelbooru.com//)")
             }
-            url = gelbooru.postView(image[0].id)
+            // @ts-ignore
+            images = rawImages.map((i) => i.data)
         }
-
-        let id
-        if (url.match(/json/)) {
-            id = url.match(/\d+/g)!.join("").slice(1)
+        const gelbooruArray: MessageEmbed[] = []
+        for (let i = 0; i < images.length; i++) {
+            const img = images[i]
+            if (img.rating !== "s") {
+                if (!perms.checkNSFW(true)) continue
+            }
+            const gelbooruEmbed = embeds.createEmbed()
+            .setAuthor("gelbooru", "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png")
+            .setTitle(`**Gelbooru Search** ${discord.getEmoji("gabLewd")}`)
+            .setURL(`https://gelbooru.com/index.php?page=post&s=view&id=${img.id}`)
+            .setDescription(
+                `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
+                `${discord.getEmoji("star")}_Uploader:_ **${img.owner}**\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(img.created_at)}**\n` +
+                `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(String(img.tags), 1900, " ")}\n`
+            )
+            .setImage(img.file_url)
+            gelbooruArray.push(gelbooruEmbed)
+        }
+        if (!gelbooruArray[0]) {
+            return this.invalidQuery(gelbooruEmbed)
+        }
+        if (gelbooruArray.length === 1) {
+            message.channel.send(gelbooruArray[0])
         } else {
-            id = url.match(/\d+/g)!.join("")
+            embeds.createReactionEmbed(gelbooruArray, true, true)
         }
-        const result = await axios.get(`https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&id=${id}${process.env.GELBOORU_API_KEY}`, {headers}).then((r) => r.data)
-        const img = result[0]
-        if (!img) return this.invalidQuery(gelbooruEmbed, "The url is invalid.")
-        if (img.rating !== "s") {
-            if (!perms.checkNSFW()) return
-        }
-        gelbooruEmbed
-        .setURL(url)
-        .setDescription(
-            `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
-            `${discord.getEmoji("star")}_Uploader:_ **${img.owner}**\n` +
-            `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(img.created_at)}**\n` +
-            `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(String(img.tags), 1900, " ")}\n`
-        )
-        .setImage(img.file_url)
-        // .setImage(`https://img2.gelbooru.com/samples/${img.directory}/sample_${img.image}`)
-        message.channel.send(gelbooruEmbed)
     }
 }
