@@ -39,10 +39,8 @@ export class AudioEffects {
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
-        filepath = path.join(__dirname, filepath)
         const ext = path.extname(filepath).replace(".", "")
         let outDest = fileDest + `.${ext}`
-        outDest = path.join(__dirname, outDest)
         console.log(filepath)
         console.log(outDest)
         let index = 0
