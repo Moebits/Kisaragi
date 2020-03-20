@@ -24,7 +24,7 @@ const dumps = [
 ]
 
 for (let i = 0; i < dumps.length; i++) {
-    if (!fs.existsSync(path.join(__dirname, dumps[i]))) fs.mkdirSync(path.join(__dirname, dumps[i]))
+    if (!fs.existsSync(path.join(__dirname, dumps[i]))) fs.mkdirSync(path.join(__dirname, dumps[i]), {recursive: true})
 }
 
 const start = async (): Promise<void> => {
