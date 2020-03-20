@@ -39,7 +39,26 @@ export default class GuildCreate {
         // logGuild(guild)
 
         async function joinMessage(guild: Guild) {
-            let mainChannel = guild.channels.cache.find((c) => c.name.toLowerCase().includes("main") || c.name.toLowerCase().includes("general") || c.name.toLowerCase().includes("chat")) as TextChannel
+            const mainChannels = guild.channels.cache.filter((c) => {
+                if (c.name.toLowerCase().includes("main") || c.name.toLowerCase().includes("general") || c.name.toLowerCase().includes("chat")) {
+                    if (c.type === "text") {
+                        return true
+                    } else {
+                        return false
+                    }
+                } else {
+                    return false
+                }
+            }).map((c) => c) as TextChannel[]
+            let index = 0
+            let highest = mainChannels[0]?.rawPosition
+            for (let i = 0; i < mainChannels.length; i++) {
+                if (mainChannels[i]?.rawPosition < highest) {
+                    highest = mainChannels[i].rawPosition
+                    index = i
+                }
+            }
+            let mainChannel = mainChannels[index]
             if (!mainChannel) mainChannel = await discord.fetchFirstMessage(guild).then((m) => m?.channel) as TextChannel
             const msg = mainChannel.lastMessage
             if (msg) {

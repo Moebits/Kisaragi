@@ -845,7 +845,7 @@ export class Audio {
             name = name?.match(/.(mp3|wav|ogg|webm)/) ? name : name + ".mp3"
             if (name === ".mp3") name = "noname.mp3"
             const data = await axios.get(song, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
-            const dest = `./tracks/${name}`
+            const dest = path.join(__dirname, `../tracks/${name}`)
             fs.writeFileSync(dest, Buffer.from(data, "binary"))
             file = dest
         }
@@ -874,9 +874,9 @@ export class Audio {
         if (!connection) return
         let player = connection.dispatcher
         if (start) {
-            player = connection?.play(path.join(__dirname, "..", file), {seek: start, highWaterMark: 1})
+            player = connection?.play(file, {seek: start, highWaterMark: 1})
         } else {
-            player = connection?.play(path.join(__dirname, "..", file), {highWaterMark: 1})
+            player = connection?.play(file, {highWaterMark: 1})
         }
         player.setBitrate(128)
         player.setFEC(false)

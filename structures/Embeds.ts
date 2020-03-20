@@ -393,10 +393,10 @@ export class Embeds {
         }
         const shortDescription: string[] = []
         for (let i = 0; i < longDescription.length; i++) {
-            const top = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
-            let text = longDescription[i].replace(top!, "")
-            const second = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
-            text = longDescription[i].replace(second!, "")
+            const top = longDescription[i].match(/(^)(.*?)(>)/g)?.[0]
+            let text = longDescription[i].replace(top!, "").trim()
+            const second = text.match(/(^)(.*?)(>)/g)?.[0]
+            text = text.replace(second!, "").trim()
             const commands = text.match(/(`)(.*?)(`)/gm)
             commandCount.push(commands?.map((c)=>c)?.length ?? 0)
             const desc = `${top}\n${second}\n${commands?.map((c) => c).join(", ")}`
@@ -523,10 +523,10 @@ export class Embeds {
         }
         const shortDescription: string[] = []
         for (let i = 0; i < longDescription.length; i++) {
-            const top = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
-            let text = longDescription[i].replace(top!, "")
-            const second = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
-            text = longDescription[i].replace(second!, "")
+            const top = longDescription[i].match(/(^)(.*?)(>)/g)?.[0]
+            let text = longDescription[i].replace(top!, "").trim()
+            const second = text.match(/(^)(.*?)(>)/g)?.[0]
+            text = text.replace(second!, "").trim()
             const commands = text.match(/(`)(.*?)(`)/gm)
             commandCount.push(commands?.map((c)=>c)?.length ?? 0)
             const desc = `${top}\n${second}\n${commands?.map((c) => c).join(", ")}`

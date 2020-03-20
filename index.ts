@@ -20,7 +20,10 @@ const dumps = [
     `../assets/images/waifu2x`,
     `../assets/misc/dump`,
     `../assets/misc/tracks`,
-    `../assets/misc/videos`
+    `../assets/misc/videos`,
+    `./tracks/transform`,
+    `./images/transform`,
+    `./videos/transform`
 ]
 
 for (let i = 0; i < dumps.length; i++) {
