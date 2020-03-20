@@ -37,6 +37,7 @@ export default class Waifu2x extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         deepai.setApiKey(process.env.DEEP_API_KEY)
 
+        /*
         if (args[1] === "list") {
             const data = await sql.selectColumn("waifu2x", "id")
             const users = await sql.selectColumn("waifu2x", "user")
@@ -56,7 +57,7 @@ export default class Waifu2x extends Command {
             }
             embeds.createReactionEmbed(waifu2xArray, true, true)
             return
-        }
+        }*/
 
         let imgUrl
         if (!args[1]) {
@@ -72,30 +73,8 @@ export default class Waifu2x extends Command {
             imgUrl = args[1]
         }
 
-        const raw = await axios.get(imgUrl, {responseType: "arraybuffer", headers}).then((r) => r.data)
-        const hash = md5(raw)
-        console.log(imgUrl)
-        console.log(hash)
-        const found = await sql.fetchColumn("waifu2x", "id", "hash", hash)
-        console.log(found)
-
-        let imageURL: string
-        let desc: string
-        if (found?.[0] && found?.[0] !== "Error") {
-            imageURL = `https://api.deepai.org/job-view-file/${found}/outputs/output.png`
-            const user = await sql.fetchColumn("waifu2x", "user", "hash", hash)
-            const date = await sql.fetchColumn("waifu2x", "date", "hash", hash)
-            desc = `_Requested by_ \`${user?.[0]}\` _on_ \`${Functions.formatDate(new Date(date?.[0]))}\`.`
-        } else {
-            const resp = await deepai.callStandardApi("waifu2x", {image: imgUrl})
-            imageURL = resp.output_url
-            const imageID = resp.id
-            await sql.insertInto("waifu2x", "hash", hash)
-            await sql.updateColumn("waifu2x", "id", imageID, "hash", hash)
-            await sql.updateColumn("waifu2x", "user", message.author.tag, "hash", hash)
-            await sql.updateColumn("waifu2x", "date", String(new Date()), "hash", hash)
-            desc = `**${message.author.username}**, _Your image was saved in the database. To view all user images use_ \`waifu2x list\`.`
-        }
+        const resp = await deepai.callStandardApi("waifu2x", {image: imgUrl})
+        const imageURL = resp.output_url
 
         /*
         const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
@@ -118,7 +97,6 @@ export default class Waifu2x extends Command {
         .setTitle(`**Waifu 2x Upscaling** ${discord.getEmoji("gabYes")}`)
         // .attachFiles([msgAttachment])
         // .setImage(`attachment://upscaled.png`)
-        .setDescription(desc)
         .setImage(imageURL)
         .setURL(imageURL)
         return message.channel.send(waifuEmbed)

@@ -874,9 +874,9 @@ export class Audio {
         if (!connection) return
         let player = connection.dispatcher
         if (start) {
-            player = connection?.play(file, {seek: start, highWaterMark: 1})
+            player = connection?.play(path.join(__dirname, "..", file), {seek: start, highWaterMark: 1})
         } else {
-            player = connection?.play(file, {highWaterMark: 1})
+            player = connection?.play(path.join(__dirname, "..", file), {highWaterMark: 1})
         }
         player.setBitrate(128)
         player.setFEC(false)
