@@ -35,7 +35,7 @@ export class AudioEffects {
         if (filepath.includes("https://") || filepath.includes("http://")) {
             const data = await axios.get(filepath, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
             const filename = path.basename(filepath.replace(`_${effect}`, "")).slice(0, -4)
-            const dest = `./tracks/${filename}_${effect}.${filepath.slice(-3)}`
+            const dest = path.join(__dirname, `../tracks/${filename}_${effect}.${filepath.slice(-3)}`)
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
@@ -43,6 +43,8 @@ export class AudioEffects {
         const ext = path.extname(filepath).replace(".", "")
         let outDest = fileDest + `.${ext}`
         outDest = path.join(__dirname, outDest)
+        console.log(filepath)
+        console.log(outDest)
         let index = 0
         while (fs.existsSync(outDest)) {
             outDest = index <= 1 ? `${fileDest}.${ext}` : `${fileDest}${index}.${ext}`
