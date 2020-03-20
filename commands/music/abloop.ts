@@ -19,6 +19,7 @@ export default class ABLoop extends Command {
             \`=>abloop 1:30 2:30\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 10
         })
     }

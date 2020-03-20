@@ -18,6 +18,7 @@ export default class Pause extends Command {
             \`=>pause\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 5
         })
     }

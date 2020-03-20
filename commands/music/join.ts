@@ -18,6 +18,7 @@ export default class Join extends Command {
             \`=>join\`
             `,
             aliases: ["connect"],
+            guildOnly: true,
             cooldown: 10
         })
     }

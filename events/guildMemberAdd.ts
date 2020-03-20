@@ -18,7 +18,7 @@ export default class GuildMemberAdd {
 
         let defaultChannel = firstMsg!.channel as TextChannel
         const defChannel = await sql.fetchColumn("blocks", "default channel")
-        if (defChannel.join("")) {
+        if (String(defChannel)) {
             defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === defChannel.join("")) as TextChannel
         }
 
@@ -30,18 +30,18 @@ export default class GuildMemberAdd {
 
         async function welcomeMessages() {
             const welcomeToggle = await sql.fetchColumn("welcome leaves", "welcome toggle")
-            if (welcomeToggle.join("") === "off") return
+            if (String(welcomeToggle) === "off") return
 
             const welcomeMsg = await sql.fetchColumn("welcome leaves", "welcome message")
             const welcomeChannel = await sql.fetchColumn("welcome leaves", "welcome channel")
             const welcomeImage = await sql.fetchColumn("welcome leaves", "welcome bg image")
             const welcomeText = await sql.fetchColumn("welcome leaves", "welcome bg text")
             const welcomeColor = await sql.fetchColumn("welcome leaves", "welcome bg color")
-            const channel = member.guild.channels.cache.find((c) => c.id.toString() === welcomeChannel.join("")) as TextChannel
+            const channel = member.guild.channels.cache.find((c) => c.id.toString() === String(welcomeChannel)) as TextChannel
 
-            const attachment = await image.createCanvas(member, welcomeImage[0], welcomeText[0], welcomeColor[0]) as MessageAttachment
+            const attachment = await image.createCanvas(member, String(welcomeImage), String(welcomeText), String(welcomeColor)) as MessageAttachment
 
-            const newMsg = welcomeMsg.join("").replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
+            const newMsg = String(welcomeMsg).replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
             .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())
 
             channel.send(newMsg, attachment)
@@ -52,7 +52,7 @@ export default class GuildMemberAdd {
         async function avatarBan(discord: Kisaragi) {
             const banToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
             const banEmbed = embeds.createEmbed()
-            if (banToggle.join("") === "off") return
+            if (String(banToggle) === "off") return
 
             if (!member.user.avatarURL) {
                 const channel = defaultChannel

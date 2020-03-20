@@ -12,7 +12,7 @@ const imageDataURI = require("image-data-uri")
 export default class Rank extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts your rank.",
+            description: "Posts your rank (disabled).",
             aliases: [],
             cooldown: 3
         })
@@ -24,6 +24,7 @@ export default class Rank extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const points = new Points(discord, message)
+        return message.reply("This command is disabled for the time being...")
 
         const canvas = createCanvas(200, 5)
         const ctx = canvas.getContext("2d")
@@ -41,7 +42,7 @@ export default class Rank extends Command {
             message.channel.send(rankEmbed
                 .setDescription("Could not find a score for you!"))
         } else {
-            const percent: number = (100 / pointThreshold) * (userScore % pointThreshold)
+            const percent: number = (100 / pointThreshold) * (userScore! % pointThreshold)
             const width: number = (percent / 100) * 200
             ctx.fillStyle = "#ff3d9b"
             ctx.fillRect(0, 0, width, 5)

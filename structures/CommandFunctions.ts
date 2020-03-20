@@ -17,6 +17,9 @@ export class CommandFunctions {
         const cmdPath = await this.findCommand(args?.[0])
         if (!cmdPath) return this.noCommand(args?.[0])
         const cp = new (require(path.join(__dirname, `${cmdPath.slice(0, -3)}`)).default)(this.discord, msg)
+        if (cp.options.guildOnly) {
+            if (msg.channel.type === "dm") return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
+        }
         let data: any
         await new Promise(async (resolve, reject) => {
             await cp.run(args).then((d: any) => {
@@ -38,7 +41,7 @@ export class CommandFunctions {
         const channel = await sql.fetchColumn("auto", "channel")
         const frequency = await sql.fetchColumn("auto", "frequency")
         const toggle = await sql.fetchColumn("auto", "toggle")
-        if (!command?.[0]) return
+        if (!command) return
         for (let i = 0; i < command.length; i++) {
             if (toggle[i] === "inactive") continue
             const guildChannel = (this.message.guild!.channels.cache.find((c) => c.id === channel[i])) as TextChannel

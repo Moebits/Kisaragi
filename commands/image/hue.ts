@@ -10,7 +10,7 @@ export default class Hue extends Command {
           description: "Shifts the hue of an image.",
           help:
           `
-          _Note: Range is -360 to 360._
+          _Note: Hue is in degrees._
           \`hue shift\` - Shifts the hue of the last posted image
           \`hue shift url\` - Shifts the hue of the linked image
           `,

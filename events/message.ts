@@ -40,12 +40,10 @@ export default class MessageEvent {
         detect.detectAnime()
         detect.swapRoles()
         haiku.haiku()
-        const pointTimeout = await sql.fetchColumn("points", "point timeout")
-        /*
+        /*const pointTimeout = await sql.fetchColumn("points", "point timeout")
         setTimeout(() => {
         points.calcScore()
-        }, pointTimeout ? Number(pointTimeout) : 60000)
-        */
+        }, pointTimeout ? Number(pointTimeout) : 60000)*/
         cmdFunctions.autoCommand()
     }
 
@@ -107,15 +105,16 @@ export default class MessageEvent {
       if (message.author.id === process.env.OWNER_ID) {
         message.channel.send(`I love you more, <@${message.author.id}>!`)
       } else {
-        message.channel.send(`Sorry <@${message.author.id}>, but I don't share the same feelings. We can still be friends though!`)
+        message.channel.send(`Sorry <@${message.author.id}>, but I don't share the same feelings.`)
       }
     }
 
       if (this.discord.checkBotMention(message)) {
         const args = message.content.slice(`<@!${this.discord.user?.id}>`.length).trim().split(/ +/g)
-        message.reply(`My prefix is set to "${prefix}"!\n`)
         if (args[0]) {
           cmdFunctions.runCommand(message, args)
+        } else {
+          message.reply(`My prefix is set to "${prefix}"!\n`)
         }
     }
 
@@ -133,9 +132,13 @@ export default class MessageEvent {
       if (!pathFind) return cmdFunctions.noCommand(cmd)
       const cmdPath = new (require(pathFind).default)(this.discord, message)
 
+      if (cmdPath.options.guildOnly) {
+        if (message.channel.type === "dm") return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
+      }
+
       const cooldown = new Cooldown(this.discord, message)
       const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown, this.cooldowns)
-      if (onCooldown && (message.author!.id !== process.env.OWNER_ID)) return message.reply({embed: onCooldown})
+      if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return message.reply({embed: onCooldown})
 
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
 

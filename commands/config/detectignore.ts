@@ -1,10 +1,10 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
+import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class DetectChannels extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -12,13 +12,13 @@ export default class DetectChannels extends Command {
             description: "Configures channels ignored by anime detection.",
             help:
             `
-            \`detectchannels\` - Opens the detection channels prompt
-            \`detectchannels #channel1 #channel2\` - Sets channels that are ignored from anime detection
-            \`detectchannels reset\` - Deletes all settings
+            \`detectignore\` - Opens the detect ignore prompt
+            \`detectignore #channel1 #channel2\` - Sets channels that are ignored from anime detection
+            \`detectignore reset\` - Deletes all settings
             `,
             examples:
             `
-            \`=>detectchannels #channel\`
+            \`=>detectignore #channel\`
             `,
             guildOnly: true,
             aliases: [],

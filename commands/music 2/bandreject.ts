@@ -20,6 +20,7 @@ export default class Bandreject extends Command {
             \`=>bandreject 700 100\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

@@ -36,7 +36,7 @@ export default class Blur extends Command {
             url = await discord.fetchLastAttachment(message)
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
-        if (!factor) factor = 10
+        if (!factor) factor = 5
         const image = await jimp.read(url)
         if (args[0] === "gaussian") {
             image.gaussian(factor)

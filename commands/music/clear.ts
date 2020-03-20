@@ -18,6 +18,7 @@ export default class Clear extends Command {
             \`=>clear\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 10
         })
     }

@@ -20,6 +20,7 @@ export default class Lowshelf extends Command {
             \`=>lowshelf 2 200 50\`
             `,
             aliases: ["bass"],
+            guildOnly: true,
             cooldown: 20
         })
     }

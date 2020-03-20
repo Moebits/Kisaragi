@@ -31,11 +31,11 @@ export default class MessageReactionAdd {
                     const help = await sql.fetchColumn("collectors", "help", "message", reaction.message.id)
                     const download = await sql.fetchColumn("collectors", "download", "message", reaction.message.id)
                     const newEmbeds: MessageEmbed[] = []
-                    for (let i = 0; i < cachedEmbeds[0].length; i++) {
-                        newEmbeds.push(new MessageEmbed(JSON.parse(cachedEmbeds[0][i])))
+                    for (let i = 0; i < cachedEmbeds.length; i++) {
+                        newEmbeds.push(new MessageEmbed(JSON.parse(cachedEmbeds[i])))
                     }
                     active.add(reaction.message.id)
-                    if (!help?.[0] && !download?.[0]) {
+                    if (!help && !download) {
                         embeds.editHelpEmbed(reaction.message, reaction.emoji.name, user, newEmbeds)
                     } else {
                         embeds.editReactionCollector(reaction.message, reaction.emoji.name, user, newEmbeds, Boolean(collapse), Boolean(download), Number(page))

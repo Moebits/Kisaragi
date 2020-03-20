@@ -21,6 +21,7 @@ export default class Tremolo extends Command {
             \`=>compress 90\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

@@ -54,15 +54,14 @@ export default class Download extends Command {
         await Functions.createZip(downloads, dest)
         const stats = fs.statSync(dest)
         if (stats.size > 8000000) {
-            const link = await i.fileIOUpload(dest)
+            const link = await i.upload([dest]).then((l) => l[0])
             const downloadEmbed = embeds.createEmbed()
             downloadEmbed
             .setAuthor("download", "https://outdoortycoon.com/wp-content/uploads/2017/01/Download-Icon-Wenzel.png")
             .setTitle(`**Image Downloader** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}Downloaded **${images.length}** images from this text channel!\n` +
-                `${discord.getEmoji("star")}This file is too large for attachments. Please note that the following link **will get deleted after someone downloads it**.\n` +
-                link
+                `${discord.getEmoji("star")}This file is too large for attachments. Download it [**here**](${link}).\n`
             )
             await message.channel.send(downloadEmbed)
         } else {

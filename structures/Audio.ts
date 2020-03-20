@@ -1046,7 +1046,7 @@ export class Audio {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const results = await this.soundcloud.tracks.search({q: query})
+        const results = await this.soundcloud.tracks.scrape(query)
         const links = results.map((r) => r.permalink_url)
         if (first) return links[0]
         const titles = results.map((r) => r.title)

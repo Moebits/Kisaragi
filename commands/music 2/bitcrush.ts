@@ -20,6 +20,7 @@ export default class Bitcrush extends Command {
             \`=>bitcrush download 4\`
             `,
             aliases: ["downsample"],
+            guildOnly: true,
             cooldown: 20
         })
     }

@@ -8,7 +8,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Level extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configure settings for xp gaining.",
+            description: "Configure settings for xp gaining (disabled).",
             aliases: [],
             cooldown: 3
         })
@@ -19,6 +19,7 @@ export default class Level extends Command {
         const message = this.message
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
+        return message.reply("This command is disabled for the time being...")
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()

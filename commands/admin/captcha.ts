@@ -70,11 +70,11 @@ export default class CaptchaCmd extends Command {
             **Captcha Difficulty** = Either easy, medium, hard, or extreme.
             newline
             __Current Settings:__
-            ${discord.getEmoji("star")}_Verify Role:_ **${String(vRole) ?  "<@&" + String(vRole) + ">" : "None"}**
-            ${discord.getEmoji("star")}_Verify Toggle:_ **${String(vToggle)}**
-            ${discord.getEmoji("star")}_Captcha Type:_ **${String(cType)}**
-            ${discord.getEmoji("star")}_Captcha Difficulty:_ **${String(difficulty)}**
-            ${discord.getEmoji("star")}_Background Color:_ **${String(color)}**
+            ${discord.getEmoji("star")}_Verify Role:_ **${vRole ?  "<@&" + vRole + ">" : "None"}**
+            ${discord.getEmoji("star")}_Verify Toggle:_ **${vToggle}**
+            ${discord.getEmoji("star")}_Captcha Type:_ **${cType}**
+            ${discord.getEmoji("star")}_Captcha Difficulty:_ **${difficulty}**
+            ${discord.getEmoji("star")}_Background Color:_ **${color}**
             newline
             __Edit Settings:__
             ${discord.getEmoji("star")}_Type **enable** or **disable** to enable or disable verification._

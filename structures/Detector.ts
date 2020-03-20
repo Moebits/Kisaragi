@@ -28,7 +28,7 @@ export class Detector {
         const anime = await sql.fetchColumn("detection", "pfp") as unknown as string
         if (await this.detectIgnore()) return
         if (!anime) return
-        if (anime?.[0] === "off") return
+        if (anime === "off") return
         if (this.message.author!.id === this.discord.user!.id) return
         if (this.message.attachments.size) {
             const urls = this.message.attachments.map((a) => a.url)
@@ -47,7 +47,7 @@ export class Detector {
         if (this.message.author!.bot) return
         const sql = new SQLQuery(this.message)
         const pfp = await sql.fetchColumn("detection", "pfp") as unknown as string
-        if (!pfp || pfp === "off" || pfp[0] === "off") return
+        if (!pfp || pfp === "off") return
         if (!member) member = this.message.member!
         if (!member || member.user.bot || !member.user.displayAvatarURL()) return
         const weeb = await sql.fetchColumn("detection", "weeb") as unknown as string

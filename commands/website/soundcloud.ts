@@ -62,7 +62,7 @@ export default class SoundCloud extends Command {
                 .setTitle(`**Soundcloud User** ${discord.getEmoji("karenSugoi")}`))
             }
             const soundcloudArray: MessageEmbed[] = []
-            const users = await soundcloud.users.search({q: query})
+            const users = await soundcloud.users.scrape(query)
             for (let i = 0; i < users.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
@@ -94,7 +94,7 @@ export default class SoundCloud extends Command {
                 .setTitle(`**Soundcloud Playlist** ${discord.getEmoji("karenSugoi")}`))
             }
             const soundcloudArray: MessageEmbed[] = []
-            const playlists = await soundcloud.playlists.search({q: query})
+            const playlists = await soundcloud.playlists.scrape(query)
             for (let i = 0; i < playlists.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
@@ -132,7 +132,7 @@ export default class SoundCloud extends Command {
             if (/soundcloud.com/.test(query)) {
                 track = query
             } else {
-                track = await soundcloud.tracks.search({q: query}).then((r) => r[0].permalink_url)
+                track = await soundcloud.tracks.scrape(query).then((r) => r[0].permalink_url)
             }
             if (!track) {
                 return this.invalidQuery(embeds.createEmbed()
@@ -171,7 +171,7 @@ export default class SoundCloud extends Command {
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
         }
         const soundcloudArray: MessageEmbed[] = []
-        const tracks = await soundcloud.tracks.search({q: query})
+        const tracks = await soundcloud.tracks.scrape(query)
         for (let i = 0; i < tracks.length; i++) {
             const soundcloudEmbed = embeds.createEmbed()
             soundcloudEmbed

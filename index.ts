@@ -9,6 +9,24 @@ const discord = new Kisaragi({
     restTimeOffset: 0
 })
 
+const dumps = [
+    `../assets/images/dump`,
+    `../assets/images/gifs`,
+    `../assets/images/misc`,
+    `../assets/images/pages`,
+    `../assets/images/pixiv/illusts`,
+    `../assets/images/pixiv/profiles`,
+    `../assets/images/pixiv/zip`,
+    `../assets/images/waifu2x`,
+    `../assets/misc/dump`,
+    `../assets/misc/tracks`,
+    `../assets/misc/videos`
+]
+
+for (let i = 0; i < dumps.length; i++) {
+    if (!fs.existsSync(path.join(__dirname, dumps[i]))) fs.mkdirSync(path.join(__dirname, dumps[i]))
+}
+
 const start = async (): Promise<void> => {
     let commandCounter = 0
     const cmdFiles: string[][] = []

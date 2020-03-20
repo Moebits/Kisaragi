@@ -20,6 +20,7 @@ export default class Chorus extends Command {
             \`=>chorus download 50 0.5 30 2\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

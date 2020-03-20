@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class Rule34 extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: `Searches for anime pictures on rule34.`,
+            description: `Searches for anime pictures on rule34 (disabled).`,
             help:
             `
             \`rule34\` - Gets a random sfw image
@@ -33,6 +33,7 @@ export default class Rule34 extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        return message.reply("This command is disabled for the time being...")
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const rule34 = Booru("rule34")
         const rule34Embed = embeds.createEmbed()

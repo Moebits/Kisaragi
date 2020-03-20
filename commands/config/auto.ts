@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Auto extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configures auto command settings.",
+            description: "Configures auto command settings (disabled).",
             help:
             `
             \`auto\` - Shows the auto settings prompt.
@@ -37,6 +37,7 @@ export default class Auto extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
+        return message.reply("This command is disabled for the time being...")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {

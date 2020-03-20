@@ -18,6 +18,7 @@ export default class Queue extends Command {
             \`=>queue\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 10
         })
     }

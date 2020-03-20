@@ -7,7 +7,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Top extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Lists the xp leaderboard.",
+          description: "Lists the xp leaderboard (disabled).",
           aliases: [],
           cooldown: 3
         })
@@ -18,6 +18,7 @@ export default class Top extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
+        return message.reply("This command is disabled for the time being...")
 
         const rawScoreList = await sql.fetchColumn("points", "score list")
         const rawLevelList = await sql.fetchColumn("points", "level list")

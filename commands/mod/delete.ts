@@ -21,6 +21,7 @@ export default class Delete extends Command {
             \`=>delete 100 badWord\`
             `,
             aliases: ["del", "prune", "purge"],
+            guildOnly: true,
             cooldown: 10
         })
     }

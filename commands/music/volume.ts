@@ -18,6 +18,7 @@ export default class Volume extends Command {
             \`=>volume 150\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 5
         })
     }

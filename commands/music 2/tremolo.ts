@@ -20,6 +20,7 @@ export default class Tremolo extends Command {
             \`=>tremolo 20 80\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

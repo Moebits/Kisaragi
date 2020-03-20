@@ -6,7 +6,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Give extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Gives a user level xp.",
+            description: "Gives a user level xp (disabled).",
             aliases: [],
             cooldown: 3
         })
@@ -14,6 +14,7 @@ export default class Give extends Command {
 
     public run = async (discord: Kisaragi, message: Message, args: string[]) => {
         const embeds = new Embeds(discord, message)
+        return message.reply("This command is disabled for the time being...")
 
         const giveEmbed = embeds.createEmbed()
 

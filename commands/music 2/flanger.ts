@@ -21,6 +21,7 @@ export default class Flanger extends Command {
             \`=>flanger download 300 20 40 60 10 50 10 50\`
             `,
             aliases: ["flg"],
+            guildOnly: true,
             cooldown: 20
         })
     }

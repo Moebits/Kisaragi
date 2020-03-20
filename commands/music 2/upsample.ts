@@ -20,6 +20,7 @@ export default class Upsample extends Command {
             \`=>upsample download 4\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

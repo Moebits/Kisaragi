@@ -20,6 +20,7 @@ export default class Highpass extends Command {
             \`=>highpass 600 100\`
             `,
             aliases: ["lowcut"],
+            guildOnly: true,
             cooldown: 20
         })
     }

@@ -20,6 +20,7 @@ export default class Peak extends Command {
             \`=>peak 3000 2 -4\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

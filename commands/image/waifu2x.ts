@@ -23,7 +23,7 @@ export default class Waifu2x extends Command {
             `
             \`=>waifu2x\`
             `,
-            aliases: ["2x", "w2x"],
+            aliases: ["2x"],
             cooldown: 30
         })
     }
@@ -44,12 +44,12 @@ export default class Waifu2x extends Command {
             const waifu2xArray: MessageEmbed[] = []
             const max = data.length > 500 ? 500 : data.length
             for (let i = 0; i < max; i++) {
-                const imageURL = `https://api.deepai.org/job-view-file/${data[i]?.[0]}/outputs/output.png`
+                const imageURL = `https://api.deepai.org/job-view-file/${data[i]}/outputs/output.png`
                 const waifu2xEmbed = embeds.createEmbed()
                 waifu2xEmbed
                 .setAuthor("waifu2x", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9hWZ1ptE9IrNWOUqHzcf9OFD7RMMQEXeUwqpE3zCMB8PWD8Caeg")
                 .setTitle(`**Waifu 2x Upscaling** ${discord.getEmoji("gabYes")}`)
-                .setDescription(`_Requested by_ \`${users[i]?.[0]}\` _on_ \`${Functions.formatDate(new Date(dates[i]?.[0]))}\`.`)
+                .setDescription(`_Requested by_ \`${users[i]}\` _on_ \`${Functions.formatDate(new Date(dates[i]))}\`.`)
                 .setImage(imageURL)
                 .setURL(imageURL)
                 waifu2xArray.push(waifu2xEmbed)
@@ -82,7 +82,7 @@ export default class Waifu2x extends Command {
         let imageURL: string
         let desc: string
         if (found?.[0] && found?.[0] !== "Error") {
-            imageURL = `https://api.deepai.org/job-view-file/${found?.[0]}/outputs/output.png`
+            imageURL = `https://api.deepai.org/job-view-file/${found}/outputs/output.png`
             const user = await sql.fetchColumn("waifu2x", "user", "hash", hash)
             const date = await sql.fetchColumn("waifu2x", "date", "hash", hash)
             desc = `_Requested by_ \`${user?.[0]}\` _on_ \`${Functions.formatDate(new Date(date?.[0]))}\`.`

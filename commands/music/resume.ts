@@ -18,6 +18,7 @@ export default class Resume extends Command {
             \`=>resume\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 5
         })
     }

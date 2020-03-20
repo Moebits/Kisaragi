@@ -17,6 +17,7 @@ export default class Stop extends Command {
             \`=>stop\`
             `,
             aliases: ["disconnect"],
+            guildOnly: true,
             cooldown: 5
         })
     }

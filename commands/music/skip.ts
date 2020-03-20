@@ -18,6 +18,7 @@ export default class Skip extends Command {
             \`=>skip 3\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 5
         })
     }

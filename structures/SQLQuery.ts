@@ -157,7 +157,7 @@ export class SQLQuery {
         values: [this.message.guild?.id]
       }
       const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
-      return result[0]
+      return result?.[0]?.[0] ? JSON.parse(JSON.stringify(result[0][0])) : null
     }
 
   // Select whole column

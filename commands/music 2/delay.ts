@@ -21,6 +21,7 @@ export default class Delay extends Command {
             \`=>delay download 1000 0.5 400 0.7\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

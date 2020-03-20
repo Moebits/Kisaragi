@@ -20,6 +20,7 @@ export default class Highshelf extends Command {
             \`=>highshelf 2 1000 50\`
             `,
             aliases: ["treble"],
+            guildOnly: true,
             cooldown: 20
         })
     }

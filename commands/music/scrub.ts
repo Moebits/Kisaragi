@@ -19,6 +19,7 @@ export default class Scrub extends Command {
             \`=>scrub 1:00\`
             `,
             aliases: ["seek"],
+            guildOnly: true,
             cooldown: 5
         })
     }

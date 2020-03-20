@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Config extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configures bot settings.",
+            description: "Configures bot settings (disabled).",
             help:
             `
             \`config\` - Shows the config prompt.
@@ -34,6 +34,7 @@ export default class Config extends Command {
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
+        return message.reply("This command is disabled for the time being...")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {

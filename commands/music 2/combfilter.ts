@@ -19,6 +19,7 @@ export default class CombFilter extends Command {
             \`=>combfilter\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 5
         })
     }

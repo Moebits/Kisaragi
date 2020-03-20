@@ -108,7 +108,7 @@ export default class AzurLane extends Command {
                 `${discord.getEmoji("star")}_Artist:_ **${artist ? artist[0] : "Not found"}**\n` +
                 `${discord.getEmoji("star")}_Pixiv:_ ${pixivID ? `https://www.pixiv.net/member.php?id=${pixivID[0]}` : "None"}\n` +
                 `${discord.getEmoji("star")}_Twitter_: ${twitter ? `https://www.twitter.com/${twitter[0]}` : "None"}\n` +
-                `${discord.getEmoji("star")}_Historical References:_ ${Functions.checkChar(description, 1700, " ")}`
+                `${discord.getEmoji("star")}_Historical References:_ ${Functions.checkChar(description, 1500, " ")}`
             )
             azurArray.push(azurEmbed)
         }

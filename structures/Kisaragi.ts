@@ -95,7 +95,8 @@ export class Kisaragi extends Client {
     // Check for Bot Mention
     public checkBotMention = (message: Message) => {
         if (message.author.id === this.user?.id) return false
-        const regex = new RegExp(`<@!${this.user?.id}>`)
+        if (!message.content.startsWith("<@")) return false
+        const regex = new RegExp(`<@${this.user?.id}>`)
         if (message.content.match(regex)) return true
     }
 

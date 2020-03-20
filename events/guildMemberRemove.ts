@@ -15,8 +15,8 @@ export default class GuildMemberRemove {
 
         let defaultChannel = firstMsg.channel as TextChannel
         const defChannel = await sql.fetchColumn("blocks", "default channel")
-        if (defChannel.join("")) {
-            defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === defChannel.join("")) as TextChannel
+        if (String(defChannel)) {
+            defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === String(defChannel)) as TextChannel
         }
 
         const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message :
@@ -27,18 +27,18 @@ export default class GuildMemberRemove {
 
         async function leaveMessages() {
             const leaveToggle = await sql.fetchColumn("welcome leaves", "leave toggle")
-            if (leaveToggle.join("") === "off") return
+            if (String(leaveToggle) === "off") return
 
             const leaveMsg = await sql.fetchColumn("welcome leaves", "leave message")
             const leaveChannel = await sql.fetchColumn("welcome leaves", "leave channel")
             const leaveImage = await sql.fetchColumn("welcome leaves", "leave bg image")
             const leaveText = await sql.fetchColumn("welcome leaves", "leave bg text")
             const leaveColor = await sql.fetchColumn("welcome leaves", "leave bg color")
-            const channel = member.guild.channels.cache.find((c) => c.id.toString() === leaveChannel.join("")) as TextChannel
+            const channel = member.guild.channels.cache.find((c) => c.id.toString() === String(leaveChannel)) as TextChannel
 
-            const attachment = await image.createCanvas(member, leaveImage[0], leaveText[0], leaveColor[0]) as MessageAttachment
+            const attachment = await image.createCanvas(member, String(leaveImage), String(leaveText), String(leaveColor)) as MessageAttachment
 
-            const newMsg = leaveMsg.join("").replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
+            const newMsg = String(leaveMsg).replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
             .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())
 
             channel.send(newMsg, attachment)
@@ -49,7 +49,7 @@ export default class GuildMemberRemove {
         async function leaveBan(discord: Kisaragi) {
             const leaveToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
             const banEmbed = embeds.createEmbed()
-            if (leaveToggle.join("") === "off") return
+            if (String(leaveToggle) === "off") return
 
             const now = Math.ceil(Date.now())
             const joinDate = member.joinedTimestamp!

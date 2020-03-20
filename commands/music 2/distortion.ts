@@ -20,6 +20,7 @@ export default class Distortion extends Command {
             \`=>distortion download 20 20\`
             `,
             aliases: ["overdrive"],
+            guildOnly: true,
             cooldown: 20
         })
     }

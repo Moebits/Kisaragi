@@ -20,6 +20,7 @@ export default class Loop extends Command {
             \`=>loop\`
             `,
             aliases: ["repeat"],
+            guildOnly: true,
             cooldown: 10
         })
     }

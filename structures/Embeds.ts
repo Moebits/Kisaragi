@@ -77,7 +77,7 @@ export class Embeds {
                 }
                 await this.updateEmbed(embeds, page, user)
                 msg.edit(embeds[page])
-                reaction.users.remove(user)
+                await reaction.users.remove(user).catch(() => null)
             })
         }
 
@@ -92,7 +92,7 @@ export class Embeds {
                         images.push(embeds[i].image?.url!)
                     }
                 }
-                reaction.users.remove(user)
+                await reaction.users.remove(user).catch(() => null)
                 download.stop()
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
@@ -138,7 +138,7 @@ export class Embeds {
             }
             await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
-            await reaction.users.remove(user)
+            await await reaction.users.remove(user).catch(() => null)
         })
 
         forward.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -149,7 +149,7 @@ export class Embeds {
             }
             await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
 
         tripleBackward.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -161,7 +161,7 @@ export class Embeds {
             if (page < 0) page *= -1
             await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
 
         tripleForward.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -173,7 +173,7 @@ export class Embeds {
             if (page > embeds.length - 1) page -= embeds.length - 1
             await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
 
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -190,7 +190,7 @@ export class Embeds {
                 await response.delete()
             }
             const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
             await this.createPrompt(getPageNumber)
             await numReply.delete()
         })
@@ -296,7 +296,7 @@ export class Embeds {
                 }
                 await this.updateEmbed(embeds, page, user)
                 msg.edit(embeds[page])
-                reaction.users.remove(user)
+                await reaction.users.remove(user).catch(() => null)
             })
         }
 
@@ -311,7 +311,7 @@ export class Embeds {
                         images.push(embeds[i].image?.url!)
                     }
                 }
-                reaction.users.remove(user)
+                await reaction.users.remove(user).catch(() => null)
                 download.stop()
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
@@ -336,7 +336,7 @@ export class Embeds {
             }
             await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
 
         forward.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -347,7 +347,7 @@ export class Embeds {
             }
             await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
 
         tripleBackward.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -359,7 +359,7 @@ export class Embeds {
             if (page < 0) page *= -1
             await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
 
         tripleForward.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -371,13 +371,13 @@ export class Embeds {
             if (page > embeds.length - 1) page -= embeds.length - 1
             await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
 
         repost.on("collect", async (reaction: MessageReaction, user: User) => {
             await this.message.channel.send(`<@${user.id}>, I reposted this embed.`)
             await this.createReactionEmbed(embeds)
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
     }
 
@@ -394,14 +394,16 @@ export class Embeds {
         const shortDescription: string[] = []
         for (let i = 0; i < longDescription.length; i++) {
             const top = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
-            const text = longDescription[i].replace(top!, "")
+            let text = longDescription[i].replace(top!, "")
+            const second = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
+            text = longDescription[i].replace(second!, "")
             const commands = text.match(/(`)(.*?)(`)/gm)
             commandCount.push(commands?.map((c)=>c)?.length ?? 0)
-            const desc = `${top}\n${commands?.map((c) => c).join(", ")}`
+            const desc = `${top}\n${second}\n${commands?.map((c) => c).join(", ")}`
             shortDescription.push(desc)
         }
         for (let i = 0; i < embeds.length; i++) {
-            embeds[i].setFooter(`${titles[i]} Commands (${commandCount[i]}) • Page ${i + 1}/${embeds.length}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
+            embeds[i].setFooter(`${titles[i]} Commands (${commandCount[i]}) • Page ${i + 1}/${embeds.length}`, this.message.author.displayAvatarURL({format: "png", dynamic: true}))
         }
         const reactions: Emoji[] = [
             this.discord.getEmoji("admin"),
@@ -483,7 +485,7 @@ export class Embeds {
                 await this.updateEmbed(embeds, page, user, msg, true, commandCount)
                 page = i
                 msg.edit(embeds[page])
-                reaction.users.remove(user)
+                await reaction.users.remove(user).catch(() => null)
             })
         }
 
@@ -501,7 +503,7 @@ export class Embeds {
             }
             await this.updateEmbed(embeds, page, user, msg, true, commandCount)
             msg.edit(embeds[page])
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
     }
 
@@ -522,10 +524,12 @@ export class Embeds {
         const shortDescription: string[] = []
         for (let i = 0; i < longDescription.length; i++) {
             const top = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
-            const text = longDescription[i].replace(top!, "")
+            let text = longDescription[i].replace(top!, "")
+            const second = longDescription[i].match(/(^)(.*?)(?<=>)/)?.[0]
+            text = longDescription[i].replace(second!, "")
             const commands = text.match(/(`)(.*?)(`)/gm)
             commandCount.push(commands?.map((c)=>c)?.length ?? 0)
-            const desc = `${top}\n${commands?.map((c) => c).join(",  ")}`
+            const desc = `${top}\n${second}\n${commands?.map((c) => c).join(", ")}`
             shortDescription.push(desc)
         }
         const page = emojiMap.indexOf(emoji) || 0
@@ -581,14 +585,14 @@ export class Embeds {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
                 await this.updateEmbed(embeds, page, user, msg, true, commandCount)
                 msg.edit(embeds[i])
-                reaction.users.remove(user)
+                await reaction.users.remove(user).catch(() => null)
             })
         }
 
         repost.on("collect", async (reaction: MessageReaction, user: User) => {
             await this.message.channel.send(`<@${user.id}>, I reposted this embed.`)
             await this.createHelpEmbed(embeds)
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
 
         compress.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -605,7 +609,7 @@ export class Embeds {
             }
             await this.updateEmbed(embeds, page, user, msg, true, commandCount)
             msg.edit(embeds[page])
-            reaction.users.remove(user)
+            await reaction.users.remove(user).catch(() => null)
         })
     }
 

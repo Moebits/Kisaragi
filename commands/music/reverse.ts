@@ -21,6 +21,7 @@ export default class Reverse extends Command {
             \`=>reverse\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

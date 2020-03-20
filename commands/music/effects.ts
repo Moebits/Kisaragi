@@ -19,6 +19,7 @@ export default class Effects extends Command {
             \`=>effects\`
             `,
             aliases: ["fx"],
+            guildOnly: true,
             cooldown: 20
         })
     }

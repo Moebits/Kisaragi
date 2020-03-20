@@ -20,6 +20,7 @@ export default class AllPass extends Command {
             \`=>allpass 600 100\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

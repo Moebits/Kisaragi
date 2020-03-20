@@ -20,6 +20,7 @@ export default class Bandpass extends Command {
             \`=>bandpass 640 60\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

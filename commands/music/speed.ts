@@ -23,6 +23,7 @@ export default class Speed extends Command {
             \`=>speed download 2.5\`
             `,
             aliases: ["timestretch", "tempo"],
+            guildOnly: true,
             cooldown: 10
         })
     }

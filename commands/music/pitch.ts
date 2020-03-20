@@ -21,6 +21,7 @@ export default class Pitch extends Command {
             \`=>pitch -12\`
             `,
             aliases: ["pitchshift", "semitones"],
+            guildOnly: true,
             cooldown: 10
         })
     }

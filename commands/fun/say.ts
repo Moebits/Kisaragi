@@ -29,7 +29,13 @@ export default class Say extends Command {
         const rawText = Functions.combineArgs(args, 1)
         if (!rawText) return message.reply("You did not provide any text.")
         await message.channel.send(Functions.checkChar(rawText, 2000, "."))
-        if (message.content.startsWith(prefix[0])) await message.delete()
+        if (message.content.startsWith(prefix[0])) {
+            try {
+                await message.delete()
+            } catch {
+                // Do nothing
+            }
+        }
         return
 
     }

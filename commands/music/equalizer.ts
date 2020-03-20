@@ -19,6 +19,7 @@ export default class Equalizer extends Command {
             \`=>equalizer\`
             `,
             aliases: ["eq"],
+            guildOnly: true,
             cooldown: 20
         })
     }

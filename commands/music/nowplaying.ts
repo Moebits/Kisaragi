@@ -18,6 +18,7 @@ export default class NowPlaying extends Command {
             \`=>nowplaying\`
             `,
             aliases: ["np", "playing"],
+            guildOnly: true,
             cooldown: 10
         })
     }

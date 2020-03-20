@@ -20,6 +20,7 @@ export default class Phaser extends Command {
             \`=>phaser download 1 0.4 2\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 20
         })
     }

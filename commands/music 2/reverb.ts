@@ -22,6 +22,7 @@ export default class Reverb extends Command {
             \`=>reverb reverse 75 25 100 100 0 0\`
             `,
             aliases: [],
+            guildOnly: true,
             cooldown: 5
         })
     }
