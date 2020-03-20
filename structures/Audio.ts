@@ -490,7 +490,7 @@ export class Audio {
             queueObj.image = image
             queueObj.duration = duration as string
         } else if (link?.match(/soundcloud.com/)) {
-            const info = await this.soundcloud.tracks.get(link) as SoundCloudTrack
+            const info = await this.soundcloud.tracks.getURL(link) as SoundCloudTrack
             const image = info.artwork_url
             const title = info.title
             const artist = info.user.username
