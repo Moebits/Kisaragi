@@ -41,8 +41,6 @@ export class AudioEffects {
         }
         const ext = path.extname(filepath).replace(".", "")
         let outDest = fileDest + `.${ext}`
-        console.log(filepath)
-        console.log(outDest)
         let index = 0
         while (fs.existsSync(outDest)) {
             outDest = index <= 1 ? `${fileDest}.${ext}` : `${fileDest}${index}.${ext}`
@@ -69,7 +67,7 @@ export class AudioEffects {
             .on("error", (err) => console.log(err))
             .on("finish", () => resolve())
         })
-        return path.join(__dirname, outDest)
+        return outDest
     }
 
     public downloadEffect = async (effect: string, filepath: string) => {
