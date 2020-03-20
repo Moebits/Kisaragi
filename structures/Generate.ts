@@ -16,7 +16,7 @@ export class Generate {
             for (let j = 0; j < commands.length; j++) {
                 commands[j] = commands[j].slice(0, -3)
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
-                const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
+                const cmdClass = new (require(`../commands/${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
                 if (cmdClass.options.unlist === true) continue
                 commandDesc += `\`${commands[j]}\`` + ` -> _${cmdClass.options.description}_\n`
             }

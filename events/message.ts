@@ -5,6 +5,7 @@ import {Cooldown} from "../structures/Cooldown.js"
 import {Kisaragi} from "../structures/Kisaragi.js"
 import {Block} from "./../structures/Block"
 import {Detector} from "./../structures/Detector"
+import {Generate} from "./../structures/Generate"
 import {Haiku} from "./../structures/Haiku"
 import {Letters} from "./../structures/Letters"
 import {Link} from "./../structures/Link"
@@ -24,6 +25,7 @@ export default class MessageEvent {
       const detect = new Detector(this.discord, message)
       const cmdFunctions = new CommandFunctions(this.discord, message)
       const links = new Link(this.discord, message)
+      const generate = new Generate(this.discord, message)
 
       let prefix = "=>"
       try {
@@ -33,6 +35,9 @@ export default class MessageEvent {
       }
 
       if (message.author!.bot) return
+
+      // const cmdstr = generate.generateCommands()
+      // console.log(cmdstr)
 
       if (message.guild) {
         const sql = new SQLQuery(message)
