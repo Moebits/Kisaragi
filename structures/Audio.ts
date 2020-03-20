@@ -748,14 +748,14 @@ export class Audio {
                     await msg.edit(await this.updateNowPlaying())
                     await this.abloop(start, end)
                     return
-                } else if (reaction.emoji.name === "clear") {
+                } else if (reaction.emoji.name === "reset") {
                     await reaction.users.remove(user)
                     await this.clear()
                     const rep = await this.message.channel.send(`<@${user.id}>, Cleared all effects that were applied to this song!`)
                     rep.delete({timeout: 3000})
                     await msg.edit(await this.updateNowPlaying())
                     return
-                } else if (reaction.emoji.name === "mp3") {
+                } else if (reaction.emoji.name === "save") {
                     await reaction.users.remove(user)
                     await this.mp3Download(user.id)
                     return

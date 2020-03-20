@@ -39,24 +39,23 @@ export class AudioEffects {
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
-        const wavDest = await this.mp3ToWav(filepath)
-        // const ext = path.extname(filepath).replace(".", "")
-        let outDest = fileDest.slice(0, -4) + `.wav`
+        const ext = path.extname(filepath).replace(".", "")
+        let outDest = fileDest + `.${ext}`
         let index = 0
         while (fs.existsSync(outDest)) {
-            outDest = index <= 1 ? `${fileDest}.wav` : `${fileDest}${index}.wav`
+            outDest = index <= 1 ? `${fileDest}.${ext}` : `${fileDest}${index}.${ext}`
             index++
         }
         console.log([...effect.split(" ")])
-        const input = fs.createReadStream(wavDest)
+        const input = fs.createReadStream(filepath)
         const output = fs.createWriteStream(outDest)
         const transform = sox({
             global: {
                 "temp": "./tracks/transform",
                 "replay-gain": "off"
             },
-            input: {type: "wav"},
-            output: {type: "wav"},
+            input: {type: ext},
+            output: {type: ext},
             effects: ["gain", "-h", ...effect.split(" ")]
         })
         await new Promise((resolve) => {
@@ -68,10 +67,7 @@ export class AudioEffects {
             .on("error", (err) => console.log(err))
             .on("finish", () => resolve())
         })
-        const mp3Dest = await this.WavToMp3(outDest)
-        fs.unlink(wavDest, (err) => console.log(err))
-        fs.unlink(outDest, (err) => console.log(err))
-        return mp3Dest
+        return outDest
     }
 
     public downloadEffect = async (effect: string, filepath: string) => {
