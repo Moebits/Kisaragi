@@ -88,7 +88,7 @@ export default class Safebooru extends Command {
                 `${discord.getEmoji("star")}_Uploader:_ **${img.owner}**\n` +
                 `${discord.getEmoji("star")}_Tags:_ ${Functions.checkChar(String(img.tags), 1900, " ")}\n`
             )
-            .setImage(`https://safebooru.org//samples/${img.directory}/sample_${img.image}`)
+            .setImage(`https://safebooru.org//samples/${img.directory}/sample_${img.image.replace("png", "jpg")}`)
             safebooruArray.push(safebooruEmbed)
         }
         if (!safebooruArray[0]) {
