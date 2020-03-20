@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 14, date: "3/20/2020", changes: "Fixed the photoshop editor, added pagination for the booru commands and the new command \`safebooru\`."},
             {num: 13, date: "3/19/2020", changes: "Fixed some image commands such as \`sharpen\`."},
             {num: 12, date: "3/18/2020", changes: "Added the command \`crunchydl\` which can download anime episodes from crunchyroll or their subtitiles."},
             {num: 11, date: "3/18/2020", changes: "Added new video commands, for speeding up/reversing videos or for converting them to mp3/gif files."},
