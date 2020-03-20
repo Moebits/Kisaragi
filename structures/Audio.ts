@@ -584,7 +584,7 @@ export class Audio {
         const now = queue[0]
         const nowEmbed = await this.updateNowPlaying()
         const msg = await this.message.channel.send(nowEmbed)
-        const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "reset", "save"]
+        const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear", "mp3"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
         const resumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("resume") && user.bot === false
         const pauseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("pause") && user.bot === false
@@ -598,8 +598,8 @@ export class Audio {
         const volumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("volume") && user.bot === false
         const eqCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("eq") && user.bot === false
         const fxCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fx") && user.bot === false
-        const clearCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reset") && user.bot === false
-        const mp3Check = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("save") && user.bot === false
+        const clearCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("clear") && user.bot === false
+        const mp3Check = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mp3") && user.bot === false
 
         const resume = msg.createReactionCollector(resumeCheck)
         const pause = msg.createReactionCollector(pauseCheck)
@@ -748,14 +748,14 @@ export class Audio {
                     await msg.edit(await this.updateNowPlaying())
                     await this.abloop(start, end)
                     return
-                } else if (reaction.emoji.name === "reset") {
+                } else if (reaction.emoji.name === "clear") {
                     await reaction.users.remove(user)
                     await this.clear()
                     const rep = await this.message.channel.send(`<@${user.id}>, Cleared all effects that were applied to this song!`)
                     rep.delete({timeout: 3000})
                     await msg.edit(await this.updateNowPlaying())
                     return
-                } else if (reaction.emoji.name === "save") {
+                } else if (reaction.emoji.name === "mp3") {
                     await reaction.users.remove(user)
                     await this.mp3Download(user.id)
                     return
