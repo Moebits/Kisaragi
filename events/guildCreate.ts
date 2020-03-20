@@ -36,7 +36,7 @@ export default class GuildCreate {
             guildChannel.send(logEmbed)
             return
         }
-        // logGuild(guild)
+        logGuild(guild)
 
         async function joinMessage(guild: Guild) {
             const mainChannels = guild.channels.cache.filter((c) => {

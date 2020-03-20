@@ -454,6 +454,10 @@ export class Audio {
         }
     }
 
+    public deleteQueue = () => {
+        queues.set(this.message.guild?.id, [])
+    }
+
     public queueAdd = async (link: string, file: string) => {
         const discord = this.discord
         let kind: "youtube" | "soundcloud" | "link"
