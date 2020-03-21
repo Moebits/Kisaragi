@@ -26,6 +26,16 @@ export default class Emoji extends Command {
         })
     }
 
+    public getImage = (emoji: GuildEmoji) => {
+        let image = ""
+        if (emoji.animated) {
+            image = `https://cdn.discordapp.com/emojis/${emoji.id}.gif`
+        } else {
+            image = `https://cdn.discordapp.com/emojis/${emoji.id}.png`
+        }
+        return image
+    }
+
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
@@ -78,14 +88,15 @@ export default class Emoji extends Command {
 
             message.channel.send(emojiEmbed
             .setDescription(`**${emojiFound!.name} Emoji**`)
-            .setImage(`${emojiFound!.url}`))
+            .setImage(this.getImage(emojiFound)))
             return
 
             } else {
                 const emojiGet = discord.emojis.cache.get(emojiID)
+                if (!emojiGet) return message.reply("Looks like this id is invalid...")
                 message.channel.send(emojiEmbed
                 .setDescription(`**${emojiGet!.name} Emoji**`)
-                .setImage(emojiGet!.url))
+                .setImage(this.getImage(emojiGet)))
                 return
             }
     }
