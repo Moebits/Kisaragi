@@ -55,8 +55,8 @@ export default class Leave extends Command {
         const leaveImage = await sql.fetchColumn("welcome leaves", "leave bg image")
         const leaveText = await sql.fetchColumn("welcome leaves", "leave bg text")
         const leaveColor = await sql.fetchColumn("welcome leaves", "leave bg color")
-        const attachment = await images.createCanvas(message.member!, leaveImage[0], leaveText[0], leaveColor[0]) as MessageAttachment
-        const json = await axios.get(`https://is.gd/create.php?format=json&url=${leaveImage.join("")}`)
+        const attachment = await images.createCanvas(message.member!, leaveImage, leaveText, leaveColor) as MessageAttachment
+        const json = await axios.get(`https://is.gd/create.php?format=json&url=${leaveImage}`)
         const newImg = json.data.shorturl
         leaveEmbed
         .setTitle(`**Leave Messages** ${discord.getEmoji("sagiriBleh")}`)
@@ -75,7 +75,7 @@ export default class Leave extends Command {
             newline
             __Current Settings:__
             ${discord.getEmoji("star")}_Leave Message:_ **${leaveMsg}**
-            ${discord.getEmoji("star")}_Leave Channel:_ **${leaveChannel.join("") ?  `<#${leaveChannel}>`  :  "None"}**
+            ${discord.getEmoji("star")}_Leave Channel:_ **${leaveChannel ?  `<#${leaveChannel}>`  :  "None"}**
             ${discord.getEmoji("star")}_Leave Toggle:_ **${leaveToggle}**
             ${discord.getEmoji("star")}_Background Image:_ **${newImg}**
             ${discord.getEmoji("star")}_Background Text:_ **${leaveText}**
@@ -126,7 +126,7 @@ export default class Leave extends Command {
             if (newMsg.trim()) setMsg = true
             if (msg.content.toLowerCase().includes("enable")) setOn = true
             if (msg.content.toLowerCase() === "disable") setOff = true
-            if (msg.mentions.channels.array().join("")) setChannel = true
+            if (msg.mentions.channels.array()) setChannel = true
             if (newImage) setImage = true
             if (newBGText) setBGText = true
 

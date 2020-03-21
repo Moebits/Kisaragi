@@ -195,17 +195,13 @@ export class Images {
 
         function wrapText(context: CanvasRenderingContext2D, txt: string, x: number, y: number, maxWidth: number, lineHeight: number) {
             const cars = txt.split("\n")
-
             for (let i = 0; i < cars.length; i++) {
-
                 let line = ""
                 const words = cars[i].split(" ")
-
                 for (let n = 0; n < words.length; n++) {
                     const testLine = line + words[n] + " "
                     const metrics = context.measureText(testLine)
                     const testWidth = metrics.width
-
                     if (testWidth > maxWidth) {
                         context.strokeText(line, x, y)
                         context.fillText(line, x, y)
@@ -215,7 +211,6 @@ export class Images {
                         line = testLine
                     }
                 }
-
                 context.strokeText(line, x, y)
                 context.fillText(line, x, y)
                 y += lineHeight

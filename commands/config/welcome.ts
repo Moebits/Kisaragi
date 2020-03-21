@@ -54,8 +54,8 @@ export default class Welcome extends Command {
         const welcomeImage = await sql.fetchColumn("welcome leaves", "welcome bg image")
         const welcomeText = await sql.fetchColumn("welcome leaves", "welcome bg text")
         const welcomeColor = await sql.fetchColumn("welcome leaves", "welcome bg color")
-        const attachment = await images.createCanvas(message.member!, welcomeImage[0], welcomeText[0], welcomeColor[0]) as MessageAttachment
-        const json = await axios.get(`https://is.gd/create.php?format=json&url=${welcomeImage.join("")}`)
+        const attachment = await images.createCanvas(message.member!, welcomeImage, welcomeText, welcomeColor) as MessageAttachment
+        const json = await axios.get(`https://is.gd/create.php?format=json&url=${welcomeImage}`)
         const newImage = json.data.shorturl
         welcomeEmbed
         .setTitle(`**Welcome Messages** ${discord.getEmoji("karenSugoi")}`)
@@ -74,7 +74,7 @@ export default class Welcome extends Command {
             newline
             __Current Settings:__
             ${discord.getEmoji("star")}_Welcome Message:_ **${welcomeMsg}**
-            ${discord.getEmoji("star")}_Welcome Channel:_ **${welcomeChannel.join("") ?  `<#${welcomeChannel}>`  :  "None"}**
+            ${discord.getEmoji("star")}_Welcome Channel:_ **${welcomeChannel ?  `<#${welcomeChannel}>`  :  "None"}**
             ${discord.getEmoji("star")}_Welcome Toggle:_ **${welcomeToggle}**
             ${discord.getEmoji("star")}_Background Image:_ **${newImage}**
             ${discord.getEmoji("star")}_Background Text:_ **${welcomeText}**
@@ -125,7 +125,7 @@ export default class Welcome extends Command {
             if (newMsg.trim()) setMsg = true
             if (msg.content.toLowerCase().includes("enable")) setOn = true
             if (msg.content.toLowerCase() === "disable") setOff = true
-            if (msg.mentions.channels.array().join("")) setChannel = true
+            if (msg.mentions.channels.array()) setChannel = true
             if (newImg) setImage = true
             if (newBGText) setBGText = true
 

@@ -5,19 +5,19 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Skip extends Command {
+export default class Shuffle extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Skips a song, or skips to a song.",
+            description: "Deletes the entire queue or a range.",
             help:
             `
-            \`skip\` - Skips to the next song.
-            \`skip num/name\` - Skips to the song at the position, or with the given title.
+            _Note: Valid ranges are a number, or two numbers separated by dash (eg. 3-5)._
+            \`deletequeue range?\` - Deletes the queue, or the specified range.
             `,
             examples:
             `
-            \`=>skip 3\`
-            \`=>skip rainfall\`
+            \`=>deletequeue\`
+            \`=>deletequeue 1-5\`
             `,
             aliases: [],
             guildOnly: true,
@@ -30,19 +30,18 @@ export default class Skip extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        let rep: Message
         const input = Functions.combineArgs(args, 1)
-
-        let amount = 1
-        if (Number(input)) {
-            amount = Number(input)
-        } else if (input) {
-            const queue = audio.getQueue() as any
-            const index =  queue.findIndex((q: any) => q.title.toLowerCase().includes(input.toLowerCase()))
-            amount = index + 1
+        if (!Number(input) && !input.includes("-")) {
+            audio.deleteQueue()
+            rep = await message.reply("Deleted the queue!")
+        } else {
+            const newArgs = input.split("-")
+            const pos = Number(newArgs[1])
+            const end = Number(newArgs[2]) ? Number(args[2]) - Number(newArgs[1]) : 1
+            audio.deleteQueue(pos, end)
+            rep = await message.reply(`Deleted **${end}** songs starting at position **${pos}**!`)
         }
-        const text = amount === 1 ? "Skipped this song!" : (Number(input) ? `Skipped to the song at position **${amount}**!` : `Skipped to **${input}**!`)
-        const rep = await message.reply(text)
-        await audio.skip(amount)
         rep.delete({timeout: 3000})
         return
     }

@@ -40,7 +40,7 @@ export default class Download extends Command {
         if (!images[0]) {
             const downloadEmbed = embeds.createEmbed()
             downloadEmbed
-            .setAuthor("download", "https://outdoortycoon.com/wp-content/uploads/2017/01/Download-Icon-Wenzel.png")
+            .setAuthor("download", "https://cdn.discordapp.com/emojis/685894156647661579.gif")
             .setTitle(`**Image Downloader** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(`${discord.getEmoji("star")}Could not find any images. By default I only search the last **300** messages from the current message, or from a message id if provided. ${last ? `To continue from where this search left off, run the command \`download ${last}\`.` : "There are no more messages left in this channel!"}`)
             return message.channel.send(downloadEmbed)
@@ -57,7 +57,7 @@ export default class Download extends Command {
             const link = await i.upload([dest]).then((l) => l[0])
             const downloadEmbed = embeds.createEmbed()
             downloadEmbed
-            .setAuthor("download", "https://outdoortycoon.com/wp-content/uploads/2017/01/Download-Icon-Wenzel.png")
+            .setAuthor("download", "https://cdn.discordapp.com/emojis/685894156647661579.gif")
             .setTitle(`**Image Downloader** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}Downloaded **${images.length}** images from this text channel!\n` +
@@ -69,7 +69,7 @@ export default class Download extends Command {
             const lastText = last ? `There are still more messages left in this text channel. To continue from where this search left off, run the command \`download ${last}\`.` : `There are no more images left after this. Congrats!`
             const downloadEmbed = embeds.createEmbed()
             downloadEmbed
-            .setAuthor("download", "https://outdoortycoon.com/wp-content/uploads/2017/01/Download-Icon-Wenzel.png")
+            .setAuthor("download", "https://cdn.discordapp.com/emojis/685894156647661579.gif")
             .setTitle(`**Image Downloader** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}Downloaded **${images.length}** images from this text channel!\n` +
@@ -98,25 +98,25 @@ export default class Download extends Command {
 
         if (args[1] === "gif") {
             if (Number(args[2]) && Number(args[2]) > 0 && Number(args[2]) <= 1000) amount = Number(args[2])
-            const result = await images.fetchChannelAttachments(message.channel, amount+2, true)
+            const result = await images.fetchChannelAttachments(message.channel, amount+1, true)
             attachments = result.attachments
             last = result.last
         } else if (args[1]?.match(/\d{15,}/)) {
             const id = args[1]?.match(/\d{15,}/)?.[0]
             if (args[2] === "gif") {
                 if (Number(args[3]) && Number(args[3]) > 0 && Number(args[3]) <= 1000) amount = Number(args[3])
-                const result = await images.fetchChannelAttachments(message.channel, amount+2, true, id)
+                const result = await images.fetchChannelAttachments(message.channel, amount+1, true, id)
                 attachments = result.attachments
                 last = result.last
             } else {
                 if (Number(args[2]) && Number(args[2]) > 0 && Number(args[2]) <= 1000) amount = Number(args[2])
-                const result = await images.fetchChannelAttachments(message.channel, amount+2, false, id)
+                const result = await images.fetchChannelAttachments(message.channel, amount+1, false, id)
                 attachments = result.attachments
                 last = result.last
             }
         } else {
             if (Number(args[1]) && Number(args[1]) > 0 && Number(args[1]) <= 1000) amount = Number(args[1])
-            const result = await images.fetchChannelAttachments(message.channel, amount+2)
+            const result = await images.fetchChannelAttachments(message.channel, amount+1)
             attachments = result.attachments
             last = result.last
         }

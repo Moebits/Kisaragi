@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Eval extends Command {
   constructor(discord: Kisaragi, message: Message) {
       super(discord, message, {
-          description: "Evaluates Typescript code.",
+          description: "Evaluates Javascript code.",
           aliases: [],
           cooldown: 3
       })
@@ -36,7 +36,7 @@ export default class Eval extends Command {
           }
 
           evalEmbed
-          .setTitle(`**Typescript Code Eval** ${discord.getEmoji("kaosWTF")}`)
+          .setTitle(`**Javascript Code Eval** ${discord.getEmoji("kaosWTF")}`)
           .setDescription(this.clean(evaled))
           message.channel.send(evalEmbed)
 

@@ -64,7 +64,7 @@ export class Points {
         const levelList = rawLevelList?.map((num: string) => Number(num))
         const pointRange = rawPointRange?.map((num: string) => Number(num))
         const pointThreshold = Number(rawPointThreshold)
-        const userStr = levelUpMessage.join("").replace("user", `<@${this.message.author!.id}>`)
+        const userStr = levelUpMessage.replace("user", `<@${this.message.author!.id}>`)
 
         for (let i = 0; i < userList.length; i++) {
             if (userList[i] === Number(this.message.author!.id)) {

@@ -19,6 +19,7 @@ const numMap = {
 }
 
 const queues = new Collection()
+const procBlock = new Collection()
 
 export class Audio {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
@@ -454,8 +455,37 @@ export class Audio {
         }
     }
 
-    public deleteQueue = () => {
-        queues.set(this.message.guild?.id, [])
+    public getProcBlock = () => {
+        if (procBlock.has(this.message.guild?.id)) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    public setProcBlock = (remove?: boolean) => {
+        if (remove) {
+            procBlock.delete(this.message.guild?.id)
+        } else {
+            procBlock.set(this.message.guild?.id, true)
+        }
+    }
+
+    public deleteQueue = (pos?: number, end?: number) => {
+        if (pos) {
+            if (!end) end = 1
+            let queue = this.getQueue() as any
+            queue = queue.splice(pos-1, end)
+            queues.set(this.message.guild?.id, queue)
+        } else {
+            queues.set(this.message.guild?.id, [])
+        }
+    }
+
+    public shuffle = () => {
+        let queue = this.getQueue() as any
+        queue = Functions.shuffleArray(queue)
+        queues.set(this.message.guild?.id, queue)
     }
 
     public queueAdd = async (link: string, file: string) => {
@@ -622,6 +652,13 @@ export class Audio {
         const reactors = [resume, pause, scrub, reverse, speed, pitch, loop, abloop, skip, volume, eq, fx, clear, mp3]
         for (let i = 0; i < reactors.length; i++) {
             reactors[i].on("collect", async (reaction, user) => {
+                if (this.getProcBlock()) {
+                    await reaction.users.remove(user)
+                    const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                    proc.delete({timeout: 3000})
+                    return
+                }
+                this.setProcBlock()
                 await msg.edit(await this.updateNowPlaying())
                 if (reaction.emoji.name === "reverse") {
                     await reaction.users.remove(user)
@@ -629,6 +666,7 @@ export class Audio {
                     await this.reverse(now.file)
                     rep.delete()
                     await msg.edit(await this.updateNowPlaying())
+                    this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "volume") {
                     let vol = 100
@@ -645,7 +683,8 @@ export class Audio {
                     const rep = await this.message.channel.send(`<@${user.id}>, Enter a volume scaling factor \`0-200%\`.`)
                     await this.embeds.createPrompt(getVolumeChange)
                     rep.delete()
-                    return this.volume(vol)
+                    await this.volume(vol)
+                    this.setProcBlock(true)
                 } else if (reaction.emoji.name === "speed") {
                     let factor = 1.0
                     let setPitch = false
@@ -675,6 +714,7 @@ export class Audio {
                         now.speed *= factor
                     }
                     await msg.edit(await this.updateNowPlaying())
+                    this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "loop") {
                     await reaction.users.remove(user)
@@ -684,12 +724,14 @@ export class Audio {
                     this.loop()
                     await msg.edit(await this.updateNowPlaying())
                     rep.delete({timeout: 1000})
+                    this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "skip") {
                     await reaction.users.remove(user)
                     const rep = await this.message.channel.send(`<@${user.id}>, Skipped this track!`)
                     rep.delete({timeout: 3000})
                     await this.skip()
+                    this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "pitch") {
                     let semitones = 0
@@ -711,6 +753,7 @@ export class Audio {
                     rep2.delete()
                     now.pitch += semitones
                     await msg.edit(await this.updateNowPlaying())
+                    this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "scrub") {
                     let position = "0"
@@ -724,6 +767,7 @@ export class Audio {
                     rep.delete()
                     await this.scrub(position)
                     await msg.edit(await this.updateNowPlaying())
+                    this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "abloop") {
                     await reaction.users.remove(user)
@@ -750,6 +794,7 @@ export class Audio {
                     rep2.delete({timeout: 3000})
                     queue[0].ablooping = true
                     await msg.edit(await this.updateNowPlaying())
+                    this.setProcBlock(true)
                     await this.abloop(start, end)
                     return
                 } else if (reaction.emoji.name === "clear") {
@@ -758,26 +803,29 @@ export class Audio {
                     const rep = await this.message.channel.send(`<@${user.id}>, Cleared all effects that were applied to this song!`)
                     rep.delete({timeout: 3000})
                     await msg.edit(await this.updateNowPlaying())
+                    this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "mp3") {
                     await reaction.users.remove(user)
                     await this.mp3Download(user.id)
+                    this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "eq") {
                     await reaction.users.remove(user)
-                    const m = await this.equalizerMenu()
+                    const m = await this.equalizerMenu(true)
                     await msg.edit(await this.updateNowPlaying())
                     m.delete()
                     return
                 } else if (reaction.emoji.name === "fx") {
                     await reaction.users.remove(user)
-                    const m = await this.fxMenu()
+                    const m = await this.fxMenu(true)
                     await msg.edit(await this.updateNowPlaying())
                     m.delete()
                     return
                 }
                 await reaction.users.remove(user)
-                return this[reactions[i]]()
+                await this[reactions[i]]()
+                this.setProcBlock(true)
             })
         }
     }
@@ -1202,7 +1250,8 @@ export class Audio {
         return `${hours}${minutes}:${seconds}`
     }
 
-    public equalizerMenu = async () => {
+    public equalizerMenu = async (clearProc?: boolean) => {
+        if (clearProc) this.setProcBlock(true)
         const discord = this.discord
         const eqEmbed = this.embeds.createEmbed()
         eqEmbed
@@ -1220,7 +1269,7 @@ export class Audio {
             `_Frequency and width are in Hz. If applicable, resonance is a Q factor and gain is in decibels._`
         )
         const msg = await this.message.channel.send(eqEmbed)
-        const reactions = ["highpass", "highshelf", "bandpass", "peak", "bandreject", "lowshelf", "lowpass"]
+        const reactions = ["highpass", "highshelf", "bandpass", "peak", "bandreject", "lowshelf", "lowpass", "cancel"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
         const highpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("highpass") && user.bot === false
@@ -1230,6 +1279,7 @@ export class Audio {
         const bandrejectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("bandreject") && user.bot === false
         const lowshelfCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lowshelf") && user.bot === false
         const lowpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lowpass") && user.bot === false
+        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("cancel") && user.bot === false
         const highpass = msg.createReactionCollector(highpassCheck)
         const highshelf = msg.createReactionCollector(highshelfCheck)
         const bandpass = msg.createReactionCollector(bandpassCheck)
@@ -1237,6 +1287,7 @@ export class Audio {
         const bandreject = msg.createReactionCollector(bandrejectCheck)
         const lowshelf = msg.createReactionCollector(lowshelfCheck)
         const lowpass = msg.createReactionCollector(lowpassCheck)
+        const cancel = msg.createReactionCollector(cancelCheck)
 
         const pass = ["highpass", "bandpass", "bandreject", "lowpass"]
         const passCol = [highpass, bandpass, bandreject, lowpass]
@@ -1246,6 +1297,13 @@ export class Audio {
         await new Promise((resolve) => {
         for (let i = 0; i < pass.length; i++) {
             passCol[i].on("collect", async (reaction, user) => {
+                if (this.getProcBlock()) {
+                    await reaction.users.remove(user)
+                    const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                    proc.delete({timeout: 3000})
+                    return
+                }
+                this.setProcBlock()
                 await reaction.users.remove(user)
                 let freq = 600
                 let width = 100
@@ -1271,12 +1329,20 @@ export class Audio {
                 rep3.delete()
                 const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${pass[i]} filter!`)
                 rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 resolve()
             })
         }
 
         for (let i = 0; i < shelf.length; i++) {
             shelfCol[i].on("collect", async (reaction, user) => {
+                if (this.getProcBlock()) {
+                    await reaction.users.remove(user)
+                    const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                    proc.delete({timeout: 3000})
+                    return
+                }
+                this.setProcBlock()
                 await reaction.users.remove(user)
                 let gain = 3
                 let freq = 600
@@ -1304,11 +1370,19 @@ export class Audio {
                 rep3.delete()
                 const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${shelf[i]} filter!`)
                 rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 resolve()
             })
         }
 
         peak.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             let freq = 1000
             let resonance = 2
@@ -1336,13 +1410,18 @@ export class Audio {
             rep3.delete()
             const rep2 = await this.message.channel.send(`<@${user.id}>, Added a peak filter!`)
             rep2.delete({timeout: 3000})
+            this.setProcBlock(true)
+            resolve()
+        })
+        cancel.on("collect", (reaction, user) => {
             resolve()
         })
         })
         return msg
     }
 
-    public fxMenu = async () => {
+    public fxMenu = async (clearProc?: boolean) => {
+        if (clearProc) this.setProcBlock()
         const discord = this.discord
         const fxEmbed = this.embeds.createEmbed()
         .setAuthor("effects", "https://clipartmag.com/images/musical-notes-png-11.png")
@@ -1361,7 +1440,7 @@ export class Audio {
             `${discord.getEmoji("allpass")}_Allpass Filter_ -> _Changes the phase relationship of frequencies._\n` +
             `${discord.getEmoji("tremolo")}_Tremelo_ -> _Amplitude modulation with an LFO._`
         )
-        const reactions = ["reverb", "delay", "chorus", "phaser", "flanger", "bitcrush", "upsample", "distortion", "compression", "allpass", "tremolo"]
+        const reactions = ["reverb", "delay", "chorus", "phaser", "flanger", "bitcrush", "upsample", "distortion", "compression", "allpass", "tremolo", "cancel"]
         const msg = await this.message.channel.send(fxEmbed)
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
@@ -1376,6 +1455,7 @@ export class Audio {
         const compressionCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("compression") && user.bot === false
         const allpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("allpass") && user.bot === false
         const tremoloCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tremolo") && user.bot === false
+        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("cancel") && user.bot === false
         const reverb = msg.createReactionCollector(reverbCheck)
         const delay = msg.createReactionCollector(delayCheck)
         const chorus = msg.createReactionCollector(chorusCheck)
@@ -1387,6 +1467,7 @@ export class Audio {
         const compression = msg.createReactionCollector(compressionCheck)
         const allpass = msg.createReactionCollector(allpassCheck)
         const tremolo = msg.createReactionCollector(tremoloCheck)
+        const cancel = msg.createReactionCollector(cancelCheck)
         let argArray: any[] = []
         async function parseArgs(response: Message) {
             const rArgs = response.content.split(" ")
@@ -1396,6 +1477,13 @@ export class Audio {
         }
         await new Promise((resolve) => {
         reverb.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the amount, damping, room, stereo, pre-delay, and wet-gain.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1415,10 +1503,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added reverb!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         delay.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter pairs of delay and decay times.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1433,10 +1529,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added delay!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         chorus.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, speed, and depth.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1453,10 +1557,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added chorus!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         phaser.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, and speed.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1472,10 +1584,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added phaser!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         flanger.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, depth, regen, width, speed, shape, phase, and interp.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1496,10 +1616,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added flanger!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         bitcrush.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the bitcrush factor.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1513,10 +1641,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added bitcrushing!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         upsample.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the upsample factor.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1530,10 +1666,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added upsampling!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         distortion.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain and color.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1548,10 +1692,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added distortion!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         compression.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the compression amount (0-100).`)
             await this.embeds.createPrompt(parseArgs)
@@ -1565,10 +1717,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added compression!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         allpass.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the frequency and width.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1583,10 +1743,18 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added an allpass filter!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
             resolve()
         })
 
         tremolo.on("collect", async (reaction, user) => {
+            if (this.getProcBlock()) {
+                await reaction.users.remove(user)
+                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                proc.delete({timeout: 3000})
+                return
+            }
+            this.setProcBlock()
             await reaction.users.remove(user)
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the speed and depth.`)
             await this.embeds.createPrompt(parseArgs)
@@ -1601,6 +1769,10 @@ export class Audio {
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added tremolo!`)
             rep3.delete({timeout: 3000})
+            this.setProcBlock(true)
+            resolve()
+        })
+        cancel.on("collect", (reaction, user) => {
             resolve()
         })
         })
