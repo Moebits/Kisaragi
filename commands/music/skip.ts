@@ -38,6 +38,7 @@ export default class Skip extends Command {
         } else if (input) {
             const queue = audio.getQueue() as any
             const index =  queue.findIndex((q: any) => q.title.toLowerCase().includes(input.toLowerCase()))
+            if (index === -1) return message.reply(`Could not find a song with that name ${discord.getEmoji("kannaCurious")}`)
             amount = index + 1
         }
         const text = amount === 1 ? "Skipped this song!" : (Number(input) ? `Skipped to the song at position **${amount}**!` : `Skipped to **${input}**!`)

@@ -48,7 +48,7 @@ export default class MDN extends Command {
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setTitle(`**MDN Search** ${discord.getEmoji("gabStare")}`)
-            .setAuthor(`mdn`, "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png"))
+            .setAuthor(`mdn`, "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png", "https://developer.mozilla.org/en-US/"))
         }
 
         if (query.match(/developer.mozilla.org/)) {
@@ -63,7 +63,7 @@ export default class MDN extends Command {
         const mdnEmbed = embeds.createEmbed()
         mdnEmbed
         .setTitle(`**${result.Title}** ${discord.getEmoji("gabStare")}`)
-        .setAuthor(`mdn`, "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png")
+        .setAuthor(`mdn`, "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png", "https://developer.mozilla.org/en-US/")
         .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
         .setURL(`https://developer.mozilla.org/${result.URL}`)
         .setDescription(

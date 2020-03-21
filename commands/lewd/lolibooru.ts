@@ -71,7 +71,7 @@ export default class Lolibooru extends Command {
                 return this.invalidQuery(lolibooruEmbed, "The url is invalid.")
             }
         } else {
-            const rawImages = await lolibooru.search(tagArray, {limit: 50})
+            const rawImages = await lolibooru.search(tagArray, {limit: 50, random: true})
             if (!rawImages[0]) {
                 return this.invalidQuery(lolibooruEmbed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name, try looking up your tag " +

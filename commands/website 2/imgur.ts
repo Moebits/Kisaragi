@@ -52,7 +52,7 @@ export default class Imgur extends Command {
             }
             const cover = `https://imgur.com/${image.id}.${extension}`
             imgurEmbed
-            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg")
+            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg", "https://imgur.com/")
             .setURL(image.link)
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription(
@@ -74,7 +74,7 @@ export default class Imgur extends Command {
         if (!image) {
             const imgurEmbed = embeds.createEmbed()
             imgurEmbed
-            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg")
+            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg", "https://imgur.com/")
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription("No results were found! Try searching for a tag on the imgur website.\n" +
             "[Imgur Website](https://imgur.com/)")
@@ -90,7 +90,7 @@ export default class Imgur extends Command {
             }
             const cover = `https://imgur.com/${image.images[0].id}.${extension}`
             imgurEmbed
-            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg")
+            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg", "https://imgur.com/")
             .setURL(image.link)
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription(
@@ -116,7 +116,7 @@ export default class Imgur extends Command {
                 }
                 const cover = `https://imgur.com/${image.images[i].id}.${extension}`
                 imgurEmbed
-                .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg")
+                .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg", "https://imgur.com/")
                 .setURL(image.link)
                 .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
                 .setDescription(

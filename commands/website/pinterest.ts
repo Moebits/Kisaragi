@@ -36,7 +36,7 @@ export default class Pinterest extends Command {
         if (!msg) msg = ""
         const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
-        .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png")
+        .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
         .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
         .setDescription(`No results were found. ${msg}Try searching on the pinterest website: ` +
         "[Pinterest Website](https://www.pinterest.com/)")
@@ -47,7 +47,7 @@ export default class Pinterest extends Command {
         const embeds = new Embeds(discord, message)
         const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
-        .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png")
+        .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
         .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
         .setURL(response.url)
         .setImage(response.image.original.url)
@@ -96,7 +96,7 @@ export default class Pinterest extends Command {
                 const pinDate = response.items[i].date_published
                 const pinEmbed = embeds.createEmbed()
                 pinEmbed
-                .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png")
+                .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
                 .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
                 .setURL(pinUrl)
                 .setImage(pinImage ? pinImage : "")
@@ -132,7 +132,7 @@ export default class Pinterest extends Command {
                 const pinDate = response.items[i].date_published
                 const pinEmbed = embeds.createEmbed()
                 pinEmbed
-                .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png")
+                .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
                 .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
                 .setURL(pinUrl)
                 .setImage(pinImage ? pinImage : "")
@@ -200,7 +200,7 @@ export default class Pinterest extends Command {
                 const pinDate = response.items[i].date_published
                 const pinEmbed = embeds.createEmbed()
                 pinEmbed
-                .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png")
+                .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
                 .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
                 .setURL(pinUrl)
                 .setImage(pinImage ? pinImage : "")

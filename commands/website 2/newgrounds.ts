@@ -161,13 +161,13 @@ export default class Newgrounds extends Command {
         const type = this.getType(link)
         const result = await Functions.promiseTimeout(15000, this.linkData(link, type)).catch(() => {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
             .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`))
         }) as any
         if (!result) return
         const ngEmbed = embeds.createEmbed()
         ngEmbed
-        .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+        .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
         .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`)
         .setThumbnail(result.authorIcon)
         .setImage(result.image)
@@ -220,7 +220,7 @@ export default class Newgrounds extends Command {
         for (let i = 0; i < results.length; i++) {
             const image = await this.getArtImage(results[i].url, results[i].image)
             const ngEmbed = embeds.createEmbed()
-            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
             .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`)
             .setImage(image)
             .setURL(results[i].url)
@@ -268,7 +268,7 @@ export default class Newgrounds extends Command {
         const result = await Functions.promiseTimeout(10000, this.userData(username))
         .catch(() => {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
             .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`))
         }) as any
         let categoryDesc = ""
@@ -281,7 +281,7 @@ export default class Newgrounds extends Command {
         }
         const ngEmbed = embeds.createEmbed()
         ngEmbed
-        .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+        .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
         .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`)
         .setImage(result.banner)
         .setURL(`https://${username}.newgrounds.com`)
@@ -308,7 +308,7 @@ export default class Newgrounds extends Command {
             const query = Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+                .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
                 .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`))
             }
             return this.fetchArtSearch(query.trim())
@@ -316,7 +316,7 @@ export default class Newgrounds extends Command {
             const username = args[2]
             if (!username) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+                .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
                 .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`))
             }
             return this.fetchUser(username)
@@ -341,13 +341,13 @@ export default class Newgrounds extends Command {
         }
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
             .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`))
         }
         const result = await Functions.promiseTimeout(15000, this.searchData(query.trim(), searchURL, skip))
         .catch(() => {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
             .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`))
         }) as any
 
@@ -364,7 +364,7 @@ export default class Newgrounds extends Command {
             }
             const ngEmbed = embeds.createEmbed()
             ngEmbed
-            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png")
+            .setAuthor("newgrounds", "https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Newgrounds_Tankman_logo.png/220px-Newgrounds_Tankman_logo.png", "https://www.newgrounds.com/")
             .setTitle(`**Newgrounds Search** ${discord.getEmoji("PoiHug")}`)
             .setImage(img)
             .setThumbnail(result[i].image)

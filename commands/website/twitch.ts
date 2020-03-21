@@ -47,13 +47,13 @@ export default class Twitch extends Command {
             const term = this.channel || args[2]
             if (!term) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg")
+                .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg", "https://www.twitch.tv/")
                 .setTitle(`**Twitch Channel** ${discord.getEmoji("gabSip")}`))
             }
             const result = await twitch.kraken.search.searchChannels(term, 1, 1)
             const twitchEmbed = embeds.createEmbed()
             twitchEmbed
-            .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg")
+            .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg", "https://www.twitch.tv/")
             .setTitle(`**Twitch Channel** ${discord.getEmoji("gabSip")}`)
             .setURL(result[0].url)
             .setThumbnail(result[0].logo)
@@ -74,7 +74,7 @@ export default class Twitch extends Command {
         const term = this.search || Functions.combineArgs(args, 1)
         if (!term) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg")
+            .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg", "https://www.twitch.tv/")
             .setTitle(`**Twitch Stream** ${discord.getEmoji("gabSip")}`))
         }
         const result = await twitch.kraken.search.searchStreams(term.trim(), 1, 11)
@@ -82,7 +82,7 @@ export default class Twitch extends Command {
         for (let i = 0; i < result.length; i++) {
             const twitchEmbed = embeds.createEmbed()
             twitchEmbed
-            .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg")
+            .setAuthor("twitch", "http://videoadnews.com/wp-content/uploads/2014/05/twitch-icon-box.jpg", "https://www.twitch.tv/")
             .setTitle(`**Twitch Stream** ${discord.getEmoji("gabSip")}`)
             .setURL(result[i].channel.url)
             .setImage(result[i].getPreviewUrl("large"))

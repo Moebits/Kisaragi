@@ -37,7 +37,7 @@ export default class IMDB extends Command {
 
         const result = await imdb.get({name: query})
         const imdbEmbed = embeds.createEmbed()
-        .setAuthor("imdb", "https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/171_Imdb_logo_logos-512.png")
+        .setAuthor("imdb", "https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/171_Imdb_logo_logos-512.png", "https://www.imdb.com/")
         .setTitle(`**IMDb Search** ${discord.getEmoji("yaoi")}`)
         .setImage(result.poster)
         .setURL(result.imdburl)

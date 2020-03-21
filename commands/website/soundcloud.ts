@@ -58,7 +58,7 @@ export default class SoundCloud extends Command {
             const query = this.user || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
                 .setTitle(`**Soundcloud User** ${discord.getEmoji("karenSugoi")}`))
             }
             const soundcloudArray: MessageEmbed[] = []
@@ -66,7 +66,7 @@ export default class SoundCloud extends Command {
             for (let i = 0; i < users.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
-                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
                 .setTitle(`**Soundcloud User** ${discord.getEmoji("karenSugoi")}`)
                 .setURL(users[i].permalink_url)
                 .setImage(users[i].avatar_url)
@@ -90,7 +90,7 @@ export default class SoundCloud extends Command {
             const query = this.playlist || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
                 .setTitle(`**Soundcloud Playlist** ${discord.getEmoji("karenSugoi")}`))
             }
             const soundcloudArray: MessageEmbed[] = []
@@ -98,7 +98,7 @@ export default class SoundCloud extends Command {
             for (let i = 0; i < playlists.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
-                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
                 .setTitle(`**Soundcloud Playlist** ${discord.getEmoji("karenSugoi")}`)
                 .setURL(playlists[i].permalink_url)
                 .setImage(playlists[i].artwork_url!)
@@ -122,7 +122,7 @@ export default class SoundCloud extends Command {
             const query = Functions.combineArgs(args, 2).trim()
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
                 .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
             }
             const rand = Math.floor(Math.random()*10000)
@@ -136,7 +136,7 @@ export default class SoundCloud extends Command {
             }
             if (!track) {
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
                 .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
             }
             const file = await soundcloud.util.downloadTrack(track, src)
@@ -145,7 +145,7 @@ export default class SoundCloud extends Command {
                 const link = await images.upload([file]).then((l) => l[0])
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
-                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
                 .setURL(link)
                 .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
                 .setDescription(`${discord.getEmoji("star")}Downloaded the track! This file is too large for attachments. Download the file [**here**](${link}).\n`)
@@ -154,7 +154,7 @@ export default class SoundCloud extends Command {
                 const attachment = new MessageAttachment(file)
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
-                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+                .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
                 .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
                 .setDescription(`${discord.getEmoji("star")}Downloaded the track!\n`)
                 await message.channel.send(soundcloudEmbed)
@@ -167,7 +167,7 @@ export default class SoundCloud extends Command {
         const query = this.track || Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+            .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
         }
         const soundcloudArray: MessageEmbed[] = []
@@ -175,7 +175,7 @@ export default class SoundCloud extends Command {
         for (let i = 0; i < tracks.length; i++) {
             const soundcloudEmbed = embeds.createEmbed()
             soundcloudEmbed
-            .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg")
+            .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`)
             .setURL(tracks[i].permalink_url)
             .setThumbnail(tracks[i].user.avatar_url)

@@ -31,10 +31,10 @@ export class PixivApi {
                 if (!comments.comments[i]) break
                 commentArray.push(comments.comments[i].comment)
         }
-        const viewLink = await this.pixiv.util.viewLink(String(image.id))
-        const url = viewLink ? viewLink : await this.pixiv.util.downloadIllust(image, `assets/images/pixiv/illusts`)
+        // const viewLink = await this.pixiv.util.viewLink(String(image.id))
+        const url = await this.pixiv.util.downloadIllust(image, `assets/images/pixiv/illusts`)
         const authorUrl = await this.pixiv.util.downloadProfilePicture(image, `assets/images/pixiv/profiles`)
-        const viewLinkAppend = viewLink ? `_Image not showing? Click_ [**here**](${viewLink}).` : ""
+        // const viewLinkAppend = viewLink ? `_Image not showing? Click_ [**here**](${viewLink}).` : ""
         if (noUpload) {
             pixivEmbed
             const imageAttachment = new MessageAttachment(url, "image.png")
@@ -62,8 +62,7 @@ export class PixivApi {
         `${discord.getEmoji("star")}_Views:_ **${image.total_view}**\n` +
         `${discord.getEmoji("star")}_Bookmarks:_ **${image.total_bookmarks}**\n` +
         `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` +
-        `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n` +
-        viewLinkAppend
+        `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
         )
         return pixivEmbed
     }

@@ -54,7 +54,7 @@ export default class Discordjs extends Command {
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setTitle(`**Discord.js Docs** ${discord.getEmoji("gabStare")}`)
-            .setAuthor(`discord.js`, "https://discord.js.org/static/logo-square.png"))
+            .setAuthor(`discord.js`, "https://discord.js.org/static/logo-square.png", "https://discord.js.org/#/"))
         }
         let result = await axios.get(`https://djsdocs.sorta.moe/v2/embed?src=${src}&q=${query}`, {headers}).then((r) => r.data)
         if (result.title === "Search results:") {
@@ -74,7 +74,7 @@ export default class Discordjs extends Command {
         .setTitle(`**${result.author.name}** ${discord.getEmoji("gabStare")}`)
         .setURL(result.url)
         .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
-        .setAuthor(`discord.js`, "https://discord.js.org/static/logo-square.png")
+        .setAuthor(`discord.js`, "https://discord.js.org/static/logo-square.png", "https://discord.js.org/#/")
         .setDescription(
         `${discord.getEmoji("star")}_Description:_ ${result.description.replace(/__/g, "**")}\n` +
         fields

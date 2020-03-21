@@ -69,7 +69,7 @@ export default class Konachan extends Command {
                 return this.invalidQuery(konachanEmbed, "The url is invalid.")
             }
         } else {
-            const rawImages = await konachan.search(tagArray, {limit: 50})
+            const rawImages = await konachan.search(tagArray, {limit: 50, random: true})
             if (!rawImages[0]) {
                 return this.invalidQuery(konachanEmbed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name, try looking up your tag " +

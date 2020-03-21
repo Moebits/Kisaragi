@@ -64,7 +64,7 @@ export default class Wikipedia extends Command {
 
             const wikiEmbed = embeds.createEmbed()
             wikiEmbed
-            .setAuthor("wikipedia", "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png")
+            .setAuthor("wikipedia", "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", "https://en.wikipedia.org/wiki/Main_Page")
             .setTitle(`**Wikipedia Article** ${discord.getEmoji("raphi")}`)
             .setURL(page.raw.fullurl)
             .attachFiles([attachment])
@@ -81,7 +81,7 @@ export default class Wikipedia extends Command {
 
             const wikiEmbed = embeds.createEmbed()
             wikiEmbed
-            .setAuthor("wikipedia", "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png")
+            .setAuthor("wikipedia", "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", "https://en.wikipedia.org/wiki/Main_Page")
             .setTitle(`**Wikipedia Article** ${discord.getEmoji("raphi")}`)
             .setURL(page.raw.fullurl)
             .setImage(mainImg)

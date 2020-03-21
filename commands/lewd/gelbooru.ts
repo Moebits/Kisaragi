@@ -68,7 +68,7 @@ export default class Gelbooru extends Command {
                 return this.invalidQuery(gelbooruEmbed, "The url is invalid.")
             }
         } else {
-            const rawImages = await gelbooru.search(tagArray, {limit: 50})
+            const rawImages = await gelbooru.search(tagArray, {limit: 50, random: true})
             if (!rawImages[0]) {
                 return this.invalidQuery(gelbooruEmbed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name; try looking up your tag " +

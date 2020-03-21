@@ -47,7 +47,7 @@ export default class Reddit extends Command {
             }
             const redditEmbed = embeds.createEmbed()
             redditEmbed
-            .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
+            .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
             .setTitle(`**${Functions.checkChar(post.title, 200, " ")}** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://www.reddit.com/${post.permalink}`)
             .setDescription(
@@ -92,7 +92,7 @@ export default class Reddit extends Command {
             const query = this.user || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
+                .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
                 .setTitle(`**Reddit User** ${discord.getEmoji("aquaUp")}`)
                 )
             }
@@ -100,7 +100,7 @@ export default class Reddit extends Command {
             const user = await reddit.getUser(query.trim()).fetch()
             const redditEmbed = embeds.createEmbed()
             redditEmbed
-            .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
+            .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
             .setTitle(`**${user.name}** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://www.reddit.com${user.subreddit.display_name.url}`)
             .setImage(user.subreddit.display_name.banner_img)
@@ -145,7 +145,7 @@ export default class Reddit extends Command {
                     posts = await reddit.getSubreddit(subreddit).getRandomSubmission()
                 } catch {
                     return this.invalidQuery(embeds.createEmbed()
-                    .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
+                    .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
                     .setTitle(`**Reddit Search** ${discord.getEmoji("aquaUp")}`)
                     .setDescription("No results were found. Try searching on the reddit website: " +
                     "[Reddit Website](https://www.reddit.com)"))
@@ -161,7 +161,7 @@ export default class Reddit extends Command {
         if (!postIDS.join("")) {
             const redditEmbed = embeds.createEmbed()
             redditEmbed
-                .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
+                .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
                 .setTitle(`**Reddit Search** ${discord.getEmoji("aquaUp")}`)
                 .setDescription("No results were found. Try searching on the reddit website: " +
                 "[Reddit Website](https://www.reddit.com)")

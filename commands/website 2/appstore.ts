@@ -32,7 +32,7 @@ export default class AppStore extends Command {
         let term = Functions.combineArgs(args, 1).trim()
         if (!term) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg")
+            .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", "https://fnd.io/")
             .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`))
         }
         if (term.match(/apps.apple.com/)) {
@@ -44,7 +44,7 @@ export default class AppStore extends Command {
             const app = response[i]
             const appEmbed = embeds.createEmbed()
             appEmbed
-            .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg")
+            .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", "https://fnd.io/")
             .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`)
             .setURL(app.url)
             .setThumbnail(app.icon)
@@ -66,7 +66,7 @@ export default class AppStore extends Command {
         }
         if (!appArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg")
+            .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", "https://fnd.io/")
             .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`))
         }
         if (appArray.length === 1) {

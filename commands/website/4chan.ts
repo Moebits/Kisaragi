@@ -17,11 +17,14 @@ export default class $4chan extends Command {
             description: "Searches for posts and images on 4chan.",
             help:
             `
+            _Note: NSFW boards are restricted to nsfw channels._
+            \`4chan images?\` - Default search is "a anime".
             \`4chan board query\` - Searches the specified board with the query.
             \`4chan images board query\` - Similar, but only sends all of the images.
             `,
             examples:
             `
+            \`=>4chan\`
             \`=>4chan a kawaii\`
             \`=>4chan images c cute\`
             `,
@@ -64,12 +67,16 @@ export default class $4chan extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const perms = new Permission(discord, message)
         const badChanEmbed = embeds.createEmbed()
-        .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png")
+        .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", "https://www.4chan.org/")
         .setTitle(`**4chan Search** ${discord.getEmoji("vigneDead")}`)
 
         if (args[1] === "images") {
-            const board = args[2]
-            const query = Functions.combineArgs(args, 3)
+            let board = args[2]
+            let query = Functions.combineArgs(args, 3)
+            if (!board) {
+                board = "a"
+                query = "anime"
+            }
             if (!board || !query) {
                 return this.noQuery(badChanEmbed, "The first parameter is the board name, the rest is the search query.")
             }
@@ -89,7 +96,7 @@ export default class $4chan extends Command {
             for (const i in results) {
                 const chanEmbed = embeds.createEmbed()
                 chanEmbed
-                .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png")
+                .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", "https://www.4chan.org/")
                 .setTitle(`**4chan Image Search** ${discord.getEmoji("vigneDead")}`)
                 .setURL(url)
                 .setImage(results[i])
@@ -103,7 +110,12 @@ export default class $4chan extends Command {
             return
         }
 
-        const board = args[1]
+        let board = args[1]
+        let query = Functions.combineArgs(args, 2)
+        if (!board) {
+            board = "a"
+            query = "anime"
+        }
         if (board.match(/boards.4channel.org/)) {
             const b = board.match(/(?<=boards.4channel.org\/)(.*?)(?=\/)/)?.[0]
             const id =  board.match(/\d{5,}/)?.[0]
@@ -114,7 +126,7 @@ export default class $4chan extends Command {
             const chanArray: MessageEmbed[] = []
             for (const i in posts) {
                 const chanEmbed = embeds.createEmbed()
-                .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png")
+                .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", "https://www.4chan.org/")
                 chanEmbed
                 .setTitle(`${posts[0].sub ? posts[0].sub : `**4chan Search**`} ${discord.getEmoji("vigneDead")}`)
                 .setURL(`${url}#p${posts[i].no}`)
@@ -133,7 +145,6 @@ export default class $4chan extends Command {
             }
             return
         }
-        const query = Functions.combineArgs(args, 2)
         if (!board || !query) {
             return this.noQuery(badChanEmbed, "The first parameter is the board name, the rest is the search query. Try looking at the [**4chan Website**](https://www.4chan.org/)")
         }
@@ -154,7 +165,7 @@ export default class $4chan extends Command {
         const chanArray: MessageEmbed[] = []
         for (const i in posts) {
             const chanEmbed = embeds.createEmbed()
-            .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png")
+            .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", "https://www.4chan.org/")
             chanEmbed
             .setTitle(`${posts[0].sub ? posts[0].sub : threads[random].semantic_url} ${discord.getEmoji("vigneDead")}`)
             .setURL(`${url}#p${posts[i].no}`)

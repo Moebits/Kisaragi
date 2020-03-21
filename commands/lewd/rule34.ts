@@ -65,7 +65,7 @@ export default class Rule34 extends Command {
                 return this.invalidQuery(rule34Embed, "The url is invalid.")
             }
         } else {
-            const rawImages = rule34.search(tagArray, {limit: 50})
+            const rawImages = rule34.search(tagArray, {limit: 50, random: true})
             if (!rawImages[0]) {
                 return this.invalidQuery(rule34Embed, "Underscores are not required, " +
                 "if you want to search multiple terms separate them with a comma. Tags usually start with a last name, try looking up your tag " +

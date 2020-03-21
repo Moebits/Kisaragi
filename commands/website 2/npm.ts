@@ -33,7 +33,7 @@ export default class NPM extends Command {
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setTitle(`**NPM Search** ${discord.getEmoji("gabStare")}`)
-            .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png"))
+            .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png", "https://www.npmjs.com/"))
         }
         if (query.match(/npmjs.com/)) {
             query = query.match(/(?<=\/)(?:.(?!\/))+$/)![0].replace("search?q=", "")
@@ -46,7 +46,7 @@ export default class NPM extends Command {
             npmEmbed
             .setTitle(`**${result[i].name}** ${discord.getEmoji("gabStare")}`)
             .setURL(result[i].links ? result[i].links.npm : "None")
-            .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png")
+            .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png", "https://www.npmjs.com/")
             .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
             .setDescription(
             `${discord.getEmoji("star")}_Version:_ **${result[i].version}**\n` +

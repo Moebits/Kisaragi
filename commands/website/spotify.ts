@@ -41,7 +41,7 @@ export default class SpotifyCommand extends Command {
             const query = Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
+                .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", "https://www.spotify.com/")
                 .setTitle(`**Spotify Artist** ${discord.getEmoji("aquaUp")}`))
             }
             const spotifyArray: MessageEmbed[] = []
@@ -51,7 +51,7 @@ export default class SpotifyCommand extends Command {
                 const artist = artists[i]
                 const spotifyEmbed = embeds.createEmbed()
                 spotifyEmbed
-                .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
+                .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", "https://www.spotify.com/")
                 .setTitle(`**Spotify Artist** ${discord.getEmoji("aquaUp")}`)
                 .setURL(artist.external_urls.spotify)
                 .setImage(artist.images[0]?.url)
@@ -72,7 +72,7 @@ export default class SpotifyCommand extends Command {
         const query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
+            .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", "https://www.spotify.com/")
             .setTitle(`**Spotify Search** ${discord.getEmoji("aquaUp")}`))
         }
         const response = await spotify.search({type: "track", query: query.trim()})
@@ -84,7 +84,7 @@ export default class SpotifyCommand extends Command {
             const image = artistResponse.artists.items[0].images[0]?.url
             const spotifyEmbed = embeds.createEmbed()
             spotifyEmbed
-            .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png")
+            .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", "https://www.spotify.com/")
             .setTitle(`**Spotify Search** ${discord.getEmoji("aquaUp")}`)
             .setImage(track.album.images[0]?.url)
             .setThumbnail(image)

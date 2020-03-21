@@ -73,7 +73,7 @@ export default class YoutubeCommand extends Command {
         }
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed
-        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
         .setTitle(`**${playlist.snippet.title}** ${discord.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/playlist?list=${playlist.id}`)
         .setDescription(
@@ -100,7 +100,7 @@ export default class YoutubeCommand extends Command {
         const ytChannel = await youtube.channels.get(video.snippet.channelId)
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed
-        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
         .setTitle(`**${video.snippet.title}** ${discord.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/watch?=${video.id}`)
         .setDescription(
@@ -125,7 +125,7 @@ export default class YoutubeCommand extends Command {
         const youtube = new yt(process.env.GOOGLE_API_KEY!)
         if (!args[1]) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+            .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
             .setTitle(`**Youtube Search** ${discord.getEmoji("kannaWave")}`))
         }
 
@@ -221,7 +221,7 @@ export default class YoutubeCommand extends Command {
                     link = encodeURI(link).replace("http", "https")
                     const youtubeEmbed = embeds.createEmbed()
                     youtubeEmbed
-                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
                     .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
                     .setURL(link)
                     .setDescription(`${discord.getEmoji("star")}Converted the video to an mp3 file! This file is too large for attachments. Download the file [**here**](${link}).\n`)
@@ -230,7 +230,7 @@ export default class YoutubeCommand extends Command {
                     const attachment = new MessageAttachment(file)
                     const youtubeEmbed = embeds.createEmbed()
                     youtubeEmbed
-                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
                     .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
                     .setDescription(`${discord.getEmoji("star")}Converted the video to an mp3 file!`)
                     await message.channel.send(youtubeEmbed)
@@ -262,7 +262,7 @@ export default class YoutubeCommand extends Command {
                 console.log(link)
                 const youtubeEmbed = embeds.createEmbed()
                 youtubeEmbed
-                .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png")
+                .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
                 .setURL(link)
                 .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
                 .setDescription(

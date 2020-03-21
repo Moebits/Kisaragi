@@ -44,7 +44,7 @@ export default class Urban extends Command {
             const cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "")
             const checkedExample = Functions.checkChar(cleanExample, 1700, ".")
             urbanEmbed
-            .setAuthor("Urban Dictionary", "https://i.imgur.com/iXnNjPc.png")
+            .setAuthor("Urban Dictionary", "https://i.imgur.com/iXnNjPc.png", "https://www.urbandictionary.com/")
             .setURL(result.URL)
             .setTitle(`**Urban Dictionary** ${discord.getEmoji("smugFace")}`)
             .setDescription(
@@ -64,7 +64,7 @@ export default class Urban extends Command {
         const cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "")
         const checkedExample = Functions.checkChar(cleanExample, 1700, ".")
         urbanEmbed
-            .setAuthor("Urban Dictionary", "https://i.imgur.com/iXnNjPc.png")
+            .setAuthor("Urban Dictionary", "https://i.imgur.com/iXnNjPc.png", "https://www.urbandictionary.com/")
             .setURL(result.URL)
             .setTitle(`**Urban Dictionary** ${discord.getEmoji("smugFace")}`)
             .setDescription(

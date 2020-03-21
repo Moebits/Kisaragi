@@ -48,7 +48,7 @@ export default class GiphyCommand extends Command {
         for (let i = 0; i < gif.length; i++) {
             const giphyEmbed = embeds.createEmbed()
             giphyEmbed
-            .setAuthor("giphy", "https://media0.giphy.com/media/YJBNjrvG5Ctmo/giphy.gif")
+            .setAuthor("giphy", "https://media0.giphy.com/media/YJBNjrvG5Ctmo/giphy.gif", "https://giphy.com/")
             .setTitle(`**Giphy Gif** ${discord.getEmoji("raphi")}`)
             .setURL(gif[i].url)
             .setDescription(

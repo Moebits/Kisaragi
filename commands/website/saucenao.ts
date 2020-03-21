@@ -97,7 +97,7 @@ export default class Saucenao extends Command {
 
         if (!image) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("saucenao", "https://www.userlogos.org/files/logos/zoinzberg/SauceNAO_2.png")
+            .setAuthor("saucenao", "https://www.userlogos.org/files/logos/zoinzberg/SauceNAO_2.png", "https://saucenao.com/")
             .setTitle(`**Saucenao Search** ${discord.getEmoji("gabrielLick")}`), "No image could be found.")
         }
 
@@ -105,7 +105,7 @@ export default class Saucenao extends Command {
         const {description, url} = this.getDetails(source)
         const siteEmbed = embeds.createEmbed()
         siteEmbed
-        .setAuthor("saucenao", "https://www.userlogos.org/files/logos/zoinzberg/SauceNAO_2.png")
+        .setAuthor("saucenao", "https://www.userlogos.org/files/logos/zoinzberg/SauceNAO_2.png", "https://saucenao.com/")
         .setTitle(`**Saucenao Search** ${discord.getEmoji("gabrielLick")}`)
         .setThumbnail(author?.displayAvatarURL({format: "png", dynamic: true}) ?? "")
         .setURL(url)
