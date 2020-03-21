@@ -384,7 +384,7 @@ export class Embeds {
     // Create Help Embed
     public createHelpEmbed = async (embeds: MessageEmbed[]) => {
         let page = 8
-        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Mod", "Music", "Music 2", "Video", "Website", "Website 2"]
+        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Mod", "Music", "Music 2", "Video", "Website", "Website 2", "Website 3"]
         let compressed = false
         const longDescription: string[] = []
         const commandCount: number[] = []
@@ -399,7 +399,7 @@ export class Embeds {
             text = text.replace(second!, "").trim()
             const commands = text.match(/(`)(.*?)(`)/gm)
             commandCount.push(commands?.map((c)=>c)?.length ?? 0)
-            const desc = `${top}\n${second}\n${commands?.map((c) => c).join(", ")}`
+            const desc = `${top}\n${second}\n_Click on a reaction twice to toggle compact mode._\n${commands?.map((c) => c).join(", ")}`
             shortDescription.push(desc)
         }
         for (let i = 0; i < embeds.length; i++) {
@@ -424,10 +424,10 @@ export class Embeds {
             this.discord.getEmoji("musicTwo"),
             this.discord.getEmoji("video"),
             this.discord.getEmoji("website"),
-            this.discord.getEmoji("websiteTwo")
+            this.discord.getEmoji("websiteTwo"),
+            this.discord.getEmoji("websiteThree")
         ]
         const msg = await this.message.channel.send(embeds[page])
-        await msg.react(this.discord.getEmoji("compress"))
         for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
         await this.sql.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
@@ -454,7 +454,7 @@ export class Embeds {
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
         const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
-        const compressCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("compress") && user.bot === false
+        const webThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteThree") && user.bot === false
 
         const admin = msg.createReactionCollector(adminCheck)
         const anime = msg.createReactionCollector(animeCheck)
@@ -475,45 +475,41 @@ export class Embeds {
         const video = msg.createReactionCollector(videoCheck)
         const web = msg.createReactionCollector(webCheck)
         const webTwo = msg.createReactionCollector(webTwoCheck)
-        const compress = msg.createReactionCollector(compressCheck)
+        const webThree = msg.createReactionCollector(webThreeCheck)
         await this.redisAddEmbed(msg)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, video, web, webTwo]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, video, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
+                if (page === i) {
+                    if (!compressed) {
+                        for (let i = 0; i < embeds.length; i++) {
+                            embeds[i].setDescription(shortDescription[i])
+                        }
+                        compressed = true
+                    } else {
+                        for (let i = 0; i < embeds.length; i++) {
+                            embeds[i].setDescription(longDescription[i])
+                        }
+                        compressed = false
+                    }
+                }
                 await this.updateEmbed(embeds, page, user, msg, true, commandCount)
                 page = i
                 msg.edit(embeds[page])
                 await reaction.users.remove(user).catch(() => null)
             })
         }
-
-        compress.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (!compressed) {
-                for (let i = 0; i < embeds.length; i++) {
-                    embeds[i].setDescription(shortDescription[i])
-                }
-                compressed = true
-            } else {
-                for (let i = 0; i < embeds.length; i++) {
-                    embeds[i].setDescription(longDescription[i])
-                }
-                compressed = false
-            }
-            await this.updateEmbed(embeds, page, user, msg, true, commandCount)
-            msg.edit(embeds[page])
-            await reaction.users.remove(user).catch(() => null)
-        })
     }
 
     // Re-trigger Help Embed
-    public editHelpEmbed = async (msg: Message, emoji: string, user: User, embeds: MessageEmbed[]) => {
+    public editHelpEmbed = (msg: Message, emoji: string, user: User, embeds: MessageEmbed[]) => {
         const emojiMap: string[] = [
             "admin", "anime", "botDeveloper",
             "config", "fun", "game", "heart", "image", "info",
-            "japanese", "level", "lewd",
-            "misc", "mod", "music", "musicTwo", "video", "website", "websiteTwo"
+            "japanese", "level", "lewd", "misc", "mod", "music",
+            "musicTwo", "video", "website", "websiteTwo", "websiteThree"
         ]
         let compressed = false
         const longDescription: string[] = []
@@ -529,12 +525,11 @@ export class Embeds {
             text = text.replace(second!, "").trim()
             const commands = text.match(/(`)(.*?)(`)/gm)
             commandCount.push(commands?.map((c)=>c)?.length ?? 0)
-            const desc = `${top}\n${second}\n${commands?.map((c) => c).join(", ")}`
+            const desc = `${top}\n${second}\n_Click on a reaction twice to toggle compact mode._\n${commands?.map((c) => c).join(", ")}`
             shortDescription.push(desc)
         }
         const page = emojiMap.indexOf(emoji) || 0
         msg.edit(embeds[page])
-        await msg.react(this.discord.getEmoji("repost"))
         const adminCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("admin") && user.bot === false
         const animeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("anime") && user.bot === false
         const botDevCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("botDeveloper") && user.bot === false
@@ -554,8 +549,7 @@ export class Embeds {
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
         const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
-        const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("repost") && user.bot === false
-        const compressCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("compress") && user.bot === false
+        const webThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteThree") && user.bot === false
 
         const admin = msg.createReactionCollector(adminCheck)
         const anime = msg.createReactionCollector(animeCheck)
@@ -576,41 +570,30 @@ export class Embeds {
         const video = msg.createReactionCollector(videoCheck)
         const web = msg.createReactionCollector(webCheck)
         const webTwo = msg.createReactionCollector(webTwoCheck)
-        const repost = msg.createReactionCollector(repostCheck)
-        const compress = msg.createReactionCollector(compressCheck)
+        const webThree = msg.createReactionCollector(webThreeCheck)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, video, web, webTwo]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, video, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
+                if (page === i) {
+                    if (!compressed) {
+                        for (let i = 0; i < embeds.length; i++) {
+                            embeds[i].setDescription(shortDescription[i])
+                        }
+                        compressed = true
+                    } else {
+                        for (let i = 0; i < embeds.length; i++) {
+                            embeds[i].setDescription(longDescription[i])
+                        }
+                        compressed = false
+                    }
+                }
                 await this.updateEmbed(embeds, page, user, msg, true, commandCount)
                 msg.edit(embeds[i])
                 await reaction.users.remove(user).catch(() => null)
             })
         }
-
-        repost.on("collect", async (reaction: MessageReaction, user: User) => {
-            await this.message.channel.send(`<@${user.id}>, I reposted this embed.`)
-            await this.createHelpEmbed(embeds)
-            await reaction.users.remove(user).catch(() => null)
-        })
-
-        compress.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (!compressed) {
-                for (let i = 0; i < embeds.length; i++) {
-                    embeds[i].setDescription(shortDescription[i])
-                }
-                compressed = true
-            } else {
-                for (let i = 0; i < embeds.length; i++) {
-                    embeds[i].setDescription(longDescription[i])
-                }
-                compressed = false
-            }
-            await this.updateEmbed(embeds, page, user, msg, true, commandCount)
-            msg.edit(embeds[page])
-            await reaction.users.remove(user).catch(() => null)
-        })
     }
 
     // Create Prompt

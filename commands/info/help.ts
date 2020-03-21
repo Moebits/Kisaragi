@@ -69,7 +69,8 @@ export default class Help extends Command {
                 "music 2": discord.getEmoji("yes"),
                 "video": discord.getEmoji("vigneXD"),
                 "website": discord.getEmoji("tohruThumbsUp2"),
-                "website 2": discord.getEmoji("mexShrug")
+                "website 2": discord.getEmoji("mexShrug"),
+                "website 3": discord.getEmoji("think")
             }
             const imageMap: any = {
                 "admin": "https://i.imgur.com/mMXKOPW.png",
@@ -90,7 +91,8 @@ export default class Help extends Command {
                 "music 2": "https://i.imgur.com/fADrzzB.png",
                 "video": "https://i.imgur.com/qqUFolE.png",
                 "website": "https://i.imgur.com/ftVh8jx.png",
-                "website 2": "https://i.imgur.com/0bUmQ7F.png"
+                "website 2": "https://i.imgur.com/0bUmQ7F.png",
+                "website 3": "https://i.imgur.com/CMm9fZy.png"
             }
 
             const thumbMap: any = {
@@ -112,7 +114,8 @@ export default class Help extends Command {
                 "music 2": "https://cdn.discordapp.com/emojis/687861928781021214.gif",
                 "video": "https://cdn.discordapp.com/emojis/689575172130209814.gif",
                 "website": "https://cdn.discordapp.com/emojis/684270969417760779.gif",
-                "website 2": "https://cdn.discordapp.com/emojis/684271413284175902.gif"
+                "website 2": "https://cdn.discordapp.com/emojis/684271413284175902.gif",
+                "website 3": "https://cdn.discordapp.com/emojis/691011174673809528.gif"
             }
             if (subDir[i] === "japanese") subDir[i] = "weeb"
             if (args[1]?.startsWith("!")) {
