@@ -6,6 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class ReverseImage extends Command {
+    private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Reverse image searches an image, avatar, or guild icon.",
@@ -35,8 +36,8 @@ export default class ReverseImage extends Command {
         const data2: any[] = []
         const data3: any[] = []
         await new Promise((resolve) => {
-            osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`)
-            .find("div:nth-child(4) > div > div > div > div > div.r > a")
+            osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
+            .find("div.rc > div.r > a")
             .set({url: "@href", title: "h3"})
             .data(function(d) {
                 data.push(d)
@@ -44,8 +45,8 @@ export default class ReverseImage extends Command {
             })
         })
         await new Promise((resolve) => {
-            osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`)
-            .find("div:nth-child(4) > div > div > div > div > div.s > div > div > a")
+            osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
+            .find("div.rc > div.s > div > div > a")
             .set({image: "@href"})
             .data(function(d) {
                 d.image = d.image.match(/(?<=imgurl=)(.*?)(jpg)/) ? d.image.match(/(?<=imgurl=)(.*?)(jpg)/)[0] : ""
@@ -54,8 +55,8 @@ export default class ReverseImage extends Command {
             })
         })
         await new Promise((resolve) => {
-            osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`)
-            .find("div:nth-child(4) > div > div > div > div > div.s > div")
+            osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
+            .find("div.rc > div.s > div")
             .set({desc: "span"})
             .data(function(d) {
                 data3.push(d)
@@ -65,10 +66,10 @@ export default class ReverseImage extends Command {
         const newArray: any[] = []
         for (let i = 0; i < data.length; i++) {
             const obj = {} as any
-            obj.url = data[i].url
-            obj.title = data[i].title
-            obj.image = data2[i].image
-            obj.desc = data3[i].desc ? data[3].desc : "None"
+            obj.url = data[i]?.url ?? "None"
+            obj.title = data[i]?.title ?? "None"
+            obj.image = data2[i]?.image ?? ""
+            obj.desc = data3[i]?.desc ?? "None"
             newArray.push(obj)
         }
         return newArray
@@ -128,6 +129,7 @@ export default class ReverseImage extends Command {
             revArray.push(revEmbed)
         }
 
+        if (!revArray[0]) return
         if (revArray.length === 1) {
             message.channel.send(revArray[0])
         } else {

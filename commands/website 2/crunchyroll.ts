@@ -7,6 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Crunchyroll extends Command {
+    private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for an anime on crunchyroll.",
@@ -56,7 +57,7 @@ export default class Crunchyroll extends Command {
         let done = false
         while (!done) {
             await new Promise((resolve) => {
-                osmosis.get(link)
+                osmosis.get(link).headers(this.headers)
                 .find("div#source_showview")
                 .set({episode: `div > div > div > div > ul > li > ul > li:nth(${i}) > div > a > img > @alt`, num: `div > div > div > div > ul > li > ul > li:nth(${i}) > div > a > span`})
                 .data(function(d) {
@@ -77,7 +78,7 @@ export default class Crunchyroll extends Command {
     public getLinkData = async (link: string) => {
         let data: any = ""
         await new Promise((resolve) => {
-            osmosis.get(link)
+            osmosis.get(link).headers(this.headers)
             .find("div#source_showview")
             .set({image: "div > div > ul > li > img > @src", desc: "div > div > ul > li > p > span.more", rating: "div > div > ul > li > div > div > span > span > @content",
                   publisher: "div > div > ul > li > ul > li > a"})
@@ -96,7 +97,7 @@ export default class Crunchyroll extends Command {
         let i = 1
         while (!done) {
             await new Promise((resolve) => {
-                osmosis.get(`https://www.crunchyroll.com/search?from=search&q=${query}`)
+                osmosis.get(`https://www.crunchyroll.com/search?from=search&q=${query}`).headers(this.headers)
                 .find("ul.search-results")
                 .set({url: `li:nth-child(${i}) > a > @href`})
                 .data(function(d) {
