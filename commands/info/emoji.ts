@@ -11,12 +11,14 @@ export default class Emoji extends Command {
             help:
             `
             \`emoji emoji/name\` - Posts an emoji from the emoji or name
+            \`emoji dev emoji/name\` - Gets an emoji from servers the developer owns
             \`emoji list\` - Posts a list of all the emojis in the server
             `,
             examples:
             `
             \`=>emoji karenSugoi\`
             \`=>emoji kannaHungry\`
+            \`=>emoji dev download\`
             \`=>emoji list\`
             `,
             aliases: [],
@@ -62,7 +64,12 @@ export default class Emoji extends Command {
         const emojiID = String(emojiName.replace(/(?<=:)(.*?)(?=:)/g, "").match(/\d+/))
 
         if (emojiID === "null") {
-            const emojiFound = discord.emojis.cache.find((emoji: GuildEmoji) => emoji.name.toLowerCase() === emojiName.toLowerCase())
+            let emojiFound: GuildEmoji | undefined
+            if (args[1] === "dev") {
+                emojiFound = discord.getEmoji(args[2])
+            } else  {
+                emojiFound = discord.emojis.cache.find((emoji: GuildEmoji) => emoji.name.toLowerCase() === emojiName.toLowerCase())
+            }
             if (emojiFound === undefined) {
                 message.channel.send(emojiEmbed
                 .setDescription("Could not find that emoji!"))
