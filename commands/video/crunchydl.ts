@@ -38,13 +38,13 @@ export default class CrunchyDL extends Command {
     }
 
     public downloadEpisode = async (stream: string, dest: string, resolution?: number) => {
-        if (!resolution) resolution = 720
+        if (!resolution) resolution = 480 // reduce
         const manifest = await axios.get(stream).then((r) => r.data)
         const m3u8 = Functions.parsem3u8(manifest)
         let playlist = m3u8.playlists.find((p: any) => p.attributes.RESOLUTION.height === resolution)
         if (!playlist) playlist = m3u8.playlists.find((p: any) => p.attributes.RESOLUTION.height === 480)
         await new Promise((resolve) => {
-            ffmpeg(playlist.uri).outputOptions("-c copy").save(dest)
+            ffmpeg(playlist.uri).outputOptions(["-vcodec", "copy", "-acodec", "copy"]).save(dest)
             .on("end", () => resolve())
         })
     }

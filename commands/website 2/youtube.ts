@@ -205,6 +205,11 @@ export default class YoutubeCommand extends Command {
                 } else {
                     video = await youtube.videos.search({q: query, maxResults: 1}).then((v) => v.items.map((i) => i.id.videoId))?.[0]
                 }
+                if (!video) {
+                    return this.invalidQuery(embeds.createEmbed()
+                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+                    .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`))
+                }
                 const src = `../assets/misc/videos/${rand}/`
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 const msg2 = await message.channel.send(`**Downloading MP3, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
@@ -213,7 +218,7 @@ export default class YoutubeCommand extends Command {
                     file = await youtube.util.downloadMP3(video, src)
                 } catch {
                     msg2.delete({timeout: 1000})
-                    return message.reply(`There was an error in processing this request. Try again later.`)
+                    return message.reply(`This request was rate limited. Try again later.`)
                 }
                 const stats = fs.statSync(file)
                 if (stats.size > 8000000) {
@@ -247,6 +252,11 @@ export default class YoutubeCommand extends Command {
                 } else {
                     video = await youtube.videos.search({q: query, maxResults: 1}).then((v) => v.items.map((i) => i.id.videoId))?.[0]
                 }
+                if (!video) {
+                    return this.invalidQuery(embeds.createEmbed()
+                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+                    .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`))
+                }
                 const src = `../assets/misc/videos/${rand}/`
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 const msg2 = await message.channel.send(`**Downloading video, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
@@ -255,11 +265,10 @@ export default class YoutubeCommand extends Command {
                     file = await youtube.util.downloadVideo(video, src)
                 } catch {
                     msg2.delete({timeout: 1000})
-                    return message.reply(`There was an error in processing this request. Try again later.`)
+                    return message.reply(`This request was rate limited. Try again later.`)
                 }
                 let link = await images.upload([file]).then((l) => l[0])
                 link = encodeURI(link).replace("http", "https")
-                console.log(link)
                 const youtubeEmbed = embeds.createEmbed()
                 youtubeEmbed
                 .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")

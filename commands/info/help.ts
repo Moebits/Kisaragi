@@ -130,7 +130,7 @@ export default class Help extends Command {
             .setImage(imageMap[subDir[i]])
             .setThumbnail(thumbMap[subDir[i]])
             .setDescription(
-                `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n To display a single module, use \`help !(module)\` ${discord.getEmoji("vigneWink")}\n_Click on a reaction twice to toggle compact mode._\n` + help)
+                `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n To display a single module, use \`help !(module)\` ${discord.getEmoji("gabYes")}\n_Click on a reaction twice to toggle compact mode._\n` + help)
             helpEmbedArray.push(helpEmbed)
         }
         if (setIndex > -1) {
