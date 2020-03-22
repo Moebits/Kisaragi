@@ -98,12 +98,12 @@ export class Embeds {
                 const rand = Math.floor(Math.random()*10000)
                 const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
                 const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
-                if (!fs.existsSync(src)) fs.mkdirSync(src)
+                if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 await this.images.downloadImages(images, src)
                 const downloads = fs.readdirSync(src).map((m) => src + m)
                 await Functions.createZip(downloads, dest)
                 if (rep) rep.delete()
-                const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "") || "None"
+                const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
                 const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
                 await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
                 Functions.removeDirectory(src)
@@ -316,14 +316,15 @@ export class Embeds {
                 const rand = Math.floor(Math.random()*10000)
                 const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
                 const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
-                if (!fs.existsSync(src)) fs.mkdirSync(src)
+                if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 await this.images.downloadImages(images, src)
                 const downloads = fs.readdirSync(src).map((m) => src + m)
                 await Functions.createZip(downloads, dest)
                 if (rep) rep.delete()
-                const attachment = new MessageAttachment(dest, `${embeds[0].title}.zip`)
-                await msg.channel.send(`<@${user.id}>, downloaded **${images.length}** images from this embed.`, attachment)
-                fs.rmdirSync(src)
+                const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
+                const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
+                await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
+                Functions.removeDirectory(src)
             })
         }
 

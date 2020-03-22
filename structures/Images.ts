@@ -230,9 +230,9 @@ export class Images {
         const ctx = canvas.getContext("2d")
 
         let background: Canvas.Image
-        const random  = Math.floor(Math.random() * 1000000)
         if (image.includes("gif")) {
-            const dir = `../../../assets/images/dump/${random}/`
+            const random  = Math.floor(Math.random() * 1000000)
+            const dir = path.join(__dirname, `../../../assets/images/dump/${random}/`)
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, {recursive: true})
 
             const files: string[] = []
@@ -259,10 +259,10 @@ export class Images {
                 attachmentArray.push(`image${i}.jpeg`)
                 rIterator++
             }
-            const file = fs.createWriteStream(path.join(dir, `./animated.gif`))
+            const file = fs.createWriteStream(path.join(dir, `./animated${random}.gif`))
             await this.encodeGif(attachmentArray, dir, file)
             msg2.delete()
-            const attachment = new MessageAttachment(path.join(dir, `./animated.gif`), "animated.gif")
+            const attachment = new MessageAttachment(path.join(dir, `./animated${random}.gif`), "animated.gif")
             return attachment
 
         } else {
