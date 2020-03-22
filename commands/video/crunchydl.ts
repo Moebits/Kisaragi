@@ -10,10 +10,12 @@ import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Images} from "../../structures/Images"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {ProcBlock} from "../../structures/ProcBlock"
 import {Video} from "../../structures/Video"
 import crunchyCmd from "../website 2/crunchyroll"
 
 export default class CrunchyDL extends Command {
+    private readonly procBlock = new ProcBlock(this.discord, this.message)
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"}
     public readonly baseURL = "https://api.crunchyroll.com/"
     constructor(discord: Kisaragi, message: Message) {
@@ -38,6 +40,7 @@ export default class CrunchyDL extends Command {
     }
 
     public downloadEpisode = async (stream: string, dest: string, resolution?: number) => {
+        this.procBlock.setGlobalProcBlock()
         if (!resolution) resolution = 480 // reduce
         const manifest = await axios.get(stream).then((r) => r.data)
         const m3u8 = Functions.parsem3u8(manifest)
@@ -47,6 +50,7 @@ export default class CrunchyDL extends Command {
             ffmpeg(playlist.uri).outputOptions(["-vcodec", "copy", "-acodec", "copy"]).save(dest)
             .on("end", () => resolve())
         })
+        this.procBlock.setGlobalProcBlock(true)
     }
 
     public getVilos = async (url: string, sessionID: string) => {
@@ -107,6 +111,7 @@ export default class CrunchyDL extends Command {
         const images = new Images(discord, message)
         const video = new Video(discord, message)
         const crunchy = new crunchyCmd(discord, message)
+        if (this.procBlock.getGlobalProcBlock()) return message.reply(`Sorry, someone is already downloading a video. I can only handle one request at a time ${discord.getEmoji("hanaDesires")}`)
         let input = Functions.combineArgs(args, 1)
         let setSubs = false
         let setMP3 = false

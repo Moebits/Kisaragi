@@ -6,12 +6,14 @@ import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {ProcBlock} from "./../../structures/ProcBlock"
 
 let ytEmbeds: MessageEmbed[] = []
 export default class YoutubeCommand extends Command {
     private video = null as any
     private channel = null as any
     private playlist = null as any
+    private readonly procBlock = new ProcBlock(this.discord, this.message)
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for youtube videos, channels, and playlists or downloads them.",
@@ -196,6 +198,8 @@ export default class YoutubeCommand extends Command {
 
         if (args[1] === "download" || args[1] === "dl") {
             msg.delete({timeout: 1000})
+            if (this.procBlock.getProcBlock()) return message.reply(`Please wait until the current download finishes ${discord.getEmoji("sagiriBleh")}`)
+            this.procBlock.setProcBlock()
             const rand = Math.floor(Math.random()*10000)
             if (args[2] === "mp3") {
                 const query = Functions.combineArgs(args, 3).trim()
@@ -243,6 +247,7 @@ export default class YoutubeCommand extends Command {
                 }
                 Functions.removeDirectory(src)
                 msg2.delete({timeout: 1000})
+                this.procBlock.setProcBlock(true)
                 return
             } else {
                 const query = Functions.combineArgs(args, 2).trim()
@@ -280,6 +285,7 @@ export default class YoutubeCommand extends Command {
                 await message.channel.send(youtubeEmbed)
                 Functions.removeDirectory(src)
                 msg2.delete({timeout: 1000})
+                this.procBlock.setProcBlock(true)
                 return
             }
         }

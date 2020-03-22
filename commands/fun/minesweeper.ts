@@ -180,6 +180,7 @@ export default class Minesweeper extends Command {
         const reveal = msg.createReactionCollector(revealCheck)
 
         array.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
             let row = 1
             let column = 1
             const self = this
@@ -200,7 +201,6 @@ export default class Minesweeper extends Command {
                 await response.delete()
             }
             const numReply = await msg.channel.send(`<@${user.id}>, Enter the row number followed by the column number.`)
-            reaction.users.remove(user)
             await embeds.createPrompt(getRowsColumns)
             await numReply.delete()
             const win = this.checkWinLose(board, user, row, column, mineCount)
@@ -208,6 +208,7 @@ export default class Minesweeper extends Command {
         })
 
         flag.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
             const self = this
             async function getRowsColumns(response: Message) {
                 let row = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)?.[0] : NaN)
@@ -226,12 +227,12 @@ export default class Minesweeper extends Command {
                 await response.delete()
             }
             const numReply = await msg.channel.send(`<@${user.id}>, Enter the row number followed by the column number.`)
-            reaction.users.remove(user)
             await embeds.createPrompt(getRowsColumns)
             await numReply.delete()
         })
 
         reveal.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
             if (!this.done) {
                 await msg.channel.send(`<@${user.id}>, You revealed the game before it was done so you lost by default! ${discord.getEmoji("tohruSmug")}`)
                 this.done = true
