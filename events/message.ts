@@ -28,8 +28,6 @@ export default class MessageEvent {
       const links = new Link(this.discord, message)
       const generate = new Generate(this.discord, message)
 
-      const prefix = await SQLQuery.fetchPrefix(message)
-
       if (message.partial) {
         try {
           message = await message.fetch()
@@ -37,6 +35,8 @@ export default class MessageEvent {
           return
         }
       }
+
+      const prefix = await SQLQuery.fetchPrefix(message)
 
       if (message.author.bot) return
       if (await this.discord.blacklistStop(message)) return

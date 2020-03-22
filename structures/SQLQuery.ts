@@ -143,10 +143,8 @@ export class SQLQuery {
           values: [message.guild?.id]
         }
         const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
-        if (!result?.[0]) {
-          const rep = await message.channel.send(`**Initializing guild, please wait...** ${config.gabCircle}`)
+        if (!result) {
           await SQLQuery.initGuild(message)
-          rep.delete()
           return "=>"
         } else {
           return String(result[0])
