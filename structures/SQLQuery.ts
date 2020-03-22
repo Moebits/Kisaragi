@@ -4,6 +4,7 @@ import {Message} from "discord.js"
 import moment from "moment"
 import {Pool, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
 import * as Redis from "redis"
+import * as config from "../config.json"
 import {Command} from "./Command"
 import {Settings} from "./Settings"
 
@@ -142,8 +143,14 @@ export class SQLQuery {
           values: [message.guild?.id]
         }
         const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
-        if (!result) return "=>"
-        return String(result[0])
+        if (!result?.[0]) {
+          const rep = await message.channel.send(`**Initializing guild, please wait...** ${config.gabCircle}`)
+          await SQLQuery.initGuild(message)
+          rep.delete()
+          return "=>"
+        } else {
+          return String(result[0])
+        }
     }
 
   // Fetch a column
@@ -172,7 +179,7 @@ export class SQLQuery {
     }
 
   // Insert row into a table
-  public insertInto = async (table: string, column: string, value: any): Promise<void> => {
+  public static insertInto = async (table: string, column: string, value: any): Promise<void> => {
         const query: QueryConfig = {
           text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
           values: [value]
@@ -247,7 +254,7 @@ export class SQLQuery {
       await SQLQuery.runQuery(query, true)
     }
 
-  // Purge Table
+  /** Deletes a table. */
   public static purgeTable = async (table: string): Promise<void> => {
       const query: QueryConfig = {
         text: `DELETE FROM "${table}"`
@@ -266,22 +273,44 @@ export class SQLQuery {
         }
     }
 
-  // Init guild
-  public initGuild = async () => {
-      const settings = new Settings(this.message)
-      const query: QueryArrayConfig = {
-            text: `SELECT "guild id" FROM guilds`,
-            rowMode: "array"
+  /** Init Guild */
+  public static initGuild = async (message: Message) => {
+    const settings = new Settings(message)
+    const query: QueryArrayConfig = {
+          text: `SELECT "guild id" FROM guilds`,
+          rowMode: "array"
+    }
+    const result = await SQLQuery.runQuery(query, true)
+    const found = result.find((id: string[]) => id[0] === message.guild?.id.toString()) as any
+    if (!found) {
+          for (let i = 0; i < tableList.length; i++) {
+            await SQLQuery.insertInto(tableList[i], "guild id", message.guild?.id)
           }
-      const result = await SQLQuery.runQuery(query, true)
-      const found = result.find((id: string[]) => id[0] === this.message.guild?.id.toString()) as any
-      if (!found) {
-            for (let i = 0; i < tableList.length; i++) {
-              await this.insertInto(tableList[i], "guild id", this.message.guild?.id)
-            }
-            await settings.initAll()
-            await SQLQuery.orderTables()
-          }
-      return
-      }
+          await settings.initAll()
+          await SQLQuery.orderTables()
+    }
+    return
+  }
+
+  /** Gets all tables. */
+  public static getTables = async () => {
+    const query: QueryConfig = {
+      text: `SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_name`
+    }
+    const result = await SQLQuery.runQuery(query, true) as any
+    return result.map((r: any) => r.table_name) as string[]
+  }
+
+  /** Deletes all rows from all tables. */
+  public static purgeDB = async () => {
+    for (let i = 0; i < tableList.length; i++) {
+      await SQLQuery.purgeTable(tableList[i])
+    }
+    return
+  }
+
+  /** Sets foreign keys. */
+  public static foreignKeys = async () => {
+    //
+  }
 }

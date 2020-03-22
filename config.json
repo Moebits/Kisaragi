@@ -10,5 +10,6 @@
     "invite": "https://discordapp.com/api/oauth2/authorize?client_id=CLIENTID&permissions=2113793271&scope=bot",
     "repo": "https://github.com/Tenpi/Kisaragi",
     "imagesAPI": "https://tenpi-images.herokuapp.com",
-    "openCVAPI": "https://tenpi-opencv.herokuapp.com"
+    "openCVAPI": "https://tenpi-opencv.herokuapp.com",
+    "gabCircle": "<a:gabCircle:599807603899629578>"
 }

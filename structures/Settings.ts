@@ -32,7 +32,7 @@ export class Settings {
         "region": this.message.guild!.region,
         "owner": this.message.guild!.owner!.user.tag,
         "owner id": this.message.guild!.ownerID,
-        "games": this.message.guild!.presences.cache.map((presence: Presence) => presence.activities.join("") ? presence.activities.map((a) => a.name) : null)
+        "games": this.message.guild!.presences.cache.map((presence: Presence) => presence.activities.join("") ? presence.activities.map((a) => a.name) : [null]).flat(Infinity)
     }
 
     private readonly userSettings: Init = {
@@ -189,11 +189,11 @@ export class Settings {
     }
 
     private readonly tableMap: object = {
+        "guilds": this.guildSettings,
+        "users": this.userSettings,
         "prefixes": this.prefixSetting,
         "timezones": this.timezoneSetting,
-        "guilds": this.guildSettings,
         "guild info": this.guildInfoSettings,
-        "users": this.userSettings,
         "channels": this.channelSettings,
         "roles": this.roleSettings,
         "emojis": this.emojiSettings,

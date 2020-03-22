@@ -28,12 +28,7 @@ export default class MessageEvent {
       const links = new Link(this.discord, message)
       const generate = new Generate(this.discord, message)
 
-      let prefix = "=>"
-      try {
-        prefix = await SQLQuery.fetchPrefix(message)
-      } catch {
-        // Do nothing
-      }
+      const prefix = await SQLQuery.fetchPrefix(message)
 
       if (message.partial) {
         try {

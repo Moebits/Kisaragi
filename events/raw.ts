@@ -16,11 +16,10 @@ export default class Raw {
         const user = this.discord.users.cache.get(data.user_id)
         const channel = (this.discord.channels.cache.get(data.channel_id) || await user!.createDM()) as TextChannel
         const message = await channel.messages.fetch(data.message_id)
-        const sql = new SQLQuery(message)
 
         if (channel.messages.cache.has(data.message_id)) return
 
-        await sql.insertInto("ignore", "message", data.message_id)
+        await SQLQuery.insertInto("ignore", "message", data.message_id)
         const emojiKey = data.emoji.id || data.emoji.name
         let reaction = message.reactions.cache.get(emojiKey)
 

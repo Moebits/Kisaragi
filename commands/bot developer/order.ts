@@ -24,6 +24,7 @@ export default class Order extends Command {
 
         await SQLQuery.orderTables()
         orderEmbed
+        .setTitle(`**Order** ${discord.getEmoji("gabStare")}`)
         .setDescription("The tables were **ordered**!")
         message.channel.send(orderEmbed)
 

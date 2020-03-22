@@ -26,7 +26,8 @@ export default class Clean extends Command {
         await SQLQuery.purgeTable("collectors")
         await SQLQuery.flushDB()
         cleanEmbed
-        .setDescription("Tables were **cleaned**! Cached data was deleted.")
+        .setTitle(`**Clean** ${discord.getEmoji("gabStare")}`)
+        .setDescription("Tables were cleaned! Cached data was deleted.")
         message.channel.send(cleanEmbed)
     }
 }

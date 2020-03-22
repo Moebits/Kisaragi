@@ -58,7 +58,7 @@ export default class OsuCommand extends Command {
                     .setTitle(`**Osu Profile** ${discord.getEmoji("kannaSip")}`))
             }
             try {
-                await sql.insertInto("misc", "user id", message.author.id)
+                await SQLQuery.insertInto("misc", "user id", message.author.id)
             } finally {
                 await sql.updateColumn("misc", "osu name", playerName, "user id", message.author.id)
                 message.reply(`Successfully linked your account to **${playerName}**! ${discord.getEmoji("tohruThumbsUp")}`)

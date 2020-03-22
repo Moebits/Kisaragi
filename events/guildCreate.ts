@@ -15,7 +15,7 @@ export default class GuildCreate {
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
         const sql = new SQLQuery(message)
-        sql.initGuild()
+        SQLQuery.initGuild(message)
 
         const logGuild = async (guild: Guild) => {
             const guildChannel = discord.channels.cache.get("683760526840692761") as TextChannel

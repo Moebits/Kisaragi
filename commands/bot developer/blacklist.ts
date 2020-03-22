@@ -54,7 +54,7 @@ export default class Clean extends Command {
             } else {
                 const guild = discord.guilds.cache.get(id)
                 if (!guild) return message.reply("Invalid guild id!")
-                await sql.insertInto("blacklist", "guild id", id)
+                await SQLQuery.insertInto("blacklist", "guild id", id)
                 const msg = await discord.fetchFirstMessage(guild)
                 if (msg) await msg.channel.send(blacklistEmbed.setDescription(`Your guild has been blacklisted, and you will no longer be able to add me onto it. Message from developer: **${reason ?? "None provided!"}**`))
                 await guild.leave()
@@ -67,7 +67,7 @@ export default class Clean extends Command {
             } else {
                 const user = discord.users.cache.get(id)
                 if (!user) return message.reply("Invalid user id!")
-                await sql.insertInto("blacklist", "user id", id)
+                await SQLQuery.insertInto("blacklist", "user id", id)
                 await user.send(blacklistEmbed.setDescription(`You have been blacklisted, and you will no longer be able use Kisaragi bot. Message from developer: **${reason ?? "None provided!"}**`))
                 return message.channel.send(blacklistEmbed.setDescription(`Blacklisted the user **${user.tag}**!`))
             }

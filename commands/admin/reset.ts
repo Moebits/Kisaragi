@@ -34,7 +34,7 @@ export default class Captcha extends Command {
         const initEmbed = embeds.createEmbed()
 
         await SQLQuery.deleteGuild(message.guild!.id)
-        await sql.initGuild()
+        await SQLQuery.initGuild(message)
         message.channel.send(
         initEmbed
         .setTitle(`**Reset** ${discord.getEmoji("kaosWTF")}`)

@@ -7,7 +7,7 @@ export class Permission {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Check Mod
-    public checkMod = async (ignore?: boolean): Promise<boolean> => {
+    public checkMod = async (ignore?: boolean) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
         if (this.message.author.id === this.discord.user!.id) return true
         const mod = await this.sql.fetchColumn("special roles", "mod role")
@@ -29,7 +29,7 @@ export class Permission {
     }
 
     // Check Admin
-    public checkAdmin = async (ignore?: boolean): Promise<boolean> => {
+    public checkAdmin = async (ignore?: boolean) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
         if (this.message.author.id === this.discord.user!.id) return true
         const admin = await this.sql.fetchColumn("special roles", "admin role")
@@ -51,12 +51,11 @@ export class Permission {
     }
 
     // Check Bot Dev
-    public checkBotDev = (): boolean => {
-        if (this.message.author.id === this.discord.user!.id) return true
+    public checkBotDev = () => {
         if (this.message.author.id === process.env.OWNER_ID) {
             return true
         } else {
-            this.message.reply("Sorry, only the bot developer can use bot developer commands.")
+            this.message.reply(`Sorry, only the bot developer can use bot developer commands. ${this.discord.getEmoji("sagiriBleh")}`)
             return false
         }
     }

@@ -123,7 +123,7 @@ export class Embeds {
         const tripleBackward = msg.createReactionCollector(tripleBackwardCheck)
         const numberSelect = msg.createReactionCollector(numberSelectCheck)
 
-        await this.sql.insertInto("collectors", "message", msg.id)
+        await SQLQuery.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", insertEmbeds, "message", msg.id)
         await this.sql.updateColumn("collectors", "collapse", collapseOn, "message", msg.id)
         await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
@@ -428,7 +428,7 @@ export class Embeds {
         ]
         const msg = await this.message.channel.send(embeds[page])
         for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
-        await this.sql.insertInto("collectors", "message", msg.id)
+        await SQLQuery.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
         await this.sql.updateColumn("collectors", "collapse", true, "message", msg.id)
         await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
