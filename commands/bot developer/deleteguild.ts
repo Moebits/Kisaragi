@@ -29,7 +29,7 @@ export default class DeleteGuild extends Command {
         } catch (err) {
             console.log(err)
         } finally {
-            await sql.deleteGuild(guildID)
+            await SQLQuery.deleteGuild(guildID)
         }
 
         message.channel.send(`Deleted the guild **${name}**!`)

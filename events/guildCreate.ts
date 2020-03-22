@@ -17,7 +17,7 @@ export default class GuildCreate {
         const sql = new SQLQuery(message)
         sql.initGuild()
 
-        async function logGuild(guild: Guild) {
+        const logGuild = async (guild: Guild) => {
             const guildChannel = discord.channels.cache.get("683760526840692761") as TextChannel
             const invite = await discord.getInvite(guild)
             const logEmbed = embeds.createEmbed()
@@ -38,7 +38,7 @@ export default class GuildCreate {
         }
         logGuild(guild)
 
-        async function joinMessage(guild: Guild) {
+        const joinMessage = async (guild: Guild) => {
             const mainChannels = guild.channels.cache.filter((c) => {
                 if (c.name.toLowerCase().includes("main") || c.name.toLowerCase().includes("general") || c.name.toLowerCase().includes("chat")) {
                     if (c.type === "text") {
@@ -68,5 +68,18 @@ export default class GuildCreate {
             }
         }
         joinMessage(guild)
+
+        const blacklistLeave = async (guild: Guild) => {
+            const blacklists = await sql.selectColumn("blacklist", "guild id")
+            const found = blacklists.find((g) => String(g) === guild.id)
+            if (found) {
+                await guild.leave()
+            } else {
+                const userLists = await sql.selectColumn("blacklist", "user id")
+                const found = userLists.find((u) => String(u) === guild.ownerID)
+                if (found) await guild.leave()
+            }
+        }
+        blacklistLeave(guild)
     }
 }

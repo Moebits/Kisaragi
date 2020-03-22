@@ -4,6 +4,7 @@ import {Message} from "discord.js"
 import moment from "moment"
 import {Pool, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
 import * as Redis from "redis"
+import {Command} from "./Command"
 import {Settings} from "./Settings"
 
 const RedisAsync = bluebird.promisifyAll(Redis)
@@ -180,12 +181,13 @@ export class SQLQuery {
     }
 
   // Insert command
-  public static insertCommand = async (command: string, aliases: string[], path: string, cooldown: string): Promise<void> => {
-      const query: QueryConfig = {
-        text: `INSERT INTO commands (command, aliases, path, cooldown) VALUES ($1, $2, $3, $4)`,
-        values: [command, aliases, path, cooldown]
+  public static insertCommand = async (name: string, path: string, command: Command): Promise<void> => {
+    const cmd = command.options
+    const query: QueryConfig = {
+        text: `INSERT INTO commands (command, aliases, path, cooldown, help, examples, "guild only", random, permission, "bot permission") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        values: [name, cmd.aliases, path, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission]
       }
-      await SQLQuery.runQuery(query, true)
+    await SQLQuery.runQuery(query, true)
   }
 
   // Update Prefix
@@ -216,16 +218,17 @@ export class SQLQuery {
     }
 
   // Update Command
-  public static updateCommand = async (command: string, aliases: string[], cooldown: string): Promise<void> => {
-      const query: QueryConfig = {
-        text: `UPDATE commands SET aliases = $1, cooldown = $2 WHERE "command" = $3`,
-        values: [aliases, cooldown, command]
-      }
-      await SQLQuery.runQuery(query, true)
+  public static updateCommand = async (name: string, command: Command): Promise<void> => {
+    const cmd = command.options
+    const query: QueryConfig = {
+      text: `UPDATE commands SET aliases = $2, cooldown = $3, help = $4, examples = $5, "guild only" = $6, random = $7, permission = $8, "bot permission" = $9 WHERE "command" = $1`,
+      values: [name, cmd.aliases, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission]
+    }
+    await SQLQuery.runQuery(query, true)
   }
 
   // Remove a guild from all tables
-  public deleteGuild = async (guildID: string): Promise<void> => {
+  public static deleteGuild = async (guildID: string): Promise<void> => {
         for (let i = 0; i < tableList.length; i++) {
             const query: QueryConfig = {
               text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
@@ -236,18 +239,18 @@ export class SQLQuery {
     }
 
   // Delete row
-  public deleteRow = async (table: string, column: string, value: any): Promise<void> => {
+  public static deleteRow = async (table: string, column: string, value: any): Promise<void> => {
       const query: QueryConfig = {
-        text: `DELETE FROM ${table} WHERE ${column} = $1`,
+        text: `DELETE FROM "${table}" WHERE "${column}" = $1`,
         values: [value]
       }
       await SQLQuery.runQuery(query, true)
     }
 
   // Purge Table
-  public purgeTable = async (table: string): Promise<void> => {
+  public static purgeTable = async (table: string): Promise<void> => {
       const query: QueryConfig = {
-        text: `DELETE FROM ${table}`
+        text: `DELETE FROM "${table}"`
       }
       await SQLQuery.runQuery(query, true)
     }

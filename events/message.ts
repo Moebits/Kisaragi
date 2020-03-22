@@ -1,5 +1,6 @@
 import {Collection, Message, MessageAttachment} from "discord.js"
 import path from "path"
+import SQL from "../commands/bot developer/sql"
 import {CommandFunctions} from "../structures/CommandFunctions"
 import {Cooldown} from "../structures/Cooldown.js"
 import {Kisaragi} from "../structures/Kisaragi.js"
@@ -34,7 +35,16 @@ export default class MessageEvent {
         // Do nothing
       }
 
-      if (message.author!.bot) return
+      if (message.partial) {
+        try {
+          message = await message.fetch()
+        } catch {
+          return
+        }
+      }
+
+      if (message.author.bot) return
+      if (await this.discord.blacklistStop(message)) return
 
       // const cmdstr = generate.generateCommands()
       // console.log(cmdstr)

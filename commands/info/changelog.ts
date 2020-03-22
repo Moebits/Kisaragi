@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 16, date: "3/21/2020", changes: "Added \`coin\`, \`blacklist\`, and \`unblacklist\`! Don't make me use them."},
             {num: 15, date: "3/21/2020", changes: "Added random results to the \`xkcd\` command."},
             {num: 14, date: "3/20/2020", changes: "Fixed the photoshop editor, added pagination for the booru commands and the new command \`safebooru\`."},
             {num: 13, date: "3/19/2020", changes: "Fixed some image commands such as \`sharpen\`."},

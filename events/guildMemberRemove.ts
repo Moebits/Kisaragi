@@ -25,7 +25,7 @@ export default class GuildMemberRemove {
         const image = new Images(this.discord, defMsg)
         const embeds = new Embeds(this.discord, defMsg)
 
-        async function leaveMessages() {
+        const leaveMessages = async () => {
             const leaveToggle = await sql.fetchColumn("welcome leaves", "leave toggle")
             if (String(leaveToggle) === "off") return
 
@@ -46,7 +46,7 @@ export default class GuildMemberRemove {
 
         leaveMessages()
 
-        async function leaveBan(discord: Kisaragi) {
+        const leaveBan = async (discord: Kisaragi) => {
             const leaveToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
             const banEmbed = embeds.createEmbed()
             if (String(leaveToggle) === "off") return

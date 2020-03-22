@@ -28,7 +28,7 @@ export default class GuildMemberAdd {
         const image = new Images(this.discord, defMsg)
         const embeds = new Embeds(this.discord, defMsg)
 
-        async function welcomeMessages() {
+        const welcomeMessages = async () => {
             const welcomeToggle = await sql.fetchColumn("welcome leaves", "welcome toggle")
             if (String(welcomeToggle) === "off") return
 
@@ -49,7 +49,7 @@ export default class GuildMemberAdd {
 
         welcomeMessages()
 
-        async function avatarBan(discord: Kisaragi) {
+        const avatarBan = async (discord: Kisaragi) => {
             const banToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
             const banEmbed = embeds.createEmbed()
             if (String(banToggle) === "off") return

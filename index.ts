@@ -6,7 +6,8 @@ import {SQLQuery} from "./structures/SQLQuery"
 
 const discord = new Kisaragi({
     disableMentions: "everyone",
-    restTimeOffset: 0
+    restTimeOffset: 0,
+    partials: ["MESSAGE", "CHANNEL", "REACTION"]
 })
 
 const dumps = [
@@ -31,6 +32,7 @@ for (let i = 0; i < dumps.length; i++) {
 }
 
 const start = async (): Promise<void> => {
+    // await SQLQuery.purgeTable("commands")
     let commandCounter = 0
     const cmdFiles: string[][] = []
     const subDirectory = fs.readdirSync(path.join(__dirname, "./commands/"))
@@ -49,9 +51,9 @@ const start = async (): Promise<void> => {
             const command = new (require(path.join(__dirname, `./commands/${currDir}/${file}`)).default)(discord, null)
 
             if (!cmdFind) {
-                await SQLQuery.insertCommand(commandName, command.aliases, p, command.cooldown)
+                await SQLQuery.insertCommand(commandName, p, command)
             } else {
-                await SQLQuery.updateCommand(commandName, command.aliases, command.cooldown)
+                await SQLQuery.updateCommand(commandName, command)
             }
             commandCounter++
             Logger.log(`Loading Command: ${commandName}`)

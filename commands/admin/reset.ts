@@ -33,7 +33,7 @@ export default class Captcha extends Command {
 
         const initEmbed = embeds.createEmbed()
 
-        await sql.deleteGuild(message.guild!.id)
+        await SQLQuery.deleteGuild(message.guild!.id)
         await sql.initGuild()
         message.channel.send(
         initEmbed

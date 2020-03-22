@@ -128,7 +128,6 @@ export class Embeds {
         await this.sql.updateColumn("collectors", "collapse", collapseOn, "message", msg.id)
         await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         await this.sql.updateColumn("collectors", "download", download, "message", msg.id)
-        await this.redisAddEmbed(msg)
 
         backward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === 0) {
@@ -138,7 +137,7 @@ export class Embeds {
             }
             await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embeds[page])
-            await await reaction.users.remove(user).catch(() => null)
+            await reaction.users.remove(user).catch(() => null)
         })
 
         forward.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -476,7 +475,6 @@ export class Embeds {
         const web = msg.createReactionCollector(webCheck)
         const webTwo = msg.createReactionCollector(webTwoCheck)
         const webThree = msg.createReactionCollector(webThreeCheck)
-        await this.redisAddEmbed(msg)
 
         const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, mod, music, musicTwo, video, web, webTwo, webThree]
 

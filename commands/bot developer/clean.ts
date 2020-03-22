@@ -23,8 +23,7 @@ export default class Clean extends Command {
         if (!perms.checkBotDev()) return
         const cleanEmbed = embeds.createEmbed()
 
-        await sql.purgeTable("ignore")
-        await sql.purgeTable("collectors")
+        await SQLQuery.purgeTable("collectors")
         await SQLQuery.flushDB()
         cleanEmbed
         .setDescription("Tables were **cleaned**! Cached data was deleted.")

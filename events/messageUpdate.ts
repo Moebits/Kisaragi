@@ -5,6 +5,5 @@ export default class MessageUpdate {
 
     public run = (message: Message) => {
         // log updated
-
     }
 }

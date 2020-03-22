@@ -2,6 +2,7 @@ import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Mess
 import {message} from "../test/login"
 import * as config from "./../config.json"
 import {Embeds} from "./Embeds"
+import {SQLQuery} from "./SQLQuery"
 export class Kisaragi extends Client {
     private starIndex = 0
     constructor(options: ClientOptions) {
@@ -87,8 +88,8 @@ export class Kisaragi extends Client {
             }
             return false
         })
-        const channel = channels.first() as TextChannel
-        const lastMsg = await channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
+        const channel = channels?.first() as TextChannel
+        const lastMsg = await channel?.messages?.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
         return lastMsg
     }
 
@@ -112,6 +113,18 @@ export class Kisaragi extends Client {
         `Please report this with the \`feedback\` command, or through any of the following links:\n` +
         `[Support Server](${config.support}), [Github Repository](${config.repo})`)
         return messageErrorEmbed
+    }
+
+    /** Stops responding if the user is blacklisted. */
+    public blacklistStop = async (msg: Message) => {
+        const sql = new SQLQuery(msg)
+        const blacklists = await sql.selectColumn("blacklist", "user id")
+        const found = blacklists.find((u) => String(u) === msg.author.id)
+        if (found) {
+            return true
+        } else {
+            return false
+        }
     }
 
 }

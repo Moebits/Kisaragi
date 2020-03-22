@@ -10,12 +10,13 @@ export default class GuildDelete {
     public run = async (guild: Guild) => {
         const discord = this.discord
         const message = await this.discord.fetchFirstMessage(guild) as Message
+        if (!message) return
         const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        sql.deleteGuild(guild.id)
+        SQLQuery.deleteGuild(guild.id)
 
-        async function logGuild(guild: Guild) {
+        const logGuild = async (guild: Guild) => {
             const guildChannel = discord.channels.cache.get("683760526840692761") as TextChannel
             const invite = await discord.getInvite(guild)
             const logEmbed = embeds.createEmbed()
