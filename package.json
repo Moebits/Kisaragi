@@ -65,6 +65,7 @@
     "dropbox": "^4.0.30",
     "erlpack": "github:discordapp/erlpack",
     "figlet": "^1.3.0",
+    "flickr-sdk": "^3.9.0",
     "fluent-ffmpeg": "^2.1.2",
     "form-data": "^3.0.0",
     "gdprofiles": "^1.0.2-rc.2",

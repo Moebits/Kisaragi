@@ -71,13 +71,11 @@ export default class Pinterest extends Command {
         const accessToken = (process.env.PINTEREST_ACCESS_TOKEN)
         const images = new GoogleImages(process.env.PINTEREST_SEARCH_ID!, process.env.GOOGLE_API_KEY!)
         pinArray = []
-        if (args[1]) {
-            if (args[1].match(/pinterest.com/)) {
-                const matches = args[1].replace("www.", "").replace("https://pinterest.com", "").match(/(?<=\/)(.*?)(?=\/)/g)
-                if (matches?.[0] && matches[0] !== "pin") {
-                    this.user = matches[0]
-                    if (matches[1]) this.board = matches[1]
-                }
+        if (args[1]?.match(/pinterest.com/)) {
+            const matches = args[1].replace("www.", "").replace("https://pinterest.com", "").match(/(?<=\/)(.*?)(?=\/)/g)
+            if (matches?.[0] && matches[0] !== "pin") {
+                this.user = matches[0]
+                if (matches[1]) this.board = matches[1]
             }
         }
 
@@ -152,7 +150,8 @@ export default class Pinterest extends Command {
             return
         }
 
-        const query = Functions.combineArgs(args, 1)
+        let query = Functions.combineArgs(args, 1)
+        if (!query) query = "anime"
         const imageResult = await images.search(query) as any
         const rand = Math.floor(Math.random() * imageResult.length)
         const randPin = imageResult[rand].parentPage

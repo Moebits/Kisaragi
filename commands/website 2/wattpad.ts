@@ -74,7 +74,8 @@ export default class Wattpad extends Command {
         const max = partURLS.length > 20 ? 20 : partURLS.length
         for (let i = 0; i < max; i++) {
             const html = await axios.get(partURLS[i]).then((r) => r.data)
-            const match = Functions.cleanHTML(html.match(/(?<=<pre>)((.|\n)*?)(?=<\/pre>)/gm)?.[0])
+            const match = Functions.cleanHTML(html.match(/(?<=<pre>)((.|\n)*?)(?=<\/pre>)/gm)?.[0]).replace(/\s{2,}/g, "")
+            .replace(/Oops! This image does not follow our content guidelines./g, "").replace(/To continue publishing, please remove it or upload a different image./g, "")
             .replace(/&quot;/gm, '"').replace(/&apos;/gm, "'").replace(/&lt;/g, "<").replace(/&gt;/gm, ">")
             const description = `${discord.getEmoji("star")}_Title:_ **${partTitles[i]}**\n` +
             `${discord.getEmoji("star")}_Writer:_ **${story.user.name}**\n` +
