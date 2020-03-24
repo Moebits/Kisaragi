@@ -53,7 +53,7 @@ export class SQLQuery {
       let redisResult = await redis.getAsync(JSON.stringify(query)) as any
       if (newData) redisResult = null
       if (redisResult) {
-        SQLQuery.logQuery(Object.values(query)[0], start, true)
+        // SQLQuery.logQuery(Object.values(query)[0], start, true)
         return (JSON.parse(redisResult))[0]
       } else {
         const pgClient = await pgPool.connect()
