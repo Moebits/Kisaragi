@@ -53,7 +53,7 @@ const start = async (): Promise<void> => {
             if (!cmdFind) {
                 await SQLQuery.insertCommand(commandName, p, command)
             } else {
-                await SQLQuery.updateCommand(commandName, command)
+                await SQLQuery.updateCommand(commandName, p, command)
             }
             commandCounter++
             Logger.log(`Loading Command: ${commandName}`)

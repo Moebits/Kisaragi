@@ -1,5 +1,6 @@
 import {Message, MessageEmbed, TextChannel} from "discord.js"
 import fs from "fs"
+import * as config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -26,7 +27,7 @@ export default class Help extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const feedChannel = discord.channels.cache.get("683756932317577232") as TextChannel
+        const feedChannel = discord.channels.cache.get(config.feedback) as TextChannel
         let [channelName, guildName] = ["", ""]
         if (message.guild) {
             channelName = (message.channel as TextChannel).name

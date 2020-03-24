@@ -1,4 +1,5 @@
 import {Guild, Message, TextChannel} from "discord.js"
+import * as config from "../config.json"
 import {CommandFunctions} from "./../structures/CommandFunctions"
 import {Embeds} from "./../structures/Embeds"
 import {Functions} from "./../structures/Functions"
@@ -18,7 +19,7 @@ export default class GuildCreate {
         SQLQuery.initGuild(message)
 
         const logGuild = async (guild: Guild) => {
-            const guildChannel = discord.channels.cache.get("683760526840692761") as TextChannel
+            const guildChannel = discord.channels.cache.get(config.guildLog) as TextChannel
             const invite = await discord.getInvite(guild)
             const logEmbed = embeds.createEmbed()
             logEmbed

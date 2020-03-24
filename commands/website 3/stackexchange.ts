@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 export default class FlickrCommand extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for questions on stack overflow or another stack exchange site.",
+            description: "Searches for questions on a stack exchange site, use alias \`stackoverflow\` for stack overflow.",
             help:
             `
             _Note: You must use the stackoverflow alias in order to search on stackoverflow._

@@ -223,11 +223,11 @@ export class SQLQuery {
     }
 
   // Update Command
-  public static updateCommand = async (name: string, command: Command): Promise<void> => {
+  public static updateCommand = async (name: string, path: string, command: Command): Promise<void> => {
     const cmd = command.options
     const query: QueryConfig = {
-      text: `UPDATE commands SET aliases = $2, cooldown = $3, help = $4, examples = $5, "guild only" = $6, random = $7, permission = $8, "bot permission" = $9 WHERE "command" = $1`,
-      values: [name, cmd.aliases, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission]
+      text: `UPDATE commands SET aliases = $2, cooldown = $3, help = $4, examples = $5, "guild only" = $6, random = $7, permission = $8, "bot permission" = $9, path = $10 WHERE "command" = $1`,
+      values: [name, cmd.aliases, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission, path]
     }
     await SQLQuery.runQuery(query, true)
   }

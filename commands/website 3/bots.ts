@@ -42,8 +42,6 @@ export default class DiscordBotList extends Command {
             response =  await axios.get(`${baseURL}/bots?q=${query}`, {headers}).then((r) => r.data)
         }
 
-        console.log(response.bots[0])
-
         const botArray: MessageEmbed[] = []
         for (let i = 0; i < response.bots.length; i++) {
             const bot = response.bots[i]
