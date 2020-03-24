@@ -1,6 +1,7 @@
 import {GuildChannel, Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Channels extends Command {
@@ -40,8 +41,8 @@ export default class Channels extends Command {
                 const value = (i*step)+j
                 if (!channelArray[value]) break
                 description += `${discord.getEmoji("star")}_Channel:_ **${channelArray[value]}**\n` +
-                `${discord.getEmoji("star")}_Channel ID:_ ${idArray[value]}\n` +
-                `${discord.getEmoji("star")}_Creation Date:_ ${createdArray[value]}\n`
+                `${discord.getEmoji("star")}_Channel ID:_ \`${idArray[value]}\`\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ ${Functions.formatDate(createdArray[value])}\n`
             }
             userEmbed
             .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")

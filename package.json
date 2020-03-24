@@ -145,6 +145,7 @@
     "sodium": "^3.0.2",
     "soundcloud.ts": "^0.2.1",
     "sox-stream": "^2.0.3",
+    "stackexchange": "^1.2.0",
     "svg-captcha": "^1.4.0",
     "svg2img": "^0.6.1",
     "syllable": "github:Tenpi/syllable",

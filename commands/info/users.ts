@@ -1,6 +1,7 @@
 import {GuildMember, Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Users extends Command {
@@ -29,7 +30,7 @@ export default class Users extends Command {
         const members = message.guild!.members
         const userArray = members.cache.map((m: GuildMember) => `${m.user.username}#${m.user.discriminator}`)
         const idArray = members.cache.map((m: GuildMember) => m.user.id)
-        const joinArray = members.cache.map((m: GuildMember) => m.joinedAt)
+        const joinArray = members.cache.map((m: GuildMember) => m.joinedAt ?? new Date())
         const step = 7.0
         const increment = Math.ceil(members.cache.size / step)
         const userEmbedArray: MessageEmbed[] = []
@@ -40,8 +41,8 @@ export default class Users extends Command {
                 const value = (i*step)+j
                 if (!userArray[value]) break
                 description += `${discord.getEmoji("star")}_User:_ **${userArray[value]}**\n` +
-                `${discord.getEmoji("star")}_User ID:_ ${idArray[value]}\n` +
-                `${discord.getEmoji("star")}_Join Date:_ ${joinArray[value]}\n`
+                `${discord.getEmoji("star")}_User ID:_ \`${idArray[value]}\`\n` +
+                `${discord.getEmoji("star")}_Join Date:_ ${Functions.formatDate(joinArray[value])}\n`
             }
             userEmbed
             .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")

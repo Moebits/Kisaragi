@@ -1,7 +1,9 @@
 import {Guild, Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 export default class Guilds extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -25,6 +27,8 @@ export default class Guilds extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
         const guilds = discord.guilds
         const guildArray = guilds.cache.map((g: Guild) => g.name)
         const idArray = guilds.cache.map((g: Guild) => g.id)
@@ -39,8 +43,8 @@ export default class Guilds extends Command {
                 const value = (i*step)+j
                 if (!guildArray[value]) break
                 description += `${discord.getEmoji("star")}_Guild:_ **${guildArray[value]}**\n` +
-                `${discord.getEmoji("star")}_Guild ID:_ ${idArray[value]}\n` +
-                `${discord.getEmoji("star")}_Creation Date:_ ${createdArray[value]}\n`
+                `${discord.getEmoji("star")}_Guild ID:_ \`${idArray[value]}\`\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ ${Functions.formatDate(createdArray[value])}\n`
             }
             userEmbed
             .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")

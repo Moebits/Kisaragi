@@ -91,6 +91,24 @@ export class Functions {
         return str.replace(/<\/?[^>]+(>|$)/g, "")
     }
 
+    // Decode HTML entities
+    public static decodeEntities(encodedString: string) {
+        const regex = /&(nbsp|amp|quot|lt|gt);/g
+        const translate = {
+            nbsp:" ",
+            amp : "&",
+            quot: "\"",
+            lt  : "<",
+            gt  : ">"
+        }
+        return encodedString.replace(regex, function(match, entity) {
+            return translate[entity]
+        }).replace(/&#(\d+);/gi, function(match, numStr) {
+            const num = parseInt(numStr, 10)
+            return String.fromCharCode(num)
+        })
+    }
+
     // Multi Trim
     public static multiTrim = (str: string) => {
         return str.replace(/^\s+/gm, "").replace(/\s+$/gm, "").replace(/newline/g, " ")
@@ -206,11 +224,11 @@ export class Functions {
               let varA: any
               let varB: any
               if (type === "number") {
-                varA = a[key].match(/\d+/) ? Number(a[key].replace(/,/g, "").match(/\d+/)[0]) : 0
-                varB = b[key].match(/\d+/) ? Number(b[key].replace(/,/g, "").match(/\d+/)[0]) : 0
+                varA = String(a[key]).match(/\d+/) ? Number(String(a[key]).replace(/,/g, "").match(/\d+/)?.[0]) : 0
+                varB = String(b[key]).match(/\d+/) ? Number(String(b[key]).replace(/,/g, "").match(/\d+/)?.[0]) : 0
               } else {
-                varA = a[key].toUpperCase()
-                varB = b[key].toUpperCase()
+                varA = String(a[key]).toUpperCase()
+                varB = String(b[key]).toUpperCase()
               }
 
               let comparison = 0

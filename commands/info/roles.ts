@@ -1,6 +1,7 @@
 import {Message, MessageEmbed, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Roles extends Command {
@@ -40,8 +41,8 @@ export default class Roles extends Command {
                 const value = (i*step)+j
                 if (!roleArray[value]) break
                 description += `${discord.getEmoji("star")}_Role:_ **${roleArray[value]}**\n` +
-                `${discord.getEmoji("star")}_Role ID:_ ${idArray[value]}\n` +
-                `${discord.getEmoji("star")}_Creation Date:_ ${createdArray[value]}\n`
+                `${discord.getEmoji("star")}_Role ID:_ \`${idArray[value]}\`\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ ${Functions.formatDate(createdArray[value])}\n`
             }
             userEmbed
             .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")

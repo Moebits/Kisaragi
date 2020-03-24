@@ -83,7 +83,7 @@ export default class MessageEvent {
       "bye": "https://i.imgur.com/2CrEDAD.gif"
     }
 
-      if (responseText[message.content.trim().toLowerCase()]) {
+      /*if (responseText[message.content.trim().toLowerCase()]) {
       if (!message.author!.bot) {
         if (this.responseTextCool.has(message.author.id || message.guild?.id)) {
           const reply = await message.channel.send(`<@${message.author.id}>, This command is under a 3 second cooldown!`) as Message
@@ -109,7 +109,7 @@ export default class MessageEvent {
         setTimeout(() => this.responseImageCool.delete(id), 10000)
         return message.channel.send(new MessageAttachment(responseImage[message.content.toLowerCase()]))
       }
-    }
+    }*/
 
       if (message.content.trim().toLowerCase() === "i love you") {
       if (message.author.id === process.env.OWNER_ID) {
