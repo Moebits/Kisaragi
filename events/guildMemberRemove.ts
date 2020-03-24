@@ -15,7 +15,7 @@ export default class GuildMemberRemove {
 
         let defaultChannel = firstMsg.channel as TextChannel
         const defChannel = await sql.fetchColumn("blocks", "default channel")
-        if (String(defChannel)) {
+        if (defChannel) {
             defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === String(defChannel)) as TextChannel
         }
 

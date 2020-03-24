@@ -18,8 +18,8 @@ export default class GuildMemberAdd {
 
         let defaultChannel = firstMsg!.channel as TextChannel
         const defChannel = await sql.fetchColumn("blocks", "default channel")
-        if (String(defChannel)) {
-            defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === defChannel.join("")) as TextChannel
+        if (defChannel) {
+            defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === String(defChannel)) as TextChannel
         }
 
         const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message :

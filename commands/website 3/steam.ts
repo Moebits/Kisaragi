@@ -67,7 +67,7 @@ export default class Steam extends Command {
         if (steamArray.length === 1) {
             await message.channel.send(steamArray[0])
         } else {
-            embeds.createReactionEmbed(steamArray)
+            embeds.createReactionEmbed(steamArray, true, true)
         }
         return
     }
