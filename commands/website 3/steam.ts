@@ -1,3 +1,4 @@
+import axios from "axios"
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -5,16 +6,17 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Steam extends Command {
+    private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches the steam store (disabled).",
+            description: "Searches the steam store.",
             help:
             `
             \`steam query\` - Searches steam.
             `,
             examples:
             `
-            \`=>steam\`
+            \`=>steam anime\`
             `,
             aliases: [],
             random: "none",
@@ -26,8 +28,47 @@ export default class Steam extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        return message.reply("This command isn't finished.")
-
+        let term = Functions.combineArgs(args, 1)
+        if (!term) term = "anime"
+        const data = await axios.get(`https://store.steampowered.com/api/storesearch/?term=${term}&l=english&cc=US`, {headers: this.headers}).then((r) => r.data)
+        if (!data.items?.[0]) {
+            return this.invalidQuery(embeds.createEmbed()
+            .setAuthor("steam", "https://toppng.com/uploads/preview/steam-logo-png-steam-logo-black-11563631869uaboooqq1t.png", "https://store.steampowered.com/")
+            .setTitle(`**Steam Store Search** ${discord.getEmoji("gabYes")}`))
+        }
+        const ids = data.items.map((i: any) => i.id)
+        const steamArray: MessageEmbed[] = []
+        for (let i = 0; i < ids.length; i++) {
+            const details = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${ids[i]}`, {headers: this.headers}).then((r) => r.data[ids[i]].data)
+            const price = details.price_overview ? details.price_overview.final_formatted : "$0"
+            const desc = Functions.checkChar(Functions.decodeEntities(Functions.cleanHTML(details.about_the_game)), 1000, " ")
+            const steamEmbed = embeds.createEmbed()
+            steamEmbed
+            .setAuthor("steam", "https://toppng.com/uploads/preview/steam-logo-png-steam-logo-black-11563631869uaboooqq1t.png", "https://store.steampowered.com/")
+            .setTitle(`**Steam Store Search** ${discord.getEmoji("gabYes")}`)
+            .setURL(`https://store.steampowered.com/app/${details.steam_appid}/`)
+            .setImage(details.header_image)
+            .setDescription(
+                `${discord.getEmoji("star")}_Game:_ **${details.name}**\n` +
+                `${discord.getEmoji("star")}_Mini Desc:_ ${details.short_description}\n` +
+                `${discord.getEmoji("star")}_Release Date:_ **${details.release_date.date ? details.release_date.date : "Coming Soon"}**\n` +
+                `${discord.getEmoji("star")}_Price:_ **${price}**\n` +
+                `${discord.getEmoji("star")}_Publishers:_ **${details.publishers.join(", ")}**\n` +
+                `${discord.getEmoji("star")}_Developers:_ **${details.developers.join(", ")}**\n` +
+                `${discord.getEmoji("star")}_Genres:_ **${details.genres.map((g: any) => g.description).join(", ")}**\n` +
+                `${discord.getEmoji("star")}_Achievements:_ **${details.achievements?.total ?? 0}**\n` +
+                `${discord.getEmoji("star")}_Movie:_ ${details.movies?.[0]?.webm?.max ? `[**Link**](${details.movies[0].webm.max})` : "**None**"}\n` +
+                `${discord.getEmoji("star")}_Website:_ **${details.website ? details.website : "None"}**\n` +
+                `${discord.getEmoji("star")}_Support:_ **${details.support_info?.url ? details.support_info?.url : (details.support_info?.email ?? "None")}**\n` +
+                `${discord.getEmoji("star")}_Description:_ ${desc}\n`
+            )
+            steamArray.push(steamEmbed)
+        }
+        if (steamArray.length === 1) {
+            await message.channel.send(steamArray[0])
+        } else {
+            embeds.createReactionEmbed(steamArray)
+        }
         return
     }
 }
