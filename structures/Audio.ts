@@ -906,15 +906,15 @@ export class Audio {
 
     public applyEffects = async (newFile: string) => {
         const queue = this.getQueue() as any
-        if (queue[0].reverse) {
+        if (queue[0]?.reverse) {
             if (queue[1]) queue[1].reverse = true
             await this.reverse(newFile)
         }
-        if (Number(queue[0].pitch) !== 0) {
+        if (Number(queue[0]?.pitch) !== 0) {
             if (queue[1]) queue[1].pitch = queue[0].pitch
             await this.pitch(newFile, Number(queue[0].pitch))
         }
-        if ((queue[0].speed) !== 1) {
+        if ((queue[0]?.speed) !== 1) {
             if (queue[1]) queue[1].speed = queue[0].speed
             await this.speed(newFile, Number(queue[0].speed))
         }
