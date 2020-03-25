@@ -50,11 +50,19 @@ export default class Selfrole extends Command {
                 const found = message.member!.roles.cache.find((r: Role) => r.id === roles[i].id)
                 let description = ""
                 if (found) {
-                    await message.member!.roles.remove(roles[i].id)
-                    description = `${discord.getEmoji("star")}<@${message.author!.id}>, you no longer have the <@&${roles[i].id}> role!`
+                    try {
+                        await message.member!.roles.remove(roles[i].id)
+                        description = `${discord.getEmoji("star")}<@${message.author!.id}>, you no longer have the <@&${roles[i].id}> role!`
+                    } catch {
+                        description = "I need the **Manage Roles** permission in order to remove this role."
+                    }
                 } else {
-                    await message.member!.roles.add(roles[i].id)
-                    description = `${discord.getEmoji("star")}<@${message.author!.id}>, you were given the <@&${roles[i].id}> role!`
+                    try {
+                        await message.member!.roles.add(roles[i].id)
+                        description = `${discord.getEmoji("star")}<@${message.author!.id}>, you were given the <@&${roles[i].id}> role!`
+                    } catch {
+                        description = "I need the **Manage Roles** permission in order to add this role."
+                    }
                 }
                 const selfEmbed = embeds.createEmbed()
                 selfEmbed

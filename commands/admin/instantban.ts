@@ -40,9 +40,9 @@ export default class InstantBan extends Command {
         .setDescription(Functions.multiTrim(`
             Configure settings for instant bans.
             newline
-            **Profile Picture Ban** = Bans all members that have a default profile picture upon joining.
-            **Leave Ban** = Bans all members that join and then leave in under 5 minutes.
-            **Default Channel** = The default channel where messages will be posted.
+            **Profile Picture Ban** - Bans all members that have a default profile picture upon joining.
+            **Leave Ban** - Bans all members that join and then leave in under 5 minutes.
+            **Default Channel** - The default channel where messages will be posted.
             newline
             __Current Settings:__
             ${discord.getEmoji("star")}_Profile Picture Ban:_ **${pfpBan}**

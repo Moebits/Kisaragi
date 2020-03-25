@@ -57,16 +57,16 @@ export default class Detect extends Command {
         .setDescription(Functions.multiTrim(`
             Configure settings for automatic detection.
             newline
-            **Link Detection** = Detects links and automatically runs the corresponding command.
-            **Anime Detection** = Removes all pictures that don't contain anime characters.
-            **Pfp Detection** = Actively swaps members between the weeb role (anime pfp) and normie role (non anime pfp).
+            **Link Detection** - Detects links and automatically runs the corresponding command.
+            **Anime Detection** - Removes all pictures that don't contain anime characters.
+            **Pfp Detection** - Actively swaps members between the weeb role (anime pfp) and normie role (non anime pfp).
             newline
             __Current Settings__
-            ${discord.getEmoji("star")}Link detection is **${links ? links.join("") :  "off"}**
-            ${discord.getEmoji("star")}Anime detection is **${anime ? anime.join("") :  "off"}**
-            ${discord.getEmoji("star")}Pfp detection is **${pfp ? pfp.join("") :  "off"}**
-            ${discord.getEmoji("star")}Weeb role: **${weeb ? (weeb.join("") ?  `<@&${weeb.join("")}>` : "None") :  "None"}**
-            ${discord.getEmoji("star")}Normie role: **${normie ? (normie.join("") ?  `<@&${normie.join("")}>` : "None") : "None"}**
+            ${discord.getEmoji("star")}Link detection is **${links ? links :  "off"}**
+            ${discord.getEmoji("star")}Anime detection is **${anime ? anime :  "off"}**
+            ${discord.getEmoji("star")}Pfp detection is **${pfp ? pfp :  "off"}**
+            ${discord.getEmoji("star")}Weeb role: **${weeb ? (weeb ?  `<@&${weeb}>` : "None") :  "None"}**
+            ${discord.getEmoji("star")}Normie role: **${normie ? (normie ?  `<@&${normie}>` : "None") : "None"}**
             newline
             __Edit Settings__
             ${discord.getEmoji("star")}Type **link** to toggle link detection on/off.
@@ -120,7 +120,7 @@ export default class Detect extends Command {
             let description = ""
 
             if (setLink) {
-                if (!dLinks || dLinks.join("") === "off") {
+                if (!dLinks || dLinks === "off") {
                     await sql.updateColumn("detection", "links", "on")
                     description += `${discord.getEmoji("star")}Link detection is **on**!\n`
                 } else {
@@ -130,7 +130,7 @@ export default class Detect extends Command {
             }
 
             if (setAnime) {
-                if (!dAnime || dAnime.join("") === "off") {
+                if (!dAnime || dAnime === "off") {
                     await sql.updateColumn("detection", "anime", "on")
                     description += `${discord.getEmoji("star")}Anime detection is **on**!\n`
                 } else {
@@ -140,13 +140,13 @@ export default class Detect extends Command {
             }
 
             if (setPfp) {
-                if (!dPfp || dPfp.join("") === "off") {
-                    if (!dWeeb.join("") || !dNormie.join("")) {
+                if (!dPfp || dPfp === "off") {
+                    if (!dWeeb || !dNormie) {
                         let [testWeeb, testNormie] = [] as boolean[]
-                        if (!dWeeb.join("") && setWeeb) testWeeb = true
-                        if (!dNormie.join("") && setNormie) testNormie = true
-                        if (dWeeb.join("")) testWeeb = true
-                        if (dNormie.join("")) testNormie = true
+                        if (!dWeeb && setWeeb) testWeeb = true
+                        if (!dNormie && setNormie) testNormie = true
+                        if (dWeeb) testWeeb = true
+                        if (dNormie) testNormie = true
                         if (!(testWeeb && testNormie)) {
                             responseEmbed
                             .setDescription("In order to turn on pfp detection, you must set both the weeb and normie role.")
@@ -163,13 +163,13 @@ export default class Detect extends Command {
             }
 
             if (setWeeb) {
-                await sql.updateColumn("detection", "weeb", weebRole!.join(""))
-                description += `${discord.getEmoji("star")}Weeb role set to **<@&${weebRole!.join("")}>**!\n`
+                await sql.updateColumn("detection", "weeb", String(weebRole))
+                description += `${discord.getEmoji("star")}Weeb role set to **<@&${String(weebRole)}>**!\n`
             }
 
             if (setNormie) {
-                await sql.updateColumn("detection", "normie", normieRole!.join(""))
-                description += `${discord.getEmoji("star")}Normie role set to **<@&${normieRole!.join("")}>**!\n`
+                await sql.updateColumn("detection", "normie", String(normieRole))
+                description += `${discord.getEmoji("star")}Normie role set to **<@&${String(normieRole)}>**!\n`
             }
 
             responseEmbed

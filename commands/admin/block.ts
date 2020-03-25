@@ -69,9 +69,9 @@ export default class Block extends Command {
         .setDescription(Functions.multiTrim(`
         Add or remove blocked words.
         newline
-        **Exact** = Only matches the exact word.
-        **Partial** = Also matches if the word is partially in another word.
-        **Asterisk** = Whether messages containing asterisks will be blocked.
+        **Exact** - Only matches the exact word.
+        **Partial** - Also matches if the word is partially in another word.
+        **Asterisk** - Whether messages containing asterisks will be blocked.
         newline
         __Word List__
         ${wordList}
@@ -166,7 +166,7 @@ export default class Block extends Command {
                         if (words[i] === wordArray[j]) {
                             description += `${discord.getEmoji("star")}**${wordArray[j]}** is already blocked!`
                             wordArray[j] = ""
-                            wordArray = wordArray.filter(Boolean)
+                            wordArray = wordArray.map((w) => w.trim()).filter(Boolean)
                         }
                     }
                 }

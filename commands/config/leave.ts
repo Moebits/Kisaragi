@@ -67,11 +67,11 @@ export default class Leave extends Command {
             View and edit the settings for leave messages!
             newline
             __Text Replacements:__
-            **user** = member mention
-            **tag** = member tag
-            **name** = member name
-            **guild** = guild name
-            **count** = guild member count
+            **user** - mention
+            **tag** - member tag
+            **name** - member name
+            **guild** - guild name
+            **count** - guild member count
             newline
             __Current Settings:__
             ${discord.getEmoji("star")}_Leave Message:_ **${leaveMsg}**

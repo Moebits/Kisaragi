@@ -41,9 +41,14 @@ export default class Mention extends Command {
             .setDescription("Could not find that role!"))
             return
         }
-        await role.setMentionable(true)
-        await message.channel.send(`<@&${role.id}>`)
-        await role.setMentionable(false)
+        try {
+            await role.setMentionable(true)
+            await message.channel.send(`<@&${role.id}>`)
+            await role.setMentionable(false)
+        } catch {
+            return message.reply("Could not mention this role, I need the **Manage Roles** permission.")
+        }
+
         if (message.content.startsWith(prefix[0])) await message.delete()
     }
 }

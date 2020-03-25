@@ -19,6 +19,7 @@ export default class Verify extends Command {
             \`=>verify\`
             `,
             guildOnly: true,
+            botPermission: "MANAGE_ROLES",
             aliases: [],
             cooldown: 10
         })
@@ -31,13 +32,13 @@ export default class Verify extends Command {
         const captchaClass = new Captcha(discord, message)
         const sql = new SQLQuery(message)
         const vToggle = await sql.fetchColumn("captcha", "verify toggle")
-        if (vToggle.join("") === "off") return message.reply(`Looks like verification is disabled. Enable it in the **captcha** command.`)
+        if (vToggle === "off") return message.reply(`Looks like verification is disabled. Enable it in the **captcha** command.`)
         const vRole = await sql.fetchColumn("captcha", "verify role")
         const cType = await sql.fetchColumn("captcha", "captcha type")
         const color = await sql.fetchColumn("captcha", "captcha color")
         const difficulty = await sql.fetchColumn("captcha", "difficulty")
 
-        const role = message.guild!.roles.cache.find((r: Role) => r.id === vRole.join(""))
+        const role = message.guild!.roles.cache.find((r: Role) => r.id === vRole)
         if (!role) {
             const vErrorEmbed = embeds.createEmbed()
             vErrorEmbed.setDescription("Could not find the verify role!")
@@ -50,6 +51,8 @@ export default class Verify extends Command {
         const filter = (response: Message) => {
             return (response.author === message.author)
         }
+
+        let fail = false
 
         function sendCaptcha(cap: MessageEmbed, txt: string) {
             message.channel.send(cap).then(() => {
@@ -69,10 +72,20 @@ export default class Verify extends Command {
                             return sendCaptcha(result.captcha, result.text)
                         } else if (msg.content.trim() === txt) {
                             if (msg.member!.roles.cache.has(role!.id)) {
-                                await msg.member!.roles.remove(role!)
-                                await msg.member!.roles.add!(role!, "Successfully solved the captcha")
+                                try {
+                                    await msg.member!.roles.remove(role!)
+                                    await msg.member!.roles.add!(role!, "Successfully solved the captcha")
+                                } catch {
+                                    fail = true
+                                    return message.channel.send("Verification failed. Either I don't have the **Manage Roles** permission, or the verify role is above my highest role in the role hierarchy.")
+                                }
                             } else {
-                                await msg.member!.roles.add(role!, "Successfully solved the captcha")
+                                try {
+                                    await msg.member!.roles.add(role!, "Successfully solved the captcha")
+                                } catch {
+                                    fail = true
+                                    return message.channel.send("Verification failed. Either I don't have the **Manage Roles** permission, or the verify role is above my highest role in the role hierarchy.")
+                                }
                             }
                             responseEmbed
                             .setDescription(`${discord.getEmoji("pinkCheck")} **${msg.member!.displayName}** was verified!`)
@@ -83,7 +96,8 @@ export default class Verify extends Command {
                             return sendCaptcha(result.captcha, result.text)
                         }
                     })
-                    .catch((collected) => {
+                    .catch(() => {
+                        if (fail) return
                         message.channel.send("Quit the captcha because the time has run out.")
                     })
             })

@@ -218,6 +218,10 @@ export class Settings {
     public initAll = async () => {
         const entries = Object.entries(this.tableMap)
         for (const [table, object] of entries) {
+            if (table === "points") {
+                const exists = await this.sql.fetchColumn("points", "score list")
+                if (exists) continue
+            }
             const settings = Object.entries(object)
             for (const [key, value] of settings) {
                 await this.sql.updateColumn(table, key, value)

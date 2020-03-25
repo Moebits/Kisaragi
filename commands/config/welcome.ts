@@ -179,7 +179,6 @@ export default class Welcome extends Command {
             msg.channel.send(responseEmbed)
             return
         }
-
         embeds.createPrompt(welcomePrompt)
     }
 }

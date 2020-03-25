@@ -49,13 +49,17 @@ export default class Create extends Command {
             }
             if (position < 0) position = 0
             if (!name) return message.reply("You must provide a name for the channel.")
-            const nChannel = await message.guild!.channels.create(name, {position, parent, reason, type: "text"})
-            const createEmbed = embeds.createEmbed()
-            createEmbed
-            .setAuthor("create", "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png")
-            .setTitle(`**Channel Creation** ${discord.getEmoji("gabYes")}`)
-            .setDescription(`The channel **<#${nChannel.id}>** was created for reason: **${reason}**`)
-            return message.reply(createEmbed)
+            try {
+                const nChannel = await message.guild!.channels.create(name, {position, parent, reason, type: "text"})
+                const createEmbed = embeds.createEmbed()
+                createEmbed
+                .setAuthor("create", "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png")
+                .setTitle(`**Channel Creation** ${discord.getEmoji("gabYes")}`)
+                .setDescription(`The channel **<#${nChannel.id}>** was created for reason: **${reason}**`)
+                return message.reply(createEmbed)
+            } catch {
+                return message.reply("Could not create this channel, I need the **Manage Channels** permission.")
+            }
         }
 
         if (args[1] === "role") {
@@ -70,13 +74,17 @@ export default class Create extends Command {
             if (newArgs[2]) position = Number(newArgs[2])
             if (newArgs[3]) hoist = Boolean(newArgs[3])
             if (newArgs[4]) mentionable = Boolean(newArgs[4])
-            const nRole = await message.guild!.roles.create({data: {name, position, color, hoist, mentionable}})
-            const createEmbed = embeds.createEmbed()
-            createEmbed
-            .setAuthor("create", "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png")
-            .setTitle(`**Role Creation** ${discord.getEmoji("gabYes")}`)
-            .setDescription(`The role **<@&${nRole.id}>** was created!`)
-            return message.reply(createEmbed)
+            try {
+                const nRole = await message.guild!.roles.create({data: {name, position, color, hoist, mentionable}})
+                const createEmbed = embeds.createEmbed()
+                createEmbed
+                .setAuthor("create", "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png")
+                .setTitle(`**Role Creation** ${discord.getEmoji("gabYes")}`)
+                .setDescription(`The role **<@&${nRole.id}>** was created!`)
+                return message.reply(createEmbed)
+            } catch {
+                return message.reply("Could not create this role, I need the **Manage Roles** permission.")
+            }
         }
 
         if (args[1] === "emoji") {
@@ -86,14 +94,18 @@ export default class Create extends Command {
             const reason = newArgs[2] ? Functions.combineArgs(newArgs, 2).trim() : "None provided!"
             if (!image) image = await discord.fetchLastAttachment(message)
             if (!name || !image) return message.reply(`You must provide a name for the emoji and an image link (I will also try searching for recently sent images.)`)
-            const nEmoji = await message.guild!.emojis.create(image, name, {reason})
-            const emojiTag = nEmoji.animated ? `<${nEmoji.identifier}>` : `<:${nEmoji.identifier}>`
-            const createEmbed = embeds.createEmbed()
-            createEmbed
-            .setAuthor("create", "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png")
-            .setTitle(`**Emoji Creation** ${discord.getEmoji("gabYes")}`)
-            .setDescription(`The emoji **${emojiTag}** was created for reason: **${reason}**`)
-            return message.reply(createEmbed)
+            try {
+                const nEmoji = await message.guild!.emojis.create(image, name, {reason})
+                const emojiTag = nEmoji.animated ? `<${nEmoji.identifier}>` : `<:${nEmoji.identifier}>`
+                const createEmbed = embeds.createEmbed()
+                createEmbed
+                .setAuthor("create", "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png")
+                .setTitle(`**Emoji Creation** ${discord.getEmoji("gabYes")}`)
+                .setDescription(`The emoji **${emojiTag}** was created for reason: **${reason}**`)
+                return message.reply(createEmbed)
+            } catch {
+                return message.reply("Could not create this emoji, I need the **Manage Emojis** permission.")
+            }
         }
     }
 }

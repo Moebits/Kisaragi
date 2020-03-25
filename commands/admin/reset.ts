@@ -8,10 +8,10 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Captcha extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Deletes and resets all data on your guild (no undo).",
+            description: "Deletes and resets all data on your guild (excluding points).",
             help:
             `
-            \`reset\` - Resets all data (no undo)
+            \`reset\` - Resets all data, excluding points
             `,
             examples:
             `
@@ -38,7 +38,7 @@ export default class Captcha extends Command {
         message.channel.send(
         initEmbed
         .setTitle(`**Reset** ${discord.getEmoji("kaosWTF")}`)
-        .setDescription("All guild settings have been reset to the default."))
+        .setDescription("All guild settings have been reset to the default! Points are still intact, if you wish to delete them do it in \`level\`."))
         return
     }
 }

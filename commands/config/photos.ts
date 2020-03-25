@@ -63,7 +63,7 @@ export default class Photos extends Command {
                 "**Upload Notify** = Whether you will be notified whenever a photo is uploaded.\n" +
                 "\n" +
                 "__Current Settings__\n" +
-                `${discord.getEmoji("star")}Upload notify is set to **${notify.join("")}**!\n` +
+                `${discord.getEmoji("star")}Upload notify is set to **${notify}**!\n` +
                 description +
                 "\n" +
                 "__Edit Settings__\n" +

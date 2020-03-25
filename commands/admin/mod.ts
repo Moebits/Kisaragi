@@ -47,10 +47,10 @@ export default class Mod extends Command {
         .setDescription(Functions.multiTrim(`
              Edit moderation settings for the server.
 
-             **Restricted Role** = Can be any role with restricted Permission.
-             **Warn Threshold** = How many warnings will trigger the punishment.
-             **Warn Penalty** = The punishment after hitting the warn threshold.
-             **Ascii Names** = Removes all non-ascii characters in usernames.
+             **Restricted Role** - Can be any role with restricted Permission.
+             **Warn Threshold** - How many warnings will trigger the punishment.
+             **Warn Penalty** - The punishment after hitting the warn threshold.
+             **Ascii Names** - Removes all non-ascii characters in usernames.
 
              __Current Settings__
              ${discord.getEmoji("star")}Admin role: ${admin ? `<@&${admin}>` : "None"}

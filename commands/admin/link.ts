@@ -52,7 +52,7 @@ export default class ChannelLink extends Command {
             Configure settings for linked channels. You can link a text channel to a voice channel so that only people in the voice channel can access it.
             In order for this to work, you should disable the **read messages** permission on the text channel for all member roles.
             newline
-            **Status** = Either on or off. In order for the status to be on, both the voice and text channel must be set.
+            **Status** - Either on or off. In order for the status to be on, both the voice and text channel must be set.
             newline
             __Current Settings:__
             ${linkDescription}

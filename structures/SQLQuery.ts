@@ -235,11 +235,12 @@ export class SQLQuery {
   // Remove a guild from all tables
   public static deleteGuild = async (guildID: string): Promise<void> => {
         for (let i = 0; i < tableList.length; i++) {
-            const query: QueryConfig = {
-              text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
-              values: [guildID]
-            }
-            await SQLQuery.runQuery(query, true)
+          if (tableList[i] === "points") continue
+          const query: QueryConfig = {
+            text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
+            values: [guildID]
+          }
+          await SQLQuery.runQuery(query, true)
         }
     }
 
@@ -254,6 +255,7 @@ export class SQLQuery {
 
   /** Deletes a table. */
   public static purgeTable = async (table: string): Promise<void> => {
+      if (table === "points") return
       const query: QueryConfig = {
         text: `DELETE FROM "${table}"`
       }
@@ -302,6 +304,7 @@ export class SQLQuery {
   /** Deletes all rows from all tables. */
   public static purgeDB = async () => {
     for (let i = 0; i < tableList.length; i++) {
+      if (tableList[i] === "points") continue
       await SQLQuery.purgeTable(tableList[i])
     }
     return

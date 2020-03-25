@@ -76,8 +76,8 @@ export default class Auto extends Command {
             .setDescription(Functions.multiTrim(`
             Configure settings for auto commands. You can set up a maximum of 10 auto commands.
             newline
-            **Frequency** = How often the command will run, in hours.
-            **State** = Active (on) or Inactive (off).
+            **Frequency** - How often the command will run, in hours.
+            **State** - Active (on) or Inactive (off).
             newline
             __Current Settings:__
             ${settings}

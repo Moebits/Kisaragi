@@ -41,22 +41,22 @@ export default class Level extends Command {
             "individual channels, use **levelchannels** instead. To add or remove points from a user, use **give** instead.\n" +
             "\n" +
             "__Text Replacements:__\n" +
-            "**user** = member mention\n" +
-            "**tag** = member tag\n" +
-            "**name** = member name\n" +
-            "**newlevel** = new level\n" +
-            "**totalpoints** = total points\n" +
+            "**user** - member mention\n" +
+            "**tag** - member tag\n" +
+            "**name** - member name\n" +
+            "**newlevel** - new level\n" +
+            "**totalpoints** - total points\n" +
             "\n" +
-            "**Point Range** = The range of points to award per message.\n" +
-            "**Point Threshold** = The amount of points required to level up.\n" +
-            "**Point Timeout** = How often points are awarded (in seconds).\n" +
+            "**Point Range** - The range of points to award per message.\n" +
+            "**Point Threshold** - The amount of points required to level up.\n" +
+            "**Point Timeout** - How often points are awarded (in seconds).\n" +
             "\n" +
             "__Current Settings:__\n" +
-            `${discord.getEmoji("star")}_Point Toggle:_ **${pointToggle.join("")}**\n` +
-            `${discord.getEmoji("star")}_Point Range:_ **${pointRange.join("")}**\n` +
-            `${discord.getEmoji("star")}_Point Threshold:_ **${pointThreshold.join("")}**\n` +
-            `${discord.getEmoji("star")}_Point Timeout:_ **${Math.floor(parseInt(pointTimeout.join(""), 10)/1000)}**\n` +
-            `${discord.getEmoji("star")}_Level Message:_ **${levelMsg.join("")}**\n` +
+            `${discord.getEmoji("star")}_Point Toggle:_ **${pointToggle}**\n` +
+            `${discord.getEmoji("star")}_Point Range:_ **${pointRange}**\n` +
+            `${discord.getEmoji("star")}_Point Threshold:_ **${pointThreshold}**\n` +
+            `${discord.getEmoji("star")}_Point Timeout:_ **${Math.floor(parseInt(pointTimeout, 10)/1000)}**\n` +
+            `${discord.getEmoji("star")}_Level Message:_ **${levelMsg}**\n` +
             "\n" +
             "__Edit Settings:__\n" +
             `${discord.getEmoji("star")}_**Type any message** to set the level message._\n` +
@@ -74,7 +74,7 @@ export default class Level extends Command {
         async function levelPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Level Settings** ${discord.getEmoji("mexShrug")}`)
-            let setOn, setOff, setRange, setThreshold, setTimeout, setMsg
+            let [setOn, setOff, setRange, setThreshold, setTimeout, setMsg] = [false, false, false, false, false, false]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)

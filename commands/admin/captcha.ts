@@ -65,9 +65,9 @@ export default class CaptchaCmd extends Command {
             Configure settings for captcha verification. In order for this to function, you should create a role for verified members
             and deny the @everyone role reading Permission in all your guild channels, with the exception of the rules channel and the verify channel. Use **verify** to send a captcha.
             newline
-            **Verify Role** = The role given to members who solve the captcha.
-            **Captcha Type** = Either text or math.
-            **Captcha Difficulty** = Either easy, medium, hard, or extreme.
+            **Verify Role** - The role given to members who solve the captcha.
+            **Captcha Type** - Either text or math.
+            **Captcha Difficulty** - Either easy, medium, hard, or extreme.
             newline
             __Current Settings:__
             ${discord.getEmoji("star")}_Verify Role:_ **${vRole ?  "<@&" + vRole + ">" : "None"}**

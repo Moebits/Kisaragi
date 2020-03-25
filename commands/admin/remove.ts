@@ -47,13 +47,18 @@ export default class Remove extends Command {
             }
             if (!channel) return message.reply(`Could not find this channel!`)
             const channelName = channel.name
-            await channel.delete(reason)
-            const removeEmbed = embeds.createEmbed()
-            removeEmbed
-            .setAuthor("remove", "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png")
-            .setTitle(`**Channel Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
-            .setDescription(`The channel **#${channelName}** was deleted for reason: **${reason}**`)
-            return message.reply(removeEmbed)
+            try {
+                await channel.delete(reason)
+                const removeEmbed = embeds.createEmbed()
+                removeEmbed
+                .setAuthor("remove", "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png")
+                .setTitle(`**Channel Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
+                .setDescription(`The channel **#${channelName}** was deleted for reason: **${reason}**`)
+                return message.reply(removeEmbed)
+            } catch {
+                return message.reply("Could not delete this channel, I need the **Manage Channels** permission.")
+            }
+
         }
 
         if (args[1] === "role") {
@@ -67,13 +72,17 @@ export default class Remove extends Command {
             }
             if (!role) return message.reply(`Could not find a role!`)
             const roleName = role.name
-            await role.delete(reason)
-            const removeEmbed = embeds.createEmbed()
-            removeEmbed
-            .setAuthor("remove", "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png")
-            .setTitle(`**Role Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
-            .setDescription(`The role **${roleName}** was deleted for reason: **${reason}**`)
-            return message.reply(removeEmbed)
+            try {
+                await role.delete(reason)
+                const removeEmbed = embeds.createEmbed()
+                removeEmbed
+                .setAuthor("remove", "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png")
+                .setTitle(`**Role Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
+                .setDescription(`The role **${roleName}** was deleted for reason: **${reason}**`)
+                return message.reply(removeEmbed)
+            } catch {
+                return message.reply("Could not delete this role, I need the **Manage Roles** permission.")
+            }
         }
 
         if (args[1] === "emoji") {
@@ -87,13 +96,17 @@ export default class Remove extends Command {
             }
             if (!emoji) return message.reply(`Could not find this emoji!`)
             const emojiName = emoji.name
-            await emoji.delete(reason)
-            const removeEmbed = embeds.createEmbed()
-            removeEmbed
-            .setAuthor("remove", "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png")
-            .setTitle(`**Emoji Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
-            .setDescription(`The emoji **${emojiName}** was deleted for reason: **${reason}**`)
-            return message.reply(removeEmbed)
+            try {
+                await emoji.delete(reason)
+                const removeEmbed = embeds.createEmbed()
+                removeEmbed
+                .setAuthor("remove", "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png")
+                .setTitle(`**Emoji Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
+                .setDescription(`The emoji **${emojiName}** was deleted for reason: **${reason}**`)
+                return message.reply(removeEmbed)
+            } catch {
+                return message.reply("Could not delete this emoji, I need the **Manage Emojis** permission.")
+            }
         }
     }
 }
