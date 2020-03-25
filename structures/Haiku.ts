@@ -1,7 +1,6 @@
 import {Message} from "discord.js"
 import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
-
 export class Haiku {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
@@ -45,7 +44,7 @@ export class Haiku {
                 "\n" +
                 `**- ${this.message.author!.username}**\n`
             )
-            this.message.channel.send(haikuEmbed)
+            return haikuEmbed
         }
     }
 }

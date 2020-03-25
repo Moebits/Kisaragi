@@ -68,7 +68,7 @@ export default class GuildCreate {
                 await cmd.runCommand(message, ["gettingstarted", mainChannel.id])
             }
         }
-        joinMessage(guild)
+        if (!discord.checkMuted(guild)) joinMessage(guild)
 
         const blacklistLeave = async (guild: Guild) => {
             const blacklists = await sql.selectColumn("blacklist", "guild id")

@@ -10,8 +10,10 @@ export default class GuildMemberRemove {
     public run = async (member: GuildMember) => {
         const firstMsg = await this.discord.fetchFirstMessage(member.guild) as Message
         const sql = new SQLQuery(firstMsg)
-        const bans = await member.guild.fetchBans()
-        if (bans.has(member.id)) return
+        if (member.guild.me?.permissions.has("MANAGE_GUILD")) {
+            const bans = await member.guild.fetchBans()
+            if (bans.has(member.id)) return
+        }
 
         let defaultChannel = firstMsg.channel as TextChannel
         const defChannel = await sql.fetchColumn("blocks", "default channel")

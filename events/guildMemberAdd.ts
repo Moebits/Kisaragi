@@ -13,8 +13,10 @@ export default class GuildMemberAdd {
     public run = async (member: GuildMember) => {
         const firstMsg = await this.discord.fetchFirstMessage(member.guild)
         const sql = new SQLQuery(firstMsg as Message)
-        const bans = await member.guild.fetchBans()
-        if (bans.has(member.id)) return
+        if (member.guild.me?.permissions.has("MANAGE_GUILD")) {
+            const bans = await member.guild.fetchBans()
+            if (bans.has(member.id)) return
+        }
 
         let defaultChannel = firstMsg!.channel as TextChannel
         const defChannel = await sql.fetchColumn("blocks", "default channel")
@@ -74,7 +76,6 @@ export default class GuildMemberAdd {
                 await member.ban({reason})
             }
         }
-
         avatarBan(this.discord)
     }
 }

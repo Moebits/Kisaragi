@@ -51,9 +51,9 @@ export class Kisaragi extends Client {
 
     // Get an Invite
     public getInvite = async (guild: Guild | null) => {
-        if (!guild) return "None"
+        if (!guild || !guild.me?.permissions.has("MANAGE_GUILD")) return "None"
         const invites = await guild.fetchInvites()
-        let invite
+        let invite: string | undefined
         if (invites) {
             invite = invites.find((i)=>i.temporary === false)?.url
             if (!invite) invite = invites.first()?.url
@@ -121,6 +121,20 @@ export class Kisaragi extends Client {
         const blacklists = await sql.selectColumn("blacklist", "user id")
         const found = blacklists.find((u) => String(u) === msg.author.id)
         if (found) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    /** Disable responses in muted guilds (bot list etc.) */
+    public checkMuted = (guild: Guild | null) => {
+        const muted = [
+            "110373943822540800",
+            "264445053596991498"
+        ]
+        if (!guild) return false
+        if (muted.includes(guild.id)) {
             return true
         } else {
             return false
