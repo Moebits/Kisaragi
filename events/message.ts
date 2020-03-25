@@ -46,15 +46,15 @@ export default class MessageEvent {
 
       if (message.guild) {
         const sql = new SQLQuery(message)
-        Block.blockWord(message)
-        detect.detectAnime()
-        detect.swapRoles()
-        haiku.haiku()
+        // Block.blockWord(message)
+        // detect.detectAnime()
+        // detect.swapRoles()
+        // haiku.haiku()
         /*const pointTimeout = await sql.fetchColumn("points", "point timeout")
         setTimeout(() => {
         points.calcScore()
         }, pointTimeout ? Number(pointTimeout) : 60000)*/
-        cmdFunctions.autoCommand()
+        // cmdFunctions.autoCommand()
     }
 
       const responseText: any = {
@@ -109,7 +109,7 @@ export default class MessageEvent {
         setTimeout(() => this.responseImageCool.delete(id), 10000)
         return message.channel.send(new MessageAttachment(responseImage[message.content.toLowerCase()]))
       }
-    }*/
+    }
 
       if (message.content.trim().toLowerCase() === "i love you") {
       if (message.author.id === process.env.OWNER_ID) {
@@ -117,7 +117,7 @@ export default class MessageEvent {
       } else {
         message.channel.send(`Sorry <@${message.author.id}>, but I don't share the same feelings.`)
       }
-    }
+    }*/
 
       if (this.discord.checkBotMention(message)) {
         const args = message.content.slice(`<@!${this.discord.user?.id}>`.length).trim().split(/ +/g)
@@ -128,10 +128,10 @@ export default class MessageEvent {
         }
     }
 
-      if (message.content.trim().startsWith("http")) {
+      /*if (message.content.trim().startsWith("http")) {
         await links.postLink()
         return
-      }
+      }*/
 
       if (!message.content.trim().startsWith(prefix)) return
 
