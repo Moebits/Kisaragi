@@ -94,6 +94,7 @@ export default class Hentaigasm extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        if (!perms.checkNSFW()) return
         const query = Functions.combineArgs(args, 1).trim()
         const data = await this.getLinks(query)
         const gasmArray: MessageEmbed[] = []

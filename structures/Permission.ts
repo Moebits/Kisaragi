@@ -80,7 +80,7 @@ export class Permission {
             return true
         } else {
             if (noMsg) return false
-            this.message.reply(`You can only use this command in **NSFW channels**!`)
+            this.message.reply(`You can only use this command in **NSFW channels**, pervert! ${discord.getEmoji("madokaLewd")}`)
             return false
         }
     }
