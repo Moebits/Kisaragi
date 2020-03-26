@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Collection, Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -40,8 +40,10 @@ export default class Event extends Command {
         case "messageDelete":
             discord.emit(event, message)
             break
-        case "messageUpdate":
-            discord.emit(event, message)
+        case "messageDeleteBulk":
+            const col = new Collection()
+            col.set(message.id, message)
+            discord.emit(event, col)
             break
         case "messageReactionAdd":
             const reaction = await message.react(discord.getEmoji("aquaUp"))
@@ -50,6 +52,24 @@ export default class Event extends Command {
         case "messageReactionRemove":
             const reaction2 = await message.react(discord.getEmoji("aquaUp"))
             discord.emit(event, reaction2, message.author)
+            break
+        case "guildBanAdd":
+            discord.emit(event, message.guild, message.author)
+            break
+        case "guildBanRemove":
+            discord.emit(event, message.guild, message.author)
+            break
+        case "channelCreate":
+            discord.emit(event, message.channel)
+            break
+        case "channelDelete":
+            discord.emit(event, message.channel)
+            break
+        case "emojiCreate":
+            discord.emit(event, discord.getEmoji("chinoSmug"))
+            break
+        case "emojiDelete":
+            discord.emit(event, discord.getEmoji("chinoSmug"))
             break
         default:
             discord.emit(event)

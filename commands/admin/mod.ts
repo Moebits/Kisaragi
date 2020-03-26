@@ -45,37 +45,37 @@ export default class Mod extends Command {
         .setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .setDescription(Functions.multiTrim(`
-             Edit moderation settings for the server.
-
-             **Restricted Role** - Can be any role with restricted Permission.
-             **Warn Threshold** - How many warnings will trigger the punishment.
-             **Warn Penalty** - The punishment after hitting the warn threshold.
-             **Ascii Names** - Removes all non-ascii characters in usernames.
-
-             __Current Settings__
-             ${discord.getEmoji("star")}Admin role: ${admin ? `<@&${admin}>` : "None"}
-             ${discord.getEmoji("star")}Mod role: ${mod ? `<@&${mod}>` : "None"}
-             ${discord.getEmoji("star")}Mute role: ${mute ?  `<@&${mute}>` : "None"}
-             ${discord.getEmoji("star")}Restricted role: ${restrict ?  `<@&${restrict}>` : "None"}
-             ${discord.getEmoji("star")}Warn One role: ${warnOne ? `<@&${warnOne}>` : "None"}
-             ${discord.getEmoji("star")}Warn Two role: ${warnTwo ? `<@&${warnTwo}>` : "None"}
-             ${discord.getEmoji("star")}Warn Threshold: **${warnThresh}**
-             ${discord.getEmoji("star")}Warn Penalty: **${warnPen ? warnPen :  "None"}**
-             ${discord.getEmoji("star")}Ascii names are **${ascii}**
-
-             __Edit Settings__
-             ${discord.getEmoji("star")}Type **ascii** to toggle ascii names on/off.
-             ${discord.getEmoji("star")}Type **any number** to set the warning threshold.
-             ${discord.getEmoji("star")}Type **ban**, **kick**, **mute**, or **none** to set the warn penalty.
-             ${discord.getEmoji("star")}**Mention a role or type a role id** to set the admin role.
-             ${discord.getEmoji("star")}Do the same **between exclamation points !role!** to set the mod role.
-             ${discord.getEmoji("star")}Do the same **between hashtags #role#** to set the mute role.
-             ${discord.getEmoji("star")}Do the same **between dollar signs $role$** to set the restricted role.
-             ${discord.getEmoji("star")}Do the same **between parentheses (role)** to set the role for warn one.
-             ${discord.getEmoji("star")}Do the same **between brackets [role]** to set the role for warn two.
-             ${discord.getEmoji("star")}**Type multiple settings** to set them at once.
-             ${discord.getEmoji("star")}Type **reset** to reset settings.
-             ${discord.getEmoji("star")}Type **cancel** to exit.
+            Edit moderation settings for the server.
+            newline
+            **Restricted Role** - Can be any role with restricted Permission.
+            **Warn Threshold** - How many warnings will trigger the punishment.
+            **Warn Penalty** - The punishment after hitting the warn threshold.
+            **Ascii Names** - Removes all non-ascii characters in usernames.
+            newline
+            __Current Settings__
+            ${discord.getEmoji("star")}Admin role: ${admin ? `<@&${admin}>` : "None"}
+            ${discord.getEmoji("star")}Mod role: ${mod ? `<@&${mod}>` : "None"}
+            ${discord.getEmoji("star")}Mute role: ${mute ?  `<@&${mute}>` : "None"}
+            ${discord.getEmoji("star")}Restricted role: ${restrict ?  `<@&${restrict}>` : "None"}
+            ${discord.getEmoji("star")}Warn One role: ${warnOne ? `<@&${warnOne}>` : "None"}
+            ${discord.getEmoji("star")}Warn Two role: ${warnTwo ? `<@&${warnTwo}>` : "None"}
+            ${discord.getEmoji("star")}Warn Threshold: **${warnThresh}**
+            ${discord.getEmoji("star")}Warn Penalty: **${warnPen ? warnPen :  "None"}**
+            ${discord.getEmoji("star")}Ascii names are **${ascii}**
+            newline
+            __Edit Settings__
+            ${discord.getEmoji("star")}Type **ascii** to toggle ascii names on/off.
+            ${discord.getEmoji("star")}Type **any number** to set the warning threshold.
+            ${discord.getEmoji("star")}Type **ban**, **kick**, **mute**, or **none** to set the warn penalty.
+            ${discord.getEmoji("star")}**Mention a role or type a role id** to set the admin role.
+            ${discord.getEmoji("star")}Do the same **between exclamation points !role!** to set the mod role.
+            ${discord.getEmoji("star")}Do the same **between hashtags #role#** to set the mute role.
+            ${discord.getEmoji("star")}Do the same **between dollar signs $role$** to set the restricted role.
+            ${discord.getEmoji("star")}Do the same **between parentheses (role)** to set the role for warn one.
+            ${discord.getEmoji("star")}Do the same **between brackets [role]** to set the role for warn two.
+            ${discord.getEmoji("star")}**Type multiple settings** to set them at once.
+            ${discord.getEmoji("star")}Type **reset** to reset settings.
+            ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
 
         message.channel.send(modEmbed)

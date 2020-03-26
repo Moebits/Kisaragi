@@ -51,7 +51,7 @@ export default class Unban extends Command {
                 members.push(`<@${userArray[i]}>`)
             }
             banEmbed
-            .setTitle(`**You Were Unbanned** ${discord.getEmoji("kannaFU")}`)
+            .setTitle(`**You Were Unbanned** ${discord.getEmoji("ceaseBullying")}`)
             .setDescription(`${discord.getEmoji("star")}_You were unbanned from ${message.guild!.name} for reason:_ **${reason}**`)
             try {
                 const dm = await member!.createDM()
@@ -63,7 +63,7 @@ export default class Unban extends Command {
         }
         banEmbed
         .setAuthor("unban", "https://discordemoji.com/assets/emoji/bancat.png")
-        .setTitle(`**Member Unbanned** ${discord.getEmoji("kannaFU")}`)
+        .setTitle(`**Member Unbanned** ${discord.getEmoji("ceaseBullying")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully unbanned ${members.join(", ")} for reason:_ **${reason}**`)
         message.channel.send(banEmbed)
         return

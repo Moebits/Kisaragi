@@ -45,10 +45,6 @@ export default class ReactionRoles extends Command {
             return
         }
 
-        /*
-        {"message": messageID, "emoji": "emojiName", "role": roleID, state: "on"}
-        */
-
         const reactions = await sql.fetchColumn("special roles", "reaction roles")
         const step = 3.0
         const increment = Math.ceil((reactions ? reactions.length : 1) / step)

@@ -1,5 +1,6 @@
 import fs from "fs"
 import path from "path"
+import * as config from "./config.json"
 import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
@@ -75,7 +76,8 @@ const start = async (): Promise<void> => {
         Logger.log(`Loaded a total of ${commandCounter} commands.`)
         Logger.log(`Loaded a total of ${evtFiles.length} events.`)
 
-        await discord.login(process.env.TOKEN)
+        const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
+        await discord.login(token)
 
     }, 1000)
 }

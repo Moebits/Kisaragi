@@ -1,5 +1,6 @@
-import {GuildMember, Message, MessageAttachment, TextChannel} from "discord.js"
+import {Guild, GuildMember, Message, MessageAttachment, TextChannel, User} from "discord.js"
 import {Embeds} from "../structures/Embeds"
+import {Functions} from "./../structures/Functions"
 import {Images} from "./../structures/Images"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
@@ -11,6 +12,7 @@ export default class GuildMemberAdd {
     }
 
     public run = async (member: GuildMember) => {
+        const discord = this.discord
         const firstMsg = await this.discord.fetchFirstMessage(member.guild)
         const sql = new SQLQuery(firstMsg as Message)
         if (member.guild.me?.permissions.has("MANAGE_GUILD")) {
@@ -54,7 +56,7 @@ export default class GuildMemberAdd {
         const avatarBan = async (discord: Kisaragi) => {
             const banToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
             const banEmbed = embeds.createEmbed()
-            if (String(banToggle) === "off") return
+            if (!banToggle || (banToggle === "off")) return
 
             if (!member.user.avatarURL) {
                 const channel = defaultChannel
@@ -77,5 +79,27 @@ export default class GuildMemberAdd {
             }
         }
         avatarBan(this.discord)
+
+        const logJoin = async (member: GuildMember) => {
+            const userLog = await sql.fetchColumn("logs", "user log")
+            if (userLog) {
+                const joinChannel = member.guild?.channels.cache.get(userLog)! as TextChannel
+                const joinEmbed = embeds.createEmbed()
+                joinEmbed
+                .setAuthor("join", "https://cdn.discordapp.com/emojis/588199024906207271.gif")
+                .setTitle(`**Member Join** ${discord.getEmoji("akariLurk")}`)
+                .setThumbnail(member.user.displayAvatarURL({format: "png", dynamic: true}))
+                .setDescription(
+                    `${discord.getEmoji("star")}_Member:_ **<@!${member.id}> (${member.user.tag})**\n` +
+                    `${discord.getEmoji("star")}_Member ID:_ \`${member.id}\`\n` +
+                    `${discord.getEmoji("star")}_Bot Account:_ **${member.user.bot ? "Yes" : "No"}**\n` +
+                    `${discord.getEmoji("star")}_Account Creation Date:_ **${Functions.formatDate(member.user.createdAt)}**\n` +
+                    `${discord.getEmoji("star")}_Guild Members:_ **${member.guild.members.cache.size}**\n`
+                )
+                .setFooter(`${member.guild.name} • ${Functions.formatDate(member.joinedAt ?? new Date())}`, member.guild.iconURL({format: "png", dynamic: true}) ?? "")
+                await joinChannel.send(joinEmbed).catch(() => null)
+            }
+        }
+        logJoin(member)
     }
 }
