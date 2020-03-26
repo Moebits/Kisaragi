@@ -40,17 +40,16 @@ export default class Selfroles extends Command {
 
         // If not admin, only shows the role list.
         if (!await perms.checkAdmin(true) || args[1] === "list") {
-            let selfroles = await sql.fetchColumn("special roles", "self roles")
-            selfroles = JSON.parse(selfroles[0])
+            const selfroles = await sql.fetchColumn("special roles", "self roles")
             const step = 3.0
-            const increment = Math.ceil((selfroles[0] ? selfroles.length : 1) / step)
+            const increment = Math.ceil((selfroles ? selfroles.length : 1) / step)
             const selfArray: MessageEmbed[] = []
             for (let i = 0; i < increment; i++) {
                 let settings = ""
                 for (let j = 0; j < step; j++) {
-                    if (selfroles[0]) {
+                    if (selfroles) {
                         const value = (i*step)+j
-                        if (!selfroles.join("")) settings = "None"
+                        if (!selfroles) settings = "None"
                         if (!selfroles[value]) break
                         settings += `${i + 1} **=>** ` +  `<@&${selfroles[value]}>`
                     } else {
@@ -82,19 +81,19 @@ export default class Selfroles extends Command {
             return
         }
 
-        let selfroles = await sql.fetchColumn("special roles", "self roles")
-        selfroles = JSON.parse(selfroles[0])
+        const selfroles = await sql.fetchColumn("special roles", "self roles")
         const step = 3.0
-        const increment = Math.ceil((selfroles[0] ? selfroles.length : 1) / step)
+        let increment = Math.ceil((selfroles ? selfroles.length : 1) / step)
+        if (increment === 0) increment = 1
         const selfArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {
-                if (selfroles[0]) {
+                if (selfroles) {
                     const value = (i*step)+j
-                    if (!selfroles.join("")) settings = "None"
+                    if (!selfroles) settings = "None"
                     if (!selfroles[value]) break
-                    settings += `${i + 1} **=>** ` +  `<@&${selfroles[value]}>`
+                    settings += `${value + 1} **=>** ` +  `<@&${selfroles[value]}>\n`
                 } else {
                     settings = "None"
                 }
@@ -128,8 +127,7 @@ export default class Selfroles extends Command {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Self Role Settings** ${discord.getEmoji("karenSugoi")}`)
             let selfroles = await sql.fetchColumn("special roles", "self roles")
-            selfroles = JSON.parse(selfroles[0])
-            if (!selfroles[0]) selfroles = []
+            if (!selfroles) selfroles = []
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
@@ -146,10 +144,10 @@ export default class Selfroles extends Command {
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
                 if (num) {
-                    if (selfroles[0] ? selfroles[num - 1] : false) {
+                    if (selfroles ? selfroles[num - 1] : false) {
                         selfroles[num - 1] = ""
                         selfroles = selfroles.filter(Boolean)
-                        await sql.updateColumn("special roles", "selfroles", JSON.stringify(selfroles))
+                        await sql.updateColumn("special roles", "self roles", selfroles)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                         msg.channel.send(responseEmbed)
@@ -169,7 +167,8 @@ export default class Selfroles extends Command {
             }
 
             let roles = msg.content.replace(/<@&/g, "").replace(/>/g, "").match(/\s?\d+/g)
-            roles = roles!.map((r: string) => r.trim())
+            if (!roles) return message.reply("These roles are invalid!")
+            roles = roles.map((r: string) => r.trim())
 
             let description = ""
 
@@ -179,7 +178,7 @@ export default class Selfroles extends Command {
             }
 
             if (!description) return
-            await sql.updateColumn("special roles", "self roles", JSON.stringify(selfroles))
+            await sql.updateColumn("special roles", "self roles", selfroles)
 
             responseEmbed
             .setDescription(description)

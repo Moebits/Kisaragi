@@ -36,18 +36,18 @@ export default class Photos extends Command {
         let albums = await sql.fetchColumn("images", "google albums")
         const notify = await sql.fetchColumn("images", "notify toggle")
         const step = 3.0
-        const increment = Math.ceil((channels[0] ? channels[0].length : 1) / step)
+        const increment = Math.ceil((channels ? channels.length : 1) / step)
         const photosArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             let description = ""
             for (let j = 0; j < step; j++) {
-                if (channels[0] || folders[0] || albums[0]) {
+                if (channels || folders || albums) {
                     const value = (i*step)+j
-                    if (!channels[0][value]) break
+                    if (!channels[value]) break
                     description += `**${value + 1} =>**\n` +
-                    `${discord.getEmoji("star")}Channel: ${channels[0] ? (channels[0][value] ? `<#${channels[0][value]}>` : "None") : "None"}\n` +
-                    `${discord.getEmoji("star")}Dropbox Folder: **${folders[0] ? (folders[0][value] ? folders[0][value] : "None") : "None"}**\n` +
-                    `${discord.getEmoji("star")}Google Album: **${albums[0] ? (albums[0][value] ? albums[0][value] : "None") : "None"}**\n`
+                    `${discord.getEmoji("star")}Channel: ${channels ? (channels[value] ? `<#${channels[value]}>` : "None") : "None"}\n` +
+                    `${discord.getEmoji("star")}Dropbox Folder: **${folders ? (folders[value] ? folders[value] : "None") : "None"}**\n` +
+                    `${discord.getEmoji("star")}Google Album: **${albums ? (albums[value] ? albums[value] : "None") : "None"}**\n`
                 } else {
                     description = ""
                 }
@@ -88,9 +88,9 @@ export default class Photos extends Command {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Photo Downloader/Uploader** ${discord.getEmoji("gabYes")}`)
             let setChannel, setFolder, setAlbum, setNotify, setInit
-            if (!channels[0]) channels = [""]; setInit = true
-            if (!folders[0]) folders = [""]; setInit = true
-            if (!albums[0]) albums = [""]; setInit = true
+            if (!channels) channels = [""]; setInit = true
+            if (!folders) folders = [""]; setInit = true
+            if (!albums) albums = [""]; setInit = true
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)

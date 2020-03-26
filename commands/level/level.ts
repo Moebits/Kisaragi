@@ -140,12 +140,12 @@ export default class Level extends Command {
                 description += `${discord.getEmoji("star")}Point range set to **${newRange}**!\n`
             }
             if (setThreshold) {
-                await sql.updateColumn("points", "point range", newThreshold![0])
-                description += `${discord.getEmoji("star")}Point threshold set to **${newThreshold![0].replace(/\{/g, "").replace(/\}/g, "")}**!\n`
+                await sql.updateColumn("points", "point range", String(newThreshold))
+                description += `${discord.getEmoji("star")}Point threshold set to **${String(newThreshold).replace(/\{/g, "").replace(/\}/g, "")}**!\n`
             }
             if (setTimeout) {
-                await sql.updateColumn("points", "point range", [Math.floor(parseInt(newTimeout![0].replace(/</g, "").replace(/>/g, ""), 10)*1000)])
-                description += `${discord.getEmoji("star")}Point timeout set to **${newTimeout![0].replace(/</g, "").replace(/>/g, "")}**!\n`
+                await sql.updateColumn("points", "point range", [Math.floor(parseInt(String(newTimeout).replace(/</g, "").replace(/>/g, ""), 10)*1000)])
+                description += `${discord.getEmoji("star")}Point timeout set to **${String(newTimeout).replace(/</g, "").replace(/>/g, "")}**!\n`
             }
 
             responseEmbed

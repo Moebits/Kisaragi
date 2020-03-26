@@ -36,7 +36,7 @@ export default class ChannelLink extends Command {
 
         let linkDescription = ""
         if (linkText) {
-            for (let i = 0; i < linkText[0].length; i++) {
+            for (let i = 0; i < linkText.length; i++) {
                 linkDescription += `**${i + 1} => **\n` + `${discord.getEmoji("star")}_Text:_ <#${linkText[i]}>\n` +
                 `${discord.getEmoji("star")}_Voice:_ **<#${linkVoice[i]}>**\n` +
                 `${discord.getEmoji("star")}_State:_ **${linkToggle[i]}**\n`
@@ -73,9 +73,9 @@ export default class ChannelLink extends Command {
             let voice = await sql.fetchColumn("links", "voice")
             let toggle = await sql.fetchColumn("links", "toggle")
             let [setText, setVoice, setInit] = [] as boolean[]
-            if (!text[0]) text = [""]; setInit = true
-            if (!voice[0]) voice = [""]; setInit = true
-            if (!toggle[0]) toggle = [""]; setInit = true
+            if (!text) text = [""]; setInit = true
+            if (!voice) voice = [""]; setInit = true
+            if (!toggle) toggle = [""]; setInit = true
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`)
             if (msg.content.toLowerCase() === "cancel") {

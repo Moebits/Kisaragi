@@ -361,4 +361,18 @@ export class Functions {
             return parser.manifest
     }
 
+    /** Get object depth */
+    public static objectDepth = (object: any) => {
+        let level = 1
+        for (const key in object) {
+            if (!object.hasOwnProperty(key)) continue
+
+            if (typeof object[key] == "object") {
+                const depth = Functions.objectDepth(object[key]) + 1
+                level = Math.max(depth, level)
+            }
+        }
+        return level
+    }
+
 }

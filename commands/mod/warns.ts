@@ -33,10 +33,10 @@ export default class Warns extends Command {
         const warnArray: MessageEmbed[] = []
         let warnings = ""
         let warnLog = await sql.fetchColumn("warns", "warn log") as any
-        if (!warnLog[0]) warnLog = [""]
+        if (!warnLog) warnLog = [""]
         for (let i = 0; i < warnLog.length; i++) {
-            if (typeof warnLog[i] === "string") warnLog[i] = JSON.parse(warnLog[i])
-            if (warnLog[0] === "") {
+            if (typeof warnLog[i]?.trim() === "string") warnLog[i] = JSON.parse(warnLog[i])
+            if (warnLog === [""]) {
                 warnings = "None"
             } else {
                 for (let j = 0; j < warnLog[i].warns.length; j++) {
@@ -73,7 +73,7 @@ export default class Warns extends Command {
             responseEmbed.setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
             const warnOne = await sql.fetchColumn("special roles", "warn one")
             const warnTwo = await sql.fetchColumn("special roles", "warn two")
-            if (!warnLog[0]) warnLog = [""]
+            if (!warnLog) warnLog = [""]
             let [setUser, setDelete, setPurge] = [] as boolean[]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
@@ -85,8 +85,8 @@ export default class Warns extends Command {
             const userID = msg.content.match(/(?<=<@)(.*?)(?=>)/g)
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userID!.join("")) as GuildMember
             let warnOneRole, warnTwoRole
-            if (warnOne[0]) warnOneRole = message.guild!.roles.cache.find((r: Role) => r.id === warnOne[0])
-            if (warnTwo[0]) warnTwoRole = message.guild!.roles.cache.find((r: Role) => r.id === warnTwo[0])
+            if (warnOne) warnOneRole = message.guild!.roles.cache.find((r: Role) => r.id === warnOne)
+            if (warnTwo) warnTwoRole = message.guild!.roles.cache.find((r: Role) => r.id === warnTwo)
 
             if (member && !msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)) setUser = true
             if (member && msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)) setDelete = true
@@ -94,13 +94,13 @@ export default class Warns extends Command {
 
             if (setPurge) {
                 let found = false
-                for (let i = 0; i < warnLog[0].length; i++) {
-                    if (typeof warnLog[0][i] === "string") warnLog[0][i] = JSON.parse(warnLog[0][i])
-                    if (warnLog[0][i].user === member.id) {
-                        warnLog[0][i].warns = []
-                        await sql.updateColumn("warns", "warn log", warnLog[0])
+                for (let i = 0; i < warnLog.length; i++) {
+                    if (typeof warnLog[i] === "string") warnLog[i] = JSON.parse(warnLog[i])
+                    if (warnLog[i].user === member.id) {
+                        warnLog[i].warns = []
+                        await sql.updateColumn("warns", "warn log", warnLog)
                         found = true
-                        if (warnLog[0][i].warns.length < 1) {
+                        if (warnLog[i].warns.length < 1) {
                             if (warnOneRole) {
                                 if (member.roles.cache.has(warnOneRole.id)) {
                                     await member.roles.remove(warnOneRole)
@@ -110,7 +110,7 @@ export default class Warns extends Command {
                                 }
                             }
                         }
-                        if (warnLog[0][i].warns.length < 2) {
+                        if (warnLog[i].warns.length < 2) {
                             if (warnTwoRole) {
                                 if (member.roles.cache.has(warnTwoRole.id)) {
                                     await member.roles.remove(warnTwoRole)
@@ -131,11 +131,11 @@ export default class Warns extends Command {
             if (setUser) {
                 let warns = ""
                 let found = false
-                for (let i = 0; i < warnLog[0].length; i++) {
-                    if (typeof warnLog[0][i] === "string") warnLog[0][i] = JSON.parse(warnLog[0][i])
-                    if (warnLog[0][i].user === member.id) {
-                        for (let j = 0; j < warnLog[0][i].warns.length; j++) {
-                            warns += `**${j + 1} => **\n` + `${warnLog[0][i].warns[j]}\n`
+                for (let i = 0; i < warnLog.length; i++) {
+                    if (typeof warnLog[i] === "string") warnLog[i] = JSON.parse(warnLog[i])
+                    if (warnLog[i].user === member.id) {
+                        for (let j = 0; j < warnLog[i].warns.length; j++) {
+                            warns += `**${j + 1} => **\n` + `${warnLog[i].warns[j]}\n`
                         }
                         found = true
                     }
@@ -152,15 +152,15 @@ export default class Warns extends Command {
                 let num: number = Number(msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)![0])
                 num = num - 1
                 let found = false
-                for (let i = 0; i < warnLog[0].length; i++) {
-                    if (typeof warnLog[0][i] === "string") warnLog[0][i] = JSON.parse(warnLog[0][i])
-                    if (warnLog[0][i].user === member.id) {
-                        if (warnLog[0][i].warns.length > num + 1) return msg.reply("Could not find that warning!")
-                        warnLog[0][i].warns[num] = 0
-                        warnLog[0][i].warns = warnLog[0][i].warns.filter(Boolean)
-                        await sql.updateColumn("warns", "warn log", warnLog[0])
+                for (let i = 0; i < warnLog.length; i++) {
+                    if (typeof warnLog[i] === "string") warnLog[i] = JSON.parse(warnLog[i])
+                    if (warnLog[i].user === member.id) {
+                        if (warnLog[i].warns.length > num + 1) return msg.reply("Could not find that warning!")
+                        warnLog[i].warns[num] = 0
+                        warnLog[i].warns = warnLog[i].warns.filter(Boolean)
+                        await sql.updateColumn("warns", "warn log", warnLog)
                         found = true
-                        if (warnLog[0][i].warns.length < 1) {
+                        if (warnLog[i].warns.length < 1) {
                             if (warnOneRole) {
                                 if (member.roles.cache.has(warnOneRole.id)) {
                                     await member.roles.remove(warnOneRole)
@@ -170,7 +170,7 @@ export default class Warns extends Command {
                                 }
                             }
                         }
-                        if (warnLog[0][i].warns.length < 2) {
+                        if (warnLog[i].warns.length < 2) {
                             if (warnTwoRole) {
                                 if (member.roles.cache.has(warnTwoRole.id)) {
                                     await member.roles.remove(warnTwoRole)

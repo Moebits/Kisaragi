@@ -40,10 +40,10 @@ export default class ReactionRoles extends Command {
         let emojis = await sql.fetchColumn("reaction", "emoji")
         let roles = await sql.fetchColumn("reaction", "role")
         let states = await sql.fetchColumn("reaction", "state")
-        messages = JSON.parse(messages[0])
-        emojis = JSON.parse(emojis[0])
-        roles = JSON.parse(roles[0])
-        states = JSON.parse(states[0])
+        messages = JSON.parse(messages)
+        emojis = JSON.parse(emojis)
+        roles = JSON.parse(roles)
+        states = JSON.parse(states)
         const step = 3.0
         const increment = Math.ceil((messages[0] ? messages.length : 1) / step)
         const reactArray: MessageEmbed[] = []

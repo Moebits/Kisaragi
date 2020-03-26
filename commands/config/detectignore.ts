@@ -42,16 +42,16 @@ export default class DetectChannels extends Command {
 
         const ignored = await sql.fetchColumn("detection", "ignored")
         const step = 5.0
-        const increment = Math.ceil((ignored[0] ? ignored[0].length : 1) / step)
+        const increment = Math.ceil((ignored ? ignored.length : 1) / step)
         const detectArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
             let description = ""
             for (let j = 0; j < step; j++) {
-                if (ignored[0]) {
+                if (ignored) {
                     const value = (i*step)+j
-                    if (!ignored[0][value]) break
+                    if (!ignored[value]) break
                     description += `**${value + 1} =>**\n` +
-                    `${discord.getEmoji("star")}Channel: ${ignored[0] ? (ignored[0][value] ? `<#${ignored[0][value]}>` : "None") : "None"}\n`
+                    `${discord.getEmoji("star")}Channel: ${ignored ? (ignored[value] ? `<#${ignored[value]}>` : "None") : "None"}\n`
                 } else {
                     description = "None"
                 }
@@ -85,7 +85,7 @@ export default class DetectChannels extends Command {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Ignored Detection Channels** ${discord.getEmoji("kisaragibawls")}`)
             let setInit = false
-            if (!dIgnored[0]) dIgnored = [""]; setInit = true
+            if (!dIgnored) dIgnored = [""]; setInit = true
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)

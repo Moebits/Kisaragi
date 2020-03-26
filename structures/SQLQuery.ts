@@ -6,6 +6,7 @@ import {Pool, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
 import * as Redis from "redis"
 import * as config from "../config.json"
 import {Command} from "./Command"
+import {Functions} from "./Functions"
 import {Settings} from "./Settings"
 
 const RedisAsync = bluebird.promisifyAll(Redis)
@@ -163,7 +164,12 @@ export class SQLQuery {
         values: [this.message.guild?.id]
       }
       const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
-      return result?.[0]?.[0] ? JSON.parse(JSON.stringify(result[0][0])) : null
+      const data = result?.[0]?.[0]
+      if (data) {
+        if (data === "[]" || data === "{}") return null
+        return JSON.parse(JSON.stringify(data))
+      }
+      return null
     }
 
   // Select whole column
