@@ -51,8 +51,8 @@ export class SQLQuery {
   // Run Query
   public static runQuery = async (query: QueryConfig | QueryArrayConfig, newData?: boolean): Promise<string[][]> => {
       const start = Date.now()
-      let redisResult = await redis.getAsync(JSON.stringify(query)) as any
-      if (newData) redisResult = null
+      let redisResult = null
+      if (!newData) redisResult = await redis.getAsync(JSON.stringify(query)) as any
       if (redisResult) {
         // SQLQuery.logQuery(Object.values(query)[0], start, true)
         return (JSON.parse(redisResult))[0]
@@ -138,13 +138,14 @@ export class SQLQuery {
 
   // Fetch Prefix
   public static fetchPrefix = async (message: Message, update?: boolean): Promise<string> => {
-        const query: QueryArrayConfig = {
+      if (!message.guild?.id) return "=>"
+      const query: QueryArrayConfig = {
           text: `SELECT prefix FROM prefixes WHERE "guild id" = $1`,
           rowMode: "array",
           values: [message.guild?.id]
-        }
-        const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
-        if (!result) {
+      }
+      const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
+      if (!result) {
           await SQLQuery.initGuild(message)
           return "=>"
         } else {

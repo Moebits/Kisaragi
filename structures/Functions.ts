@@ -1,6 +1,7 @@
 import archiver from "archiver"
 import child_process from "child_process"
 import {Message, Util} from "discord.js"
+import emojiRegex from "emoji-regex"
 import fs from "fs"
 import path from "path"
 import * as stream from "stream"
@@ -373,6 +374,11 @@ export class Functions {
             }
         }
         return level
+    }
+
+    /** Checks if a string contains a unicode emoji. */
+    public static unicodeEmoji = (str: string) => {
+        return emojiRegex().test(str)
     }
 
 }

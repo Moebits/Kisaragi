@@ -9,7 +9,7 @@ export class Kisaragi extends Client {
         super(options)
     }
 
-    // Get Emoji
+    /** Get emojis (my servers) */
     public getEmoji = (name: string): GuildEmoji => {
         if (name === "star") {
             if (this.starIndex === 0) {
@@ -28,15 +28,29 @@ export class Kisaragi extends Client {
         }
     }
 
+    /** Get emojis (all servers) */
+    public getEmojiGlobal = (resolvable: string) => {
+        if (!resolvable) return null
+        let emoji: GuildEmoji | undefined
+        if (Number(resolvable)) {
+            emoji = this.emojis.cache.find((e) => e.id === resolvable)
+        } else {
+            emoji = this.emojis.cache.find((e) => e.name === resolvable)
+        }
+        if (!emoji) return null
+        const emojiTag = emoji.animated ? `<${emoji.identifier}>` : `<:${emoji.identifier}>`
+        return emojiTag
+    }
+
     // Fetch Message
     public fetchMessage = async (msg: Message, messageID: string) => {
         const channels = msg.guild!.channels.cache.map((c: GuildChannel) => {if (c.type === "text") return c as TextChannel})
         const msgArray: Message[] = []
         for (let i = 0; i < channels.length; i++) {
-            const found = await channels[i]!.messages.fetch({limit: 1, around: messageID})
-            if (found) msgArray.push(found.first() as Message)
+            const found = await channels[i]?.messages.fetch({limit: 1, around: messageID?.trim()})?.then((m) => m.map((m) => m))
+            if (found) msgArray.push(...found)
         }
-        const msgFound = msgArray.find((m: Message) => m.id === messageID)
+        const msgFound = msgArray.find((m: Message) => m?.id === messageID)
         return msgFound
     }
 

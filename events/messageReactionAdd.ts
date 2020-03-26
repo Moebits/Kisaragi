@@ -10,9 +10,9 @@ export default class MessageReactionAdd {
     public run = async (reaction: MessageReaction, user: User) => {
         if (user.id === this.discord.user!.id) return
         const sql = new SQLQuery(reaction.message)
+        const embeds = new Embeds(this.discord, reaction.message)
         const retriggerEmbed = async (reaction: MessageReaction) => {
             if (!reaction.message.partial) return
-            const embeds = new Embeds(this.discord, reaction.message)
             reaction.message = await reaction.message.fetch()
             if (reaction.message.author.id === this.discord.user!.id) {
                 if (active.has(reaction.message.id)) return
@@ -48,5 +48,41 @@ export default class MessageReactionAdd {
             }
         }
         retriggerEmbed(reaction)
+
+        const addReactionRole = async (reaction: MessageReaction, user: User) => {
+            const reactionroles = await sql.fetchColumn("special roles", "reaction roles")
+            if (!reactionroles?.[0]) return
+            for (let i = 0; i < reactionroles.length; i++) {
+                const reactionrole = JSON.parse(reactionroles[i])
+                if (!reactionrole.state || reactionrole.state === "off") continue
+                if (reactionrole.message !== reaction.message.id) continue
+                if (reactionrole.emoji === reaction.emoji.toString()) {
+                    const member = reaction.message.guild?.members.cache.get(user.id)
+                    const exists = member?.roles.cache.get(reactionrole.role)
+                    if (exists) return
+                    try {
+                        const roleName = reaction.message.guild?.roles.cache.get(reactionrole.role)?.name
+                        await reaction.message.member?.roles.add(reactionrole.role)
+                        if (reactionrole.dm === "on") {
+                            const dmEmbed = embeds.createEmbed()
+                            dmEmbed
+                            .setAuthor("reaction role", "https://cdn.discordapp.com/emojis/589152499617759232.gif")
+                            .setTitle(`**Reaction Role Add** ${this.discord.getEmoji("gabYes")}`)
+                            .setDescription(`${this.discord.getEmoji("star")}Added the role **${roleName}** in the guild **${reaction.message.guild?.name}**`)
+                            await user.send(dmEmbed).catch(() => null)
+                        }
+                    } catch {
+                        const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message)
+                        try {
+                            await foundMsg?.channel.send(`I need the **Manage Roles** permission in order to add this reaction role ${this.discord.getEmoji("kannaFacepalm")}`)
+                        } catch {
+                            await user.send(`I need the **Manage Roles** permission in order to add this reaction role ${this.discord.getEmoji("kannaFacepalm")}`)
+                            .catch(() => null)
+                        }
+                    }
+                }
+            }
+        }
+        addReactionRole(reaction, user)
     }
 }

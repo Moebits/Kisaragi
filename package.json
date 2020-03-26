@@ -63,6 +63,7 @@
     "discord.js-minesweeper": "^1.0.5",
     "dotenv": "^8.0.0",
     "dropbox": "^4.0.30",
+    "emoji-regex": "^8.0.0",
     "erlpack": "github:discordapp/erlpack",
     "figlet": "^1.3.0",
     "flickr-sdk": "^3.9.0",

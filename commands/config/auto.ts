@@ -160,7 +160,7 @@ export default class Auto extends Command {
             if (msg.content.toLowerCase().startsWith("edit")) {
                 const newMsg = msg.content.replace(/edit/g, "").trim().split(" ")
                 const tempMsg = newMsg.slice(1).join(" ")
-                const num = Number(newMsg) - 1
+                const num = Number(newMsg[0]) - 1
                 if (tempMsg) {
                     const tempCmd = tempMsg.match(/\D+/gi) ? tempMsg.match(/\D+/gi)!.join("").replace(/<#/g, "").replace(/>/g, "").trim() : null
                     const tempChan = tempMsg.match(/<#\d+>/g) ? tempMsg.match(/<#\d+>/g)!.join("").replace(/<#/g, "").replace(/>/g, "") : null

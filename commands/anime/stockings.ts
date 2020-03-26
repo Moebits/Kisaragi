@@ -4,6 +4,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 export default class Stockings extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -28,9 +29,11 @@ export default class Stockings extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
+        const perms = new Permission(discord, message)
         const imageArray: MessageEmbed[] = []
 
         if (args[1] === "lewd") {
+            if (!perms.checkNSFW()) return
             const links = await images.parseImgurAlbum("RuDYpXQ", 10)
             for (let i = 0; i < links.length; i++) {
                 const imageEmbed = embeds.createEmbed()

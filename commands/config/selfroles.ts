@@ -17,7 +17,7 @@ export default class Selfroles extends Command {
             \`selfroles list\` - Lists all of the self assignable roles (works for admins)
             \`selfroles @role1 @role2\` - Adds roles to the self assignable roles list
             \`selfroles delete setting\` - Removes a role from the list
-            \`selfroles reset\` - Deletes all roles.
+            \`selfroles reset\` - Deletes all self roles.
             `,
             examples:
             `
@@ -100,7 +100,7 @@ export default class Selfroles extends Command {
             }
             const selfEmbed = embeds.createEmbed()
             selfEmbed
-            .setTitle(`**Self Role Settings** ${discord.getEmoji("karenSugoi")}`)
+            .setTitle(`**Self Roles** ${discord.getEmoji("karenSugoi")}`)
             .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
             .setDescription(Functions.multiTrim(`
                 Add and remove self-assignable roles. Users can assign them with the command **selfrole**.
@@ -125,7 +125,7 @@ export default class Selfroles extends Command {
 
         async function selfPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
-            responseEmbed.setTitle(`**Self Role Settings** ${discord.getEmoji("karenSugoi")}`)
+            responseEmbed.setTitle(`**Self Roles** ${discord.getEmoji("karenSugoi")}`)
             let selfroles = await sql.fetchColumn("special roles", "self roles")
             if (!selfroles) selfroles = []
             if (msg.content.toLowerCase() === "cancel") {
@@ -143,21 +143,15 @@ export default class Selfroles extends Command {
             }
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
-                if (num) {
-                    if (selfroles ? selfroles[num - 1] : false) {
-                        selfroles[num - 1] = ""
-                        selfroles = selfroles.filter(Boolean)
-                        await sql.updateColumn("special roles", "self roles", selfroles)
-                        responseEmbed
-                        .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                        msg.channel.send(responseEmbed)
-                        return
-                    } else {
-                        responseEmbed
-                        .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                        msg.channel.send(responseEmbed)
-                        return
-                    }
+                if (Number.isNaN(num)) return msg.reply("Invalid setting number!")
+                if (selfroles ? selfroles[num - 1] : false) {
+                    selfroles[num - 1] = ""
+                    selfroles = selfroles.filter(Boolean)
+                    await sql.updateColumn("special roles", "self roles", selfroles)
+                    responseEmbed
+                    .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
+                    msg.channel.send(responseEmbed)
+                    return
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
@@ -177,7 +171,7 @@ export default class Selfroles extends Command {
                 description += `${discord.getEmoji("star")}Added <@&${roles[i]}>!\n`
             }
 
-            if (!description) return
+            if (!description) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             await sql.updateColumn("special roles", "self roles", selfroles)
 
             responseEmbed

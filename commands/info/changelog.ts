@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 19, date: "3/26/2020", changes: "Added \`reactionroles\`."},
             {num: 18, date: "3/24/2020", changes: "Added \`tumblr\`, \`musescore\`, \`fiverr\`, and \`instagram\`."},
             {num: 17, date: "3/24/2020", changes: "Added \`bots\`, \`flickr\`, \`gravatar\`, and \`steam\`. Had to make a third website category!"},
             {num: 16, date: "3/21/2020", changes: "Added \`coin\`, \`blacklist\`, and \`unblacklist\`! Don't make me use them."},

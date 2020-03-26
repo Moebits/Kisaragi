@@ -32,7 +32,7 @@ export class Settings {
         "region": this.message.guild!.region,
         "owner": this.message.guild!.owner!.user.tag,
         "owner id": this.message.guild!.ownerID,
-        "games": this.message.guild!.presences.cache.map((presence: Presence) => presence.activities.join("") ? presence.activities.map((a) => a.name) : [null]).flat(Infinity)
+        "games": this.message.guild!.presences.cache.map((presence: Presence) => presence.activities.join("") ? presence.activities.map((a) => a?.name) : [null]).flat(Infinity)
     }
 
     private readonly userSettings: Init = {
@@ -45,8 +45,8 @@ export class Settings {
         "channel list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.name),
         "channel id list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.id),
         "channel created list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.createdTimestamp),
-        "category list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.parent !== null ? channel.parent.name : null),
-        "category id list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.parent !== null ? channel.parentID : null)
+        "category list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.parent ? channel.parent.name : null),
+        "category id list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.parentID ? channel.parentID : null)
     }
 
     private readonly roleSettings: Init = {

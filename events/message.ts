@@ -50,7 +50,7 @@ export default class MessageEvent {
       if (!this.discord.checkMuted(message.guild)) {
         if (message.guild) {
           const sql = new SQLQuery(message)
-          Block.blockWord(message)
+          // Block.blockWord(message)
           detect.detectAnime()
           detect.swapRoles()
           const haikuEmbed = haiku.haiku()
@@ -69,7 +69,7 @@ export default class MessageEvent {
           setTimeout(() => {
           points.calcScore()
           }, pointTimeout ? Number(pointTimeout) : 60000)*/
-          cmdFunctions.autoCommand()
+          // cmdFunctions.autoCommand()
         }
         if (responses.text[message.content.trim().toLowerCase()]) {
           const response = message.content.trim().toLowerCase()
@@ -121,8 +121,8 @@ export default class MessageEvent {
       }
 
       if (!message.content.trim().startsWith(prefix)) return
-      if (message.content === prefix) return
-      const args = message.content.trim().slice(prefix.length).split(/ +/g)
+      if (message.content.trim() === prefix) return
+      const args = message.content.trim().slice(prefix.length).trim().split(/ +/g)
       if (args[0] === undefined) return
       const cmd = args[0].toLowerCase()
       const pathFind = await cmdFunctions.findCommand(cmd)
