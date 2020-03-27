@@ -67,7 +67,7 @@ export class Settings {
         "mod log": null,
         "message log": null,
         "user log": null,
-        "guild log": null
+        "member log": null
     }
 
     private readonly specialChannelSettings: Init = {
@@ -83,7 +83,8 @@ export class Settings {
         "warn two": null,
         "mod role": null,
         "admin role": null,
-        "self roles": null
+        "self roles": null,
+        "reaction roles": null
     }
 
     private readonly pointSettings: Init = {
@@ -176,13 +177,6 @@ export class Settings {
         ignored: null
     }
 
-    private readonly reactionSettings: Init = {
-        message: null,
-        emoji: null,
-        role: null,
-        state: null
-    }
-
     private readonly configSettings: Init = {
         "embed colors": "default",
         "permissions": "role"
@@ -210,7 +204,6 @@ export class Settings {
         "auto": this.autoSettings,
         "links": this.linkSettings,
         "detection": this.detectionSettings,
-        "reaction": this.reactionSettings,
         "config": this.configSettings
     }
 

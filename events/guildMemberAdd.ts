@@ -87,7 +87,7 @@ export default class GuildMemberAdd {
                 const joinEmbed = embeds.createEmbed()
                 joinEmbed
                 .setAuthor("join", "https://cdn.discordapp.com/emojis/588199024906207271.gif")
-                .setTitle(`**Member Join** ${discord.getEmoji("akariLurk")}`)
+                .setTitle(`**Member Join** ${discord.getEmoji("aquaUp")}`)
                 .setThumbnail(member.user.displayAvatarURL({format: "png", dynamic: true}))
                 .setDescription(
                     `${discord.getEmoji("star")}_Member:_ **<@!${member.id}> (${member.user.tag})**\n` +

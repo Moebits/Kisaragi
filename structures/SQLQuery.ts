@@ -41,7 +41,6 @@ const tableList = [
   "auto",
   "links",
   "detection",
-  "reaction",
   "config"
 ]
 
