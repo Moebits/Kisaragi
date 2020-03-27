@@ -56,7 +56,7 @@ export default class Define extends Command {
         for (const i in result[0].definition) {
             if (result[0].definition[i].senses) {
                 const meaningArray: string[] = []
-                if (result[0].definition[i].senses.join("")) {
+                if (result[0].definition[i].senses?.join("")) {
                     for (const j in result[0].definition[i].senses[0].meanings) {
                         if (result[0].definition[i].senses[0].meanings[j] === ":") {
                             if (result[0].definition[i].senses[0].synonyms) {
@@ -74,7 +74,7 @@ export default class Define extends Command {
                     definArray.push(result[0].definition[i].meanings.join("\n"))
                 }
             } else {
-                if (result[0].definition[i].meanings.join("").trim() === ":") {
+                if (result[0].definition[i].meanings?.join("").trim() === ":") {
                     definArray.push("")
                 } else {
                     definArray.push(result[0].definition[i].meanings.join("\n"))

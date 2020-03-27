@@ -188,7 +188,7 @@ export default class ReactionRoles extends Command {
                                     if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
                                     const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
                                     if (foundReact) {
-                                        nEmoji = discord.getEmojiGlobal(foundReact.emoji.id!) ?? ""
+                                        nEmoji = discord.getEmojiGlobal(foundReact.emoji.id!) ?? foundReact.emoji.id ?? ""
                                     } else {
                                         nEmoji = discord.getEmojiGlobal(emojiName) ?? ""
                                     }
@@ -271,7 +271,7 @@ export default class ReactionRoles extends Command {
                         if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
                         const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
                         if (foundReact) {
-                            newEmoji = discord.getEmojiGlobal(foundReact.emoji.id!) ?? ""
+                            newEmoji = discord.getEmojiGlobal(foundReact.emoji.id!) ?? foundReact.emoji.id ?? ""
                         } else {
                             newEmoji = discord.getEmojiGlobal(emojiName) ?? ""
                         }
