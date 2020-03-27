@@ -90,14 +90,9 @@ export class Kisaragi extends Client {
     public fetchFirstMessage = async (guild: Guild) => {
         const channels = guild.channels.cache.filter((c: GuildChannel) => {
             if (c.type === "text") {
-                let perms = c.permissionsFor(guild.id)!
-                if (perms?.has("SEND_MESSAGES")) {
+                const perms = c.permissionsFor(this.user?.id!)!
+                if (perms?.has("SEND_MESSAGES") && perms?.has("VIEW_CHANNEL")) {
                     return true
-                } else {
-                    perms = c.permissionsFor(this.user?.id!)!
-                    if (perms?.has("SEND_MESSAGES")) {
-                        return true
-                    }
                 }
             }
             return false
