@@ -30,7 +30,7 @@ export default class UserUpdate {
                     .setTitle(`**Username Change** ${discord.getEmoji("tohruSmug")}`)
                     .setThumbnail(newUser.displayAvatarURL({format: "png", dynamic: true}) ?? "")
                     .setDescription(
-                        `${discord.getEmoji("star")}_User:_ **<@!${newUser.id}> \`(${newUser.tag})**\n` +
+                        `${discord.getEmoji("star")}_User:_ **<@!${newUser.id}> (${newUser.tag})**\n` +
                         `${discord.getEmoji("star")}_User ID:_ \`${newUser.id}\`\n` +
                         `${discord.getEmoji("star")}_Old Username:_ **${oldUser.username}**\n` +
                         `${discord.getEmoji("star")}_New Username:_ **${newUser.username}**\n`
@@ -51,7 +51,7 @@ export default class UserUpdate {
                     .setTitle(`**Profile Picture Change** ${discord.getEmoji("KannaXD")}`)
                     .setThumbnail(newUser.displayAvatarURL({format: "png", dynamic: true}))
                     .setDescription(
-                        `${discord.getEmoji("star")}_User:_ **<@!${newUser.id}> \`(${newUser.tag})**\n` +
+                        `${discord.getEmoji("star")}_User:_ **<@!${newUser.id}> (${newUser.tag})**\n` +
                         `${discord.getEmoji("star")}_User ID:_ \`${newUser.id}\`\n` +
                         `${discord.getEmoji("star")}_Old Avatar:_ [**Link**](${oldUser.displayAvatarURL({format: "png", dynamic: true})})\n` +
                         `${discord.getEmoji("star")}_New Avatar:_ [**Link**](${newUser.displayAvatarURL({format: "png", dynamic: true})})\n`

@@ -28,7 +28,7 @@ export default class GuildMemberUpdate {
                 .setTitle(`**Nickname Change** ${discord.getEmoji("chinoSmug")}`)
                 .setThumbnail(newMember.user.displayAvatarURL({format: "png", dynamic: true}) ?? "")
                 .setDescription(
-                    `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> \`(${newMember.user.tag})**\n` +
+                    `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> (${newMember.user.tag})**\n` +
                     `${discord.getEmoji("star")}_User ID:_ \`${newMember.id}\`\n` +
                     `${discord.getEmoji("star")}_Old Nickname:_ **${oldMember.nickname ?? oldMember.displayName}**\n` +
                     `${discord.getEmoji("star")}_New Nickname:_ **${newMember.nickname ?? newMember.displayName}**\n`
@@ -56,7 +56,7 @@ export default class GuildMemberUpdate {
                 .setTitle(`**Role Addition** ${discord.getEmoji("tohruThink")}`)
                 .setThumbnail(newMember.user.displayAvatarURL({format: "png", dynamic: true}))
                 .setDescription(
-                    `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> \`(${newMember.user.tag})**\n` +
+                    `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> (${newMember.user.tag})**\n` +
                     `${discord.getEmoji("star")}_User ID:_ \`${newMember.id}\`\n` +
                     `${discord.getEmoji("star")}_New Role:_ <@&${newRole.id}>\n` +
                     `${discord.getEmoji("star")}_Roles:_ **${newMember.roles.cache.size - 1}**`
@@ -84,7 +84,7 @@ export default class GuildMemberUpdate {
                 .setTitle(`**Role Removal** ${discord.getEmoji("raphi")}`)
                 .setThumbnail(newMember.user.displayAvatarURL({format: "png", dynamic: true}))
                 .setDescription(
-                    `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> \`(${newMember.user.tag})**\n` +
+                    `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> (${newMember.user.tag})**\n` +
                     `${discord.getEmoji("star")}_User ID:_ \`${newMember.id}\`\n` +
                     `${discord.getEmoji("star")}_Removed Role:_ <@&${oldRole.id}>\n` +
                     `${discord.getEmoji("star")}_Roles:_ **${newMember.roles.cache.size - 1}**`
