@@ -70,10 +70,11 @@ export class Kisaragi extends Client {
 
     // Fetch Message
     public fetchMessage = async (msg: Message, messageID: string) => {
+        if (!messageID?.trim()) return undefined
         const channels = msg.guild!.channels.cache.map((c: GuildChannel) => {if (c.type === "text") return c as TextChannel})
         const msgArray: Message[] = []
         for (let i = 0; i < channels.length; i++) {
-            const found = await channels[i]?.messages.fetch({limit: 1, around: messageID?.trim()})?.then((m) => m.map((m) => m))
+            const found = await channels[i]?.messages.fetch({limit: 1, around: messageID})?.then((m) => m.map((m) => m))
             if (found) msgArray.push(...found)
         }
         const msgFound = msgArray.find((m: Message) => m?.id === messageID)

@@ -183,7 +183,7 @@ export default class ReactionRoles extends Command {
                         if (!nEmoji) {
                             const emojiName = msg.content.match(/(?<=!)(.*?)(?=!)/)?.[0]
                             if (emojiName) {
-                                if (nMessage) {
+                                if (nMessage?.trim()) {
                                     const foundMsg = await discord.fetchMessage(message, nMessage)
                                     if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
                                     const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
@@ -200,7 +200,7 @@ export default class ReactionRoles extends Command {
                             nEmoji = discord.getEmojiGlobal(nEmoji) ?? ""
                         }
                         let editDesc = ""
-                        if (nMessage) {
+                        if (nMessage?.trim()) {
                             const foundMsg = await discord.fetchMessage(message, nMessage)
                             if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
                             reaction.message = nMessage
@@ -266,7 +266,7 @@ export default class ReactionRoles extends Command {
             if (!newEmoji) {
                 const emojiName = msg.content.match(/(?<=!)(.*?)(?=!)/)?.[0]
                 if (emojiName) {
-                    if (newMessage) {
+                    if (newMessage?.trim()) {
                         const foundMsg = await discord.fetchMessage(message, newMessage)
                         if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
                         const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
@@ -283,7 +283,7 @@ export default class ReactionRoles extends Command {
                 newEmoji = discord.getEmojiGlobal(newEmoji) ?? ""
             }
             if (newToggle) setToggle = true
-            if (newMessage) setMessage = true
+            if (newMessage?.trim()) setMessage = true
             if (newEmoji) setEmoji = true
             if (newRole) setRole = true
             if (newDM) setDM = true
