@@ -171,17 +171,17 @@ export default class ReactionRoles extends Command {
                         const reaction = JSON.parse(reactionroles[num])
                         const nDM = tempMsg.match(/dm/)?.[0] ?? ""
                         const nMessage = tempMsg.match(/(?<=\[)(.*?)(?=\])/g)?.[0] ?? ""
-                        let nEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(msg.content) ?? ""
-                        let nRole = msg.content.replace(nMessage, "").replace(nEmoji, "").match(/\d{5,}/)?.[0] ?? msg.content.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
+                        let nEmoji = tempMsg.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(tempMsg) ?? ""
+                        let nRole = tempMsg.replace(nMessage, "").replace(nEmoji, "").match(/\d{5,}/)?.[0] ?? tempMsg.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
                         if (!nRole) {
-                            const roleName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(nEmoji, "").replace(/(!)(.*?)(!)/, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
+                            const roleName = tempMsg?.replace(/toggle/, "").replace(/dm/, "").replace(nEmoji, "").replace(/(!)(.*?)(!)/, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
                             const roleSearch = discord.getRole(message.guild!, roleName)
                             if (roleSearch) {
                                 nRole = roleSearch.id
                             }
                         }
                         if (!nEmoji) {
-                            const emojiName = msg.content.match(/(?<=!)(.*?)(?=!)/)?.[0]
+                            const emojiName = tempMsg.match(/(?<=!)(.*?)(?=!)/)?.[0]
                             if (emojiName) {
                                 if (nMessage?.trim()) {
                                     const foundMsg = await discord.fetchMessage(message, nMessage)
@@ -197,7 +197,7 @@ export default class ReactionRoles extends Command {
                                 }
                             }
                         } else {
-                            nEmoji = discord.getEmojiGlobal(nEmoji) ?? ""
+                            nEmoji = Functions.unicodeEmoji(tempMsg) ? Functions.unicodeEmoji(tempMsg) : (discord.getEmojiGlobal(nEmoji) ?? "")
                         }
                         let editDesc = ""
                         if (nMessage?.trim()) {
@@ -235,6 +235,7 @@ export default class ReactionRoles extends Command {
                                 editDesc += `${discord.getEmoji("star")}This message didn't have this reaction, so I added it! (You can remove it and add it yourself, if you wish).\n`
                             }
                         }
+                        if (!editDesc) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
                         reactionroles[num] = JSON.stringify(reaction)
                         await sql.updateColumn("special roles", "reaction roles", reactionroles)
                         responseEmbed
@@ -280,7 +281,7 @@ export default class ReactionRoles extends Command {
                     }
                 }
             } else {
-                newEmoji = discord.getEmojiGlobal(newEmoji) ?? ""
+                newEmoji = Functions.unicodeEmoji(msg.content) ? Functions.unicodeEmoji(msg.content) : (discord.getEmojiGlobal(newEmoji) ?? "")
             }
             if (newToggle) setToggle = true
             if (newMessage?.trim()) setMessage = true
