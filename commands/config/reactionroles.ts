@@ -174,7 +174,7 @@ export default class ReactionRoles extends Command {
                         let nEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(msg.content) ?? ""
                         let nRole = msg.content.replace(nMessage, "").replace(nEmoji, "").match(/\d{5,}/)?.[0] ?? msg.content.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
                         if (!nRole) {
-                            const roleName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(nEmoji, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
+                            const roleName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(nEmoji, "").replace(/(:)(.*?)(:)/, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
                             const roleSearch = discord.getRole(message.guild!, roleName)
                             if (roleSearch) {
                                 nRole = roleSearch.id
@@ -255,7 +255,7 @@ export default class ReactionRoles extends Command {
             let newEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(msg.content) ?? ""
             let newRole = msg.content.replace(newMessage, "").replace(newEmoji, "").match(/\d{5,}/)?.[0] ?? msg.content.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
             if (!newRole) {
-                const roleName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(newEmoji, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
+                const roleName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(newEmoji, "").replace(/(:)(.*?)(:)/, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
                 const roleSearch = discord.getRole(message.guild!, roleName)
                 if (roleSearch) {
                     newRole = roleSearch.id
