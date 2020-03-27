@@ -181,7 +181,7 @@ export default class ReactionRoles extends Command {
                             }
                         }
                         if (!nEmoji) {
-                            const emojiName = msg.content.match(/(:)(.*?)(:)/)?.[0]
+                            const emojiName = msg.content.match(/(?<=:)(.*?)(?=:)/)?.[0]
                             if (emojiName) {
                                 if (nMessage) {
                                     const foundMsg = await discord.fetchMessage(message, nMessage)
@@ -262,13 +262,11 @@ export default class ReactionRoles extends Command {
                 }
             }
             if (!newEmoji) {
-                const emojiName = msg.content.match(/(:)(.*?)(:)/)?.[0]
-                console.log(emojiName)
+                const emojiName = msg.content.match(/(?<=:)(.*?)(?=:)/)?.[0]
                 if (emojiName) {
                     if (newMessage) {
                         const foundMsg = await discord.fetchMessage(message, newMessage)
                         if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
-                        console.log(foundMsg.reactions)
                         const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
                         if (foundReact) {
                             newEmoji = foundReact.emoji.toString()

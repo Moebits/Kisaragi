@@ -27,21 +27,15 @@ export default class Eval extends Command {
         const embeds = new Embeds(discord, message)
         if (!perms.checkBotDev()) return
 
-        const evalEmbed = embeds.createEmbed()
-
         try {
           const code = Functions.combineArgs(args, 1)
           let evaled = await eval(code)
-
-          if (typeof evaled !== "string") {
-            evaled = util.inspect(evaled)
-          }
-
+          if (typeof evaled !== "string") evaled = util.inspect(evaled)
+          const evalEmbed = embeds.createEmbed()
           evalEmbed
           .setTitle(`**Javascript Code Eval** ${discord.getEmoji("kaosWTF")}`)
           .setDescription(Functions.checkChar(this.clean(evaled), 2000, ""))
           message.channel.send(evalEmbed)
-
         } catch (error) {
           message.channel.send(`\`ERROR\` \`\`\`xl\n${this.clean(error)}\n\`\`\``)
         }
