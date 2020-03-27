@@ -1,0 +1,75 @@
+import {Message, MessageEmbed} from "discord.js"
+import {Command} from "../../structures/Command"
+import SQL from "../bot developer/sql"
+import {Audio} from "./../../structures/Audio"
+import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
+import {Kisaragi} from "./../../structures/Kisaragi"
+import {SQLQuery} from "./../../structures/SQLQuery"
+
+export default class Playlists extends Command {
+    constructor(discord: Kisaragi, message: Message) {
+        super(discord, message, {
+            description: "Plays or manages your playlists.",
+            help:
+            `
+            \`playlist\` - Opens the playlist prompt.
+            \`playlist num/name\` - Starts playing this playlist.
+            `,
+            examples:
+            `
+            \`=>playlist\`
+            \`=>playlist kawaii future bass\`
+            `,
+            aliases: ["pl", "playlists"],
+            guildOnly: true,
+            cooldown: 10
+        })
+    }
+
+    public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
+        const embeds = new Embeds(discord, message)
+        const audio = new Audio(discord, message)
+        const sql = new SQLQuery(message)
+        let playlists = [{name: null, songs: [], length: 0}]
+        const exists = await sql.fetchColumn("misc", "playlists", "user id", message.author.id)
+        if (!exists) {
+            try {
+                await SQLQuery.insertInto("misc", "user id", message.author.id)
+            } finally {
+                await sql.updateColumn("misc", "playlists", playlists, "user id", message.author.id)
+            }
+        } else {
+            playlists = exists
+        }
+        const step = 3.0
+        const increment = Math.ceil((playlists ? playlists.length : 1) / step)
+        const playlistArray: MessageEmbed[] = []
+        for (let i = 0; i < increment; i++) {
+            let playDesc = ""
+            for (let j = 0; j < step; j++) {
+                const k = (i*step)+j
+                const p = JSON.parse(JSON.stringify(playlists[k]))
+                playDesc += `**${i + 1} =>**\n` +
+                `${discord.getEmoji("star")}_Playlist:_ **${p.name ?? "Empty"}**\n` +
+                `${discord.getEmoji("star")}_Tracks:_ **${p.songs.length}**\n` +
+                `${discord.getEmoji("star")}_Length:_ **${p.length}**\n`
+            }
+            const playlistEmbed = embeds.createEmbed()
+            playlistEmbed
+            .setAuthor("playlist", "https://cdn3.iconfinder.com/data/icons/music-set-8/64/iconspace_Playlist-512.png")
+            .setTitle(`**Playlists** ${discord.getEmoji("karenSugoi")}`)
+            .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+            .setDescription(Functions.multiTrim(`
+                __Playlists__
+                ${playDesc}
+            `))
+            playlistArray.push(playlistEmbed)
+        }
+        const msg = await message.channel.send(playlistArray[0])
+        const reactions = ["right", "left", "1n", "2n", "3n", "random", "edit", "add"]
+        return
+    }
+}

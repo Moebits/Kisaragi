@@ -24,7 +24,7 @@ export default class Mute extends Command {
         if (!await perms.checkMod()) return
         const muteEmbed = embeds.createEmbed()
         const mute = await sql.fetchColumn("special roles", "mute role")
-        if (!mute.join("")) return message.reply("You need to set a mute role first!")
+        if (!mute) return message.reply("You need to set a mute role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []
 
@@ -41,7 +41,7 @@ export default class Mute extends Command {
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
-            await member.roles.add(mute.join(""))
+            await member.roles.add(mute)
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             muteEmbed

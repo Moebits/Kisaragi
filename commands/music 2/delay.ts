@@ -37,7 +37,7 @@ export default class Delay extends Command {
             setDownload = true
             args.shift()
         }
-        let delaysDecays: number[] = []
+        const delaysDecays: number[] = []
         for (let i = 0; i < args.length; i++) {
             if (Number(args[i])) {
                 delaysDecays.push(Number(args[i]))
@@ -62,8 +62,13 @@ export default class Delay extends Command {
         }
         if (rep) rep.delete()
         if (!setDownload) {
-            const rep = await message.reply("Added delay to the file!")
-            rep.delete({timeout: 3000})
+            const queue = audio.getQueue() as any
+            const settings = audio.getSettings() as any
+            settings.effects.push("delay")
+            const embed = await audio.updateNowPlaying()
+            queue[0].message.edit(embed)
+            const rep = await message.reply("Applied a delay effect to the file!")
+            rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         }
         return
     }

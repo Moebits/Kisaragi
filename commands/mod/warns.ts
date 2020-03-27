@@ -82,8 +82,8 @@ export default class Warns extends Command {
                 return
             }
 
-            const userID = msg.content.match(/(?<=<@)(.*?)(?=>)/g)
-            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userID!.join("")) as GuildMember
+            const userID = msg.content.match(/(?<=<@)(.*?)(?=>)/g)?.[0]
+            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userID!) as GuildMember
             let warnOneRole, warnTwoRole
             if (warnOne) warnOneRole = message.guild!.roles.cache.find((r: Role) => r.id === warnOne)
             if (warnTwo) warnTwoRole = message.guild!.roles.cache.find((r: Role) => r.id === warnTwo)

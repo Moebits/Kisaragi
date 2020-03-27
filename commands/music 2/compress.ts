@@ -56,8 +56,13 @@ export default class Tremolo extends Command {
         }
         if (rep) rep.delete()
         if (!setDownload) {
+            const queue = audio.getQueue() as any
+            const settings = audio.getSettings() as any
+            settings.effects.push("compression")
+            const embed = await audio.updateNowPlaying()
+            queue[0].message.edit(embed)
             const rep = await message.reply("Applied compression to the file!")
-            rep.delete({timeout: 3000})
+            rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         }
         return
     }

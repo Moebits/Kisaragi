@@ -56,8 +56,13 @@ export default class Highpass extends Command {
         }
         if (rep) rep.delete()
         if (!setDownload) {
-            const rep = await message.reply("Added a highpass filter to the file!")
-            rep.delete({timeout: 3000})
+            const queue = audio.getQueue() as any
+            const settings = audio.getSettings() as any
+            settings.filters.push("highpass")
+            const embed = await audio.updateNowPlaying()
+            queue[0].message.edit(embed)
+            const rep = await message.reply("Applied a highpass filter to the file!")
+            rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         }
         return
     }

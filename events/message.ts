@@ -80,13 +80,21 @@ export default class MessageEvent {
           if (!message.author!.bot) {
             if (responseTextCool.has(message.author.id) || responseTextCool.has(message.guild?.id)) {
               const reply = await message.channel.send(`<@${message.author.id}>, **${response}** is under a 3 second cooldown!`)
-              reply.delete({timeout: 3000})
+              reply.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
               return
             }
             const id = message.guild?.id ?? message.author.id
             responseTextCool.add(id)
             setTimeout(() => responseTextCool.delete(id), 3000)
-            return message.channel.send(responses.text[response])
+            let text = responses.text[response]
+            if (text === "f") {
+              text = this.discord.getEmoji("FU")
+            } else if (text === "rip") {
+              text = this.discord.getEmoji("rip")
+            } else if (Array.isArray(text)) {
+              text = text.join("")
+            }
+            return message.channel.send(text)
           }
         }
         if (responses.image[message.content.trim().toLowerCase()]) {
@@ -94,7 +102,7 @@ export default class MessageEvent {
           if (!message.author!.bot) {
             if (responseImageCool.has(message.author.id) || responseImageCool.has(message.guild?.id)) {
               const reply = await message.channel.send(`<@${message.author.id}>, **${response}** is under a 10 second cooldown!`)
-              reply.delete({timeout: 3000})
+              reply.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
               return
             }
             const id = message.guild?.id ?? message.author.id

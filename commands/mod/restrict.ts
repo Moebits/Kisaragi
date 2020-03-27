@@ -24,7 +24,7 @@ export default class Restrict extends Command {
         if (!await perms.checkMod()) return
         const restrictEmbed = embeds.createEmbed()
         const restrict = await sql.fetchColumn("special roles", "restricted role")
-        if (!restrict.join("")) return message.reply("You need to set a restricted role first!")
+        if (!restrict) return message.reply("You need to set a restricted role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []
 
@@ -41,7 +41,7 @@ export default class Restrict extends Command {
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
-            await member.roles.add(restrict.join(""))
+            await member.roles.add(restrict)
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             restrictEmbed

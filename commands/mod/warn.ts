@@ -86,7 +86,7 @@ export default class Warn extends Command {
                                 message.reply(`Failed to mute <@${userID}>. You do not have a mute role set!`)
                                 return false
                             }
-                            await member!.roles.add(mute.join(""))
+                            await member!.roles.add(mute)
                             dmEmbed
                             .setAuthor("mute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
                             .setTitle(`**You Were Muted** ${discord.getEmoji("kannaFU")}`)
@@ -123,7 +123,7 @@ export default class Warn extends Command {
         const warnTwo = await sql.fetchColumn("special roles", "warn two")
         let warnLog = await sql.fetchColumn("warns", "warn log") as any
         let setInit = false
-        if (!warnLog.join("")) warnLog = [""]; setInit = true
+        if (!warnLog) warnLog = [""]; setInit = true
 
         let warnOneRole, warnTwoRole
         if (warnOne[0]) warnOneRole = message.guild!.roles.cache.find((r: Role) => r.id === warnOne[0])
