@@ -36,9 +36,9 @@ export default class Peak extends Command {
             setDownload = true
             args.shift()
         }
-        const freq = Number(args[1]) ? Number(args[1]) : 1000
-        const resonance = Number(args[2]) ? Number(args[2]) : 2
-        const gain = Number(args[3]) ? Number(args[3]) : -3
+        const freq = Number(args[1])
+        const resonance = Number(args[2])
+        const gain = Number(args[3])
         const rep = await message.reply("_Adding a peak filter to the file, please wait..._")
         let file = ""
         if (setDownload) {

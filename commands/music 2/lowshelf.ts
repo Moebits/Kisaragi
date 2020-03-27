@@ -36,9 +36,9 @@ export default class Lowshelf extends Command {
             setDownload = true
             args.shift()
         }
-        const gain = Number(args[1]) ? Number(args[1]) : 3
-        const freq = Number(args[2]) ? Number(args[2]) : 1000
-        const width = Number(args[3]) ? Number(args[3]) : 100
+        const gain = Number(args[1])
+        const freq = Number(args[2])
+        const width = Number(args[3])
         const rep = await message.reply("_Adding a lowshelf filter to the file, please wait..._")
         let file = ""
         if (setDownload) {

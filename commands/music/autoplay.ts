@@ -1,27 +1,25 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
-import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Loop extends Command {
+export default class Autoplay extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Loops the current track, or stops looping.",
+            description: "Autoplays default songs when there are no songs left in the queue.",
             help:
             `
-            \`loop\` - Loops the current track.
-            \`loop link/query\` - An alias for \`play loop\`.
+            \`autoplay\` - Toggles autoplay.
             `,
             examples:
             `
-            \`=>loop\`
+            \`=>autoplay\`
             `,
-            aliases: ["repeat"],
+            aliases: [],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 5
         })
     }
 
@@ -29,17 +27,14 @@ export default class Loop extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const cmd = new CommandFunctions(discord, message)
         const audio = new Audio(discord, message)
-        if (Functions.combineArgs(args, 1).trim()) {
-            args.shift()
-            return cmd.runCommand(message, ["play", "loop", ...args])
-        }
-        audio.loop()
+        audio.autoplay()
         const queue = audio.getQueue() as any
+        const settings = audio.getSettings() as any
         const embed = await audio.updateNowPlaying()
         queue[0].message.edit(embed)
-        const rep = await message.reply("Enabled looping!")
+        const text = settings.autoplay === true ? "on" : "off"
+        const rep = await message.reply(`Turned ${text} autoplay!`)
         rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         return
     }

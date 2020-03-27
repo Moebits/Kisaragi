@@ -36,10 +36,10 @@ export default class Chorus extends Command {
             setDownload = true
             args.shift()
         }
-        const delay = Number(args[1]) ? Number(args[1]) : 50
-        const decay = Number(args[2]) ? Number(args[2]) : 0.3
-        const speed = Number(args[3]) ? Number(args[3]) : 2
-        const depth = Number(args[4]) ? Number(args[4]) : 2
+        const delay = Number(args[1])
+        const decay = Number(args[2])
+        const speed = Number(args[3])
+        const depth = Number(args[4])
         const rep = await message.reply("_Adding chorus to the file, please wait..._")
         let file = ""
         if (setDownload) {

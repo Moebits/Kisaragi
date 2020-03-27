@@ -36,8 +36,8 @@ export default class Highpass extends Command {
             setDownload = true
             args.shift()
         }
-        const freq = Number(args[1]) ? Number(args[1]) : 600
-        const width = Number(args[2]) ? Number(args[2]) : 100
+        const freq = Number(args[1])
+        const width = Number(args[2])
         const rep = await message.reply("_Adding a highpass filter to the file, please wait..._")
         let file = ""
         if (setDownload) {

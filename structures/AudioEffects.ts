@@ -47,7 +47,7 @@ export class AudioEffects {
             outDest = index <= 1 ? `${fileDest}.wav` : `${fileDest}${index}.wav`
             index++
         }
-        console.log([...effect.split(" ")])
+        // console.log([...effect.split(" ")])
         const input = fs.createReadStream(wavDest)
         const output = fs.createWriteStream(outDest)
         const transform = sox({
@@ -69,8 +69,8 @@ export class AudioEffects {
             .on("finish", () => resolve())
         })
         const mp3Dest = await this.WavToMp3(outDest)
-        fs.unlink(wavDest, (err) => console.log(err))
-        fs.unlink(outDest, (err) => console.log(err))
+        fs.unlink(wavDest, () => null)
+        fs.unlink(outDest, () => null)
         return mp3Dest
     }
 

@@ -42,9 +42,8 @@ export default class Skip extends Command {
             amount = index + 1
         }
         const text = amount === 1 ? "Skipped this song!" : (Number(input) ? `Skipped to the song at position **${amount}**!` : `Skipped to **${input}**!`)
-        const rep = await message.reply(text)
+        await message.reply(text)
         await audio.skip(amount)
-        rep.delete({timeout: 3000})
         return
     }
 }

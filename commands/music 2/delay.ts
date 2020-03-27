@@ -43,7 +43,6 @@ export default class Delay extends Command {
                 delaysDecays.push(Number(args[i]))
             }
         }
-        if (!delaysDecays[0]) delaysDecays = [60, 0.4]
         if (delaysDecays.length % 2 === 1) return message.reply(`There must be an even amount of arguments (delay and decay pairs).`)
         const rep = await message.reply("_Adding delay to the file, please wait..._")
         let file = ""

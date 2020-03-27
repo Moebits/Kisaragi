@@ -42,7 +42,7 @@ export default class Shuffle extends Command {
             audio.deleteQueue(pos, end)
             rep = await message.reply(`Deleted **${end}** songs starting at position **${pos}**!`)
         }
-        rep.delete({timeout: 3000})
+        rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         return
     }
 }

@@ -30,7 +30,7 @@ export default class Resume extends Command {
         const audio = new Audio(discord, message)
         audio.resume()
         const rep = await message.reply("Resumed the song!")
-        rep.delete({timeout: 3000})
+        rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         return
     }
 }

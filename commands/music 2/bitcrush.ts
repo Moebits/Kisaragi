@@ -36,7 +36,7 @@ export default class Bitcrush extends Command {
             setDownload = true
             args.shift()
         }
-        const factor = Number(args[1]) ? Number(args[1]) : 2
+        const factor = Number(args[1])
         const rep = await message.reply("_Adding bitcrushing to the file, please wait..._")
         let file = ""
         if (setDownload) {

@@ -56,8 +56,10 @@ export default class Reverse extends Command {
         await audio.reverse(file, setDownload)
         if (rep) rep.delete()
         if (!setDownload) {
+            const embed = await audio.updateNowPlaying()
+            queue[0].message.edit(embed)
             const rep = await message.reply("Reversed the file!")
-            rep.delete({timeout: 3000})
+            rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         }
         return
     }

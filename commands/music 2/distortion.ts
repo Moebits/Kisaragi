@@ -36,8 +36,8 @@ export default class Distortion extends Command {
             setDownload = true
             args.shift()
         }
-        const gain = Number(args[1]) ? Number(args[1]) : 20
-        const color = Number(args[2]) ? Number(args[2]) : 20
+        const gain = Number(args[1])
+        const color = Number(args[2])
         const rep = await message.reply("_Adding distortion to the file, please wait..._")
         let file = ""
         if (setDownload) {

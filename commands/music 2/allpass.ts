@@ -35,10 +35,8 @@ export default class AllPass extends Command {
             setDownload = true
             args.shift()
         }
-        let freq = parseInt(args[1], 10)
-        let width = parseInt(args[2], 10)
-        if (!freq) freq = 600
-        if (!width) width = 100
+        const freq = Number(args[1])
+        const width = Number(args[2])
         if (Number.isNaN(freq) || Number.isNaN(width)) return message.reply(`The parameters must be numbers ${discord.getEmoji("kannaCurious")}`)
         const rep = await message.reply("_Applying an allpass filter, please wait..._")
         let file = ""
@@ -52,7 +50,7 @@ export default class AllPass extends Command {
             file = queue?.[0].file
         }
         try {
-            await audio.allPass(freq, width, file, setDownload)
+            await audio.allPass(file, freq, width, setDownload)
         } catch {
             return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
         }

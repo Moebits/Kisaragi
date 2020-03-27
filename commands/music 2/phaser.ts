@@ -36,9 +36,9 @@ export default class Phaser extends Command {
             setDownload = true
             args.shift()
         }
-        const delay = Number(args[1]) ? Number(args[1]) : 3
-        const decay = Number(args[2]) ? Number(args[2]) : 0.5
-        const speed = Number(args[3]) ? Number(args[3]) : 0.5
+        const delay = Number(args[1])
+        const decay = Number(args[2])
+        const speed = Number(args[3])
         const rep = await message.reply("_Adding phaser to the file, please wait..._")
         let file = ""
         if (setDownload) {

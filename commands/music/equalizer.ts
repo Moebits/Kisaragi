@@ -31,6 +31,9 @@ export default class Equalizer extends Command {
         const audio = new Audio(discord, message)
         const msg = await audio.equalizerMenu()
         msg.delete()
+        const queue = audio.getQueue() as any
+        const embed = await audio.updateNowPlaying()
+        queue[0].message.edit(embed)
         return
     }
 }

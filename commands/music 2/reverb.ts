@@ -44,12 +44,12 @@ export default class Reverb extends Command {
             setDownload = true
             args.shift()
         }
-        const amount = Number(newArgs[0]) ? Number(newArgs[0]) : 50
-        const damping = Number(newArgs[1]) ? Number(newArgs[1]) : 50
-        const room = Number(newArgs[2]) ? Number(newArgs[2]) : 100
-        const stereo = Number(newArgs[3]) ? Number(newArgs[3]) : 100
-        const preDelay = Number(newArgs[4]) ? Number(newArgs[4]) : 0
-        const wetGain = Number(newArgs[5]) ? Number(newArgs[5]) : 0
+        const amount = Number(newArgs[0])
+        const damping = Number(newArgs[1])
+        const room = Number(newArgs[2])
+        const stereo = Number(newArgs[3])
+        const preDelay = Number(newArgs[4])
+        const wetGain = Number(newArgs[5])
         const rep = await message.reply("_Adding reverb to the file, please wait..._")
         let file = ""
         if (setDownload) {

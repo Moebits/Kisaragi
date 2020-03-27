@@ -59,8 +59,10 @@ export default class Speed extends Command {
         await audio.speed(file, factor, setPitch, setDownload)
         if (rep) rep.delete()
         if (!setDownload) {
+            const embed = await audio.updateNowPlaying()
+            queue[0].message.edit(embed)
             const rep = await message.reply(`Changed the speed by a factor of ${factor}!`)
-            rep.delete({timeout: 3000})
+            rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         }
         return
     }

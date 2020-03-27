@@ -36,8 +36,8 @@ export default class Tremolo extends Command {
             setDownload = true
             args.shift()
         }
-        const speed = Number(args[1]) ? Number(args[1]) : 10
-        const depth = Number(args[2]) ? Number(args[2]) : 70
+        const speed = Number(args[1])
+        const depth = Number(args[2])
         const rep = await message.reply("_Adding a tremolo effect to the file, please wait..._")
         let file = ""
         if (setDownload) {

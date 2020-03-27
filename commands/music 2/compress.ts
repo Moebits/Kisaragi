@@ -37,7 +37,7 @@ export default class Tremolo extends Command {
             setDownload = true
             args.shift()
         }
-        const amount = Number(args[1]) ? Number(args[1]) : 80
+        const amount = Number(args[1])
         const rep = await message.reply("_Applying compression to the file, please wait..._")
         let file = ""
         if (setDownload) {
@@ -50,7 +50,7 @@ export default class Tremolo extends Command {
             file = queue?.[0].file
         }
         try {
-            await audio.compress(file, amount, setDownload)
+            await audio.compression(file, amount, setDownload)
         } catch {
             return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
         }

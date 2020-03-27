@@ -37,14 +37,14 @@ export default class Flanger extends Command {
             setDownload = true
             args.shift()
         }
-        const delay = Number(args[1]) ? Number(args[1]) : 0
-        const depth = Number(args[2]) ? Number(args[2]) : 2
-        const regen = Number(args[3]) ? Number(args[3]) : 0
-        const width = Number(args[4]) ? Number(args[4]) : 71
-        const speed = Number(args[5]) ? Number(args[5]) : 0.5
-        const shape = (args[6] ? args[6] : "sin") as "sin" | "tri"
-        const phase = Number(args[7]) ? Number(args[7]) : 25
-        const interp = (args[8] ? args[8] : "lin") as "lin" | "quad"
+        const delay = Number(args[1])
+        const depth = Number(args[2])
+        const regen = Number(args[3])
+        const width = Number(args[4])
+        const speed = Number(args[5])
+        const shape = args[6] as any
+        const phase = Number(args[7])
+        const interp = args[8] as any
         const rep = await message.reply("_Adding flanger to the file, please wait..._")
         let file = ""
         if (setDownload) {

@@ -229,10 +229,10 @@ export default class ReactionRoles extends Command {
                         }
                         if (reaction.message && reaction.emoji) {
                             const foundMsg = await discord.fetchMessage(message, nMessage)
-                            const id = nEmoji.match(/\d{10,}/) ? nEmoji.match(/\d{10,}/)![0] : nEmoji
-                            if (!foundMsg?.reactions.cache.get(id)) {
+                            const id = nEmoji.match(/\d+/)?.[0] ?? nEmoji
+                            if (!foundMsg?.reactions.cache.has(id)) {
                                 await foundMsg?.react(id)
-                                editDesc += `${discord.getEmoji("star")}This message didn't have this reaction, so I added it! (You can remove it and add it yourself, if you wish).\n`
+                                editDesc += `${discord.getEmoji("star")}This message didn't have this reaction, so I added it!\n`
                             }
                         }
                         if (!editDesc) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
@@ -329,10 +329,10 @@ export default class ReactionRoles extends Command {
 
             if (setMessage && setEmoji) {
                 const foundMsg = await discord.fetchMessage(message, newMessage)
-                const id = newEmoji.match(/\d{10,}/) ? newEmoji.match(/\d{10,}/)![0] : newEmoji
-                if (!foundMsg?.reactions.cache.get(id)) {
+                const id = newEmoji.match(/\d+/)?.[0] ?? newEmoji
+                if (!foundMsg?.reactions.cache.has(id)) {
                     await foundMsg?.react(id)
-                    description += `${discord.getEmoji("star")}This message didn't have this reaction, so I added it! (You can remove it and add it yourself, if you wish).\n`
+                    description += `${discord.getEmoji("star")}This message didn't have this reaction, so I added it!\n`
                 }
             }
 

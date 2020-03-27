@@ -30,7 +30,7 @@ export default class Pause extends Command {
         const audio = new Audio(discord, message)
         audio.pause()
         const rep = await message.reply("Paused the song!")
-        rep.delete({timeout: 3000})
+        rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         return
     }
 }
