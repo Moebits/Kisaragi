@@ -1,4 +1,4 @@
-import {GuildMember, Message} from "discord.js"
+import {GuildMember, Message, User} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -42,29 +42,27 @@ export default class Unban extends Command {
 
         const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
 
-        const members: string[] = []
+        const users: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i])
-            if (member) {
-                members.push(`<@${member.id}>`)
-            } else {
-                members.push(`<@${userArray[i]}>`)
-            }
+            const user = await discord.users.fetch(userArray[i])
+            .catch(() => {
+                return message.reply(`Invalid user id ${discord.getEmoji("kannaFacepalm")}`)
+            }) as User
+            users.push(`<@${user.id}>`)
             banEmbed
             .setTitle(`**You Were Unbanned** ${discord.getEmoji("ceaseBullying")}`)
             .setDescription(`${discord.getEmoji("star")}_You were unbanned from ${message.guild!.name} for reason:_ **${reason}**`)
             try {
-                const dm = await member!.createDM()
-                await dm.send(banEmbed)
+                await user.send(banEmbed)
             } catch (err) {
                 console.log(err)
             }
-            await message.guild!.members.unban(member ? member : userArray[i][0], reason)
+            await message.guild!.members.unban(user, reason)
         }
         banEmbed
         .setAuthor("unban", "https://discordemoji.com/assets/emoji/bancat.png")
         .setTitle(`**Member Unbanned** ${discord.getEmoji("ceaseBullying")}`)
-        .setDescription(`${discord.getEmoji("star")}_Successfully unbanned ${members.join(", ")} for reason:_ **${reason}**`)
+        .setDescription(`${discord.getEmoji("star")}_Successfully unbanned ${users.join(", ")} for reason:_ **${reason}**`)
         message.channel.send(banEmbed)
         return
     }

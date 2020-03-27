@@ -34,7 +34,7 @@ export default class GuildMemberAdd {
 
         const welcomeMessages = async () => {
             const welcomeToggle = await sql.fetchColumn("welcome leaves", "welcome toggle")
-            if (String(welcomeToggle) === "off") return
+            if (!welcomeToggle || (welcomeToggle === "off")) return
 
             const welcomeMsg = await sql.fetchColumn("welcome leaves", "welcome message")
             const welcomeChannel = await sql.fetchColumn("welcome leaves", "welcome channel")

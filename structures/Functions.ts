@@ -377,8 +377,13 @@ export class Functions {
     }
 
     /** Checks if a string contains a unicode emoji. */
-    public static unicodeEmoji = (str: string) => {
-        return emojiRegex().test(str)
+    public static unicodeEmoji = <T extends boolean = false>(str: string, all?: T): T extends false ? string : RegExpMatchArray => {
+        const regex = new RegExp(emojiRegex(), "g")
+        if (all) {
+            return str.match(regex) as T extends false ? string : RegExpMatchArray
+        } else {
+            return str.match(regex)?.[0] as T extends false ? string : RegExpMatchArray
+        }
     }
 
 }

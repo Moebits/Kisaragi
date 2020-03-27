@@ -13,16 +13,16 @@ export default class ReactionRoles extends Command {
             help:
             `
             \`reactionroles\` - Opens the reaction roles prompt
-            \`reactionroles [messageID]? @role? emoji? dm?\` - Adds a new reaction role with the parameters
+            \`reactionroles [messageID]? @role/rolename? emoji? dm?\` - Adds a new reaction role with the parameters
             \`reactionroles delete setting\` - Removes a reaction role
-            \`reactionroles edit setting [messageID]? @role? emoji? dm?\` - Edits a reaction role
+            \`reactionroles edit setting [messageID]? @role/rolename? emoji? dm?\` - Edits a reaction role
             \`reactionroles toggle setting\` - Toggles the reaction role on or off
             \`reactionroles reset\` - Deletes all reaction roles.
             `,
             examples:
             `
             \`=>reactionroles\`
-            \`=>reactionroles edit 1 [messageID] @role emojiName\`
+            \`=>reactionroles edit 1 [messageID] weebs :anime:\`
             \`=>reactionroles delete 5\`
             `,
             aliases: ["rr"],
@@ -171,15 +171,13 @@ export default class ReactionRoles extends Command {
                         const reaction = JSON.parse(reactionroles[num])
                         const nDM = tempMsg.match(/dm/)?.[0] ?? ""
                         const nMessage = tempMsg.match(/(?<=\[)(.*?)(?=\])/g)?.[0] ?? ""
-                        let nEmoji = tempMsg.match(/(<a?:)(.*?)(>)/)?.[0] ?? ""
-                        const nRole = tempMsg.replace(nMessage, "").replace(nEmoji, "").match(/\d{5,}/)?.[0] ?? tempMsg.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
-                        if (!nEmoji) {
-                            const emojiName = tempMsg?.replace(/toggle/, "").replace(/dm/, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
-                            const emojiSearch = discord.getEmojiGlobal(emojiName)
-                            if (emojiSearch) {
-                                nEmoji = emojiSearch
-                            } else if (Functions.unicodeEmoji(emojiName)) {
-                                nEmoji = emojiName
+                        const nEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(msg.content) ?? ""
+                        let nRole = msg.content.replace(nMessage, "").replace(nEmoji, "").match(/\d{5,}/)?.[0] ?? msg.content.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
+                        if (!nRole) {
+                            const roleName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(nEmoji, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
+                            const roleSearch = message.guild?.roles.cache.find((r) => r.name.toLowerCase().includes(roleName.toLowerCase()))?.id
+                            if (roleSearch) {
+                                nRole = roleSearch
                             }
                         }
                         let editDesc = ""
@@ -237,15 +235,13 @@ export default class ReactionRoles extends Command {
             const newDM = msg.content.match(/dm/)?.[0] ?? ""
             const newToggle = msg.content.match(/toggle/)?.[0] ?? ""
             const newMessage = msg.content.match(/(?<=\[)(.*?)(?=\])/g)?.[0] ?? ""
-            let newEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? ""
-            const newRole = msg.content.replace(newMessage, "").replace(newEmoji, "").match(/\d{5,}/)?.[0] ?? msg.content.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
-            if (!newEmoji) {
-                const emojiName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
-                const emojiSearch = discord.getEmojiGlobal(emojiName)
-                if (emojiSearch) {
-                    newEmoji = emojiSearch
-                } else if (Functions.unicodeEmoji(emojiName)) {
-                    newEmoji = emojiName
+            const newEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(msg.content) ?? ""
+            let newRole = msg.content.replace(newMessage, "").replace(newEmoji, "").match(/\d{5,}/)?.[0] ?? msg.content.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
+            if (!newRole) {
+                const roleName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(newEmoji, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
+                const roleSearch = message.guild?.roles.cache.find((r) => r.name.toLowerCase().includes(roleName.toLowerCase()))?.id
+                if (roleSearch) {
+                    newRole = roleSearch
                 }
             }
             if (newToggle) setToggle = true

@@ -49,7 +49,7 @@ export default class Ban extends Command {
             if (member) {
                 members.push(`<@${member.id}>`)
             } else {
-                members.push(`<@${userArray[i]}>`)
+                return message.reply(`Invalid member id ${discord.getEmoji("kannaFacepalm")}`)
             }
             banEmbed
             .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
@@ -60,7 +60,7 @@ export default class Ban extends Command {
             } catch (err) {
                 console.log(err)
             }
-            await message.guild!.members.ban(member ? member : userArray[i][0], {reason})
+            await message.guild!.members.ban(member, {reason})
         }
         banEmbed
         .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")

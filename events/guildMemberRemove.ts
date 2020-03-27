@@ -31,7 +31,7 @@ export default class GuildMemberRemove {
 
         const leaveMessages = async () => {
             const leaveToggle = await sql.fetchColumn("welcome leaves", "leave toggle")
-            if (String(leaveToggle) === "off") return
+            if (!leaveToggle || (leaveToggle === "off")) return
 
             const leaveMsg = await sql.fetchColumn("welcome leaves", "leave message")
             const leaveChannel = await sql.fetchColumn("welcome leaves", "leave channel")

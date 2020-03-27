@@ -45,8 +45,12 @@ export default class Kick extends Command {
 
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
-            members.push(`<@${member.id}>`)
+            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i])
+            if (member) {
+                members.push(`<@${member.id}>`)
+            } else {
+                return message.reply(`Invalid member id ${discord.getEmoji("kannaFacepalm")}`)
+            }
             kickEmbed
             .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
             .setTitle(`**You Were Kicked** ${discord.getEmoji("kannaFU")}`)
