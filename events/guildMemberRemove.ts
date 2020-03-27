@@ -31,7 +31,7 @@ export default class GuildMemberRemove {
 
         const leaveMessages = async () => {
             const leaveToggle = await sql.fetchColumn("welcome leaves", "leave toggle")
-            if (!leaveToggle || (leaveToggle === "off")) return
+            if (!(leaveToggle === "on")) return
 
             const leaveMsg = await sql.fetchColumn("welcome leaves", "leave message")
             const leaveChannel = await sql.fetchColumn("welcome leaves", "leave channel")
@@ -51,9 +51,9 @@ export default class GuildMemberRemove {
         leaveMessages()
 
         const leaveBan = async (discord: Kisaragi) => {
-            const leaveToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
+            const leaveBanToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
             const banEmbed = embeds.createEmbed()
-            if (!leaveToggle || (leaveToggle === "off")) return
+            if (!(leaveBanToggle === "on")) return
 
             const now = Math.ceil(Date.now())
             const joinDate = member.joinedTimestamp!

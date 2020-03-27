@@ -34,7 +34,7 @@ export default class GuildMemberAdd {
 
         const welcomeMessages = async () => {
             const welcomeToggle = await sql.fetchColumn("welcome leaves", "welcome toggle")
-            if (!welcomeToggle || (welcomeToggle === "off")) return
+            if (!(welcomeToggle === "on")) return
 
             const welcomeMsg = await sql.fetchColumn("welcome leaves", "welcome message")
             const welcomeChannel = await sql.fetchColumn("welcome leaves", "welcome channel")
@@ -56,7 +56,7 @@ export default class GuildMemberAdd {
         const avatarBan = async (discord: Kisaragi) => {
             const banToggle = await sql.fetchColumn("blocks", "leaver ban toggle")
             const banEmbed = embeds.createEmbed()
-            if (!banToggle || (banToggle === "off")) return
+            if (!(banToggle === "on")) return
 
             if (!member.user.avatarURL) {
                 const channel = defaultChannel
