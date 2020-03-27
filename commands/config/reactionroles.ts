@@ -263,10 +263,12 @@ export default class ReactionRoles extends Command {
             }
             if (!newEmoji) {
                 const emojiName = msg.content.match(/(:)(.*?)(:)/)?.[0]
+                console.log(emojiName)
                 if (emojiName) {
                     if (newMessage) {
                         const foundMsg = await discord.fetchMessage(message, newMessage)
                         if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
+                        console.log(foundMsg.reactions)
                         const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
                         if (foundReact) {
                             newEmoji = foundReact.emoji.toString()

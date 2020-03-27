@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import util from "util"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -15,6 +16,7 @@ export default class Eval extends Command {
   }
 
   public clean = (text: string) => {
+    if (!text) return text
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203))
   }
 
@@ -28,16 +30,16 @@ export default class Eval extends Command {
         const evalEmbed = embeds.createEmbed()
 
         try {
-          const code: string = Functions.combineArgs(args, 1)
-          let evaled: string = eval(code)
+          const code = Functions.combineArgs(args, 1)
+          let evaled = await eval(code)
 
           if (typeof evaled !== "string") {
-            evaled = require("util").inspect(evaled)
+            evaled = util.inspect(evaled)
           }
 
           evalEmbed
           .setTitle(`**Javascript Code Eval** ${discord.getEmoji("kaosWTF")}`)
-          .setDescription(this.clean(evaled))
+          .setDescription(Functions.checkChar(this.clean(evaled), 2000, ""))
           message.channel.send(evalEmbed)
 
         } catch (error) {

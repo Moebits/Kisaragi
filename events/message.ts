@@ -40,9 +40,9 @@ export default class MessageEvent {
         }
       }
 
-      if (config.testing === "on") {
+      /*if (config.testing === "on") {
         if (message.guild?.id === config.tenpiLand) return
-      }
+      }*/
       const prefix = await SQLQuery.fetchPrefix(message)
 
       if (message.author.bot) return
