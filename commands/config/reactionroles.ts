@@ -13,7 +13,7 @@ export default class ReactionRoles extends Command {
             help:
             `
             \`reactionroles\` - Opens the reaction roles prompt
-            \`reactionroles [messageID]? @role/rolename? emoji? dm?\` - Adds a new reaction role with the parameters
+            \`reactionroles [messageID]? @role/rolename? emoji/:emojiname:? dm?\` - Adds a new reaction role with the parameters
             \`reactionroles delete setting\` - Removes a reaction role
             \`reactionroles edit setting [messageID]? @role/rolename? emoji? dm?\` - Edits a reaction role
             \`reactionroles toggle setting\` - Toggles the reaction role on or off
@@ -80,8 +80,8 @@ export default class ReactionRoles extends Command {
                 newline
                 __Edit Settings__
                 ${discord.getEmoji("star")}Type a **[message id] between brackets** to set the message.
-                ${discord.getEmoji("star")}**Mention a role or type a role id** to set the role.
-                ${discord.getEmoji("star")}**Send an emoji or emoji name** to set the emoji.
+                ${discord.getEmoji("star")}**Mention a role or type a role name or id** to set the role.
+                ${discord.getEmoji("star")}**Send an emoji or type the :emoji name: between colons** to set the emoji.
                 ${discord.getEmoji("star")}Type **dm** to toggle dm notifications.
                 ${discord.getEmoji("star")}Type **delete (setting number)** to delete a setting.
                 ${discord.getEmoji("star")}Type **edit (setting number)** to edit a setting.
@@ -171,13 +171,30 @@ export default class ReactionRoles extends Command {
                         const reaction = JSON.parse(reactionroles[num])
                         const nDM = tempMsg.match(/dm/)?.[0] ?? ""
                         const nMessage = tempMsg.match(/(?<=\[)(.*?)(?=\])/g)?.[0] ?? ""
-                        const nEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(msg.content) ?? ""
+                        let nEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(msg.content) ?? ""
                         let nRole = msg.content.replace(nMessage, "").replace(nEmoji, "").match(/\d{5,}/)?.[0] ?? msg.content.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
                         if (!nRole) {
                             const roleName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(nEmoji, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
-                            const roleSearch = message.guild?.roles.cache.find((r) => r.name.toLowerCase().includes(roleName.toLowerCase()))?.id
+                            const roleSearch = discord.getRole(message.guild!, roleName)
                             if (roleSearch) {
-                                nRole = roleSearch
+                                nRole = roleSearch.id
+                            }
+                        }
+                        if (!nEmoji) {
+                            const emojiName = msg.content.match(/(:)(.*?)(:)/)?.[0]
+                            if (emojiName) {
+                                if (nMessage) {
+                                    const foundMsg = await discord.fetchMessage(message, nMessage)
+                                    if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
+                                    const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
+                                    if (foundReact) {
+                                        nEmoji = foundReact.emoji.toString()
+                                    } else {
+                                        nEmoji = discord.getEmojiGlobal(emojiName)?.toString() ?? ""
+                                    }
+                                } else {
+                                    nEmoji = discord.getEmojiGlobal(emojiName)?.toString() ?? ""
+                                }
                             }
                         }
                         let editDesc = ""
@@ -235,13 +252,30 @@ export default class ReactionRoles extends Command {
             const newDM = msg.content.match(/dm/)?.[0] ?? ""
             const newToggle = msg.content.match(/toggle/)?.[0] ?? ""
             const newMessage = msg.content.match(/(?<=\[)(.*?)(?=\])/g)?.[0] ?? ""
-            const newEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(msg.content) ?? ""
+            let newEmoji = msg.content.match(/(<a?:)(.*?)(>)/)?.[0] ?? Functions.unicodeEmoji(msg.content) ?? ""
             let newRole = msg.content.replace(newMessage, "").replace(newEmoji, "").match(/\d{5,}/)?.[0] ?? msg.content.match(/(?<=<@&)(.*?)(?=>)/g)?.[0] ?? ""
             if (!newRole) {
                 const roleName = msg.content?.replace(/toggle/, "").replace(/dm/, "").replace(newEmoji, "").replace(/(\[)(.*?)(\])/g, "").replace(/(<@&)(.*?)(>)/g, "")?.trim()
-                const roleSearch = message.guild?.roles.cache.find((r) => r.name.toLowerCase().includes(roleName.toLowerCase()))?.id
+                const roleSearch = discord.getRole(message.guild!, roleName)
                 if (roleSearch) {
-                    newRole = roleSearch
+                    newRole = roleSearch.id
+                }
+            }
+            if (!newEmoji) {
+                const emojiName = msg.content.match(/(:)(.*?)(:)/)?.[0]
+                if (emojiName) {
+                    if (newMessage) {
+                        const foundMsg = await discord.fetchMessage(message, newMessage)
+                        if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
+                        const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
+                        if (foundReact) {
+                            newEmoji = foundReact.emoji.toString()
+                        } else {
+                            newEmoji = discord.getEmojiGlobal(emojiName)?.toString() ?? ""
+                        }
+                    } else {
+                        newEmoji = discord.getEmojiGlobal(emojiName)?.toString() ?? ""
+                    }
                 }
             }
             if (newToggle) setToggle = true

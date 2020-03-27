@@ -1,4 +1,4 @@
-import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, TextChannel, User} from "discord.js"
+import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, Role, TextChannel, User} from "discord.js"
 import {message} from "../test/login"
 import * as config from "./../config.json"
 import {Embeds} from "./Embeds"
@@ -40,6 +40,32 @@ export class Kisaragi extends Client {
         if (!emoji) return null
         const emojiTag = emoji.animated ? `<${emoji.identifier}>` : `<:${emoji.identifier}>`
         return emojiTag
+    }
+
+    /** Find a role in the guild */
+    public getRole = (guild: Guild, resolvable: string) => {
+        if (!resolvable) return null
+        let role: Role | undefined
+        if (Number(resolvable)) {
+            role = guild.roles.cache.find((r) => r.id === resolvable)
+        } else {
+            role = guild.roles.cache.find((r) => r.name.toLowerCase().includes(resolvable.toLowerCase()))
+        }
+        if (!role) return null
+        return role
+    }
+
+    /** Find a channel in the guild */
+    public getChannel = (guild: Guild, resolvable: string) => {
+        if (!resolvable) return null
+        let channel: GuildChannel | undefined
+        if (Number(resolvable)) {
+            channel = guild.channels.cache.find((c) => c.id === resolvable)
+        } else {
+            channel = guild.channels.cache.find((c) => c.name.toLowerCase().includes(resolvable.toLowerCase()))
+        }
+        if (!channel) return null
+        return channel
     }
 
     // Fetch Message
