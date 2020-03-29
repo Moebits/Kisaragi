@@ -16,7 +16,7 @@ const redis = RedisAsync.createClient({
 const pgPool = new Pool({
   connectionString: process.env.PG_URL,
   ssl: true,
-  max: 10
+  max: 2
 })
 
 const tableList = [
