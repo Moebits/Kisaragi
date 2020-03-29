@@ -319,8 +319,7 @@ export class SQLQuery {
   /** Sets foreign keys. */
   public static foreignKeys = async (table: string) => {
     const query: QueryConfig = {
-      text: `ALTER TABLE $1 ADD FOREIGN KEY ("guild id") REFERENCES guilds ("guild id")`,
-      values: [table]
+      text: `ALTER TABLE "${table}" ADD FOREIGN KEY ("guild id") REFERENCES guilds ("guild id")`
     }
     await SQLQuery.runQuery(query, true)
   }
