@@ -167,7 +167,9 @@ export class Kisaragi extends Client {
     public checkMuted = (guild: Guild | null) => {
         const muted = [
             "110373943822540800",
-            "264445053596991498"
+            "264445053596991498",
+            "450100127256936458",
+            "446425626988249089"
         ]
         if (!guild) return false
         if (muted.includes(guild.id)) {

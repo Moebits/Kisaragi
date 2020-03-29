@@ -126,7 +126,7 @@ export default class MessageEvent {
             message.reply(`My prefix is set to "${prefix}"!\n`)
           }
         }
-        if (message.content.trim().startsWith("http")) {
+        if (message.content.match(/https?:\/\//)) {
           await links.postLink()
           return
         }

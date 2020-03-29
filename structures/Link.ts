@@ -18,7 +18,8 @@ export class Link {
     }
 
     public postLink = async () => {
-        const link = this.message.content
+        const link = this.message.content.match(/(https?:\/\/)(.*?)(?= |$)/)?.[0] ?? ""
+        if (!link) return
         if (link.includes("youtube.com")) {
             await this.linkRun(this.message, ["youtube", link])
             return

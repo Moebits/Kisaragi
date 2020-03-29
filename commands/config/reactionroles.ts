@@ -58,7 +58,7 @@ export default class ReactionRoles extends Command {
                     const reaction = JSON.parse(reactions[value])
                     const foundMsg = await discord.fetchMessage(message, reaction.message)
                     const link = foundMsg ? `[**Link**](${foundMsg?.url})` : "None"
-                    settings += `${value + 1} **=>**\n` +
+                    settings += `**${value + 1} =>**\n` +
                     `${discord.getEmoji("star")}_Message:_ ${link}\n` +
                     `${discord.getEmoji("star")}_Emoji:_ ${reaction.emoji ?? "None"}\n` +
                     `${discord.getEmoji("star")}_Role:_ ${reaction.role ? `<@&${reaction.role}>` : "None"}\n` +

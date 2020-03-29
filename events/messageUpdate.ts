@@ -17,6 +17,9 @@ export default class MessageUpdate {
         const logUpdated = async (oldMsg: Message, newMsg: Message) => {
             const messageLog = await sql.fetchColumn("logs", "message log")
             if (messageLog) {
+                if (oldMsg.content) {
+                    if (oldMsg.content === newMsg.content) return
+                }
                 const msgChannel = newMsg.guild?.channels.cache.get(messageLog)! as TextChannel
                 const logEmbed =  embeds.createEmbed()
                 const oldContent = oldMsg.content ? `**Old Message**\n ${oldMsg.content}\n` : ""
