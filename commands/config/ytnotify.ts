@@ -19,6 +19,9 @@ export default class YTNotify extends Command {
             `
             \`ytnotify\` - Opens the yt notify prompt
             \`ytnotify ytid/name #channel @role/id?\` - Sets the youtube channel, text channel, and mention role (optional)
+            \`ytnotify delete number\` - Deletes a setting
+            \`ytnotify edit number @role/id?\` - Edits the role mention. Omit the role to remove role mentions
+            \`ytnotify refresh\` - Refreshes all youtube subscriptions that could have been stopped (like restarting the server)
             `,
             examples:
             `
@@ -112,6 +115,7 @@ export default class YTNotify extends Command {
                 ${discord.getEmoji("star")}Type **toggle (setting number)** to toggle the state.
                 ${discord.getEmoji("star")}Type **delete (setting number)** to delete a setting.
                 ${discord.getEmoji("star")}Type **edit (setting number)** to edit the the role mention.
+                ${discord.getEmoji("star")}Type **refresh** to refresh all subscriptions that could have been stopped (eg. server restart).
                 ${discord.getEmoji("star")}Type **reset** to reset all settings.
                 ${discord.getEmoji("star")}Type **cancel** to exit.
             `))
@@ -141,6 +145,16 @@ export default class YTNotify extends Command {
                 await axios.delete(`${config.imagesAPI}/youtube`, {data: {channels, guild: message.guild?.id}})
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}YT Notify settings were wiped!`)
+                return msg.channel.send(responseEmbed)
+            }
+            if (msg.content.toLowerCase() === "refresh") {
+                for (let i = 0; i < yt.length; i++) {
+                    if (!yt[i]) break
+                    const current = {...yt[i], refresh: true}
+                    await axios.post(`${config.imagesAPI}/youtube`, current)
+                }
+                responseEmbed
+                .setDescription(`${discord.getEmoji("star")}Re-subscribed to all youtube notifications!`)
                 return msg.channel.send(responseEmbed)
             }
             if (msg.content.toLowerCase().includes("delete")) {

@@ -1,1 +1,1 @@
-worker: npm start
+worker: bin/start-pgbouncer-stunnel npm start

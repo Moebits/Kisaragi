@@ -106,9 +106,9 @@ export class SQLQuery {
   // Fetch a row
   public fetchRow = async (table: string, update?: boolean): Promise<string[]> => {
         const query: QueryArrayConfig = {
-          text: `SELECT * FROM "${table}" WHERE "guild id" = $1`,
+          text: `SELECT * FROM $1 WHERE "guild id" = $2`,
           rowMode:"array",
-          values: [this.message.guild?.id]
+          values: [table, this.message.guild?.id]
         }
         const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
         return result[0]
@@ -117,8 +117,8 @@ export class SQLQuery {
   // Fetch commands
   public static fetchCommand = async (command: string, column: string): Promise<string[]> => {
       const query: QueryArrayConfig = {
-        text: `SELECT "${column}" FROM commands WHERE command IN ($1)`,
-        values: [command],
+        text: `SELECT $1 FROM commands WHERE command IN ($2)`,
+        values: [column, command],
         rowMode: "array"
       }
       const result = await SQLQuery.runQuery(query, true)
@@ -155,13 +155,13 @@ export class SQLQuery {
   // Fetch a column
   public fetchColumn = async (table: string, column: string, key?: string | boolean, value?: string | boolean, update?: boolean): Promise<any> => {
       const query: QueryArrayConfig = key ? {
-        text: `SELECT "${column}" FROM "${table}" WHERE "${key}" = $1`,
+        text: `SELECT $1 FROM $2 WHERE $3 = $4`,
         rowMode: "array",
-        values: [value]
+        values: [column, table, key, value]
       } : {
-        text: `SELECT "${column}" FROM "${table}" WHERE "guild id" = $1`,
+        text: `SELECT $1 FROM $2 WHERE "guild id" = $3`,
         rowMode: "array",
-        values: [this.message.guild?.id]
+        values: [column, table, this.message.guild?.id]
       }
       const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
       const data = result?.[0]?.[0]
@@ -175,8 +175,9 @@ export class SQLQuery {
   // Select whole column
   public selectColumn = async (table: string, column: string, update?: boolean): Promise<string[]> => {
       const query: QueryArrayConfig = {
-        text: `SELECT "${column}" FROM "${table}"`,
-        rowMode: "array"
+        text: `SELECT $1 FROM $2`,
+        rowMode: "array",
+        values: [column, table]
       }
       const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
       return result as any as string[]
@@ -185,8 +186,8 @@ export class SQLQuery {
   // Insert row into a table
   public static insertInto = async (table: string, column: string, value: any): Promise<void> => {
         const query: QueryConfig = {
-          text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
-          values: [value]
+          text: `INSERT INTO $1 ($2) VALUES ($3)`,
+          values: [table, column, value]
         }
         await SQLQuery.runQuery(query, true)
     }
@@ -216,13 +217,13 @@ export class SQLQuery {
         let query: QueryConfig
         if (key) {
           query = {
-            text: `UPDATE "${table}" SET "${column}" = $1 WHERE "${key}" = $2`,
-            values: [value, keyVal]
+            text: `UPDATE $1 SET $2 = $4 WHERE $3 = $5`,
+            values: [table, column, key, value, keyVal]
           }
         } else {
           query = {
-            text: `UPDATE "${table}" SET "${column}" = $1 WHERE "guild id" = $2`,
-            values: [value, this.message.guild?.id]
+            text: `UPDATE $1 SET $2 = $3 WHERE "guild id" = $4`,
+            values: [table, column, value, this.message.guild?.id]
           }
         }
         await SQLQuery.runQuery(query, true)
@@ -243,8 +244,8 @@ export class SQLQuery {
         for (let i = 0; i < tableList.length; i++) {
           if (tableList[i] === "points") continue
           const query: QueryConfig = {
-            text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
-            values: [guildID]
+            text: `DELETE FROM $1 WHERE "guild id" = $2`,
+            values: [tableList[i], guildID]
           }
           await SQLQuery.runQuery(query, true)
         }
@@ -253,8 +254,8 @@ export class SQLQuery {
   // Delete row
   public static deleteRow = async (table: string, column: string, value: any): Promise<void> => {
       const query: QueryConfig = {
-        text: `DELETE FROM "${table}" WHERE "${column}" = $1`,
-        values: [value]
+        text: `DELETE FROM $1 WHERE $2 = $3`,
+        values: [table, column, value]
       }
       await SQLQuery.runQuery(query, true)
     }
@@ -263,7 +264,8 @@ export class SQLQuery {
   public static purgeTable = async (table: string): Promise<void> => {
       if (table === "points") return
       const query: QueryConfig = {
-        text: `DELETE FROM "${table}"`
+        text: `DELETE FROM $1`,
+        values: [table]
       }
       await SQLQuery.runQuery(query, true)
     }
@@ -272,8 +274,9 @@ export class SQLQuery {
   public static orderTables = async (): Promise<void> => {
         for (let i = 0; i < tableList.length; i++) {
             const query: QueryConfig = {
-              text: `SELECT members FROM "${tableList[i]}" ORDER BY
-              CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members DESC`
+              text: `SELECT members FROM $1 ORDER BY
+              CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members DESC`,
+              values: [tableList[i]]
             }
             await SQLQuery.runQuery(query, true)
         }
@@ -317,7 +320,11 @@ export class SQLQuery {
   }
 
   /** Sets foreign keys. */
-  public static foreignKeys = async () => {
-    //
+  public static foreignKeys = async (table: string) => {
+    const query: QueryConfig = {
+      text: `ALTER TABLE $1 ADD FOREIGN KEY ("guild id") REFERENCES guilds ("guild id")`,
+      values: [table]
+    }
+    await SQLQuery.runQuery(query, true)
   }
 }
