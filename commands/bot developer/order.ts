@@ -22,20 +22,19 @@ export default class Order extends Command {
         if (!perms.checkBotDev()) return
         const orderEmbed = embeds.createEmbed()
 
-        const tables = [
-            "auto", "birthdays", "blacklist",
-            "blocks", "captcha", "channels",
-            "config", "detection", "emojis",
-            "guild info", "images", "links",
-            "logs", "misc", "points", "prefixes",
-            "roles", "special channels", "special roles",
-            "timezones", "users", "warns", "welcome leaves"
+        /*const tables = [
+            "auto", "birthdays", "blocks",
+            "captcha", "channels", "config",
+            "detection", "emojis", "guild info",
+            "images", "links", "logs", "misc",
+            "points", "prefixes", "roles",
+            "special channels", "special roles", "timezones",
+            "users", "warns", "welcome leaves"
         ]
 
         for (let i = 0; i < tables.length; i++) {
             await SQLQuery.foreignKeys(tables[i])
-        }
-
+        }*/
         await SQLQuery.orderTables()
         orderEmbed
         .setTitle(`**Order** ${discord.getEmoji("gabStare")}`)

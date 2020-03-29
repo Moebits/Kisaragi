@@ -42,10 +42,13 @@ export class Images {
         const dimensions = sizeOf(`${folder}${path.basename(images[0])}`)
         const gif = new GifEncoder(dimensions.width, dimensions.height)
         gif.pipe(file)
-        gif.setQuality(20)
+        gif.setQuality(10)
         gif.setDelay(0)
         gif.setRepeat(0)
         gif.writeHeader()
+        gif.on("end", () => {
+            resolve()
+        })
         let counter = 0
         const addToGif = (frames: string[]) => {
             getPixels(`${folder}${path.basename(frames[counter])}`, function(err: Error, pixels: any) {
@@ -60,9 +63,6 @@ export class Images {
             })
         }
         addToGif(images)
-        gif.on("end", () => {
-                resolve()
-            })
         })
     }
 
@@ -256,7 +256,7 @@ export class Images {
                 }
                 const dataURI = await this.createCanvas(member, files[i], text, color, true, rIterator)
                 await imageDataURI.outputFile(dataURI, path.join(dir, `./image${i}`))
-                attachmentArray.push(`image${i}.jpeg`)
+                attachmentArray.push(`image${i}.png`)
                 rIterator++
             }
             const file = fs.createWriteStream(path.join(dir, `./animated${random}.gif`))
@@ -298,7 +298,7 @@ export class Images {
             ctx.drawImage(avatar, 25, 25, 200, 200)
 
             if (uri) {
-                return canvas.toDataURL("image/jpeg")
+                return canvas.toDataURL("image/png")
             }
 
             const attachment = new MessageAttachment(canvas.toBuffer(), `welcome.jpg`)

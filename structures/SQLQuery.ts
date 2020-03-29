@@ -15,7 +15,9 @@ const redis = RedisAsync.createClient({
 }) as any
 const pgPool = new Pool({
   connectionString: process.env.PG_URL,
-  ssl: true,
+  ssl: {
+    rejectUnauthorized: false
+  },
   max: 2
 })
 
@@ -273,7 +275,7 @@ export class SQLQuery {
       for (let i = 0; i < tableList.length; i++) {
           const query: QueryConfig = {
             text: `SELECT members FROM "${tableList[i]}" ORDER BY
-            CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members DESC`
+            CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members ASC`
           }
           await SQLQuery.runQuery(query, true)
       }
@@ -320,6 +322,25 @@ export class SQLQuery {
   public static foreignKeys = async (table: string) => {
     const query: QueryConfig = {
       text: `ALTER TABLE "${table}" ADD FOREIGN KEY ("guild id") REFERENCES guilds ("guild id")`
+    }
+    await SQLQuery.runQuery(query, true)
+  }
+
+  /** Removes foreign keys. */
+  public static dropForeignKeys = async (table: string) => {
+    const query: QueryConfig = {
+      text: `ALTER TABLE "${table}" DROP CONSTRAINT "${table}_guild id_fkey"`
+    }
+    await SQLQuery.runQuery(query, true)
+  }
+
+  /** Deletes duplicate records. */
+  public static deleteDuplicates = async (table: string, key: string) => {
+    const query: QueryConfig = {
+      text: `DELETE FROM "${table}"
+        WHERE ctid IN (SELECT unnest(array_remove(all_ctids, actid))
+        FROM (SELECT min(b.ctid) AS actid, array_agg(ctid) AS all_ctids
+        FROM "${table}" b GROUP BY "${key}" HAVING count(*) > 1) c)`
     }
     await SQLQuery.runQuery(query, true)
   }

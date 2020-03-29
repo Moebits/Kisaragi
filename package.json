@@ -128,7 +128,7 @@
     "opusscript": "0.0.7",
     "osmosis": "^1.1.10",
     "osu.ts": "^0.1.1",
-    "pg": "^7.11.0",
+    "pg": "^7.18.2",
     "pinterest-node-api": "0.0.3",
     "pixiv-app-api": "github:Tenpi/pixiv-app-api#fork",
     "pixiv-img": "^1.0.0",

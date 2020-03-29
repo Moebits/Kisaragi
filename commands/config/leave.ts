@@ -126,7 +126,7 @@ export default class Leave extends Command {
             if (newMsg.trim()) setMsg = true
             if (msg.content.toLowerCase().includes("enable")) setOn = true
             if (msg.content.toLowerCase() === "disable") setOff = true
-            if (msg.mentions.channels.array()) setChannel = true
+            if (msg.mentions.channels.array()?.[0]) setChannel = true
             if (newImage) setImage = true
             if (newBGText) setBGText = true
 
@@ -150,9 +150,10 @@ export default class Leave extends Command {
             }
             if (setChannel) {
                 const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
-                await sql.updateColumn("welcome leaves", "leave channel", String(channel!.id))
+                if (!channel) return message.reply(`Invalid channel name ${discord.getEmoji("kannaFacepalm")}`)
+                await sql.updateColumn("welcome leaves", "leave channel", channel.id)
                 setOn = true
-                description += `${discord.getEmoji("star")}Leave channel set to <#${channel!.id}>!\n`
+                description += `${discord.getEmoji("star")}Leave channel set to <#${channel.id}>!\n`
             }
             if (setOn) {
                 await sql.updateColumn("welcome leaves", "leave toggle", "on")
@@ -175,6 +176,7 @@ export default class Leave extends Command {
                 description += `${discord.getEmoji("star")}Background color set to **${newBGColor![0]}**!\n`
             }
 
+            if (!description) return message.reply(`No edits were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
             msg.channel.send(responseEmbed)
