@@ -14,7 +14,7 @@ export default class YTNotify extends Command {
     private readonly sql = new SQLQuery(this.message)
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configure youtube video upload notifications (disabled).",
+            description: "Configure youtube video upload notifications.",
             help:
             `
             \`ytnotify\` - Opens the yt notify prompt
@@ -44,7 +44,7 @@ export default class YTNotify extends Command {
                 const config = await this.sql.fetchColumn("yt", "config", "channel id", channels[i])
                 if (!config?.[0]) continue
                 for (let j = 0; j < config.length; j++) {
-                    const current = JSON.parse(JSON.stringify(config[j]))
+                    const current = JSON.parse(config[j])
                     if (current.guild === this.message.guild?.id) {
                         yt.push(current)
                     }
@@ -78,14 +78,15 @@ export default class YTNotify extends Command {
         for (let i = 0; i < increment; i++) {
             let ytDesc = ""
             for (let j = 0; j < step; j++) {
-                if (yt[0].channel) {
+                if (yt[0]?.channel) {
                     const k = (i*step)+j
-                    const channel = yt[k].channel ? `[**${yt[k].name}**](${yt[k].channel})` : "None"
+                    if (!yt[k]) break
+                    const channel = yt[k]?.channel ? `[**${yt[k].name}**](https://www.youtube.com/channel/${yt[k].channel})` : "None"
                     ytDesc += `**${k + 1} =>**\n` +
                     `${discord.getEmoji("star")}YT Channel: ${channel}\n` +
                     `${discord.getEmoji("star")}Text Channel: ${yt[k].text ? `<#${yt[k].text}>` : "None"}\n` +
-                    `${discord.getEmoji("star")}Role Mention: ${yt[k].mention ? `<@&${yt[k].mention}>` : "None"}\n` +
-                    `${discord.getEmoji("star")}State: ${yt[k].state ? yt[k].state : "Off"}\n`
+                    `${discord.getEmoji("star")}Role Mention: ${yt[k].mention ? yt[k].mention : "None"}\n` +
+                    `${discord.getEmoji("star")}State: **${yt[k].state ? yt[k].state : "Off"}**\n`
                 } else {
                     ytDesc = "None"
                 }
@@ -105,12 +106,12 @@ export default class YTNotify extends Command {
                 ${ytDesc}
                 newline
                 __Edit Settings__
-                ${discord.getEmoji("star")}**Type a channel id or name** to set the youtube channel.
-                ${discord.getEmoji("star")}**Mention a text channel** to set the text channel.
+                ${discord.getEmoji("star")}**Type a channel id or name** to set the youtube channel (required).
+                ${discord.getEmoji("star")}**Mention a text channel** to set the text channel (required).
                 ${discord.getEmoji("star")}**Mention a role or type a role id** to set the role mention.
-                ${discord.getEmoji("star")}Type **toggle (setting nummber)** to toggle the setting.
-                ${discord.getEmoji("star")}Type **delete (setting number)** to delete the setting.
-                ${discord.getEmoji("star")}Type **edit (setting number)** to edit the setting.
+                ${discord.getEmoji("star")}Type **toggle (setting number)** to toggle the state.
+                ${discord.getEmoji("star")}Type **delete (setting number)** to delete a setting.
+                ${discord.getEmoji("star")}Type **edit (setting number)** to edit the the role mention.
                 ${discord.getEmoji("star")}Type **reset** to reset all settings.
                 ${discord.getEmoji("star")}Type **cancel** to exit.
             `))
@@ -146,7 +147,7 @@ export default class YTNotify extends Command {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
                 if (Number.isNaN(num)) return msg.reply("Invalid setting number!")
                 if (yt ? yt[num - 1] : false) {
-                    const channel = JSON.parse(yt[num - 1]).channel
+                    const channel = yt[num - 1].channel
                     const index = channels.findIndex((c: string) => c === channel)
                     channels[index] = ""
                     channels = channels.filter(Boolean)
@@ -154,6 +155,57 @@ export default class YTNotify extends Command {
                     await axios.delete(`${config.imagesAPI}/youtube`, {data: {channels: [channel], guild: message.guild?.id}})
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
+                    return msg.channel.send(responseEmbed)
+                } else {
+                    responseEmbed
+                    .setDescription(`${discord.getEmoji("star")}Setting not found!`)
+                    return msg.channel.send(responseEmbed)
+                }
+            }
+            if (msg.content.toLowerCase().includes("toggle")) {
+                const num = Number(msg.content.replace(/toggle/gi, "").replace(/\s+/g, ""))
+                if (Number.isNaN(num)) return msg.reply("Invalid setting number!")
+                if (yt ? yt[num - 1] : false) {
+                    let desc = ""
+                    const current = yt[num - 1]
+                    if (current.state === "On") {
+                        current.state = "Off"
+                        desc += `${discord.getEmoji("star")}Setting ${num} was toggled **off**!`
+                    } else {
+                        current.state = "On"
+                        desc += `${discord.getEmoji("star")}Setting ${num} was toggled **on**!`
+                    }
+                    await axios.post(`${config.imagesAPI}/youtube`, current)
+                    responseEmbed
+                    .setDescription(desc)
+                    return msg.channel.send(responseEmbed)
+                } else {
+                    responseEmbed
+                    .setDescription(`${discord.getEmoji("star")}Setting not found!`)
+                    return msg.channel.send(responseEmbed)
+                }
+            }
+            if (msg.content.toLowerCase().includes("edit")) {
+                const newMsg = msg.content.replace(/edit/g, "").trim().split(" ")
+                const tempMsg = newMsg.slice(1).join(" ")
+                const num = Number(newMsg[0])
+                if (Number.isNaN(num)) return msg.reply("Invalid setting number!")
+                if (yt ? yt[num - 1] : false) {
+                    const current = yt[num - 1]
+                    let desc = ""
+                    const nRole = tempMsg.match(/\d{10,}/)?.[0] ?? ""
+                    if (nRole) {
+                        const found = message.guild?.roles.cache.get(nRole)
+                        if (!found) return msg.reply(`Invalid role ${discord.getEmoji("kannaFacepalm")}`)
+                        current.mention = `<@&${nRole}>`
+                        desc += `${discord.getEmoji("star")}Role mention set to <@&${nRole}>!\n`
+                    } else {
+                        current.mention = ""
+                        desc += `${discord.getEmoji("star")}Role mentions removed!\n`
+                    }
+                    await axios.post(`${config.imagesAPI}/youtube`, current)
+                    responseEmbed
+                    .setDescription(desc)
                     return msg.channel.send(responseEmbed)
                 } else {
                     responseEmbed
@@ -185,6 +237,8 @@ export default class YTNotify extends Command {
             request.guild = message.guild?.id
 
             if (setChannel) {
+                const found = channels.find((c: string) => c === newChannel)
+                if (!found) channels.push(newChannel)
                 const name = await self.getName(newChannel)
                 request.channel = newChannel
                 request.name = name
@@ -197,7 +251,7 @@ export default class YTNotify extends Command {
             }
 
             if (setRole) {
-                request.mention = newRole
+                request.mention = `<@&${newRole}>`
                 description += `${discord.getEmoji("star")}Role mention set to <@&${newRole}>!\n`
             }
 
@@ -219,12 +273,12 @@ export default class YTNotify extends Command {
                 } catch {
                     return message.reply(`I need the **Manage Webhooks** permission in order to send upload notifications ${discord.getEmoji("kannaFacepalm")}`)
                 }
+            } else {
+                return message.reply(`Setting both the youtube channel and text channel is required.`)
             }
-
-            console.log(request)
             if (!description) return message.reply(`No edits were made ${discord.getEmoji("kannaFacepalm")}`)
-            const req = await axios.post(`${config.imagesAPI}/youtube`, request)
-            console.log(req)
+            await axios.post(`${config.imagesAPI}/youtube`, request)
+            await sql.updateColumn("special channels", "yt channels", channels)
             responseEmbed
             .setDescription(description)
             return msg.channel.send(responseEmbed)
