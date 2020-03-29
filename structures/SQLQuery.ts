@@ -105,182 +105,179 @@ export class SQLQuery {
 
   // Fetch a row
   public fetchRow = async (table: string, update?: boolean): Promise<string[]> => {
-        const query: QueryArrayConfig = {
-          text: `SELECT * FROM $1 WHERE "guild id" = $2`,
-          rowMode:"array",
-          values: [table, this.message.guild?.id]
-        }
-        const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
-        return result[0]
+    const query: QueryArrayConfig = {
+      text: `SELECT * FROM "${table}" WHERE "guild id" = $1`,
+      rowMode:"array",
+      values: [this.message.guild?.id]
     }
+    const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
+    return result[0]
+}
 
   // Fetch commands
   public static fetchCommand = async (command: string, column: string): Promise<string[]> => {
+    const query: QueryArrayConfig = {
+      text: `SELECT "${column}" FROM commands WHERE command IN ($1)`,
+      values: [command],
+      rowMode: "array"
+    }
+    const result = await SQLQuery.runQuery(query, true)
+    return result[0]
+  }
+
+  // Fetch aliases
+  public fetchAliases = async (update?: boolean): Promise<string[]> => {
       const query: QueryArrayConfig = {
-        text: `SELECT $1 FROM commands WHERE command IN ($2)`,
-        values: [column, command],
+        text: `SELECT aliases FROM commands`,
         rowMode: "array"
       }
       const result = await SQLQuery.runQuery(query, true)
       return result[0]
   }
 
-  // Fetch aliases
-  public fetchAliases = async (update?: boolean): Promise<string[]> => {
-        const query: QueryArrayConfig = {
-          text: `SELECT aliases FROM commands`,
-          rowMode: "array"
-        }
-        const result = await SQLQuery.runQuery(query, true)
-        return result[0]
-    }
-
   // Fetch Prefix
   public static fetchPrefix = async (message: Message, update?: boolean): Promise<string> => {
-      if (!message.guild?.id) return "=>"
-      const query: QueryArrayConfig = {
-          text: `SELECT prefix FROM prefixes WHERE "guild id" = $1`,
-          rowMode: "array",
-          values: [message.guild?.id]
-      }
-      const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
-      if (!result) {
-          await SQLQuery.initGuild(message)
-          return "=>"
-        } else {
-          return String(result[0])
-        }
+    if (!message.guild?.id) return "=>"
+    const query: QueryArrayConfig = {
+        text: `SELECT prefix FROM prefixes WHERE "guild id" = $1`,
+        rowMode: "array",
+        values: [message.guild?.id]
     }
+    const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
+    if (!result) {
+        await SQLQuery.initGuild(message)
+        return "=>"
+      } else {
+        return String(result[0])
+      }
+  }
 
   // Fetch a column
   public fetchColumn = async (table: string, column: string, key?: string | boolean, value?: string | boolean, update?: boolean): Promise<any> => {
-      const query: QueryArrayConfig = key ? {
-        text: `SELECT $1 FROM $2 WHERE $3 = $4`,
-        rowMode: "array",
-        values: [column, table, key, value]
-      } : {
-        text: `SELECT $1 FROM $2 WHERE "guild id" = $3`,
-        rowMode: "array",
-        values: [column, table, this.message.guild?.id]
-      }
-      const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
-      const data = result?.[0]?.[0]
-      if (data) {
-        if (data === "[]" || data === "{}") return null
-        return JSON.parse(JSON.stringify(data))
-      }
-      return null
+    const query: QueryArrayConfig = key ? {
+      text: `SELECT "${column}" FROM "${table}" WHERE "${key}" = $1`,
+      rowMode: "array",
+      values: [value]
+    } : {
+      text: `SELECT "${column}" FROM "${table}" WHERE "guild id" = $1`,
+      rowMode: "array",
+      values: [this.message.guild?.id]
     }
+    const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
+    const data = result?.[0]?.[0]
+    if (data) {
+      if (data === "[]" || data === "{}") return null
+      return JSON.parse(JSON.stringify(data))
+    }
+    return null
+  }
 
   // Select whole column
   public selectColumn = async (table: string, column: string, update?: boolean): Promise<string[]> => {
-      const query: QueryArrayConfig = {
-        text: `SELECT $1 FROM $2`,
-        rowMode: "array",
-        values: [column, table]
-      }
-      const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
-      return result as any as string[]
+    const query: QueryArrayConfig = {
+      text: `SELECT "${column}" FROM "${table}"`,
+      rowMode: "array"
     }
+    const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
+    return result as any as string[]
+  }
 
   // Insert row into a table
   public static insertInto = async (table: string, column: string, value: any): Promise<void> => {
-        const query: QueryConfig = {
-          text: `INSERT INTO $1 ($2) VALUES ($3)`,
-          values: [table, column, value]
-        }
-        await SQLQuery.runQuery(query, true)
-    }
+      const query: QueryConfig = {
+        text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
+        values: [value]
+      }
+      await SQLQuery.runQuery(query, true)
+  }
 
   // Insert command
   public static insertCommand = async (name: string, path: string, command: Command): Promise<void> => {
-    const cmd = command.options
-    const query: QueryConfig = {
-        text: `INSERT INTO commands (command, aliases, path, cooldown, help, examples, "guild only", random, permission, "bot permission") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        values: [name, cmd.aliases, path, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission]
-      }
-    await SQLQuery.runQuery(query, true)
+  const cmd = command.options
+  const query: QueryConfig = {
+      text: `INSERT INTO commands (command, aliases, path, cooldown, help, examples, "guild only", random, permission, "bot permission") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      values: [name, cmd.aliases, path, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission]
+    }
+  await SQLQuery.runQuery(query, true)
   }
 
   // Update Prefix
   public static updatePrefix = async (message: Message, prefix: string): Promise<void> => {
-    const query: QueryConfig = {
-        text: `UPDATE "prefixes" SET "prefix" = $1 WHERE "guild id" = $2`,
-        values: [prefix, message.guild?.id]
-      }
-    await SQLQuery.runQuery(query, true)
-    SQLQuery.fetchPrefix(message, true)
-}
+  const query: QueryConfig = {
+      text: `UPDATE "prefixes" SET "prefix" = $1 WHERE "guild id" = $2`,
+      values: [prefix, message.guild?.id]
+    }
+  await SQLQuery.runQuery(query, true)
+  SQLQuery.fetchPrefix(message, true)
+  }
 
   // Update a row in a table
   public updateColumn = async (table: string, column: string, value: any, key?: string, keyVal?: string): Promise<void> => {
-        let query: QueryConfig
-        if (key) {
-          query = {
-            text: `UPDATE $1 SET $2 = $4 WHERE $3 = $5`,
-            values: [table, column, key, value, keyVal]
-          }
-        } else {
-          query = {
-            text: `UPDATE $1 SET $2 = $3 WHERE "guild id" = $4`,
-            values: [table, column, value, this.message.guild?.id]
-          }
+      let query: QueryConfig
+      if (key) {
+        query = {
+          text: `UPDATE "${table}" SET "${column}" = $1 WHERE "${key}" = $2`,
+          values: [value, keyVal]
         }
-        await SQLQuery.runQuery(query, true)
-    }
+      } else {
+        query = {
+          text: `UPDATE "${table}" SET "${column}" = $1 WHERE "guild id" = $2`,
+          values: [value, this.message.guild?.id]
+        }
+      }
+      await SQLQuery.runQuery(query, true)
+  }
 
   // Update Command
   public static updateCommand = async (name: string, path: string, command: Command): Promise<void> => {
-    const cmd = command.options
-    const query: QueryConfig = {
-      text: `UPDATE commands SET aliases = $2, cooldown = $3, help = $4, examples = $5, "guild only" = $6, random = $7, permission = $8, "bot permission" = $9, path = $10 WHERE "command" = $1`,
-      values: [name, cmd.aliases, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission, path]
-    }
-    await SQLQuery.runQuery(query, true)
+  const cmd = command.options
+  const query: QueryConfig = {
+    text: `UPDATE commands SET aliases = $2, cooldown = $3, help = $4, examples = $5, "guild only" = $6, random = $7, permission = $8, "bot permission" = $9, path = $10 WHERE "command" = $1`,
+    values: [name, cmd.aliases, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission, path]
+  }
+  await SQLQuery.runQuery(query, true)
   }
 
   // Remove a guild from all tables
   public static deleteGuild = async (guildID: string): Promise<void> => {
-        for (let i = 0; i < tableList.length; i++) {
-          if (tableList[i] === "points") continue
-          const query: QueryConfig = {
-            text: `DELETE FROM $1 WHERE "guild id" = $2`,
-            values: [tableList[i], guildID]
-          }
-          await SQLQuery.runQuery(query, true)
+      for (let i = 0; i < tableList.length; i++) {
+        if (tableList[i] === "points") continue
+        const query: QueryConfig = {
+          text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
+          values: [guildID]
         }
-    }
+        await SQLQuery.runQuery(query, true)
+      }
+  }
 
   // Delete row
   public static deleteRow = async (table: string, column: string, value: any): Promise<void> => {
-      const query: QueryConfig = {
-        text: `DELETE FROM $1 WHERE $2 = $3`,
-        values: [table, column, value]
-      }
-      await SQLQuery.runQuery(query, true)
+    const query: QueryConfig = {
+      text: `DELETE FROM "${table}" WHERE "${column}" = $1`,
+      values: [value]
     }
+    await SQLQuery.runQuery(query, true)
+  }
 
   /** Deletes a table. */
   public static purgeTable = async (table: string): Promise<void> => {
-      if (table === "points") return
-      const query: QueryConfig = {
-        text: `DELETE FROM $1`,
-        values: [table]
-      }
-      await SQLQuery.runQuery(query, true)
+    if (table === "points") return
+    const query: QueryConfig = {
+      text: `DELETE FROM "${table}"`
     }
+    await SQLQuery.runQuery(query, true)
+  }
 
   // Order tables by guild member count
   public static orderTables = async (): Promise<void> => {
-        for (let i = 0; i < tableList.length; i++) {
-            const query: QueryConfig = {
-              text: `SELECT members FROM $1 ORDER BY
-              CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members DESC`,
-              values: [tableList[i]]
-            }
-            await SQLQuery.runQuery(query, true)
-        }
-    }
+      for (let i = 0; i < tableList.length; i++) {
+          const query: QueryConfig = {
+            text: `SELECT members FROM "${tableList[i]}" ORDER BY
+            CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members DESC`
+          }
+          await SQLQuery.runQuery(query, true)
+      }
+  }
 
   /** Init Guild */
   public static initGuild = async (message: Message) => {
