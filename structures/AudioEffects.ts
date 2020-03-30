@@ -39,24 +39,24 @@ export class AudioEffects {
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
-        const flacDest = await this.convertFromMp3(filepath, "flac")
+        const inDest = await this.convertFromMp3(filepath, "aiff")
         // const ext = path.extname(filepath).replace(".", "")
-        let outDest = fileDest.slice(0, -4) + `.flac`
+        let outDest = fileDest.slice(0, -4) + `.aiff`
         let index = 0
         while (fs.existsSync(outDest)) {
-            outDest = index <= 1 ? `${fileDest}.flac` : `${fileDest}${index}.flac`
+            outDest = index <= 1 ? `${fileDest}.aiff` : `${fileDest}${index}.aiff`
             index++
         }
         // console.log([...effect.split(" ")])
-        const input = fs.createReadStream(flacDest)
+        const input = fs.createReadStream(inDest)
         const output = fs.createWriteStream(outDest)
         const transform = sox({
             global: {
                 "temp": "./tracks/transform",
                 "replay-gain": "off"
             },
-            input: {type: "flac"},
-            output: {type: "flac"},
+            input: {type: "aiff"},
+            output: {type: "aiff"},
             effects: ["gain", "-h", ...effect.split(" ")]
         })
         await new Promise((resolve) => {
@@ -69,7 +69,7 @@ export class AudioEffects {
             .on("finish", () => resolve())
         })
         const mp3Dest = await this.convertToMp3(outDest)
-        fs.unlink(flacDest, () => null)
+        fs.unlink(inDest, () => null)
         fs.unlink(outDest, () => null)
         return mp3Dest
     }
