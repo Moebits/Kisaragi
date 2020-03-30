@@ -225,8 +225,7 @@ export class AudioEffects {
 
     public convertFromMp3 = async (filepath: string, format: string) => {
         this.init()
-        let filename = path.basename(filepath).slice(0, -4)
-        if (filename.endsWith(".")) filename = filename.slice(0, -1)
+        const filename = format.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
         const newDest = `./tracks/transform/${filename}.${format}`
         await new Promise((resolve) => {
             ffmpeg(filepath).toFormat(format).outputOptions("-bitexact").save(newDest)
