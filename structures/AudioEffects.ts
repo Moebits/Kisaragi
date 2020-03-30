@@ -176,8 +176,8 @@ export class AudioEffects {
     }
 
     public speed = async (factor: number, pitch: boolean, filepath: string, fileDest: string) => {
-        let effect = `tempo ${factor}`
-        if (pitch) effect = `speed ${factor}`
+        let effect = `gain -50 tempo ${factor} gain -n`
+        if (pitch) effect = `gain -50 speed ${factor} gain -n`
         return this.processEffect(effect, filepath, fileDest)
     }
 
