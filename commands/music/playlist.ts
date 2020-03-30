@@ -23,7 +23,8 @@ export default class Playlists extends Command {
             `,
             aliases: ["pl", "playlists"],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            unlist: true
         })
     }
 

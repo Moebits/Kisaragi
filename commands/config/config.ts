@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Config extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configures bot settings (disabled).",
+            description: "Configures bot settings like embed colors.",
             help:
             `
             \`config\` - Shows the config prompt.
@@ -44,7 +44,6 @@ export default class Config extends Command {
 
         let color = await sql.fetchColumn("config", "embed colors")
         if (!color) color = ["default"]
-        console.log(color)
         const permCheck = await sql.fetchColumn("config", "permissions")
         const configEmbed = embeds.createEmbed()
         configEmbed

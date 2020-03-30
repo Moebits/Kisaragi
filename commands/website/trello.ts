@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Twitch extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for trello boards and members.",
+            description: "Searches for trello boards and users.",
             help:
             `
             \`trello query\` - Searches for users with the query
