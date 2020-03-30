@@ -46,7 +46,7 @@ export default class CaptchaCmd extends Command {
         const input = Functions.combineArgs(args, 1).trim()
         if (input.trim()) {
             message.content = input.trim()
-            captchaPrompt(message)
+            await captchaPrompt(message)
             return
         }
         const vToggle = await sql.fetchColumn("captcha", "verify toggle")
@@ -188,6 +188,6 @@ export default class CaptchaCmd extends Command {
             return
         }
 
-        embeds.createPrompt(captchaPrompt)
+        await embeds.createPrompt(captchaPrompt)
     }
 }

@@ -26,7 +26,7 @@ export default class Mod extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            modPrompt(message)
+            await modPrompt(message)
             return
         }
 
@@ -183,6 +183,6 @@ export default class Mod extends Command {
 
         }
 
-        embeds.createPrompt(modPrompt)
+        await embeds.createPrompt(modPrompt)
     }
 }

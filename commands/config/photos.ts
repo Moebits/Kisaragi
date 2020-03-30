@@ -27,7 +27,7 @@ export default class Photos extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            photoPrompt(message)
+            await photoPrompt(message)
             return
         }
 
@@ -205,6 +205,6 @@ export default class Photos extends Command {
 
         }
 
-        embeds.createPrompt(photoPrompt)
+        await embeds.createPrompt(photoPrompt)
     }
 }

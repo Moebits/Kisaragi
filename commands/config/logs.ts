@@ -39,7 +39,7 @@ export default class Logs extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            logPrompt(message)
+            await logPrompt(message)
             return
         }
 
@@ -167,6 +167,6 @@ export default class Logs extends Command {
             return msg.channel.send(responseEmbed)
         }
 
-        embeds.createPrompt(logPrompt)
+        await embeds.createPrompt(logPrompt)
     }
 }

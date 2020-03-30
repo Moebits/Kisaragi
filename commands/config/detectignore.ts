@@ -36,7 +36,7 @@ export default class DetectChannels extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            detectPrompt(message)
+            await detectPrompt(message)
             return
         }
 
@@ -118,6 +118,6 @@ export default class DetectChannels extends Command {
             return
         }
 
-        embeds.createPrompt(detectPrompt)
+        await embeds.createPrompt(detectPrompt)
     }
 }

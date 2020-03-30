@@ -38,7 +38,7 @@ export default class Config extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            configPrompt(message)
+            await configPrompt(message)
             return
         }
 
@@ -118,6 +118,6 @@ export default class Config extends Command {
             msg.channel.send(responseEmbed)
             return
         }
-        embeds.createPrompt(configPrompt)
+        await embeds.createPrompt(configPrompt)
     }
 }

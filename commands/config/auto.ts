@@ -42,7 +42,7 @@ export default class Auto extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            autoPrompt(message)
+            await autoPrompt(message)
             return
         }
 
@@ -297,6 +297,6 @@ export default class Auto extends Command {
 
         }
 
-        embeds.createPrompt(autoPrompt)
+        await embeds.createPrompt(autoPrompt)
     }
 }

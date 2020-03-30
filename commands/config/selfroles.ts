@@ -77,7 +77,7 @@ export default class Selfroles extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            selfPrompt(message)
+            await selfPrompt(message)
             return
         }
 
@@ -181,6 +181,6 @@ export default class Selfroles extends Command {
 
         }
 
-        embeds.createPrompt(selfPrompt)
+        await embeds.createPrompt(selfPrompt)
     }
 }

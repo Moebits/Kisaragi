@@ -45,7 +45,7 @@ export default class Leave extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            leavePrompt(message)
+            await leavePrompt(message)
             return
         }
         const leaveEmbed = embeds.createEmbed()
@@ -183,6 +183,6 @@ export default class Leave extends Command {
             return
         }
 
-        embeds.createPrompt(leavePrompt)
+        await embeds.createPrompt(leavePrompt)
     }
 }

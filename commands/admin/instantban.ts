@@ -26,7 +26,7 @@ export default class InstantBan extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            instantBanPrompt(message)
+            await instantBanPrompt(message)
             return
         }
 
@@ -140,6 +140,6 @@ export default class InstantBan extends Command {
             return
         }
 
-        embeds.createPrompt(instantBanPrompt)
+        await embeds.createPrompt(instantBanPrompt)
     }
 }

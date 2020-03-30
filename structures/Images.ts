@@ -232,7 +232,7 @@ export class Images {
         let background: Canvas.Image
         if (image.includes("gif")) {
             const random  = Math.floor(Math.random() * 1000000)
-            const dir = path.join(__dirname, `../../../assets/images/dump/${random}/`)
+            const dir = path.join(__dirname, `../../assets/images/dump/${random}/`)
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, {recursive: true})
 
             const files: string[] = []

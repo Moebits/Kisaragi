@@ -47,7 +47,7 @@ export default class Block extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            blockPrompt(message)
+            await blockPrompt(message)
             return
         }
         const words = await sql.fetchColumn("blocks", "blocked words")
@@ -208,6 +208,6 @@ export default class Block extends Command {
             msg.channel.send(responseEmbed)
             return
         }
-        embeds.createPrompt(blockPrompt)
+        await embeds.createPrompt(blockPrompt)
         }
 }

@@ -27,7 +27,7 @@ export default class ChannelLink extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            linkPrompt(message)
+            await linkPrompt(message)
             return
         }
         const linkText = await sql.fetchColumn("links", "text")
@@ -171,6 +171,6 @@ export default class ChannelLink extends Command {
             return
         }
 
-        embeds.createPrompt(linkPrompt)
+        await embeds.createPrompt(linkPrompt)
     }
 }

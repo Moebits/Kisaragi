@@ -9,6 +9,7 @@ export default class MessageReactionRemove {
     public run = (reaction: MessageReaction, user: User) => {
         const removeReactionRole = async (reaction: MessageReaction, user: User) => {
             if (user.id === this.discord.user!.id) return
+            if (reaction.partial) reaction = await reaction.fetch()
             const sql = new SQLQuery(reaction.message)
             const embeds = new Embeds(this.discord, reaction.message)
             const reactionroles = await sql.fetchColumn("special roles", "reaction roles")
@@ -17,7 +18,10 @@ export default class MessageReactionRemove {
                 const reactionrole = JSON.parse(reactionroles[i])
                 if (!reactionrole.state || reactionrole.state === "off") continue
                 if (reactionrole.message !== reaction.message.id) continue
-                if (reactionrole.emoji === reaction.emoji.toString()) {
+                let test = false
+                if (reactionrole.emoji === reaction.emoji.id) test = true
+                if (reactionrole.emoji === reaction.emoji.toString()) test = true
+                if (test) {
                     const member = reaction.message.guild?.members.cache.get(user.id)
                     const exists = member?.roles.cache.get(reactionrole.role)
                     if (!exists) return

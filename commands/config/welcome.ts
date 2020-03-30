@@ -44,7 +44,7 @@ export default class Welcome extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            welcomePrompt(message)
+            await welcomePrompt(message)
             return
         }
         const welcomeEmbed = embeds.createEmbed()
@@ -181,6 +181,6 @@ export default class Welcome extends Command {
             msg.channel.send(responseEmbed)
             return
         }
-        embeds.createPrompt(welcomePrompt)
+        await embeds.createPrompt(welcomePrompt)
     }
 }

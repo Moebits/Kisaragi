@@ -69,7 +69,7 @@ export default class YTNotify extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            ytPrompt(message)
+            await ytPrompt(message)
             return
         }
 
@@ -299,6 +299,6 @@ export default class YTNotify extends Command {
 
         }
 
-        embeds.createPrompt(ytPrompt)
+        await embeds.createPrompt(ytPrompt)
     }
 }
