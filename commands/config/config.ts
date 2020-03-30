@@ -13,7 +13,7 @@ export default class Config extends Command {
             help:
             `
             \`config\` - Shows the config prompt.
-            \`config default/random/#hexcolor\` - Sets the colors of the embeds
+            \`config default/random/#hexcolor1 #hexcolor2\` - Sets the colors of the embeds
             \`config role/perm\` - Checks permissions with mod/admin roles or discord permissions (eg. ban members)
             \`config reset\` - Resets settings to the default
             `,
@@ -34,7 +34,6 @@ export default class Config extends Command {
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
-        return message.reply("This command is disabled for the time being...")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -43,18 +42,20 @@ export default class Config extends Command {
             return
         }
 
-        const color = await sql.fetchColumn("config", "embed colors")
+        let color = await sql.fetchColumn("config", "embed colors")
+        if (!color) color = ["default"]
+        console.log(color)
         const permCheck = await sql.fetchColumn("config", "permissions")
         const configEmbed = embeds.createEmbed()
         configEmbed
         .setTitle(`**Bot Config Settings** ${discord.getEmoji("gabStare")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .setDescription(Functions.multiTrim(`
-        Configure bot settings.
+        Configure bot settings. (Permission checks are not implemented yet)
         newline
         __Current Settings__
-        ${discord.getEmoji("star")}Embed color set to **${color}**
-        ${discord.getEmoji("star")}Permission checks set to **${permCheck}**
+        ${discord.getEmoji("star")}Embed colors are set to **${color.join(", ")}**
+        ${discord.getEmoji("star")}Permission checks are set to **${permCheck}**
         newline
         __Edit Settings__
         ${discord.getEmoji("star")}Type **default/random** or a **hexcolor** to set the embed color.
@@ -87,26 +88,31 @@ export default class Config extends Command {
                 return
             }
 
-            const newColor = (msg.content.match(/default/gi) || msg.content.match(/random/gi) ||
-            msg.content.match(/(\s|^)#[0-9a-f]{3,6}/ig))
+            let newColor = (msg.content.match(/default/gi) || msg.content.match(/random/gi) ||
+            msg.content.match(/(\s|^)#[0-9a-f]{3,6}/gi))
             const newPerm = (msg.content.match(/role/gi) || msg.content.match(/perm/gi))
 
-            if (newColor) setColor = true
+            if (newColor) {
+                newColor = newColor.map((m) => m)
+                setColor = true
+            }
+
             if (newPerm) setPerm = true
 
             let description = ""
 
             if (setColor) {
-                await sql.updateColumn("config", "embed colors", String(newColor))
-                description += `${discord.getEmoji("star")}Embed color set to **${newColor}!**\n`
+                await sql.updateColumn("config", "embed colors", newColor)
+                await embeds.updateColor()
+                description += `${discord.getEmoji("star")}Embed colors are set to **${newColor?.join(", ")}!**\n`
             }
 
             if (setPerm) {
-                await sql.updateColumn("config", "permissions", String(newPerm))
+                await sql.updateColumn("config", "permissions", newPerm)
                 description += `${discord.getEmoji("star")}Permission check set to **${newPerm}!**\n`
             }
 
-            if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
+            if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt ${discord.getEmoji("kannaFacepalm")}`
             responseEmbed
             .setDescription(description)
             msg.channel.send(responseEmbed)

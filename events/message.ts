@@ -8,6 +8,7 @@ import {Cooldown} from "../structures/Cooldown.js"
 import {Kisaragi} from "../structures/Kisaragi.js"
 import {Block} from "./../structures/Block"
 import {Detector} from "./../structures/Detector"
+import {Embeds} from "./../structures/Embeds"
 import {Generate} from "./../structures/Generate"
 import {Haiku} from "./../structures/Haiku"
 import {Letters} from "./../structures/Letters"
@@ -18,6 +19,7 @@ import {SQLQuery} from "./../structures/SQLQuery"
 const responseTextCool = new Set()
 const responseImageCool = new Set()
 const haikuCool = new Set()
+const firstMessage = new Set()
 
 export default class MessageEvent {
     private readonly cooldowns: Collection<string, Collection<string, number>> = new Collection()
@@ -31,6 +33,7 @@ export default class MessageEvent {
       const cmdFunctions = new CommandFunctions(this.discord, message)
       const links = new Link(this.discord, message)
       const generate = new Generate(this.discord, message)
+      const embeds = new Embeds(this.discord, message)
 
       if (message.partial) {
         try {
@@ -74,6 +77,10 @@ export default class MessageEvent {
           points.calcScore()
           }, pointTimeout ? Number(pointTimeout) : 60000)*/
           // cmdFunctions.autoCommand()
+          if (!firstMessage.has(message.guild.id)) {
+            await embeds.updateColor()
+            firstMessage.add(message.guild.id)
+          }
         }
         if (responses.text[message.content.trim().toLowerCase()]) {
           const response = message.content.trim().toLowerCase()

@@ -1,4 +1,4 @@
-import {Emoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, User} from "discord.js"
+import {Collection, Emoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, User} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Functions} from "./Functions"
@@ -6,23 +6,40 @@ import {Images} from "./Images"
 import {Kisaragi} from "./Kisaragi.js"
 import {SQLQuery} from "./SQLQuery"
 
+const colors = new Collection()
+
 export class Embeds {
     private readonly functions = new Functions(this.message)
     private readonly sql = new SQLQuery(this.message)
     private readonly images = new Images(this.discord, this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
-    // Create Embed
+    /** Updates the guild embed color */
+    public updateColor = async () => {
+        const color = await this.sql.fetchColumn("config", "embed colors")
+        if (!color || String(color) === "default") {
+            colors.set(this.message.guild?.id, "default")
+        } else if (String(color) === "random") {
+            colors.set(this.message.guild?.id, "RANDOM")
+        } else {
+            colors.set(this.message.guild?.id, color)
+        }
+    }
+
+    /** Creates a basic embed */
     public createEmbed = () => {
+        let color = colors.has(this.message.guild?.id) ? colors.get(this.message.guild?.id) : Functions.randomColor() as any
+        if (Array.isArray(color)) color = color[Math.floor(Math.random()*color.length)]
+        if (color === "default") color = Functions.randomColor()
         const embed = new MessageEmbed()
         embed
-            .setColor(Functions.randomColor())
-            .setTimestamp(embed.timestamp!)
-            .setFooter(`Responded in ${this.functions.responseTime()}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
+        .setColor(color)
+        .setTimestamp(embed.timestamp!)
+        .setFooter(`Responded in ${this.functions.responseTime()}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
         return embed
     }
 
-    // Update Embed
+    /** Updates an embed */
     public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean, cmdCount?: number[]) => {
         if (!embeds[page]) return
         if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)

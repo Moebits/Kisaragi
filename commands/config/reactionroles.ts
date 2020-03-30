@@ -41,7 +41,7 @@ export default class ReactionRoles extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            reactPrompt(message)
+            await reactPrompt(message)
             return
         }
 
@@ -345,6 +345,6 @@ export default class ReactionRoles extends Command {
             return msg.channel.send(responseEmbed)
         }
 
-        embeds.createPrompt(reactPrompt)
+        await embeds.createPrompt(reactPrompt)
     }
 }
