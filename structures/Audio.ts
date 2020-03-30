@@ -784,7 +784,13 @@ export class Audio {
         const reactors = [resume, pause, scrub, reverse, speed, pitch, loop, abloop, skip, volume, eq, fx, clear, mp3]
         for (let i = 0; i < reactors.length; i++) {
             reactors[i].on("collect", async (reaction, user) => {
-                if (this.getProcBlock()) {
+                let test = true
+                if (reaction.emoji.name === "reverse") test = false
+                if (reaction.emoji.name === "speed") test = false
+                if (reaction.emoji.name === "pitch") test = false
+                if (reaction.emoji.name === "eq") test = false
+                if (reaction.emoji.name === "fx") test = false
+                if (this.getProcBlock() && !test) {
                     await reaction.users.remove(user)
                     const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                     proc.delete({timeout: 3000})

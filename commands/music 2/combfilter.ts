@@ -20,7 +20,8 @@ export default class CombFilter extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 5
+            cooldown: 5,
+            unlist: true
         })
     }
 

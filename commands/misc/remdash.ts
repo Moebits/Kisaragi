@@ -10,7 +10,8 @@ export default class Remdash extends Command {
             description: "Removes dashes from channel names (disabled).",
             aliases: ["delhyphen"],
             guildOnly: true,
-            cooldown: 5
+            cooldown: 5,
+            unlist: true
         })
     }
 

@@ -39,24 +39,24 @@ export class AudioEffects {
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
-        const wavDest = await this.mp3ToWav(filepath)
+        const flacDest = await this.convertFromMp3(filepath, "flac")
         // const ext = path.extname(filepath).replace(".", "")
-        let outDest = fileDest.slice(0, -4) + `.wav`
+        let outDest = fileDest.slice(0, -4) + `.flac`
         let index = 0
         while (fs.existsSync(outDest)) {
-            outDest = index <= 1 ? `${fileDest}.wav` : `${fileDest}${index}.wav`
+            outDest = index <= 1 ? `${fileDest}.flac` : `${fileDest}${index}.flac`
             index++
         }
         // console.log([...effect.split(" ")])
-        const input = fs.createReadStream(wavDest)
+        const input = fs.createReadStream(flacDest)
         const output = fs.createWriteStream(outDest)
         const transform = sox({
             global: {
                 "temp": "./tracks/transform",
                 "replay-gain": "off"
             },
-            input: {type: "wav"},
-            output: {type: "wav"},
+            input: {type: "flac"},
+            output: {type: "flac"},
             effects: ["gain", "-h", ...effect.split(" ")]
         })
         await new Promise((resolve) => {
@@ -68,8 +68,8 @@ export class AudioEffects {
             .on("error", (err) => console.log(err))
             .on("finish", () => resolve())
         })
-        const mp3Dest = await this.WavToMp3(outDest)
-        fs.unlink(wavDest, () => null)
+        const mp3Dest = await this.convertToMp3(outDest)
+        fs.unlink(flacDest, () => null)
         fs.unlink(outDest, () => null)
         return mp3Dest
     }
@@ -199,7 +199,7 @@ export class AudioEffects {
 
     public combFilter = async (delay: number, decay: number, filepath: string, wavDest?: string) => {
         this.init()
-        const wavFile = await this.mp3ToWav(filepath)
+        const wavFile = await this.convertFromMp3(filepath, "wav")
         const arraybuffer = fs.readFileSync(wavFile, null).buffer
         const array = new Uint8Array(arraybuffer)
         const header = array.slice(0, 44)
@@ -223,12 +223,12 @@ export class AudioEffects {
         return wavDest
     }
 
-    public mp3ToWav = async (filepath: string) => {
+    public convertFromMp3 = async (filepath: string, format: string) => {
         this.init()
         const filename = path.basename(filepath).slice(0, -4)
-        const newDest = `./tracks/transform/${filename}.wav`
+        const newDest = `./tracks/transform/${filename}.${format}`
         await new Promise((resolve) => {
-            ffmpeg(filepath).toFormat("wav").outputOptions("-bitexact").save(newDest)
+            ffmpeg(filepath).toFormat(format).outputOptions("-bitexact").save(newDest)
             .on("end", () => {
                 resolve()
             })
@@ -236,7 +236,7 @@ export class AudioEffects {
         return newDest
     }
 
-    public WavToMp3 = async (filepath: string) => {
+    public convertToMp3 = async (filepath: string) => {
         this.init()
         const filename = path.basename(filepath).slice(0, -4)
         const newDest = `./tracks/transform/${filename}.mp3`
@@ -285,7 +285,7 @@ export class AudioEffects {
 
     public reverseLegacy = async (filepath: string, wavDest: string) => {
         this.init()
-        const wavFile = await this.mp3ToWav(filepath)
+        const wavFile = await this.convertFromMp3(filepath, "wav")
         const arraybuffer = fs.readFileSync(wavFile, null).buffer
         const array = new Uint8Array(arraybuffer)
         const header = array.slice(0, 44)
@@ -302,7 +302,7 @@ export class AudioEffects {
         }
         const reversedArray = [...header, ...reversed]
         fs.writeFileSync(wavDest, Buffer.from(new Uint8Array(reversedArray)))
-        const mp3File = await this.WavToMp3(wavDest)
+        const mp3File = await this.convertToMp3(wavDest)
         fs.unlink(wavFile, (err) => console.log(err))
         fs.unlink(wavDest, (err) => console.log(err))
         return mp3File

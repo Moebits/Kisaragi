@@ -7,7 +7,7 @@ export default class VoiceStateUpdate {
 
     public run = async (oldState: VoiceState, newState: VoiceState) => {
         const connected = newState.guild.voice?.connection?.channel
-        const listening = oldState.channel?.members.filter((m) => {
+        const listening = newState.channel?.members.filter((m) => {
             if (m.user.bot) {
                 return false
             } else if (m.voice.deaf) {
@@ -16,7 +16,7 @@ export default class VoiceStateUpdate {
                 return true
             }
         })
-        if (connected && !newState.connection?.channel && (!listening || listening.size === 1)) {
+        if (connected && !newState.connection?.channel && !listening?.size) {
             const msg = await this.discord.fetchFirstMessage(newState.guild)
             const audio = new Audio(this.discord, msg!)
             audio.deleteQueue()

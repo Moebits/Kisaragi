@@ -20,7 +20,8 @@ export default class DiscordBotList extends Command {
             `,
             aliases: ["topgg", "discordbotlist"],
             random: "none",
-            cooldown: 15
+            cooldown: 15,
+            unlist: true
         })
     }
 
