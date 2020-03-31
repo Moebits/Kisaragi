@@ -43,16 +43,21 @@ export default class Konachan extends Command {
         .setTitle(`**Konachan Image** ${discord.getEmoji("gabLewd")}`)
         .setAuthor("konachan", "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE")
 
-        let tags
+        let tags: string[] = []
         if (!args[1]) {
-            tags = ["loli", "rating:safe"]
+            tags = ["pantyhose", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
+            if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
-            if (!tags) tags = ["loli"]
-            tags.push("-rating:safe")
+            if (!tags) tags = ["pantyhose"]
+            if (discord.checkMuted(message.guild)) {
+                tags.push("rating:safe")
+            } else {
+                tags.push("-rating:safe")
+            }
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
-            if (!tags) tags = ["loli"]
+            if (!tags) tags = ["pantyhose"]
             tags.push("rating:safe")
         }
 
@@ -83,6 +88,7 @@ export default class Konachan extends Command {
             const img = images[i]
             if (img.rating !== "s") {
                 if (!perms.checkNSFW(true)) continue
+                if (perms.loliFilter(img.tags)) continue
             }
             const konachanEmbed = embeds.createEmbed()
             .setTitle(`**Konachan Image** ${discord.getEmoji("gabLewd")}`)

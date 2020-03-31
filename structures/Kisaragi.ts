@@ -169,7 +169,9 @@ export class Kisaragi extends Client {
             "110373943822540800",
             "264445053596991498",
             "450100127256936458",
-            "446425626988249089"
+            "446425626988249089",
+            "333949691962195969",
+            "632760185756319784"
         ]
         if (!guild) return false
         if (muted.includes(guild.id)) {
@@ -178,5 +180,4 @@ export class Kisaragi extends Client {
             return false
         }
     }
-
 }

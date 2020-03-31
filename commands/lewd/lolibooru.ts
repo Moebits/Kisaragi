@@ -17,14 +17,13 @@ export default class Lolibooru extends Command {
             \`lolibooru\` - Get a random image.
             \`lolibooru link/id\` - Gets the image from the link.
             \`lolibooru tag\` - Gets an image with the tag.
-            \`lolibooru r18\` - Get a random r18 image.
-            \`lolibooru r18 tag\` - Get an r18 image with the tag.
+            \`lolibooru r18\` - Gets a random r18 image.
+            \`lolibooru r18 tag\` - Gets an r18 image with the tag.
             `,
             examples:
             `
             \`=>lolibooru\`
             \`=>lolibooru kanna kamui\`
-            \`=>lolibooru r18 megumin\`
             `,
             aliases: ["lb"],
             cooldown: 20,
@@ -44,17 +43,21 @@ export default class Lolibooru extends Command {
         .setAuthor("lolibooru", "https://i.imgur.com/vayyvC4.png")
         .setTitle(`**Lolibooru Image** ${discord.getEmoji("gabLewd")}`)
 
-        let tags
+        let tags: string[] = []
         if (!args[1]) {
-            tags = ["girl", "rating:safe"]
+            tags = ["pantyhose", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
             if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
-            if (!tags.join("")) tags = ["girl"]
-            tags.push("-rating:safe")
+            if (!tags.join("")) tags = ["pantyhose"]
+            if (discord.checkMuted(message.guild)) {
+                tags.push("rating:safe")
+            } else {
+                tags.push("-rating:safe")
+            }
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
-            if (!tags.join("")) tags = ["girl"]
+            if (!tags.join("")) tags = ["pantyhose"]
             tags.push("rating:safe")
         }
 

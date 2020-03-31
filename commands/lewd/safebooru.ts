@@ -35,10 +35,10 @@ export default class Safebooru extends Command {
     public getImage = async (dir: string, image: string) => {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         try {
-            await axios.head(`https://safebooru.org//samples/${dir}/sample_${image.replace("png", "jpg")}`, {headers})
-            return `https://safebooru.org//samples/${dir}/sample_${image.replace("png", "jpg")}`
+            await axios.head(`https://safebooru.org/samples/${dir}/sample_${image.replace("png", "jpg")}`, {headers})
+            return `https://safebooru.org/samples/${dir}/sample_${image.replace("png", "jpg")}`
         } catch {
-            return `https://safebooru.org//images/${dir}/${image}`
+            return `https://safebooru.org/images/${dir}/${image}`
         }
     }
 
@@ -53,13 +53,17 @@ export default class Safebooru extends Command {
         .setAuthor("safebooru", "https://safebooru.org/images/safechibi.png")
         .setTitle(`**Safebooru Search** ${discord.getEmoji("gabLewd")}`)
 
-        let tags
+        let tags: string[] = []
         if (!args[1]) {
-            tags = ["loli", "rating:safe"]
+            tags = ["pantyhose", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
             tags = Functions.combineArgs(args, 2).split(",")
-            if (!tags.join("")) tags = ["loli"]
-            tags.push("-rating:safe")
+            if (!tags.join("")) tags = ["pantyhose"]
+            if (discord.checkMuted(message.guild)) {
+                tags.push("rating:safe")
+            } else {
+                tags.push("-rating:safe")
+            }
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
             tags.push("rating:safe")

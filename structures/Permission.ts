@@ -6,7 +6,7 @@ export class Permission {
     private readonly sql = new SQLQuery(this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
-    // Check Mod
+    /** Check Mod */
     public checkMod = async (ignore?: boolean) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
         if (this.message.author.id === this.discord.user!.id) return true
@@ -28,7 +28,7 @@ export class Permission {
         return true
     }
 
-    // Check Admin
+    /** Check Admin */
     public checkAdmin = async (ignore?: boolean) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
         if (this.message.author.id === this.discord.user!.id) return true
@@ -50,7 +50,7 @@ export class Permission {
         return true
     }
 
-    // Check Bot Dev
+    /** Check Bot Dev */
     public checkBotDev = () => {
         if (this.message.author.id === process.env.OWNER_ID) {
             return true
@@ -60,7 +60,7 @@ export class Permission {
         }
     }
 
-    // Check Permission
+    /** Check Permission */
     public checkPerm = (perm: string) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
         perm = perm.toUpperCase().replace(/\s+/g, "_")
@@ -73,14 +73,26 @@ export class Permission {
         }
     }
 
-    // Check NSFW
+    /** Check NSFW */
     public checkNSFW = (noMsg?: boolean) => {
+        if (!this.message.guild) return true
         const channel = this.message.channel as TextChannel
         if (channel.nsfw) {
             return true
         } else {
             if (noMsg) return false
             this.message.reply(`You can only use this command in **NSFW channels**, pervert! ${this.discord.getEmoji("madokaLewd")}`)
+            return false
+        }
+    }
+
+    /** Filter loli content */
+    public loliFilter = (tags: string) => {
+        if (!this.message.guild) return false
+        if (this.message.guild.ownerID === process.env.OWNER_ID) return false
+        if (/loli/gi.test(tags) || /shota/gi.test(tags) || /lolicon/gi.test(tags) || /shotacon/gi.test(tags)) {
+            return true
+        } else {
             return false
         }
     }

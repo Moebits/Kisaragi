@@ -43,13 +43,18 @@ export default class Danbooru extends Command {
         .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")
         .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
 
-        let tags
+        let tags: string[] = []
         if (!args[1]) {
             tags = ["1girl", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
+            if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["1girl"]
-            tags.push("-rating:safe")
+            if (discord.checkMuted(message.guild)) {
+                tags.push("rating:safe")
+            } else {
+                tags.push("-rating:safe")
+            }
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
             tags.push("rating:safe")
@@ -82,6 +87,7 @@ export default class Danbooru extends Command {
             const img = images[i]
             if (img.rating !== "s") {
                 if (!perms.checkNSFW(true)) continue
+                if (perms.loliFilter(img.tags)) continue
             }
             const danbooruEmbed = embeds.createEmbed()
             .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")

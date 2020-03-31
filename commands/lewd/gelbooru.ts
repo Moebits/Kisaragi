@@ -24,7 +24,6 @@ export default class Gelbooru extends Command {
             `
             \`=>gelbooru\`
             \`=>gelbooru tenma gabriel white\`
-            \`=>gelbooru r18 gabriel dropout\`
             `,
             aliases: ["gel"],
             random: "none",
@@ -43,13 +42,18 @@ export default class Gelbooru extends Command {
         .setAuthor("gelbooru", "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png")
         .setTitle(`**Gelbooru Search** ${discord.getEmoji("gabLewd")}`)
 
-        let tags
+        let tags: string[] = []
         if (!args[1]) {
-            tags = ["1girl", "rating:safe"]
+            tags = ["pantyhose", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
+            if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
-            if (!tags.join("")) tags = ["1girl"]
-            tags.push("-rating:safe")
+            if (!tags.join("")) tags = ["pantyhose"]
+            if (discord.checkMuted(message.guild)) {
+                tags.push("rating:safe")
+            } else {
+                tags.push("-rating:safe")
+            }
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
             tags.push("rating:safe")
@@ -82,6 +86,7 @@ export default class Gelbooru extends Command {
             const img = images[i]
             if (img.rating !== "s") {
                 if (!perms.checkNSFW(true)) continue
+                if (perms.loliFilter(img.tags)) continue
             }
             const gelbooruEmbed = embeds.createEmbed()
             .setAuthor("gelbooru", "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png")

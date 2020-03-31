@@ -56,7 +56,7 @@ export default class Anime extends Command {
         .setTitle(`**${data.attributes.titles.en_jp}** ${discord.getEmoji("gabYes")}`)
         .setDescription(
             `${discord.getEmoji("star")}_Japanese Title:_ **${data.attributes.titles.ja_jp}**\n` +
-            `${discord.getEmoji("star")}_Most Popular Rank:_ **#${data.attributes.popularityRank}**\n` +
+            `${discord.getEmoji("star")}_Popularity Rank:_ **#${data.attributes.popularityRank}**\n` +
             `${discord.getEmoji("star")}_Community Approval:_ **${data.attributes.averageRating}%**\n` +
             `${discord.getEmoji("star")}_Highly Rated Rank:_ **#${data.attributes.ratingRank}**\n` +
             `${discord.getEmoji("star")}_Episodes:_ **${data.attributes.episodeCount ? data.attributes.episodeCount : "Still Airing"}** _Length:_ **${data.attributes.totalLength}m (${data.attributes.episodeLength}m each)**\n` +

@@ -48,7 +48,7 @@ export default class Info extends Command {
         const infoEmbed = embeds.createEmbed()
         .setTitle(`**Kisaragi Bot Info** ${discord.getEmoji("tohruSmug")}`)
         .setURL(config.repo)
-        .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+        .setThumbnail(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
         .setDescription(
             `${discord.getEmoji("star")}_Description:_ ${description}\n` +
             `${discord.getEmoji("star")}_Version:_ **${pack.version}**\n` +

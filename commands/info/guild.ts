@@ -39,7 +39,7 @@ export default class Guild extends Command {
         .setDescription(
             `${discord.getEmoji("star")}_Guild:_ **${message.guild?.name}**\n` +
             `${discord.getEmoji("star")}_Guild ID:_ \`${message.guild?.id}\`\n` +
-            `${discord.getEmoji("star")}_Owner:_ **${message.guild?.owner?.user.tag}**\n` +
+            `${discord.getEmoji("owner")}_Owner:_ **${message.guild?.owner?.user.tag}**\n` +
             `${discord.getEmoji("star")}_Shard:_ **${message.guild?.shard.id}**\n` +
             `${discord.getEmoji("star")}_Region:_ **${message.guild?.region}**\n` +
             `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(message.guild?.createdAt!)}**\n` +

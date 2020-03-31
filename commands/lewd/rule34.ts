@@ -24,7 +24,8 @@ export default class Rule34 extends Command {
             `,
             aliases: ["r34"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            unlist: true
         })
     }
 
@@ -39,14 +40,18 @@ export default class Rule34 extends Command {
         .setAuthor("rule34", "https://cdn.imgbin.com/18/6/2/imgbin-rule-34-internet-mpeg-4-part-14-rule-34-Eg19BPJrNiThRQmqwVpTJsZAw.jpg")
         .setTitle(`**Rule34 Search** ${discord.getEmoji("gabLewd")}`)
 
-        let tags
+        let tags: string[] = []
         if (!args[1]) {
             tags = ["1girl", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
             if (!perms.checkNSFW(true)) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["1girl"]
-            tags.push("-rating:safe")
+            if (discord.checkMuted(message.guild)) {
+                tags.push("rating:safe")
+            } else {
+                tags.push("-rating:safe")
+            }
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
             tags.push("rating:safe")

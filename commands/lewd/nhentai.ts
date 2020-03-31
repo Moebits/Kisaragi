@@ -22,7 +22,7 @@ export default class $nHentai extends Command {
             `,
             examples:
             `
-            \`=>nhentai loli stockings\`
+            \`=>nhentai stockings\`
             \`=>nhentai\`
             `,
             aliases: ["nh"],
@@ -42,14 +42,6 @@ export default class $nHentai extends Command {
         const checkLanguages = doujin.details.languages ? Functions.checkChar(doujin.details.languages.join(" "), 50, ")") : "None"
         const checkCategories = doujin.details.categories ? Functions.checkChar(doujin.details.categories.join(" "), 50, ")") : "None"
         const doujinPages: MessageEmbed[] = []
-        /*fs.mkdirSync(`../assets/pages/${tag}/`);
-        fs.mkdirSync(`../assets/pagesCompressed/${tag}/`);
-        let msg1 = await message.channel.send(`**Downloading images** ${discord.getEmoji("gabCircle")}`);
-        await discord.downloadPages(doujin.pages, `../assets/pages/${tag}/`);
-        msg1.delete(1000);
-        let msg2 = await message.channel.send(`**Compressing images** ${discord.getEmoji("gabCircle")}`);
-        await discord.compressImages(`../assets/pages/${tag}/*.jpg`, `../assets/pagesCompressed/${tag}/`);
-        msg2.delete(1000);*/
         for (let i = 0; i < doujin.pages.length; i++) {
             const nhentaiEmbed = this.embeds.createEmbed()
             nhentaiEmbed
@@ -64,8 +56,6 @@ export default class $nHentai extends Command {
             `${discord.getEmoji("star")}_Tags:_ ${checkTags} ${checkParodies}` +
             `${checkGroups} ${checkLanguages} ${checkCategories}\n`
             )
-            // .attachFiles([`../assets/pagesCompressed/${tag}/page${i}.jpg`])
-            // .setImage(`attachment://page${i}.jpg`)
             .setThumbnail(doujin.thumbnails[0])
             .setImage(doujin.pages[i])
             doujinPages.push(nhentaiEmbed)
@@ -74,13 +64,15 @@ export default class $nHentai extends Command {
     }
 
     public nhentaiRandom = async (filter?: boolean) => {
+        const perms = new Permission(this.discord, this.message)
         let random = "0"
         while (!await nhentai.exists(random)) {
             random = Math.floor(Math.random() * 1000000).toString()
         }
         const doujin = await nhentai.getDoujin(random)
         if (filter) {
-            for (const i in doujin.details.tags) {
+            for (let i = 0; i < doujin.details.tags.length; i++) {
+                if (perms.loliFilter(doujin.details.tags[i])) await this.nhentaiRandom(true)
                 for (let j = 0; j < blacklist.nhentai.length; j++) {
                     if (doujin.details.tags[i] === blacklist.nhentai[j]) {
                         await this.nhentaiRandom(true)
@@ -121,9 +113,21 @@ export default class $nHentai extends Command {
                     .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`)
                     return this.invalidQuery(nHentaiEmbed, "Try searching on the [**nhentai Website**](https://nhentai.net/).")
                 }
-                const index = Math.floor(Math.random() * (result.results.length - result.results.length/2) + result.results.length/2)
-                const book = result.results[index]
-                const doujin = await nhentai.getDoujin(book.bookId)
+                let counter = 0
+                let index = Math.floor(Math.random() * (result.results.length - result.results.length/2) + result.results.length/2)
+                let book = result.results[index]
+                let doujin = await nhentai.getDoujin(book.bookId)
+                while (perms.loliFilter(doujin.details.tags.join(""))) {
+                    index = Math.floor(Math.random() * (result.results.length - result.results.length/2) + result.results.length/2)
+                    book = result.results[index]
+                    doujin = await nhentai.getDoujin(book.bookId)
+                    if (counter >= result.results.length) {
+                        return this.invalidQuery(this.embeds.createEmbed()
+                        .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
+                        .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`))
+                    }
+                    counter++
+                }
                 this.getNhentaiDoujin(doujin, book.bookId)
             }
         }

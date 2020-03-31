@@ -55,7 +55,7 @@ export default class Manga extends Command {
         .setTitle(`${data.attributes.titles.en_jp} ${discord.getEmoji("gabYes")}`)
         .setDescription(
             `${discord.getEmoji("star")}_Japanese Title:_ **${data.attributes.titles.ja_jp}**\n` +
-            `${discord.getEmoji("star")}_Most Popular Rank:_ **#${data.attributes.popularityRank}**\n` +
+            `${discord.getEmoji("star")}_Popularity Rank:_ **#${data.attributes.popularityRank}**\n` +
             `${discord.getEmoji("star")}_Community Approval:_ **${data.attributes.averageRating}%**\n` +
             `${discord.getEmoji("star")}_Highly Rated Rank:_ **#${data.attributes.ratingRank}**\n` +
             `${discord.getEmoji("star")}_Chapters:_ **${data.attributes.chapterCount ? data.attributes.chapterCount : "Ongoing"}** _Volumes:_ **${data.attributes.volumeCount}**\n` +
