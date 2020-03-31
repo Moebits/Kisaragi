@@ -117,13 +117,24 @@ export class Embeds {
                 const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 await this.images.downloadImages(images, src)
-                const downloads = fs.readdirSync(src).map((m) => src + m)
+                const downloads = fs.readdirSync(src).map((m) => {
+                    if (!m.endsWith(".jpg") || !m.endsWith(".png") || !m.endsWith(".gif")) {
+                        return `${src}${m}.png`
+                    } else {
+                        return `${src}${m}`
+                    }
+                })
                 await Functions.createZip(downloads, dest)
                 if (rep) rep.delete()
                 const stats = fs.statSync(dest)
                 if (stats.size > 8000000) {
                     const link = await this.images.upload(dest)
-                    await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed. This file is too large for attachments, get it [**here**](${link})`)
+                    const downloadEmbed = this.createEmbed()
+                    downloadEmbed
+                    .setAuthor("download", "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+                    .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
+                    .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
+                    await msg.channel.send(downloadEmbed)
                 } else {
                     const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
                     const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
