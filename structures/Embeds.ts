@@ -117,13 +117,7 @@ export class Embeds {
                 const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 await this.images.downloadImages(images, src)
-                const downloads = fs.readdirSync(src).map((m) => {
-                    if (!m.endsWith(".jpg") || !m.endsWith(".png") || !m.endsWith(".gif")) {
-                        return `${src}${m}.png`
-                    } else {
-                        return `${src}${m}`
-                    }
-                })
+                const downloads = fs.readdirSync(src).map((m) => src + m)
                 await Functions.createZip(downloads, dest)
                 if (rep) rep.delete()
                 const stats = fs.statSync(dest)

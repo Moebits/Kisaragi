@@ -116,6 +116,7 @@ export class Images {
         await Promise.all(images.map(async (url, i) => {
             let name = path.basename(images[i])
             name = name.length > 15 ? name.slice(0, 15) : name
+            if (!/.(png|jpg|gif)/.test(name)) name += ".png"
             try {
                 await this.downloadImage(images[i], dest + name)
             } catch (e) {
