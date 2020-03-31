@@ -373,8 +373,13 @@ export class Images {
     }
 
     /** Uploads files to my api */
-    public upload = async (files: string[]) => {
-        const links: string[] = []
+    public upload = async <T extends string | string[]>(files: T): Promise<T extends string ? string : string[]> => {
+        let isString = false
+        if (!Array.isArray(files)) {
+            files = [files] as any
+            isString = true
+        }
+        let links: string[] = []
         const url = `${config.imagesAPI}/upload`
         for (let i = 0; i < files.length; i++) {
             if (files[i].includes("http")) {
@@ -392,6 +397,11 @@ export class Images {
                 })
             }
         }
-        return links.flat(Infinity)
+        links = links.flat(Infinity)
+        if (isString) {
+            return links[0] as any
+        } else {
+            return links as any
+        }
     }
 }

@@ -61,7 +61,7 @@ export default class ConstrainGIF extends Command {
 
         const stats = fs.statSync(dest)
         if (stats.size > 8000000) {
-            let link = await images.upload([dest]).then((l) => l[0])
+            let link = await images.upload(dest)
             link = encodeURI(link)
             videoEmbed
             .setURL(link)

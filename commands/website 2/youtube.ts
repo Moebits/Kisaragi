@@ -226,7 +226,7 @@ export default class YoutubeCommand extends Command {
                 }
                 const stats = fs.statSync(file)
                 if (stats.size > 8000000) {
-                    let link = await images.upload([file]).then((l) => l[0])
+                    let link = await images.upload(file)
                     link = encodeURI(link).replace("http", "https")
                     const youtubeEmbed = embeds.createEmbed()
                     youtubeEmbed
@@ -272,7 +272,7 @@ export default class YoutubeCommand extends Command {
                     msg2.delete({timeout: 1000})
                     return message.reply(`This request was rate limited. Try again later.`)
                 }
-                let link = await images.upload([file]).then((l) => l[0])
+                let link = await images.upload(file)
                 link = encodeURI(link).replace("http", "https")
                 const youtubeEmbed = embeds.createEmbed()
                 youtubeEmbed

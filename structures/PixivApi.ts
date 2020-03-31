@@ -44,8 +44,8 @@ export class PixivApi {
             .setThumbnail(`attachment://author.png`)
             .setImage(`attachment://image.png`)
         } else {
-            const illustImage = await this.images.upload([url]).then((i) => i[0])
-            const authorImage = await this.images.upload([authorUrl]).then((i) => i[0])
+            const illustImage = await this.images.upload(url)
+            const authorImage = await this.images.upload(authorUrl)
             pixivEmbed
             .setImage(encodeURI(illustImage))
             .setThumbnail(encodeURI(authorImage))

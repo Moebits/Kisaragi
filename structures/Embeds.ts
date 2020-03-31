@@ -120,9 +120,15 @@ export class Embeds {
                 const downloads = fs.readdirSync(src).map((m) => src + m)
                 await Functions.createZip(downloads, dest)
                 if (rep) rep.delete()
-                const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
-                const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
-                await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
+                const stats = fs.statSync(dest)
+                if (stats.size > 8000000) {
+                    const link = await this.images.upload(dest)
+                    await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed. This file is too large for attachments, get it [**here**](${link})`)
+                } else {
+                    const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
+                    const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
+                    await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
+                }
                 Functions.removeDirectory(src)
             })
         }

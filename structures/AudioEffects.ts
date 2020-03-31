@@ -81,14 +81,13 @@ export class AudioEffects {
         const fileDest = path.join(__dirname, `../tracks/transform/${filename}_${effect}${ext}`)
         const stats = fs.statSync(fileDest)
         if (stats.size > 8000000) {
-            const link = await this.images.fileIOUpload(fileDest)
+            const link = await this.images.upload(fileDest)
             const effectEmbed = this.embeds.createEmbed()
             effectEmbed
             .setAuthor("audio effect", "https://clipartmag.com/images/musical-notes-png-11.png")
             .setTitle(`**Audio Effect Download** ${this.discord.getEmoji("kannaWave")}`)
             .setDescription(
-                `${this.discord.getEmoji("star")}This file is too large for attachments. Please note that the following link **will get deleted after someone downloads it**.\n` +
-                link
+                `${this.discord.getEmoji("star")}This audio file is too large for attachments. Download it [**here**](${link}).\n`
             )
             return this.message.channel.send(effectEmbed)
         } else {

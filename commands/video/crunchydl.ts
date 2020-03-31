@@ -166,7 +166,7 @@ export default class CrunchyDL extends Command {
                 return message.reply("It looks like this anime doesn't have a dub up on Crunchyroll.")
             }
             await this.downloadEpisode(vilos.dub[0].url, dest)
-            const fileLink = await images.upload([dest]).then((l) => l[0])
+            const fileLink = await images.upload(dest)
             crunchyEmbed
             .setURL(url)
             .setDescription(
@@ -182,10 +182,10 @@ export default class CrunchyDL extends Command {
             await this.downloadEpisode(vilos.sub[0].url, dest)
             let mp3Dest = path.join(__dirname, `../../tracks/${vilos.title}.mp3`)
             mp3Dest = await video.extractAudio(dest, mp3Dest)
-            const originalLink = await images.upload([dest]).then((l) => l[0])
+            const originalLink = await images.upload(dest)
             const stats = fs.statSync(mp3Dest)
             if (stats.size > 8000000) {
-                const fileLink = await images.upload([mp3Dest]).then((l) => l[0])
+                const fileLink = await images.upload(mp3Dest)
                 crunchyEmbed
                 .setURL(url)
                 .setDescription(
@@ -222,7 +222,7 @@ export default class CrunchyDL extends Command {
                 return message.reply("It looks like this anime isn't on Crunchyroll.")
             }
             await this.downloadEpisode(vilos.sub[0].url, dest)
-            const fileLink = await images.upload([dest]).then((l) => l[0])
+            const fileLink = await images.upload(dest)
             crunchyEmbed
             .setURL(url)
             .setDescription(

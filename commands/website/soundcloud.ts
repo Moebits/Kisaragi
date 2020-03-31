@@ -142,7 +142,7 @@ export default class SoundCloud extends Command {
             const file = await soundcloud.util.downloadTrack(track, src)
             const stats = fs.statSync(file)
             if (stats.size > 8000000) {
-                const link = await images.upload([file]).then((l) => l[0])
+                const link = await images.upload(file)
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
                 .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
