@@ -54,7 +54,7 @@ export default class MessageEvent {
       // const cmdstr = generate.generateCommands()
       // console.log(cmdstr)
 
-      if (!this.discord.checkMuted(message.guild)) {
+      if (!this.discord.checkMuted(message)) {
         if (message.guild) {
           const sql = new SQLQuery(message)
           // Block.blockWord(message)

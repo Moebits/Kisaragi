@@ -131,7 +131,7 @@
     "pinterest-node-api": "0.0.3",
     "pixiv-app-api": "github:Tenpi/pixiv-app-api#fork",
     "pixiv-img": "^1.0.0",
-    "pixiv.ts": "^0.3.4",
+    "pixiv.ts": "^0.3.5",
     "pm2": "^3.5.1",
     "pokedex-promise-v2": "^3.2.0",
     "postgres-redis": "^0.1.0",

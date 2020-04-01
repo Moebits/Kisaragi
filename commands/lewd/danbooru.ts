@@ -45,12 +45,12 @@ export default class Danbooru extends Command {
 
         let tags: string[] = []
         if (!args[1]) {
-            tags = ["1girl", "rating:safe"]
+            tags = ["pantyhose", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
             if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
-            if (!tags.join("")) tags = ["1girl"]
-            if (discord.checkMuted(message.guild)) {
+            if (!tags.join("")) tags = ["pantyhose"]
+            if (discord.checkMuted(message)) {
                 tags.push("rating:safe")
             } else {
                 tags.push("-rating:safe")
@@ -87,7 +87,7 @@ export default class Danbooru extends Command {
             const img = images[i]
             if (img.rating !== "s") {
                 if (!perms.checkNSFW(true)) continue
-                if (perms.loliFilter(img.tags)) continue
+                if (discord.checkMuted(message)) continue
             }
             const danbooruEmbed = embeds.createEmbed()
             .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")

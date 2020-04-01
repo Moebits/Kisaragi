@@ -5,6 +5,9 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
+// \`kitsune ecchi\` - Gets a random ecchi image.
+// \`kitsune lewd\` - Gets a random nsfw image.
+
 export default class Kitsune extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -12,8 +15,6 @@ export default class Kitsune extends Command {
             help:
             `
             \`kitsune\` - Gets a random sfw image.
-            \`kitsune ecchi\` - Gets a random ecchi image.
-            \`kitsune lewd\` - Gets a random nsfw image.
             `,
             examples:
             `

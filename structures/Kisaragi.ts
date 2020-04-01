@@ -163,8 +163,9 @@ export class Kisaragi extends Client {
         }
     }
 
-    /** Disable responses in muted guilds (bot list etc.) */
-    public checkMuted = (guild: Guild | null) => {
+    /** Mute responses in large guilds */
+    public checkMuted = (message: Message) => {
+        if (message.guild?.ownerID === process.env.OWNER_ID) return false
         const muted = [
             "110373943822540800",
             "264445053596991498",
@@ -173,10 +174,24 @@ export class Kisaragi extends Client {
             "333949691962195969",
             "632760185756319784"
         ]
-        if (!guild) return false
-        if (muted.includes(guild.id)) {
+        const mutedUsers = [
+            "321714991050784770",
+            "955798657884569600",
+            "395526710101278721",
+            "255048840615428107",
+            "165811958828761089",
+            "187316528100802560",
+            "205680187394752512"
+        ]
+        if (!message.guild) {
+            if (mutedUsers.includes(message.author.id)) return true
+            return false
+        }
+        if (muted.includes(message.guild.id)) {
             return true
         } else {
+            const found = message.guild.members.cache.find((m) => mutedUsers.includes(m.id))
+            if (found) return true
             return false
         }
     }

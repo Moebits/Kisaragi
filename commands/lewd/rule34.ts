@@ -47,7 +47,7 @@ export default class Rule34 extends Command {
             if (!perms.checkNSFW(true)) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["1girl"]
-            if (discord.checkMuted(message.guild)) {
+            if (discord.checkMuted(message)) {
                 tags.push("rating:safe")
             } else {
                 tags.push("-rating:safe")

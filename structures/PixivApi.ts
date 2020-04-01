@@ -22,6 +22,7 @@ export class PixivApi {
         if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         if (image.x_restrict !== 0) {
             if (!this.perms.checkNSFW(true)) return
+            if (discord.checkMuted(this.message)) return
         }
         const pixivEmbed = this.embeds.createEmbed()
         if (!image) return
@@ -88,18 +89,19 @@ export class PixivApi {
             setFast = true
         }
         let json: PixivIllust[]
+        if (!r18 || this.discord.checkMuted(this.message)) r18 = false
         if (r18) {
             if (ugoira) {
                 if (en) {
-                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: true, type: "ugoira", moe: true})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18, type: "ugoira", moe: true})
                 } else {
-                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, r18: true, type: "ugoira", moe: true})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, r18, type: "ugoira", moe: true})
                 }
             } else {
                 if (en) {
-                    json = await this.pixiv.search.illusts({word: tag, en: true, r18: true, moe: true})
+                    json = await this.pixiv.search.illusts({word: tag, en: true, r18, moe: true})
                 } else {
-                    json = await this.pixiv.search.illusts({word: tag, r18: true, moe: true})
+                    json = await this.pixiv.search.illusts({word: tag, r18, moe: true})
                 }
             }
         } else {
@@ -255,13 +257,13 @@ export class PixivApi {
         const embeds = new Embeds(this.discord, this.message)
         if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         const msg1 = await this.message.channel.send(`**Downloading the pictures, please wait...** ${this.discord.getEmoji("gabCircle")}`)
-        if (r18) tag += " R-18"
         tag = tag.trim()
         const rand = Math.floor(Math.random()*10000)
         const src = `assets/images/pixiv/zip/${rand}/`
+        if (this.discord.checkMuted(this.message)) r18 = false
         let files: string[] = []
         try {
-            files = await this.pixiv.util.downloadIllusts(tag, src, undefined, folderMap) as any
+            files = await this.pixiv.util.downloadIllusts(tag, src, undefined, folderMap, r18) as any
         } catch {
             return this.pixivErrorEmbed()
         }

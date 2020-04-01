@@ -50,7 +50,7 @@ export default class Lolibooru extends Command {
             if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["pantyhose"]
-            if (discord.checkMuted(message.guild)) {
+            if (discord.checkMuted(message)) {
                 tags.push("rating:safe")
             } else {
                 tags.push("-rating:safe")
