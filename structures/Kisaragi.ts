@@ -165,7 +165,7 @@ export class Kisaragi extends Client {
 
     /** Mute responses in large guilds */
     public checkMuted = (message: Message) => {
-        if (message.guild?.ownerID === process.env.OWNER_ID) return false
+        // if (message.guild?.ownerID === process.env.OWNER_ID) return false
         const muted = [
             "110373943822540800",
             "264445053596991498",

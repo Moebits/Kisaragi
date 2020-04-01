@@ -117,18 +117,16 @@ export default class $nHentai extends Command {
                 let index = Math.floor(Math.random() * (result.results.length - result.results.length/2) + result.results.length/2)
                 let book = result.results[index]
                 let doujin = await nhentai.getDoujin(book.bookId)
-                if (discord.checkMuted(message)) {
-                    while (perms.loliFilter(doujin.details.tags.join(""))) {
-                        index = Math.floor(Math.random() * (result.results.length - result.results.length/2) + result.results.length/2)
-                        book = result.results[index]
-                        doujin = await nhentai.getDoujin(book.bookId)
-                        if (counter >= result.results.length) {
-                            return this.invalidQuery(this.embeds.createEmbed()
-                            .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
-                            .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`))
-                        }
-                        counter++
+                while (perms.loliFilter(doujin.details.tags.join(""))) {
+                    index = Math.floor(Math.random() * (result.results.length - result.results.length/2) + result.results.length/2)
+                    book = result.results[index]
+                    doujin = await nhentai.getDoujin(book.bookId)
+                    if (counter >= result.results.length) {
+                        return this.invalidQuery(this.embeds.createEmbed()
+                        .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
+                        .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`))
                     }
+                    counter++
                 }
                 this.getNhentaiDoujin(doujin, book.bookId)
             }

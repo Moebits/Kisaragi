@@ -88,6 +88,7 @@ export default class Danbooru extends Command {
             if (img.rating !== "s") {
                 if (!perms.checkNSFW(true)) continue
                 if (discord.checkMuted(message)) continue
+                if (perms.loliFilter(img.tags)) continue
             }
             const danbooruEmbed = embeds.createEmbed()
             .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")

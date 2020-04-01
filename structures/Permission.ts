@@ -1,4 +1,5 @@
 import {Message, Permissions, PermissionString, Role, TextChannel} from "discord.js"
+import * as config from "../assets/json/blacklist.json"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
@@ -84,6 +85,14 @@ export class Permission {
             this.message.reply(`You can only use this command in **NSFW channels**, pervert! ${this.discord.getEmoji("madokaLewd")}`)
             return false
         }
+    }
+
+    /** Booru content filter */
+    public booruFilter = (tags: string) => {
+        for (let i = 0; i < config.booru.length; i++) {
+            if (tags.includes(config.booru[i])) return true
+        }
+        return false
     }
 
     /** Filter loli content */
