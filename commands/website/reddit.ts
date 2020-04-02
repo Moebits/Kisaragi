@@ -4,10 +4,12 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 let redditArray: MessageEmbed[] = []
 
 export default class Reddit extends Command {
+    private readonly perms = new Permission(this.discord, this.message)
     private sub = null as any
     private postID = null as any
     private user = null as any
@@ -40,10 +42,13 @@ export default class Reddit extends Command {
             if (!postIDS[i]) break
             // @ts-ignore
             const post = await reddit.getSubmission(postIDS[i]).fetch()
+            if (post.over_18) {
+                if (!this.perms.checkNSFW(true)) continue
+            }
             const commentArray: string[] = []
             for (let j = 0; j < 3; j++) {
                 if (!post.comments[j]) break
-                commentArray.push(`**${post.comments[j].author ? post.comments[j].author.name : "Deleted"}**: ${(Functions.checkChar(post.comments[j].body, 150, " ") as string).replace(/(\r\n|\n|\r)/gm, " ")}`)
+                commentArray.push(`**${post.comments[j].author ? post.comments[j].author.name : "Deleted"}**: ${(Functions.checkChar(post.comments[j].body, 150, "") as string).replace(/(\r\n|\n|\r)/gm, " ")}`)
             }
             const redditEmbed = embeds.createEmbed()
             redditEmbed
@@ -55,7 +60,7 @@ export default class Reddit extends Command {
                 `${discord.getEmoji("star")}_Subscribers:_ **${post.subreddit_subscribers}**\n` +
                 `${discord.getEmoji("star")}_Author:_ **${post.author ? post.author.name : "Deleted"}**\n` +
                 `${discord.getEmoji("star")}${discord.getEmoji("thumbsUp")} **${Math.ceil(post.ups / post.upvote_ratio)}** ${discord.getEmoji("thumbsDown")} **${Math.ceil(post.ups / post.upvote_ratio) - post.ups}**\n` +
-                `${discord.getEmoji("star")}_Selftext:_ ${post.selftext ? (Functions.checkChar(post.selftext, 800, ".") as string).replace(/(\r\n|\n|\r)/gm, " ") : "None"}\n` +
+                `${discord.getEmoji("star")}_Selftext:_ ${post.selftext ? (Functions.checkChar(post.selftext, 800, "") as string).replace(/(\r\n|\n|\r)/gm, " ") : "None"}\n` +
                 `${discord.getEmoji("star")}_Comments:_ ${commentArray.join("") ? commentArray.join("\n") : "None"}\n`
             )
             .setImage(post.url)
@@ -68,7 +73,12 @@ export default class Reddit extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
         redditArray = []
+
+        if (discord.checkMuted(message)) {
+            if (!perms.checkNSFW()) return
+        }
 
         const reddit = new snoowrap({
             userAgent: "kisaragi bot v1.0 by /u/imtenpi",

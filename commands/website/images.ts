@@ -4,6 +4,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 export default class GoogleImageCommand extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -28,6 +29,7 @@ export default class GoogleImageCommand extends Command {
         const message = this.message
 
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
         let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
@@ -41,6 +43,10 @@ export default class GoogleImageCommand extends Command {
         }
 
         const images = new GoogleImages(process.env.GOOGLE_IMAGES_ID!, process.env.GOOGLE_API_KEY!)
+
+        if (/hentai|porn|sex|nsfw/.test(query) || discord.checkMuted(message)) {
+            if (!perms.checkNSFW()) return
+        }
 
         const result = await images.search(query)
         const imagesArray: MessageEmbed[] = []

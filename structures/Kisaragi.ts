@@ -181,7 +181,9 @@ export class Kisaragi extends Client {
             "255048840615428107",
             "165811958828761089",
             "187316528100802560",
-            "205680187394752512"
+            "205680187394752512",
+            "187316528100802560",
+            "245225589332639747"
         ]
         if (!message.guild) {
             if (mutedUsers.includes(message.author.id)) return true

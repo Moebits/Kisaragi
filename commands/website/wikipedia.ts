@@ -6,6 +6,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 const svg2img = require("svg2img")
 
@@ -34,6 +35,7 @@ export default class Wikipedia extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
 
         const wikipedia = wiki()
 
@@ -44,6 +46,9 @@ export default class Wikipedia extends Command {
             let query = Functions.combineArgs(args, 1)
             if (query.match(/en.wikipedia.org/)) {
                 query = query.match(/(?<=\/)(?:.(?!\/))+$/)?.[0].replace(/_/g, " ")!
+            }
+            if (/hentai|porn|sex|penis|vagina|nsfw/.test(query)) {
+                if (!perms.checkNSFW()) return
             }
             const result = await wikipedia.search(query, 1)
             title = result.results

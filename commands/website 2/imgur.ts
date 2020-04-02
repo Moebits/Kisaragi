@@ -3,6 +3,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 const imgur = require("imgur")
 
@@ -28,6 +29,10 @@ export default class Imgur extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) {
+            if (!perms.checkNSFW()) return
+        }
         await imgur.setClientId(process.env.IMGUR_discord_ID)
         await imgur.setAPIUrl("https://api.imgur.com/3/")
 

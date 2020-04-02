@@ -4,6 +4,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 export default class TwitterCommand extends Command {
     private user = null as any
@@ -33,6 +34,10 @@ export default class TwitterCommand extends Command {
         const message = this.message
 
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) {
+            if (!perms.checkNSFW()) return
+        }
         const twitter = new Twitter({
             consumer_key: process.env.TWITTER_API_KEY!,
             consumer_secret: process.env.TWITTER_API_SECRET!,
@@ -89,6 +94,9 @@ export default class TwitterCommand extends Command {
         const tweets = await twitter.get("search/tweets", {q: query})
         const twitterArray: MessageEmbed[] = []
         for (const i in tweets.statuses) {
+            if (tweets.statuses[i]?.possibly_sensitive) {
+                if (!perms.checkNSFW(true)) continue
+            }
             const twitterEmbed = embeds.createEmbed()
             twitterEmbed
             .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", "https://twitter.com/")
