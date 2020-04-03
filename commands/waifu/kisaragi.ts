@@ -1,25 +1,24 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
-import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 
-export default class Stockings extends Command {
+export default class KisaragiCommand extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts pictures of anime girls wearing stockings.",
+            description: "Posts pictures of kisaragi.",
             help:
             `
-            \`stockings\` - Sends pictures of anime girls in stockings.
+            \`kisaragi\` - Posts kisaragi pictures.
             `,
             examples:
             `
-            \`=>stockings\`
+            \`=>kisaragi\`
             `,
-            aliases: ["leggings", "tights"],
+            aliases: [],
             random: "none",
             cooldown: 10
         })
@@ -30,14 +29,8 @@ export default class Stockings extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const pixiv = new PixivApi(discord, message)
-        const perms = new Permission(discord, message)
 
-        if (args[1] === "lewd") {
-            if (!perms.checkNSFW()) return
-            const pixivArray = await pixiv.animeEndpoint("stockings/lewd", 10)
-            return embeds.createReactionEmbed(pixivArray, true, true)
-        }
-        const pixivArray = await pixiv.animeEndpoint("stockings", 10)
-        return embeds.createReactionEmbed(pixivArray, true, true)
+        const pixivArray = await pixiv.animeEndpoint("kisaragi", 10)
+        embeds.createReactionEmbed(pixivArray, true, true)
     }
 }

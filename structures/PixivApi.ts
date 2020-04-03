@@ -1,12 +1,14 @@
 import {Message, MessageAttachment, MessageEmbed} from "discord.js"
 import path from "path"
 import Pixiv, {PixivFolderMap, PixivIllust} from "pixiv.ts"
+import SQL from "../commands/bot developer/sql"
 import {CommandFunctions} from "./CommandFunctions"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {Images} from "./Images"
 import {Kisaragi} from "./Kisaragi"
 import {Permission} from "./Permission"
+import {SQLQuery} from "./SQLQuery"
 
 export class PixivApi {
     private readonly images = new Images(this.discord, this.message)
@@ -167,7 +169,7 @@ export class PixivApi {
         if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
         let image: PixivIllust
         try {
-            image = await this.pixiv.illust.detail({illust_id: Number(tags)})
+            image = await this.pixiv.illust.get(tags)
         } catch {
             return this.pixivErrorEmbed()
         }
@@ -301,5 +303,115 @@ export class PixivApi {
         await this.message.channel.send(attachment)
         Functions.removeDirectory(src)
         return
+    }
+
+    public animeEndpoint = async (endpoint: string, limit?: number, update?: boolean) => {
+        let emoji = ""
+        switch (endpoint) {
+            case "aqua":
+                emoji = "aquaUp"
+                break
+            case "kanna":
+                emoji = "kannaFreeze"
+                break
+            case "raphi":
+                emoji = "raphi"
+                break
+            case "gabriel":
+                emoji = "gabStare"
+                break
+            case "kisaragi":
+                emoji = "kisaragibawls"
+                break
+            case "tohru":
+                emoji = "tohruThink"
+                break
+            case "stockings":
+                emoji = "gabrielLick"
+                break
+            case "stockings/lewd":
+                emoji = "madokaLewd"
+                break
+            default:
+                emoji = "chinoSmug"
+        }
+        const discord = this.discord
+        const sql = new SQLQuery(this.message)
+        const func = new Functions(this.message)
+        const pictures = await this.images.fetch(endpoint, limit)
+        const pixivArray: MessageEmbed[] = []
+        for (let i = 0; i < pictures.length; i++) {
+            const id = decodeURI(path.basename(pictures[i])).split("_")[0].replace(/.(jpg|png)/gi, "")
+            const exists = await sql.fetchColumn("pixiv", "id", "id", id)
+            if (exists && !update) {
+                const embed = await sql.fetchColumn("pixiv", "embed", "id", id)
+                const pixivEmbed = new MessageEmbed(JSON.parse(embed))
+                pixivEmbed
+                .setTitle(`**${Functions.toProperCase(endpoint)}** ${this.discord.getEmoji(emoji)}`)
+                .setFooter(`Responded in ${func.responseTime()}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
+                pixivArray.push(pixivEmbed)
+            } else {
+                if (Number(id)) {
+                    if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+                    await Functions.timeout(500)
+                    let illust: PixivIllust
+                    try {
+                        illust = await this.pixiv.illust.get(id)
+                    } catch {
+                        continue
+                    }
+                    const comments = await this.pixiv.illust.comments({illust_id: illust.id})
+                    await Functions.timeout(500)
+                    const commentArray: string[] = []
+                    for (let i = 0; i <= 5; i++) {
+                            if (!comments.comments[i]) break
+                            commentArray.push(comments.comments[i].comment)
+                    }
+                    const cleanText = illust.caption.replace(/<\/?[^>]+(>|$)/g, "")
+                    const pixivEmbed = this.embeds.createEmbed()
+                    pixivEmbed
+                    .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814", "https://www.pixiv.net/en/")
+                    .setTitle(`**${Functions.toProperCase(endpoint)}** ${this.discord.getEmoji(emoji)}`)
+                    .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${illust.id}`)
+                    .setImage(pictures[i])
+                    .setDescription(
+                    `${discord.getEmoji("star")}_Title:_ **${illust.title}**\n` +
+                    `${discord.getEmoji("star")}_Artist:_ **${illust.user.name}**\n` +
+                    `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(illust.create_date))}**\n` +
+                    `${discord.getEmoji("star")}_Views:_ **${illust.total_view}**\n` +
+                    `${discord.getEmoji("star")}_Bookmarks:_ **${illust.total_bookmarks}**\n` +
+                    `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` +
+                    `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
+                    )
+                    pixivArray.push(pixivEmbed)
+                    try {
+                        await SQLQuery.insertInto("pixiv", "id", id)
+                        await sql.updateColumn("pixiv", "embed", pixivEmbed, "id", id)
+                    } catch {
+                        await sql.updateColumn("pixiv", "embed", pixivEmbed, "id", id)
+                    }
+                } else {
+                    const title = id.replace(/(\()(.*?)(\))/, "")?.trim() ?? "Unknown"
+                    const author = id.match(/(?<=\()(.*?)(?=\))/)?.[0] ?? "Unknown"
+                    const pixivEmbed = this.embeds.createEmbed()
+                    pixivEmbed
+                    .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814", "https://www.pixiv.net/en/")
+                    .setTitle(`**Pixiv Image** ${this.discord.getEmoji(emoji)}`)
+                    .setImage(pictures[i])
+                    .setDescription(
+                        `${discord.getEmoji("star")}_Title:_ **${title}**\n` +
+                        `${discord.getEmoji("star")}_Author:_ **${author}**\n`
+                    )
+                    pixivArray.push(pixivEmbed)
+                    try {
+                        await SQLQuery.insertInto("pixiv", "id", id)
+                        await sql.updateColumn("pixiv", "embed", pixivEmbed, "id", id)
+                    } catch {
+                        await sql.updateColumn("pixiv", "embed", pixivEmbed, "id", id)
+                    }
+                }
+            }
+        }
+        return pixivArray
     }
 }

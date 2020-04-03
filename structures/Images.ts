@@ -114,7 +114,7 @@ export class Images {
     /** Download images */
     public downloadImages = async (images: string[], dest: string) => {
         await Promise.all(images.map(async (url, i) => {
-            let name = path.basename(images[i])
+            let name = path.basename(decodeURI(images[i]))
             name = name.length > 15 ? name.slice(0, 15) : name
             if (!/.(png|jpg|gif)/.test(name)) name += ".png"
             try {
@@ -404,5 +404,12 @@ export class Images {
         } else {
             return links as any
         }
+    }
+
+    /** Fetch images from my api */
+    public fetch = async (endpoint: string, limit?: number) => {
+        const pictures = await axios.get(`${config.animeAPI}/${endpoint}`).then((r) => r.data)
+        if (!limit) limit = pictures.length
+        return Functions.shuffleArray(pictures).slice(0, limit) as string[]
     }
 }

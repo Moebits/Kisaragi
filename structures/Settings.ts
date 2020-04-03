@@ -27,8 +27,8 @@ export class Settings {
     private readonly guildInfoSettings: Init = {
         "created": this.message.guild!.createdTimestamp,
         "joined": this.message.guild!.joinedTimestamp,
-        "icon": this.message.guild!.iconURL,
-        "splash": this.message.guild!.splashURL,
+        "icon": this.message.guild!.iconURL({format: "png", dynamic: true}),
+        "splash": this.message.guild!.splashURL({format: "png"}),
         "region": this.message.guild!.region,
         "owner": this.message.guild!.owner!.user.tag,
         "owner id": this.message.guild!.ownerID,

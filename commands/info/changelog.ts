@@ -31,6 +31,8 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 22, date: "4/3/2020", changes: "Added waifu commands such as \`gab\` and \`megumin\`. The help command also now has pagination because there are over 20 sections now."},
+            {num: 21, date: "4/2/2020", changes: "Added \`yelp\` and \`nmap\`, maybe some more stuff that I forgot about."},
             {num: 20, date: "3/26/2020", changes: "Added \`logs\` (message, mod, user, and member)."},
             {num: 19, date: "3/26/2020", changes: "Added \`reactionroles\`."},
             {num: 18, date: "3/24/2020", changes: "Added \`tumblr\`, \`musescore\`, \`fiverr\`, and \`instagram\`."},

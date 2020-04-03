@@ -68,6 +68,7 @@ export default class Help extends Command {
                 "music": discord.getEmoji("PoiHug"),
                 "music 2": discord.getEmoji("yes"),
                 "video": discord.getEmoji("vigneXD"),
+                "waifu": discord.getEmoji("karenSugoi"),
                 "website": discord.getEmoji("tohruThumbsUp2"),
                 "website 2": discord.getEmoji("mexShrug"),
                 "website 3": discord.getEmoji("think")
@@ -86,10 +87,12 @@ export default class Help extends Command {
                 "level": "https://i.imgur.com/fxLI1df.png",
                 "image": "https://i.imgur.com/eR3k5Ur.png",
                 "misc": "https://i.imgur.com/Rd9U6tc.png",
+                "misc 2": "https://i.imgur.com/0ol5ajZ.png",
                 "mod": "https://i.imgur.com/x3Y108l.png",
                 "music": "https://i.imgur.com/eZ2IphP.png",
                 "music 2": "https://i.imgur.com/fADrzzB.png",
                 "video": "https://i.imgur.com/qqUFolE.png",
+                "waifu": "https://i.imgur.com/t5P05XQ.png",
                 "website": "https://i.imgur.com/ftVh8jx.png",
                 "website 2": "https://i.imgur.com/0bUmQ7F.png",
                 "website 3": "https://i.imgur.com/CMm9fZy.png"
@@ -109,10 +112,12 @@ export default class Help extends Command {
                 "level": "https://cdn.discordapp.com/emojis/684265359137570846.gif",
                 "image": "https://cdn.discordapp.com/emojis/688250178268037120.gif",
                 "misc": "https://cdn.discordapp.com/emojis/684269087857311908.gif",
+                "misc 2": "https://cdn.discordapp.com/emojis/695493739639996437.gif",
                 "mod": "https://cdn.discordapp.com/emojis/684270341689835591.gif",
                 "music": "https://cdn.discordapp.com/emojis/684270605134200857.gif",
                 "music 2": "https://cdn.discordapp.com/emojis/687861928781021214.gif",
                 "video": "https://cdn.discordapp.com/emojis/689575172130209814.gif",
+                "waifu": "https://cdn.discordapp.com/emojis/695484678085410908.gif",
                 "website": "https://cdn.discordapp.com/emojis/684270969417760779.gif",
                 "website 2": "https://cdn.discordapp.com/emojis/684271413284175902.gif",
                 "website 3": "https://cdn.discordapp.com/emojis/691011174673809528.gif"

@@ -9,7 +9,7 @@ import * as config from "../config.json"
 
 export class Functions {
     private static readonly colors: string[] = config.colors
-    constructor(private readonly message?: Message) {}
+    constructor(private readonly message: Message) {}
 
     // Timeout
     public static timeout = (ms: number) => {
@@ -66,9 +66,7 @@ export class Functions {
 
     // Response Time
     public responseTime = () => {
-        if (this.message) {
-            return `${Date.now() - this.message.createdTimestamp} ms`
-        }
+        return `${Date.now() - this.message.createdTimestamp} ms`
     }
 
     // Format Date
