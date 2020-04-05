@@ -1,5 +1,7 @@
 import {GuildChannel, Message, MessageAttachment, TextChannel} from "discord.js"
-import GPhotos from "upload-gphotos"
+import fs from "fs"
+import path from "path"
+import {GPhotos} from "upload-gphotos"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -27,12 +29,11 @@ export default class Upload extends Command {
 
         if (!channels[0]) return
 
-        const gphotos = new GPhotos({username: process.env.GOOGLE_EMAIL, password: process.env.GOOGLE_PASSWORD})
-        await gphotos.login()
+        const gphotos = new GPhotos()
+        await gphotos.signin({username: process.env.GOOGLE_EMAIL!, password: process.env.GOOGLE_PASSWORD!})
         const download = require("image-downloader")
         // const Dropbox = require('dropbox').Dropbox;
         // const fetch = require('isomorphic-fetch');
-        const fs = require("fs")
 
         /*let dropbox = new Dropbox({
             fetch: fetch,
@@ -83,14 +84,19 @@ export default class Upload extends Command {
 
         async function uploadToAlbum(photos: string[], albumName: string, guildChannel: string) {
             const channel = message.guild!.channels.cache.find((c: GuildChannel) => c.id === guildChannel) as TextChannel
-            const album = await gphotos.searchOrCreateAlbum(albumName)
+            let album = await gphotos.searchAlbum({title: albumName})
+            if (!album) album = await gphotos.createAlbum({title: albumName})
             let notMsg
             if (notify[0] === "on") {
                 notMsg = await channel.send(`Uploading images to google photos. Please be patient ${discord.getEmoji("gabCircle")}`)
             }
             for (let i = 0; i < photos.length; i++) {
-                const photo = await gphotos.upload(photos[i])
-                await album.addPhoto(photo)
+                const photo = await gphotos.upload({
+                    stream: fs.createReadStream(photos[i]),
+                    size: fs.statSync(photos[i]).size,
+                    filename: path.basename(photos[i])
+                })
+                await album.append(photo)
             }
             if (notMsg) await notMsg.delete()
             const gPhotosEmbed = embeds.createEmbed()
