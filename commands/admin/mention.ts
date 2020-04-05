@@ -30,6 +30,8 @@ export default class Mention extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         if (!await perms.checkAdmin()) return
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const mentionEmbed = embeds.createEmbed()
         const prefix = await SQLQuery.fetchPrefix(message)
 

@@ -89,7 +89,7 @@ export default class Warn extends Command {
                             await member!.roles.add(mute)
                             dmEmbed
                             .setAuthor("mute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-                            .setTitle(`**You Were Muted** ${discord.getEmoji("kannaFU")}`)
+                            .setTitle(`**You Were Muted** ${discord.getEmoji("sagiriBleh")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were muted from ${message.guild!.name} for reason:_ **${warnReason}**`)
                             try {
                                 await dm.send(dmEmbed)
@@ -98,7 +98,7 @@ export default class Warn extends Command {
                             }
                             guildEmbed
                             .setAuthor("mute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-                            .setTitle(`**Member Muted** ${discord.getEmoji("kannaFU")}`)
+                            .setTitle(`**Member Muted** ${discord.getEmoji("sagiriBleh")}`)
                             .setDescription(`${discord.getEmoji("star")}_Successfully muted <@${userID}> for reason:_ **${warnReason}**`)
                             await member!.kick(warnReason)
                             message.channel.send(guildEmbed)
@@ -154,7 +154,7 @@ export default class Warn extends Command {
                 warnLog.push(`{"user": "${userArray[i]}", "warns": ["${reason}"]}`)
             }
             for (let j = 0; j < warnLog.length; j++) {
-                warnLog[j] = JSON.parse(JSON.stringify(warnLog[j]))
+                warnLog[j] = JSON.parse(warnLog[j])
             }
             await this.checkWarns(discord, message, embeds, sql, warnLog, userArray[i], warnThreshold, warnPenalty, warnOneRole, warnTwoRole)
         }
@@ -168,7 +168,7 @@ export default class Warn extends Command {
             const warnDMEmbed = embeds.createEmbed()
             warnDMEmbed
             .setAuthor("warn", "https://www.emoji.co.uk/files/phantom-open-emojis/symbols-phantom/13025-warning-sign.png")
-            .setTitle(`**You Were Warned** ${discord.getEmoji("kannaFU")}`)
+            .setTitle(`**You Were Warned** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_You were warned in ${message.guild!.name} for reason: **${reason}**_`
             )
@@ -180,7 +180,7 @@ export default class Warn extends Command {
         const warnEmbed = embeds.createEmbed()
         warnEmbed
         .setAuthor("warn", "https://www.emoji.co.uk/files/phantom-open-emojis/symbols-phantom/13025-warning-sign.png")
-        .setTitle(`**Member Warned** ${discord.getEmoji("kannaFU")}`)
+        .setTitle(`**Member Warned** ${discord.getEmoji("raphi")}`)
         .setDescription(
             `${discord.getEmoji("star")}_Successfully warned ${users} for reason: **${reason}**_`
         )

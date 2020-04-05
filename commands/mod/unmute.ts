@@ -41,18 +41,20 @@ export default class Unmute extends Command {
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
+            if (!members) continue
             await member.roles.remove(mute)
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             muteEmbed
             .setAuthor("unmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-            .setTitle(`**You Were Unmuted** ${discord.getEmoji("kannaFU")}`)
+            .setTitle(`**You Were Unmuted** ${discord.getEmoji("mexShrug")}`)
             .setDescription(`${discord.getEmoji("star")}_You were unmuted in ${message.guild!.name} for reason:_ **${reason}**`)
-            await dm.send(muteEmbed)
+            await dm.send(muteEmbed).catch(() => null)
         }
+        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         muteEmbed
         .setAuthor("unmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-        .setTitle(`**Member Unmuted** ${discord.getEmoji("kannaFU")}`)
+        .setTitle(`**Member Unmuted** ${discord.getEmoji("mexShrug")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully unmuted ${members.join(", ")} for reason:_ **${reason}**`)
         message.channel.send(muteEmbed)
         return

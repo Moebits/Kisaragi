@@ -1,8 +1,10 @@
+import axios from "axios"
 import bluebird from "bluebird"
 import chalk from "chalk"
 import {Message} from "discord.js"
 import moment from "moment"
 import {Pool, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
+import querystring from "querystring"
 import * as Redis from "redis"
 import * as config from "../config.json"
 import {Command} from "./Command"
@@ -165,7 +167,23 @@ export class SQLQuery {
       rowMode: "array",
       values: [this.message.guild?.id]
     }
-    const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
+    const result = await SQLQuery.runQuery(query, true)
+    const data = result?.[0]?.[0]
+    if (data) {
+      if (data === "[]" || data === "{}") return null
+      return JSON.parse(JSON.stringify(data))
+    }
+    return null
+  }
+
+  /** Fetch Column Static */
+  public static fetchColumn = async (table: string, column: string, key?: string | boolean, value?: string | boolean) => {
+    const query: QueryArrayConfig = {
+      text: `SELECT "${column}" FROM "${table}" WHERE "${key}" = $1`,
+      rowMode: "array",
+      values: [value]
+    }
+    const result = await SQLQuery.runQuery(query, true)
     const data = result?.[0]?.[0]
     if (data) {
       if (data === "[]" || data === "{}") return null
@@ -228,6 +246,15 @@ export class SQLQuery {
         }
       }
       await SQLQuery.runQuery(query, true)
+  }
+
+  /** Update Column Static */
+  public static updateColumn = async (table: string, column: string, value: any, key: string, keyVal: string): Promise<void> => {
+    const query: QueryConfig = {
+        text: `UPDATE "${table}" SET "${column}" = $1 WHERE "${key}" = $2`,
+        values: [value, keyVal]
+    }
+    await SQLQuery.runQuery(query, true)
   }
 
   // Update Command
@@ -343,5 +370,63 @@ export class SQLQuery {
         FROM "${table}" b GROUP BY "${key}" HAVING count(*) > 1) c)`
     }
     await SQLQuery.runQuery(query, true)
+  }
+
+  /** Deletes user data on account deletion */
+  public static deleteUser = async (id: string) => {
+    await SQLQuery.deleteRow("misc", "user id", id).catch(() => null)
+    await SQLQuery.deleteRow("oauth2", "user id", id).catch(() => null)
+  }
+
+  /** Revokes an oauth2 entry */
+  public static revokeOuath2 = async (id: string) => {
+    const token = await SQLQuery.fetchColumn("oauth2", "access token", "user id", id)
+    if (!token) return
+    const clientID = config.testing === "on" ? process.env.TEST_CLIENT_ID : process.env.CLIENT_ID
+    const clientSecret = config.testing === "on" ? process.env.TEST_CLIENT_SECRET : process.env.CLIENT_SECRET
+    const data = await axios.post(`https://discordapp.com/api/oauth2/token/revoke`, querystring.stringify({
+      client_id: clientID,
+      client_secret: clientSecret,
+      token
+    })).then((r) => r.data)
+    await SQLQuery.deleteRow("oauth2", "access token", token)
+  }
+
+  /** Inits an oauth2 entry */
+  public static initOauth2 = async (code: string) => {
+    const clientID = config.testing === "on" ? process.env.TEST_CLIENT_ID : process.env.CLIENT_ID
+    const clientSecret = config.testing === "on" ? process.env.TEST_CLIENT_SECRET : process.env.CLIENT_SECRET
+    const redirectURI = config.testing === "on" ? "http://localhost:53134" : "https://kisaragi-discord-bot.herokuapp.com/"
+    const data = await axios.post(`https://discordapp.com/api/oauth2/token`, querystring.stringify({
+      client_id: clientID,
+      client_secret: clientSecret,
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: redirectURI,
+      scope: "identify,email,connections,guilds,guilds.join,gdm.join"
+    })).then((r) => r.data)
+    const accessToken = data.access_token
+    const refreshToken = data.refresh_token
+    const tokenType = data.token_type
+    const info = await axios.get(`https://discordapp.com/api/users/@me`, {
+      headers: {authorization: `${tokenType} ${accessToken}`}
+    }).then((r) => r.data)
+    const connections = await axios.get(`https://discordapp.com/api/users/@me/connections`, {
+      headers: {authorization: `${tokenType} ${accessToken}`}
+    }).then((r) => r.data)
+    const guilds = await axios.get(`https://discordapp.com/api/users/@me/guilds`, {
+      headers: {authorization: `${tokenType} ${accessToken}`}
+    }).then((r) => r.data)
+    const tag = `${info.username}#${info.discriminator}`
+    try {
+      await SQLQuery.insertInto("oauth2", "user id", info.id)
+    } finally {
+      await SQLQuery.updateColumn("oauth2", "access token", accessToken, "user id", info.id)
+      await SQLQuery.updateColumn("oauth2", "refresh token", refreshToken, "user id", info.id)
+      await SQLQuery.updateColumn("oauth2", "email", info.email, "user id", info.id)
+      await SQLQuery.updateColumn("oauth2", "user tag", tag, "user id", info.id)
+      await SQLQuery.updateColumn("oauth2", "connections", connections, "user id", info.id)
+      await SQLQuery.updateColumn("oauth2", "guilds", guilds, "user id", info.id)
+    }
   }
 }

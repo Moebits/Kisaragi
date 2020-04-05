@@ -43,6 +43,8 @@ export default class CaptchaCmd extends Command {
         const sql = new SQLQuery(message)
         const captchaClass = new Captcha(discord, message)
         if (!await perms.checkAdmin()) return
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const input = Functions.combineArgs(args, 1).trim()
         if (input.trim()) {
             message.content = input.trim()

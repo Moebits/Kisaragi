@@ -40,6 +40,8 @@ export default class Auto extends Command {
         const sql = new SQLQuery(message)
         return message.reply("This command is disabled for the time being...")
         if (!await perms.checkAdmin()) return
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()

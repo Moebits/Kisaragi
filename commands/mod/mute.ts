@@ -41,18 +41,24 @@ export default class Mute extends Command {
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
-            await member.roles.add(mute)
+            if (!member) continue
+            try {
+                await member.roles.add(mute)
+            } catch {
+                return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
+            }
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             muteEmbed
             .setAuthor("mute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-            .setTitle(`**You Were Muted** ${discord.getEmoji("kannaFU")}`)
+            .setTitle(`**You Were Muted** ${discord.getEmoji("sagiriBleh")}`)
             .setDescription(`${discord.getEmoji("star")}_You were muted in ${message.guild!.name} for reason:_ **${reason}**`)
-            await dm.send(muteEmbed)
+            await dm.send(muteEmbed).catch(() => null)
         }
+        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         muteEmbed
         .setAuthor("mute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
-        .setTitle(`**Member Muted** ${discord.getEmoji("kannaFU")}`)
+        .setTitle(`**Member Muted** ${discord.getEmoji("sagiriBleh")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully muted ${members.join(", ")} for reason:_ **${reason}**`)
         message.channel.send(muteEmbed)
         return

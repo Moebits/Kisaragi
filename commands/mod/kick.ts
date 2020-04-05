@@ -49,7 +49,7 @@ export default class Kick extends Command {
             if (member) {
                 members.push(`<@${member.id}>`)
             } else {
-                return message.reply(`Invalid member id ${discord.getEmoji("kannaFacepalm")}`)
+                continue
             }
             kickEmbed
             .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
@@ -57,12 +57,13 @@ export default class Kick extends Command {
             .setDescription(`${discord.getEmoji("star")}_You were kicked from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
             try {
-                await dm.send(kickEmbed)
-            } catch (err) {
-                console.log(err)
+                await member.kick(reason)
+            } catch {
+                return message.reply(`I need the **Kick Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await member.kick(reason)
+            await dm.send(kickEmbed).catch(() => null)
         }
+        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         kickEmbed
         .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
         .setTitle(`**Member Kicked** ${discord.getEmoji("kannaFU")}`)

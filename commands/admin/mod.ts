@@ -22,7 +22,9 @@ export default class Mod extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        if (!perms.checkPerm("administrator")) return
+        if (!perms.checkAdmin()) return
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -47,7 +49,8 @@ export default class Mod extends Command {
         .setDescription(Functions.multiTrim(`
             Edit moderation settings for the server.
             newline
-            **Restricted Role** - Can be any role with restricted Permission.
+            **Mute Role** - Create a role and disable speaking permissions for every channel.
+            **Restricted Role** - Can be any role with restricted permissions.
             **Warn Threshold** - How many warnings will trigger the punishment.
             **Warn Penalty** - The punishment after hitting the warn threshold.
             **Ascii Names** - Removes all non-ascii characters in usernames.
@@ -60,8 +63,8 @@ export default class Mod extends Command {
             ${discord.getEmoji("star")}Warn One role: ${warnOne ? `<@&${warnOne}>` : "None"}
             ${discord.getEmoji("star")}Warn Two role: ${warnTwo ? `<@&${warnTwo}>` : "None"}
             ${discord.getEmoji("star")}Warn Threshold: **${warnThresh}**
-            ${discord.getEmoji("star")}Warn Penalty: **${warnPen ? warnPen :  "None"}**
-            ${discord.getEmoji("star")}Ascii names are **${ascii}**
+            ${discord.getEmoji("star")}Warn Penalty: ${warnPen ? `**${warnPen}**` :  "None"}
+            ${discord.getEmoji("star")}Ascii names are ${ascii ? `**${ascii}**` : "None"}
             newline
             __Edit Settings__
             ${discord.getEmoji("star")}Type **ascii** to toggle ascii names on/off.

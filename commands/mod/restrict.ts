@@ -41,18 +41,24 @@ export default class Restrict extends Command {
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
-            await member.roles.add(restrict)
+            if (!member) continue
+            try {
+                await member.roles.add(restrict)
+            } catch {
+                return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
+            }
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             restrictEmbed
             .setAuthor("restrict", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png")
-            .setTitle(`**You Were Restricted** ${discord.getEmoji("kannaFU")}`)
+            .setTitle(`**You Were Restricted** ${discord.getEmoji("no")}`)
             .setDescription(`${discord.getEmoji("star")}_You were restricted in ${message.guild!.name} for reason:_ **${reason}**`)
             await dm.send(restrictEmbed)
         }
+        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         restrictEmbed
         .setAuthor("restrict", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png")
-        .setTitle(`**Member Restricted** ${discord.getEmoji("kannaFU")}`)
+        .setTitle(`**Member Restricted** ${discord.getEmoji("no")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully restricted ${members.join(", ")} for reason:_ **${reason}**`)
         message.channel.send(restrictEmbed)
         return

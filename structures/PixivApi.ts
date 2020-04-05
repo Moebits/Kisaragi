@@ -321,7 +321,7 @@ export class PixivApi {
                 emoji = "gabStare"
                 break
             case "kisaragi":
-                emoji = "kisaragibawls"
+                emoji = "kisaragiBawls"
                 break
             case "tohru":
                 emoji = "tohruThink"

@@ -12,7 +12,7 @@ export default class Scrub extends Command {
             help:
             `
             _Note: The song will be skipped if the position is longer than the song length._
-            \`scrub position?\` - Starts playing at the position \`00:00:00\`, \`00:00\`, or \`00\` format
+            \`scrub time?\` - Starts playing at the time in \`00:00\`, \`0m 0s\`, or \`00\` format
             `,
             examples:
             `
@@ -30,7 +30,8 @@ export default class Scrub extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
 
-        const scrub = args[1] ? args[1] : "0"
+        let scrub = args[1] ? args[1] : "0"
+        scrub = scrub.replace(/h|m/gi, ":").replace(/s/gi, "").replace(/ +/g, "")
         await audio.scrub(scrub)
         const queue = audio.getQueue() as any
         const embed = await audio.updateNowPlaying()

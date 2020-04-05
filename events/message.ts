@@ -13,6 +13,7 @@ import {Generate} from "./../structures/Generate"
 import {Haiku} from "./../structures/Haiku"
 import {Letters} from "./../structures/Letters"
 import {Link} from "./../structures/Link"
+import {Permission} from "./../structures/Permission"
 import {Points} from "./../structures/Points"
 import {SQLQuery} from "./../structures/SQLQuery"
 
@@ -34,6 +35,7 @@ export default class MessageEvent {
       const links = new Link(this.discord, message)
       const generate = new Generate(this.discord, message)
       const embeds = new Embeds(this.discord, message)
+      const perms = new Permission(this.discord, message)
 
       if (message.partial) {
         try {
@@ -79,6 +81,7 @@ export default class MessageEvent {
           // cmdFunctions.autoCommand()
           if (!firstMessage.has(message.guild.id)) {
             await embeds.updateColor()
+            perms.continueTempBans()
             firstMessage.add(message.guild.id)
           }
         }

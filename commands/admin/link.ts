@@ -22,6 +22,8 @@ export default class ChannelLink extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
+        const loading = message.channel.lastMessage
+        loading?.delete()
         return message.reply("This command is disabled for the time being...")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)

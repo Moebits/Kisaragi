@@ -35,7 +35,7 @@ export default class GettingStarted extends Command {
         joinEmbed
         .setAuthor("getting started", "https://i.kym-cdn.com/photos/images/facebook/001/415/932/f20.png")
         .setTitle(`**Getting Started** ${discord.getEmoji("tohruThumbsUp")}`)
-        .setThumbnail("https://i.pixiv.cat/c/600x1200_90/img-master/img/2020/01/14/02/09/16/78891347_p4_master1200.jpg")
+        .setThumbnail(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
         .setDescription(
             `Thanks for adding me to your guild${message.guild?.owner?.user.username ? `, **${message.guild.owner.user.username}**` : ""}! ${discord.getEmoji("chinoSmug")}\n\n` +
             `${discord.getEmoji("star")}The current prefix is set to \`${prefix}\`. Use \`${prefix}help\` at anytime to display the list of commands.\n` +
@@ -52,7 +52,7 @@ export default class GettingStarted extends Command {
             `I hope that you enjoy using this bot! ${discord.getEmoji("aquaUp")}\n` +
             `If you need additional help, you can always join my [**support server**](${config.support}).`
         )
-        let msg
+        let msg = null as unknown as Message
         try {
             if (args[1]) {
                 const chan = message.guild?.channels.cache.find((c) => c.id === args[1].match(/\d{15,}/)?.[0]) as TextChannel
@@ -73,6 +73,7 @@ export default class GettingStarted extends Command {
             await reaction.users.remove(user)
             await message.channel.send(`<@${user.id}>, here is the help command!`)
             await cmd.runCommand(msg, ["help"])
+            help.stop()
         })
         return
     }

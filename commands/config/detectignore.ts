@@ -33,6 +33,8 @@ export default class DetectChannels extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!await perms.checkAdmin()) return
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()

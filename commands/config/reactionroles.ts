@@ -38,6 +38,8 @@ export default class ReactionRoles extends Command {
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()

@@ -49,7 +49,7 @@ export default class Play extends Command {
             voiceChannel = message.member.voice.channel
             connection = await message.member.voice.channel.join()
         } else if (!message.member?.voice.channel) {
-            return message.reply(`You must join a voice channel first. How are you going to listen to the song ${discord.getEmoji("kannaCurious")}`)
+            return message.reply(`You must join a voice channel first. How will you listen to the song ${discord.getEmoji("kannaFacepalm")}`)
         }
 
         const loading = message.channel.lastMessage

@@ -1,4 +1,4 @@
-import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, Role, TextChannel, User} from "discord.js"
+import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, MessageAttachment, Role, TextChannel, User} from "discord.js"
 import {message} from "../test/login"
 import * as config from "./../config.json"
 import {Embeds} from "./Embeds"
@@ -82,12 +82,15 @@ export class Kisaragi extends Client {
     }
 
     // Fetch Last Attachment
-    public fetchLastAttachment = async <T extends boolean = false>(message: Message, author?: T, fileExt?: RegExp) =>  {
+    public fetchLastAttachment = async <T extends boolean = false, A extends boolean = false>(message: Message, author?: T, fileExt?: RegExp | false, limit?: number, all?: A):
+    Promise<A extends true ? string[] | undefined : (T extends true ? {image: string | undefined, author: User | undefined} : string | undefined)> => {
+        if (!limit) limit = 100
         if (!fileExt) fileExt = new RegExp(/.(png|jpg|gif)/)
-        const msg = await message.channel.messages.fetch({limit: 100}).then((i) => i.find((m)=>m.attachments.size > 0))
-        const image = msg?.attachments.find((a) => a.url.match(fileExt!) !== null)?.url
-        if (author) return {image, author: msg?.author} as unknown as Promise<T extends true ? {image: string | undefined, author: User | undefined} : string | undefined>
-        return image as unknown as Promise<T extends true ? {image: string | undefined, author: User | undefined} : string | undefined>
+        const msg = await message.channel.messages.fetch({limit}).then((i) => i.find((m) => m.attachments.size > 0 && m.attachments.first()?.url.match(fileExt as RegExp) !== null))
+        if (all) return msg?.attachments.map((a) => a.url) as any
+        const image = msg?.attachments.first()?.url
+        if (author) return {image, author: msg?.author} as any
+        return image as any
     }
 
     // Get an Invite

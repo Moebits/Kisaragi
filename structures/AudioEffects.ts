@@ -1,4 +1,5 @@
 import axios from "axios"
+import {reject} from "bluebird"
 import child_process from "child_process"
 import {Message, MessageAttachment} from "discord.js"
 import ffmpeg from "fluent-ffmpeg"
@@ -39,7 +40,7 @@ export class AudioEffects {
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
-        const inDest = await this.convertFromMp3(filepath, "aiff")
+        const inDest = await this.convertToFormat(filepath, "aiff")
         // const ext = path.extname(filepath).replace(".", "")
         let outDest = fileDest.slice(0, -4) + `.aiff`
         let index = 0
@@ -68,7 +69,7 @@ export class AudioEffects {
             .on("error", (err) => console.log(err))
             .on("finish", () => resolve())
         })
-        const mp3Dest = await this.convertToMp3(outDest)
+        const mp3Dest = await this.convertToFormat(outDest, "mp3")
         fs.unlink(inDest, () => null)
         fs.unlink(outDest, () => null)
         return mp3Dest
@@ -198,7 +199,7 @@ export class AudioEffects {
 
     public combFilter = async (delay: number, decay: number, filepath: string, wavDest?: string) => {
         this.init()
-        const wavFile = await this.convertFromMp3(filepath, "wav")
+        const wavFile = await this.convertToFormat(filepath, "wav")
         const arraybuffer = fs.readFileSync(wavFile, null).buffer
         const array = new Uint8Array(arraybuffer)
         const header = array.slice(0, 44)
@@ -222,28 +223,45 @@ export class AudioEffects {
         return wavDest
     }
 
-    public convertFromMp3 = async (filepath: string, format: string) => {
+    public streamOgg = async (filepath: string) => {
         this.init()
-        const filename = format.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
-        const newDest = `./tracks/transform/${filename}.${format}`
+        const ext = path.extname(filepath).replace(".", "")
+        if (ext === "ogg") return fs.createReadStream(filepath)
+        const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
+        const newDest = `./tracks/transform/${filename}.ogg`
         await new Promise((resolve) => {
-            ffmpeg(filepath).toFormat(format).outputOptions("-bitexact").save(newDest)
-            .on("end", () => {
-                resolve()
-            })
+            ffmpeg(filepath).toFormat("ogg").outputOptions(["-c:a", "libopus", "-b:a", "96k"]).save(newDest)
+            .on("end", () => resolve())
+        })
+        return fs.createReadStream(newDest)
+    }
+
+    public pcmToWav = async (filepath: string) => {
+        this.init()
+        const ext = path.extname(filepath).replace(".", "")
+        const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
+        const newDest = `./tracks/transform/${filename}.wav`
+        await new Promise((resolve, reject) => {
+            ffmpeg(filepath).inputOptions(["-f", "s16le", "-ar", "44.1k", "-ac", "2"]).save(newDest)
+            .on("end", () => resolve())
+            .on("error", () => reject())
         })
         return newDest
     }
 
-    public convertToMp3 = async (filepath: string) => {
+    public convertToFormat = async (filepath: string, format: string) => {
         this.init()
-        const filename = path.basename(filepath).slice(0, -4)
-        const newDest = `./tracks/transform/${filename}.mp3`
-        await new Promise((resolve) => {
-            ffmpeg(filepath).toFormat("mp3").save(newDest)
-            .on("end", () => {
-                resolve()
-            })
+        if (filepath.slice(-3) === "pcm") {
+            const wavDest = await this.pcmToWav(filepath)
+            return this.convertToFormat(wavDest, format)
+        }
+        const ext = path.extname(filepath).replace(".", "")
+        const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
+        const newDest = `./tracks/transform/${filename}.${format}`
+        await new Promise((resolve, reject) => {
+            ffmpeg(filepath).toFormat(format).outputOptions("-bitexact").save(newDest)
+            .on("end", () => resolve())
+            .on("error", () => reject())
         })
         return newDest
     }
@@ -284,7 +302,7 @@ export class AudioEffects {
 
     public reverseLegacy = async (filepath: string, wavDest: string) => {
         this.init()
-        const wavFile = await this.convertFromMp3(filepath, "wav")
+        const wavFile = await this.convertToFormat(filepath, "wav")
         const arraybuffer = fs.readFileSync(wavFile, null).buffer
         const array = new Uint8Array(arraybuffer)
         const header = array.slice(0, 44)
@@ -301,7 +319,7 @@ export class AudioEffects {
         }
         const reversedArray = [...header, ...reversed]
         fs.writeFileSync(wavDest, Buffer.from(new Uint8Array(reversedArray)))
-        const mp3File = await this.convertToMp3(wavDest)
+        const mp3File = await this.convertToFormat(wavDest, "mp3")
         fs.unlink(wavFile, (err) => console.log(err))
         fs.unlink(wavDest, (err) => console.log(err))
         return mp3File

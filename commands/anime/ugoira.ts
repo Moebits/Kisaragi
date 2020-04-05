@@ -46,7 +46,7 @@ export default class Ugoira extends Command {
         const pixivApi = new PixivApi(discord, message)
         const perms = new Permission(discord, message)
         const pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
-        let input
+        let input: string
         if (args[1] && (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en" || args[1].toLowerCase() === "popular")) {
             if (args[2] === "en" || args[2] === "popular") {
                 input = Functions.combineArgs(args, 3)

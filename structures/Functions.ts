@@ -334,12 +334,12 @@ export class Functions {
         }
     }
 
-    /** Parses seconds string */
+    /** Parses seconds (clock format) */
     public static parseSeconds = (str: string) => {
         const split = str.split(":")
         let seconds = 0
         if (split.length === 3) {
-            seconds += Number(split[0]) * 60 * 60
+            seconds += Number(split[0]) * 3600
             seconds += Number(split[1]) * 60
             seconds += Number(split[2])
         } else if (split.length === 2) {
@@ -347,6 +347,30 @@ export class Functions {
             seconds += Number(split[1])
         } else if (split.length === 1) {
             seconds += Number(split[0])
+        }
+        return seconds
+    }
+
+    /** Parses seconds (calender format) */
+    public static parseCalenderSeconds = (str: string) => {
+        const split = str.split(" ")
+        let seconds = 0
+        for (let i = 0; i < split.length; i++) {
+            if (/y/.test(split[i])) {
+                seconds += Number(split[i].replace("y", "")) * 3.154e7
+            } else if (/mo/.test(split[i])) {
+                seconds += Number(split[i].replace("mo", "")) * 2.628e6
+            } else if (/w/.test(split[i])) {
+                seconds += Number(split[i].replace("w", "")) * 604800
+            } else if (/d/.test(split[i])) {
+                seconds += Number(split[i].replace("d", "")) * 86400
+            } else if (/h/.test(split[i])) {
+                seconds += Number(split[i].replace("h", "")) * 3600
+            } else if (/m/.test(split[i])) {
+                seconds += Number(split[i].replace("m", "")) * 60
+            } else {
+                seconds += Number(split[i].replace("s", ""))
+            }
         }
         return seconds
     }
@@ -382,6 +406,19 @@ export class Functions {
         } else {
             return str.match(regex)?.[0] as T extends false ? string : RegExpMatchArray
         }
+    }
+
+    /** Returns a frame of silence */
+    public static silence = () => {
+        const {Readable} = require("stream")
+        const SILENCE_FRAME = Buffer.from([0xF8, 0xFF, 0xFE])
+        class Silence extends Readable {
+            public _read() {
+                this.push(SILENCE_FRAME)
+                this.destroy()
+            }
+        }
+        return new Silence() as unknown as stream.Readable
     }
 
 }

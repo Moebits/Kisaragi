@@ -41,6 +41,8 @@ export default class Leave extends Command {
         const images = new Images(discord, message)
         const sql = new SQLQuery(message)
         if (!await perms.checkAdmin()) return
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const axios = require("axios")
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {

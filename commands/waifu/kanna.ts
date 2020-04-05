@@ -18,7 +18,7 @@ export default class Kanna extends Command {
             `
             \`=>kanna\`
             `,
-            aliases: [],
+            aliases: ["kannakamui"],
             random: "none",
             cooldown: 10
         })

@@ -10,9 +10,10 @@ export default class UserUpdate {
         const discord = this.discord
         const guilds = discord.guilds.cache.filter((g) => g.members.cache.has(newUser.id)).map((g) => g)
 
-        let [setUsername, setAvatar] = [false, false]
+        let [setUsername, setAvatar, setDelete] = [false, false, false]
         if (oldUser.username !== newUser.username) setUsername = true
         if (oldUser.displayAvatarURL() !== newUser.displayAvatarURL()) setAvatar = true
+        if (/Deleted User/.test(newUser.username) && !newUser.avatar) setDelete = true
 
         for (let i = 0; i < guilds.length; i++) {
             const guild = guilds[i]
@@ -61,6 +62,11 @@ export default class UserUpdate {
                 }
             }
             if (setAvatar) logAvatar(oldUser, newUser)
+
+            const deleteUser = async (userID: string) => {
+                await SQLQuery.deleteUser(userID)
+            }
+            if (setDelete) deleteUser(newUser.id)
         }
     }
 }

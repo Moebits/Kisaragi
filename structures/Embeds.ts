@@ -40,12 +40,13 @@ export class Embeds {
     }
 
     /** Updates an embed */
-    public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean, cmdCount?: number[]) => {
+    public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean, helpIndex?: number, cmdCount?: number[]) => {
         if (!embeds[page]) return
         if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         if (help) {
+            if (!helpIndex) helpIndex = 0
             const name = embeds[page].title!.replace(/(<)(.*?)(>)/g, "").replace(/\*/g, "")
-            embeds[page].setFooter(`${name} (${cmdCount?.[page]}) • Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+            embeds[page].setFooter(`${name} (${cmdCount?.[page]}) • Page ${helpIndex + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
         } else {
             embeds[page].setFooter(`Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
         }
@@ -434,6 +435,7 @@ export class Embeds {
             embeds[i].setFooter(`${titles[i]} Commands (${commandCount[i]}) • Page ${i + 1}/${embeds.length}`, this.message.author.displayAvatarURL({format: "png", dynamic: true}))
         }
         const page1 = [
+            this.discord.getEmoji("arrowRight"),
             this.discord.getEmoji("admin"),
             this.discord.getEmoji("anime"),
             this.discord.getEmoji("config"),
@@ -443,23 +445,22 @@ export class Embeds {
             this.discord.getEmoji("image"),
             this.discord.getEmoji("info"),
             this.discord.getEmoji("japanese"),
+            this.discord.getEmoji("level"),
             this.discord.getEmoji("lewd"),
             this.discord.getEmoji("misc"),
-            this.discord.getEmoji("miscTwo"),
             this.discord.getEmoji("mod"),
             this.discord.getEmoji("music"),
             this.discord.getEmoji("musicTwo"),
             this.discord.getEmoji("video"),
             this.discord.getEmoji("waifu"),
             this.discord.getEmoji("website"),
-            this.discord.getEmoji("websiteTwo"),
-            this.discord.getEmoji("arrowRight")
+            this.discord.getEmoji("websiteTwo")
         ]
 
         const page2 = [
             this.discord.getEmoji("arrowLeft"),
+            this.discord.getEmoji("miscTwo"),
             this.discord.getEmoji("websiteThree"),
-            this.discord.getEmoji("level"),
             this.discord.getEmoji("botDeveloper")
         ]
 
@@ -540,7 +541,8 @@ export class Embeds {
                         compressed = false
                     }
                 }
-                await this.updateEmbed(embeds, page, user, msg, true, commandCount)
+                const curr = pages.flat(Infinity).findIndex((e) => e.name === reaction.emoji.name)
+                await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
                 page = i
                 msg.edit(embeds[page])
                 await reaction.users.remove(user).catch(() => null)
@@ -690,7 +692,8 @@ export class Embeds {
                         compressed = false
                     }
                 }
-                await this.updateEmbed(embeds, page, user, msg, true, commandCount)
+                const curr = pages.flat(Infinity).findIndex((e) => e.name === reaction.emoji.name)
+                await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
                 msg.edit(embeds[i])
                 await reaction.users.remove(user).catch(() => null)
             })

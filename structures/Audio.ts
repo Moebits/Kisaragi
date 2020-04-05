@@ -550,6 +550,22 @@ export class Audio {
         return time
     }
 
+    public rewind = (input: string) => {
+        const seconds = this.parseSeconds(input)
+        const time = this.time()
+        const queue = this.getQueue() as any
+        let rewind = time - seconds
+        if (rewind < 0) rewind = 0
+        return this.play(queue[0].file, rewind)
+    }
+
+    public fastforward = (input: string) => {
+        const seconds = this.parseSeconds(input)
+        const time = this.time()
+        const queue = this.getQueue() as any
+        return this.play(queue[0].file, time + seconds)
+    }
+
     public getQueue = () => {
         if (queues.has(this.message.guild?.id)) {
             return queues.get(this.message.guild?.id)
@@ -982,7 +998,7 @@ export class Audio {
             `${discord.getEmoji("highpass")}_Filters:_ _${settings.filters[0] ? settings.filters.map((f: string) => Functions.toProperCase(f)).join(", ") : "None"}_  ` +
             `${discord.getEmoji("delay")}_Effects:_ _${settings.effects[0] ? settings.effects.map((e: string) => Functions.toProperCase(e)).join(", ") : "None"}_\n` +
             `${discord.getEmoji("position")}_Song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
-            `_Added by **${now.requester}**_`
+            `_Added by ${now.requester}_`
         } else {
             details =
             `${settings.autoplay ? `${discord.getEmoji("autoplay")}Autoplay is **on**! ${discord.getEmoji("tohruSmug")}\n` : ""}` +
@@ -996,7 +1012,7 @@ export class Audio {
             `${discord.getEmoji("highpass")}_Filters:_ _${settings.filters[0] ? settings.filters.map((f: string) => Functions.toProperCase(f)).join(", ") : "None"}_  ` +
             `${discord.getEmoji("delay")}_Effects:_ _${settings.effects[0] ? settings.effects.map((e: string) => Functions.toProperCase(e)).join(", ") : "None"}_\n` +
             `${discord.getEmoji("position")}_Song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
-            `_Added by **${now.requester}**_`
+            `_Added by ${now.requester}_`
         }
         const nowEmbed = this.embeds.createEmbed()
         nowEmbed
@@ -1068,10 +1084,11 @@ export class Audio {
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
         let player = connection.dispatcher
+        const stream = await this.fx.streamOgg(file)
         if (start) {
-            player = connection?.play(file, {seek: start, highWaterMark: 1})
+            player = connection.play(stream, {type: "ogg/opus", seek: start, highWaterMark: 100})
         } else {
-            player = connection?.play(file, {highWaterMark: 1})
+            player = connection.play(stream, {type: "ogg/opus", highWaterMark: 100})
         }
         player.setBitrate(128)
         player.setFEC(false)

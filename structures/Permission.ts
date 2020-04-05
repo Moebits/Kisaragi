@@ -24,9 +24,10 @@ export class Permission {
                 this.message.reply("In order to use moderator commands, you must have " +
                 `the mod role which is currently set to <@&${mod}>!`)
                 return false
+            } else {
+                return true
             }
         }
-        return true
     }
 
     /** Check Admin */
@@ -46,9 +47,10 @@ export class Permission {
                 this.message.reply("In order to use administrator commands, you must have " +
                 `the admin role which is currently set to <@&${admin}>!`)
                 return false
+            } else {
+                return true
             }
         }
-        return true
     }
 
     /** Check Bot Dev */
@@ -102,6 +104,30 @@ export class Permission {
             return true
         } else {
             return false
+        }
+    }
+
+    /** Continue temporary bans */
+    public continueTempBans = async () => {
+        let tempArr = await this.sql.redisGet(`${this.message.guild?.id}_tempban`)
+        if (tempArr) {
+            tempArr = JSON.parse(tempArr)
+            for (let i = 0; i < tempArr.length; i++) {
+                const current = tempArr[i]
+                setInterval(async () => {
+                    let newArr = await this.sql.redisGet(`${this.message.guild?.id}_tempban`)
+                    newArr = JSON.parse(newArr)
+                    const index = newArr.findIndex((i: any) => i.member === current.id)
+                    const curr = newArr[index]
+                    const time = Number(curr.time)-60000
+                    if (time >= 0) clearInterval()
+                    newArr[index] = {...curr, time}
+                    await this.sql.redisSet(`${this.message.guild?.id}_tempban`, JSON.stringify(newArr))
+                }, 60000)
+                setTimeout(async () => {
+                    await this.message.guild?.members.unban(current.id, current.reason)
+                }, current.time)
+            }
         }
     }
 }

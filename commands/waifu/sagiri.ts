@@ -18,7 +18,7 @@ export default class Sagiri extends Command {
             `
             \`=>sagiri\`
             `,
-            aliases: [],
+            aliases: ["sagiriizumi"],
             random: "none",
             cooldown: 10
         })

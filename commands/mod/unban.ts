@@ -34,7 +34,7 @@ export default class Unban extends Command {
 
         for (let i = 1; i < args.length; i++) {
             if (args[i].match(/\d+/g)) {
-                userArray.push(args[i].match(/\d+/g)!.toString()![0])
+                userArray.push(args[i].match(/\d+/g)![0])
             } else {
                 reasonArray.push(args[i])
             }
@@ -44,21 +44,24 @@ export default class Unban extends Command {
 
         const users: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const user = await discord.users.fetch(userArray[i])
-            .catch(() => {
-                return message.reply(`Invalid user id ${discord.getEmoji("kannaFacepalm")}`)
-            }) as User
+            let user: User
+            try {
+                user = await discord.users.fetch(userArray[i])
+            } catch {
+                continue
+            }
             users.push(`<@${user.id}>`)
             banEmbed
             .setTitle(`**You Were Unbanned** ${discord.getEmoji("ceaseBullying")}`)
             .setDescription(`${discord.getEmoji("star")}_You were unbanned from ${message.guild!.name} for reason:_ **${reason}**`)
             try {
-                await user.send(banEmbed)
-            } catch (err) {
-                console.log(err)
+                await message.guild!.members.unban(user, reason)
+            } catch {
+                return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await message.guild!.members.unban(user, reason)
+            await user.send(banEmbed).catch(() => null)
         }
+        if (!users[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         banEmbed
         .setAuthor("unban", "https://discordemoji.com/assets/emoji/bancat.png")
         .setTitle(`**Member Unbanned** ${discord.getEmoji("ceaseBullying")}`)

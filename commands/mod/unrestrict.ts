@@ -41,18 +41,20 @@ export default class Unrestrict extends Command {
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
+            if (!member) continue
             await member.roles.remove(restrict)
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             restrictEmbed
             .setAuthor("unrestrict", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png")
-            .setTitle(`**You Were Unrestricted** ${discord.getEmoji("kannaFU")}`)
+            .setTitle(`**You Were Unrestricted** ${discord.getEmoji("yes")}`)
             .setDescription(`${discord.getEmoji("star")}_You were unrestricted in ${message.guild!.name} for reason:_ **${reason}**`)
-            await dm.send(restrictEmbed)
+            await dm.send(restrictEmbed).catch(() => null)
         }
+        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         restrictEmbed
         .setAuthor("restrict", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png")
-        .setTitle(`**Member Unrestricted** ${discord.getEmoji("kannaFU")}`)
+        .setTitle(`**Member Unrestricted** ${discord.getEmoji("yes")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully unrestricted ${members.join(", ")} for reason:_ **${reason}**`)
         message.channel.send(restrictEmbed)
         return

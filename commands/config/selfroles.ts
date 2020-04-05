@@ -37,6 +37,8 @@ export default class Selfroles extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
+        const loading = message.channel.lastMessage
+        loading?.delete()
 
         // If not admin, only shows the role list.
         if (!await perms.checkAdmin(true) || args[1] === "list") {

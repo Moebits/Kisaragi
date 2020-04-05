@@ -1,6 +1,5 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
-import SQL from "../bot developer/sql"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
