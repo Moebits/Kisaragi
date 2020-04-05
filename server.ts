@@ -1,6 +1,7 @@
 import bodyParser from "body-parser"
 import express from "express"
 import path from "path"
+import config from "./config.json"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 
@@ -30,4 +31,9 @@ export default class Server {
         app.listen(port)
         Logger.log(`Started the web server!`)
     }
+}
+
+if (config.testing === "off") {
+    const server = new Server()
+    server.run()
 }
