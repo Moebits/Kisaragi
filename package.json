@@ -4,8 +4,8 @@
   "description": "Kisaragi is the best girl",
   "main": "dist/shard.js",
   "scripts": {
-    "start": "npm i && npm run build && npm run compile && npm run pm2",
-    "cleanStart": "npm i && npm run clean && npm run build && npm run compile && npm run pm2",
+    "start": "npm run build && npm run compile && npm run pm2",
+    "cleanStart": "npm run clean && npm run build && npm run compile && npm run pm2",
     "build": "tsc -p tsconfig.json",
     "compile": "cd dist && node --max-old-space-size=8192 --optimize-for-size ./shard.js",
     "test": "ts-mocha --timeout 100000 -p tsconfig.json 'test/**/*.spec.ts'",
