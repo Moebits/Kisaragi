@@ -34,7 +34,7 @@ export default class TOS extends Command {
         .setAuthor("tos", "https://www.symphonyenvironmental.com/wp-content/uploads/2019/10/Terms-and-conditions-icon-V2.png")
         .setTitle(`**Terms of Service** ${discord.getEmoji("kannaPat")}`)
         .setDescription(Functions.multiTrim(`
-            By using Kisaragi, you (the "user") **agree** to abide by the terms of service. Kisaragi is a bot on discord, meant to enhance your user experience by adding a lot of features that Discord does not provide.
+            By using Kisaragi, you (the "user") **agree** to abide by the terms of service. Kisaragi is a bot on Discord meant to enhance your experience by adding a lot of features that Discord does not provide. You can report violations to me privately in DM (Tenpi#7920).
             **Bot Spam and Abuse**
             ${discord.getEmoji("star")}_API Spam:_ Don't API spam the bot, or abuse the command chaining command.
             ${discord.getEmoji("star")}_Global Chat Spam:_ Don't spam the global chat, or you could get blocked from using it.
