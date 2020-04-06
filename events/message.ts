@@ -1,4 +1,4 @@
-import {Collection, Message, MessageAttachment} from "discord.js"
+import {Collection, Message, MessageAttachment, TextChannel} from "discord.js"
 import path from "path"
 import * as responses from "../assets/json/responses.json"
 import SQL from "../commands/bot developer/sql"
@@ -21,6 +21,7 @@ const responseTextCool = new Set()
 const responseImageCool = new Set()
 const haikuCool = new Set()
 const firstMessage = new Set()
+const globalChatCool = new Set()
 
 export default class MessageEvent {
     private readonly cooldowns: Collection<string, Collection<string, number>> = new Collection()
@@ -59,13 +60,32 @@ export default class MessageEvent {
       if (!this.discord.checkMuted(message)) {
         if (message.guild) {
           const sql = new SQLQuery(message)
-          // Block.blockWord(message)
+          const globalChat = await sql.fetchColumn("special channels", "global chat")
+          if (globalChat && !message.content.startsWith(prefix) && !message.author.bot) {
+            if (message.content.length > 100) return message.reply(`There is a limit of 100 characters on the global chat ${this.discord.getEmoji("sagiriBleh")}`)
+            if (globalChatCool.has(message.author.id)) return message.reply(`**global chat** is under a 3 second cooldown! ${this.discord.getEmoji("kannaHungry")}`)
+            const globalChannel = message.guild.channels.cache.find((c) => c.id === globalChat)
+            if (message.channel.id === globalChannel?.id) {
+              let globalChannels = await SQLQuery.selectColumn("special channels", "global chat")
+              globalChannels = globalChannels.filter(Boolean)
+              for (let i = 0; i < globalChannels.length; i++) {
+                if (globalChannels[i] === message.channel.id) continue
+                const chan = this.discord.channels.cache.find((c) => c.id === globalChannels[i]) as TextChannel
+                chan.send(`**${message.author.tag}** \`(${message.guild.name})\` - ${message.content}`)
+                globalChatCool.add(message.author.id)
+                setTimeout(() => {
+                  globalChatCool.delete(message.author.id)
+                }, 3000)
+              }
+            }
+          }
+          Block.blockWord(message)
           detect.detectAnime()
           detect.swapRoles()
           const haikuEmbed = haiku.haiku()
           if (haikuEmbed) {
             if (haikuCool.has(message.author.id) || haikuCool.has(message.guild?.id)) {
-              const reply = await message.channel.send(`<@${message.author.id}>, **haiku** is under a 3 second cooldown!`)
+              const reply = await message.channel.send(`<@${message.author.id}>, **haiku** is under a 3 second cooldown! ${this.discord.getEmoji("kannaHungry")}`)
               reply.delete({timeout: 3000})
               return
             }
@@ -89,7 +109,7 @@ export default class MessageEvent {
           const response = message.content.trim().toLowerCase()
           if (!message.author!.bot) {
             if (responseTextCool.has(message.author.id) || responseTextCool.has(message.guild?.id)) {
-              const reply = await message.channel.send(`<@${message.author.id}>, **${response}** is under a 3 second cooldown!`)
+              const reply = await message.channel.send(`<@${message.author.id}>, **${response}** is under a 3 second cooldown! ${this.discord.getEmoji("kannaHungry")}`)
               reply.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
               return
             }

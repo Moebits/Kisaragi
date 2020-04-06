@@ -36,7 +36,7 @@ export default class Email extends Command {
 
         const content = Functions.combineArgs(args, 1).trim().replace(/(<@)(.*?)(>)/g, "").replace(/(http)(.*?)(?= |$)/g, "")
         let links = Functions.combineArgs(args, 1).trim().match(/(http)(.*?)(?= |$)/)
-        if (!links) links = await discord.fetchLastAttachment(message, false, /./, 3, true) as any
+        if (!links) links = await discord.fetchLastAttachment(message, false, /./, 5, true) as any
         let attach = undefined as any
         if (links) {
             attach = []

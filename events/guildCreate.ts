@@ -71,12 +71,12 @@ export default class GuildCreate {
         if (!discord.checkMuted(message)) joinMessage(guild)
 
         const blacklistLeave = async (guild: Guild) => {
-            const blacklists = await sql.selectColumn("blacklist", "guild id")
+            const blacklists = await SQLQuery.selectColumn("blacklist", "guild id")
             const found = blacklists.find((g) => String(g) === guild.id)
             if (found) {
                 await guild.leave()
             } else {
-                const userLists = await sql.selectColumn("blacklist", "user id")
+                const userLists = await SQLQuery.selectColumn("blacklist", "user id")
                 const found = userLists.find((u) => String(u) === guild.ownerID)
                 if (found) await guild.leave()
             }

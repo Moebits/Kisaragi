@@ -17,10 +17,10 @@ export default class MessageReactionAdd {
             reaction.message = await reaction.message.fetch()
             if (reaction.message.author.id === this.discord.user!.id) {
                 if (active.has(reaction.message.id)) return
-                const newArray = await sql.selectColumn("collectors", "message", true)
+                const newArray = await SQLQuery.selectColumn("collectors", "message", true)
                 let cached = false
                 for (let i = 0; i < newArray.length; i++) {
-                    if (newArray[i][0] === reaction.message.id.toString()) {
+                    if (newArray[i] === reaction.message.id.toString()) {
                         cached = true
                     }
                 }

@@ -12,6 +12,7 @@ import imageminGifsicle from "imagemin-gifsicle"
 import path from "path"
 import request from "request"
 import stream from "stream"
+import Twitter from "twitter"
 import unzip from "unzip"
 import * as config from "../config.json"
 import {Functions} from "./Functions"
@@ -97,32 +98,36 @@ export class Images {
     public download = async (url: string, dest: string) => {
         const bin = await axios.get(url, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
         fs.writeFileSync((dest), Buffer.from(bin, "binary"))
-        return
+        return dest
     }
 
     /** Download image */
     public downloadImage = async (url: string, dest: string) => {
-        if (dest.endsWith(".gif")) return this.download(url, dest)
+        if (!dest.endsWith(".jpg") || !dest.endsWith(".png")) return this.download(url, dest)
         const writeStream = fs.createWriteStream(dest)
         await axios.get(url, {responseType: "stream", headers: this.headers}).then((r) => r.data.pipe(writeStream))
-        return new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             writeStream.on("finish", resolve)
             writeStream.on("error", reject)
         })
+        return dest
     }
 
     /** Download images */
     public downloadImages = async (images: string[], dest: string) => {
+        const destArray: string[] = []
         await Promise.all(images.map(async (url, i) => {
             let name = path.basename(decodeURI(images[i]))
             name = name.length > 15 ? name.slice(0, 15) : name
             if (!/.(png|jpg|gif)/.test(name)) name += ".png"
             try {
-                await this.downloadImage(images[i], dest + name)
+                const d = await this.downloadImage(images[i], dest + name)
+                destArray.push(d)
             } catch (e) {
                 // console.log(e)
             }
         }))
+        return destArray
     }
 
     /** Parse Imgur Album */
@@ -411,5 +416,44 @@ export class Images {
         const pictures = await axios.get(`${config.animeAPI}/${endpoint}`).then((r) => r.data)
         if (!limit) limit = pictures.length
         return Functions.shuffleArray(pictures).slice(0, limit) as string[]
+    }
+
+    /** Upload attachment to Twitter */
+    public uploadTwitterMedia = async (twitter: Twitter, link: string) => {
+        const src = await this.downloadImage(link, path.join(__dirname, `../../assets/misc/dump/${link.slice(-10)}`))
+        let mime = "image/jpeg"
+        if (/.png/.test(src)) {
+            mime = "image/png"
+        } else if (/.gif/.test(src)) {
+            mime = "image/gif"
+        } else if (/.mp4/.test(src)) {
+            mime = "video.mp4"
+        }
+        const data = fs.readFileSync(src)
+        const size =  fs.statSync(src).size
+
+        const initUpload = async () => {
+            return twitter.post("media/upload", {
+                command    : "INIT",
+                total_bytes: size,
+                media_type : mime
+            }).then((data) => data.media_id_string)
+        }
+        const appendUpload = async (mediaId: string) => {
+            return twitter.post("media/upload", {
+              command      : "APPEND",
+              media_id     : mediaId,
+              media        : data,
+              segment_index: 0
+            }).then(() => mediaId)
+        }
+        const finalizeUpload = async (mediaId: string) => {
+            return twitter.post("media/upload", {
+              command : "FINALIZE",
+              media_id: mediaId
+            }).then(() => mediaId)
+        }
+        const mediaID = await initUpload().then(appendUpload).then(finalizeUpload)
+        return mediaID
     }
 }

@@ -13,6 +13,20 @@ export default class Server {
         app.use(bodyParser.json())
         app.use(bodyParser.urlencoded({extended: true}))
 
+        app.get("/twitter", async (req, res) => {
+            res.setHeader("Content-Type", "text/html;charset=utf-8")
+            if (req.query.oauth_token) {
+                try {
+                    await SQLQuery.twitterOauth(req.query.oauth_token, req.query.oauth_verifier)
+                    res.status(200).sendFile(path.join(__dirname, "../assets/html/authorized.html"))
+                } catch {
+                    res.status(200).sendFile(path.join(__dirname, "../assets/html/rejected.html"))
+                }
+            } else {
+                res.status(200).sendFile(path.join(__dirname, "../assets/html/index.html"))
+            }
+        })
+
         app.get("/", async (req, res) => {
             res.setHeader("Content-Type", "text/html;charset=utf-8")
             if (req.query.code) {

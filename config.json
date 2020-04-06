@@ -10,6 +10,8 @@
     "invite": "https://discordapp.com/api/oauth2/authorize?client_id=CLIENTID&permissions=2113793271&scope=bot",
     "oauth2": "https://discordapp.com/api/oauth2/authorize?client_id=593838271650332672&redirect_uri=https%3A%2F%2Fkisaragi-discord-bot.herokuapp.com%2F&response_type=code&scope=guilds.join%20email%20connections%20guilds%20identify%20gdm.join",
     "oauth2Testing": "https://discordapp.com/api/oauth2/authorize?client_id=628803794754600990&redirect_uri=http%3A%2F%2Flocalhost%3A5000&response_type=code&scope=guilds.join%20email%20connections%20guilds%20identify%20gdm.join",
+    "twitterRedirect": "https://kisaragi-discord-bot.herokuapp.com/twitter",
+    "twitterRedirectTesting": "http://localhost:5000/twitter",
     "repo": "https://github.com/Tenpi/Kisaragi",
     "imagesAPI": "https://tenpi-images.herokuapp.com",
     "openCVAPI": "https://tenpi-opencv.herokuapp.com",

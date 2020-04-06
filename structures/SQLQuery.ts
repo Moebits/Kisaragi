@@ -3,6 +3,7 @@ import bluebird from "bluebird"
 import chalk from "chalk"
 import {Message} from "discord.js"
 import moment from "moment"
+import path from "path"
 import {Pool, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
 import querystring from "querystring"
 import * as Redis from "redis"
@@ -93,7 +94,8 @@ export class SQLQuery {
     }
 
   // Redis Set
-  public redisSet = async (key: string, value: string, expiration?: number) => {
+  public redisSet = async (key: string, value: string | null, expiration?: number) => {
+    if (value === null) value = "null"
     if (expiration) {
       await redis.setAsync(key, value, "EX", expiration)
     } else {
@@ -192,14 +194,14 @@ export class SQLQuery {
     return null
   }
 
-  // Select whole column
-  public selectColumn = async (table: string, column: string, update?: boolean): Promise<string[]> => {
+  /** Selects a column. */
+  public static selectColumn = async (table: string, column: string, update?: boolean): Promise<any> => {
     const query: QueryArrayConfig = {
       text: `SELECT "${column}" FROM "${table}"`,
       rowMode: "array"
     }
     const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
-    return result as any as string[]
+    return result.flat()
   }
 
   // Insert row into a table
@@ -396,7 +398,7 @@ export class SQLQuery {
   public static initOauth2 = async (code: string) => {
     const clientID = config.testing === "on" ? process.env.TEST_CLIENT_ID : process.env.CLIENT_ID
     const clientSecret = config.testing === "on" ? process.env.TEST_CLIENT_SECRET : process.env.CLIENT_SECRET
-    const redirectURI = config.testing === "on" ? "http://localhost:53134" : "https://kisaragi-discord-bot.herokuapp.com/"
+    const redirectURI = config.testing === "on" ? "http://localhost:5000" : "https://kisaragi-discord-bot.herokuapp.com/"
     const data = await axios.post(`https://discordapp.com/api/oauth2/token`, querystring.stringify({
       client_id: clientID,
       client_secret: clientSecret,
@@ -428,5 +430,39 @@ export class SQLQuery {
       await SQLQuery.updateColumn("oauth2", "connections", connections, "user id", info.id)
       await SQLQuery.updateColumn("oauth2", "guilds", guilds, "user id", info.id)
     }
+  }
+
+  /** Revokes twitter oauth */
+  public static revokeTwitterOauth = async (userID: string) => {
+    await SQLQuery.updateColumn("oauth2", "twitter token", null, "user id", userID)
+    await SQLQuery.updateColumn("oauth2", "twitter secret", null, "user id", userID)
+  }
+
+  /** Inits twitter oauth */
+  public static twitterOauth = async (token: string, verifier: string) => {
+    const data = await axios.post(`https://api.twitter.com/oauth/access_token?oauth_token=${token}&oauth_verifier=${verifier}`).then((r) => querystring.parse(r.data))
+    const twitterToken = data.oauth_token
+    const twitterSecret = data.oauth_token_secret
+    const username = data.screen_name
+    const userID = data.user_id
+    const keys = await SQLQuery.selectColumn("oauth2", "user id")
+    const connections = await SQLQuery.selectColumn("oauth2", "connections")
+    let index = -1
+    twit:
+    for (let i = 0; i < connections.length; i++) {
+      for (let j = 0; j < connections[i].length; j++) {
+        const curr = JSON.parse(connections[i][j])
+        if (curr.type === "twitter" && curr.id === userID) {
+          index = i
+          break twit
+        }
+      }
+    }
+    if (index === -1) return Promise.reject("Twitter id not found")
+    const discordID = keys[index]
+    await SQLQuery.updateColumn("oauth2", "twitter token", twitterToken, "user id", discordID)
+    await SQLQuery.updateColumn("oauth2", "twitter secret", twitterSecret, "user id", discordID)
+    await SQLQuery.updateColumn("oauth2", "screen name", username, "user id", discordID)
+    await SQLQuery.updateColumn("oauth2", "twitter id", userID, "user id", discordID)
   }
 }

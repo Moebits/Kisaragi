@@ -71,21 +71,34 @@ export default class TempBan extends Command {
             const id = member.id
             try {
                 await message.guild?.members.ban(member, {reason})
-                const tempArr = [] as any
+                let tempArr = await sql.redisGet(`${message.guild?.id}_tempban`)
+                if (!tempArr) tempArr = [] as any
                 tempArr.push({member: id, time: seconds*1000, reason})
                 await sql.redisSet(`${message.guild?.id}_tempban`, JSON.stringify(tempArr))
                 setInterval(async () => {
                     let newArr = await sql.redisGet(`${message.guild?.id}_tempban`)
                     newArr = JSON.parse(newArr)
+                    if (!newArr) return
                     const index = newArr.findIndex((i: any) => i.member === id)
                     const curr = newArr[index]
                     const time = Number(curr.time)-60000
-                    if (time <= 0) clearInterval()
+                    if (time <= 0) {
+                        await this.message.guild?.members.unban(curr.id, curr.reason).catch(() => null)
+                        newArr[index] = null
+                        newArr = newArr.filter(Boolean)?.[0] ?? null
+                        await sql.redisSet(`${this.message.guild?.id}_tempban`, newArr)
+                        clearInterval()
+                        return
+                    }
                     newArr[index] = {...curr, time}
                     await sql.redisSet(`${message.guild?.id}_tempban`, JSON.stringify(newArr))
                 }, 60000)
                 setTimeout(async () => {
-                    await message.guild?.members.unban(id, reason)
+                    await message.guild?.members.unban(id, reason).catch(() => null)
+                    const index = tempArr.findIndex((i: any) => i.member === id)
+                    tempArr[index] = null
+                    tempArr = tempArr.filter(Boolean)?.[0] ?? null
+                    await sql.redisSet(`${this.message.guild?.id}_tempban`, tempArr)
                 }, seconds*1000)
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)

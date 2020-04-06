@@ -157,7 +157,7 @@ export class Kisaragi extends Client {
     /** Stops responding if the user is blacklisted. */
     public blacklistStop = async (msg: Message) => {
         const sql = new SQLQuery(msg)
-        const blacklists = await sql.selectColumn("blacklist", "user id")
+        const blacklists = await SQLQuery.selectColumn("blacklist", "user id")
         const found = blacklists.find((u) => String(u) === msg.author.id)
         if (found) {
             return true
@@ -174,8 +174,7 @@ export class Kisaragi extends Client {
             "264445053596991498",
             "450100127256936458",
             "446425626988249089",
-            "333949691962195969",
-            "632760185756319784"
+            "333949691962195969"
         ]
         const mutedUsers = [
             "321714991050784770",

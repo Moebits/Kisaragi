@@ -81,8 +81,7 @@ export default class TwitterCommand extends Command {
                 )
             .setThumbnail(user.profile_image_url)
             .setImage(user.profile_banner_url)
-            message.channel.send(twitterEmbed)
-            return
+            return message.channel.send(twitterEmbed)
         }
 
         const query = this.search || Functions.combineArgs(args, 1)
