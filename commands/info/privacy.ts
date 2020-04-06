@@ -36,7 +36,7 @@ export default class Privacy extends Command {
         .setDescription(Functions.multiTrim(`
             By adding Kisaragi to your server, or by authorizing her with oauth2, every member in the server automatically **agrees** to this privacy policy. If this is not the case, leave the server or remove the bot. Information is not shared.
             **Public Information**
-            ${discord.getEmoji("star")}_Guilds:_ The bot collects all of the public information of every guild that she is on, including but not limited to: guild name, members, roles, channels, and emojis.
+            ${discord.getEmoji("star")}_Guilds:_ The bot collects public information of every guild that she is on, including but not limited to: guild name, members, roles, channels, and emojis.
             This is required for bot functionality.
             **Private Information (Oauth2 Only)**
             ${discord.getEmoji("star")}_Email Address:_ Your discord email address is used to send you email from the \`email\` command. This is to verify that the address belongs to you, and also to protect your privacy by not having to write your email when invoking the command.
