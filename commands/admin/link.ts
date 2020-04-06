@@ -24,7 +24,6 @@ export default class ChannelLink extends Command {
         const sql = new SQLQuery(message)
         const loading = message.channel.lastMessage
         loading?.delete()
-        return message.reply("This command is disabled for the time being...")
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {

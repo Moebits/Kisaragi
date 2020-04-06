@@ -70,9 +70,10 @@ export default class MessageEvent {
               globalChannels = globalChannels.filter(Boolean)
               for (let i = 0; i < globalChannels.length; i++) {
                 if (globalChannels[i] === message.channel.id) continue
+                const sourceChan = message.channel as TextChannel
                 const cleaned = message.content.replace(/@/g, `@\u200b`)
                 const chan = this.discord.channels.cache.find((c) => c.id === globalChannels[i]) as TextChannel
-                chan.send(`\`#${chan.name}\` ${message.author.tag} -> ${cleaned}`)
+                chan.send(`\`#${sourceChan.name}\` ${message.author.tag} -> ${cleaned}`)
                 globalChatCool.add(message.author.id)
                 setTimeout(() => {
                   globalChatCool.delete(message.author.id)
