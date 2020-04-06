@@ -47,8 +47,10 @@ export class Embeds {
             if (!helpIndex) helpIndex = 0
             const name = embeds[page].title!.replace(/(<)(.*?)(>)/g, "").replace(/\*/g, "")
             embeds[page].setFooter(`${name} (${cmdCount?.[page]}) • Page ${helpIndex + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+            return embeds[page]
         } else {
             embeds[page].setFooter(`Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+            return embeds[page]
         }
     }
 
@@ -93,8 +95,8 @@ export class Embeds {
                     }
                     collapsed = false
                 }
-                await this.updateEmbed(embeds, page, user)
-                msg.edit(embeds[page])
+                const embed = await this.updateEmbed(embeds, page, user)
+                msg.edit(embed)
                 await reaction.users.remove(user).catch(() => null)
             })
         }
@@ -164,8 +166,8 @@ export class Embeds {
             } else {
                 page--
             }
-            await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embeds[page])
+            const embed = await this.updateEmbed(embeds, page, user, msg)
+            msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -175,8 +177,8 @@ export class Embeds {
             } else {
                 page++
             }
-            await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embeds[page])
+            const embed = await this.updateEmbed(embeds, page, user, msg)
+            msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -187,8 +189,8 @@ export class Embeds {
                 page -= Math.floor(embeds.length/5)
             }
             if (page < 0) page *= -1
-            await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embeds[page])
+            const embed = await this.updateEmbed(embeds, page, user, msg)
+            msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -199,8 +201,8 @@ export class Embeds {
                 page += Math.floor(embeds.length/5)
             }
             if (page > embeds.length - 1) page -= embeds.length - 1
-            await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embeds[page])
+            const embed = await this.updateEmbed(embeds, page, user, msg)
+            msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -212,8 +214,8 @@ export class Embeds {
                     await rep.delete({timeout: 2000})
                 } else {
                     page = Number(response.content) - 1
-                    await self.updateEmbed(embeds, page, user, msg)
-                    msg.edit(embeds[Number(response.content) - 1])
+                    const embed = await self.updateEmbed(embeds, page, user, msg)
+                    msg.edit(embed)
                 }
                 await response.delete()
             }
@@ -322,8 +324,8 @@ export class Embeds {
                     }
                     collapsed = false
                 }
-                await this.updateEmbed(embeds, page, user)
-                msg.edit(embeds[page])
+                const embed = await this.updateEmbed(embeds, page, user)
+                msg.edit(embed)
                 await reaction.users.remove(user).catch(() => null)
             })
         }
@@ -363,8 +365,8 @@ export class Embeds {
             } else {
                 page--
             }
-            await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embeds[page])
+            const embed = await this.updateEmbed(embeds, page, user, msg)
+            msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -374,8 +376,8 @@ export class Embeds {
             } else {
                 page++
             }
-            await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embeds[page])
+            const embed = await this.updateEmbed(embeds, page, user, msg)
+            msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -386,8 +388,8 @@ export class Embeds {
                 page -= Math.floor(embeds.length/5)
             }
             if (page < 0) page *= -1
-            await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embeds[page])
+            const embed = await this.updateEmbed(embeds, page, user, msg)
+            msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -398,8 +400,8 @@ export class Embeds {
                 page += Math.floor(embeds.length/5)
             }
             if (page > embeds.length - 1) page -= embeds.length - 1
-            await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embeds[page])
+            const embed = await this.updateEmbed(embeds, page, user, msg)
+            msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -413,7 +415,7 @@ export class Embeds {
     // Create Help Embed
     public createHelpEmbed = async (embeds: MessageEmbed[]) => {
         let page = 8
-        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Misc 2", "Mod", "Music", "Music 2", "Video", "Waifu", "Website", "Website 2", "Website 3"]
+        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Misc 2", "Mod", "Music", "Music 2", "Music 3", "Video", "Waifu", "Website", "Website 2", "Website 3"]
         let compressed = false
         const longDescription: string[] = []
         const commandCount: number[] = []
@@ -459,6 +461,7 @@ export class Embeds {
 
         const page2 = [
             this.discord.getEmoji("arrowLeft"),
+            this.discord.getEmoji("musicThree"),
             this.discord.getEmoji("miscTwo"),
             this.discord.getEmoji("websiteThree"),
             this.discord.getEmoji("botDeveloper")
@@ -491,6 +494,7 @@ export class Embeds {
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
         const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
         const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
+        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
         const waifuCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("waifu") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
@@ -516,6 +520,7 @@ export class Embeds {
         const mod = msg.createReactionCollector(modCheck)
         const music = msg.createReactionCollector(musicCheck)
         const musicTwo = msg.createReactionCollector(musicTwoCheck)
+        const musicThree = msg.createReactionCollector(musicThreeCheck)
         const video = msg.createReactionCollector(videoCheck)
         const waifu = msg.createReactionCollector(waifuCheck)
         const web = msg.createReactionCollector(webCheck)
@@ -524,7 +529,7 @@ export class Embeds {
         const left = msg.createReactionCollector(leftCheck)
         const right = msg.createReactionCollector(rightCheck)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, video, waifu, web, webTwo, webThree]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, video, waifu, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
@@ -541,10 +546,17 @@ export class Embeds {
                         compressed = false
                     }
                 }
-                const curr = pages.flat(Infinity).findIndex((e) => e.name === reaction.emoji.name)
-                await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
+                const filtered = pages.flat(Infinity).filter((e) => {
+                    if (e.name === "arrowLeft" || e.name === "arrowRight") {
+                        return false
+                    } else {
+                        return true
+                    }
+                })
+                const curr = filtered.findIndex((e) => e.name === reaction.emoji.name)
                 page = i
-                msg.edit(embeds[page])
+                const embed = await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
+                msg.edit(embed)
                 await reaction.users.remove(user).catch(() => null)
             })
         }
@@ -569,7 +581,7 @@ export class Embeds {
         const emojiMap: string[] = [
             "admin", "anime", "config", "fun", "game",
             "heart", "image", "info", "japanese", "lewd", "misc",
-            "miscTwo", "mod", "music", "musicTwo", "video", "waifu",
+            "miscTwo", "mod", "music", "musicTwo", "musicThree", "video", "waifu",
             "website", "websiteTwo", "websiteThree", "level", "botDeveloper"
         ]
         let compressed = false
@@ -589,10 +601,11 @@ export class Embeds {
             const desc = `${top}\n${second}\n_Click on a reaction twice to toggle compact mode._\n${commands?.map((c) => c).join(", ")}`
             shortDescription.push(desc)
         }
-        const page = emojiMap.indexOf(emoji) || 0
+        let page = emojiMap.indexOf(emoji) || 0
         msg.edit(embeds[page])
 
         const page1 = [
+            this.discord.getEmoji("arrowRight"),
             this.discord.getEmoji("admin"),
             this.discord.getEmoji("anime"),
             this.discord.getEmoji("config"),
@@ -602,29 +615,30 @@ export class Embeds {
             this.discord.getEmoji("image"),
             this.discord.getEmoji("info"),
             this.discord.getEmoji("japanese"),
+            this.discord.getEmoji("level"),
             this.discord.getEmoji("lewd"),
             this.discord.getEmoji("misc"),
-            this.discord.getEmoji("miscTwo"),
             this.discord.getEmoji("mod"),
             this.discord.getEmoji("music"),
             this.discord.getEmoji("musicTwo"),
             this.discord.getEmoji("video"),
             this.discord.getEmoji("waifu"),
             this.discord.getEmoji("website"),
-            this.discord.getEmoji("websiteTwo"),
-            this.discord.getEmoji("arrowRight")
+            this.discord.getEmoji("websiteTwo")
         ]
 
         const page2 = [
             this.discord.getEmoji("arrowLeft"),
+            this.discord.getEmoji("musicThree"),
+            this.discord.getEmoji("miscTwo"),
             this.discord.getEmoji("websiteThree"),
-            this.discord.getEmoji("level"),
             this.discord.getEmoji("botDeveloper")
         ]
 
         const pages = [page1, page2]
         let pageIndex = 0
         if (msg.reactions.cache.find((r) => r.emoji.name === "botDeveloper")) pageIndex = 1
+
         const adminCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("admin") && user.bot === false
         const animeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("anime") && user.bot === false
         const botDevCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("botDeveloper") && user.bot === false
@@ -642,6 +656,7 @@ export class Embeds {
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
         const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
         const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
+        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
         const waifuCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("waifu") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
@@ -667,6 +682,7 @@ export class Embeds {
         const mod = msg.createReactionCollector(modCheck)
         const music = msg.createReactionCollector(musicCheck)
         const musicTwo = msg.createReactionCollector(musicTwoCheck)
+        const musicThree = msg.createReactionCollector(musicThreeCheck)
         const video = msg.createReactionCollector(videoCheck)
         const waifu = msg.createReactionCollector(waifuCheck)
         const web = msg.createReactionCollector(webCheck)
@@ -675,7 +691,7 @@ export class Embeds {
         const left = msg.createReactionCollector(leftCheck)
         const right = msg.createReactionCollector(rightCheck)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, video, waifu, web, webTwo, webThree]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, video, waifu, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
@@ -692,9 +708,17 @@ export class Embeds {
                         compressed = false
                     }
                 }
-                const curr = pages.flat(Infinity).findIndex((e) => e.name === reaction.emoji.name)
-                await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
-                msg.edit(embeds[i])
+                const filtered = pages.flat(Infinity).filter((e) => {
+                    if (e.name === "arrowLeft" || e.name === "arrowRight") {
+                        return false
+                    } else {
+                        return true
+                    }
+                })
+                const curr = filtered.findIndex((e) => e.name === reaction.emoji.name)
+                page = i
+                const embed = await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
+                msg.edit(embed)
                 await reaction.users.remove(user).catch(() => null)
             })
         }
