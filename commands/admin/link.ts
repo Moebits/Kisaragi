@@ -9,12 +9,13 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class ChannelLink extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configure settings for linked channels (disabled).",
+            description: "Configure settings for linked channels.",
             aliases: [],
             guildOnly: true,
             cooldown: 3
         })
     }
+    // [{text, voice, toggle}]
 
     public run = async (args: string[]) => {
         const discord = this.discord

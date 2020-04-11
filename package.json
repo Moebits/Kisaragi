@@ -11,7 +11,8 @@
     "test": "ts-mocha --timeout 100000 -p tsconfig.json 'test/**/*.spec.ts'",
     "pm2": "pm2-runtime start ecosystem.config.js --env production",
     "preinstall": "npx npm-force-resolutions",
-    "clean": "del-cli --force dist/commands && del-cli --force dist/events && del-cli --force dist/structures"
+    "clean": "del-cli --force dist/commands && del-cli --force dist/events && del-cli --force dist/structures",
+    "config": "python heroku-config.py"
   },
   "resolutions": {
     "graceful-fs": "4.2.3",
