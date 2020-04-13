@@ -19,3 +19,7 @@ _Double click on the same reaction to toggle a compact form of the help menu._
 
 `help !section` - Only posts the help menu page for that section.
 
+## Command List
+
+Here is a temporary command list, it might be a little out of date. [**Commands**](https://github.com/Tenpi/Kisaragi/wiki/Command-list)
+
