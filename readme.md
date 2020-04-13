@@ -13,11 +13,11 @@ This project is still a wip (beta version) so there might be commands that don't
 ## Help
 _Double click on the same reaction to toggle a compact form of the help menu._
 
-`help` - Open the help menu which lists all commands.
+`=>help` - Open the help menu which lists all commands.
 
-`help command` - Detailed help information, such as arguments, usage, and an example image.
+`=>help command` - Detailed help information, such as arguments, usage, and an example image.
 
-`help !section` - Only posts the help menu page for that section.
+`=>help !section` - Only posts the help menu page for that section.
 
 ## Command List
 
