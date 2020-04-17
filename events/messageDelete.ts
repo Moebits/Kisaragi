@@ -29,7 +29,7 @@ export default class MessageDelete {
                 }
                 const msgChannel = message.guild?.channels.cache.get(messageLog)! as TextChannel
                 const logEmbed =  embeds.createEmbed()
-                const content = message.content ? `${discord.getEmoji("star")}_Content:_ ${message.content}` : ""
+                const content = message.content ? `${message.content}` : ""
                 const image = message.attachments.first() ? message.attachments.first()!.proxyURL : ""
                 const attachments = message.attachments.size > 1 ? "\n" + message.attachments.map((a) => `[**Link**](${a.proxyURL})`).join("\n") : ""
                 const imageText = image ? `\n_Image might be already deleted. Link_ [**here**](${image})` : ""

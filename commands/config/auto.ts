@@ -1,6 +1,7 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
+import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -38,7 +39,7 @@ export default class Auto extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        return message.reply("This command is disabled for the time being...")
+        const cmdFunc = new CommandFunctions(discord, message)
         if (!await perms.checkAdmin()) return
         const loading = message.channel.lastMessage
         loading?.delete()
@@ -60,14 +61,14 @@ export default class Auto extends Command {
             let settings = ""
             for (let j = 0; j < step; j++) {
                 if (command) {
-                    const value = (i*step)+j
+                    const k = (i*step)+j
                     if (!command.join("")) settings = "None"
-                    if (!command[value]) break
-                    settings += `${i + 1} **=>**\n` +
-                    `${discord.getEmoji("star")}_Command:_ **${command[i] !== "0" ? command[i] : "None"}**\n`+
-                    `${discord.getEmoji("star")}_Channel:_ **${channel[i] !== "0" ? "<#" + channel[i] + ">" : "None"}**\n`+
-                    `${discord.getEmoji("star")}_Frequency:_ **${frequency[i] !== "0" ? frequency[i] : "None"}**\n` +
-                    `${discord.getEmoji("star")}_State:_ **${toggle[i]}**\n`
+                    if (!command[k]) break
+                    settings += `${k + 1} **=>**\n` +
+                    `${discord.getEmoji("star")}_Command:_ **${command[k] ? command[k] : "None"}**\n`+
+                    `${discord.getEmoji("star")}_Channel:_ **${channel[k] ? "<#" + channel[k] + ">" : "None"}**\n`+
+                    `${discord.getEmoji("star")}_Frequency:_ **${frequency[k] ? frequency[k] : "None"}**\n` +
+                    `${discord.getEmoji("star")}_State:_ **${toggle[k]}**\n`
                 } else {
                     settings = "None"
                 }
@@ -118,6 +119,21 @@ export default class Auto extends Command {
             if (!chan) chan = [""]; setInit = true
             if (!freq) freq = [""]; setInit = true
             if (!tog) tog = [""]; setInit = true
+            if (msg.content.toLowerCase().startsWith("cancel")) {
+                responseEmbed
+                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
+                return msg.channel.send(responseEmbed)
+            }
+            if (msg.content.toLowerCase().startsWith("reset")) {
+                await sql.updateColumn("auto", "command", null)
+                await sql.updateColumn("auto", "channel", null)
+                await sql.updateColumn("auto", "frequency", null)
+                await sql.updateColumn("auto", "toggle", null)
+                await sql.updateColumn("auto", "timeout", null)
+                responseEmbed
+                .setDescription(`${discord.getEmoji("star")}Auto settings were wiped!`)
+                return msg.channel.send(responseEmbed)
+            }
             if (msg.content.toLowerCase().startsWith("delete")) {
                 const newMsg = Number(msg.content.replace(/delete/g, "").trim())
                 const num = newMsg - 1
@@ -165,38 +181,38 @@ export default class Auto extends Command {
                 const tempMsg = newMsg.slice(1).join(" ")
                 const num = Number(newMsg[0]) - 1
                 if (tempMsg) {
-                    const tempCmd = tempMsg.match(/\D+/gi) ? tempMsg.match(/\D+/gi)!.join("").replace(/<#/g, "").replace(/>/g, "").trim() : null
-                    const tempChan = tempMsg.match(/<#\d+>/g) ? tempMsg.match(/<#\d+>/g)!.join("").replace(/<#/g, "").replace(/>/g, "") : null
-                    const tempReChan = new RegExp(tempChan!, "g")
-                    const tempFreq = tempMsg.replace(/\D+/gi, "").replace(tempReChan, "").replace(/\s+/g, "")
+                    const tempCmd = tempMsg.match(/\D+/gi)?.join("").replace(/<#/g, "").replace(/>/g, "").trim() ?? ""
+                    const tempChan = tempMsg.match(/(<#\d+>)/g)?.join("").replace(/<#/g, "").replace(/>/g, "") ?? ""
+                    const tempFreq = tempMsg.replace(/\D+/gi, "").replace(tempChan, "").replace(/\s+/g, "")
                     let editDesc = ""
                     if (tempCmd) {
                         cmd[num] = tempCmd
-                        await sql.updateColumn("auto", "command", String(cmd))
+                        await sql.updateColumn("auto", "command", cmd)
                         editDesc += `${discord.getEmoji("star")}Command set to **${tempCmd}**!\n`
                     }
                     if (tempChan) {
                         chan[num] = tempChan
-                        await sql.updateColumn("auto", "channel", String(chan))
+                        await sql.updateColumn("auto", "channel", chan)
                         editDesc += `${discord.getEmoji("star")}Channel set to **${tempChan}**!\n`
                     }
                     if (tempFreq) {
                         freq[num] = tempFreq
-                        await sql.updateColumn("auto", "frequency", String(freq))
+                        await sql.updateColumn("auto", "frequency", freq)
                         editDesc += `${discord.getEmoji("star")}Command set to **${tempFreq}**!\n`
                     }
                     tim[num] = ""
-                    await sql.updateColumn("auto", "timeout", String(tim))
+                    await sql.updateColumn("auto", "timeout", tim)
                     const testCmd = await sql.fetchColumn("auto", "command")
                     const testChan = await sql.fetchColumn("auto", "channel")
                     const testFreq = await sql.fetchColumn("auto", "frequency")
                     if (testCmd[num] && testChan[num] && testFreq[num]) {
                         tog[num] = "active"
-                        await sql.updateColumn("auto", "toggle", String(tog))
+                        await sql.updateColumn("auto", "toggle", tog)
                         editDesc += `${discord.getEmoji("star")}This setting is **active**!\n`
+                        cmdFunc.autoCommand()
                     } else {
                         tog[num] = "inactive"
-                        await sql.updateColumn("auto", "toggle", String(tog))
+                        await sql.updateColumn("auto", "toggle", tog)
                         editDesc += `${discord.getEmoji("star")}This setting is **inactive**!\n`
                     }
                     return msg.channel.send(responseEmbed.setDescription(editDesc))
@@ -204,28 +220,10 @@ export default class Auto extends Command {
                     return msg.channel.send(responseEmbed.setDescription("No edits specified!"))
                 }
             }
-            if (msg.content.toLowerCase() === "cancel") {
-                responseEmbed
-                .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
-                return
-            }
-            if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("auto", "command", null)
-                await sql.updateColumn("auto", "channel", null)
-                await sql.updateColumn("auto", "frequency", null)
-                await sql.updateColumn("auto", "toggle", null)
-                await sql.updateColumn("auto", "timeout", null)
-                responseEmbed
-                .setDescription(`${discord.getEmoji("star")}Auto settings were wiped!`)
-                msg.channel.send(responseEmbed)
-                return
-            }
 
-            const newCmd = msg.content.match(/\D+/gi)!.join("").replace(/<#/g, "").replace(/>/g, "").trim()
-            const newChan = msg.content.match(/<#\d+>/g)!.join("").replace(/<#/g, "").replace(/>/g, "")
-            const reChan = new RegExp(newChan, "g")
-            const newFreq = msg.content.replace(/\D+/gi, "").replace(reChan, "").replace(/\s+/g, "")
+            const newCmd = msg.content.match(/\D+/gi)?.join("").replace(/<#/g, "").replace(/>/g, "").trim() ?? ""
+            const newChan = msg.content.match(/<#\d+>/g)?.join("").replace(/<#/g, "").replace(/>/g, "") ?? ""
+            const newFreq = msg.content.replace(/\D+/gi, "").replace(newChan, "").replace(/\s+/g, "")
             if (newCmd) setCmd = true
             if (newChan) setChannel = true
             if (newFreq) setFreq = true
@@ -238,7 +236,7 @@ export default class Auto extends Command {
                 } else {
                     cmd.push(newCmd)
                     const arrCmd = cmd.filter(Boolean)
-                    await sql.updateColumn("auto", "command", String(arrCmd))
+                    await sql.updateColumn("auto", "command", arrCmd)
                     description += `${discord.getEmoji("star")}Command set to **${newCmd}**!\n`
                 }
             }
@@ -249,7 +247,7 @@ export default class Auto extends Command {
                 } else {
                     chan.push(newChan)
                     const arrChan = chan.filter(Boolean)
-                    await sql.updateColumn("auto", "channel", String(arrChan))
+                    await sql.updateColumn("auto", "channel", arrChan)
                     description += `${discord.getEmoji("star")}Channel set to <#${newChan}>!\n`
                 }
             }
@@ -260,7 +258,7 @@ export default class Auto extends Command {
                 } else {
                     freq.push(newFreq)
                     const arrFreq = freq.filter(Boolean)
-                    await sql.updateColumn("auto", "frequency", String(arrFreq))
+                    await sql.updateColumn("auto", "frequency", arrFreq)
                     description += `${discord.getEmoji("star")}Frequency set to **${newFreq}**!\n`
                 }
             }
@@ -268,36 +266,35 @@ export default class Auto extends Command {
             if (!setCmd) {
                 if (setInit) cmd = cmd.filter(Boolean)
                 cmd.push("")
-                await sql.updateColumn("auto", "command", String(cmd))
+                await sql.updateColumn("auto", "command", cmd)
             }
             if (!setChannel) {
                 if (setInit) chan = chan.filter(Boolean)
                 chan.push("")
-                await sql.updateColumn("auto", "command", String(chan))
+                await sql.updateColumn("auto", "command", chan)
             }
             if (!setFreq) {
                 if (setInit) freq = freq.filter(Boolean)
                 freq.push("")
-                await sql.updateColumn("auto", "command", String(freq))
+                await sql.updateColumn("auto", "command", freq)
             }
 
             if (setCmd && setChannel && setFreq) {
                 tog = tog.filter(Boolean)
                 tog.push("active")
-                await sql.updateColumn("auto", "toggle", String(tog))
+                await sql.updateColumn("auto", "toggle", tog)
                 description += `${discord.getEmoji("star")}This setting is **active**!\n`
+                cmdFunc.autoCommand()
             } else {
                 tog = tog.filter(Boolean)
                 tog.push("inactive")
-                await sql.updateColumn("auto", "toggle", String(tog))
+                await sql.updateColumn("auto", "toggle", tog)
                 description += `${discord.getEmoji("star")}This setting is **inactive**!\n`
             }
-
             responseEmbed
             .setDescription(description)
             msg.channel.send(responseEmbed)
             return
-
         }
 
         await embeds.createPrompt(autoPrompt)

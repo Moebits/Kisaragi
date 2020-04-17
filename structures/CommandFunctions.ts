@@ -12,10 +12,10 @@ export class CommandFunctions {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Run Command
-    public runCommand = async (msg: Message, args: string[]) => {
+    public runCommand = async (msg: Message, args: string[], auto?: boolean) => {
         args = args.filter(Boolean)
-        const cmdPath = await this.findCommand(args?.[0])
-        if (!cmdPath) return this.noCommand(args?.[0])
+        const cmdPath = await this.findCommand(args?.[0]) as string
+        if (!cmdPath && !auto) return this.noCommand(args?.[0])
         const cp = new (require(path.join(__dirname, `${cmdPath.slice(0, -3)}`)).default)(this.discord, msg)
         if (cp.options.guildOnly) {
             if (msg.channel.type === "dm") return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
@@ -38,44 +38,53 @@ export class CommandFunctions {
     public autoCommand = async () => {
         const sql = new SQLQuery(this.message)
         const command = await sql.fetchColumn("auto", "command")
+        if (!command) return
         const channel = await sql.fetchColumn("auto", "channel")
         const frequency = await sql.fetchColumn("auto", "frequency")
         const toggle = await sql.fetchColumn("auto", "toggle")
-        if (!command) return
         for (let i = 0; i < command.length; i++) {
             if (toggle[i] === "inactive") continue
-            const guildChannel = (this.message.guild!.channels.cache.find((c) => c.id === channel[i])) as TextChannel
+            const guildChannel = (this.message.guild?.channels.cache.find((c) => c.id === channel[i])) as TextChannel
             const cmd = command[i].split(" ")
             const timeout = Number(frequency[i]) * 3600000
-            const rawTimeLeft = await sql.fetchColumn("auto", "timeout")
+            let rawTimeLeft = await sql.fetchColumn("auto", "timeout")
             let timeLeft = 0
             if (rawTimeLeft) {
                 if (rawTimeLeft[i]) {
-                    const remaining = (Date.now() - Number(rawTimeLeft[i])) || 0
-                    timeLeft = remaining > timeout ? timeout - (remaining % timeout) : timeout - remaining
+                    let remaining = timeout - Number(rawTimeLeft[i])
+                    if (remaining <= 0) remaining = 0
+                    timeLeft = remaining > 0 ? remaining : timeout
                 } else {
-                    rawTimeLeft[i] = Date.now().toString()
+                    rawTimeLeft[i] = timeout
                     await sql.updateColumn("auto", "timeout", rawTimeLeft)
-                    timeLeft = 0
+                    timeLeft = timeout
                 }
             } else {
-                const timeoutArray: number[] = []
-                timeoutArray.push(Date.now())
-                await sql.updateColumn("auto", "timeout", timeoutArray)
-                timeLeft = 0
+                rawTimeLeft = [timeout]
+                await sql.updateColumn("auto", "timeout", rawTimeLeft)
+                timeLeft = timeout
             }
             const guildMsg = await guildChannel.messages.fetch({limit: 1}).then((m) => m.first())
             setInterval(async () => {
-                await this.runCommand(guildMsg || this.message, cmd)
+                let newTimeLeft = timeLeft - 60000
+                if (newTimeLeft <= 0) newTimeLeft = timeout
+                rawTimeLeft[i] = newTimeLeft
+                await sql.updateColumn("auto", "timeout", rawTimeLeft)
+                const toggle = await sql.fetchColumn("auto", "toggle")
+                if (toggle?.[i] === "inactive" || newTimeLeft === timeout) clearInterval()
+            }, 60000)
+            setInterval(async () => {
+                await this.runCommand(guildMsg ?? this.message, cmd, true)
                 timeLeft = timeout
-            }, timeLeft > 0 ? timeLeft : timeout)
+                const toggle = await sql.fetchColumn("auto", "toggle")
+                if (toggle?.[i] === "inactive") clearInterval()
+            }, timeLeft)
         }
     }
 
     public noCommand = async (input: string) => {
-        const sql = new SQLQuery(this.message)
         if (noCmdCool.has(this.message.guild!.id)) return
-        const commands = await sql.fetchColumn("commands", "command")
+        const commands = await SQLQuery.selectColumn("commands", "command")
         for (let i = 0; i < commands.length; i++) {
             if (commands[i].toLowerCase().includes(input.toLowerCase())) {
                 noCmdCool.add(this.message.guild!.id)

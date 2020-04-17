@@ -101,10 +101,10 @@ export default class MessageEvent {
           setTimeout(() => {
           points.calcScore()
           }, pointTimeout ? Number(pointTimeout) : 60000)*/
-          // cmdFunctions.autoCommand()
           if (!firstMessage.has(message.guild.id)) {
             await embeds.updateColor()
             perms.continueTempBans()
+            cmdFunctions.autoCommand()
             firstMessage.add(message.guild.id)
           }
         }
