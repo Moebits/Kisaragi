@@ -22,7 +22,8 @@ export default class Hentaigasm extends Command {
             \`=>hentaigasm love 2 quad\`
             `,
             aliases: [],
-            cooldown: 20
+            cooldown: 20,
+            unlist: true
         })
     }
 

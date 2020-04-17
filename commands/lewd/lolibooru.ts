@@ -27,7 +27,6 @@ export default class Lolibooru extends Command {
             `,
             aliases: ["lb"],
             cooldown: 20,
-            random: "none",
             unlist: true
         })
     }

@@ -7,6 +7,10 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
+// \`yandere r18\` - Get a random r18 image.
+// \`yandere r18 tag\` - Get an r18 image with the tag.
+// \`=>yandere r18 azur lane\`
+
 export default class Yandere extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -17,14 +21,11 @@ export default class Yandere extends Command {
             \`yandere\` - Get a random image.
             \`yandere link/id\` - Gets the image from the link.
             \`yandere tag\` - Gets an image with the tag.
-            \`yandere r18\` - Get a random r18 image.
-            \`yandere r18 tag\` - Get an r18 image with the tag.
             `,
             examples:
             `
             \`=>yandere\`
             \`=>yandere kisaragi (azur lane)\`
-            \`=>yandere r18 azur lane\`
             `,
             aliases: ["y", "ydere"],
             random: "none",
@@ -37,6 +38,7 @@ export default class Yandere extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        if (!perms.checkNSFW()) return
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const yandere = Booru("yande.re", process.env.KONACHAN_API_KEY)
         const yandereEmbed = embeds.createEmbed()
@@ -47,6 +49,7 @@ export default class Yandere extends Command {
         if (!args[1]) {
             tags = ["pantyhose", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
+            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["pantyhose"]

@@ -6,6 +6,14 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 
+// \`pixiv r18 tag\` - Gets an R-18 pixiv image from the tag (translated to japanese).
+// \`pixiv r18 en tag\` - Gets an R-18 pixiv image from the tag (not translated).
+// \`pixiv r18 popular\` - Gets a random image from the R-18 daily rankings.
+// \`pixiv r18 download/dl query [folderMap]?\` - Downloads R-18 images and uploads the zip file.
+// \`=>pixiv r18 sagiri izumi\`
+// \`=>pixiv r18 megumin\`
+// \`=>pixiv r18 popular\`
+
 export default class Pixiv extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -18,11 +26,7 @@ export default class Pixiv extends Command {
             \`pixiv tag\` - Gets a pixiv image with the tag (translated to japanese).
             \`pixiv en tag\` - Gets a pixiv image with the tag (not translated).
             \`pixiv popular\` - Gets a pixiv image from the daily rankings.
-            \`pixiv r18 tag\` - Gets an R-18 pixiv image from the tag (translated to japanese).
-            \`pixiv r18 en tag\` - Gets an R-18 pixiv image from the tag (not translated).
-            \`pixiv r18 popular\` - Gets a random image from the R-18 daily rankings.
             \`pixiv download/dl query [folderMap]?\` - Downloads images on pixiv and uploads the zip file. Folder map will organize certain tags into sub folders.
-            \`pixiv r18 download/dl query [folderMap]?\` - Downloads R-18 images and uploads the zip file.
             `,
             examples:
             `
@@ -30,9 +34,6 @@ export default class Pixiv extends Command {
             \`=>pixiv azur lane\`
             \`=>pixiv download black tights\`
             \`=>pixiv download gabriel dropout [gabriel:gabriel, satania:satania, raphiel:raphiel, vignette:vignette]\`
-            \`=>pixiv r18 sagiri izumi\`
-            \`=>pixiv r18 megumin\`
-            \`=>pixiv r18 popular\`
             `,
             aliases: ["p"],
             random: "none",

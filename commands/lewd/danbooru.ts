@@ -7,6 +7,9 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
+// \`danbooru r18\` - Get a random r18 image.
+// \`danbooru r18 tag\` - Get an r18 image with the tag.
+// \`=>danbooru r18 gabriel dropout\`
 export default class Danbooru extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -17,14 +20,11 @@ export default class Danbooru extends Command {
             \`danbooru\` - Get a random image.
             \`danbooru link/id\` - Gets the image from the link.
             \`danbooru tag\` - Gets an image with the tag.
-            \`danbooru r18\` - Get a random r18 image.
-            \`danbooru r18 tag\` - Get an r18 image with the tag.
             `,
             examples:
-            `
+`
             \`=>danbooru\`
             \`=>danbooru tenma gabriel white\`
-            \`=>danbooru r18 gabriel dropout\`
             `,
             aliases: ["d", "dan"],
             random: "none",
@@ -37,6 +37,7 @@ export default class Danbooru extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        if (!perms.checkNSFW()) return
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const danbooru = Booru("danbooru", process.env.DANBOORU_API_KEY)
         const danbooruEmbed = embeds.createEmbed()
@@ -47,6 +48,7 @@ export default class Danbooru extends Command {
         if (!args[1]) {
             tags = ["pantyhose", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
+            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["pantyhose"]

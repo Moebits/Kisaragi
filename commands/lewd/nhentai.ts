@@ -27,7 +27,8 @@ export default class $nHentai extends Command {
             `,
             aliases: ["nh"],
             random: "none",
-            cooldown: 15
+            cooldown: 15,
+            unlist: true
         })
     }
 

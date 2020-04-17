@@ -30,6 +30,7 @@ export default class LoliCommand extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
         const loli = new Loli()
         const loliEmbed = embeds.createEmbed()
         let result

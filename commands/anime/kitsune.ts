@@ -8,6 +8,9 @@ import {Permission} from "./../../structures/Permission"
 // \`kitsune ecchi\` - Gets a random ecchi image.
 // \`kitsune lewd\` - Gets a random nsfw image.
 
+// \`=>kitsune ecchi\`
+//  \`=>kitsune lewd\`
+
 export default class Kitsune extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -19,8 +22,6 @@ export default class Kitsune extends Command {
             examples:
             `
             \`=>kitsune\`
-            \`=>kitsune ecchi\`
-            \`=>kitsune lewd\`
             `,
             aliases: ["k", "foxgirl"],
             random: "none",

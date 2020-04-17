@@ -33,6 +33,7 @@ export default class Stockings extends Command {
         const perms = new Permission(discord, message)
 
         if (args[1] === "lewd") {
+            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             const pixivArray = await pixiv.animeEndpoint("stockings/lewd", 10)
             return embeds.createReactionEmbed(pixivArray, true, true)

@@ -11,6 +11,9 @@ import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 const download = require("image-downloader")
 
+// \`ugoira r18 tag\` - Gets an R-18 ugoira from the tag (translated to japanese).
+// \`ugoira r18 en tag\` - Gets an R-18 ugoira from the tag (not translated).
+
 export default class Ugoira extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -22,15 +25,12 @@ export default class Ugoira extends Command {
             \`ugoira link/id\` - Gets the pixiv ugoira from the link.
             \`ugoira tag\` - Gets a pixiv ugoira from the tag (translated to japanese).
             \`ugoira en tag\` - Gets a pixiv ugoira from the tag (not translated).
-            \`ugoira r18 tag\` - Gets an R-18 ugoira from the tag (translated to japanese).
-            \`ugoira r18 en tag\` - Gets an R-18 ugoira from the tag (not translated).
             `,
             examples:
             `
             \`=>ugoira\`
-            \`=>ugoira r18 izumi sagiri\`
-            \`=>ugoira r18 kisaragi (azur lane)\`
-            \`=>ugoira popular\`
+            \`=>ugoira izumi sagiri\`
+            \`=>ugoira kisaragi (azur lane)\`
             `,
             aliases: ["u"],
             random: "none",

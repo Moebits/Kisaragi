@@ -5,6 +5,11 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
+// \`neko lewd\` - Posts a random nsfw neko image.
+// \`neko lewd gif\` - Posts a random nsfw neko gif.
+// \`=>neko lewd gif\`
+// \`=>neko lewd\`
+
 export default class Neko extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -13,14 +18,10 @@ export default class Neko extends Command {
             `
             \`neko\` - Posts a random neko image.
             \`neko gif\` - Posts a random neko gif.
-            \`neko lewd\` - Posts a random nsfw neko image.
-            \`neko lewd gif\` - Posts a random nsfw neko gif.
             `,
             examples:
             `
             \`=>neko\`
-            \`=>neko lewd gif\`
-            \`=>neko lewd\`
             `,
             aliases: ["catgirl"],
             random: "none",
