@@ -28,8 +28,7 @@ export default class Auto extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 10,
-            unlist: true
+            cooldown: 10
         })
     }
 
