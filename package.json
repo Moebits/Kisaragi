@@ -1,6 +1,6 @@
 {
   "name": "kisaragi",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Kisaragi is the best girl",
   "main": "dist/shard.js",
   "scripts": {
