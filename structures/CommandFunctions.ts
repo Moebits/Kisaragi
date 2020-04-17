@@ -71,13 +71,13 @@ export class CommandFunctions {
                 rawTimeLeft[i] = newTimeLeft
                 await sql.updateColumn("auto", "timeout", rawTimeLeft)
                 const toggle = await sql.fetchColumn("auto", "toggle")
-                if (toggle?.[i] === "inactive" || newTimeLeft === timeout) clearInterval()
+                if (!toggle?.[i] || toggle?.[i] === "inactive" || newTimeLeft === timeout) clearInterval()
             }, 60000)
             setInterval(async () => {
                 await this.runCommand(guildMsg ?? this.message, cmd, true)
                 timeLeft = timeout
                 const toggle = await sql.fetchColumn("auto", "toggle")
-                if (toggle?.[i] === "inactive") clearInterval()
+                if (!toggle?.[i] || toggle?.[i] === "inactive") clearInterval()
             }, timeLeft)
         }
     }

@@ -14,7 +14,7 @@ import {Video} from "./../../structures/Video"
 export default class Ytdl extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Alias for \`youtube download\`.",
+            description: "Short alias for youtube download.",
             help:
             `
             \`ytdl url/query\` - Downloads the video

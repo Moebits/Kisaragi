@@ -10,7 +10,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Auto extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configures auto command settings (disabled).",
+            description: "Configures settings for auto commands.",
             help:
             `
             \`auto\` - Shows the auto settings prompt.
