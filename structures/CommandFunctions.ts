@@ -6,7 +6,6 @@ import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
 const noCmdCool = new Set()
-const topDir = path.basename(__dirname).slice(0, -2) === "ts" ? "../" : ""
 
 export class CommandFunctions {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
@@ -43,17 +42,17 @@ export class CommandFunctions {
         const frequency = await sql.fetchColumn("auto", "frequency")
         const toggle = await sql.fetchColumn("auto", "toggle")
         for (let i = 0; i < command.length; i++) {
-            if (toggle[i] === "inactive") continue
+            if (!toggle?.[i] || toggle[i] === "inactive") continue
             const guildChannel = (this.message.guild?.channels.cache.find((c) => c.id === channel[i])) as TextChannel
             const cmd = command[i].split(" ")
             const timeout = Number(frequency[i]) * 3600000
             let rawTimeLeft = await sql.fetchColumn("auto", "timeout")
-            let timeLeft = 0
+            let timeLeft = timeout
             if (rawTimeLeft) {
                 if (rawTimeLeft[i]) {
                     let remaining = timeout - Number(rawTimeLeft[i])
-                    if (remaining <= 0) remaining = 0
-                    timeLeft = remaining > 0 ? remaining : timeout
+                    if (remaining <= 0) remaining = timeout
+                    timeLeft = remaining
                 } else {
                     rawTimeLeft[i] = timeout
                     await sql.updateColumn("auto", "timeout", rawTimeLeft)
@@ -65,19 +64,20 @@ export class CommandFunctions {
                 timeLeft = timeout
             }
             const guildMsg = await guildChannel.messages.fetch({limit: 1}).then((m) => m.first())
-            setInterval(async () => {
+            const update = setInterval(async () => {
                 let newTimeLeft = timeLeft - 60000
                 if (newTimeLeft <= 0) newTimeLeft = timeout
+                const toggle = await sql.fetchColumn("auto", "toggle")
+                if (!toggle?.[i] || toggle?.[i] === "inactive" || newTimeLeft === timeout) clearInterval(update)
                 rawTimeLeft[i] = newTimeLeft
                 await sql.updateColumn("auto", "timeout", rawTimeLeft)
-                const toggle = await sql.fetchColumn("auto", "toggle")
-                if (!toggle?.[i] || toggle?.[i] === "inactive" || newTimeLeft === timeout) clearInterval()
             }, 60000)
-            setInterval(async () => {
-                await this.runCommand(guildMsg ?? this.message, cmd, true)
+            const autoRun = setInterval(async () => {
+                if (!toggle?.[i] || toggle?.[i] === "inactive") clearInterval(autoRun)
+                const msg = guildMsg ?? this.message
+                msg.author.id = this.discord.user!.id
+                await this.runCommand(msg, cmd, true)
                 timeLeft = timeout
-                const toggle = await sql.fetchColumn("auto", "toggle")
-                if (!toggle?.[i] || toggle?.[i] === "inactive") clearInterval()
             }, timeLeft)
         }
     }

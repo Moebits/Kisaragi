@@ -58,10 +58,12 @@ export default class Block extends Command {
         let toggle = await sql.fetchColumn("blocks", "block toggle")
         let asterisk = await sql.fetchColumn("blocks", "asterisk")
         let invite = await sql.fetchColumn("blocks", "invite")
+        let promo = await sql.fetchColumn("blocks", "self promo")
         if (!toggle) toggle = "off"
         if (!match) match = "partial"
         if (!asterisk) asterisk = "off"
         if (!invite) invite = "off"
+        if (!promo) promo = "None"
         let wordList = ""
         if (words) {
             for (let i = 0; i < words.length; i++) {
@@ -81,6 +83,7 @@ export default class Block extends Command {
         **Partial** - Also matches if the word is partially in another word.
         **Asterisk** - Whether messages containing asterisks will be blocked.
         **Invite** - Delete invite links to other servers
+        **Self Promo Channel** - Ignores invites sent to this channel
         newline
         __Word List__
         ${wordList}
@@ -90,6 +93,7 @@ export default class Block extends Command {
         ${discord.getEmoji("star")}_Matching algorithm set to **${match}**._
         ${discord.getEmoji("star")}_Asterisk filtering is **${asterisk}**._
         ${discord.getEmoji("star")}_Invite filtering is **${invite}**._
+        ${discord.getEmoji("star")}_Self promo channel set to **${promo}**._
         newline
         __Edit Settings__
         ${discord.getEmoji("star")}_**Type any words**, separated by a space, to add blocked words._
@@ -97,6 +101,7 @@ export default class Block extends Command {
         ${discord.getEmoji("star")}_Type **exact** or **partial** to set the matching algorithm._
         ${discord.getEmoji("star")}_Type **asterisk** to toggle asterisk filtering._
         ${discord.getEmoji("star")}_Type **invite** to toggle invite filtering._
+        ${discord.getEmoji("star")}_**Mention a channel** to set the self promo channel._
         ${discord.getEmoji("star")}_Type **delete (word number)** to delete a word._
         ${discord.getEmoji("star")}_**You can type multiple options** to enable all at once._
         ${discord.getEmoji("star")}_Type **reset** to delete all words._
@@ -108,7 +113,7 @@ export default class Block extends Command {
             let words = await sql.fetchColumn("blocks", "blocked words")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Blocked Words** ${discord.getEmoji("gabuChrist")}`)
-            let [setOn, setOff, setExact, setPartial, setWord, setAsterisk, setInvite] = [] as boolean[]
+            let [setOn, setOff, setExact, setPartial, setWord, setAsterisk, setInvite, setPromo] = [] as boolean[]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
@@ -121,6 +126,7 @@ export default class Block extends Command {
                 await sql.updateColumn("blocks", "block match", "partial")
                 await sql.updateColumn("blocks", "asterisk", "off")
                 await sql.updateColumn("blocks", "invite", "off")
+                await sql.updateColumn("blocks", "self promo", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All blocked words were deleted!`)
                 msg.channel.send(responseEmbed)
@@ -146,13 +152,16 @@ export default class Block extends Command {
                 }
             }
 
-            const newMsg = msg.content.replace(/enable/gi, "").replace(/disable/gi, "").replace(/exact/gi, "").replace(/partial/gi, "").replace(/asterisk/gi, "").replace(/invite/gi, "")
+            const newPromo = msg.content.match(/(?<=<#)(.*?)(?=>)/gi)?.[0] ?? ""
+            const newMsg = msg.content.replace(/enable/gi, "").replace(/disable/gi, "").replace(/exact/gi, "")
+            .replace(/partial/gi, "").replace(/asterisk/gi, "").replace(/invite/gi, "").replace(newPromo, "")
             if (msg.content.match(/enable/gi)) setOn = true
             if (msg.content.match(/disable/gi)) setOff = true
             if (msg.content.match(/exact/gi)) setExact = true
             if (msg.content.match(/partial/gi)) setPartial = true
             if (msg.content.match(/asterisk/gi)) setAsterisk = true
             if (msg.content.match(/invite/gi)) setInvite = true
+            if (newPromo) setPromo = true
             if (newMsg.trim()) setWord = true
 
             let wordArray = newMsg.split(" ")
@@ -223,6 +232,10 @@ export default class Block extends Command {
                     await sql.updateColumn("blocks", "invite", "off")
                     description += `${discord.getEmoji("star")}Invite filtering is **off**!\n`
                 }
+            }
+            if (setPromo) {
+                await sql.updateColumn("blocks", "self promo", newPromo)
+                description += `${discord.getEmoji("star")}Self promo channel set to <#${newPromo}>!\n`
             }
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             responseEmbed

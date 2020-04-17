@@ -17,18 +17,22 @@ export class Settings {
     }
 
     private readonly prefixSetting: Init = {
+        ...this.guildSettings,
         prefix: "=>"
       }
 
     private readonly timezoneSetting: Init = {
+        ...this.guildSettings,
         timezone: "GMT -4"
     }
 
     private readonly guildInfoSettings: Init = {
+        ...this.guildSettings,
         "created": this.message.guild!.createdTimestamp,
         "joined": this.message.guild!.joinedTimestamp,
         "icon": this.message.guild!.iconURL({format: "png", dynamic: true}),
         "splash": this.message.guild!.splashURL({format: "png"}),
+        "banner": this.message.guild!.bannerURL({format: "png"}),
         "region": this.message.guild!.region,
         "owner": this.message.guild!.owner!.user.tag,
         "owner id": this.message.guild!.ownerID,
@@ -36,12 +40,14 @@ export class Settings {
     }
 
     private readonly userSettings: Init = {
+        ...this.guildSettings,
         "user list": this.message.guild!.members.cache.map((member: GuildMember) => member.displayName),
         "user id list": this.message.guild!.members.cache.map((member: GuildMember) => member.id),
         "user join list": this.message.guild!.members.cache.map((member: GuildMember) => member.joinedTimestamp)
     }
 
     private readonly channelSettings: Init = {
+        ...this.guildSettings,
         "channel list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.name),
         "channel id list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.id),
         "channel created list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.createdTimestamp),
@@ -50,6 +56,7 @@ export class Settings {
     }
 
     private readonly roleSettings: Init = {
+        ...this.guildSettings,
         "role list": this.message.guild!.roles.cache.map((role: Role) => role.name),
         "role id list": this.message.guild!.roles.cache.map((role: Role) => role.id),
         "role created list": this.message.guild!.roles.cache.map((role: Role) => role.createdTimestamp),
@@ -57,6 +64,7 @@ export class Settings {
     }
 
     private readonly emojiSettings: Init = {
+        ...this.guildSettings,
         "emoji list": this.message.guild!.emojis.cache.map((emoji: GuildEmoji) => emoji.name),
         "emoji id list": this.message.guild!.emojis.cache.map((emoji: GuildEmoji) => emoji.id),
         "emoji created list": this.message.guild!.emojis.cache.map((emoji: GuildEmoji) => emoji.createdTimestamp),
@@ -64,6 +72,7 @@ export class Settings {
     }
 
     private readonly logSettings: Init = {
+        ...this.guildSettings,
         "mod log": null,
         "message log": null,
         "user log": null,
@@ -71,6 +80,7 @@ export class Settings {
     }
 
     private readonly specialChannelSettings: Init = {
+        ...this.guildSettings,
         "star channel": null,
         "star threshold": 3,
         "pin channel": null,
@@ -80,6 +90,7 @@ export class Settings {
     }
 
     private readonly specialRoleSettings: Init = {
+        ...this.guildSettings,
         "mute role": null,
         "restricted role": null,
         "warn one": null,
@@ -91,6 +102,8 @@ export class Settings {
     }
 
     private readonly pointSettings: Init = {
+        ...this.guildSettings,
+        "user id list": this.message.guild!.members.cache.map((member: GuildMember) => member.id),
         "score list": null,
         "level list": null,
         "point range": [10, 20],
@@ -101,6 +114,7 @@ export class Settings {
     }
 
     private readonly welcomeLeaveSettings: Init = {
+        ...this.guildSettings,
         "welcome channel": null,
         "welcome message": "Welcome to guild, user!",
         "welcome toggle": "off",
@@ -116,6 +130,7 @@ export class Settings {
     }
 
     private readonly birthdaySettings: Init = {
+        ...this.guildSettings,
         "birthday user list": null,
         "birthday date list": null,
         "birthday channel": null,
@@ -124,6 +139,7 @@ export class Settings {
     }
 
     private readonly imageSettings: Init = {
+        ...this.guildSettings,
         "image channels": null,
         "dropbox folders": null,
         "google albums": null,
@@ -131,12 +147,14 @@ export class Settings {
     }
 
     private readonly warnSettings: Init = {
+        ...this.guildSettings,
         "warn log": null,
         "warn penalty": "none",
         "warn threshold": 3
     }
 
     private readonly blockSettings: Init = {
+        ...this.guildSettings,
         "blocked words": null,
         "disabled commands": null,
         "pfp ban toggle": "off",
@@ -147,10 +165,12 @@ export class Settings {
         "block toggle": "off",
         "link ban": "off",
         "asterisk": "off",
-        "invite": "off"
+        "invite": "off",
+        "self promo": "None"
     }
 
     private readonly captchaSettings: Init = {
+        ...this.guildSettings,
         "verify toggle": "off",
         "verify role": null,
         "captcha type": "text",
@@ -159,6 +179,7 @@ export class Settings {
     }
 
     private readonly autoSettings: Init = {
+        ...this.guildSettings,
         command: null,
         channel: null,
         frequency: null,
@@ -167,12 +188,14 @@ export class Settings {
     }
 
     private readonly linkSettings: Init = {
+        ...this.guildSettings,
         text: null,
         voice: null,
         toggle: null
     }
 
     private readonly detectionSettings: Init = {
+        ...this.guildSettings,
         links: "on",
         anime: "off",
         pfp: "off",
@@ -182,16 +205,16 @@ export class Settings {
     }
 
     private readonly configSettings: Init = {
+        ...this.guildSettings,
         "embed colors": ["default"],
         "permissions": "role"
     }
 
     private readonly tableMap: object = {
-        "guilds": this.guildSettings,
+        "guilds": this.guildInfoSettings,
         "users": this.userSettings,
         "prefixes": this.prefixSetting,
         "timezones": this.timezoneSetting,
-        "guild info": this.guildInfoSettings,
         "channels": this.channelSettings,
         "roles": this.roleSettings,
         "emojis": this.emojiSettings,

@@ -370,10 +370,8 @@ export class SQLQuery {
   /** Deletes duplicate records. */
   public static deleteDuplicates = async (table: string, key: string) => {
     const query: QueryConfig = {
-      text: `DELETE FROM "${table}"
-        WHERE ctid IN (SELECT unnest(array_remove(all_ctids, actid))
-        FROM (SELECT min(b.ctid) AS actid, array_agg(ctid) AS all_ctids
-        FROM "${table}" b GROUP BY "${key}" HAVING count(*) > 1) c)`
+      text: `DELETE FROM "${table}" T1 USING "${table}" T2
+      WHERE T1.ctid < T2.ctid AND T1."${key}" = T2."${key}"`
     }
     await SQLQuery.runQuery(query, true)
   }
@@ -390,7 +388,7 @@ export class SQLQuery {
     if (!token) return
     const clientID = config.testing === "on" ? process.env.TEST_CLIENT_ID : process.env.CLIENT_ID
     const clientSecret = config.testing === "on" ? process.env.TEST_CLIENT_SECRET : process.env.CLIENT_SECRET
-    const data = await axios.post(`https://discordapp.com/api/oauth2/token/revoke`, querystring.stringify({
+    const data = await axios.post(`https:// discordapp.com/api/oauth2/token/revoke`, querystring.stringify({
       client_id: clientID,
       client_secret: clientSecret,
       token

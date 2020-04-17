@@ -76,7 +76,7 @@ export default class SoundCloud extends Command {
                     `${discord.getEmoji("star")}_Following:_ **${users[i].followings_count}**\n`+
                     `${discord.getEmoji("star")}_Followers:_ **${users[i].followers_count}**\n` +
                     `${discord.getEmoji("star")}_Comments:_ **${users[i].comments_count}**\n` +
-                    `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(users[i].description, 500, " ")}`
+                    `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(users[i].description, 500, "")}`
                 )
                 soundcloudArray.push(soundcloudEmbed)
             }
@@ -108,7 +108,7 @@ export default class SoundCloud extends Command {
                     `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(playlists[i].created_at))}**\n` +
                     `${discord.getEmoji("star")}_Tracks:_ **${playlists[i].track_count}**\n` +
                     `${discord.getEmoji("star")}_Duration:_ **${playlists[i].duration}**\n`+
-                    `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar((playlists[i].description ? playlists[i].description! : "None"), 500, " ")}`
+                    `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar((playlists[i].description ? playlists[i].description! : "None"), 500, "")}`
                 )
                 soundcloudArray.push(soundcloudEmbed)
             }
@@ -189,7 +189,7 @@ export default class SoundCloud extends Command {
                 `${discord.getEmoji("star")}_Likes:_ **${tracks[i].likes_count}**\n` +
                 `${discord.getEmoji("star")}_Reposts:_ **${tracks[i].reposts_count}**\n` +
                 `${discord.getEmoji("star")}_Comments:_ **${tracks[i].comment_count}**\n`+
-                `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(tracks[i].description, 500, " ")}`
+                `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(tracks[i].description, 500, "")}`
             )
             soundcloudArray.push(soundcloudEmbed)
         }

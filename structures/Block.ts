@@ -35,9 +35,15 @@ export class Block {
 
     public blockInvite = async () => {
         const message = this.message
+        const sql = new SQLQuery(message)
         const regex = /(?<=(discord.gg|discordapp.com\/invite)\/)[a-z0-9]+/gi
         const match = message.content.match(regex)
         if (match?.[0]) {
+            const promo = await sql.fetchColumn("blocks", "self promo")
+            if (promo) {
+                const channel = this.message.guild?.channels.cache.get(promo)
+                if (this.message.channel.id === channel?.id) return
+            }
             let del = true
             try {
                 const invites = await message.guild?.fetchInvites()
