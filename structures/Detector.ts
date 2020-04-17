@@ -3,7 +3,7 @@ import {GuildMember, Message, Role} from "discord.js"
 import * as fs from "fs"
 import * as config from "../config.json"
 import {Functions} from "./Functions"
-import {Kisaragi} from "./Kisaragi.js"
+import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
 const download = require("image-downloader")

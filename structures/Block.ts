@@ -1,8 +1,11 @@
 import {Message} from "discord.js"
+import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
 export class Block {
-    public static blockWord = async (message: Message) => {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    public blockWord = async () => {
+        const message = this.message
         const sql = new SQLQuery(message)
         if (message.author!.bot) return
         let words = await sql.fetchColumn("blocks", "blocked words")
@@ -26,6 +29,26 @@ export class Block {
                     await message.delete()
                     reply.delete({timeout: 10000})
                 }
+            }
+        }
+    }
+
+    public blockInvite = async () => {
+        const message = this.message
+        const regex = /(?<=(discord.gg|discordapp.com\/invite)\/)[a-z0-9]+/gi
+        const match = message.content.match(regex)
+        if (match?.[0]) {
+            let del = true
+            try {
+                const invites = await message.guild?.fetchInvites()
+                if (invites?.has(match[0].trim())) del = false
+            } finally {
+                // Do nothing
+            }
+            if (del) {
+                const reply = await message.reply("Your post was removed because it contained an invite to another server.")
+                await message.delete()
+                reply.delete({timeout: 10000})
             }
         }
     }

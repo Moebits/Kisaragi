@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Block extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configure settings for word filtering.",
+            description: "Configure settings for word and invite filtering.",
             help:
             `
             _Note: You can type multiple options in one command._
@@ -18,6 +18,7 @@ export default class Block extends Command {
             \`block enable/disable\` - Toggles filtering on or off.
             \`block exact/partial\` - Sets the matching algorithm.
             \`block asterisk\` - Toggles asterisk filtering.
+            \`block invite\` - Block invites to other servers
             \`block delete (number)\` - Deletes a word.
             \`block reset\` - Deletes all words.
             `,
@@ -53,9 +54,14 @@ export default class Block extends Command {
             return
         }
         const words = await sql.fetchColumn("blocks", "blocked words")
-        const match = await sql.fetchColumn("blocks", "block match")
-        const toggle = await sql.fetchColumn("blocks", "block toggle")
-        const asterisk = await sql.fetchColumn("blocks", "asterisk")
+        let match = await sql.fetchColumn("blocks", "block match")
+        let toggle = await sql.fetchColumn("blocks", "block toggle")
+        let asterisk = await sql.fetchColumn("blocks", "asterisk")
+        let invite = await sql.fetchColumn("blocks", "invite")
+        if (!toggle) toggle = "off"
+        if (!match) match = "partial"
+        if (!asterisk) asterisk = "off"
+        if (!invite) invite = "off"
         let wordList = ""
         if (words) {
             for (let i = 0; i < words.length; i++) {
@@ -74,6 +80,7 @@ export default class Block extends Command {
         **Exact** - Only matches the exact word.
         **Partial** - Also matches if the word is partially in another word.
         **Asterisk** - Whether messages containing asterisks will be blocked.
+        **Invite** - Delete invite links to other servers
         newline
         __Word List__
         ${wordList}
@@ -82,12 +89,14 @@ export default class Block extends Command {
         ${discord.getEmoji("star")}_Filtering is **${toggle}**._
         ${discord.getEmoji("star")}_Matching algorithm set to **${match}**._
         ${discord.getEmoji("star")}_Asterisk filtering is **${asterisk}**._
+        ${discord.getEmoji("star")}_Invite filtering is **${invite}**._
         newline
         __Edit Settings__
         ${discord.getEmoji("star")}_**Type any words**, separated by a space, to add blocked words._
         ${discord.getEmoji("star")}_Type **enable** or **disable** to enable/disable filtering._
         ${discord.getEmoji("star")}_Type **exact** or **partial** to set the matching algorithm._
         ${discord.getEmoji("star")}_Type **asterisk** to toggle asterisk filtering._
+        ${discord.getEmoji("star")}_Type **invite** to toggle invite filtering._
         ${discord.getEmoji("star")}_Type **delete (word number)** to delete a word._
         ${discord.getEmoji("star")}_**You can type multiple options** to enable all at once._
         ${discord.getEmoji("star")}_Type **reset** to delete all words._
@@ -99,7 +108,7 @@ export default class Block extends Command {
             let words = await sql.fetchColumn("blocks", "blocked words")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Blocked Words** ${discord.getEmoji("gabuChrist")}`)
-            let [setOn, setOff, setExact, setPartial, setWord, setAsterisk] = [] as boolean[]
+            let [setOn, setOff, setExact, setPartial, setWord, setAsterisk, setInvite] = [] as boolean[]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
@@ -111,6 +120,7 @@ export default class Block extends Command {
                 await sql.updateColumn("blocks", "block toggle", "off")
                 await sql.updateColumn("blocks", "block match", "partial")
                 await sql.updateColumn("blocks", "asterisk", "off")
+                await sql.updateColumn("blocks", "invite", "off")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All blocked words were deleted!`)
                 msg.channel.send(responseEmbed)
@@ -136,12 +146,13 @@ export default class Block extends Command {
                 }
             }
 
-            const newMsg = msg.content.replace(/enable/gi, "").replace(/disable/gi, "").replace(/exact/gi, "").replace(/partial/gi, "").replace(/asterisk/gi, "")
+            const newMsg = msg.content.replace(/enable/gi, "").replace(/disable/gi, "").replace(/exact/gi, "").replace(/partial/gi, "").replace(/asterisk/gi, "").replace(/invite/gi, "")
             if (msg.content.match(/enable/gi)) setOn = true
             if (msg.content.match(/disable/gi)) setOff = true
             if (msg.content.match(/exact/gi)) setExact = true
             if (msg.content.match(/partial/gi)) setPartial = true
             if (msg.content.match(/asterisk/gi)) setAsterisk = true
+            if (msg.content.match(/invite/gi)) setInvite = true
             if (newMsg.trim()) setWord = true
 
             let wordArray = newMsg.split(" ")
@@ -196,12 +207,21 @@ export default class Block extends Command {
                 description += `${discord.getEmoji("star")}Filtering is **disabled**!\n`
             }
             if (setAsterisk) {
-                if (String(asterisk) === "off") {
+                if (asterisk === "off") {
                     await sql.updateColumn("blocks", "asterisk", "on")
                     description += `${discord.getEmoji("star")}Asterisk filtering is **on**!\n`
                 } else {
                     await sql.updateColumn("blocks", "asterisk", "off")
                     description += `${discord.getEmoji("star")}Asterisk filtering is **off**!\n`
+                }
+            }
+            if (setInvite) {
+                if (invite === "off") {
+                    await sql.updateColumn("blocks", "invite", "on")
+                    description += `${discord.getEmoji("star")}Invite filtering is **on**!\n`
+                } else {
+                    await sql.updateColumn("blocks", "invite", "off")
+                    description += `${discord.getEmoji("star")}Invite filtering is **off**!\n`
                 }
             }
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`

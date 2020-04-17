@@ -20,7 +20,7 @@ export default class MessageDelete {
                 const logs = await message.guild?.fetchAuditLogs({type: "MESSAGE_DELETE", limit: 1}).then((l) => l.entries.first())
                 let executor = ""
                 if (logs?.createdTimestamp && logs?.createdTimestamp > Date.now() - 1000) {
-                    if (logs?.executor.id === discord.user!.id) {
+                    if (logs?.executor.id === discord.user!.id && !/discord/gi.test(message.content)) {
                         return
                     } else {
                         executor = `${discord.getEmoji("star")}_Deleter:_ **<@!${logs.executor.id}> (${logs.executor.tag})**\n` +

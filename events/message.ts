@@ -32,6 +32,7 @@ export default class MessageEvent {
       const points = new Points(this.discord, message)
       const haiku = new Haiku(this.discord, message)
       const detect = new Detector(this.discord, message)
+      const block = new Block(this.discord, message)
       const cmdFunctions = new CommandFunctions(this.discord, message)
       const links = new Link(this.discord, message)
       const generate = new Generate(this.discord, message)
@@ -82,7 +83,8 @@ export default class MessageEvent {
               }
             }
           }
-          Block.blockWord(message)
+          block.blockWord()
+          block.blockInvite()
           detect.detectAnime()
           detect.swapRoles()
           const haikuEmbed = haiku.haiku()

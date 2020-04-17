@@ -15,7 +15,7 @@ import {Video} from "./../../structures/Video"
 export default class Videospeed extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Changes the speed of a video (attachment or youtube link).",
+            description: "Changes the speed of a video.",
             help:
             `
             \`videospeed factor\` - Changes the speed of the last posted video

@@ -146,7 +146,8 @@ export class Settings {
         "block match": "partial",
         "block toggle": "off",
         "link ban": "off",
-        "asterisk": "off"
+        "asterisk": "off",
+        "invite": "off"
     }
 
     private readonly captchaSettings: Init = {

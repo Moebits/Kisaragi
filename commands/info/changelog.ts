@@ -31,6 +31,8 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 26, date: "4/17/2020", changes: "The \`block\` command can now block invite links."},
+            {num: 25, date: "4/17/2020", changes: "Added \`trace\`, \`books\`, and \`auto\`."},
             {num: 24, date: "4/6/2020", changes: "Added \`tweet\` and (global) \`chat\` commands!"},
             {num: 23, date: "4/5/2020", changes: "Added music commands such as \`record\` and \`rewind\`, moderation commands such as \`softban\` and \`tempban\`, and oauth2 commands such as \`email\`"},
             {num: 22, date: "4/3/2020", changes: "Added waifu commands such as \`gab\` and \`megumin\`. The help command also now has pagination because there are over 20 sections now."},
