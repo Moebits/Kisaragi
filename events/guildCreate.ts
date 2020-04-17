@@ -28,11 +28,12 @@ export default class GuildCreate {
             .setThumbnail(guild.iconURL() ? guild.iconURL({format: "png", dynamic: true})! : "")
             .setImage(guild.bannerURL() ? guild.bannerURL({format: "png"})! : (guild.splashURL() ? guild.splashURL({format: "png"})! : ""))
             .setDescription(
-                `${star}_Guild Name:_ **${guild.name}**\n` +
-                `${star}_Guild Owner:_ **${guild.owner?.user.tag}**\n` +
-                `${star}_Creation Date:_ **${Functions.formatDate(guild.createdAt)}**\n` +
-                `${star}_Members:_ **${guild.memberCount}**\n` +
-                `${star}_Invite:_ ${invite}`
+                `${discord.getEmoji("star")}_Guild Name:_ **${guild.name}**\n` +
+                `${discord.getEmoji("star")}_Guild Owner:_ **${guild.owner?.user.tag}**\n` +
+                `${discord.getEmoji("star")}_Guild ID:_ \`${guild.id}\`\n` +
+                `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(guild.createdAt)}**\n` +
+                `${discord.getEmoji("star")}_Members:_ **${guild.memberCount}**\n` +
+                `${discord.getEmoji("star")}_Invite:_ ${invite}`
             )
             guildChannel.send(logEmbed)
             return

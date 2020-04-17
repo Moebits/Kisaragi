@@ -99,7 +99,6 @@ export class Permission {
 
     /** Filter loli content */
     public loliFilter = (tags: string) => {
-        if (this.message.guild?.ownerID === process.env.OWNER_ID) return false
         if (/loli/gi.test(tags) || /shota/gi.test(tags) || /lolicon/gi.test(tags) || /shotacon/gi.test(tags)) {
             return true
         } else {
