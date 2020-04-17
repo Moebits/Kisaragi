@@ -86,7 +86,8 @@ export class Settings {
         "pin channel": null,
         "yt channels": null,
         "twitch channels": null,
-        "global chat": null
+        "global chat": null,
+        "linked": null
     }
 
     private readonly specialRoleSettings: Init = {
@@ -187,13 +188,6 @@ export class Settings {
         timeout: null
     }
 
-    private readonly linkSettings: Init = {
-        ...this.guildSettings,
-        text: null,
-        voice: null,
-        toggle: null
-    }
-
     private readonly detectionSettings: Init = {
         ...this.guildSettings,
         links: "on",
@@ -229,7 +223,6 @@ export class Settings {
         "blocks": this.blockSettings,
         "captcha": this.captchaSettings,
         "auto": this.autoSettings,
-        "links": this.linkSettings,
         "detection": this.detectionSettings,
         "config": this.configSettings
     }

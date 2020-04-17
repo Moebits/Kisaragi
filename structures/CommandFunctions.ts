@@ -14,7 +14,7 @@ export class CommandFunctions {
     public runCommand = async (msg: Message, args: string[], auto?: boolean) => {
         args = args.filter(Boolean)
         const cmdPath = await this.findCommand(args?.[0]) as string
-        if (!cmdPath && !auto) return this.noCommand(args?.[0])
+        if (!cmdPath) return this.noCommand(args?.[0], auto)
         const cp = new (require(path.join(__dirname, `${cmdPath.slice(0, -3)}`)).default)(this.discord, msg)
         if (cp.options.guildOnly) {
             if (msg.channel.type === "dm") return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
@@ -72,17 +72,19 @@ export class CommandFunctions {
                 rawTimeLeft[i] = newTimeLeft
                 await sql.updateColumn("auto", "timeout", rawTimeLeft)
             }, 60000)
-            const autoRun = setInterval(async () => {
-                if (!toggle?.[i] || toggle?.[i] === "inactive") clearInterval(autoRun)
+            const autoRun = async () => {
+                if (!toggle?.[i] || toggle?.[i] === "inactive") return
                 const msg = guildMsg ?? this.message
                 msg.author.id = this.discord.user!.id
                 await this.runCommand(msg, cmd, true)
-                timeLeft = timeout
-            }, timeLeft)
+                setTimeout(autoRun, timeout)
+            }
+            setTimeout(autoRun, timeLeft)
         }
     }
 
-    public noCommand = async (input: string) => {
+    public noCommand = async (input: string, noMsg?: boolean) => {
+        if (noMsg) return
         if (noCmdCool.has(this.message.guild!.id)) return
         const commands = await SQLQuery.selectColumn("commands", "command")
         for (let i = 0; i < commands.length; i++) {

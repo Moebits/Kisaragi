@@ -44,7 +44,6 @@ const tableList = [
   "welcome leaves",
   "captcha",
   "auto",
-  "links",
   "detection",
   "config"
 ]

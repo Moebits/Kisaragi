@@ -1,4 +1,4 @@
-import {GuildChannel, Message} from "discord.js"
+import {GuildChannel, Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -10,12 +10,25 @@ export default class ChannelLink extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configure settings for linked channels.",
-            aliases: [],
+            help:
+            `
+            \`link\` - Shows the linked channels prompt.
+            \`link #textchannel? voicechannel?\` - Sets the text and voice channel that are linked.
+            \`link toggle setting\` - Enables or disables a setting.
+            \`link edit setting #textchannel? voicechannel?\` - Edits an existing setting.
+            \`link delete setting\` - Deletes a setting.
+            \`link reset\` - Deletes all settings.
+            `,
+            examples:
+            `
+            \`=>link #music-commands music\`
+            \`=>link #voice-chat voice\`
+            `,
+            aliases: ["links", "linked", "linkchannel"],
             guildOnly: true,
             cooldown: 3
         })
     }
-    // [{text, voice, toggle}]
 
     public run = async (args: string[]) => {
         const discord = this.discord
@@ -32,32 +45,38 @@ export default class ChannelLink extends Command {
             await linkPrompt(message)
             return
         }
-        const linkText = await sql.fetchColumn("links", "text")
-        const linkVoice = await sql.fetchColumn("links", "voice")
-        const linkToggle = await sql.fetchColumn("links", "toggle")
-
-        let linkDescription = ""
-        if (linkText) {
-            for (let i = 0; i < linkText.length; i++) {
-                linkDescription += `**${i + 1} => **\n` + `${discord.getEmoji("star")}_Text:_ <#${linkText[i]}>\n` +
-                `${discord.getEmoji("star")}_Voice:_ **<#${linkVoice[i]}>**\n` +
-                `${discord.getEmoji("star")}_State:_ **${linkToggle[i]}**\n`
+        const linked = await sql.fetchColumn("special channels", "linked")
+        const step = 3.0
+        const increment = Math.ceil((linked ? linked.length : 1) / step)
+        const linkArray: MessageEmbed[] = []
+        for (let i = 0; i < increment; i++) {
+            let settings = ""
+            for (let j = 0; j < step; j++) {
+                if (linked) {
+                    const k = (i*step)+j
+                    if (!linked.join("")) settings = "None"
+                    if (!linked[k]) break
+                    const curr = JSON.parse(linked[k])
+                    settings += `${k + 1} **=>**\n` +
+                    `${discord.getEmoji("star")}_Text:_ **${curr.text ? `<#${curr.text}>` : "None"}**\n`+
+                    `${discord.getEmoji("star")}_Voice:_ **${curr.voice ? `**<#${curr.voice}>**` : "None"}**\n`+
+                    `${discord.getEmoji("star")}_State:_ **${curr.state ? curr.state : "None"}**\n`
+                } else {
+                    settings = "None"
+                }
             }
-        } else {
-            linkDescription = "None"
-        }
-        const linkEmbed = embeds.createEmbed()
-        linkEmbed
-        .setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-        .setDescription(Functions.multiTrim(`
+            const linkEmbed = embeds.createEmbed()
+            linkEmbed
+            .setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+            .setDescription(Functions.multiTrim(`
             Configure settings for linked channels. You can link a text channel to a voice channel so that only people in the voice channel can access it.
             In order for this to work, you should disable the **read messages** permission on the text channel for all member roles.
             newline
             **Status** - Either on or off. In order for the status to be on, both the voice and text channel must be set.
             newline
             __Current Settings:__
-            ${linkDescription}
+            ${settings}
             newline
             __Edit Settings:__
             ${discord.getEmoji("star")}_**Mention a text channel** to set the text channel._
@@ -68,16 +87,19 @@ export default class ChannelLink extends Command {
             ${discord.getEmoji("star")}_Type **reset** to delete all settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send(linkEmbed)
+            linkArray.push(linkEmbed)
+        }
+
+        if (linkArray.length === 1) {
+            message.channel.send(linkArray[0])
+        } else {
+            embeds.createReactionEmbed(linkArray)
+        }
 
         async function linkPrompt(msg: Message) {
-            let text = await sql.fetchColumn("links", "text")
-            let voice = await sql.fetchColumn("links", "voice")
-            let toggle = await sql.fetchColumn("links", "toggle")
-            let [setText, setVoice, setInit] = [] as boolean[]
-            if (!text) text = [""]; setInit = true
-            if (!voice) voice = [""]; setInit = true
-            if (!toggle) toggle = [""]; setInit = true
+            let linked = await sql.fetchColumn("special channels", "linked")
+            let [setText, setVoice] = [] as boolean[]
+            if (!linked) linked = []
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`)
             if (msg.content.toLowerCase() === "cancel") {
@@ -87,9 +109,7 @@ export default class ChannelLink extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("links", "voice", null)
-                await sql.updateColumn("links", "text", null)
-                await sql.updateColumn("links", "toggle", "off")
+                await sql.updateColumn("special channels", "linked", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 msg.channel.send(responseEmbed)
@@ -98,16 +118,10 @@ export default class ChannelLink extends Command {
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
                 if (num) {
-                    if (text) {
-                        text[num - 1] = ""
-                        voice[num - 1] = ""
-                        toggle[num - 1] = ""
-                        text = text.filter(Boolean)
-                        voice = voice.filter(Boolean)
-                        toggle = toggle.filter(Boolean)
-                        await sql.updateColumn("links", "text", text)
-                        await sql.updateColumn("links", "voice", voice)
-                        await sql.updateColumn("links", "toggle", toggle)
+                    if (linked[num - 1]) {
+                        linked[num - 1] = ""
+                        linked = linked.filter(Boolean)
+                        await sql.updateColumn("special channels", "linked", linked)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                         msg.channel.send(responseEmbed)
@@ -120,19 +134,79 @@ export default class ChannelLink extends Command {
                     return
                 }
             }
+            if (msg.content.toLowerCase().startsWith("toggle")) {
+                const newMsg = Number(msg.content.replace(/toggle/g, "").trim())
+                const num = newMsg - 1
+                const testLink = await sql.fetchColumn("special channels", "linked")
+                if (newMsg && testLink?.[num]) {
+                        if (testLink[num].state === "off") {
+                            testLink[num].state = "on"
+                            await sql.updateColumn("special channels", "linked", testLink)
+                            return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **on**!`))
+                        } else {
+                            testLink[num].state = "off"
+                            await sql.updateColumn("special channels", "linked", testLink)
+                            return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **off**!`))
+                        }
+                } else {
+                    return msg.channel.send(responseEmbed.setDescription("You cannot use the toggle command on an unfinished setting!"))
+                }
+            }
 
-            const newText = msg.content.match(/<#\d+>/g)
-            const newVoice = msg.content.replace(/<#\d+>/g, "").match(/\D+/gi)
+            if (msg.content.toLowerCase().startsWith("edit")) {
+                const newMsg = msg.content.replace(/edit/g, "").trim().split(" ")
+                const tempMsg = newMsg.slice(1).join(" ")
+                const num = Number(newMsg[0]) - 1
+                if (tempMsg && linked?.[num]) {
+                    linked[num] = JSON.parse(linked[num])
+                    let editDesc = ""
+                    const tempText = tempMsg.match(/(?<=<#)\d+(?=>)/g)?.[0] ?? ""
+                    const tempVoice = tempMsg.replace(/<#\d+>/g, "").match(/\D+/gi)?.[0].trim() ?? ""
+                    if (tempText) {
+                        linked[num].text = tempText
+                        editDesc += `${discord.getEmoji("star")}Text channel set to <#${tempText!}>!\n`
+                    }
+                    if (tempVoice) {
+                        const channels = msg.guild!.channels.cache.filter((c: GuildChannel) => {
+                            const type = c.type === "voice" ? true : false
+                            return type
+                        })
+                        const channel = channels.find((c: GuildChannel) => {
+                            const name = (c.name.toLowerCase().includes(tempVoice.toLowerCase())) ? true : false
+                            return name
+                        })
+                        if (channel) {
+                            linked[num].voice = channel.id
+                            editDesc += `${discord.getEmoji("star")}Voice channel set to **<#${channel.id}>**!\n`
+                        } else {
+                            return msg.channel.send(responseEmbed.setDescription("Voice channel not found!"))
+                        }
+                    }
+                    if (setText && setVoice) {
+                        linked[num].state = "on"
+                        editDesc += `${discord.getEmoji("star")}Status set to **on**!\n`
+                    } else {
+                        linked[num].state = "off"
+                        editDesc += `${discord.getEmoji("star")}Status set to **off**!\n`
+                    }
+                    await sql.updateColumn("special channels", "linked", linked)
+                    return msg.channel.send(responseEmbed.setDescription(editDesc))
+                } else {
+                    return msg.channel.send(responseEmbed.setDescription("No edits specified!"))
+                }
+            }
+
+            const newText = msg.content.match(/(?<=<#)\d+(?=>)/g)?.[0] ?? ""
+            const newVoice = msg.content.replace(/<#\d+>/g, "").match(/\D+/gi)?.[0].trim() ?? ""
             if (newText) setText = true
             if (newVoice) setVoice = true
 
             let description = ""
+            const obj = {} as any
 
             if (setText) {
-                text.push(String(newText!).replace(/<#/g, "").replace(/>/g, ""))
-                if (setInit) text = text.filter(Boolean)
-                await sql.updateColumn("links", "text", String(text))
-                description += `${discord.getEmoji("star")}Text channel set to **${newText!}**!\n`
+                obj.text = newText
+                description += `${discord.getEmoji("star")}Text channel set to <#${newText!}>!\n`
             }
 
             if (setVoice) {
@@ -141,36 +215,31 @@ export default class ChannelLink extends Command {
                     return type
                 })
                 const channel = channels.find((c: GuildChannel) => {
-                    const name = (c.name.replace(/\s+/g, " ").toLowerCase().includes(newVoice![0].toLowerCase())) ? true : false
+                    const name = (c.name.toLowerCase().includes(newVoice.toLowerCase())) ? true : false
                     return name
                 })
                 if (channel) {
-                    voice.push(channel.id)
-                    if (setInit) voice = voice.filter(Boolean)
-                    await sql.updateColumn("links", "voice", String(voice))
-                    description += `${discord.getEmoji("star")}Voice channel set to **${channel.name}**!\n`
+                    obj.voice = channel.id
+                    description += `${discord.getEmoji("star")}Voice channel set to **<#${channel.id}>**!\n`
                 } else {
                     return msg.channel.send(responseEmbed.setDescription("Voice channel not found!"))
                 }
             }
 
             if (setText && setVoice) {
-                toggle.push("on")
-                if (setInit) toggle = toggle.filter(Boolean)
-                await sql.updateColumn("links", "toggle", String(toggle))
+                obj.state = "on"
                 description += `${discord.getEmoji("star")}Status set to **on**!\n`
             } else {
-                toggle.push("off")
-                if (setInit) toggle = toggle.filter(Boolean)
-                await sql.updateColumn("links", "toggle", String(toggle))
+                obj.state = "off"
                 description += `${discord.getEmoji("star")}Status set to **off**!\n`
             }
 
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
+            linked.push(obj)
+            await sql.updateColumn("special channels", "linked", linked)
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
-            return
+            return msg.channel.send(responseEmbed)
         }
 
         await embeds.createPrompt(linkPrompt)
