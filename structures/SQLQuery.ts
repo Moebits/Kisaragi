@@ -311,17 +311,21 @@ export class SQLQuery {
   }
 
   /** Init Guild */
-  public static initGuild = async (message: Message) => {
+  public static initGuild = async (message: Message, force?: boolean) => {
     const settings = new Settings(message)
     const query: QueryArrayConfig = {
           text: `SELECT "guild id" FROM guilds`,
           rowMode: "array"
     }
     const result = await SQLQuery.runQuery(query, true)
-    const found = result.find((id: string[]) => id[0] === message.guild?.id.toString()) as any
-    if (!found) {
+    const found = result.find((id: string[]) => String(id) === message.guild?.id) as any
+    if (!found || force) {
           for (let i = 0; i < tableList.length; i++) {
-            await SQLQuery.insertInto(tableList[i], "guild id", message.guild?.id)
+            try {
+              await SQLQuery.insertInto(tableList[i], "guild id", message.guild?.id)
+            } catch {
+              // Do nothing
+            }
           }
           await settings.initAll()
           await SQLQuery.orderTables()

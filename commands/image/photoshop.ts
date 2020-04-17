@@ -175,7 +175,8 @@ export default class Photoshop extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaFacepalm")}`)
+        if (!url.includes("http")) return message.reply(`Invalid image url ${discord.getEmoji("kannaFacepalm")}`)
         const hsvEmbed = embeds.createEmbed()
         if (!fs.existsSync(path.join(__dirname, "../../images"))) fs.mkdirSync(path.join(__dirname, "../../images"))
         const link = await images.upload([url]).then((l) => l[0])

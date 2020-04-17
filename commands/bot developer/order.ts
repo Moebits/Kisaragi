@@ -2,6 +2,7 @@ import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
@@ -35,11 +36,20 @@ export default class Order extends Command {
         for (let i = 0; i < tables.length; i++) {
             await SQLQuery.foreignKeys(tables[i])
         }*/
+
+        /*let ids = await SQLQuery.selectColumn("guilds", "guild id")
+        console.log(ids)
+        ids = Functions.removeDuplicates(ids)
+
+        for (let i = 0; i < ids.length; i++) {
+            const g = discord.guilds.cache.get(ids[i])
+            const msg = await discord.fetchFirstMessage(g || message.guild!)
+            await SQLQuery.initGuild(msg || message, true)
+        }*/
         await SQLQuery.orderTables()
         orderEmbed
         .setTitle(`**Order** ${discord.getEmoji("gabStare")}`)
         .setDescription("The tables were **ordered**!")
         message.channel.send(orderEmbed)
-
     }
 }

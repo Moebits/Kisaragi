@@ -197,7 +197,7 @@ export default class Auto extends Command {
                     if (tempFreq) {
                         freq[num] = tempFreq
                         await sql.updateColumn("auto", "frequency", freq)
-                        editDesc += `${discord.getEmoji("star")}Command set to **${tempFreq}**!\n`
+                        editDesc += `${discord.getEmoji("star")}Frequency set to **${tempFreq}**!\n`
                     }
                     tim[num] = ""
                     await sql.updateColumn("auto", "timeout", tim)

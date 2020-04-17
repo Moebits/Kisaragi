@@ -73,7 +73,10 @@ export class Settings {
     private readonly specialChannelSettings: Init = {
         "star channel": null,
         "star threshold": 3,
-        "pin channel": null
+        "pin channel": null,
+        "yt channels": null,
+        "twitch channels": null,
+        "global chat": null
     }
 
     private readonly specialRoleSettings: Init = {
@@ -178,7 +181,7 @@ export class Settings {
     }
 
     private readonly configSettings: Init = {
-        "embed colors": "default",
+        "embed colors": ["default"],
         "permissions": "role"
     }
 
