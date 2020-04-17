@@ -1086,9 +1086,9 @@ export class Audio {
         let player = connection.dispatcher
         const stream = file // await this.fx.streamOgg(file)
         if (start) {
-            player = connection.play(stream, {seek: start, highWaterMark: 100000})
+            player = connection.play(stream, {seek: start, highWaterMark: 100})
         } else {
-            player = connection.play(stream, {highWaterMark: 100000})
+            player = connection.play(stream, {highWaterMark: 100})
         }
         player.setBitrate(128)
         player.setFEC(false)
