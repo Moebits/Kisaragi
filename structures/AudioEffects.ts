@@ -58,7 +58,7 @@ export class AudioEffects {
             },
             input: {type: "aiff"},
             output: {type: "aiff"},
-            effects: ["gain", "-h", ...effect.split(" ")]
+            effects: [...effect.split(" ")]
         })
         await new Promise((resolve) => {
             input
@@ -172,7 +172,7 @@ export class AudioEffects {
 
     public pitch = async (pitch: number, filepath: string, fileDest: string) => {
         const cents = pitch * 100
-        return this.processEffect(`pitch ${cents}`, filepath, fileDest)
+        return this.processEffect(`gain -h pitch ${cents}`, filepath, fileDest)
     }
 
     public speed = async (factor: number, pitch: boolean, filepath: string, fileDest: string) => {
@@ -182,7 +182,13 @@ export class AudioEffects {
     }
 
     public reverse = async (filepath: string, fileDest: string) => {
-        return this.processEffect("reverse", filepath, fileDest)
+        return this.processEffect("gain -h reverse", filepath, fileDest)
+    }
+
+    public gain = async (gain: number, filepath: string, fileDest: string) => {
+        let effect = `gain ${gain}`
+        if (gain > 0) effect = `gain -h gain ${gain}`
+        return this.processEffect(effect, filepath, fileDest)
     }
 
     public reverb = async (reverb: number, damping: number, room: number, stereo: number, preDelay: number, wetGain: number, reverse: boolean, filepath: string, fileDest: string) => {

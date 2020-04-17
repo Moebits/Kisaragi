@@ -1084,11 +1084,11 @@ export class Audio {
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
         let player = connection.dispatcher
-        const stream = await this.fx.streamOgg(file)
+        const stream = file // await this.fx.streamOgg(file)
         if (start) {
-            player = connection.play(stream, {type: "ogg/opus", seek: start, highWaterMark: 100})
+            player = connection.play(stream, {seek: start, highWaterMark: 100000})
         } else {
-            player = connection.play(stream, {type: "ogg/opus", highWaterMark: 100})
+            player = connection.play(stream, {highWaterMark: 100000})
         }
         player.setBitrate(128)
         player.setFEC(false)
