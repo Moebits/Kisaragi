@@ -99,7 +99,8 @@ export class Settings {
         "mod role": null,
         "admin role": null,
         "self roles": null,
-        "reaction roles": null
+        "reaction roles": null,
+        "emoji roles": null
     }
 
     private readonly pointSettings: Init = {
