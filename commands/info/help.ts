@@ -14,12 +14,14 @@ export default class Help extends Command {
             `
             Looking for help on the help command, how ironic!
             \`help\` - Lists all commands
-            \`help cmd\` - Gets detailed help on a command
+            \`help command\` - Gets detailed help on a command
+            \`help !category\` - Only post the specific category
             `,
             examples:
             `
             \`=>help\`
             \`=>help help\`
+            \`=>help !website 2\`
             `,
             aliases: ["h"],
             cooldown: 5
@@ -138,7 +140,9 @@ export default class Help extends Command {
             .setImage(imageMap[subDir[i]])
             .setThumbnail(thumbMap[subDir[i]])
             .setDescription(
-                `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n To display a single module, use \`help !(module)\` ${discord.getEmoji("gabYes")}\n_Click on a reaction twice to toggle compact mode._\n` + help)
+                `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` +
+                `To display only one category, use \`help !(category)\` ${discord.getEmoji("gabYes")}\n` +
+                `_Click on a reaction twice to toggle compact mode._\n` + help)
             helpEmbedArray.push(helpEmbed)
         }
         if (setIndex > -1) {

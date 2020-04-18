@@ -3,20 +3,20 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
 
-export default class GuildIcon extends Command {
+export default class Splash extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts the guild's icon.",
+            description: "Posts the guild's splash screen, if there is one.",
             help:
             `
-            \`icon\` - Posts the guild icon
+            \`splash\` - Posts the guild splash screen
             `,
             examples:
             `
-            \`=>icon\`
+            \`=>splash\`
             `,
             guildOnly: true,
-            aliases: ["gicon", "guildicon"],
+            aliases: [],
             random: "none",
             cooldown: 5
         })
@@ -27,12 +27,12 @@ export default class GuildIcon extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
 
-        const guildIconEmbed = embeds.createEmbed()
-        const icon = message.guild!.iconURL({format: "png", size: 2048, dynamic: true})
-        if (!icon) return message.reply(`This guild doesn't have an icon ${discord.getEmoji("kannaFacepalm")}`)
+        const splashEmbed = embeds.createEmbed()
+        const splash = message.guild?.splashURL({format: "png", size: 2048})
+        if (!splash) return message.reply(`This guild doesn't have a splash screen ${discord.getEmoji("kannaFacepalm")}`)
 
-        await message.channel.send(guildIconEmbed
-            .setDescription(`**${message.guild!.name}'s Icon**`)
-            .setImage(icon))
+        await message.channel.send(splashEmbed
+            .setDescription(`**${message.guild!.name}'s Splash Screen**`)
+            .setImage(splash))
     }
 }

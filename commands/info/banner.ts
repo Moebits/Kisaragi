@@ -3,20 +3,20 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
 
-export default class GuildIcon extends Command {
+export default class Banner extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts the guild's icon.",
+            description: "Posts the guild's banner, if there is one.",
             help:
             `
-            \`icon\` - Posts the guild icon
+            \`banner\` - Posts the guild banner
             `,
             examples:
             `
-            \`=>icon\`
+            \`=>banner\`
             `,
             guildOnly: true,
-            aliases: ["gicon", "guildicon"],
+            aliases: [],
             random: "none",
             cooldown: 5
         })
@@ -27,12 +27,12 @@ export default class GuildIcon extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
 
-        const guildIconEmbed = embeds.createEmbed()
-        const icon = message.guild!.iconURL({format: "png", size: 2048, dynamic: true})
-        if (!icon) return message.reply(`This guild doesn't have an icon ${discord.getEmoji("kannaFacepalm")}`)
+        const bannerEmbed = embeds.createEmbed()
+        const banner = message.guild?.bannerURL({format: "png", size: 2048})
+        if (!banner) return message.reply(`This guild has no banner ${discord.getEmoji("kannaFacepalm")}`)
 
-        await message.channel.send(guildIconEmbed
-            .setDescription(`**${message.guild!.name}'s Icon**`)
-            .setImage(icon))
+        await message.channel.send(bannerEmbed
+            .setDescription(`**${message.guild!.name}'s Banner**`)
+            .setImage(banner))
     }
 }

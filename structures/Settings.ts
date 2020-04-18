@@ -81,9 +81,11 @@ export class Settings {
 
     private readonly specialChannelSettings: Init = {
         ...this.guildSettings,
-        "star channel": null,
+        "starboard": null,
         "star threshold": 3,
-        "pin channel": null,
+        "star emoji": "⭐",
+        "pinboard": null,
+        "nsfw pinboard": null,
         "yt channels": null,
         "twitch channels": null,
         "global chat": null,

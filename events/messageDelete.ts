@@ -17,6 +17,9 @@ export default class MessageDelete {
         const logDeleted = async (message: Message) => {
             const messageLog = await sql.fetchColumn("logs", "message log")
             if (messageLog) {
+                const content = message.content ? message.content : ""
+                const image = message.attachments.first() ? message.attachments.first()!.proxyURL : ""
+                if (!content && !image) return
                 const logs = await message.guild?.fetchAuditLogs({type: "MESSAGE_DELETE", limit: 1}).then((l) => l.entries.first())
                 let executor = ""
                 if (logs?.createdTimestamp && logs?.createdTimestamp > Date.now() - 1000) {
@@ -29,8 +32,6 @@ export default class MessageDelete {
                 }
                 const msgChannel = message.guild?.channels.cache.get(messageLog)! as TextChannel
                 const logEmbed =  embeds.createEmbed()
-                const content = message.content ? `${message.content}` : ""
-                const image = message.attachments.first() ? message.attachments.first()!.proxyURL : ""
                 const attachments = message.attachments.size > 1 ? "\n" + message.attachments.map((a) => `[**Link**](${a.proxyURL})`).join("\n") : ""
                 const imageText = image ? `\n_Image might be already deleted. Link_ [**here**](${image})` : ""
                 logEmbed

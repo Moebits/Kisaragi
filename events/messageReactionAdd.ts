@@ -1,5 +1,6 @@
-import {MessageEmbed, MessageReaction, User} from "discord.js"
+import {MessageEmbed, MessageReaction, TextChannel, User} from "discord.js"
 import {Embeds} from "./../structures/Embeds"
+import {Functions} from "./../structures/Functions"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
 const active = new Set()
@@ -8,14 +9,16 @@ export default class MessageReactionAdd {
     constructor(private readonly discord: Kisaragi) {}
 
     public run = async (reaction: MessageReaction, user: User) => {
-        if (user.id === this.discord.user!.id) return
+        const discord = this.discord
+        if (user.id === discord.user!.id) return
         if (reaction.partial) reaction = await reaction.fetch()
         const sql = new SQLQuery(reaction.message)
         const embeds = new Embeds(this.discord, reaction.message)
+
         const retriggerEmbed = async (reaction: MessageReaction) => {
             if (!reaction.message.partial) return
             reaction.message = await reaction.message.fetch()
-            if (reaction.message.author.id === this.discord.user!.id) {
+            if (reaction.message.author.id === discord.user!.id) {
                 if (active.has(reaction.message.id)) return
                 const newArray = await SQLQuery.selectColumn("collectors", "message", true)
                 let cached = false
@@ -88,5 +91,28 @@ export default class MessageReactionAdd {
             }
         }
         addReactionRole(reaction, user)
+
+        const starboard = async (reaction: MessageReaction) => {
+            if (!reaction.count || !reaction.message.guild) return
+            const starEmoji = await sql.fetchColumn("special channels", "star emoji")
+            if (reaction.emoji.id === starEmoji.match(/\d+/)?.[0] || reaction.emoji.toString() === starEmoji) {
+                const starThreshold = await sql.fetchColumn("special channels", "star threshold")
+                if (!(reaction.count >= Number(starThreshold))) return
+                const starChannelID = await sql.fetchColumn("special channels", "starboard")
+                const starChannel = reaction.message.guild.channels.cache.get(starChannelID) as TextChannel
+                const content = reaction.message.embeds?.[0] ? reaction.message.embeds[0].description : reaction.message.content
+                const starEmbed = embeds.createEmbed()
+                starEmbed
+                .setAuthor("star", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/microsoft/74/white-medium-star_2b50.png")
+                .setTitle(`**New Starboard Message!** ${discord.getEmoji("RaphiSmile")}`)
+                .setThumbnail(reaction.message.author.displayAvatarURL({format: "png", dynamic: true}))
+                .setURL(reaction.message.url)
+                .setDescription(`[**Message Link**](${reaction.message.url})\n` + content)
+                .setImage(reaction.message.attachments.first() ? reaction.message.attachments.first()!.url : "")
+                .setFooter(`${reaction.message.author.tag} • #${(reaction.message.channel as TextChannel).name}`, reaction.message.author.displayAvatarURL({format: "png", dynamic: true}))
+                await starChannel?.send(starEmbed)
+            }
+        }
+        starboard(reaction)
     }
 }
