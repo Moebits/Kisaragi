@@ -245,6 +245,8 @@ export default class TwitchNotify extends Command {
                 if (!found) channels.push(newChannel)
                 try {
                     await SQLQuery.insertInto("twitch", "channel", newChannel)
+                } catch {
+                    // Do nothing
                 } finally {
                     request.channel = newChannel
                     description += `${discord.getEmoji("star")}Twitch channel set to [**${newChannel}**](https://www.twitch.tv/${newChannel})!\n`

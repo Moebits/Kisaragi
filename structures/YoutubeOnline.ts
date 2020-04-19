@@ -77,7 +77,7 @@ export class YoutubeOnline {
             res.status(200).end()
         })
 
-        yt?.on("notified", async (data: any) => {
+        yt.on("notified", async (data: any) => {
             const config = await SQLQuery.fetchColumn("yt", "config", "channel id", data.channel.id)
             if (!config?.[0]) return
             for (let i = 0; i < config.length; i++) {

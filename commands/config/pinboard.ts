@@ -89,8 +89,8 @@ export default class Pinboard extends Command {
             }
 
             let [setPin, setNSFW] = [false, false]
-            const newPin = msg.content.match(/(?<=\[)(.*?)(?=\])/)?.[0].match(/\d+/)?.[0] ?? ""
-            const newNSFW = msg.content.replace(newPin, "").match(/\d+/)?.[0] ?? ""
+            const newNSFW = msg.content.match(/(?<=\[)(.*?)(?=\])/)?.[0].match(/\d+/)?.[0] ?? ""
+            const newPin = msg.content.replace(newNSFW, "").match(/\d+/)?.[0] ?? ""
 
             if (Number(newPin)) setPin = true
             if (Number(newNSFW)) setNSFW = true
