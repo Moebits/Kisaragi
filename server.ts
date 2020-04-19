@@ -7,23 +7,18 @@ import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 import {YoutubeOnline} from "./structures/YoutubeOnline"
 
+const yt = new ytNotification({
+    hubCallback: `${config.kisaragiAPI}/yt`,
+    middleware: true
+})
 export default class Server {
-    private readonly yt = new ytNotification({
-        hubCallback: `${config.kisaragiAPI}/yt`,
-        middleware: true
-    })
-
-    public getYT = () => {
-        return this.yt
-    }
-
     public run = () => {
         const app = express()
         const port = process.env.PORT || 5000
 
         app.use(bodyParser.json())
         app.use(bodyParser.urlencoded({extended: true}))
-        app.use("/yt", this.yt.listener())
+        app.use("/yt", yt.listener())
         YoutubeOnline.youtubeRoutes(app)
 
         app.get("/twitter", async (req, res) => {
@@ -60,12 +55,9 @@ export default class Server {
     }
 }
 
-const server = new Server()
-let yt = server.getYT()
-
 if (config.testing === "off") {
+    const server = new Server()
     server.run()
-    yt = server.getYT()
 }
 
 export {yt}
