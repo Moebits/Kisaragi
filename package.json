@@ -137,7 +137,7 @@
     "pixiv-app-api": "github:Tenpi/pixiv-app-api#fork",
     "pixiv-img": "^1.0.0",
     "pixiv.ts": "^0.3.7",
-    "pm2": "^3.5.1",
+    "pm2": "^4.3.0",
     "pokedex-promise-v2": "^3.2.0",
     "postgres-redis": "^0.1.0",
     "pretty-ms": "^5.0.0",
