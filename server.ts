@@ -61,9 +61,11 @@ export default class Server {
 }
 
 const server = new Server()
+let yt = server.getYT()
 
 if (config.testing === "off") {
     server.run()
+    yt = server.getYT()
 }
-const yt = server.getYT()
+
 export {yt}
