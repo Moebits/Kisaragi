@@ -1,6 +1,5 @@
-import axios from "axios"
-import type {GuildEmoji, Message, MessageEmbed, TextChannel, Webhook} from "discord.js"
-import Youtube from "youtube.ts"
+import type {GuildChannel, GuildEmoji, Message, MessageEmbed, TextChannel, Webhook} from "discord.js"
+import WebhookListener from "twitch-webhooks"
 import * as config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -9,51 +8,52 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
-export default class YTNotify extends Command {
-    private readonly youtube = new Youtube(process.env.GOOGLE_API_KEY!)
+export default class TwitchNotify extends Command {
     private readonly sql = new SQLQuery(this.message)
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configure youtube video upload notifications.",
+            description: "Configure twitch livestream notifications.",
             help:
             `
-            \`ytnotify\` - Opens the yt notify prompt.
-            \`ytnotify ytid/name #channel @role/id?\` - Sets the youtube channel, text channel, and mention role (optional).
-            \`ytnotify delete number\` - Deletes a setting.
-            \`ytnotify edit number @role/id?\` - Edits the role mention. Omit the role to remove role mentions.
-            \`ytnotify reset\` - Deletes all settings.
+            \`twitchnotify\` - Opens the twitch notify prompt
+            \`twitchnotify name #channel @role/id?\` - Sets the text channel, text channel, and mention role (optional)
+            \`twitchnotify delete setting\` - Deletes a setting
+            \`twitchnotify edit setting @role/id?\` - Edits the role mention.
+            \`twitchnotify reset\` - Deletes all settings.
             `,
             examples:
             `
-            \`=>ytnotify\`
-            \`=>ytnotify tenpi #updates\`
+            \`=>twitchnotify\`
+            \`=>twitchnotify imtenpi #updates\`
             `,
-            aliases: ["ytnotification", "ytnotifications"],
+            aliases: ["twitchnotification", "twitchnotifications"],
             botPermission: "MANAGE_WEBHOOKS",
             guildOnly: true,
             cooldown: 15
         })
     }
 
-    public getName = async (channel: string) => {
-        const search = await this.youtube.channels.get(channel)
-        return search.snippet.title
-    }
-
-    public getYT = async (channels: string[]) => {
-        const yt: any[] = []
+    public getTwitch = async (channels: string[], reset?: boolean) => {
+        const twitch: any[] = []
         if (channels) {
             for (let i = 0; i < channels.length; i++) {
-                const config = await this.sql.fetchColumn("yt", "config", "channel id", channels[i])
+                let config = await this.sql.fetchColumn("twitch", "config", "channel", channels[i])
                 if (!config?.[0]) continue
                 for (let j = 0; j < config.length; j++) {
                     const current = JSON.parse(config[j])
-                    if (current.guild === this.message.guild?.id) yt.push(current)
+                    if (current.guild === this.message.guild?.id) {
+                        twitch.push(current)
+                        if (reset) {
+                            config[j] = ""
+                            config = config.filter(Boolean)
+                            await this.sql.updateColumn("twitch", "config", config, "channel", channels[i])
+                        }
+                    }
                 }
             }
         }
-        if (!yt?.[0]) yt.push({channel: null, text: null, guild: this.message.guild?.id, mention: "", state: "Off", id: null, token: null})
-        return yt
+        if (!twitch?.[0]) twitch.push({guild: this.message.guild?.id, channel: null, text: null, mention: null, state: "Off"})
+        return twitch
     }
 
     public run = async (args: string[]) => {
@@ -69,71 +69,70 @@ export default class YTNotify extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            await ytPrompt(message)
+            await twitchPrompt(message)
             return
         }
 
-        const channels = await sql.fetchColumn("special channels", "yt channels")
-        const yt = await this.getYT(channels)
+        const channels = await sql.fetchColumn("special channels", "twitch channels")
+        const twitch = await this.getTwitch(channels)
         const step = 3.0
-        const increment = Math.ceil((yt ? yt.length : 1) / step)
-        const ytArray: MessageEmbed[] = []
+        const increment = Math.ceil((twitch ? twitch.length : 1) / step)
+        const twitchArray: MessageEmbed[] = []
         for (let i = 0; i < increment; i++) {
-            let ytDesc = ""
+            let twitchDesc = ""
             for (let j = 0; j < step; j++) {
-                if (yt[0]?.channel) {
+                if (twitch?.[0].channel) {
                     const k = (i*step)+j
-                    if (!yt[k]) break
-                    const channel = yt[k]?.channel ? `[**${yt[k].name}**](https://www.youtube.com/channel/${yt[k].channel})` : "None"
-                    ytDesc += `**${k + 1} =>**\n` +
-                    `${discord.getEmoji("star")}YT Channel: ${channel}\n` +
-                    `${discord.getEmoji("star")}Text Channel: ${yt[k].text ? `<#${yt[k].text}>` : "None"}\n` +
-                    `${discord.getEmoji("star")}Role Mention: ${yt[k].mention ? yt[k].mention : "None"}\n` +
-                    `${discord.getEmoji("star")}State: **${yt[k].state ? yt[k].state : "Off"}**\n`
+                    if (!twitch[k]) break
+                    const channel = twitch[k]?.channel ? `[**${twitch[k].channel}**](https://www.twitch.tv/${twitch[k].channel})` : "None"
+                    twitchDesc += `**${k + 1} =>**\n` +
+                    `${discord.getEmoji("star")}Twitch Channel: ${channel}\n` +
+                    `${discord.getEmoji("star")}Text Channel: ${twitch[k].text ? `<#${twitch[k].text}>` : "None"}\n` +
+                    `${discord.getEmoji("star")}Role Mention: ${twitch[k].mention ? twitch[k].mention : "None"}\n` +
+                    `${discord.getEmoji("star")}State: **${twitch[k].state ? twitch[k].state : "Off"}**\n`
                 } else {
-                    ytDesc = "None"
+                    twitchDesc = "None"
                 }
             }
-            const ytEmbed = embeds.createEmbed()
-            ytEmbed
-            .setTitle(`**YT Notify** ${discord.getEmoji("tohruSmug")}`)
+            const twitchEmbed = embeds.createEmbed()
+            twitchEmbed
+            .setTitle(`**Twitch Notify** ${discord.getEmoji("chinoSmug")}`)
             .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
             .setDescription(Functions.multiTrim(`
-                Configure youtube upload notifications. To avoid triggering a link command, use the channel id instead (it's after youtube.com/channel/)
+                Configure twitch livestream notifications.
                 newline
-                **YT Channel** - The channel to receive upload notifications from.
+                **Twitch Channel** - The channel to receive livestream notifications from.
                 **Text Channel** - Where notifications are sent.
-                **Role Mention** - Mentions a role on every upload (optional)
+                **Role Mention** - Mentions a role whenever the channel is live (optional)
                 newline
                 __Current Settings__
-                ${ytDesc}
+                ${twitchDesc}
                 newline
                 __Edit Settings__
-                ${discord.getEmoji("star")}**Type a channel id or name** to set the youtube channel (required).
+                ${discord.getEmoji("star")}**Type a channel id or name** to set the twitch channel (required).
                 ${discord.getEmoji("star")}**Mention a text channel** to set the text channel (required).
                 ${discord.getEmoji("star")}**Mention a role or type a role id** to set the role mention.
                 ${discord.getEmoji("star")}Type **toggle (setting number)** to toggle the state.
                 ${discord.getEmoji("star")}Type **delete (setting number)** to delete a setting.
-                ${discord.getEmoji("star")}Type **edit (setting number)** to edit the the role mention.
-                ${discord.getEmoji("star")}Type **refresh** to refresh all subscriptions that could have been stopped (eg. server restart).
+                ${discord.getEmoji("star")}Type **edit (setting number)** to edit the role mention.
                 ${discord.getEmoji("star")}Type **reset** to reset all settings.
                 ${discord.getEmoji("star")}Type **cancel** to exit.
             `))
-            ytArray.push(ytEmbed)
+            twitchArray.push(twitchEmbed)
         }
 
-        if (ytArray.length === 1) {
-            message.channel.send(ytArray[0])
+        if (twitchArray.length === 1) {
+            message.channel.send(twitchArray[0])
         } else {
-            embeds.createReactionEmbed(ytArray)
+            embeds.createReactionEmbed(twitchArray)
         }
 
-        async function ytPrompt(msg: Message) {
-            let channels = await sql.fetchColumn("special channels", "yt channels")
+        async function twitchPrompt(msg: Message) {
+            let channels = await sql.fetchColumn("special channels", "twitch channels")
             if (!channels) channels = []
-            const yt = channels[0] ? await self.getYT(channels) : []
+            const twitch = channels[0] ? await self.getTwitch(channels) : []
             const responseEmbed = embeds.createEmbed()
-            .setTitle(`**YT Notify** ${discord.getEmoji("tohruSmug")}`)
+            .setTitle(`**Twitch Notify** ${discord.getEmoji("chinoSmug")}`)
 
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
@@ -141,22 +140,23 @@ export default class YTNotify extends Command {
                 return msg.channel.send(responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("special channels", "yt channels", null)
-                await axios.delete(`${config.kisaragiAPI}/youtube`, {data: {channels, guild: message.guild?.id}})
+                await sql.updateColumn("special channels", "twitch channels", null)
+                await self.getTwitch(channels, true)
                 responseEmbed
-                .setDescription(`${discord.getEmoji("star")}YT Notify settings were wiped!`)
+                .setDescription(`${discord.getEmoji("star")}Twitch notify settings were wiped!`)
                 return msg.channel.send(responseEmbed)
             }
+
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
                 if (Number.isNaN(num)) return msg.reply("Invalid setting number!")
-                if (yt ? yt[num - 1] : false) {
-                    const channel = yt[num - 1].channel
+                if (twitch ? twitch[num - 1] : false) {
+                    const channel = twitch[num - 1].channel
                     const index = channels.findIndex((c: string) => c === channel)
                     channels[index] = ""
                     channels = channels.filter(Boolean)
-                    await sql.updateColumn("special channels", "yt channels", channels)
-                    await axios.delete(`${config.kisaragiAPI}/youtube`, {data: {channels: [channel], guild: message.guild?.id}})
+                    await sql.updateColumn("special channels", "twitch channels", channels)
+                    await self.getTwitch([channel], true)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                     return msg.channel.send(responseEmbed)
@@ -169,9 +169,9 @@ export default class YTNotify extends Command {
             if (msg.content.toLowerCase().includes("toggle")) {
                 const num = Number(msg.content.replace(/toggle/gi, "").replace(/\s+/g, ""))
                 if (Number.isNaN(num)) return msg.reply("Invalid setting number!")
-                if (yt ? yt[num - 1] : false) {
+                if (twitch ? twitch[num - 1] : false) {
                     let desc = ""
-                    const current = yt[num - 1]
+                    const current = twitch[num - 1]
                     if (current.state === "On") {
                         current.state = "Off"
                         desc += `${discord.getEmoji("star")}Setting ${num} was toggled **off**!`
@@ -179,9 +179,13 @@ export default class YTNotify extends Command {
                         current.state = "On"
                         desc += `${discord.getEmoji("star")}Setting ${num} was toggled **on**!`
                     }
-                    await axios.post(`${config.kisaragiAPI}/youtube`, current)
-                    responseEmbed
-                    .setDescription(desc)
+                    const config = await sql.fetchColumn("twitch", "config", "channel", current.channel)
+                    const index = config.findIndex((c: any) => {
+                        if (c.guild === current.guild && c.text === current.text && c.mention === current.mention) return true
+                    })
+                    config[index] = current
+                    await sql.updateColumn("twitch", "config", config, "channel", current.channel)
+                    responseEmbed.setDescription(desc)
                     return msg.channel.send(responseEmbed)
                 } else {
                     responseEmbed
@@ -194,8 +198,8 @@ export default class YTNotify extends Command {
                 const tempMsg = newMsg.slice(1).join(" ")
                 const num = Number(newMsg[0])
                 if (Number.isNaN(num)) return msg.reply("Invalid setting number!")
-                if (yt ? yt[num - 1] : false) {
-                    const current = yt[num - 1]
+                if (twitch ? twitch[num - 1] : false) {
+                    const current = twitch[num - 1]
                     let desc = ""
                     const nRole = tempMsg.match(/\d{10,}/)?.[0] ?? ""
                     if (nRole) {
@@ -207,9 +211,13 @@ export default class YTNotify extends Command {
                         current.mention = ""
                         desc += `${discord.getEmoji("star")}Role mentions removed!\n`
                     }
-                    await axios.post(`${config.kisaragiAPI}/youtube`, current)
-                    responseEmbed
-                    .setDescription(desc)
+                    const config = await sql.fetchColumn("twitch", "config", "channel", current.channel)
+                    const index = config.findIndex((c: any) => {
+                        if (c.guild === current.guild && c.text === current.text && c.state === current.state) return true
+                    })
+                    config[index] = current
+                    await sql.updateColumn("twitch", "config", config, "channel", current.channel)
+                    responseEmbed.setDescription(desc)
                     return msg.channel.send(responseEmbed)
                 } else {
                     responseEmbed
@@ -222,15 +230,7 @@ export default class YTNotify extends Command {
 
             const newText = msg.content.match(/(?<=<#)(.*?)(?=>)/)?.[0] ?? ""
             const newRole = msg.content.replace(newText, "").match(/\d{10,}/)?.[0] ?? ""
-            let newChannel = msg.content.replace(newRole, "").replace(/(<#)(.*?)(>)/, "")?.trim() ?? ""
-            if (newChannel) {
-                if (newChannel.match(/UC/)) {
-                    newChannel = newChannel.match(/(UC|HC)(.*?)(?=\/|$)/)?.[0] ?? ""
-                } else {
-                    const search = await self.youtube.channels.get(newChannel)
-                    newChannel = search?.id ?? ""
-                }
-            }
+            const newChannel = msg.content.replace(newRole, "").replace(/(<#)(.*?)(>)/, "")?.trim() ?? ""
 
             if (newText) setText = true
             if (newRole) setRole = true
@@ -243,10 +243,12 @@ export default class YTNotify extends Command {
             if (setChannel) {
                 const found = channels.find((c: string) => c === newChannel)
                 if (!found) channels.push(newChannel)
-                const name = await self.getName(newChannel)
-                request.channel = newChannel
-                request.name = name
-                description += `${discord.getEmoji("star")}Youtube channel set to [**${name}**](https://www.youtube.com/channel/${newChannel})!\n`
+                try {
+                    await SQLQuery.insertInto("twitch", "channel", newChannel)
+                } finally {
+                    request.channel = newChannel
+                    description += `${discord.getEmoji("star")}Twitch channel set to [**${newChannel}**](https://www.twitch.tv/${newChannel})!\n`
+                }
             }
 
             if (setText) {
@@ -265,30 +267,30 @@ export default class YTNotify extends Command {
                 try {
                     const webhooks = await text.fetchWebhooks()
                     let webhook: Webhook
-                    if (webhooks.first()?.name === "Youtube") {
+                    if (webhooks.first()?.name === "Twitch") {
                         webhook = webhooks.first()!
                     } else {
-                        webhook = await text.createWebhook("Youtube", {avatar: discord.user!.displayAvatarURL({format: "png", dynamic: true})})
+                        webhook = await text.createWebhook("Twitch", {avatar: discord.user!.displayAvatarURL({format: "png", dynamic: true})})
                     }
                     request.id = webhook.id
                     request.token = webhook.token
                     request.state = "On"
                     description += `${discord.getEmoji("star")}State is **on**!\n`
+                    let config = await sql.fetchColumn("twitch", "config", "channel", newChannel)
+                    if (!config) config = []
+                    config.push(request)
+                    await sql.updateColumn("twitch", "config", config, "channel", newChannel)
                 } catch {
-                    return message.reply(`I need the **Manage Webhooks** permission in order to send upload notifications ${discord.getEmoji("kannaFacepalm")}`)
+                    return message.reply(`I need the **Manage Webhooks** permission in order to send livestream notifications ${discord.getEmoji("kannaFacepalm")}`)
                 }
             } else {
-                return message.reply(`Setting both the youtube channel and text channel is required.`)
+                return message.reply(`Setting both the twitch channel and text channel is required.`)
             }
             if (!description) return message.reply(`No edits were made ${discord.getEmoji("kannaFacepalm")}`)
-            await axios.post(`${config.kisaragiAPI}/youtube`, request)
-            await sql.updateColumn("special channels", "yt channels", channels)
-            responseEmbed
-            .setDescription(description)
+            await sql.updateColumn("special channels", "twitch channels", channels)
+            responseEmbed.setDescription(description)
             return msg.channel.send(responseEmbed)
-
         }
-
-        await embeds.createPrompt(ytPrompt)
+        await embeds.createPrompt(twitchPrompt)
     }
 }

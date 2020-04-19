@@ -18,6 +18,7 @@
     "imagesAPI": "https://tenpi-images.herokuapp.com",
     "openCVAPI": "https://tenpi-opencv.herokuapp.com",
     "animeAPI": "https://anime-pictures.herokuapp.com",
+    "kisaragiAPI": "https://kisaragi-discord-bot.herokuapp.com",
     "guildLog": "683760526840692761",
     "feedback": "683756932317577232",
     "tenpiLand": "578604087763795970",

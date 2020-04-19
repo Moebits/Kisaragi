@@ -1,17 +1,30 @@
 import bodyParser from "body-parser"
 import express from "express"
 import path from "path"
+import ytNotification from "youtube-notification"
 import config from "./config.json"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
+import {YoutubeOnline} from "./structures/YoutubeOnline"
 
 export default class Server {
+    private readonly yt = new ytNotification({
+        hubCallback: `${config.kisaragiAPI}/yt`,
+        middleware: true
+    })
+
+    public getYT = () => {
+        return this.yt
+    }
+
     public run = () => {
         const app = express()
         const port = process.env.PORT || 5000
 
         app.use(bodyParser.json())
         app.use(bodyParser.urlencoded({extended: true}))
+        app.use("/yt", this.yt.listener())
+        YoutubeOnline.youtubeRoutes(app)
 
         app.get("/twitter", async (req, res) => {
             res.setHeader("Content-Type", "text/html;charset=utf-8")
@@ -47,7 +60,10 @@ export default class Server {
     }
 }
 
+const server = new Server()
+
 if (config.testing === "off") {
-    const server = new Server()
     server.run()
 }
+const yt = server.getYT()
+export {yt}

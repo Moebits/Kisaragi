@@ -1,11 +1,17 @@
 import archiver from "archiver"
+import axios from "axios"
 import child_process from "child_process"
 import {Message, Util} from "discord.js"
 import emojiRegex from "emoji-regex"
 import fs from "fs"
 import path from "path"
 import * as stream from "stream"
+import TwitchClient from "twitch"
 import * as config from "../config.json"
+import {Kisaragi} from "./Kisaragi"
+import {SQLQuery} from "./SQLQuery"
+
+const activeStreams = new Set()
 
 export class Functions {
     private static readonly colors: string[] = config.colors
@@ -421,4 +427,51 @@ export class Functions {
         return new Silence() as unknown as stream.Readable
     }
 
+    /** Polls the twitch api for stream notifications */
+    public static pollTwitch = (discord: Kisaragi) => {
+        const twitch = TwitchClient.withCredentials(process.env.TWITCH_CLIENT_ID!, process.env.TWITCH_ACCESS_TOKEN)
+        const callAPI = async () => {
+            const channels = await SQLQuery.selectColumn("twitch", "channel")
+            if (!channels?.[0]) return
+            const streams = await twitch.helix.streams.getStreams({userName: channels})
+            const currentStreamers: string[] = []
+            for (let i = 0; i < streams.data.length; i++) {
+                if (!activeStreams.has(streams.data[i].userDisplayName)) {
+                    discord.emit("twitchOnline", streams.data[i])
+                    activeStreams.add(streams.data[i].userDisplayName)
+                }
+                currentStreamers.push(streams.data[i].userDisplayName)
+            }
+            if (currentStreamers?.[0]) {
+                const recordedStreams = Array.from(activeStreams) as string[]
+                for (let i = 0; i < recordedStreams.length; i++) {
+                    if (!currentStreamers.includes(recordedStreams[i])) {
+                        activeStreams.delete(recordedStreams[i])
+                    }
+                }
+            } else {
+                activeStreams.clear()
+            }
+            setTimeout(callAPI, 120000)
+        }
+        setTimeout(callAPI, 120000)
+    }
+
+    /** Re-subscribes to youtube notifications on bot restart */
+    public static youtubeReSubscribe = async () => {
+        if (config.testing === "on") return
+        const yt: any[] = []
+        const configs = await SQLQuery.selectColumn("yt", "config")
+        for (let i = 0; i < configs.length; i++) {
+            for (let j = 0; j < configs[i].length; j++) {
+                const current = JSON.parse(configs[i][j])
+                yt.push(current)
+            }
+        }
+        for (let i = 0; i < yt.length; i++) {
+            if (!yt[i]) break
+            const current = {...yt[i], refresh: true}
+            await axios.post(`${config.kisaragiAPI}/youtube`, current)
+        }
+    }
 }
