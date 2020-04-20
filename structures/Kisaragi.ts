@@ -1,3 +1,4 @@
+import axios from "axios"
 import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, MessageAttachment, Role, TextChannel, User} from "discord.js"
 import {message} from "../test/login"
 import * as config from "./../config.json"
@@ -196,6 +197,23 @@ export class Kisaragi extends Client {
             const found = message.guild.members.cache.find((m) => mutedUsers.includes(m.id))
             if (found) return true
             return false
+        }
+    }
+
+    /** Post guild count on bot lists */
+    public postGuildCount = async () => {
+        if (config.testing === "on") return
+        const urls = [
+            `https://discord.bots.gg/api/v1/bots/${this.user!.id}/stats`
+        ]
+        const headers = [
+            {authorization: process.env.DISCORD_BOTS_TOKEN}
+        ]
+        const data = [
+            {guildCount: this.guilds.cache.size}
+        ]
+        for (let i = 0; i < urls.length; i++) {
+            await axios.post(urls[i], data[i], {headers: headers[i]})
         }
     }
 }

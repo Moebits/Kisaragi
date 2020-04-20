@@ -7,10 +7,13 @@ import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 import {YoutubeOnline} from "./structures/YoutubeOnline"
 
-const yt = new ytNotification({
-    hubCallback: `${config.kisaragiAPI}/yt`,
-    middleware: true
-})
+let yt: any
+if (!yt) {
+    yt = new ytNotification({
+        hubCallback: `${config.kisaragiAPI}/yt`,
+        middleware: true
+    })
+}
 export default class Server {
     public run = () => {
         const app = express()
