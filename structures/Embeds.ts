@@ -28,14 +28,14 @@ export class Embeds {
 
     /** Creates a basic embed */
     public createEmbed = () => {
-        let color = colors.has(this.message.guild?.id) ? colors.get(this.message.guild?.id) : Functions.randomColor() as any
+        let color = colors.has(this.message?.guild?.id) ? colors.get(this.message?.guild?.id) : Functions.randomColor() as any
         if (Array.isArray(color)) color = color[Math.floor(Math.random()*color.length)]
         if (color === "default") color = Functions.randomColor()
         const embed = new MessageEmbed()
         embed
         .setColor(color)
         .setTimestamp(embed.timestamp!)
-        .setFooter(`Responded in ${this.functions.responseTime()}`, this.message.author!.displayAvatarURL({format: "png", dynamic: true}))
+        .setFooter(`Responded in ${this.functions.responseTime()}`, this.message?.author?.displayAvatarURL({format: "png", dynamic: true}))
         return embed
     }
 

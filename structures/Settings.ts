@@ -229,7 +229,7 @@ export class Settings {
         const entries = Object.entries(this.tableMap)
         for (const [table, object] of entries) {
             if (table === "points") {
-                const exists = await this.sql.fetchColumn("points", "score list")
+                const exists = await this.sql.fetchColumn("points", "scores")
                 if (exists) continue
             }
             const settings = Object.entries(object)

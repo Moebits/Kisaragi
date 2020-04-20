@@ -1,4 +1,5 @@
 import {Guild, Message, TextChannel} from "discord.js"
+import * as config from "../config.json"
 import {Embeds} from "./../structures/Embeds"
 import {Functions} from "./../structures/Functions"
 import {Kisaragi} from "./../structures/Kisaragi"
@@ -16,7 +17,7 @@ export default class GuildDelete {
         SQLQuery.deleteGuild(guild.id)
 
         const logGuild = async (guild: Guild) => {
-            const guildChannel = discord.channels.cache.get("683760526840692761") as TextChannel
+            const guildChannel = discord.channels.cache.get(config.guildLog) as TextChannel
             const invite = await discord.getInvite(guild)
             const logEmbed = embeds.createEmbed()
             logEmbed
@@ -32,7 +33,7 @@ export default class GuildDelete {
                 `${discord.getEmoji("star")}_Members:_ **${guild.memberCount}**\n` +
                 `${discord.getEmoji("star")}_Invite:_ ${invite}`
             )
-            guildChannel.send(logEmbed)
+            await guildChannel.send(logEmbed)
             return
         }
         logGuild(guild)

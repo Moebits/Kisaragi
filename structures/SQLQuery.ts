@@ -29,7 +29,6 @@ const tableList = [
   "blocks",
   "channels",
   "emojis",
-  "guild info",
   "guilds",
   "images",
   "logs",
