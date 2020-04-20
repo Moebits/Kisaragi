@@ -64,14 +64,16 @@ export class CommandFunctions {
                 timeLeft = timeout
             }
             const guildMsg = await guildChannel.messages.fetch({limit: 1}).then((m) => m.first())
-            const update = setInterval(async () => {
+            const update = async () => {
                 let newTimeLeft = timeLeft - 60000
                 if (newTimeLeft <= 0) newTimeLeft = timeout
                 const toggle = await sql.fetchColumn("auto", "toggle")
-                if (!toggle?.[i] || toggle?.[i] === "inactive" || newTimeLeft === timeout) clearInterval(update)
+                if (!toggle?.[i] || toggle?.[i] === "inactive" || newTimeLeft === timeout) return
                 rawTimeLeft[i] = newTimeLeft
                 await sql.updateColumn("auto", "timeout", rawTimeLeft)
-            }, 60000)
+                setTimeout(update, 60000)
+            }
+            setTimeout(update, 60000)
             const autoRun = async () => {
                 if (!toggle?.[i] || toggle?.[i] === "inactive") return
                 const msg = guildMsg ?? this.message

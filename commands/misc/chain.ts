@@ -18,7 +18,7 @@ export default class Chain extends Command {
             \`=>chain kawaii & kitsune & neko\`
             `,
             aliases: [],
-            cooldown: 100
+            cooldown: 300
         })
     }
 
