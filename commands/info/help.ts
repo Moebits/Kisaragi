@@ -24,7 +24,7 @@ export default class Help extends Command {
             \`=>help !website 2\`
             `,
             aliases: ["h"],
-            cooldown: 5
+            cooldown: 20
         })
     }
 

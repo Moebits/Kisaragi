@@ -54,7 +54,7 @@ export default class LevelChannels extends Command {
                     const k = (i*step)+j
                     if (!channels[k]) break
                     description += `**${k + 1} =>**\n` +
-                    `${discord.getEmoji("star")}Channel: ${channels[k]}\n`
+                    `${discord.getEmoji("star")}Channel: <#${channels[k]}>\n`
                 } else {
                     description = "None"
                 }

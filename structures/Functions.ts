@@ -475,4 +475,34 @@ export class Functions {
             await axios.post(`${config.kisaragiAPI}/youtube`, current)
         }
     }
+
+    /** Sum all object values */
+    public static sumObjectValues = (obj: object, ignore?: string) => {
+        if (ignore) obj[ignore] = 0
+        return Object.values(obj).reduce((a, b) => Number(a) + Number(b)) as number
+    }
+
+    /** Sort an object by value */
+    public static sortObject = (obj: object) => {
+        let arr = Object.entries(obj)
+        arr = arr.sort((a, b) => b[1] - a[1])
+        const newObj = {}
+        for (let i = 0; i < arr.length; i++) {
+            newObj[arr[i][0]] = arr[i][1]
+        }
+        return newObj
+    }
+
+    /** Join two arrays to an object */
+    public static doubleObjectArray = <A, B>(arr1: A[], arr2: B[], property?: string) => {
+        const obj = {} as any
+        for (let i = 0; i < arr1.length; i++) {
+            if (property) {
+                obj[arr1[i]] = JSON.parse(arr2[i] as unknown as string)[property]
+            } else {
+                obj[arr1[i]] = arr2[i]
+            }
+        }
+        return obj
+    }
 }

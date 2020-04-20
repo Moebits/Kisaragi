@@ -16,8 +16,10 @@ export default class MessageDelete {
 
         const logDeleted = async (message: Message) => {
             const messageLog = await sql.fetchColumn("logs", "message log")
+            const prefix = await SQLQuery.fetchPrefix(message)
             if (messageLog) {
                 const content = message.content ? message.content : ""
+                if (content.startsWith(prefix)) return
                 const image = message.attachments.first() ? message.attachments.first()!.proxyURL : ""
                 if (!content && !image) return
                 const logs = await message.guild?.fetchAuditLogs({type: "MESSAGE_DELETE", limit: 1}).then((l) => l.entries.first())

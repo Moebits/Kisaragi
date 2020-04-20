@@ -22,11 +22,10 @@ export default class LevelRoles extends Command {
             `
             \`=>levelroles\`
             \`=>levelroles @senpai 10000\`
-            \`=>levelroles @cute 5000 You are so cute!\`
+            \`=>levelroles @cute 5000 You are cute!\`
             `,
             aliases: [],
-            cooldown: 10,
-            unlist: true
+            cooldown: 10
         })
     }
 
@@ -56,11 +55,12 @@ export default class LevelRoles extends Command {
                 if (levelRoles) {
                     const k = (i*step)+j
                     if (!levelRoles[k]) break
+                    const curr = JSON.parse(levelRoles[k])
                     const defaultMessage = `Congrats user, you now have the role rolename! ${discord.getEmoji("kannaWave")}`
                     settings += `${k + 1} **=>**\n` +
-                    `${discord.getEmoji("star")}_Role:_ **${levelRoles[k].role ? `<@&${levelRoles[k].role}>` : "None"}**\n`+
-                    `${discord.getEmoji("star")}_Level:_ **${levelRoles[k].level ? levelRoles[k].level : "None"}**\n`+
-                    `${discord.getEmoji("star")}_Message:_ **${levelRoles[k].message ? levelRoles[k].message : defaultMessage}**\n`
+                    `${discord.getEmoji("star")}_Role:_ **${curr.role ? `<@&${curr.role}>` : "None"}**\n`+
+                    `${discord.getEmoji("star")}_Level:_ **${curr.level ? curr.level : "None"}**\n`+
+                    `${discord.getEmoji("star")}_Message:_ **${curr.message ? curr.message : defaultMessage}**\n`
                 } else {
                     settings = "None"
                 }
@@ -119,6 +119,52 @@ export default class LevelRoles extends Command {
                 msg.channel.send(responseEmbed)
                 return
             }
+            if (msg.content.toLowerCase().startsWith("delete")) {
+                const newMsg = Number(msg.content.replace(/delete/g, "").trim())
+                const num = newMsg - 1
+                if (newMsg) {
+                        roles[num] = ""
+                        roles = roles.filter(Boolean)
+                        await sql.updateColumn("points", "level roles", roles)
+                        return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
+                } else {
+                    return msg.channel.send(responseEmbed.setDescription("Setting not found!"))
+                }
+            }
+            if (msg.content.toLowerCase().startsWith("edit")) {
+                const newMsg = msg.content.replace(/edit/g, "").trim().split(" ")
+                const tempMsg = newMsg.slice(1).join(" ")
+                const num = Number(newMsg[0]) - 1
+                if (tempMsg) {
+                    let editDesc = ""
+                    let tempRole = tempMsg.match(/(?<=<@&)(.*?)(?=>)/)?.[0] ?? ""
+                    if (!tempRole) tempRole = tempMsg.match(/\d{15,}/)?.[0] ?? ""
+                    const tempLevel = tempMsg.replace(tempRole, "").match(/-?\d+/)?.[0] ?? ""
+                    const tempMessage = tempMsg.replace(tempRole, "").replace(tempLevel, "").replace(/<@&/g, "").replace(/>/g, "").trim()
+                    const curr = JSON.parse(roles[num])
+                    if (tempRole) {
+                        const roleTest = message.guild?.roles.cache.get(tempRole)
+                        if (!roleTest) return message.reply(`Invalid role ${discord.getEmoji("kannaFacepalm")}`)
+                        curr.role = tempRole
+                        editDesc += `${discord.getEmoji("star")}Level up role set to <@&${tempRole}>!\n`
+                    }
+                    if (setLevel) {
+                        curr.level = tempLevel
+                        editDesc += `${discord.getEmoji("star")}Level required set to ${tempLevel}!\n`
+                    }
+                    if (setMsg) {
+                        curr.message = tempMessage
+                        editDesc += `${discord.getEmoji("star")}Message set to ${tempMessage}!\n`
+                    }
+                    if (!editDesc) return message.reply(`No edits were made ${discord.getEmoji("kannaFacepalm")}`)
+                    roles[num] = curr
+                    await sql.updateColumn("points", "level roles", roles)
+
+                    return msg.channel.send(responseEmbed.setDescription(editDesc))
+                } else {
+                    return msg.channel.send(responseEmbed.setDescription("No edits specified!"))
+                }
+            }
 
             let newRole = msg.content.match(/(?<=<@&)(.*?)(?=>)/)?.[0] ?? ""
             if (!newRole) newRole = msg.content.match(/\d{15,}/)?.[0] ?? ""
@@ -141,7 +187,7 @@ export default class LevelRoles extends Command {
 
             if (setLevel) {
                 obj.level = newLevel
-                description += `${discord.getEmoji("star")}Level required set to ${newRole}!\n`
+                description += `${discord.getEmoji("star")}Level required set to ${newLevel}!\n`
             }
 
             if (setMsg) {

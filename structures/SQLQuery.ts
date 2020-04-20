@@ -464,4 +464,45 @@ export class SQLQuery {
     await SQLQuery.updateColumn("oauth2", "screen name", username, "user id", discordID)
     await SQLQuery.updateColumn("oauth2", "twitter id", userID, "user id", discordID)
   }
+
+  /** Update usage statistics */
+  public usageStatistics = async (cmdPath: string) => {
+    const command = await this.fetchColumn("commands", "command", "path", cmdPath)
+    const cmdUsage = await this.fetchColumn("commands", "usage", "command", command)
+    const newUsage = Number(cmdUsage) ? Number(cmdUsage) + 1 : 1
+    await this.updateColumn("commands", "usage", newUsage, "command", command)
+    if (this.message.guild) {
+      let guildUsage = await this.fetchColumn("guilds", "usage")
+      if (!guildUsage) {
+        guildUsage = {}
+      } else {
+        guildUsage = JSON.parse(guildUsage)
+      }
+      if (guildUsage[command]) {
+        guildUsage[command] = Number(guildUsage[command]) + 1
+      } else {
+        guildUsage[command] = 1
+      }
+      guildUsage.total = Functions.sumObjectValues(guildUsage, "total")
+      await this.updateColumn("guilds", "usage", guildUsage)
+    }
+    let userUsage = await this.fetchColumn("misc", "usage", "user id", this.message.author.id)
+    if (!userUsage) {
+      try {
+        await SQLQuery.insertInto("misc", "user id", this.message.author.id)
+      } catch {
+        // Do nothing
+      }
+      userUsage = {}
+    } else {
+      userUsage = JSON.parse(userUsage)
+    }
+    if (userUsage[command]) {
+      userUsage[command] = Number(userUsage[command]) + 1
+    } else {
+      userUsage[command] = 1
+    }
+    userUsage.total = Functions.sumObjectValues(userUsage, "total")
+    await this.updateColumn("misc", "usage", userUsage, "user id", this.message.author.id)
+  }
 }

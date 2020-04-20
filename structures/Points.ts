@@ -7,6 +7,54 @@ import {SQLQuery} from "./SQLQuery"
 export class Points {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
+    /** Adds level up roles */
+    public levelRoles = async (user: any, batch?: boolean) => {
+        const sql = new SQLQuery(this.message)
+        const embeds = new Embeds(this.discord, this.message)
+        const roles = await sql.fetchColumn("points", "level roles")
+        if (!roles?.[0]) return
+        let add = true
+        const batchRoles: string[] = []
+        for (let i = 0; i < roles.length; i++) {
+            const curr = JSON.parse(roles[i])
+            if (Number(user.level) >= Number(curr.level)) {
+                const role = this.message.guild?.roles.cache.get(curr.role)
+                if (!role) continue
+                try {
+                    await this.message.member?.roles.add(role)
+                } catch {
+                    return this.message.channel.send(`I need the **Manage Roles** permission to add level up roles ${this.discord.getEmoji("kannaFacepalm")}`)
+                }
+                if (batch) {
+                    batchRoles.push(role.id)
+                } else {
+                    let levelMessage = curr.message ? curr.message : `Congrats user, you now have the role rolename! ${this.discord.getEmoji("kannaWave")}`
+                    levelMessage = levelMessage.replace("user", `<@${this.message.author!.id}>`).replace("tag", `**${this.message.author.tag}**`).replace("name", `**${this.message.author.username}**`).replace("rolename", role.name).replace("rolemention", `<@&${role.id}>`)
+                    await this.message.channel.send(levelMessage)
+                }
+            } else if (Number(user.level) < Number(curr.level)) {
+                const role = this.message.guild?.roles.cache.get(curr.role)
+                if (!role) continue
+                await this.message.member?.roles.remove(role).catch(() => null)
+                add = false
+                if (batch) batchRoles.push(role.id)
+            }
+        }
+        if (batch) {
+            let roleMessage = add ? `You gained the role rolementions!` : `You lost the role rolementions!`
+            const title = add ? `**Level Role Add** ${this.discord.getEmoji("aquaUp")}` : `**Level Role Remove** ${this.discord.getEmoji("sagiriBleh")}`
+            const authorText = add ? `role add` : `role remove`
+            const authorImage = add ? `https://cdn4.iconfinder.com/data/icons/material-design-content-icons/512/add-circle-512.png` : `https://img.icons8.com/plasticine/2x/filled-trash.png`
+            roleMessage = roleMessage.replace("rolementions", batchRoles.map((r) => `<@&${r}>`).join(", "))
+            const levelRoleEmbed = embeds.createEmbed()
+            levelRoleEmbed
+            .setAuthor(authorText, authorImage)
+            .setTitle(title)
+            .setDescription(roleMessage)
+            await this.message.channel.send(levelRoleEmbed)
+        }
+    }
+
     /** Resets a users points */
     public zero = async (id: string) => {
         const sql = new SQLQuery(this.message)
@@ -43,8 +91,8 @@ export class Points {
 
                     if (newLevel > user.level) {
                         let levelUpMessage = await sql.fetchColumn("points", "level message")
-                        levelUpMessage = levelUpMessage.replace("user", `<@${this.message.author!.id}>`)
-                        levelUpMessage = levelUpMessage.replace("newlevel", `**${newLevel}**`)
+                        levelUpMessage = levelUpMessage.replace("user", `<@${this.message.author!.id}>`).replace("tag", `**${this.message.author.tag}**`).replace("name", `**${this.message.author.username}**`)
+                        levelUpMessage = levelUpMessage.replace("newlevel", `**${newLevel}**`).replace("newlevel", `**${newLevel}**`).replace("totalpoints", `**${user.score}**`)
                         user.level = newLevel
                         scores[i] = JSON.stringify(user)
                         await sql.updateColumn("points", "scores", scores)
@@ -52,7 +100,8 @@ export class Points {
                         levelEmbed
                         .setTitle(`**Level Up!** ${this.discord.getEmoji("karenXmas")}`)
                         .setDescription(levelUpMessage)
-                        this.message.channel.send(levelEmbed)
+                        await this.message.channel.send(levelEmbed)
+                        await this.levelRoles(user, true)
                     }
 
                     if (newLevel < user.level) {
@@ -63,7 +112,8 @@ export class Points {
                         levelEmbed
                         .setTitle(`**Level Down!** ${this.discord.getEmoji("kaosWTF")}`)
                         .setDescription(`You were leveled down to level **${newLevel}**!`)
-                        this.message.channel.send(levelEmbed)
+                        await this.message.channel.send(levelEmbed)
+                        await this.levelRoles(user, true)
                     }
                 }
             }
@@ -107,7 +157,7 @@ export class Points {
         let levelUpMessage = await sql.fetchColumn("points", "level message")
         pointRange = pointRange?.map((num: string) => Number(num))
         pointThreshold = Number(pointThreshold)
-        levelUpMessage = levelUpMessage.replace("user", `<@${this.message.author!.id}>`)
+        levelUpMessage = levelUpMessage.replace("user", `<@${this.message.author.id}>`).replace("tag", `**${this.message.author.tag}**`).replace("name", `**${this.message.author.username}**`)
         const userList = this.message.guild.members.cache.map((m) => m.id)
 
         if (!scores?.[0]) {
@@ -131,7 +181,7 @@ export class Points {
             if (user.id === this.message.author.id) {
                 const newPoints = Math.floor(user.score + Functions.getRandomNum(pointRange[0], pointRange[1]))
                 const newLevel = Math.floor(user.score / pointThreshold)
-                levelUpMessage = levelUpMessage.replace("newlevel", `**${newLevel}**`)
+                levelUpMessage = levelUpMessage.replace("newlevel", `**${newLevel}**`).replace("totalpoints", `**${newPoints}**`)
 
                 if (newLevel > user.level) {
                     user.level = newLevel
@@ -141,7 +191,8 @@ export class Points {
                     levelEmbed
                     .setTitle(`**Level Up!** ${this.discord.getEmoji("karenXmas")}`)
                     .setDescription(levelUpMessage)
-                    this.message.channel.send(levelEmbed)
+                    await this.message.channel.send(levelEmbed)
+                    await this.levelRoles(user)
                 }
                 user.score = newPoints
                 scores[i] = JSON.stringify(user)

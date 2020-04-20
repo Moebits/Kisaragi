@@ -54,7 +54,7 @@ export default class DetectChannels extends Command {
                     const k = (i*step)+j
                     if (!ignored[k]) break
                     description += `**${k + 1} =>**\n` +
-                    `${discord.getEmoji("star")}Channel: ${ignored[k]}\n`
+                    `${discord.getEmoji("star")}Channel: <#${ignored[k]}>\n`
                 } else {
                     description = "None"
                 }

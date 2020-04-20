@@ -39,6 +39,7 @@ export default class MessageEvent {
       const generate = new Generate(this.discord, message)
       const embeds = new Embeds(this.discord, message)
       const perms = new Permission(this.discord, message)
+      const sql = new SQLQuery(message)
 
       if (message.partial) {
         try {
@@ -61,7 +62,6 @@ export default class MessageEvent {
 
       if (!this.discord.checkMuted(message)) {
         if (message.guild) {
-          const sql = new SQLQuery(message)
           const globalChat = await sql.fetchColumn("special channels", "global chat")
           if (globalChat && !message.content.startsWith(prefix) && !message.author.bot) {
             const globalChannel = message.guild.channels.cache.find((c) => c.id === globalChat)
@@ -183,6 +183,7 @@ export default class MessageEvent {
       const pathFind = await cmdFunctions.findCommand(cmd)
       if (!pathFind) return cmdFunctions.noCommand(cmd)
       const cmdPath = new (require(pathFind).default)(this.discord, message)
+      sql.usageStatistics(pathFind)
 
       if (cmdPath.options.guildOnly) {
         if (message.channel.type === "dm") return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
