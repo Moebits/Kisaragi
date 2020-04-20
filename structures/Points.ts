@@ -7,93 +7,143 @@ import {SQLQuery} from "./SQLQuery"
 export class Points {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
-    // Fetch Score
-    public fetchScore = async () => {
+    /** Resets a users points */
+    public zero = async (id: string) => {
         const sql = new SQLQuery(this.message)
-        const rawScoreList = await sql.fetchColumn("points", "score list", false, false, true)
-        const rawUserList = await sql.fetchColumn("points", "user id list", false, false, true)
-        const scoreList = rawScoreList?.map((num: string) => Number(num))
-        const userList = rawUserList?.map((num: string) => Number(num))
-        for (let i = 0; i < userList.length; i++) {
-            if (userList[i] === Number(this.message.author!.id)) {
-                const userScore: number = scoreList[i]
-                return userScore
+        const scores = await sql.fetchColumn("points", "scores")
+        if (scores) {
+            for (let i = 0; i < scores.length; i++) {
+                const user = JSON.parse(scores[i])
+                if (user.id === id) {
+                    user.score = 0
+                    scores[i] = JSON.stringify(user)
+                    await sql.updateColumn("points", "scores", scores)
+                }
             }
+        } else {
+            return Promise.reject("No scores")
         }
     }
 
-    // Fetch Level
-    public fetchLevel = async () => {
-        const sql = new SQLQuery(this.message)
-        const rawLevelList = await sql.fetchColumn("points", "level list", false, false, true)
-        const rawUserList = await sql.fetchColumn("points", "user id list", false, false, true)
-        const levelList = rawLevelList?.map((num: string) => Number(num))
-        const userList = rawUserList?.map((num: string) => Number(num))
-        for (let i = 0; i < userList.length; i++) {
-            if (userList[i] === Number(this.message.author!.id)) {
-                const userLevel: number = levelList[i]
-                return userLevel
-            }
-        }
-    }
-
-    // Calculate Score
-    public calcScore = async () => {
-        if (this.message.author!.bot) return
+    /** Gives score to a user */
+    public giveScore = async (id: string, score: number) => {
         const sql = new SQLQuery(this.message)
         const embeds = new Embeds(this.discord, this.message)
-        const rawScoreList = await sql.fetchColumn("points", "score list", false, false, true)
-        const rawLevelList = await sql.fetchColumn("points", "level list", false, false, true)
-        const rawPointRange = await sql.fetchColumn("points", "point range", false, false, true)
-        const rawPointThreshold = await sql.fetchColumn("points", "point threshold", false, false, true)
-        const rawUserList = await sql.fetchColumn("points", "user id list", false, false, true)
-        const levelUpMessage = await sql.fetchColumn("points", "level message", false, false, true)
-        const userList = rawUserList?.map((num: string) => Number(num))
+        const scores = await sql.fetchColumn("points", "scores")
+        if (scores) {
+            for (let i = 0; i < scores.length; i++) {
+                const user = JSON.parse(scores[i])
+                if (user.id === id) {
+                    user.score = Number(user.score) + Number(score)
+                    scores[i] = JSON.stringify(user)
+                    await sql.updateColumn("points", "scores", scores)
+                    let pointThreshold = await sql.fetchColumn("points", "point threshold")
+                    pointThreshold = Number(pointThreshold)
+                    const newLevel = Math.floor(user.score / pointThreshold)
 
-        if (!rawScoreList[0]) {
-            const initList: number[] = []
-            for (let i = 0; i < userList.length; i++) {
-                initList[i] = 0
+                    if (newLevel > user.level) {
+                        let levelUpMessage = await sql.fetchColumn("points", "level message")
+                        levelUpMessage = levelUpMessage.replace("user", `<@${this.message.author!.id}>`)
+                        levelUpMessage = levelUpMessage.replace("newlevel", `**${newLevel}**`)
+                        user.level = newLevel
+                        scores[i] = JSON.stringify(user)
+                        await sql.updateColumn("points", "scores", scores)
+                        const levelEmbed = embeds.createEmbed()
+                        levelEmbed
+                        .setTitle(`**Level Up!** ${this.discord.getEmoji("karenXmas")}`)
+                        .setDescription(levelUpMessage)
+                        this.message.channel.send(levelEmbed)
+                    }
+
+                    if (newLevel < user.level) {
+                        user.level = newLevel
+                        scores[i] = JSON.stringify(user)
+                        await sql.updateColumn("points", "scores", scores)
+                        const levelEmbed = embeds.createEmbed()
+                        levelEmbed
+                        .setTitle(`**Level Down!** ${this.discord.getEmoji("kaosWTF")}`)
+                        .setDescription(`You were leveled down to level **${newLevel}**!`)
+                        this.message.channel.send(levelEmbed)
+                    }
+                }
             }
-            await sql.updateColumn("points", "score list", initList)
-            await sql.updateColumn("points", "level list", initList)
+        } else {
+            return Promise.reject("No scores")
+        }
+    }
+
+    /** Fetches a users score */
+    public fetchScore = async () => {
+        const sql = new SQLQuery(this.message)
+        const scores = await sql.fetchColumn("points", "scores")
+        let score = 0
+        let level = 0
+        if (scores) {
+            for (let i = 0; i < scores.length; i++) {
+                const user = JSON.parse(scores[i])
+                if (user.id === this.message.author!.id) {
+                    level = user.level
+                    score = user.score
+                    return {score, level}
+                }
+            }
+        }
+        return {score, level}
+    }
+
+    /** Calculates new scores, and sends a message on level up */
+    public calcScore = async () => {
+        if (this.message.author?.bot) return
+        if (!this.message.guild) return
+        const sql = new SQLQuery(this.message)
+        const embeds = new Embeds(this.discord, this.message)
+        const toggle = await sql.fetchColumn("points", "point toggle")
+        if (!toggle || toggle === "off") return
+        const scores = await sql.fetchColumn("points", "scores")
+        let pointRange = await sql.fetchColumn("points", "point range")
+        let pointThreshold = await sql.fetchColumn("points", "point threshold")
+        let levelUpMessage = await sql.fetchColumn("points", "level message")
+        pointRange = pointRange?.map((num: string) => Number(num))
+        pointThreshold = Number(pointThreshold)
+        levelUpMessage = levelUpMessage.replace("user", `<@${this.message.author!.id}>`)
+        const userList = this.message.guild.members.cache.map((m) => m.id)
+
+        if (!scores?.[0]) {
+            const initList: object[] = []
+            for (let i = 0; i < userList.length; i++) {
+                initList.push({id: userList[i], score: 0, level: 0})
+            }
+            await sql.updateColumn("points", "scores", initList)
             return
         }
 
-        const scoreList = rawScoreList?.map((num: string) => Number(num))
-        const levelList = rawLevelList?.map((num: string) => Number(num))
-        const pointRange = rawPointRange?.map((num: string) => Number(num))
-        const pointThreshold = Number(rawPointThreshold)
-        const userStr = levelUpMessage.replace("user", `<@${this.message.author!.id}>`)
+        const idList = scores.map((s: any) => JSON.parse(s).id)
+        if (!idList.includes(this.message.author.id)) {
+            scores.push({id: this.message.author.id, score: 0, level: 0})
+            await sql.updateColumn("points", "scores", scores)
+            return
+        }
 
-        for (let i = 0; i < userList.length; i++) {
-            if (userList[i] === Number(this.message.author!.id)) {
-                const userScore = scoreList[i]
-                const userLevel = levelList[i]
-                if (userScore === undefined || userScore === null) {
-                    scoreList[i] = 0
-                    levelList[i] = 0
-                    await sql.updateColumn("points", "score list", scoreList)
-                    await sql.updateColumn("points", "score list", levelList)
-                    return
-                }
-                const newPoints = Math.floor(userScore + Functions.getRandomNum(pointRange[0], pointRange[1]))
-                const newLevel = Math.floor(userScore / pointThreshold)
-                const lvlStr = userStr.replace("newlevel", newLevel.toString())
+        for (let i = 0; i < scores.length; i++) {
+            const user = JSON.parse(scores[i])
+            if (user.id === this.message.author.id) {
+                const newPoints = Math.floor(user.score + Functions.getRandomNum(pointRange[0], pointRange[1]))
+                const newLevel = Math.floor(user.score / pointThreshold)
+                levelUpMessage = levelUpMessage.replace("newlevel", `**${newLevel}**`)
 
-                if (newLevel > userLevel) {
-                    levelList[i] = newLevel
-                    await sql.updateColumn("points", "level list", levelList)
-                    const channel = this.message.member!.lastMessage!.channel
+                if (newLevel > user.level) {
+                    user.level = newLevel
+                    scores[i] = JSON.stringify(user)
+                    await sql.updateColumn("points", "scores", scores)
                     const levelEmbed = embeds.createEmbed()
                     levelEmbed
-                    .setTitle(`**Level Up!** ${this.discord.getEmoji("vigneXD")}`)
-                    .setDescription(lvlStr)
-                    channel.send(levelEmbed)
+                    .setTitle(`**Level Up!** ${this.discord.getEmoji("karenXmas")}`)
+                    .setDescription(levelUpMessage)
+                    this.message.channel.send(levelEmbed)
                 }
-
-                scoreList[i] = newPoints
-                await sql.updateColumn("points", "score list", scoreList)
+                user.score = newPoints
+                scores[i] = JSON.stringify(user)
+                await sql.updateColumn("points", "scores", scores)
                 return
             }
         }

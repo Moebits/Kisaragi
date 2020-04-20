@@ -1,5 +1,6 @@
 import {createCanvas} from "canvas"
 import {Message, MessageAttachment} from "discord.js"
+import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -12,9 +13,17 @@ const imageDataURI = require("image-data-uri")
 export default class Rank extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts your rank (disabled).",
-            aliases: [],
-            cooldown: 3
+            description: "Posts your rank (level and score).",
+            help:
+            `
+            \`rank\` - Posts your rank
+            `,
+            examples:
+            `
+            \`=>rank\`
+            `,
+            aliases: ["score", "level", "xp"],
+            cooldown: 5
         })
     }
 
@@ -24,42 +33,41 @@ export default class Rank extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const points = new Points(discord, message)
-        return message.reply("This command is disabled for the time being...")
 
         const canvas = createCanvas(200, 5)
         const ctx = canvas.getContext("2d")
         ctx.fillStyle = "black"
         ctx.fillRect(0, 0, 200, 5)
-        const rawPointThreshold = await sql.fetchColumn("points", "point threshold")
-        const pointThreshold = Number(rawPointThreshold)
+        const pointThreshold = await sql.fetchColumn("points", "point threshold").then((p) => Number(p))
 
-        const userScore = await points.fetchScore()
-        const userLevel = await points.fetchLevel()
+        const {score, level} = await points.fetchScore()
 
         const rankEmbed = embeds.createEmbed()
-
-        if (userScore === (null || undefined)) {
-            message.channel.send(rankEmbed
-                .setDescription("Could not find a score for you!"))
-        } else {
-            const percent: number = (100 / pointThreshold) * (userScore! % pointThreshold)
-            const width: number = (percent / 100) * 200
-            ctx.fillStyle = "#ff3d9b"
-            ctx.fillRect(0, 0, width, 5)
-            const dataUrl = canvas.toDataURL()
-            await imageDataURI.outputFile(dataUrl, path.join(__dirname, `../../../assets/images/dump/rankBar.jpg`))
-            const attachment = new MessageAttachment(path.join(__dirname, `../../../assets/images/dump/rankBar.jpg`))
-            message.channel.send(rankEmbed
-                .setTitle(`**${message.author!.username}'s Rank ${discord.getEmoji("kannaXD")}**`)
-                .setDescription(
-                `${discord.getEmoji("star")}_Level_: **${userLevel}**\n` +
-                `${discord.getEmoji("star")}_Points_: **${userScore}**\n` +
-                `${discord.getEmoji("star")}_Progress_: ${userScore}/${(pointThreshold * userLevel!) + pointThreshold}\n` +
-                `${discord.getEmoji("star")}**${percent.toFixed(1)}%** of the way there!`)
-                .attachFiles([attachment])
-                .setImage(`attachment://rankBar.jpg`)
-                .setThumbnail(message.author!.displayAvatarURL()))
-
+        let percent = (100 / pointThreshold) * (score % pointThreshold)
+        if (percent < 0) percent = 100 + percent
+        const width = (percent / 100) * 200
+        ctx.fillStyle = "#ff3d9b"
+        ctx.fillRect(0, 0, width, 5)
+        const dataUrl = canvas.toDataURL()
+        let image = path.join(__dirname, `../../../assets/images/dump/rankBar.jpg`)
+        let i = 1
+        while (fs.existsSync(image)) {
+            image = path.join(__dirname, `../../../assets/images/dump/rankBar${i}.jpg`)
+            i++
         }
+        await imageDataURI.outputFile(dataUrl, image)
+        const attachment = new MessageAttachment(image)
+        rankEmbed
+        .setTitle(`**${message.author!.username}'s Rank ${discord.getEmoji("cute")}**`)
+        .setDescription(
+        `${discord.getEmoji("star")}_Level_: **${level}**\n` +
+        `${discord.getEmoji("star")}_Points_: **${score}**\n` +
+        `${discord.getEmoji("star")}_Progress_: ${score}/${(pointThreshold * level!) + pointThreshold}\n` +
+        `${discord.getEmoji("star")}**${percent.toFixed(1)}%** of the way there!`)
+        .attachFiles([attachment])
+        .setImage(`attachment://rankBar.jpg`)
+        .setThumbnail(message.author!.displayAvatarURL())
+        await message.channel.send(rankEmbed)
+        fs.unlink(image, () => null)
     }
 }

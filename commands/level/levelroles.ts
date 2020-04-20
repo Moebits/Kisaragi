@@ -1,16 +1,32 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
+import {SQLQuery} from "../../structures/SQLQuery"
 
-export default class Level extends Command {
+export default class LevelRoles extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configure settings for xp gaining (disabled).",
+            description: "Configures settings for level up roles.",
+            help:
+            `
+            \`levelroles\` - Opens the levelroles prompt
+            \`levelroles @role? points? msg?\` - Sets a new level up role.
+            \`levelroles edit setting @role? points? msg?\` - Edits the level up role.
+            \`levelroles delete setting\` - Deletes a level up role.
+            \`levelroles reset\` - Deletes all level up roles.
+            `,
+            examples:
+            `
+            \`=>levelroles\`
+            \`=>levelroles @senpai 10000\`
+            \`=>levelroles @cute 5000 You are so cute!\`
+            `,
             aliases: [],
-            cooldown: 3
+            cooldown: 10,
+            unlist: true
         })
     }
 
@@ -19,61 +35,63 @@ export default class Level extends Command {
         const message = this.message
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
-        return message.reply("This command is disabled for the time being...")
+        const perms = new Permission(discord, message)
+        if (!await perms.checkMod()) return
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            levelPrompt(message)
+            // await levelPrompt(message)
             return
         }
 
-        const pointToggle = await sql.fetchColumn("points", "point toggle")
-        const pointRange = await sql.fetchColumn("points", "point range")
-        const pointThreshold = await sql.fetchColumn("points", "point threshold")
-        const pointTimeout = await sql.fetchColumn("points", "point timeout")
-        const levelMsg = await sql.fetchColumn("points", "level message")
+        // {role: r, points: p, message: msg}
+        /*
+        const levelRoles = await sql.fetchColumn("points", "level roles")
         const levelEmbed = embeds.createEmbed()
         levelEmbed
-        .setTitle(`**Level Settings** ${discord.getEmoji("mexShrug")}`)
+        .setTitle(`**Point Settings** ${discord.getEmoji("mexShrug")}`)
         .setThumbnail(message.guild!.iconURL() as string)
-        .setDescription(
-            "Configure general level settings. To set level up roles, use **levelroles** instead. To toggle points on " +
-            "individual channels, use **levelchannels** instead. To add or remove points from a user, use **give** instead.\n" +
-            "\n" +
-            "__Text Replacements:__\n" +
-            "**user** - member mention\n" +
-            "**tag** - member tag\n" +
-            "**name** - member name\n" +
-            "**newlevel** - new level\n" +
-            "**totalpoints** - total points\n" +
-            "\n" +
-            "**Point Range** - The range of points to award per message.\n" +
-            "**Point Threshold** - The amount of points required to level up.\n" +
-            "**Point Timeout** - How often points are awarded (in seconds).\n" +
-            "\n" +
-            "__Current Settings:__\n" +
-            `${discord.getEmoji("star")}_Point Toggle:_ **${pointToggle}**\n` +
-            `${discord.getEmoji("star")}_Point Range:_ **${pointRange}**\n` +
-            `${discord.getEmoji("star")}_Point Threshold:_ **${pointThreshold}**\n` +
-            `${discord.getEmoji("star")}_Point Timeout:_ **${Math.floor(parseInt(pointTimeout, 10)/1000)}**\n` +
-            `${discord.getEmoji("star")}_Level Message:_ **${levelMsg}**\n` +
-            "\n" +
-            "__Edit Settings:__\n" +
-            `${discord.getEmoji("star")}_**Type any message** to set the level message._\n` +
-            `${discord.getEmoji("star")}_Type **enable** or **disable** to enable or disable the point system._\n` +
-            `${discord.getEmoji("star")}_Use brackets **[10, 20]** to set the point range._\n` +
-            `${discord.getEmoji("star")}_Use braces **{1000}** to set the point threshold._\n` +
-            `${discord.getEmoji("star")}_Use angle brackets **<60>** to set the point timeout._\n` +
-            `${discord.getEmoji("star")}_**You can type multiple options** to enable all at once._\n` +
-            `${discord.getEmoji("star")}_Type **destroy** to delete all the points of every member (no undo)._\n` +
-            `${discord.getEmoji("star")}_Type **reset** to reset all settings._\n` +
-            `${discord.getEmoji("star")}_Type **cancel** to exit._\n`
-        )
+        .setDescription(Functions.multiTrim(`
+            Configure general point settings. To set level up roles, use **levelroles** instead. To toggle points on
+            individual channels, use **levelchannels** instead.
+            newline
+            __Text Replacements:__
+            **user** - user mention
+            **tag** - user tag
+            **name** - username
+            **newlevel** - new level
+            **totalpoints** - total points
+            newline
+            **Point Toggle** - Whether the point system is enabled or disabled.
+            **Point Range** - The range of points to award per message.
+            **Point Threshold** - The amount of points required to level up.
+            **Point Timeout** - How often points are awarded (in seconds).
+            newline
+            __Current Settings:__
+            ${discord.getEmoji("star")}_Point Toggle:_ **${pointToggle}**
+            ${discord.getEmoji("star")}_Point Range:_ **${pointRange}**
+            ${discord.getEmoji("star")}_Point Threshold:_ **${pointThreshold}**
+            ${discord.getEmoji("star")}_Point Timeout:_ **${Math.floor(parseInt(pointTimeout, 10)/1000)}**
+            ${discord.getEmoji("star")}_Level Message:_ **${levelMsg}**
+            newline
+            __Edit Settings:__
+            ${discord.getEmoji("star")}_**Type any message** to set the level message._
+            ${discord.getEmoji("star")}_Type **enable** or **disable** to enable or disable the point system._
+            ${discord.getEmoji("star")}_Use brackets **[10, 20]** to set the point range._
+            ${discord.getEmoji("star")}_Use braces **{1000}** to set the point threshold._
+            ${discord.getEmoji("star")}_Use angle brackets **<60>** to set the point timeout._
+            ${discord.getEmoji("star")}_**You can type multiple options** to enable all at once._
+            ${discord.getEmoji("star")}_Type **destroy** to delete all the points of every member (no undo)._
+            ${discord.getEmoji("star")}_Type **reset** to reset all settings, excluding member points._
+            ${discord.getEmoji("star")}_Type **cancel** to exit._
+        `))
         message.channel.send(levelEmbed)
 
         async function levelPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
-            responseEmbed.setTitle(`**Level Settings** ${discord.getEmoji("mexShrug")}`)
+            responseEmbed.setTitle(`**Point Settings** ${discord.getEmoji("mexShrug")}`)
             let [setOn, setOff, setRange, setThreshold, setTimeout, setMsg] = [false, false, false, false, false, false]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
@@ -93,8 +111,7 @@ export default class Level extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "destroy") {
-                await sql.updateColumn("points", "score list", null)
-                await sql.updateColumn("points", "level list", null)
+                await sql.updateColumn("points", "scores", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Points were destroyed for every member in the guild!`)
                 msg.channel.send(responseEmbed)
@@ -117,9 +134,8 @@ export default class Level extends Command {
 
             if (setOn && setOff) {
                 responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                msg.channel.send(responseEmbed)
-                return
+                .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
+                return msg.channel.send(responseEmbed)
             }
 
             if (setMsg) {
@@ -152,8 +168,8 @@ export default class Level extends Command {
             .setDescription(description)
             msg.channel.send(responseEmbed)
             return
-        }
+        }*/
 
-        embeds.createPrompt(levelPrompt)
+        // embeds.createPrompt(levelPrompt)
     }
 }

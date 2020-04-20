@@ -22,6 +22,7 @@ const responseImageCool = new Set()
 const haikuCool = new Set()
 const firstMessage = new Set()
 const globalChatCool = new Set()
+const pointCool = new Collection() as Collection<string, Set<string>>
 
 export default class MessageEvent {
     private readonly cooldowns: Collection<string, Collection<string, number>> = new Collection()
@@ -99,15 +100,24 @@ export default class MessageEvent {
             setTimeout(() => haikuCool.delete(id), 3000)
             return message.channel.send(haikuEmbed)
           }
-          /*const pointTimeout = await sql.fetchColumn("points", "point timeout")
-          setTimeout(() => {
-          points.calcScore()
-          }, pointTimeout ? Number(pointTimeout) : 60000)*/
+
+          console.log(!pointCool.get(message.guild.id)?.has(message.author.id))
+
+          if (!pointCool.get(message.guild.id)?.has(message.author.id)) {
+            points.calcScore()
+            pointCool.get(message.guild.id)?.add(message.author.id)
+            const pointTimeout = await sql.fetchColumn("points", "point timeout")
+            setTimeout(() => {
+              pointCool.get(message.guild?.id ?? "")?.delete(message.author.id)
+            }, pointTimeout ? Number(pointTimeout) : 60000)
+          }
+
           if (!firstMessage.has(message.guild.id)) {
             await embeds.updateColor()
             perms.continueTempBans()
             cmdFunctions.autoCommand()
             firstMessage.add(message.guild.id)
+            pointCool.set(message.guild.id, new Set())
           }
         }
         if (responses.text[message.content.trim().toLowerCase()]) {

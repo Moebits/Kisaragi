@@ -107,9 +107,7 @@ export class Settings {
 
     private readonly pointSettings: Init = {
         ...this.guildSettings,
-        "user id list": this.message.guild!.members.cache.map((member: GuildMember) => member.id),
-        "score list": null,
-        "level list": null,
+        "scores": null,
         "point range": [10, 20],
         "point threshold": 1000,
         "level message": "Congrats user, you are now level newlevel!",
