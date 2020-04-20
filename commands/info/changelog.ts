@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 27, date: "4/20/2020", changes: "Added twitch notifications with \`twitchnotify\` and level up commands such as \`rank\` and \`leaderboard\`"},
             {num: 26, date: "4/17/2020", changes: "The \`block\` command can now block invite links."},
             {num: 25, date: "4/17/2020", changes: "Added \`trace\`, \`books\`, and \`auto\`."},
             {num: 24, date: "4/6/2020", changes: "Added \`tweet\` and (global) \`chat\` commands!"},

@@ -30,7 +30,8 @@ export default class GettingStarted extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
-        const prefix = message ? await SQLQuery.fetchPrefix(message) : "=>"
+        let prefix = await SQLQuery.fetchPrefix(message)
+        if (!prefix) prefix = "=>"
         const joinEmbed = embeds.createEmbed()
         joinEmbed
         .setAuthor("getting started", "https://i.kym-cdn.com/photos/images/facebook/001/415/932/f20.png")

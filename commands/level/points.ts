@@ -55,7 +55,7 @@ export default class Points extends Command {
         .setTitle(`**Point Settings** ${discord.getEmoji("mexShrug")}`)
         .setThumbnail(message.guild!.iconURL() as string)
         .setDescription(Functions.multiTrim(`
-            Configure general point settings. To set level up roles, use **levelroles** instead. To toggle points on
+            Configure general point settings. To set level up roles, use **levelroles** instead. To disable points on
             individual channels, use **levelchannels** instead.
             newline
             __Text Replacements:__

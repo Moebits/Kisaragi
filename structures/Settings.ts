@@ -19,11 +19,6 @@ export class Settings {
     private readonly prefixSetting: Init = {
         ...this.guildSettings,
         prefix: "=>"
-      }
-
-    private readonly timezoneSetting: Init = {
-        ...this.guildSettings,
-        timezone: "GMT -4"
     }
 
     private readonly guildInfoSettings: Init = {
@@ -112,7 +107,9 @@ export class Settings {
         "point threshold": 1000,
         "level message": "Congrats user, you are now level newlevel!",
         "point timeout": 60000,
-        "point toggle": "off"
+        "point toggle": "off",
+        "level roles": null,
+        "level channels": null
     }
 
     private readonly welcomeLeaveSettings: Init = {
@@ -209,7 +206,6 @@ export class Settings {
         "guilds": this.guildInfoSettings,
         "users": this.userSettings,
         "prefixes": this.prefixSetting,
-        "timezones": this.timezoneSetting,
         "channels": this.channelSettings,
         "roles": this.roleSettings,
         "emojis": this.emojiSettings,

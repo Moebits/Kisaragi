@@ -38,7 +38,6 @@ const tableList = [
   "roles",
   "special channels",
   "special roles",
-  "timezones",
   "users",
   "warns",
   "welcome leaves",

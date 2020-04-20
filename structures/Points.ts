@@ -98,7 +98,9 @@ export class Points {
         const sql = new SQLQuery(this.message)
         const embeds = new Embeds(this.discord, this.message)
         const toggle = await sql.fetchColumn("points", "point toggle")
+        const levelChannels = await sql.fetchColumn("points", "level channels")
         if (!toggle || toggle === "off") return
+        if (levelChannels.includes(this.message.channel.id)) return
         const scores = await sql.fetchColumn("points", "scores")
         let pointRange = await sql.fetchColumn("points", "point range")
         let pointThreshold = await sql.fetchColumn("points", "point threshold")
