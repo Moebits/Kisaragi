@@ -61,11 +61,11 @@ export class SQLQuery {
         const pgClient = await pgPool.connect()
         try {
             const result: QueryResult<string[]> = await pgClient.query(query)
-            // this.logQuery(Object.values(query)[0], start);
+            // SQLQuery.logQuery(Object.values(query)[0], start)
             await redis.setAsync(JSON.stringify(query), JSON.stringify(result.rows))
             return result.rows
           } catch (error) {
-            console.log(error.stack)
+            // console.log(error.stack)
             return [["Error"]]
           } finally {
             // @ts-ignore

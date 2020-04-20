@@ -101,8 +101,6 @@ export default class MessageEvent {
             return message.channel.send(haikuEmbed)
           }
 
-          console.log(!pointCool.get(message.guild.id)?.has(message.author.id))
-
           if (!pointCool.get(message.guild.id)?.has(message.author.id)) {
             points.calcScore()
             pointCool.get(message.guild.id)?.add(message.author.id)
