@@ -58,7 +58,7 @@ export default class InRole extends Command {
             )
             inRoleArray.push(roleEmbed)
         }
-
+        if (!inRoleArray[0]) return message.reply(`No one is in this role ${discord.getEmoji("kannaFacepalm")}`)
         if (inRoleArray.length === 1) {
             message.channel.send(inRoleArray[0])
         } else {

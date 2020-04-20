@@ -3,6 +3,7 @@ import fs from "fs"
 import Soundcloud from "soundcloud.ts"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
+import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -40,6 +41,7 @@ export default class SoundCloud extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const audio = new Audio(discord, message)
         const images = new Images(discord, message)
 
         if (args[1]?.match(/soundcloud.com/)) {
@@ -107,7 +109,7 @@ export default class SoundCloud extends Command {
                     `${discord.getEmoji("star")}_Genre:_ **${playlists[i].genre ? playlists[i].genre : "None"}**\n` +
                     `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(playlists[i].created_at))}**\n` +
                     `${discord.getEmoji("star")}_Tracks:_ **${playlists[i].track_count}**\n` +
-                    `${discord.getEmoji("star")}_Duration:_ **${playlists[i].duration}**\n`+
+                    `${discord.getEmoji("star")}_Duration:_ **${audio.parseSCDuration(playlists[i].duration)}**\n`+
                     `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar((playlists[i].description ? playlists[i].description! : "None"), 500, "")}`
                 )
                 soundcloudArray.push(soundcloudEmbed)

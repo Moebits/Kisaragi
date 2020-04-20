@@ -50,7 +50,7 @@ export class CommandFunctions {
             let timeLeft = timeout
             if (rawTimeLeft) {
                 if (rawTimeLeft[i]) {
-                    let remaining = timeout - Number(rawTimeLeft[i])
+                    let remaining = Number(rawTimeLeft[i])
                     if (remaining <= 0) remaining = timeout
                     timeLeft = remaining
                 } else {

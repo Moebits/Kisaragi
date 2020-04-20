@@ -57,7 +57,7 @@ export default class Weather extends Command {
         .setThumbnail(`https://openweathermap.org/img/w/${w.weather[0].icon}.png`)
         .setDescription(
             `🌎_City:_ **${w.name}, ${w.sys.country}**\n` +
-            `🌩️_Weather:_ **${w.weather[0]?.main ?? "Not found"}**\n` +
+            `🌩️_Weather:_ **${w.weather?.[0]?.main ?? "Not found"}**\n` +
             `📏_Latitude/Longitude:_ \`${w.coord.lat}°, ${w.coord.lon}°\`\n` +
             `🌡️_Temperature:_ \`${w.main.temp}°F\`\n` +
             `🍧_Feels Like:_ \`${w.main.feels_like}°F\`\n` +

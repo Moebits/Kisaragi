@@ -5,7 +5,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
-export default class Clean extends Command {
+export default class Cache extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Deletes cached embeds from the database.",

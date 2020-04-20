@@ -20,7 +20,7 @@ export default class Hi extends Command {
             \`=>hello\`
             \`=>helloworld\`
             `,
-            aliases: ["helloworld"],
+            aliases: ["hello", "helloworld"],
             cooldown: 3
         })
     }

@@ -179,7 +179,7 @@ export default class Newgrounds extends Command {
             `${discord.getEmoji("star")}_Type:_ **${type}**\n` +
             `${discord.getEmoji("star")}_Creation Date:_ **${result.date}**\n` +
             `${discord.getEmoji("star")}_Faves:_ **${result.faves}**\n` +
-            `${discord.getEmoji("star")}_Score:_ **${result.score}**\n` +
+            `${discord.getEmoji("star")}_Score:_ **${result.score.replace("Score: ", "")}**\n` +
             `${discord.getEmoji("star")}_Votes:_ **${result.votes}**\n` +
             `${discord.getEmoji("star")}_Views:_ **${result.views}**\n` +
             `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(result.desc, 1500, " ")}\n`
@@ -380,7 +380,7 @@ export default class Newgrounds extends Command {
                 `${discord.getEmoji("star")}_Type:_ **${result[i].type}**\n` +
                 genre +
                 rating +
-                `${discord.getEmoji("star")}_Score:_ **${result[i].score}**\n` +
+                `${discord.getEmoji("star")}_Score:_ **${result[i].score.replace("Score: ", "")}**\n` +
                 `${discord.getEmoji("star")}_Views:_ **${result[i].views}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${result[i].desc}\n`
             )

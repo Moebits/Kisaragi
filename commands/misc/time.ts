@@ -38,7 +38,7 @@ export default class Time extends Command {
 
         const time = await axios.get(`http://worldtimeapi.org/api/timezone/${zone}`, {headers}).then((r) => r.data)
         const utc = time.utc_offset
-        const date = new Date(time.datetime)
+        const date = new Date(time.utc_datetime)
         const day = Functions.formatDate(date)
         const weekDay = date.getDay()
         const cityName = zone.replace(/\//g, " ").replace("America", "").replace(/_/g, " ").trim()
