@@ -100,7 +100,7 @@ export class Points {
         const toggle = await sql.fetchColumn("points", "point toggle")
         const levelChannels = await sql.fetchColumn("points", "level channels")
         if (!toggle || toggle === "off") return
-        if (levelChannels.includes(this.message.channel.id)) return
+        if (levelChannels?.includes(this.message.channel.id)) return
         const scores = await sql.fetchColumn("points", "scores")
         let pointRange = await sql.fetchColumn("points", "point range")
         let pointThreshold = await sql.fetchColumn("points", "point threshold")
@@ -120,7 +120,7 @@ export class Points {
         }
 
         const idList = scores.map((s: any) => JSON.parse(s).id)
-        if (!idList.includes(this.message.author.id)) {
+        if (!idList?.includes(this.message.author.id)) {
             scores.push({id: this.message.author.id, score: 0, level: 0})
             await sql.updateColumn("points", "scores", scores)
             return
