@@ -14,7 +14,9 @@ export class Points {
         const roles = await sql.fetchColumn("points", "level roles")
         if (!roles?.[0]) return
         let add = false
-        const batchRoles: string[] = []
+        let remove = false
+        let first = true
+        let batchRoles: string[] = []
         for (let i = 0; i < roles.length; i++) {
             const curr = JSON.parse(roles[i])
             if (Number(user.level) >= Number(curr.level)) {
@@ -26,6 +28,7 @@ export class Points {
                     return this.message.channel.send(`I need the **Manage Roles** permission to add level up roles ${this.discord.getEmoji("kannaFacepalm")}`)
                 }
                 if (batch) {
+                    if (remove) continue
                     batchRoles.push(role.id)
                     add = true
                 } else {
@@ -34,10 +37,15 @@ export class Points {
                     await this.message.channel.send(levelMessage)
                 }
             } else if (Number(user.level) < Number(curr.level)) {
-                if (add) continue
                 const role = this.message.guild?.roles.cache.get(curr.role)
                 if (!role) continue
                 await this.message.member?.roles.remove(role).catch(() => null)
+                if (add) continue
+                remove = true
+                if (first) {
+                    batchRoles = []
+                    first = false
+                }
                 if (batch) batchRoles.push(role.id)
             }
         }
