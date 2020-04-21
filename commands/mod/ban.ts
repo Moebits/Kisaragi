@@ -45,7 +45,7 @@ export default class Ban extends Command {
 
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i])
+            const member = discord.users.cache.find((u) => u.id === userArray[i])
             if (member) {
                 members.push(`<@${member.id}>`)
             } else {
