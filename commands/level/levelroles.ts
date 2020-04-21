@@ -24,7 +24,7 @@ export default class LevelRoles extends Command {
             \`=>levelroles @senpai 10000\`
             \`=>levelroles @cute 5000 You are cute!\`
             `,
-            aliases: [],
+            aliases: ["lr"],
             cooldown: 10
         })
     }

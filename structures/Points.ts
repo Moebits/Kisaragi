@@ -13,7 +13,7 @@ export class Points {
         const embeds = new Embeds(this.discord, this.message)
         const roles = await sql.fetchColumn("points", "level roles")
         if (!roles?.[0]) return
-        let add = true
+        let add = false
         const batchRoles: string[] = []
         for (let i = 0; i < roles.length; i++) {
             const curr = JSON.parse(roles[i])
@@ -27,21 +27,22 @@ export class Points {
                 }
                 if (batch) {
                     batchRoles.push(role.id)
+                    add = true
                 } else {
                     let levelMessage = curr.message ? curr.message : `Congrats user, you now have the role rolename! ${this.discord.getEmoji("kannaWave")}`
                     levelMessage = levelMessage.replace("user", `<@${this.message.author!.id}>`).replace("tag", `**${this.message.author.tag}**`).replace("name", `**${this.message.author.username}**`).replace("rolename", role.name).replace("rolemention", `<@&${role.id}>`)
                     await this.message.channel.send(levelMessage)
                 }
             } else if (Number(user.level) < Number(curr.level)) {
+                if (add) continue
                 const role = this.message.guild?.roles.cache.get(curr.role)
                 if (!role) continue
                 await this.message.member?.roles.remove(role).catch(() => null)
-                add = false
                 if (batch) batchRoles.push(role.id)
             }
         }
         if (batch) {
-            let roleMessage = add ? `You gained the role rolementions!` : `You lost the role rolementions!`
+            let roleMessage = add ? `You gained the role(s) rolementions!` : `You lost the role(s) rolementions!`
             const title = add ? `**Level Role Add** ${this.discord.getEmoji("aquaUp")}` : `**Level Role Remove** ${this.discord.getEmoji("sagiriBleh")}`
             const authorText = add ? `role add` : `role remove`
             const authorImage = add ? `https://cdn4.iconfinder.com/data/icons/material-design-content-icons/512/add-circle-512.png` : `https://img.icons8.com/plasticine/2x/filled-trash.png`

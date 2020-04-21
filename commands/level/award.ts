@@ -32,7 +32,8 @@ export default class Award extends Command {
 
         const input = Functions.combineArgs(args, 1)
         const amount = input.match(/(?<!<@)(^-?\d+|-?\d+$|(?<= )-?\d+)(?!>)/)?.[0] ?? 0
-        let users = input.match(/(?<=<@)(.*?)(?=>)/)?.map((u) => u)
+        let users = input.match(/(?<=<@)(.*?)(?=>)/g)?.map((u) => u)
+        if (!users) users = input.match(/\d{17,}/g)?.map((u) => u)
 
         if (!users) return message.reply(`You must mention a user ${discord.getEmoji("kannaFacepalm")}`)
         users = Functions.removeDuplicates(users)
