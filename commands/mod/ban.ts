@@ -45,9 +45,9 @@ export default class Ban extends Command {
 
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = discord.users.cache.find((u) => u.id === userArray[i])
-            if (member) {
-                members.push(`<@${member.id}>`)
+            const user = await discord.users.fetch(userArray[i])
+            if (user) {
+                members.push(`<@${user.id}>`)
             } else {
                 continue
             }
@@ -55,9 +55,9 @@ export default class Ban extends Command {
             .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
             .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
             .setDescription(`${discord.getEmoji("star")}_You were banned from ${message.guild!.name} for reason:_ **${reason}**`)
-            const dm = await member!.createDM()
+            const dm = await user.createDM()
             try {
-                await message.guild?.members.ban(member, {reason, days: 7})
+                await message.guild?.members.ban(user, {reason, days: 7})
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }

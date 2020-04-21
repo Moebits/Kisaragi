@@ -45,9 +45,9 @@ export default class Softban extends Command {
 
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = discord.users.cache.find((u) => u.id === userArray[i])
-            if (member) {
-                members.push(`<@${member.id}>`)
+            const user = await discord.users.fetch(userArray[i])
+            if (user) {
+                members.push(`<@${user.id}>`)
             } else {
                 continue
             }
@@ -55,10 +55,10 @@ export default class Softban extends Command {
             .setAuthor("softban", "https://cdn.discordapp.com/emojis/593867503055274006.png")
             .setTitle(`**You Were Soft Banned** ${discord.getEmoji("sagiriBleh")}`)
             .setDescription(`${discord.getEmoji("star")}_You were soft banned from ${message.guild!.name} for reason:_ **${reason}**`)
-            const dm = await member.createDM()
-            const id = member.id
+            const dm = await user.createDM()
+            const id = user.id
             try {
-                await message.guild?.members.ban(member, {reason, days: 7})
+                await message.guild?.members.ban(user, {reason, days: 7})
                 await message.guild?.members.unban(id, reason)
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)

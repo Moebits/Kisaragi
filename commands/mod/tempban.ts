@@ -57,9 +57,9 @@ export default class TempBan extends Command {
 
         const members: string[] = []
         for (let i = 0; i < userArray.length; i++) {
-            const member = discord.users.cache.find((u) => u.id === userArray[i])
-            if (member) {
-                members.push(`<@${member.id}>`)
+            const user = await discord.users.fetch(userArray[i])
+            if (user) {
+                members.push(`<@${user.id}>`)
             } else {
                 continue
             }
@@ -67,10 +67,10 @@ export default class TempBan extends Command {
             .setAuthor("tempban", "https://cdn.discordapp.com/emojis/579870079735562261.png")
             .setTitle(`**You Were Temp Banned** ${discord.getEmoji("kannaFU")}`)
             .setDescription(`${discord.getEmoji("star")}_You were temp banned from **${message.guild!.name}** for **${timeArray.join(" ")}**, reason:_ **${reason}**`)
-            const dm = await member.createDM()
-            const id = member.id
+            const dm = await user.createDM()
+            const id = user.id
             try {
-                await message.guild?.members.ban(member, {reason, days: 7})
+                await message.guild?.members.ban(user, {reason, days: 7})
                 let tempArr = await sql.redisGet(`${message.guild?.id}_tempban`)
                 if (!tempArr) tempArr = [] as any
                 tempArr.push({member: id, time: seconds*1000, reason})
