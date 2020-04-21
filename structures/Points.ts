@@ -42,7 +42,7 @@ export class Points {
             }
         }
         if (batch) {
-            let roleMessage = add ? `You gained the role(s) rolementions!` : `You lost the role(s) rolementions!`
+            let roleMessage = add ? `<@${user.id}> gained the role(s) rolementions!` : `<@${user.id}> lost the role(s) rolementions!`
             const title = add ? `**Level Role Add** ${this.discord.getEmoji("aquaUp")}` : `**Level Role Remove** ${this.discord.getEmoji("sagiriBleh")}`
             const authorText = add ? `role add` : `role remove`
             const authorImage = add ? `https://cdn4.iconfinder.com/data/icons/material-design-content-icons/512/add-circle-512.png` : `https://img.icons8.com/plasticine/2x/filled-trash.png`
