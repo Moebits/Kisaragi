@@ -58,7 +58,7 @@ export default class Softban extends Command {
             const dm = await member.createDM()
             const id = member.id
             try {
-                await message.guild?.members.ban(member, {reason})
+                await message.guild?.members.ban(member, {reason, days: 7})
                 await message.guild?.members.unban(id, reason)
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)

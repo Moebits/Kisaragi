@@ -57,7 +57,7 @@ export default class Ban extends Command {
             .setDescription(`${discord.getEmoji("star")}_You were banned from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member!.createDM()
             try {
-                await message.guild?.members.ban(member, {reason})
+                await message.guild?.members.ban(member, {reason, days: 7})
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }

@@ -70,7 +70,7 @@ export default class TempBan extends Command {
             const dm = await member.createDM()
             const id = member.id
             try {
-                await message.guild?.members.ban(member, {reason})
+                await message.guild?.members.ban(member, {reason, days: 7})
                 let tempArr = await sql.redisGet(`${message.guild?.id}_tempban`)
                 if (!tempArr) tempArr = [] as any
                 tempArr.push({member: id, time: seconds*1000, reason})
