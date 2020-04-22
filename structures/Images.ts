@@ -194,10 +194,15 @@ export class Images {
     ]
 
     /** Creates a welcome/leave canvas */
-    public createCanvas = async (member: GuildMember, image: string, text: string, color: string, uri?: boolean, iterator?: number) => {
+    public createCanvas = async (member: GuildMember, image: string, text: string, color: string, uri?: boolean | false, iterator?: number | false, rawImage?: "on" | "off" | boolean) => {
         const colorStops = this.colorStops
         const newText = text.replace(/user/g, `@${member.user.tag}`).replace(/guild/g, member.guild.name)
         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, String(member.guild.memberCount))
+        if (Array.isArray(image)) image = image[Math.floor(Math.random() * image.length)]
+        if (rawImage === true || rawImage === "on") {
+            const attachment = new MessageAttachment(image)
+            return attachment
+        }
 
         function wrapText(context: CanvasRenderingContext2D, txt: string, x: number, y: number, maxWidth: number, lineHeight: number) {
             const cars = txt.split("\n")

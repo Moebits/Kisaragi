@@ -38,12 +38,13 @@ export default class GuildMemberAdd {
 
             const welcomeMsg = await sql.fetchColumn("welcome leaves", "welcome message")
             const welcomeChannel = await sql.fetchColumn("welcome leaves", "welcome channel")
-            const welcomeImage = await sql.fetchColumn("welcome leaves", "welcome bg image")
+            const welcomeImages = await sql.fetchColumn("welcome leaves", "welcome bg images")
             const welcomeText = await sql.fetchColumn("welcome leaves", "welcome bg text")
             const welcomeColor = await sql.fetchColumn("welcome leaves", "welcome bg color")
+            const welcomeBGToggle = await sql.fetchColumn("welcome leaves", "welcome bg toggle")
             const channel = member.guild.channels.cache.find((c) => c.id.toString() === String(welcomeChannel)) as TextChannel
 
-            const attachment = await image.createCanvas(member, String(welcomeImage), String(welcomeText), String(welcomeColor)) as MessageAttachment
+            const attachment = await image.createCanvas(member, welcomeImages, welcomeText, welcomeColor, false, false, welcomeBGToggle) as MessageAttachment
 
             const newMsg = String(welcomeMsg).replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
             .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())

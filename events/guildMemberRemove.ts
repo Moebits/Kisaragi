@@ -35,12 +35,13 @@ export default class GuildMemberRemove {
 
             const leaveMsg = await sql.fetchColumn("welcome leaves", "leave message")
             const leaveChannel = await sql.fetchColumn("welcome leaves", "leave channel")
-            const leaveImage = await sql.fetchColumn("welcome leaves", "leave bg image")
+            const leaveImages = await sql.fetchColumn("welcome leaves", "leave bg images")
             const leaveText = await sql.fetchColumn("welcome leaves", "leave bg text")
             const leaveColor = await sql.fetchColumn("welcome leaves", "leave bg color")
+            const leaveBGToggle = await sql.fetchColumn("welcome leaves", "leave bg toggle")
             const channel = member.guild.channels.cache.find((c) => c.id.toString() === String(leaveChannel)) as TextChannel
 
-            const attachment = await image.createCanvas(member, String(leaveImage), String(leaveText), String(leaveColor)) as MessageAttachment
+            const attachment = await image.createCanvas(member, leaveImages, leaveText, leaveColor, false, false, leaveBGToggle) as MessageAttachment
 
             const newMsg = String(leaveMsg).replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
             .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())

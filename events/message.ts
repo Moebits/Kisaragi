@@ -117,6 +117,33 @@ export default class MessageEvent {
             firstMessage.add(message.guild.id)
             pointCool.set(message.guild.id, new Set())
           }
+
+          const everyoneBan = async (msg: Message) => {
+            if (msg.content.includes("@everyone") || msg.content.includes("@here")) {
+              if (msg.member?.hasPermission("MENTION_EVERYONE") || await perms.checkMod(true)) return
+              const toggle = await sql.fetchColumn("blocks", "everyone ban toggle")
+              if (toggle === "on") {
+                try {
+                  await msg.member?.ban({reason: "Mentioning everyone", days: 7})
+                  const banEmbed = embeds.createEmbed()
+                  .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+                  .setTitle(`**Member Banned** ${this.discord.getEmoji("kannaFU")}`)
+                  .setDescription(`${this.discord.getEmoji("star")}_Successfully banned <@${msg.author.id}> for reason:_ **Mentioning everyone without having the permission to do so.**`)
+                  message.channel.send(banEmbed)
+                  const dmEmbed = embeds.createEmbed()
+                  dmEmbed
+                  .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+                  .setTitle(`**You Were Banned** ${this.discord.getEmoji("kannaFU")}`)
+                  .setDescription(`${this.discord.getEmoji("star")}_You were banned from ${msg.guild!.name} for reason:_ **Mentioning everyone without having the permission to do so.**`)
+                  const dm = await msg.author.createDM()
+                  await msg.author.send(dmEmbed).catch(() => null)
+                } catch {
+                  // Do nothing
+                }
+              }
+            }
+          }
+          everyoneBan(message)
         }
         if (responses.text[message.content.trim().toLowerCase()]) {
           const response = message.content.trim().toLowerCase()

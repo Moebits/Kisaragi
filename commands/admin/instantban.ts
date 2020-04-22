@@ -10,7 +10,18 @@ export default class InstantBan extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configure settings for instant bans.",
-            aliases: [],
+            help:
+            `
+            \`instantban\` - Opens the instant ban prompt
+            \`instantban pfp\` - Toggles no profile picture bans
+            \`instantban everyone\` - Toggles banning of people who tag @everyone
+            \`instantban leave\` - Toggles banning of people who leave in under 5 minutes
+            `,
+            examples:
+            `
+            \`=>instantban pfp everyone leave\`
+            `,
+            aliases: ["iban"],
             guildOnly: true,
             cooldown: 3
         })
@@ -34,6 +45,7 @@ export default class InstantBan extends Command {
 
         const pfpBan = await sql.fetchColumn("blocks", "pfp ban toggle")
         const leaveBan = await sql.fetchColumn("blocks", "leaver ban toggle")
+        const everyoneBan = await sql.fetchColumn("blocks", "everyone ban toggle")
         const defChannel = await sql.fetchColumn("blocks", "default channel")
         const instantBanEmbed = embeds.createEmbed()
         instantBanEmbed
@@ -44,16 +56,19 @@ export default class InstantBan extends Command {
             newline
             **Profile Picture Ban** - Bans all members that have a default profile picture upon joining.
             **Leave Ban** - Bans all members that join and then leave in under 5 minutes.
-            **Default Channel** - The default channel where messages will be posted.
+            **Everyone Ban** - Bans anyone who tries to tag @everyone or @here (and doesn't have the permission to do so).
+            **Default Channel** - The default channel where the ban messages are posted.
             newline
             __Current Settings:__
-            ${discord.getEmoji("star")}_Profile Picture Ban:_ **${pfpBan}**
-            ${discord.getEmoji("star")}_Leave Ban:_ **${leaveBan}**
+            ${discord.getEmoji("star")}_Profile Picture Ban:_ **${pfpBan ?? "off"}**
+            ${discord.getEmoji("star")}_Leave Ban:_ **${leaveBan ?? "off"}**
+            ${discord.getEmoji("star")}_Everyone Ban:_ **${everyoneBan ?? "off"}**
             ${discord.getEmoji("star")}_Default Channel:_ **${defChannel ?  `<#${defChannel}>`  :  "None"}**
             newline
             __Edit Settings:__
             ${discord.getEmoji("star")}_Type **pfp** to toggle profile picture bans._
             ${discord.getEmoji("star")}_Type **leave** to toggle leave bans._
+            ${discord.getEmoji("star")}_Type **everyone** to toggle everyone bans._
             ${discord.getEmoji("star")}_**Mention a channel** to set the default channel._
             ${discord.getEmoji("star")}_**You can type multiple options** to enable all at once._
             ${discord.getEmoji("star")}_Type **reset** to disable all settings._
@@ -63,7 +78,7 @@ export default class InstantBan extends Command {
 
         async function instantBanPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
-            let setPfp, setLeave, setChannel
+            let [setPfp, setLeave, setChannel, setEveryone] = [false, false, false, false]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
@@ -73,6 +88,7 @@ export default class InstantBan extends Command {
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("blocks", "pfp ban toggle", "off")
                 await sql.updateColumn("blocks", "leaver ban toggle", "off")
+                await sql.updateColumn("blocks", "everyone ban toggle", "off")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were disabled!`)
                 msg.channel.send(responseEmbed)
@@ -80,66 +96,51 @@ export default class InstantBan extends Command {
             }
             if (msg.content.match(/pfp/g)) setPfp = true
             if (msg.content.match(/leave/g)) setLeave = true
+            if (msg.content.match(/everyone/g)) setEveryone = true
             if (msg.mentions.channels.array().join("")) setChannel = true
 
-            if (setChannel) {
-                const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
-                await sql.updateColumn("blocks", "default channel", channel!.id)
-                responseEmbed
-                .setDescription(`${discord.getEmoji("star")}Default channel set to <#${channel!.id}>!\n`)
-                if (setPfp || setLeave) {
-                    msg.channel.send(responseEmbed)
-                } else {
-                    msg.channel.send(responseEmbed)
-                    return
-                }
-            }
+            let description = ""
 
-            if (setPfp && setLeave) {
-                await sql.updateColumn("blocks", "pfp ban toggle", "on")
-                await sql.updateColumn("blocks", "leaver ban toggle", "on")
-                responseEmbed
-                .setDescription(`${discord.getEmoji("star")}Profile picture and leave bans are now **on**!`)
-                msg.channel.send(responseEmbed)
-                return
+            if (setChannel) {
+                const channel = msg.guild?.channels.cache.find((c) => c === msg.mentions.channels.first())
+                await sql.updateColumn("blocks", "default channel", channel?.id)
+                description += `${discord.getEmoji("star")}Default channel set to <#${channel!.id}>!\n`
             }
 
             if (setPfp) {
                 if (String(pfpBan) === "off") {
                     await sql.updateColumn("blocks", "pfp ban toggle", "on")
-                    responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}Profile picture bans are now **on**!`)
-                    msg.channel.send(responseEmbed)
-                    return
+                    description += `${discord.getEmoji("star")}Profile picture bans are now **on**!`
                 } else {
                     await sql.updateColumn("blocks", "pfp ban toggle", "off")
-                    responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}Profile picture bans are now **off**!`)
-                    msg.channel.send(responseEmbed)
-                    return
+                    description += `${discord.getEmoji("star")}Profile picture bans are now **off**!`
                 }
             }
 
             if (setLeave) {
                 if (String(leaveBan) === "off") {
                     await sql.updateColumn("blocks", "leaver ban toggle", "on")
-                    responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}Leave bans are now **on**!`)
-                    msg.channel.send(responseEmbed)
-                    return
+                    description += `${discord.getEmoji("star")}Leave bans are now **on**!`
                 } else {
                     await sql.updateColumn("blocks", "leaver ban toggle", "off")
-                    responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}Leave bans are now **off**!`)
-                    msg.channel.send(responseEmbed)
-                    return
+                    description += `${discord.getEmoji("star")}Leave bans are now **off**!`
                 }
             }
 
+            if (setEveryone) {
+                if (String(everyoneBan) === "off") {
+                    await sql.updateColumn("blocks", "everyone ban toggle", "on")
+                    description += `${discord.getEmoji("star")}Everyone bans are now **on**!`
+                } else {
+                    await sql.updateColumn("blocks", "everyone ban toggle", "off")
+                    description += `${discord.getEmoji("star")}Everyone bans are now **off**!`
+                }
+            }
+
+            if (!description) return msg.reply(`Invalid arguments ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
-            .setDescription(`${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`)
-            msg.channel.send(responseEmbed)
-            return
+            .setDescription(description)
+            return msg.channel.send(responseEmbed)
         }
 
         await embeds.createPrompt(instantBanPrompt)

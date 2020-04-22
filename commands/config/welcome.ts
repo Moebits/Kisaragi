@@ -17,9 +17,10 @@ export default class Welcome extends Command {
             \`welcome\` - Opens the welcome messages prompt
             \`welcome msg\` - Sets the welcome message
             \`welcome #channel\` - Sets the channel where welcome messages are sent
-            \`welcome url\` - Sets the background image url
+            \`welcome url\` - Sets the background image(s)
             \`welcome [msg]\` - Sets the background text
             \`welcome rainbow/#hexcolor\` - Sets the background text color
+            \`welcome bg\` - Toggles the background text and picture (just displays the raw image)
             \`welcome reset\` - Resets welcome settings to the default
             `,
             examples:
@@ -53,12 +54,16 @@ export default class Welcome extends Command {
         const welcomeMsg = await sql.fetchColumn("welcome leaves", "welcome message")
         const welcomeToggle = await sql.fetchColumn("welcome leaves", "welcome toggle")
         const welcomeChannel = await sql.fetchColumn("welcome leaves", "welcome channel")
-        const welcomeImage = await sql.fetchColumn("welcome leaves", "welcome bg image")
+        const welcomeImages = await sql.fetchColumn("welcome leaves", "welcome bg images")
         const welcomeText = await sql.fetchColumn("welcome leaves", "welcome bg text")
         const welcomeColor = await sql.fetchColumn("welcome leaves", "welcome bg color")
-        const attachment = await images.createCanvas(message.member!, welcomeImage, welcomeText, welcomeColor) as MessageAttachment
-        const json = await axios.get(`https://is.gd/create.php?format=json&url=${welcomeImage}`)
-        const newImage = json.data.shorturl
+        const welcomeBGToggle = await sql.fetchColumn("welcome leaves", "welcome bg toggle")
+        const attachment = await images.createCanvas(message.member!, welcomeImages, welcomeText, welcomeColor, false, false, welcomeBGToggle) as MessageAttachment
+        const urls: string[] = []
+        for (let i = 0; i < welcomeImages?.length ?? 0; i++) {
+            const json = await axios.get(`https://is.gd/create.php?format=json&url=${welcomeImages[i]}`)
+            urls.push(json.data.shorturl)
+        }
         welcomeEmbed
         .setTitle(`**Welcome Messages** ${discord.getEmoji("karenSugoi")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
@@ -78,17 +83,19 @@ export default class Welcome extends Command {
             ${discord.getEmoji("star")}_Welcome Message:_ **${welcomeMsg}**
             ${discord.getEmoji("star")}_Welcome Channel:_ **${welcomeChannel ?  `<#${welcomeChannel}>`  :  "None"}**
             ${discord.getEmoji("star")}_Welcome Toggle:_ **${welcomeToggle}**
-            ${discord.getEmoji("star")}_Background Image:_ **${newImage}**
+            ${discord.getEmoji("star")}_Background Images:_ **${Functions.checkChar(urls.join(" "), 500, " ")}**
             ${discord.getEmoji("star")}_Background Text:_ **${welcomeText}**
             ${discord.getEmoji("star")}_Background Text Color:_ **${welcomeColor}**
+            ${discord.getEmoji("star")}_BG Text and Picture:_ **${welcomeBGToggle}**
             newline
             __Edit Settings:__
             ${discord.getEmoji("star")}_**Type any message** to set it as the welcome message._
             ${discord.getEmoji("star")}_Type **enable** or **disable** to enable or disable welcome messages._
             ${discord.getEmoji("star")}_**Mention a channel** to set it as the welcome channel._
-            ${discord.getEmoji("star")}_Post an **image URL** (jpg, png, gif) to set the background image._
+            ${discord.getEmoji("star")}_Post an **image URL** (jpg, png, gif) to add a background image._
             ${discord.getEmoji("star")}_Add brackets **[text]** to set the background text._
             ${discord.getEmoji("star")}_Type **rainbow** or a **hex color** to set the background text color._
+            ${discord.getEmoji("star")}_Type **bg** to toggle the background text and picture._
             ${discord.getEmoji("star")}_**You can type multiple options** to set them at once._
             ${discord.getEmoji("star")}_Type **reset** to reset settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
@@ -97,13 +104,14 @@ export default class Welcome extends Command {
 
         async function welcomePrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
-            let [setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor] = [] as boolean[]
+            let [setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor, setBGToggle] = [] as boolean[]
             responseEmbed.setTitle(`**Welcome Messages** ${discord.getEmoji("karenSugoi")}`)
             const newMsg = msg.content.replace(/<#\d+>/g, "").replace(/\[(.*)\]/g, "").replace(/enable/g, "").replace(/rainbow/g, "")
-            .replace(/disable/g, "").replace(/#[0-9a-f]{3,6}/ig, "").replace(/(https?:\/\/[^\s]+)/g, "")
+            .replace(/disable/g, "").replace(/#[0-9a-f]{3,6}/ig, "").replace(/(https?:\/\/[^\s]+)/g, "").replace(/bg/g, "")
             const newImg = msg.content.match(/(https?:\/\/[^\s]+)/g)
             const newBGText = msg.content.match(/\[(.*)\]/g)
             const newBGColor = (msg.content.match(/rainbow/g) || msg.content.match(/(\s|^)#[0-9a-f]{3,6}/ig))
+            const newBGToggle = msg.content.match(/bg/)
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
@@ -114,9 +122,10 @@ export default class Welcome extends Command {
                 await sql.updateColumn("welcome leaves", "welcome message", "Welcome to guild, user!")
                 await sql.updateColumn("welcome leaves", "welcome channel", null)
                 await sql.updateColumn("welcome leaves", "welcome toggle", "off")
-                await sql.updateColumn("welcome leaves", "welcome bg image", "https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif")
+                await sql.updateColumn("welcome leaves", "welcome bg images", ["https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif"])
                 await sql.updateColumn("welcome leaves", "welcome bg text", "Welcome tag! There are now count members.")
                 await sql.updateColumn("welcome leaves", "welcome bg color", "rainbow")
+                await sql.updateColumn("welcome leaves", "welcome bg toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Welcome settings were reset!`)
                 msg.channel.send(responseEmbed)
@@ -130,6 +139,7 @@ export default class Welcome extends Command {
             if (msg.mentions.channels.array()?.[0]) setChannel = true
             if (newImg) setImage = true
             if (newBGText) setBGText = true
+            if (newBGToggle) setBGToggle = true
 
             if (setOn && setOff) {
                 responseEmbed
@@ -165,8 +175,10 @@ export default class Welcome extends Command {
                 description += `${discord.getEmoji("star")}Welcome messages are **off**!\n`
             }
             if (setImage) {
-                await sql.updateColumn("welcome leaves", "welcome bg image", String(newImg![0]))
-                description += `${discord.getEmoji("star")}Background image set to **${newImg![0]}**!\n`
+                let images = newImg!.map((i) => i)
+                images = Functions.removeDuplicates(images)
+                await sql.updateColumn("welcome leaves", "welcome bg images", images)
+                description += `${discord.getEmoji("star")}Background image(s) set to **${Functions.checkChar(images.join(", "), 500, ",")}**!\n`
             }
             if (setBGText) {
                 await sql.updateColumn("welcome leaves", "welcome bg text", String(newBGText![0].replace(/\[/g, "").replace(/\]/g, "")))
@@ -177,11 +189,21 @@ export default class Welcome extends Command {
                 description += `${discord.getEmoji("star")}Background color set to **${newBGColor![0].trim()}**!\n`
             }
 
+            if (setBGToggle) {
+                const toggle = await sql.fetchColumn("welcome leaves", "welcome bg toggle")
+                if (!toggle || toggle === "off") {
+                    await sql.updateColumn("welcome leaves", "welcome bg toggle", "on")
+                    description += `${discord.getEmoji("star")}Background text and picture is **on**!\n`
+                } else {
+                    await sql.updateColumn("welcome leaves", "welcome bg toggle", "off")
+                    description += `${discord.getEmoji("star")}Background text and picture is **off**!\n`
+                }
+            }
+
             if (!description) return message.reply(`No edits were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
-            return
+            return msg.channel.send(responseEmbed)
         }
         await embeds.createPrompt(welcomePrompt)
     }

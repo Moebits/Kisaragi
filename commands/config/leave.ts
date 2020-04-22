@@ -17,9 +17,10 @@ export default class Leave extends Command {
             \`leave enable/disable\` - Enables or disables leave messages
             \`leave msg\` - Sets the leave message
             \`leave #channel\` - Sets the channel where messages are sent
-            \`leave url\` - Sets the image url
+            \`leave url\` - Sets the background image(s)
             \`leave [msg]\` - Sets the background text
             \`leave rainbow/#hexcolor\` - Sets the background text color
+            \`leave bg\` - Toggles the background text and picture (just displays the raw image)
             \`leave reset\` - Resets settings to the default
             `,
             examples:
@@ -54,12 +55,16 @@ export default class Leave extends Command {
         const leaveMsg = await sql.fetchColumn("welcome leaves", "leave message")
         const leaveToggle = await sql.fetchColumn("welcome leaves", "leave toggle")
         const leaveChannel = await sql.fetchColumn("welcome leaves", "leave channel")
-        const leaveImage = await sql.fetchColumn("welcome leaves", "leave bg image")
+        const leaveImages = await sql.fetchColumn("welcome leaves", "leave bg images")
         const leaveText = await sql.fetchColumn("welcome leaves", "leave bg text")
         const leaveColor = await sql.fetchColumn("welcome leaves", "leave bg color")
-        const attachment = await images.createCanvas(message.member!, leaveImage, leaveText, leaveColor) as MessageAttachment
-        const json = await axios.get(`https://is.gd/create.php?format=json&url=${leaveImage}`)
-        const newImg = json.data.shorturl
+        const leaveBGToggle = await sql.fetchColumn("welcome leaves", "leave bg toggle")
+        const attachment = await images.createCanvas(message.member!, leaveImages, leaveText, leaveColor, false, false, leaveBGToggle) as MessageAttachment
+        const urls: string[] = []
+        for (let i = 0; i < leaveImages?.length ?? 0; i++) {
+            const json = await axios.get(`https://is.gd/create.php?format=json&url=${leaveImages[i]}`)
+            urls.push(json.data.shorturl)
+        }
         leaveEmbed
         .setTitle(`**Leave Messages** ${discord.getEmoji("sagiriBleh")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
@@ -79,9 +84,10 @@ export default class Leave extends Command {
             ${discord.getEmoji("star")}_Leave Message:_ **${leaveMsg}**
             ${discord.getEmoji("star")}_Leave Channel:_ **${leaveChannel ?  `<#${leaveChannel}>`  :  "None"}**
             ${discord.getEmoji("star")}_Leave Toggle:_ **${leaveToggle}**
-            ${discord.getEmoji("star")}_Background Image:_ **${newImg}**
+            ${discord.getEmoji("star")}_Background Images:_ **${Functions.checkChar(urls.join(" "), 500, " ")}**
             ${discord.getEmoji("star")}_Background Text:_ **${leaveText}**
             ${discord.getEmoji("star")}_Background Text Color:_ **${leaveColor}**
+            ${discord.getEmoji("star")}_BG Text and Picture:_ **${leaveBGToggle}**
             newline
             __Edit Settings:__
             ${discord.getEmoji("star")}_**Type any message** to set it as the leave message._
@@ -98,13 +104,14 @@ export default class Leave extends Command {
 
         async function leavePrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
-            let setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor
+            let [setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor, setBGToggle] = [false, false, false, false, false, false, false, false]
             responseEmbed.setTitle(`**Leave Messages** ${discord.getEmoji("sagiriBleh")}`)
             const newMsg = msg.content.replace(/<#\d+>/g, "").replace(/\[(.*)\]/g, "").replace(/enable/g, "").replace(/rainbow/g, "")
-            .replace(/disable/g, "").replace(/#[0-9a-f]{3,6}/ig, "").replace(/(https?:\/\/[^\s]+)/g, "")
+            .replace(/disable/g, "").replace(/#[0-9a-f]{3,6}/ig, "").replace(/(https?:\/\/[^\s]+)/g, "").replace(/bg/g, "")
             const newImage = msg.content.match(/(https?:\/\/[^\s]+)/g)
             const newBGText = msg.content.match(/\[(.*)\]/g)
             const newBGColor = (msg.content.match(/rainbow/g) || msg.content.match(/(\s|^)#[0-9a-f]{3,6}/ig))
+            const newBGToggle = msg.content.match(/bg/)
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
@@ -115,9 +122,10 @@ export default class Leave extends Command {
                 await sql.updateColumn("welcome leaves", "leave message", "user has left guild!")
                 await sql.updateColumn("welcome leaves", "leave channel", null)
                 await sql.updateColumn("welcome leaves", "leave toggle", "off")
-                await sql.updateColumn("welcome leaves", "leave bg image", "https://data.whicdn.com/images/210153523/original.gif")
+                await sql.updateColumn("welcome leaves", "leave bg images", ["https://data.whicdn.com/images/210153523/original.gif"])
                 await sql.updateColumn("welcome leaves", "leave bg text", "tag left! There are now count members.")
                 await sql.updateColumn("welcome leaves", "leave bg color", "rainbow")
+                await sql.updateColumn("welcome leaves", "leave bg toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Leave settings were reset!`)
                 msg.channel.send(responseEmbed)
@@ -166,8 +174,10 @@ export default class Leave extends Command {
                 description += `${discord.getEmoji("star")}Leave Messages are **off**!\n`
             }
             if (setImage) {
-                await sql.updateColumn("welcome leaves", "leave bg image", String(newImage![0]))
-                description += `${discord.getEmoji("star")}Background image set to **${newImage![0]}**!\n`
+                let images = newImage!.map((i) => i)
+                images = Functions.removeDuplicates(images)
+                await sql.updateColumn("welcome leaves", "leave bg images", images)
+                description += `${discord.getEmoji("star")}Background image(s) set to **${Functions.checkChar(images.join(", "), 500, ",")}**!\n`
             }
             if (setBGText) {
                 await sql.updateColumn("welcome leaves", "leave bg text", String(newBGText![0].replace(/\[/g, "").replace(/\]/g, "")))
@@ -178,11 +188,21 @@ export default class Leave extends Command {
                 description += `${discord.getEmoji("star")}Background color set to **${newBGColor![0]}**!\n`
             }
 
+            if (setBGToggle) {
+                const toggle = await sql.fetchColumn("welcome leaves", "leave bg toggle")
+                if (!toggle || toggle === "off") {
+                    await sql.updateColumn("welcome leaves", "leave bg toggle", "on")
+                    description += `${discord.getEmoji("star")}Background text and picture is **on**!\n`
+                } else {
+                    await sql.updateColumn("welcome leaves", "leave bg toggle", "off")
+                    description += `${discord.getEmoji("star")}Background text and picture is **off**!\n`
+                }
+            }
+
             if (!description) return message.reply(`No edits were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
-            return
+            return msg.channel.send(responseEmbed)
         }
 
         await embeds.createPrompt(leavePrompt)

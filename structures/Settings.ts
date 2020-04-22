@@ -117,15 +117,17 @@ export class Settings {
         "welcome channel": null,
         "welcome message": "Welcome to guild, user!",
         "welcome toggle": "off",
+        "welcome bg images": ["https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif"],
+        "welcome bg text": "Welcome tag! There are now count members.",
+        "welcome bg color": "rainbow",
+        "welcome bg toggle": "on",
         "leave channel": null,
         "leave message": "user has left guild!",
         "leave toggle": "off",
-        "welcome bg image": "https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif",
-        "welcome bg text": "Welcome tag! There are now count members.",
-        "welcome bg color": "rainbow",
-        "leave bg image": "https://data.whicdn.com/images/210153523/original.gif",
+        "leave bg images": ["https://data.whicdn.com/images/210153523/original.gif"],
         "leave bg text": "tag left! There are now count members.",
-        "leave bg color": "rainbow"
+        "leave bg color": "rainbow",
+        "leave bg toggle": "on"
     }
 
     private readonly birthdaySettings: Init = {
@@ -158,6 +160,7 @@ export class Settings {
         "disabled commands": null,
         "pfp ban toggle": "off",
         "leaver ban toggle": "off",
+        "everyone ban toggle": "off",
         "ascii name toggle": "off",
         "default channel": null,
         "block match": "partial",
