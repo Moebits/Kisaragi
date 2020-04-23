@@ -33,7 +33,7 @@ export class Points {
                     add = true
                 } else {
                     let levelMessage = curr.message ? curr.message : `Congrats user, you now have the role rolename! ${this.discord.getEmoji("kannaWave")}`
-                    levelMessage = levelMessage.replace("user", `<@${this.message.author!.id}>`).replace("tag", `**${this.message.author.tag}**`).replace("name", `**${this.message.author.username}**`).replace("rolename", role.name).replace("rolemention", `<@&${role.id}>`)
+                    levelMessage = levelMessage.replace("user", `<@${this.message.author!.id}>`).replace("tag", `**${this.message.author.tag}**`).replace("rolename", role.name).replace("name", `**${this.message.author.username}**`).replace("rolemention", `<@&${role.id}>`)
                     await this.message.channel.send(levelMessage)
                 }
             } else if (Number(user.level) < Number(curr.level)) {

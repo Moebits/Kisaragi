@@ -25,7 +25,8 @@ export default class Kitsune extends Command {
             `,
             aliases: ["k", "foxgirl"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            unlist: true
         })
     }
 
@@ -39,10 +40,12 @@ export default class Kitsune extends Command {
         let image: NekoRequestResults
         let title: string
         if (args[1] === "lewd") {
+            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             image = await neko.nsfw.kitsune()
             title = "Lewd Kitsune"
         } else if (args[1] === "ecchi") {
+            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             image = await neko.nsfw.eroKitsune()
             title = "Ecchi Kitsune"

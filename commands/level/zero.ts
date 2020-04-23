@@ -3,6 +3,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 import {Points} from "../../structures/Points"
 
 export default class Zero extends Command {
@@ -12,6 +13,7 @@ export default class Zero extends Command {
             help:
             `
             \`zero\` - Resets your points
+            \`zero @user/id\` - Reset someones points (Moderator only)
             `,
             examples:
             `
@@ -27,8 +29,14 @@ export default class Zero extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const points = new Points(discord, message)
+        const perms = new Permission(discord, message)
+        let user = message.author.id
+        if (args[1]?.match(/\d+/)) {
+            if (!await perms.checkMod()) return
+            user = args[1].match(/\d+/)![0]
+        }
         try {
-            await points.zero(message.author.id)
+            await points.zero(user)
         } catch {
             return message.reply(`This server has no scores ${discord.getEmoji("kannaFacepalm")}`)
         }

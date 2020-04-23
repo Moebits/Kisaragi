@@ -25,7 +25,8 @@ export default class Neko extends Command {
             `,
             aliases: ["catgirl"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            unlist: true
         })
     }
 
@@ -42,6 +43,7 @@ export default class Neko extends Command {
             image = await neko.sfw.nekoGif()
             title = "Neko Gif"
         } else if (args[1] === "lewd") {
+            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             if (args[2] === "gif") {
                 image = await neko.nsfw.nekoGif()

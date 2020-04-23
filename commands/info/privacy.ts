@@ -18,7 +18,7 @@ export default class Privacy extends Command {
           `
           \`=>privacy\`
           `,
-          aliases: ["about"],
+          aliases: ["privacypolicy"],
           random: "none",
           cooldown: 5
         })

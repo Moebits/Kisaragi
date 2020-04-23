@@ -1,3 +1,4 @@
+import axios from "axios"
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -26,24 +27,12 @@ export default class Weather extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
 
-        const weather = require("openweather-apis")
-        weather.setLang("en")
-        weather.setUnits("imperial")
-        weather.setAPPID(process.env.WEATHER_API_KEY)
-
         const city = Functions.combineArgs(args, 1)?.trim()
         if (!city) return message.reply(`What city do you want to search for ${discord.getEmoji("kannaCurious")}`)
-        weather.setCity(city)
 
-        let w: any
-        await new Promise((resolve) => {
-            weather.getAllWeather(function(err: Error, json: any) {
-                w = json
-                resolve()
-            })
-        }) as any
+        const w = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${process.env.WEATHER_API_KEY}`).then((r) => r.data)
 
-        if (!w) {
+        if (!w || w.cod === "404") {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor("weather",  "https://cdn1.iconfinder.com/data/icons/weather-429/64/weather_icons_color-06-512.png")
             .setTitle(`**Weather** ${discord.getEmoji("AquaWut")}`))
@@ -54,7 +43,7 @@ export default class Weather extends Command {
         .setAuthor("weather",  "https://cdn1.iconfinder.com/data/icons/weather-429/64/weather_icons_color-06-512.png")
         .setTitle(`**Weather** ${discord.getEmoji("AquaWut")}`)
         .setURL(`https://openweathermap.org/city/${w.id}`)
-        .setThumbnail(`https://openweathermap.org/img/w/${w.weather[0].icon}.png`)
+        .setThumbnail(`https://openweathermap.org/img/w/${w.weather?.[0].icon}.png`)
         .setDescription(
             `🌎_City:_ **${w.name}, ${w.sys.country}**\n` +
             `🌩️_Weather:_ **${w.weather?.[0]?.main ?? "Not found"}**\n` +
@@ -66,7 +55,6 @@ export default class Weather extends Command {
             `❄️_Humidity:_ \`${w.main.humidity}%\`\n` +
             `💨_Wind Speed/Direction:_ \`${w.wind.speed}m/s, ${w.wind.deg}°\`\n`
         )
-        message.channel.send(weatherEmbed)
-        return
+        return message.channel.send(weatherEmbed)
     }
 }
