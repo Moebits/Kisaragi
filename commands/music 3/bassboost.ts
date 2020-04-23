@@ -1,24 +1,23 @@
 import {Message} from "discord.js"
-import fs from "fs"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Equalizer extends Command {
+export default class Bassboost extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Opens the equalizer menu.",
+            description: "Preset for lowshelf (500Hz, +5db).",
             help:
             `
-            \`equalizer\` - Opens the equalizer.
+            \`bassboost\` - Applies bass boosting (lowshelf 5 500 100)
             `,
             examples:
             `
-            \`=>equalizer\`
+            \`=>bassboost\`
             `,
-            aliases: ["eq"],
+            aliases: ["bass"],
             guildOnly: true,
             cooldown: 20
         })
@@ -29,11 +28,17 @@ export default class Equalizer extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
-        const msg = await audio.equalizerMenu()
-        msg.delete()
         const queue = audio.getQueue() as any
+        const rep = await message.reply("_Applying a bass boost, please wait..._")
+        const file = queue?.[0].file
+        await audio.lowshelf(file, 5, 500, 100)
+        if (rep) rep.delete()
+        const settings = audio.getSettings() as any
+        settings.filters.push("lowshelf")
         const embed = await audio.updateNowPlaying()
         queue[0].message.edit(embed)
+        const rep2 = await message.reply("Applied bass boosting!")
+        rep2.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
         return
     }
 }

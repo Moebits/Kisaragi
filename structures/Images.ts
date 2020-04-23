@@ -10,6 +10,7 @@ import sizeOf from "image-size"
 import imagemin from "imagemin"
 import imageminGifsicle from "imagemin-gifsicle"
 import path from "path"
+import querystring from "querystring"
 import request from "request"
 import stream from "stream"
 import Twitter from "twitter"
@@ -460,5 +461,28 @@ export class Images {
         }
         const mediaID = await initUpload().then(appendUpload).then(finalizeUpload)
         return mediaID
+    }
+
+    /** Upload text to pastebin */
+    public pastebinUpload = async (title: string, content: string, privacy: number) => {
+        const link = await axios.post(`https://pastebin.com/api/api_post.php`, querystring.stringify({
+            api_dev_key: process.env.PASTEBIN_API_KEY,
+            api_option: "paste",
+            api_paste_code: content,
+            api_paste_name: title,
+            api_paste_private: privacy,
+            api_user_key: process.env.PASTEBIN_USER_KEY
+        }), {headers: this.headers}).then((r) => r.data)
+        return link as string
+    }
+
+    /** Upload text to hastebin */
+    public hastebinUpload = async (content: string) => {
+        try {
+            const key = await axios.post(`https://hastebin.com/documents`, content, {headers: this.headers}).then((r) => r.data?.key)
+            return `https://hastebin.com/${key}`
+        } catch {
+            return Promise.reject("Could not upload to hastebin")
+        }
     }
 }

@@ -844,12 +844,13 @@ export class Audio {
                     let setPitch = false
                     await reaction.users.remove(user)
                     async function getSpeedChange(response: Message) {
+                        response.content = response.content.replace("x", "")
                         if (response.content.includes("pitch")) {
                             setPitch = true
                             response.content = response.content.replace("pitch", "")
                         }
                         if (response.content?.trim() && Number.isNaN(Number(response.content))) {
-                            const rep = await response.reply("You must pass a valid speed factor, eg. \`1.5\` or \`0.5\`.")
+                            const rep = await response.reply("You must pass a valid speed factor, eg. \`1.5x\` or \`0.5x\`.")
                             rep.delete({timeout: 3000})
                         } else {
                             factor = Number(response.content)

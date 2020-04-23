@@ -23,7 +23,7 @@ export default class MessageReactionAdd {
                 const newArray = await SQLQuery.selectColumn("collectors", "message", true)
                 let cached = false
                 for (let i = 0; i < newArray.length; i++) {
-                    if (newArray[i] === reaction.message.id.toString()) {
+                    if (newArray[i] === reaction.message.id) {
                         cached = true
                     }
                 }

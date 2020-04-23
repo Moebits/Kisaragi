@@ -147,7 +147,9 @@ export default class Embed extends Command {
             rep.delete()
             if (content.length > 256) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The title cannot exceed 256 characters.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
+                return
             }
             embed.setTitle(content)
             msg.edit(embed)
@@ -167,7 +169,9 @@ export default class Embed extends Command {
             rep.delete()
             if (content.length > 2048) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The description cannot exceed 2048 characters.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
+                return
             }
             embed.setDescription(content)
             msg.edit(embed)
@@ -187,7 +191,8 @@ export default class Embed extends Command {
             rep.delete()
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 return
             }
             embed.setImage(content)
@@ -208,7 +213,8 @@ export default class Embed extends Command {
             rep.delete()
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This thumbnail is invalid.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 return
             }
             embed.setThumbnail(content)
@@ -229,7 +235,8 @@ export default class Embed extends Command {
             rep.delete()
             if (content.length > 256) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The author text cannot exceed 256 characters.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 return
             }
             embed.setAuthor(content)
@@ -250,7 +257,8 @@ export default class Embed extends Command {
             rep.delete()
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 return
             }
             embed.setAuthor(embed.author?.name, content)
@@ -271,7 +279,8 @@ export default class Embed extends Command {
             rep.delete()
             if (content.length > 2048) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The footer cannot exceed 2048 characters.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 return
             }
             embed.setFooter(content)
@@ -292,7 +301,8 @@ export default class Embed extends Command {
             rep.delete()
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 return
             }
             embed.setFooter(embed.footer?.text, content)
@@ -329,7 +339,8 @@ export default class Embed extends Command {
             rep.delete()
             if (!/http/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This is not a valid url.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 return
             }
             embed.setURL(content)
@@ -351,7 +362,8 @@ export default class Embed extends Command {
                 embed = new MessageEmbed(JSON.parse(content))
             } catch {
                 const rep2 = await message.channel.send(`<@${user.id}>, This json data is invalid.`)
-                await rep2.delete()
+                rep2.delete({timeout: 3000})
+                this.setProcBlock(true)
                 return
             }
             rep.delete()

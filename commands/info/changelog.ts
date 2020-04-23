@@ -31,6 +31,10 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 32, date: "4/23/2020", changes: "Added some music presets - \`nightcore\`, \`bassboost\`, and \`trebleboost\`."},
+            {num: 31, date: "4/23/2020", changes: "The \`spotify\` command has a new reaction that will post the link to the track in the chat."},
+            {num: 30, date: "4/23/2020", changes: "Added \`json\`, \`pastebin\`, and \`hastebin\`, mostly for easy debugging purposes."},
+            {num: 29, date: "4/23/2020", changes: "Added \`embed\`, \`bansync\`, and ability to cycle multiple images in \`welcome\` and \`leave\`."},
             {num: 28, date: "4/20/2020", changes: "Added \`levelroles\`, \`levelchannels\`, and \`usage\`."},
             {num: 27, date: "4/20/2020", changes: "Added twitch notifications with \`twitchnotify\` and level up commands such as \`rank\` and \`leaderboard\`"},
             {num: 26, date: "4/17/2020", changes: "The \`block\` command can now block invite links."},

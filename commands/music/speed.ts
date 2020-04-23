@@ -18,9 +18,9 @@ export default class Speed extends Command {
             `,
             examples:
             `
-            \`=>speed 1.5\`
-            \`=>speed 0.7 pitch\`
-            \`=>speed download 2.5\`
+            \`=>speed 1.5x\`
+            \`=>speed 0.7x pitch\`
+            \`=>speed download 2.5x\`
             `,
             aliases: ["timestretch", "tempo"],
             guildOnly: true,
@@ -43,7 +43,7 @@ export default class Speed extends Command {
             setPitch = true
             args.shift()
         }
-        const factor = Number(args[1]) ? Number(args[1]) : 1.0
+        const factor = Number(args[1].replace("x", "")) ? Number(args[1].replace("x", "")) : 1.0
         if (args[2] === "pitch") setPitch = true
         const rep = await message.reply("_Changing the speed of the file, please wait..._")
         let file = ""

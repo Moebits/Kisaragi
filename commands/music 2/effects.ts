@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Effects extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Applies special audio effects.",
+            description: "Opens the effects menu.",
             help:
             `
             \`effects\` - Opens the effects menu.

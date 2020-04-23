@@ -151,7 +151,7 @@ export class SQLQuery {
         await SQLQuery.initGuild(message)
         return "=>"
       } else {
-        return String(result[0])
+        return String(result)
       }
   }
 

@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, MessageEmbed, MessageReaction, User} from "discord.js"
 import ms from "pretty-ms"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
@@ -100,6 +100,18 @@ export default class SpotifyCommand extends Command {
             )
             spotifyArray.push(spotifyEmbed)
         }
-        embeds.createReactionEmbed(spotifyArray, true, true)
+        const msg = await embeds.createReactionEmbed(spotifyArray, true, true)
+        await msg.react(discord.getEmoji("spotify"))
+
+        const spotifyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("spotify") && user.bot === false
+        const spotifyCollector = msg.createReactionCollector(spotifyCheck)
+
+        const urls = new Set()
+        spotifyCollector.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
+            if (urls.has(msg.embeds[0].url)) return
+            urls.add(msg.embeds[0].url)
+            await message.channel.send(msg.embeds[0].url)
+        })
     }
 }

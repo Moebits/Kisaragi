@@ -224,6 +224,7 @@ export class Embeds {
             await this.createPrompt(getPageNumber)
             await numReply.delete()
         })
+        return msg
     }
 
     // Re-trigger Existing Reaction Embed
