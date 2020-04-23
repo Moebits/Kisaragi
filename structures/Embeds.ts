@@ -739,9 +739,9 @@ export class Embeds {
     }
 
     // Create Prompt
-    public createPrompt = (func: (message: Message, collector: MessageCollector) => void): Promise<void> => {
+    public createPrompt = (func: (message: Message, collector: MessageCollector) => void, infinite?: boolean): Promise<void> => {
         const filter = (m: Message) => m.author!.id === this.message.author!.id && m.channel === this.message.channel
-        const collector = this.message.channel.createMessageCollector(filter, {time: 120000})
+        const collector = this.message.channel.createMessageCollector(filter, {time: infinite ? undefined : 120000})
         return new Promise((resolve) => {
             collector.on("collect", (m: Message) => {
                 func(m, collector)

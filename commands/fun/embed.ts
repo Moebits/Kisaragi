@@ -143,7 +143,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the title of this embed.`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             if (content.length > 256) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The title cannot exceed 256 characters.`)
@@ -163,7 +163,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the description of this embed.`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             if (content.length > 2048) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The description cannot exceed 2048 characters.`)
@@ -183,7 +183,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Post an image for this embed (png, jpg, gif).`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
@@ -204,7 +204,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Post a thumbnail for this embed (png, jpg, gif).`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This thumbnail is invalid.`)
@@ -225,7 +225,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the author of this embed.`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             if (content.length > 256) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The author text cannot exceed 256 characters.`)
@@ -246,7 +246,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Post an author image for this embed (png, jpg, gif).`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
@@ -267,7 +267,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the footer of this embed.`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             if (content.length > 2048) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The footer cannot exceed 2048 characters.`)
@@ -288,7 +288,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Post a footer image for this embed (png, jpg, gif).`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
@@ -309,7 +309,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Set the color of this embed (hex or named color).`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             embed.setColor(content.toUpperCase())
             msg.edit(embed)
@@ -325,7 +325,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the url of this embed.`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             rep.delete()
             if (!/http/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This is not a valid url.`)
@@ -346,7 +346,7 @@ export default class Embed extends Command {
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the json data for this embed. The current embed will be replaced.`)
-            await embeds.createPrompt(getContent)
+            await embeds.createPrompt(getContent, true)
             try {
                 embed = new MessageEmbed(JSON.parse(content))
             } catch {

@@ -10,9 +10,25 @@ export default class Warns extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lists all warns.",
+            help:
+            `
+            \`warns\` - Displays all warns.
+            \`warns @user\` - Gets the warns of the user.
+            \`warns @user edit num new warning\` - Edits a warning.
+            \`warns @user num\` - Deletes a specific warning.
+            \`warns @user delete\` - Deletes all warns.
+            \`warns destroy\` - Deletes all warns for every member (no undo).
+            `,
+            examples:
+            `
+            \`=>warns\`
+            \`=>warns @user\`
+            \`=>warns destroy\`
+            `,
             guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            unlist: true
         })
     }
 
@@ -28,17 +44,17 @@ export default class Warns extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            warnPrompt(message)
+            await warnPrompt(message)
             return
         }
 
         const warnArray: MessageEmbed[] = []
         let warnings = ""
-        let warnLog = await sql.fetchColumn("warns", "warn log") as any
-        if (!warnLog) warnLog = [""]
+        let warnLog = await sql.fetchColumn("warns", "warn log")
+        if (!warnLog) warnLog = []
         for (let i = 0; i < warnLog.length; i++) {
-            if (typeof warnLog[i]?.trim() === "string") warnLog[i] = JSON.parse(warnLog[i])
-            if (warnLog === [""]) {
+            warnLog[i] = JSON.parse(warnLog[i])
+            if (warnLog === []) {
                 warnings = "None"
             } else {
                 for (let j = 0; j < warnLog[i].warns.length; j++) {
@@ -46,10 +62,10 @@ export default class Warns extends Command {
                 }
             }
             const warnEmbed = embeds.createEmbed()
-            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === warnLog[i].user)
+            const member = message.guild?.members.cache.find((m: GuildMember) => m.id === warnLog[i].user)
             warnEmbed
             .setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
-            .setThumbnail(message.guild!.iconURL() as string)
+            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
             .setDescription(
                 `**${member ? `${member.displayName}'s` : "No"} Warns**\n` +
                 "__Warns__\n" +
@@ -75,8 +91,7 @@ export default class Warns extends Command {
             responseEmbed.setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
             const warnOne = await sql.fetchColumn("special roles", "warn one")
             const warnTwo = await sql.fetchColumn("special roles", "warn two")
-            if (!warnLog) warnLog = [""]
-            let [setUser, setDelete, setPurge] = [] as boolean[]
+            let [setUser, setDelete, setPurge] = [false, false, false]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
@@ -85,7 +100,30 @@ export default class Warns extends Command {
             }
 
             const userID = msg.content.match(/(?<=<@)(.*?)(?=>)/g)?.[0]
-            const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userID!) as GuildMember
+            const member = message.guild?.members.cache.find((m: GuildMember) => m.id === userID) as GuildMember
+
+            if (msg.content.toLowerCase().startsWith("edit")) {
+                const newMsg = msg.content.replace(/edit/g, "").trim().split(" ")
+                const tempMsg = newMsg.slice(1).join(" ")
+                const num = Number(newMsg[0]) - 1
+                if (!member) return message.reply(`Invalid user ${discord.getEmoji("kannaFacepalm")}`)
+                if (tempMsg) {
+                    let found = false
+                    for (let i = 0; i < warnLog.length; i++) {
+                        if (warnLog[i].user === member.id) {
+                            warnLog[i].warns[num] = tempMsg
+                            await sql.updateColumn("warns", "warn log", warnLog)
+                            found = true
+                        }
+                    }
+                    if (!found) return msg.reply("That user does not have any warns!")
+                    responseEmbed.setDescription(`Edited warn **#${num+1}** for <@${member.id}>!`)
+                    return msg.channel.send(responseEmbed)
+                } else {
+                    return msg.channel.send(responseEmbed.setDescription("No warning found!"))
+                }
+            }
+
             let warnOneRole, warnTwoRole
             if (warnOne) warnOneRole = message.guild!.roles.cache.find((r: Role) => r.id === warnOne)
             if (warnTwo) warnTwoRole = message.guild!.roles.cache.find((r: Role) => r.id === warnTwo)
@@ -97,7 +135,6 @@ export default class Warns extends Command {
             if (setPurge) {
                 let found = false
                 for (let i = 0; i < warnLog.length; i++) {
-                    if (typeof warnLog[i] === "string") warnLog[i] = JSON.parse(warnLog[i])
                     if (warnLog[i].user === member.id) {
                         warnLog[i].warns = []
                         await sql.updateColumn("warns", "warn log", warnLog)
@@ -134,7 +171,6 @@ export default class Warns extends Command {
                 let warns = ""
                 let found = false
                 for (let i = 0; i < warnLog.length; i++) {
-                    if (typeof warnLog[i] === "string") warnLog[i] = JSON.parse(warnLog[i])
                     if (warnLog[i].user === member.id) {
                         for (let j = 0; j < warnLog[i].warns.length; j++) {
                             warns += `**${j + 1} => **\n` + `${warnLog[i].warns[j]}\n`
@@ -155,7 +191,6 @@ export default class Warns extends Command {
                 num = num - 1
                 let found = false
                 for (let i = 0; i < warnLog.length; i++) {
-                    if (typeof warnLog[i] === "string") warnLog[i] = JSON.parse(warnLog[i])
                     if (warnLog[i].user === member.id) {
                         if (warnLog[i].warns.length > num + 1) return msg.reply("Could not find that warning!")
                         warnLog[i].warns[num] = 0
@@ -190,9 +225,7 @@ export default class Warns extends Command {
                 )
                 return msg.channel.send(responseEmbed)
             }
-
         }
-
         embeds.createPrompt(warnPrompt)
     }
 }
