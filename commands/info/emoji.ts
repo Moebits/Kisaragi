@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Emoji extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts the image of an emoji, or lists all emojis.",
+            description: "Posts the image of an emoji.",
             help:
             `
             \`emoji emoji/name\` - Posts an emoji from the emoji or name

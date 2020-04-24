@@ -6,7 +6,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 export default class Banner extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts the guild's banner, if there is one.",
+            description: "Posts the guild's banner.",
             help:
             `
             \`banner\` - Posts the guild banner

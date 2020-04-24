@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Channels extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Info on all channels in the guild.",
+            description: "Info on all channels.",
             help:
             `
             \`channels\` - Posts all of the channels

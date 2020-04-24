@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Privacy extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "This is the privacy policy of the bot.",
+          description: "Privacy policy of the bot.",
           help:
           `
           \`privacy\` - Privacy policy

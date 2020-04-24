@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class TOS extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "This is the terms of service for the bot.",
+          description: "Terms of service for the bot.",
           help:
           `
           \`tos\` - Terms of service

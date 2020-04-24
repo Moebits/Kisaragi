@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Emojis extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Info on all emojis in the guild.",
+            description: "Info on all emojis.",
             help:
             `
             \`emojis\` - Posts all of the emojis

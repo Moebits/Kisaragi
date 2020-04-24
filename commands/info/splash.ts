@@ -6,7 +6,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 export default class Splash extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts the guild's splash screen, if there is one.",
+            description: "Posts the guild's splash screen.",
             help:
             `
             \`splash\` - Posts the guild splash screen

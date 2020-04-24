@@ -6,7 +6,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Avatar extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Posts your avatar or the avatar of a user.",
+          description: "Posts the avatar of a user.",
           help:
           `
           \`avatar\` - Posts your avatar
