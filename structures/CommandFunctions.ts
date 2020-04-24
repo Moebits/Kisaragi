@@ -11,10 +11,10 @@ export class CommandFunctions {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Run Command
-    public runCommand = async (msg: Message, args: string[], auto?: boolean) => {
+    public runCommand = async (msg: Message, args: string[], noMsg?: boolean) => {
         args = args.filter(Boolean)
         const cmdPath = await this.findCommand(args?.[0]) as string
-        if (!cmdPath) return this.noCommand(args?.[0], auto)
+        if (!cmdPath) return this.noCommand(args?.[0], noMsg)
         const cp = new (require(path.join(__dirname, `${cmdPath.slice(0, -3)}`)).default)(this.discord, msg)
         if (cp.options.guildOnly) {
             if (msg.channel.type === "dm") return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)

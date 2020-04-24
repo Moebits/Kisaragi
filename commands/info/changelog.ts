@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 33, date: "4/24/2020", changes: "Added a voice recognition system that can be toggled with \`voice\`. Although, it isn't too good."},
             {num: 32, date: "4/23/2020", changes: "Added some music presets - \`nightcore\`, \`bassboost\`, and \`trebleboost\`."},
             {num: 31, date: "4/23/2020", changes: "The \`spotify\` command has a new reaction that will post the link to the track in the chat."},
             {num: 30, date: "4/23/2020", changes: "Added \`json\`, \`pastebin\`, and \`hastebin\`, mostly for easy debugging purposes."},

@@ -42,8 +42,9 @@ export default class Voice extends Command {
             } else if (!message.member?.voice.channel) {
                 return message.reply(`You must join a voice channel first. How do you want the bot to hear you ${discord.getEmoji("kannaFacepalm")}`)
             }
+            connection.play(Functions.silence(), {type: "opus"})
             await sql.updateColumn("config", "voice", "on")
-            return message.reply(`Voice recognition was turned **on**! ${discord.getEmoji("aquaUp")}`)
+            return message.reply(`Voice recognition was turned **on**! It's recommended to use **push to talk**. Try saying **hi** or **hello**! ${discord.getEmoji("aquaUp")}`)
         } else {
             await sql.updateColumn("config", "voice", "off")
             return message.reply(`Voice recognition was turned **off**! ${discord.getEmoji("mexShrug")}`)

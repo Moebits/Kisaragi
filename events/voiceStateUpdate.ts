@@ -24,6 +24,7 @@ export default class VoiceStateUpdate {
                 const msg = await this.discord.fetchFirstMessage(newState.guild)
                 const audio = new Audio(this.discord, msg!)
                 audio.deleteQueue()
+                await sql.updateColumn("config", "voice", "off")
                 newState.guild.voice?.connection?.channel.leave()
             }
         }

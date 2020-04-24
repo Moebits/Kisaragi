@@ -242,13 +242,14 @@ export class AudioEffects {
         return fs.createReadStream(newDest)
     }
 
-    public pcmToWav = async (filepath: string) => {
+    public pcmToWav = async (filepath: string, mono?: boolean) => {
         this.init()
+        const channels = mono ? "1" : "2"
         const ext = path.extname(filepath).replace(".", "")
         const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
         const newDest = `./tracks/transform/${filename}.wav`
         await new Promise((resolve, reject) => {
-            ffmpeg(filepath).inputOptions(["-f", "s16le", "-ar", "44.1k", "-ac", "2"]).save(newDest)
+            ffmpeg(filepath).inputOptions(["-f", "s16le", "-ar", "44.1k", "-ac", channels]).save(newDest)
             .on("end", () => resolve())
             .on("error", () => reject())
         })
