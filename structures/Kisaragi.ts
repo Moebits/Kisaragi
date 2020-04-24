@@ -129,8 +129,12 @@ export class Kisaragi extends Client {
             return false
         })
         const channel = channels?.first() as TextChannel
-        const lastMsg = await channel?.messages?.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
-        return lastMsg
+        try {
+            const lastMsg = await channel?.messages?.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
+            return lastMsg
+        } catch {
+            return channel.lastMessage
+        }
     }
 
     // Check for Bot Mention

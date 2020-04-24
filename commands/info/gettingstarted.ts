@@ -70,9 +70,9 @@ export default class GettingStarted extends Command {
 
         if (msg) await msg.react(discord.getEmoji("help"))
         const helpCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("help") && user.bot === false
-        const help = msg.createReactionCollector(helpCheck)
+        const help = msg?.createReactionCollector(helpCheck)
 
-        help.on("collect", async (reaction, user) => {
+        help?.on("collect", async (reaction, user) => {
             await reaction.users.remove(user)
             await message.channel.send(`<@${user.id}>, here is the help command!`)
             await cmd.runCommand(msg, ["help"])

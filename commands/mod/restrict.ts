@@ -9,6 +9,16 @@ export default class Restrict extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Adds a restricted role to the specified users.",
+            help:
+            `
+            _Note: You must set a restricted role first._
+            \`restrict @user1 @user2 reason?\` - Restricts the user(s) with an optional reason
+            \`restrict id1 id2 reason?\` - Restricts by user id instead of mention
+            `,
+            examples:
+            `
+            \`=>restrict @user can't post images\`
+            `,
             guildOnly: true,
             aliases: [],
             cooldown: 3

@@ -141,4 +141,44 @@ export class Permission {
             }
         }
     }
+
+    /** Continue temporary mute */
+    public continueTempMutes = async () => {
+        const mute = await this.sql.fetchColumn("special roles", "mute role")
+        if (!mute) return
+        let tempArr = await this.sql.redisGet(`${this.message.guild?.id}_tempmute`)
+        if (tempArr) {
+            tempArr = JSON.parse(tempArr)
+            if (!tempArr) return
+            for (let i = 0; i < tempArr.length; i++) {
+                const current = tempArr[i]
+                setInterval(async () => {
+                    let newArr = await this.sql.redisGet(`${this.message.guild?.id}_tempmute`)
+                    newArr = JSON.parse(newArr)
+                    if (!newArr) return
+                    const index = newArr.findIndex((i: any) => i.member === current.id)
+                    const curr = newArr[index]
+                    const time = Number(curr.time)-60000
+                    if (time <= 0) {
+                        const member = this.message.guild?.members.cache.get(curr.id)
+                        await member?.roles.remove(mute).catch(() => null)
+                        newArr[index] = null
+                        newArr = newArr.filter(Boolean)?.[0] ?? null
+                        await this.sql.redisSet(`${this.message.guild?.id}_tempmute`, newArr)
+                        clearInterval()
+                        return
+                    }
+                    newArr[index] = {...curr, time}
+                    await this.sql.redisSet(`${this.message.guild?.id}_tempmute`, JSON.stringify(newArr))
+                }, 60000)
+                setTimeout(async () => {
+                    const member = this.message.guild?.members.cache.get(current.id)
+                    await member?.roles.remove(mute).catch(() => null)
+                    tempArr[i] = null
+                    tempArr = tempArr.filter(Boolean)?.[0] ?? null
+                    await this.sql.redisSet(`${this.message.guild?.id}_tempmute`, tempArr)
+                }, current.time)
+            }
+        }
+    }
 }

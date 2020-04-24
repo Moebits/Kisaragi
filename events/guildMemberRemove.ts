@@ -17,14 +17,13 @@ export default class GuildMemberRemove {
             if (bans.has(member.id)) return
         }
 
-        let defaultChannel = firstMsg.channel as TextChannel
+        let defaultChannel = firstMsg?.channel as TextChannel
         const defChannel = await sql.fetchColumn("blocks", "default channel")
         if (defChannel) {
             defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === String(defChannel)) as TextChannel
         }
 
-        const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message :
-        await this.discord.fetchFirstMessage(member.guild) as Message
+        const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message : firstMsg
 
         const image = new Images(this.discord, defMsg)
         const embeds = new Embeds(this.discord, defMsg)

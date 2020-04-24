@@ -16,7 +16,45 @@ export default class GuildCreate {
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
         const sql = new SQLQuery(message)
+
+        const mainChannels = guild.channels.cache.filter((c) => {
+            if (c.name.toLowerCase().includes("main") || c.name.toLowerCase().includes("general") || c.name.toLowerCase().includes("chat")) {
+                if (c.type === "text") {
+                    return true
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        }).map((c) => c) as TextChannel[]
+        let index = 0
+        let highest = mainChannels[0]?.rawPosition
+        for (let i = 0; i < mainChannels.length; i++) {
+            if (mainChannels[i]?.rawPosition < highest) {
+                highest = mainChannels[i].rawPosition
+                index = i
+            }
+        }
+        let mainChannel = mainChannels[index]
+        if (!mainChannel) mainChannel = await discord.fetchFirstMessage(guild).then((m) => m?.channel) as TextChannel
+
+        if (!guild.me?.hasPermission(["SEND_MESSAGES", "ADD_REACTIONS", "EMBED_LINKS", "ATTACH_FILES", "USE_EXTERNAL_EMOJIS", "CONNECT", "SPEAK"])) {
+            await mainChannel.send(`The permissions **Send Messages**, **Add Reactions**, **Embed Links**, **Attach Files**, **Use External Emojis**, **Connect**, and **Speak** are required. Invite the bot again with sufficient permissions.`)
+            .catch(() => null)
+            await guild.leave()
+            return
+        }
+
         SQLQuery.initGuild(message)
+
+        try {
+            let botRole = guild.roles.cache.find((r) => r.name.toLowerCase().includes("kisaragi"))
+            if (!botRole) botRole = await guild.roles.create({data: {name: "✨ Kisaragi ✨", color: "#ff58f4"}})
+            await guild.me?.roles.add(botRole)
+        } catch {
+            // Do nothing
+        }
 
         const logGuild = async (guild: Guild) => {
             const guildChannel = discord.channels.cache.get(config.guildLog) as TextChannel
@@ -38,30 +76,9 @@ export default class GuildCreate {
             guildChannel.send(logEmbed)
             return
         }
-        logGuild(guild)
+        if (config.testing === "off") logGuild(guild)
 
-        const joinMessage = async (guild: Guild) => {
-            const mainChannels = guild.channels.cache.filter((c) => {
-                if (c.name.toLowerCase().includes("main") || c.name.toLowerCase().includes("general") || c.name.toLowerCase().includes("chat")) {
-                    if (c.type === "text") {
-                        return true
-                    } else {
-                        return false
-                    }
-                } else {
-                    return false
-                }
-            }).map((c) => c) as TextChannel[]
-            let index = 0
-            let highest = mainChannels[0]?.rawPosition
-            for (let i = 0; i < mainChannels.length; i++) {
-                if (mainChannels[i]?.rawPosition < highest) {
-                    highest = mainChannels[i].rawPosition
-                    index = i
-                }
-            }
-            let mainChannel = mainChannels[index]
-            if (!mainChannel) mainChannel = await discord.fetchFirstMessage(guild).then((m) => m?.channel) as TextChannel
+        const joinMessage = async () => {
             const msg = mainChannel.lastMessage
             if (msg) {
                 await cmd.runCommand(msg, ["gettingstarted"])
@@ -69,7 +86,7 @@ export default class GuildCreate {
                 await cmd.runCommand(message, ["gettingstarted", mainChannel.id])
             }
         }
-        if (!discord.checkMuted(message)) joinMessage(guild)
+        if (!discord.checkMuted(message)) joinMessage()
 
         const blacklistLeave = async (guild: Guild) => {
             const blacklists = await SQLQuery.selectColumn("blacklist", "guild id")

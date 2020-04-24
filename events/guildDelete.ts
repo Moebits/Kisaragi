@@ -36,6 +36,6 @@ export default class GuildDelete {
             await guildChannel.send(logEmbed)
             return
         }
-        logGuild(guild)
+        if (config.testing === "off") logGuild(guild)
     }
 }

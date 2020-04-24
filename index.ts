@@ -71,7 +71,7 @@ const start = async (): Promise<void> => {
             if (!file.endsWith(".ts") && !file.endsWith(".js")) return
             const eventName = file.split(".")[0]
             Logger.log(`Loading Event: ${eventName}`)
-            const event = new (require(path.join(__dirname, `./events/${eventName}.js`)).default)(discord)
+            const event = new (require(path.join(__dirname, `./events/${eventName}`)).default)(discord)
             discord.on(eventName, (...args: any) => event.run(...args))
         })
 
@@ -93,3 +93,11 @@ start()
 
 Functions.pollTwitch(discord)
 Functions.youtubeReSubscribe()
+
+// @ts-ignore
+process.on("unhandledRejection", (error: Error) => console.error(error))
+process.on("uncaughtException", (error: Error) => console.error(error))
+
+process.on("exit", () => {
+    discord.user?.setPresence({activity: {name: "Bot is restarting...", type: "WATCHING"}, status: "dnd"})
+})

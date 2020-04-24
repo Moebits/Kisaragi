@@ -9,6 +9,15 @@ export default class Unmute extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Unmutes users.",
+            help:
+            `
+            \`unmute @user1 @user2 reason?\` - Unmutes the user(s) with an optional reason
+            \`unmute id1 id2 reason?\` - Unmutes by user id instead of mention
+            `,
+            examples:
+            `
+            \`=>unmute @user\`
+            `,
             guildOnly: true,
             aliases: [],
             cooldown: 3

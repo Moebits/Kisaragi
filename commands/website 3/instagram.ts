@@ -20,7 +20,7 @@ export default class Instagram extends Command {
             \`=>instagram anime\`
             \`=>instagram user imtenpi\`
             `,
-            aliases: [],
+            aliases: ["insta"],
             random: "none",
             cooldown: 10
         })

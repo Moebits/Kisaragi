@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Roles extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Lists all roles in the guild.",
+            description: "Info on all roles in the guild.",
             help:
             `
             \`roles\` - Posts all of the roles

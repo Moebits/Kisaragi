@@ -478,7 +478,7 @@ export class Functions {
 
     /** Sum all object values */
     public static sumObjectValues = (obj: object, ignore?: string) => {
-        if (ignore) obj[ignore] = 0
+        if (ignore && obj[ignore]) obj[ignore] = 0
         return Object.values(obj).reduce((a, b) => Number(a) + Number(b)) as number
     }
 
@@ -498,7 +498,7 @@ export class Functions {
         const obj = {} as any
         for (let i = 0; i < arr1.length; i++) {
             if (property) {
-                obj[arr1[i]] = JSON.parse(arr2[i] as unknown as string)[property]
+                obj[arr1[i]] = JSON.parse(arr2[i] as unknown as string)?.[property]
             } else {
                 obj[arr1[i]] = arr2[i]
             }

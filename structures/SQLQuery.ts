@@ -140,7 +140,7 @@ export class SQLQuery {
 
   // Fetch Prefix
   public static fetchPrefix = async (message: Message, update?: boolean): Promise<string> => {
-    if (!message.guild?.id) return "=>"
+    if (!message?.guild?.id) return "=>"
     const query: QueryArrayConfig = {
         text: `SELECT prefix FROM prefixes WHERE "guild id" = $1`,
         rowMode: "array",
@@ -421,6 +421,8 @@ export class SQLQuery {
     const tag = `${info.username}#${info.discriminator}`
     try {
       await SQLQuery.insertInto("oauth2", "user id", info.id)
+    } catch {
+        // Do Nothing
     } finally {
       await SQLQuery.updateColumn("oauth2", "access token", accessToken, "user id", info.id)
       await SQLQuery.updateColumn("oauth2", "refresh token", refreshToken, "user id", info.id)

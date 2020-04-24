@@ -113,6 +113,7 @@ export default class MessageEvent {
           if (!firstMessage.has(message.guild.id)) {
             await embeds.updateColor()
             perms.continueTempBans()
+            perms.continueTempMutes()
             cmdFunctions.autoCommand()
             firstMessage.add(message.guild.id)
             pointCool.set(message.guild.id, new Set())
@@ -182,18 +183,14 @@ export default class MessageEvent {
           }
        }
         if (message.content.trim().toLowerCase() === "i love you") {
-          if (message.author.id === process.env.OWNER_ID) {
             message.channel.send(`I love you more, <@${message.author.id}>!`)
-          } else {
-            message.channel.send(`Sorry <@${message.author.id}>, but I don't share the same feelings.`)
-          }
         }
         if (this.discord.checkBotMention(message)) {
           const args = message.content.slice(`<@!${this.discord.user?.id}>`.length).trim().split(/ +/g)
           if (args[0]) {
             cmdFunctions.runCommand(message, args)
           } else {
-            message.reply(`My prefix is set to "${prefix}"!\n`)
+            message.reply(`My prefix is set to "**${prefix}**"!\n`)
           }
         }
         if (message.content.match(/https?:\/\//)) {

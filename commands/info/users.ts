@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Users extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Lists all users in the guild.",
+            description: "Info on all users in the guild.",
             help:
             `
             \`users\` - Posts all of the users

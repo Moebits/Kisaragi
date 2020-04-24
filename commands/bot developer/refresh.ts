@@ -10,6 +10,15 @@ export default class Reload extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Refreshes all commands and events.",
+          help:
+          `
+          \`refresh\` - Refreshes all commands and events, without needing to restart the bot.
+          \`refresh command\` - Only re-compiles the specific command, greatly improving command speed.
+          `,
+          examples:
+          `
+          \`=>refresh\`
+          `,
           aliases: ["reload"],
           cooldown: 50
         })
@@ -32,7 +41,7 @@ export default class Reload extends Command {
             for (let j = 0; j < commands.length; j++) {
               try {
                 delete require.cache[require.resolve(`../${subDir[i]}/${commands[j].slice(0, -3)}`)]
-                new (require(`../${subDir[i]}/${commands[j].slice(0, -3)}`).default)(this.discord, this.message)
+                new (require(`../${subDir[i]}/${commands[j].slice(0, -3)}`).default)(discord, message)
               } catch {
                 continue
               }
@@ -41,7 +50,9 @@ export default class Reload extends Command {
           for (let i = 0; i < events.length; i++) {
             try {
               delete require.cache[require.resolve(`../../events/${events[i].slice(0, -3)}`)]
-              new (require(`../../events/${events[i].slice(0, -3)}`).default)(this.discord)
+              const event = new (require(`../../events/${events[i].slice(0, -3)}`).default)(discord)
+              discord.removeAllListeners(events[i].slice(0, -3))
+              discord.on(events[i].slice(0, -3), (...args: any) => event.run(...args))
             } catch {
               continue
             }
@@ -77,7 +88,7 @@ export default class Reload extends Command {
         if (!found) return message.reply(`The command ${commandName} was not found.`)
         const reloadEmbed = embeds.createEmbed()
         .setTitle(`**Refresh** ${discord.getEmoji("gabStare")}`)
-        .setDescription(`The command **${commandName}** has been reloaded!`)
+        .setDescription(`The command **${commandName}** has been refreshed!`)
         return message.channel.send(reloadEmbed)
   }
 }

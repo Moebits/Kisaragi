@@ -9,6 +9,15 @@ export default class Unrestrict extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Unrestricts users.",
+            help:
+            `
+            \`unrestrict @user1 @user2 reason?\` - Unrestricts the user(s) with an optional reason
+            \`unrestrict id1 id2 reason?\` - Unrestricts by user id instead of mention
+            `,
+            examples:
+            `
+            \`=>unrestrict @user shush\`
+            `,
             guildOnly: true,
             aliases: [],
             cooldown: 3

@@ -202,7 +202,8 @@ export class Settings {
     private readonly configSettings: Init = {
         ...this.guildSettings,
         "embed colors": ["default"],
-        "permissions": "role"
+        "permissions": "role",
+        "voice": "off"
     }
 
     private readonly tableMap: object = {

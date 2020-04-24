@@ -9,8 +9,18 @@ export default class Mute extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Mutes the specified users.",
+            help:
+            `
+            _Note: You must set a mute role first._
+            \`mute @user1 @user2 reason?\` - Mutes the user(s) with an optional reason
+            \`mute id1 id2 reason?\` - Mutes by user id instead of mention
+            `,
+            examples:
+            `
+            \`=>mute @user shush\`
+            `,
             guildOnly: true,
-            aliases: [],
+            aliases: ["silence"],
             cooldown: 3
         })
     }
