@@ -6,8 +6,6 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
-let redditArray: MessageEmbed[] = []
-
 export default class Reddit extends Command {
     private readonly perms = new Permission(this.discord, this.message)
     private sub = null as any
@@ -19,8 +17,8 @@ export default class Reddit extends Command {
             help:
             `
             \`reddit\` - Gets a random post
-            \`reddit board query?\` - Searches for posts in the board or gets random ones
-            \`reddit board hot/new/top/rising/controversial\` - Gets hot, new, top, etc. posts in the board
+            \`reddit subreddit query?\` - Searches for posts in the subreddit or gets random ones
+            \`reddit subreddit hot/new/top/rising/controversial\` - Gets hot, new, top, etc. posts in the board
             \`reddit user query\` - Searches for users
             \`reddit url\` - Gets the post from the url
             `,
@@ -37,11 +35,13 @@ export default class Reddit extends Command {
         })
     }
 
-    public getSubmissions = async (discord: Kisaragi, reddit: snoowrap, embeds: Embeds, postIDS: string[]) => {
-        for (let i = 0; i < 10; i++) {
+    public getSubmissions = async (discord: Kisaragi, reddit: snoowrap, embeds: Embeds, postIDS: string[], imagesOnly?: boolean) => {
+        const redditArray: MessageEmbed[] = []
+        for (let i = 0; i < postIDS.length; i++) {
             if (!postIDS[i]) break
             // @ts-ignore
-            const post = await reddit.getSubmission(postIDS[i]).fetch()
+            const post = await reddit.getSubmission(postIDS[i]).fetch() as snoowrap.Submission
+            if (imagesOnly && post.selftext) continue
             if (post.over_18) {
                 if (!this.perms.checkNSFW(true)) continue
             }
@@ -50,6 +50,7 @@ export default class Reddit extends Command {
                 if (!post.comments[j]) break
                 commentArray.push(`**${post.comments[j].author ? post.comments[j].author.name : "Deleted"}**: ${(Functions.checkChar(post.comments[j].body, 150, "") as string).replace(/(\r\n|\n|\r)/gm, " ")}`)
             }
+            const selfText = post.selftext ? `${discord.getEmoji("star")}_Selftext:_ ${(Functions.checkChar(post.selftext, 800, "") as string).replace(/(\r\n|\n|\r)/gm, " ")}\n` : ""
             const redditEmbed = embeds.createEmbed()
             redditEmbed
             .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
@@ -60,13 +61,25 @@ export default class Reddit extends Command {
                 `${discord.getEmoji("star")}_Subscribers:_ **${post.subreddit_subscribers}**\n` +
                 `${discord.getEmoji("star")}_Author:_ **${post.author ? post.author.name : "Deleted"}**\n` +
                 `${discord.getEmoji("star")}${discord.getEmoji("thumbsUp")} **${Math.ceil(post.ups / post.upvote_ratio)}** ${discord.getEmoji("thumbsDown")} **${Math.ceil(post.ups / post.upvote_ratio) - post.ups}**\n` +
-                `${discord.getEmoji("star")}_Selftext:_ ${post.selftext ? (Functions.checkChar(post.selftext, 800, "") as string).replace(/(\r\n|\n|\r)/gm, " ") : "None"}\n` +
+                 selfText +
                 `${discord.getEmoji("star")}_Comments:_ ${commentArray.join("") ? commentArray.join("\n") : "None"}\n`
             )
             .setImage(post.url)
-            .setThumbnail(post.thumbnail.startsWith("https") ? post.thumbnail : post.url)
+            .setThumbnail(post.thumbnail.startsWith("https") ? post.thumbnail : `https://www.redditstatic.com/icon.png`)
             redditArray.push(redditEmbed)
         }
+        return redditArray
+    }
+
+    public noResults = async () => {
+        const embeds = new Embeds(this.discord, this.message)
+        const redditEmbed = embeds.createEmbed()
+        redditEmbed
+        .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
+        .setTitle(`**Reddit Search** ${discord.getEmoji("aquaUp")}`)
+        .setDescription("No results were found. Try searching on the reddit website: " +
+        "[Reddit Website](https://www.reddit.com)")
+        return this.message.channel.send(redditEmbed)
     }
 
     public run = async (args: string[]) => {
@@ -74,7 +87,6 @@ export default class Reddit extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        redditArray = []
 
         if (discord.checkMuted(message)) {
             if (!perms.checkNSFW()) return
@@ -93,7 +105,7 @@ export default class Reddit extends Command {
             this.postID = args[1].match(/(?<=comments\/)(.*?)(?=\/)/) ? args[1].match(/(?<=comments\/)(.*?)(?=\/)/)?.[0] : null
             this.user = args[1].match(/(?<=user\/)(.*?)(?=$|\/)/) ? args[1].match(/(?<=user\/)(.*?)(?=$|\/)/)?.[0] : null
             if (this.postID) {
-                await this.getSubmissions(discord, reddit, embeds, [this.postID])
+                const redditArray = await this.getSubmissions(discord, reddit, embeds, [this.postID])
                 return message.channel.send(redditArray[0])
             }
         }
@@ -168,17 +180,8 @@ export default class Reddit extends Command {
                 postIDS.push(posts[i].id)
             }
         }
-        if (!postIDS.join("")) {
-            const redditEmbed = embeds.createEmbed()
-            redditEmbed
-                .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
-                .setTitle(`**Reddit Search** ${discord.getEmoji("aquaUp")}`)
-                .setDescription("No results were found. Try searching on the reddit website: " +
-                "[Reddit Website](https://www.reddit.com)")
-            message.channel.send(redditEmbed)
-            return
-        }
-        await this.getSubmissions(discord, reddit, embeds, postIDS)
+        if (!postIDS.join("")) return this.noResults()
+        const redditArray = await this.getSubmissions(discord, reddit, embeds, postIDS)
         if (redditArray.length === 1) {
             message.channel.send(redditArray[0])
         } else {

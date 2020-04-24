@@ -14,6 +14,7 @@
     "oauth2Testing": "https://discordapp.com/api/oauth2/authorize?client_id=628803794754600990&redirect_uri=http%3A%2F%2Flocalhost%3A5000&response_type=code&scope=guilds.join%20email%20connections%20guilds%20identify%20gdm.join",
     "twitterRedirect": "https://kisaragi-discord-bot.herokuapp.com/twitter",
     "twitterRedirectTesting": "http://localhost:5000/twitter",
+    "redditRedirect": "https://www.reddit.com/api/v1/authorize?client_id=biSXJfI1YtSrAw&response_type=code&state=RANDOM_STRING&redirect_uri=https://kisaragi-discord-bot.herokuapp.com/reddit&duration=permanent&scope=identity,read,save,subscribe,vote",
     "repo": "https://github.com/Tenpi/Kisaragi",
     "imagesAPI": "https://tenpi-images.herokuapp.com",
     "openCVAPI": "https://tenpi-opencv.herokuapp.com",
