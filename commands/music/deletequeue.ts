@@ -30,6 +30,7 @@ export default class Shuffle extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
         let rep: Message
         const input = Functions.combineArgs(args, 1)
         if (!Number(input) && !input.includes("-")) {

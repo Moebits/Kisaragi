@@ -28,6 +28,7 @@ export default class Stop extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
 
         const voiceChannel = message.guild?.voice?.channel
         if (!voiceChannel) return message.reply(`I am not in a voice channel ${discord.getEmoji("kannaCurious")}`)

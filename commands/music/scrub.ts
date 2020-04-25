@@ -29,6 +29,7 @@ export default class Scrub extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
 
         let scrub = args[1] ? args[1] : "0"
         scrub = scrub.replace(/h|m/gi, ":").replace(/s/gi, "").replace(/ +/g, "")

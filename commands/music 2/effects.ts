@@ -29,11 +29,15 @@ export default class Effects extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
+        const loading = message.channel.lastMessage
+        loading?.delete()
         const msg = await audio.fxMenu()
         msg.delete()
         const queue = audio.getQueue() as any
         const embed = await audio.updateNowPlaying()
         queue[0].message.edit(embed)
+        message.delete().catch(() => null)
         return
     }
 }

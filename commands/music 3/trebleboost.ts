@@ -28,6 +28,7 @@ export default class Trebleboost extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
         const queue = audio.getQueue() as any
         const rep = await message.reply("_Applying a treble boost, please wait..._")
         const file = queue?.[0].file

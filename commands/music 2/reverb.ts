@@ -32,6 +32,7 @@ export default class Reverb extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
         let input = Functions.combineArgs(args, 1)
         let setReverse = false
         if (input.match(/reverse/)) {

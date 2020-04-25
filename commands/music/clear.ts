@@ -28,6 +28,7 @@ export default class Clear extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
         audio.clear()
         const queue = audio.getQueue() as any
         const embed = await audio.updateNowPlaying()

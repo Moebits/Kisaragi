@@ -31,6 +31,17 @@ export class Audio {
     private readonly embeds = new Embeds(this.discord, this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
+    public checkMusicPlaying = () => {
+        const connection = this.message.guild?.voice?.connection
+        const queue = this.getQueue() as any
+        if (!connection || !queue?.[0]) {
+            this.message.channel.send(`You must be playing music in order to use this command ${this.discord.getEmoji("kannaFacepalm")}`)
+            return false
+        } else {
+            return true
+        }
+    }
+
     public compression = async (filepath: string, amount?: number, dl?: boolean) => {
         if (!amount) amount = 80
         if (amount < 0) amount = 0
@@ -990,7 +1001,7 @@ export class Audio {
         if (now.kind === "link") {
             details =
             `${settings.autoplay ? `${discord.getEmoji("autoplay")}Autoplay is **on**! ${discord.getEmoji("tohruSmug")}\n` : ""}` +
-            `${settings.looping || settings.ablooping ? `${discord.getEmoji("loop")}Loop mode is **on**! ${discord.getEmoji("aquaUp")}\n` : ""}` +
+            `${settings.looping || settings.ablooping ? `${settings.ablooping ? discord.getEmoji("abloop") : discord.getEmoji("loop")}Loop mode is **on**! ${discord.getEmoji("aquaUp")}\n` : ""}` +
             `${settings.reverse ? `${discord.getEmoji("reverse")}Reverse mode is **on**! ${discord.getEmoji("gabYes")}\n` : ""}` +
             `${discord.getEmoji("star")}_Duration:_ \`${durationStr}\`\n` +
             `${discord.getEmoji("star")}_Link:_ ${now.link.length < 1000 ? now.link : "Link is too long"}\n` +
@@ -1003,7 +1014,7 @@ export class Audio {
         } else {
             details =
             `${settings.autoplay ? `${discord.getEmoji("autoplay")}Autoplay is **on**! ${discord.getEmoji("tohruSmug")}\n` : ""}` +
-            `${settings.looping || settings.ablooping ? `${discord.getEmoji("loop")}Loop mode is **on**! ${discord.getEmoji("aquaUp")}\n` : ""}` +
+            `${settings.looping || settings.ablooping ? `${settings.ablooping ? discord.getEmoji("abloop") : discord.getEmoji("loop")}Loop mode is **on**! ${discord.getEmoji("aquaUp")}\n` : ""}` +
             `${settings.reverse ? `${discord.getEmoji("reverse")}Reverse mode is **on**! ${discord.getEmoji("gabYes")}\n` : ""}` +
             `${discord.getEmoji("star")}_Title:_ [**${now.title}**](${now.url})\n` +
             `${discord.getEmoji("star")}_Artist:_ **${now.artist}**\n` +
@@ -1179,7 +1190,7 @@ export class Audio {
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
         const seconds = this.parseSeconds(position)
-        if (Number.isNaN(seconds)) return this.message.reply("Try again, provide the time in \`00:00\` format...")
+        if (Number.isNaN(seconds)) return this.message.reply("Provide the time in \`00:00\` format...").then((m) => m.delete({timeout: 3000}))
         const queue = this.getQueue() as any
         return this.play(queue[0].file, seconds)
     }
@@ -1190,7 +1201,7 @@ export class Audio {
         const startSec = this.parseSeconds(start)
         const endSec = this.parseSeconds(end)
         if (Number.isNaN(startSec) || Number.isNaN(endSec)) {
-            const rep = await this.message.reply("Try again, provide the time in \`00:00\` format...")
+            const rep = await this.message.reply("Provide the time in \`00:00\` format...")
             rep.delete({timeout: 3000})
             return
         }

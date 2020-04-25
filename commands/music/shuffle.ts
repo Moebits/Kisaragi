@@ -28,6 +28,7 @@ export default class Shuffle extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
         audio.shuffle()
         const rep = await message.reply("Shuffled the queue!")
         rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))

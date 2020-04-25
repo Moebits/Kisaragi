@@ -30,6 +30,7 @@ export default class Skip extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
         const input = Functions.combineArgs(args, 1)
 
         let amount = 1

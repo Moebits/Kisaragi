@@ -28,6 +28,7 @@ export default class Nightcore extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
         const queue = audio.getQueue() as any
         const file = queue?.[0].file
         const rep = await message.reply("_Applying a nightcore effect, please wait..._")

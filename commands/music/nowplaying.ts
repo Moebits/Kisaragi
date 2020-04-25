@@ -28,6 +28,7 @@ export default class NowPlaying extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
         await audio.nowPlaying()
         return
     }

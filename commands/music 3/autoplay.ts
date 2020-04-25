@@ -28,6 +28,7 @@ export default class Autoplay extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPlaying()) return
         audio.autoplay()
         const queue = audio.getQueue() as any
         const settings = audio.getSettings() as any
