@@ -2,6 +2,7 @@ import {Collection, Emoji, Message, MessageAttachment, MessageCollector, Message
 import fs from "fs"
 import path from "path"
 import snoowrap from "snoowrap"
+import Twitter from "twitter"
 import RedditCmd from "../commands/website/reddit"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
@@ -34,11 +35,14 @@ export class Oauth2 {
 
         const refreshToken = await this.sql.fetchColumn("oauth2", "reddit refresh", "user id", this.message.author.id)
 
+        let options = {username: process.env.REDDIT_USERNAME, password: process.env.REDDIT_PASSWORD} as any
+        if (refreshToken) options = {refreshToken}
+
         const reddit = new snoowrap({
             userAgent: "kisaragi bot v1.0 by /u/imtenpi",
             clientId: process.env.REDDIT_APP_ID,
             clientSecret: process.env.REDDIT_APP_SECRET,
-            refreshToken
+            ...options
         })
 
         upvote.on("collect", async (reaction, user) => {
@@ -166,6 +170,42 @@ export class Oauth2 {
             rep2.delete({timeout: 3000})
             const newEmbed = await this.redditCmd.getSubmissions(reddit, [postID])
             await msg.edit(newEmbed[0])
+        })
+    }
+
+    /** Add twitter options to a twitter embed */
+    public twitterOptions = async (msg: Message) => {
+        const reactions = ["reply", "twitterrepost", "twitterheart"]
+        for (let i = 0; i < reactions.length; i++) await msg.react(this.discord.getEmoji(reactions[i]))
+
+        const replyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reply") && user.bot === false
+        const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitterrepost") && user.bot === false
+        const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitterheart") && user.bot === false
+
+        const reply = msg.createReactionCollector(replyCheck)
+        const repost = msg.createReactionCollector(repostCheck)
+        const heart = msg.createReactionCollector(heartCheck)
+
+        const token = await this.sql.fetchColumn("oauth2", "twitter token", "user id", this.message.author.id)
+        const secret = await this.sql.fetchColumn("oauth2", "twitter secret", "user id", this.message.author.id)
+        const twitterID = await this.sql.fetchColumn("oauth2", "twitter id", "user id", this.message.author.id)
+
+        const twitter = new Twitter({
+            consumer_key: process.env.TWITTER_API_KEY!,
+            consumer_secret: process.env.TWITTER_API_SECRET!,
+            access_token_key: token ?? process.env.TWITTER_ACCESS_TOKEN!,
+            access_token_secret: secret ?? process.env.TWITTER_ACCESS_SECRET!
+        })
+
+        reply.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
+            const token = await this.sql.fetchColumn("oauth2", "twitter token", "user id", user.id)
+            if (!token) {
+                const rep = await this.message.channel.send(`<@${user.id}>, you must authenticate your twitter account with **twitteroauth** in order to reply to this tweet.`)
+                await rep.delete({timeout: 3000})
+                return
+            }
+            const secret = await this.sql.fetchColumn("oauth2", "twitter secret", "user id", user.id)
         })
     }
 }
