@@ -44,7 +44,6 @@ export default class TOS extends Command {
             Violating the TOS could result in you or your entire guild getting blacklisted (blocked from using any commands and blocked from adding the bot to a server).
             **Appeal**
             There is no method of appealing yet, because I don't think it's necessary.
-            _Note: The terms of service is intentionally short because of character limits._
         `))
         return message.channel.send(termsOfService)
     }

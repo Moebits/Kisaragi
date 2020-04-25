@@ -24,6 +24,21 @@ export default class Server {
         app.use("/yt", yt.listener())
         YoutubeOnline.youtubeRoutes(app)
 
+        app.get("/reddit", async (req, res) => {
+            res.setHeader("Content-Type", "text/html;charset=utf-8")
+            if (req.query.code) {
+                try {
+                    await SQLQuery.redditOuath(req.query.code)
+                    res.status(200).sendFile(path.join(__dirname, "../assets/html/authorized.html"))
+                } catch {
+                    res.status(200).sendFile(path.join(__dirname, "../assets/html/rejected.html"))
+                }
+
+            } else {
+                res.status(200).sendFile(path.join(__dirname, "../assets/html/index.html"))
+            }
+        })
+
         app.get("/twitter", async (req, res) => {
             res.setHeader("Content-Type", "text/html;charset=utf-8")
             if (req.query.oauth_token) {

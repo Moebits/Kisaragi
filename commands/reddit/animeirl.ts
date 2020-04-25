@@ -5,6 +5,7 @@ import {Embeds} from "../../structures/Embeds"
 import Reddit from "../website/reddit"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Oauth2} from "./../../structures/Oauth2"
 import {Permission} from "./../../structures/Permission"
 
 export default class Animeirl extends Command {
@@ -31,6 +32,7 @@ export default class Animeirl extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const redditCmd = new Reddit(discord, message)
+        const oauth2 = new Oauth2(discord, message)
 
         const reddit = new snoowrap({
             userAgent: "kisaragi bot v1.0 by /u/imtenpi",
@@ -50,10 +52,12 @@ export default class Animeirl extends Command {
         let redditArray = await redditCmd.getSubmissions(discord, reddit, embeds, postIDS, true)
         redditArray = Functions.shuffleArray(redditArray)
         if (!redditArray[0]) return redditCmd.noResults()
+        let msg: Message
         if (redditArray.length === 1) {
-            message.channel.send(redditArray[0])
+            msg = await message.channel.send(redditArray[0])
         } else {
-            embeds.createReactionEmbed(redditArray, true, true)
+            msg = await embeds.createReactionEmbed(redditArray, true, true)
         }
+        await oauth2.redditOptions(msg)
     }
 }

@@ -2,8 +2,8 @@ import axios from "axios"
 import bluebird from "bluebird"
 import chalk from "chalk"
 import {Message} from "discord.js"
+import {Base64 as base64} from "js-base64"
 import moment from "moment"
-import path from "path"
 import {Pool, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
 import querystring from "querystring"
 import * as Redis from "redis"
@@ -446,7 +446,6 @@ export class SQLQuery {
     const twitterSecret = data.oauth_token_secret
     const username = data.screen_name
     const userID = data.user_id
-    const keys = await SQLQuery.selectColumn("oauth2", "user id")
     const connections = await SQLQuery.selectColumn("oauth2", "connections")
     let index = -1
     twit:
@@ -460,11 +459,66 @@ export class SQLQuery {
       }
     }
     if (index === -1) return Promise.reject("Twitter id not found")
-    const discordID = keys[index]
+    const discordID = await SQLQuery.fetchColumn("oauth2", "user id", "connections", connections[index])
     await SQLQuery.updateColumn("oauth2", "twitter token", twitterToken, "user id", discordID)
     await SQLQuery.updateColumn("oauth2", "twitter secret", twitterSecret, "user id", discordID)
     await SQLQuery.updateColumn("oauth2", "screen name", username, "user id", discordID)
     await SQLQuery.updateColumn("oauth2", "twitter id", userID, "user id", discordID)
+  }
+
+  public static revokeRedditOauth = async (id: string) => {
+    const refreshToken = await SQLQuery.fetchColumn("oauth2", "reddit refresh", "user id", id)
+    if (!refreshToken) return
+    const headers = {authorization: `Basic ${base64.encode(`${process.env.REDDIT_APP_ID}:${process.env.REDDIT_APP_SECRET}`)}`}
+    await axios.post(`https://www.reddit.com/api/v1/revoke_token`, querystring.stringify({
+      token: refreshToken,
+      token_type_hint: "refresh_token"
+    }), {headers})
+    await SQLQuery.updateColumn("oauth2", "reddit token", null, "user id", id)
+    await SQLQuery.updateColumn("oauth2", "reddit refresh", null, "user id", id)
+  }
+
+  public static refreshRedditToken = async (id: string) => {
+    const headers = {authorization: `Basic ${base64.encode(`${process.env.REDDIT_APP_ID}:${process.env.REDDIT_APP_SECRET}`)}`}
+    const refreshToken = await SQLQuery.fetchColumn("oauth2", "reddit refresh", "user id", id)
+    if (!refreshToken) return Promise.reject("No refresh token")
+    const data = await axios.post(`https://www.reddit.com/api/v1/access_token`, querystring.stringify({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken
+    }), {headers}).then((r) => r.data)
+    const redditToken = data.access_token
+    await SQLQuery.updateColumn("oauth2", "reddit token", redditToken, "user id", id)
+    return redditToken
+  }
+
+  public static redditOuath = async (code: string) => {
+    const headers = {authorization: `Basic ${base64.encode(`${process.env.REDDIT_APP_ID}:${process.env.REDDIT_APP_SECRET}`)}`}
+    const data = await axios.post(`https://www.reddit.com/api/v1/access_token`, querystring.stringify({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: config.redditRedirect
+    }), {headers}).then((r) => r.data)
+    const redditToken = data.access_token
+    const refreshToken = data.refresh_token
+    const me = await axios.get(`https://oauth.reddit.com/api/v1/me`, {headers: {authorization: `bearer ${redditToken}`}}).then((r) => r.data)
+    const name = me.name
+    const connections = await SQLQuery.selectColumn("oauth2", "connections")
+    let index = -1
+    reddit:
+    for (let i = 0; i < connections.length; i++) {
+      for (let j = 0; j < connections[i].length; j++) {
+        const curr = JSON.parse(connections[i][j])
+        if (curr.type === "reddit" && curr.name === name) {
+          index = i
+          break reddit
+        }
+      }
+    }
+    if (index === -1) return Promise.reject("Reddit name not found")
+    const discordID = await SQLQuery.fetchColumn("oauth2", "user id", "connections", connections[index])
+    await SQLQuery.updateColumn("oauth2", "reddit token", redditToken, "user id", discordID)
+    await SQLQuery.updateColumn("oauth2", "reddit refresh", refreshToken, "user id", discordID)
+    await SQLQuery.updateColumn("oauth2", "reddit name", name, "user id", discordID)
   }
 
   /** Update usage statistics */

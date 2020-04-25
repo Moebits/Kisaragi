@@ -59,7 +59,7 @@ export class Embeds {
         await this.sql.redisSet(msg.id, "true", 3600)
     }
 
-    // Create Reaction Embed
+    /** Create Reaction Embed */
     public createReactionEmbed = async (embeds: MessageEmbed[], collapseOn?: boolean, download?: boolean, startPage?: number) => {
         let page = 0
         if (startPage) page = startPage
@@ -580,7 +580,7 @@ export class Embeds {
         })
     }
 
-    // Re-trigger Help Embed
+    /** Re-trigger Help Embed */
     public editHelpEmbed = (msg: Message, emoji: string, user: User, embeds: MessageEmbed[]) => {
         const emojiMap: string[] = [
             "admin", "anime", "config", "fun", "game",

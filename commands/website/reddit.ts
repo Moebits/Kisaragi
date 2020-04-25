@@ -4,6 +4,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Oauth2} from "./../../structures/Oauth2"
 import {Permission} from "./../../structures/Permission"
 
 export default class Reddit extends Command {
@@ -76,7 +77,7 @@ export default class Reddit extends Command {
         const redditEmbed = embeds.createEmbed()
         redditEmbed
         .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
-        .setTitle(`**Reddit Search** ${discord.getEmoji("aquaUp")}`)
+        .setTitle(`**Reddit Search** ${this.discord.getEmoji("aquaUp")}`)
         .setDescription("No results were found. Try searching on the reddit website: " +
         "[Reddit Website](https://www.reddit.com)")
         return this.message.channel.send(redditEmbed)
@@ -87,6 +88,7 @@ export default class Reddit extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        const oauth2 = new Oauth2(discord, message)
 
         if (discord.checkMuted(message)) {
             if (!perms.checkNSFW()) return
@@ -133,7 +135,8 @@ export default class Reddit extends Command {
                 `${discord.getEmoji("star")}_Friends:_ **${user.num_friends ?? "None"}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${user.subreddit.display_name.public_description}\n`
             )
-            message.channel.send(redditEmbed)
+            const msg = await message.channel.send(redditEmbed)
+            await oauth2.redditOptions(msg)
             return
         }
 
@@ -182,10 +185,12 @@ export default class Reddit extends Command {
         }
         if (!postIDS.join("")) return this.noResults()
         const redditArray = await this.getSubmissions(discord, reddit, embeds, postIDS)
+        let msg: Message
         if (redditArray.length === 1) {
-            message.channel.send(redditArray[0])
+            msg = await message.channel.send(redditArray[0])
         } else {
-            embeds.createReactionEmbed(redditArray, true, true)
+            msg = await embeds.createReactionEmbed(redditArray, true, true)
         }
+        await oauth2.redditOptions(msg)
     }
 }

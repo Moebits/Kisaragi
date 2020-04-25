@@ -1,6 +1,7 @@
 import archiver from "archiver"
 import axios from "axios"
 import child_process from "child_process"
+import crypto from "crypto"
 import {Message, Util} from "discord.js"
 import emojiRegex from "emoji-regex"
 import fs from "fs"
@@ -63,6 +64,11 @@ export class Functions {
     // Random Number
     public static getRandomNum = (min: number, max: number) => {
         return Math.random() * (max - min) + min
+    }
+
+    /** Random String */
+    public static randomString = (length: number) => {
+        return crypto.randomBytes(length).toString("hex")
     }
 
     // Random Date
