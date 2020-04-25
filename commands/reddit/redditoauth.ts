@@ -48,7 +48,7 @@ export default class RedditOauth extends Command {
         redditOauthEmbed
         .setAuthor("reddit oauth", "https://toppng.com/uploads/preview/reddit-logo-reddit-icon-115628658968pe8utyxjt.png")
         .setTitle(`**Reddit Oauth2** ${discord.getEmoji("mexShrug")}`)
-        .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) in order to upvote, downvote, and save posts and to subscribe to subreddits.`)
+        .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) in order to upvote, downvote, comment, and save posts and in order to subscribe to subreddits.`)
         return message.channel.send(redditOauthEmbed)
     }
 }

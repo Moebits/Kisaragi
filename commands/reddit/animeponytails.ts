@@ -49,7 +49,7 @@ export default class Animeponytails extends Command {
                 postIDS.push(posts[i].id)
             }
         }
-        let redditArray = await redditCmd.getSubmissions(discord, reddit, embeds, postIDS, true)
+        let redditArray = await redditCmd.getSubmissions(reddit, postIDS, true)
         redditArray = Functions.shuffleArray(redditArray)
         if (!redditArray[0]) return redditCmd.noResults()
         let msg: Message

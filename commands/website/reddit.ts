@@ -36,7 +36,9 @@ export default class Reddit extends Command {
         })
     }
 
-    public getSubmissions = async (discord: Kisaragi, reddit: snoowrap, embeds: Embeds, postIDS: string[], imagesOnly?: boolean) => {
+    public getSubmissions = async (reddit: snoowrap, postIDS: string[], imagesOnly?: boolean) => {
+        const discord = this.discord
+        const embeds = new Embeds(this.discord, this.message)
         const redditArray: MessageEmbed[] = []
         for (let i = 0; i < postIDS.length; i++) {
             if (!postIDS[i]) break
@@ -107,7 +109,7 @@ export default class Reddit extends Command {
             this.postID = args[1].match(/(?<=comments\/)(.*?)(?=\/)/) ? args[1].match(/(?<=comments\/)(.*?)(?=\/)/)?.[0] : null
             this.user = args[1].match(/(?<=user\/)(.*?)(?=$|\/)/) ? args[1].match(/(?<=user\/)(.*?)(?=$|\/)/)?.[0] : null
             if (this.postID) {
-                const redditArray = await this.getSubmissions(discord, reddit, embeds, [this.postID])
+                const redditArray = await this.getSubmissions(reddit, [this.postID])
                 return message.channel.send(redditArray[0])
             }
         }
@@ -184,7 +186,7 @@ export default class Reddit extends Command {
             }
         }
         if (!postIDS.join("")) return this.noResults()
-        const redditArray = await this.getSubmissions(discord, reddit, embeds, postIDS)
+        const redditArray = await this.getSubmissions(reddit, postIDS)
         let msg: Message
         if (redditArray.length === 1) {
             msg = await message.channel.send(redditArray[0])

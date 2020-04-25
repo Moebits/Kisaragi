@@ -2,6 +2,7 @@ import {Collection, Emoji, Message, MessageAttachment, MessageCollector, Message
 import fs from "fs"
 import path from "path"
 import snoowrap from "snoowrap"
+import RedditCmd from "../commands/website/reddit"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {Images} from "./Images"
@@ -11,15 +12,8 @@ import {SQLQuery} from "./SQLQuery"
 export class Oauth2 {
     private readonly sql = new SQLQuery(this.message)
     private readonly embeds = new Embeds(this.discord, this.message)
+    private readonly redditCmd = new RedditCmd(this.discord, this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
-
-    private readonly getRedditDescriptionRegex = (desc: string) => {
-        const nums = desc.match(/(?<=\*\*)\d+(?=\*\*)/g)?.map((m) => m)!
-        const subscriberRegex = new RegExp(`_Subscribers:_ **${nums[0]}**\n`)
-        const upvoteRegex = new RegExp(` **${nums[1]}** `)
-        const downvoteRegex = new RegExp(` **${nums[2]}**\n`)
-        return {subscriberRegex, upvoteRegex, downvoteRegex}
-    }
 
     /** Add Reddit options to a reddit embed */
     public redditOptions = async (msg: Message) => {
@@ -48,6 +42,7 @@ export class Oauth2 {
         })
 
         upvote.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
             const refreshToken = await this.sql.fetchColumn("oauth2", "reddit refresh", "user id", this.message.author.id)
             if (!refreshToken) {
                 const rep = await msg.channel.send(`<@${user.id}>, you must authenticate your reddit account with **redditoauth** in order to upvote this post.`)
@@ -57,19 +52,17 @@ export class Oauth2 {
             reddit.refreshToken = refreshToken
             const postID = msg.embeds[0].url?.match(/(?<=comments\/)(.*?)(?=\/)/)?.[0] ?? ""
             // @ts-ignore
-            let post = await reddit.getSubmission(postID).fetch() as snoowrap.Submission
+            const post = await reddit.getSubmission(postID).fetch() as snoowrap.Submission
             // @ts-ignore
             await post.upvote()
-            // @ts-ignore
-            post = await reddit.getSubmission(postID).fetch() as snoowrap.Submission
-            const {upvoteRegex} = this.getRedditDescriptionRegex(msg.embeds[0].description!)
-            const newDesc = msg.embeds[0].description?.replace(upvoteRegex, ` **${post.ups}** `)
-            await msg.edit(msg.embeds[0].setDescription(newDesc))
-            const rep2 = await msg.channel.send(`Upvoted this post! ${this.discord.getEmoji("aquaUp")}`)
+            const newEmbed = await this.redditCmd.getSubmissions(reddit, [postID])
+            await msg.edit(newEmbed[0])
+            const rep2 = await msg.channel.send(`<@${user.id}>, Upvoted this post! ${this.discord.getEmoji("aquaUp")}`)
             rep2.delete({timeout: 3000})
         })
 
         downvote.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
             const refreshToken = await this.sql.fetchColumn("oauth2", "reddit refresh", "user id", this.message.author.id)
             if (!refreshToken) {
                 const rep = await msg.channel.send(`<@${user.id}>, you must authenticate your reddit account with **redditoauth** in order to downvote this post.`)
@@ -79,19 +72,17 @@ export class Oauth2 {
             reddit.refreshToken = refreshToken
             const postID = msg.embeds[0].url?.match(/(?<=comments\/)(.*?)(?=\/)/)?.[0] ?? ""
             // @ts-ignore
-            let post = await reddit.getSubmission(postID).fetch() as snoowrap.Submission
+            const post = await reddit.getSubmission(postID).fetch() as snoowrap.Submission
             // @ts-ignore
             await post.downvote()
-            // @ts-ignore
-            post = await reddit.getSubmission(postID).fetch() as snoowrap.Submission
-            const {downvoteRegex} = this.getRedditDescriptionRegex(msg.embeds[0].description!)
-            const newDesc = msg.embeds[0].description?.replace(downvoteRegex, ` **${post.downs}**\n`)
-            await msg.edit(msg.embeds[0].setDescription(newDesc))
-            const rep2 = await msg.channel.send(`Downvoted this post! ${this.discord.getEmoji("sagiriBleh")}`)
+            const newEmbed = await this.redditCmd.getSubmissions(reddit, [postID])
+            await msg.edit(newEmbed[0])
+            const rep2 = await msg.channel.send(`<@${user.id}>, Downvoted this post! ${this.discord.getEmoji("sagiriBleh")}`)
             rep2.delete({timeout: 3000})
         })
 
         comment.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
             const refreshToken = await this.sql.fetchColumn("oauth2", "reddit refresh", "user id", this.message.author.id)
             if (!refreshToken) {
                 const rep = await msg.channel.send(`<@${user.id}>, you must authenticate your reddit account with **redditoauth** in order to comment on this post.`)
@@ -105,6 +96,7 @@ export class Oauth2 {
             let text = ""
             const getComment = (response: Message) => {
                 text = response.content.trim()
+                response.delete().catch(() => null)
             }
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the comment that you want to leave on this post.`)
             await this.embeds.createPrompt(getComment)
@@ -116,11 +108,14 @@ export class Oauth2 {
             }
             // @ts-ignore
             await post.reply(text)
-            const rep2 = await msg.channel.send(`Commented on this post! ${this.discord.getEmoji("gabYes")}`)
+            const newEmbed = await this.redditCmd.getSubmissions(reddit, [postID])
+            await msg.edit(newEmbed[0])
+            const rep2 = await msg.channel.send(`<@${user.id}>, Commented on this post! ${this.discord.getEmoji("gabYes")}`)
             rep2.delete({timeout: 3000})
         })
 
         save.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
             const refreshToken = await this.sql.fetchColumn("oauth2", "reddit refresh", "user id", this.message.author.id)
             if (!refreshToken) {
                 const rep = await msg.channel.send(`<@${user.id}>, you must authenticate your reddit account with **redditoauth** in order to save this post.`)
@@ -135,16 +130,17 @@ export class Oauth2 {
             if (post.saved) {
                 // @ts-ignore
                 await post.unsave()
-                rep2 = await msg.channel.send(`Unsaved this post! ${this.discord.getEmoji("think")}`)
+                rep2 = await msg.channel.send(`<@${user.id}>, Unsaved this post! ${this.discord.getEmoji("think")}`)
             } else {
                 // @ts-ignore
                 await post.save()
-                rep2 = await msg.channel.send(`Saved this post! ${this.discord.getEmoji("yes")}`)
+                rep2 = await msg.channel.send(`<@${user.id}>, Saved this post! ${this.discord.getEmoji("yes")}`)
             }
             rep2.delete({timeout: 3000})
         })
 
         subscribe.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
             const refreshToken = await this.sql.fetchColumn("oauth2", "reddit refresh", "user id", this.message.author.id)
             if (!refreshToken) {
                 const rep = await msg.channel.send(`<@${user.id}>, you must authenticate your reddit account with **redditoauth** in order to subscribe to this subreddit.`)
@@ -161,13 +157,15 @@ export class Oauth2 {
             if (sub.user_is_subscriber) {
                 // @ts-ignore
                 await sub.unsubscribe()
-                rep2 = await msg.channel.send(`Unsubscribed from this subreddit! ${this.discord.getEmoji("mexShrug")}`)
+                rep2 = await msg.channel.send(`<@${user.id}>, Unsubscribed from this subreddit! ${this.discord.getEmoji("mexShrug")}`)
             } else {
                 // @ts-ignore
                 await sub.subscribe()
-                rep2 = await msg.channel.send(`Subscribed to this subreddit! ${this.discord.getEmoji("aquaUp")}`)
+                rep2 = await msg.channel.send(`<@${user.id}>, Subscribed to this subreddit! ${this.discord.getEmoji("aquaUp")}`)
             }
             rep2.delete({timeout: 3000})
+            const newEmbed = await this.redditCmd.getSubmissions(reddit, [postID])
+            await msg.edit(newEmbed[0])
         })
     }
 }
