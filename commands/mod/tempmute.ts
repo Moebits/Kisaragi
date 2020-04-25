@@ -73,12 +73,12 @@ export default class TempMute extends Command {
             const id = member.id
             try {
                 await member.roles.add(mute).catch(() => null)
-                let tempArr = await sql.redisGet(`${message.guild?.id}_tempmute`)
+                let tempArr = await SQLQuery.redisGet(`${message.guild?.id}_tempmute`)
                 if (!tempArr) tempArr = [] as any
                 tempArr.push({member: id, time: seconds*1000, reason})
-                await sql.redisSet(`${message.guild?.id}_tempmute`, JSON.stringify(tempArr))
+                await SQLQuery.redisSet(`${message.guild?.id}_tempmute`, JSON.stringify(tempArr))
                 setInterval(async () => {
-                    let newArr = await sql.redisGet(`${message.guild?.id}_tempmute`)
+                    let newArr = await SQLQuery.redisGet(`${message.guild?.id}_tempmute`)
                     newArr = JSON.parse(newArr)
                     if (!newArr) return
                     const index = newArr.findIndex((i: any) => i.member === id)
@@ -88,19 +88,19 @@ export default class TempMute extends Command {
                         await member.roles.remove(mute).catch(() => null)
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
-                        await sql.redisSet(`${this.message.guild?.id}_tempmute`, newArr)
+                        await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, newArr)
                         clearInterval()
                         return
                     }
                     newArr[index] = {...curr, time}
-                    await sql.redisSet(`${message.guild?.id}_tempmute`, JSON.stringify(newArr))
+                    await SQLQuery.redisSet(`${message.guild?.id}_tempmute`, JSON.stringify(newArr))
                 }, 60000)
                 setTimeout(async () => {
                     await member.roles.remove(mute).catch(() => null)
                     const index = tempArr.findIndex((i: any) => i.member === id)
                     tempArr[index] = null
                     tempArr = tempArr.filter(Boolean)?.[0] ?? null
-                    await sql.redisSet(`${this.message.guild?.id}_tempmute`, tempArr)
+                    await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, tempArr)
                 }, seconds*1000)
             } catch {
                 return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)

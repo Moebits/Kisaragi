@@ -93,6 +93,7 @@ start()
 
 Functions.pollTwitch(discord)
 Functions.youtubeReSubscribe()
+if (config.testing === "off") SQLQuery.redisSet("state", JSON.stringify([]))
 
 // @ts-ignore
 process.on("unhandledRejection", (error: Error) => console.error(error))

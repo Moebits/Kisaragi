@@ -108,14 +108,14 @@ export class Permission {
 
     /** Continue temporary bans */
     public continueTempBans = async () => {
-        let tempArr = await this.sql.redisGet(`${this.message.guild?.id}_tempban`)
+        let tempArr = await SQLQuery.redisGet(`${this.message.guild?.id}_tempban`)
         if (tempArr) {
             tempArr = JSON.parse(tempArr)
             if (!tempArr) return
             for (let i = 0; i < tempArr.length; i++) {
                 const current = tempArr[i]
                 setInterval(async () => {
-                    let newArr = await this.sql.redisGet(`${this.message.guild?.id}_tempban`)
+                    let newArr = await SQLQuery.redisGet(`${this.message.guild?.id}_tempban`)
                     newArr = JSON.parse(newArr)
                     if (!newArr) return
                     const index = newArr.findIndex((i: any) => i.member === current.id)
@@ -125,18 +125,18 @@ export class Permission {
                         await this.message.guild?.members.unban(current.id, current.reason).catch(() => null)
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
-                        await this.sql.redisSet(`${this.message.guild?.id}_tempban`, newArr)
+                        await SQLQuery.redisSet(`${this.message.guild?.id}_tempban`, newArr)
                         clearInterval()
                         return
                     }
                     newArr[index] = {...curr, time}
-                    await this.sql.redisSet(`${this.message.guild?.id}_tempban`, JSON.stringify(newArr))
+                    await SQLQuery.redisSet(`${this.message.guild?.id}_tempban`, JSON.stringify(newArr))
                 }, 60000)
                 setTimeout(async () => {
                     await this.message.guild?.members.unban(current.id, current.reason).catch(() => null)
                     tempArr[i] = null
                     tempArr = tempArr.filter(Boolean)?.[0] ?? null
-                    await this.sql.redisSet(`${this.message.guild?.id}_tempban`, tempArr)
+                    await SQLQuery.redisSet(`${this.message.guild?.id}_tempban`, tempArr)
                 }, current.time)
             }
         }
@@ -146,14 +146,14 @@ export class Permission {
     public continueTempMutes = async () => {
         const mute = await this.sql.fetchColumn("special roles", "mute role")
         if (!mute) return
-        let tempArr = await this.sql.redisGet(`${this.message.guild?.id}_tempmute`)
+        let tempArr = await SQLQuery.redisGet(`${this.message.guild?.id}_tempmute`)
         if (tempArr) {
             tempArr = JSON.parse(tempArr)
             if (!tempArr) return
             for (let i = 0; i < tempArr.length; i++) {
                 const current = tempArr[i]
                 setInterval(async () => {
-                    let newArr = await this.sql.redisGet(`${this.message.guild?.id}_tempmute`)
+                    let newArr = await SQLQuery.redisGet(`${this.message.guild?.id}_tempmute`)
                     newArr = JSON.parse(newArr)
                     if (!newArr) return
                     const index = newArr.findIndex((i: any) => i.member === current.id)
@@ -164,19 +164,19 @@ export class Permission {
                         await member?.roles.remove(mute).catch(() => null)
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
-                        await this.sql.redisSet(`${this.message.guild?.id}_tempmute`, newArr)
+                        await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, newArr)
                         clearInterval()
                         return
                     }
                     newArr[index] = {...curr, time}
-                    await this.sql.redisSet(`${this.message.guild?.id}_tempmute`, JSON.stringify(newArr))
+                    await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, JSON.stringify(newArr))
                 }, 60000)
                 setTimeout(async () => {
                     const member = this.message.guild?.members.cache.get(current.id)
                     await member?.roles.remove(mute).catch(() => null)
                     tempArr[i] = null
                     tempArr = tempArr.filter(Boolean)?.[0] ?? null
-                    await this.sql.redisSet(`${this.message.guild?.id}_tempmute`, tempArr)
+                    await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, tempArr)
                 }, current.time)
             }
         }

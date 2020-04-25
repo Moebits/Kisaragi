@@ -15,6 +15,15 @@ if (!yt) {
     })
 }
 export default class Server {
+    public checkState = async (state: string) => {
+        const states = await SQLQuery.redisGet("state")
+        if (states.includes(state)) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     public run = () => {
         const app = express()
         const port = process.env.PORT || 5000
@@ -28,10 +37,11 @@ export default class Server {
             res.setHeader("Content-Type", "text/html;charset=utf-8")
             if (req.query.code) {
                 try {
+                    if (!await this.checkState(req.query.state)) return res.status(400).sendFile(path.join(__dirname, "../assets/html/expired.html"))
                     await SQLQuery.redditOuath(req.query.code)
                     res.status(200).sendFile(path.join(__dirname, "../assets/html/authorized.html"))
                 } catch {
-                    res.status(200).sendFile(path.join(__dirname, "../assets/html/rejected.html"))
+                    res.status(400).sendFile(path.join(__dirname, "../assets/html/rejected.html"))
                 }
 
             } else {
@@ -46,21 +56,27 @@ export default class Server {
                     await SQLQuery.twitterOauth(req.query.oauth_token, req.query.oauth_verifier)
                     res.status(200).sendFile(path.join(__dirname, "../assets/html/authorized.html"))
                 } catch {
-                    res.status(200).sendFile(path.join(__dirname, "../assets/html/rejected.html"))
+                    res.status(400).sendFile(path.join(__dirname, "../assets/html/rejected.html"))
                 }
             } else {
                 res.status(200).sendFile(path.join(__dirname, "../assets/html/index.html"))
             }
         })
 
-        app.get("/", async (req, res) => {
+        app.get("/discord", async (req, res) => {
             res.setHeader("Content-Type", "text/html;charset=utf-8")
             if (req.query.code) {
+                if (!await this.checkState(req.query.state)) return res.status(400).sendFile(path.join(__dirname, "../assets/html/expired.html"))
                 await SQLQuery.initOauth2(req.query.code)
                 res.status(200).sendFile(path.join(__dirname, "../assets/html/authorized.html"))
             } else {
                 res.status(200).sendFile(path.join(__dirname, "../assets/html/index.html"))
             }
+        })
+
+        app.get("/", (req, res) => {
+            res.setHeader("Content-Type", "text/html;charset=utf-8")
+            res.status(200).sendFile(path.join(__dirname, "../assets/html/index.html"))
         })
 
         app.get("*", (req, res) => {

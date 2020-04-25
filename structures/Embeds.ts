@@ -54,11 +54,6 @@ export class Embeds {
         }
     }
 
-    // Add active embed to Redis
-    public redisAddEmbed = async (msg: Message) => {
-        await this.sql.redisSet(msg.id, "true", 3600)
-    }
-
     /** Create Reaction Embed */
     public createReactionEmbed = async (embeds: MessageEmbed[], collapseOn?: boolean, download?: boolean, startPage?: number) => {
         let page = 0

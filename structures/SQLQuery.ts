@@ -90,8 +90,8 @@ export class SQLQuery {
       await redis.flushdbAsync()
     }
 
-  // Redis Set
-  public redisSet = async (key: string, value: string | null, expiration?: number) => {
+  /** Redis Set */
+  public static redisSet = async (key: string, value: string | null, expiration?: number) => {
     if (value === null) value = "null"
     if (expiration) {
       await redis.setAsync(key, value, "EX", expiration)
@@ -100,8 +100,8 @@ export class SQLQuery {
     }
   }
 
-  // Redis Get
-  public redisGet = async (key: string) => {
+  /** Redis Get */
+  public static redisGet = async (key: string) => {
     const result = await redis.getAsync(key) as any
     return result
   }
@@ -395,9 +395,10 @@ export class SQLQuery {
 
   /** Inits an oauth2 entry */
   public static initOauth2 = async (code: string) => {
+    try {
     const clientID = config.testing === "on" ? process.env.TEST_CLIENT_ID : process.env.CLIENT_ID
     const clientSecret = config.testing === "on" ? process.env.TEST_CLIENT_SECRET : process.env.CLIENT_SECRET
-    const redirectURI = config.testing === "on" ? "http://localhost:5000" : "https://kisaragi-discord-bot.herokuapp.com/"
+    const redirectURI = config.testing === "on" ? config.oauth2Testing : config.oauth2
     const data = await axios.post(`https://discordapp.com/api/oauth2/token`, querystring.stringify({
       client_id: clientID,
       client_secret: clientSecret,
@@ -431,6 +432,9 @@ export class SQLQuery {
       await SQLQuery.updateColumn("oauth2", "connections", connections, "user id", info.id)
       await SQLQuery.updateColumn("oauth2", "guilds", guilds, "user id", info.id)
     }
+    } catch {
+      return Promise.reject("Error")
+    }
   }
 
   /** Revokes twitter oauth */
@@ -441,6 +445,7 @@ export class SQLQuery {
 
   /** Inits twitter oauth */
   public static twitterOauth = async (token: string, verifier: string) => {
+    try {
     const data = await axios.post(`https://api.twitter.com/oauth/access_token?oauth_token=${token}&oauth_verifier=${verifier}`).then((r) => querystring.parse(r.data))
     const twitterToken = data.oauth_token
     const twitterSecret = data.oauth_token_secret
@@ -464,6 +469,9 @@ export class SQLQuery {
     await SQLQuery.updateColumn("oauth2", "twitter secret", twitterSecret, "user id", discordID)
     await SQLQuery.updateColumn("oauth2", "screen name", username, "user id", discordID)
     await SQLQuery.updateColumn("oauth2", "twitter id", userID, "user id", discordID)
+    } catch {
+      return Promise.reject("Error")
+    }
   }
 
   public static revokeRedditOauth = async (id: string) => {
@@ -492,6 +500,7 @@ export class SQLQuery {
   }
 
   public static redditOuath = async (code: string) => {
+    try {
     const headers = {authorization: `Basic ${base64.encode(`${process.env.REDDIT_APP_ID}:${process.env.REDDIT_APP_SECRET}`)}`}
     const data = await axios.post(`https://www.reddit.com/api/v1/access_token`, querystring.stringify({
       grant_type: "authorization_code",
@@ -519,6 +528,9 @@ export class SQLQuery {
     await SQLQuery.updateColumn("oauth2", "reddit token", redditToken, "user id", discordID)
     await SQLQuery.updateColumn("oauth2", "reddit refresh", refreshToken, "user id", discordID)
     await SQLQuery.updateColumn("oauth2", "reddit name", name, "user id", discordID)
+    } catch {
+      return Promise.reject("Error")
+    }
   }
 
   /** Update usage statistics */

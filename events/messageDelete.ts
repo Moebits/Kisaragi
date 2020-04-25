@@ -8,7 +8,7 @@ export default class MessageDelete {
 
     public run = async (message: Message) => {
         const discord = this.discord
-        if (message.partial) message = await message.fetch()
+        if (message.partial) return
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         if (message.author.bot) return

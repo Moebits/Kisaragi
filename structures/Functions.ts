@@ -15,7 +15,6 @@ import {SQLQuery} from "./SQLQuery"
 const activeStreams = new Set()
 
 export class Functions {
-    private static readonly colors: string[] = config.colors
     constructor(private readonly message: Message) {}
 
     // Timeout
@@ -191,7 +190,7 @@ export class Functions {
 
     // Random Color
     public static randomColor = () => {
-        return Number(Functions.colors[Math.floor(Math.random() * Functions.colors.length)])
+        return Number(config.colors[Math.floor(Math.random() * config.colors.length)])
     }
 
     // Combine args after an index
@@ -403,7 +402,7 @@ export class Functions {
         for (const key in object) {
             if (!object.hasOwnProperty(key)) continue
 
-            if (typeof object[key] == "object") {
+            if (typeof object[key] === "object") {
                 const depth = Functions.objectDepth(object[key]) + 1
                 level = Math.max(depth, level)
             }

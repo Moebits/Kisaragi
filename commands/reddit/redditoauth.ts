@@ -43,7 +43,12 @@ export default class RedditOauth extends Command {
             return message.channel.send(oauth2Embed)
         }
 
-        const url = `https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&response_type=code&state=${Functions.randomString(16)}&redirect_uri=${config.redditRedirect}&duration=permanent&scope=identity,read,save,subscribe,submit,edit,vote,flair`
+        const state = Functions.randomString(16)
+        const states = await SQLQuery.redisGet("state").then((s) => JSON.parse(s))
+        states.push(state)
+        await SQLQuery.redisSet("state", JSON.stringify(states))
+
+        const url = `https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&response_type=code&state=${state}&redirect_uri=${config.redditRedirect}&duration=permanent&scope=identity,read,save,subscribe,submit,edit,vote,flair`
         const redditOauthEmbed = embeds.createEmbed()
         redditOauthEmbed
         .setAuthor("reddit oauth", "https://toppng.com/uploads/preview/reddit-logo-reddit-icon-115628658968pe8utyxjt.png")

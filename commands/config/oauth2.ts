@@ -3,6 +3,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Permission} from "../../structures/Permission"
 import * as config from "./../../config.json"
+import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
@@ -42,12 +43,18 @@ export default class Oauth2 extends Command {
             return message.channel.send(oauth2Embed)
         }
 
-        const url = config.testing === "on" ? config.oauth2Testing : config.oauth2
+        const state = Functions.randomString(16)
+        const states = await SQLQuery.redisGet("state").then((s) => JSON.parse(s))
+        states.push(state)
+        await SQLQuery.redisSet("state", JSON.stringify(states))
+
+        const redirect = config.testing === "on" ? config.oauth2Testing : config.oauth2
+        const url = `https://discordapp.com/api/oauth2/authorize?client_id=${discord.user!.id}&redirect_uri=${encodeURIComponent(redirect)}&state=${state}&response_type=code&scope=guilds.join%20email%20connections%20guilds%20identify%20gdm.join`
         const oauth2Embed = embeds.createEmbed()
         oauth2Embed
         .setAuthor("discord oauth", "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png")
         .setTitle(`**Discord Oauth 2.0** ${discord.getEmoji("gabYes")}`)
-        .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) to allow you to use oauth2 related commands (ex. Sending you email, adding you to a guild, creating a group dm). Posting tweets will also require **twitteroauth**.`)
+        .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) to authenticate additional permissions over your discord account for oauth2 commands (ex. Sending you email, adding you to a guild, creating a group dm).`)
         return message.channel.send(oauth2Embed)
     }
 }
