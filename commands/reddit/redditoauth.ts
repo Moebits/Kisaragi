@@ -37,8 +37,8 @@ export default class RedditOauth extends Command {
             await SQLQuery.revokeRedditOauth(message.author.id)
             const oauth2Embed = embeds.createEmbed()
             oauth2Embed
-            .setAuthor("reddit oauth", "https://toppng.com/uploads/preview/reddit-logo-reddit-icon-115628658968pe8utyxjt.png")
-            .setTitle(`**Reddit Oauth2** ${discord.getEmoji("mexShrug")}`)
+            .setAuthor("reddit oauth", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
+            .setTitle(`**Reddit Oauth 2.0** ${discord.getEmoji("mexShrug")}`)
             .setDescription(`${discord.getEmoji("star")}Revoked your reddit token!`)
             return message.channel.send(oauth2Embed)
         }
@@ -51,8 +51,8 @@ export default class RedditOauth extends Command {
         const url = `https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&response_type=code&state=${state}&redirect_uri=${config.redditRedirect}&duration=permanent&scope=identity,read,save,subscribe,submit,edit,vote,flair`
         const redditOauthEmbed = embeds.createEmbed()
         redditOauthEmbed
-        .setAuthor("reddit oauth", "https://toppng.com/uploads/preview/reddit-logo-reddit-icon-115628658968pe8utyxjt.png")
-        .setTitle(`**Reddit Oauth2** ${discord.getEmoji("mexShrug")}`)
+        .setAuthor("reddit oauth", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png")
+        .setTitle(`**Reddit Oauth 2.0** ${discord.getEmoji("mexShrug")}`)
         .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) in order to upvote, downvote, comment, and save posts and in order to subscribe to subreddits.`)
         return message.channel.send(redditOauthEmbed)
     }

@@ -66,6 +66,7 @@ export default class Help extends Command {
                 "level": discord.getEmoji("KannaXD"),
                 "image": discord.getEmoji("tohruSmug"),
                 "misc": discord.getEmoji("karenXmas"),
+                "misc 2": discord.getEmoji("sataniaDead"),
                 "mod": discord.getEmoji("kannaFreeze"),
                 "music": discord.getEmoji("PoiHug"),
                 "music 2": discord.getEmoji("yes"),

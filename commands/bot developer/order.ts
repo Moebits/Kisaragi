@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Order extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Orders the tables in the database.",
+            description: "Orders the rows in the database.",
             aliases: [],
             cooldown: 3
         })

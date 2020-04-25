@@ -183,7 +183,7 @@ export class Embeds {
             } else {
                 page -= Math.floor(embeds.length/5)
             }
-            if (page < 0) page *= -1
+            if (page < 0) page += embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
@@ -383,7 +383,7 @@ export class Embeds {
             } else {
                 page -= Math.floor(embeds.length/5)
             }
-            if (page < 0) page *= -1
+            if (page < 0) page += embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
