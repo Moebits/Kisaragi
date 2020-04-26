@@ -18,8 +18,9 @@ export default class UserUpdate {
         for (let i = 0; i < guilds.length; i++) {
             const guild = guilds[i]
             const message = await discord.fetchFirstMessage(guild)
-            const sql = new SQLQuery(message!)
-            const embeds = new Embeds(discord, message!)
+            if (!message) return
+            const sql = new SQLQuery(message)
+            const embeds = new Embeds(discord, message)
 
             const logUsername = async (oldUser: User, newUser: User) => {
                 const memberLog = await sql.fetchColumn("logs", "member log")
