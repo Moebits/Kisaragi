@@ -64,7 +64,7 @@ export default class Verify extends Command {
                         .setTitle(`Captcha ${discord.getEmoji("kannaAngry")}`)
                         if (msg.content.trim() === "cancel") {
                             responseEmbed
-                            .setDescription("Quit the captcha prompts.")
+                            .setDescription("Quit the captcha.")
                             return msg.channel.send(responseEmbed)
                         } else if (msg.content.trim() === "skip") {
                             message.reply("Skipped this captcha!")

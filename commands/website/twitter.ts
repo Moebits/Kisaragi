@@ -4,8 +4,8 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Oauth2} from "./../../structures/Oauth2"
 import {Permission} from "./../../structures/Permission"
-
 export default class TwitterCommand extends Command {
     private user = null as any
     private search = null as any
@@ -35,6 +35,7 @@ export default class TwitterCommand extends Command {
 
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        const oauth2 = new Oauth2(discord, message)
         if (discord.checkMuted(message)) {
             if (!perms.checkNSFW()) return
         }
@@ -118,6 +119,7 @@ export default class TwitterCommand extends Command {
             .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", "https://twitter.com/")
             .setTitle(`**Twitter Search** ${discord.getEmoji("aquaUp")}`))
         }
-        embeds.createReactionEmbed(twitterArray, true, true)
+        const msg = await embeds.createReactionEmbed(twitterArray, true, true)
+        await oauth2.twitterOptions(msg)
     }
 }

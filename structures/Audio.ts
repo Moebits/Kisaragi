@@ -35,7 +35,7 @@ export class Audio {
         const connection = this.message.guild?.voice?.connection
         const queue = this.getQueue() as any
         if (!connection || !queue?.[0]) {
-            this.message.channel.send(`You must be playing music in order to use this command ${this.discord.getEmoji("kannaFacepalm")}`)
+            this.message.channel.send(`<@${this.message.author.id}>, You must be playing music in order to use this command ${this.discord.getEmoji("kannaFacepalm")}`)
             return false
         } else {
             return true
@@ -998,7 +998,7 @@ export class Audio {
         const settings = this.getSettings() as any
         const now = queue[position]
         let details = ""
-        if (now.kind === "link") {
+        if (now?.kind === "link") {
             details =
             `${settings.autoplay ? `${discord.getEmoji("autoplay")}Autoplay is **on**! ${discord.getEmoji("tohruSmug")}\n` : ""}` +
             `${settings.looping || settings.ablooping ? `${settings.ablooping ? discord.getEmoji("abloop") : discord.getEmoji("loop")}Loop mode is **on**! ${discord.getEmoji("aquaUp")}\n` : ""}` +

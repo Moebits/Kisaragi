@@ -175,27 +175,16 @@ export class Oauth2 {
 
     /** Add twitter options to a twitter embed */
     public twitterOptions = async (msg: Message) => {
-        const reactions = ["reply", "twitterrepost", "twitterheart"]
+        const reactions = ["reply", "retweet", "twitterheart"]
         for (let i = 0; i < reactions.length; i++) await msg.react(this.discord.getEmoji(reactions[i]))
 
         const replyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reply") && user.bot === false
-        const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitterrepost") && user.bot === false
+        const retweetCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("retweet") && user.bot === false
         const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitterheart") && user.bot === false
 
         const reply = msg.createReactionCollector(replyCheck)
-        const repost = msg.createReactionCollector(repostCheck)
+        const retweet = msg.createReactionCollector(retweetCheck)
         const heart = msg.createReactionCollector(heartCheck)
-
-        const token = await this.sql.fetchColumn("oauth2", "twitter token", "user id", this.message.author.id)
-        const secret = await this.sql.fetchColumn("oauth2", "twitter secret", "user id", this.message.author.id)
-        const twitterID = await this.sql.fetchColumn("oauth2", "twitter id", "user id", this.message.author.id)
-
-        const twitter = new Twitter({
-            consumer_key: process.env.TWITTER_API_KEY!,
-            consumer_secret: process.env.TWITTER_API_SECRET!,
-            access_token_key: token ?? process.env.TWITTER_ACCESS_TOKEN!,
-            access_token_secret: secret ?? process.env.TWITTER_ACCESS_SECRET!
-        })
 
         reply.on("collect", async (reaction, user) => {
             await reaction.users.remove(user).catch(() => null)
@@ -206,6 +195,109 @@ export class Oauth2 {
                 return
             }
             const secret = await this.sql.fetchColumn("oauth2", "twitter secret", "user id", user.id)
+            const twitter = new Twitter({
+                consumer_key: process.env.TWITTER_API_KEY!,
+                consumer_secret: process.env.TWITTER_API_SECRET!,
+                access_token_key: token,
+                access_token_secret: secret
+            })
+            let text = ""
+            let mediaIDs = ""
+            const getReply = async (response: Message) => {
+                const images = new Images(this.discord, this.message)
+                text = response.content.replace(/(http)(.*?)(?= |$)/g, "").trim()
+                response.delete().catch(() => null)
+                let links = response.content.trim().match(/(http)(.*?)(?= |$)/)
+                if (!links) links = await this.discord.fetchLastAttachment(response, false, /.(png|jpg|gif|mp4)/, 5, true) as any
+                if (links) {
+                    for (let i = 0; i < links.length; i++) {
+                        if (links[0].endsWith(".gif") || links[0].endsWith(".mp4")) {
+                            mediaIDs = await images.uploadTwitterMedia(twitter, links[0])
+                            break
+                        }
+                        if (mediaIDs.length === 4) break
+                        if (links[i].endsWith(".jpg") || links[i].endsWith(".png")) {
+                            const mediaID = await images.uploadTwitterMedia(twitter, links[i])
+                            if (i === 0) {
+                                mediaIDs += mediaID
+                            } else {
+                                mediaIDs += `,${mediaID}`
+                            }
+                        }
+                    }
+                }
+            }
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the reply that you want to leave on this tweet.`)
+            await this.embeds.createPrompt(getReply)
+            rep.delete()
+            const id = msg.embeds[0].url?.match(/(?<=status\/)(.*?)(?=$| )/)?.[0] ?? ""
+            const author = msg.embeds[0].description?.match(/(?<=Author:_ \*\*)(.*?)(?=\*\*)/gi)?.[0] ?? ""
+            await twitter.post("statuses/update", {
+                status: `@${author} ${text}`,
+                media_ids: mediaIDs,
+                in_reply_to_status_id: id,
+                auto_populate_reply_metadata: true
+            })
+            const rep2 = await msg.channel.send(`<@${user.id}>, Replied to this tweet! ${this.discord.getEmoji("gabYes")}`)
+            rep2.delete({timeout: 3000})
+        })
+
+        retweet.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
+            const token = await this.sql.fetchColumn("oauth2", "twitter token", "user id", user.id)
+            if (!token) {
+                const rep = await this.message.channel.send(`<@${user.id}>, you must authenticate your twitter account with **twitteroauth** in order to reply to this tweet.`)
+                await rep.delete({timeout: 3000})
+                return
+            }
+            const secret = await this.sql.fetchColumn("oauth2", "twitter secret", "user id", user.id)
+            const twitter = new Twitter({
+                consumer_key: process.env.TWITTER_API_KEY!,
+                consumer_secret: process.env.TWITTER_API_SECRET!,
+                access_token_key: token,
+                access_token_secret: secret
+            })
+            const id = msg.embeds[0].url?.match(/(?<=status\/)(.*?)(?=$| )/)?.[0] ?? ""
+            const twitterID = await SQLQuery.fetchColumn("oauth2", "twitter id", "user id", user.id)
+            const retweets = await twitter.get(`statuses/retweets/${id}`, {id}).then((r) => r.map((u: any) => u.user.id_str))
+            let rep: Message
+            if (retweets.includes(twitterID)) {
+                rep = await msg.channel.send(`<@${user.id}>, Unretweeted this tweet! ${this.discord.getEmoji("sataniaDead")}`)
+                await twitter.post(`statuses/unretweet/${id}`, {id})
+            } else {
+                rep = await msg.channel.send(`<@${user.id}>, Retweeted this tweet! ${this.discord.getEmoji("aquaUp")}`)
+                await twitter.post(`statuses/retweet/${id}`, {id})
+            }
+            rep.delete({timeout: 3000})
+        })
+
+        heart.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
+            const token = await this.sql.fetchColumn("oauth2", "twitter token", "user id", user.id)
+            if (!token) {
+                const rep = await this.message.channel.send(`<@${user.id}>, you must authenticate your twitter account with **twitteroauth** in order to reply to this tweet.`)
+                await rep.delete({timeout: 3000})
+                return
+            }
+            const secret = await this.sql.fetchColumn("oauth2", "twitter secret", "user id", user.id)
+            const twitter = new Twitter({
+                consumer_key: process.env.TWITTER_API_KEY!,
+                consumer_secret: process.env.TWITTER_API_SECRET!,
+                access_token_key: token,
+                access_token_secret: secret
+            })
+            const id = msg.embeds[0].url?.match(/(?<=status\/)(.*?)(?=$| )/)?.[0] ?? ""
+            const twitterID = await SQLQuery.fetchColumn("oauth2", "twitter id", "user id", user.id)
+            const likes = await twitter.get(`favorites/list`, {user_id: twitterID, max_id: id}).then((r) => r.map((t: any) => t.id_str))
+            let rep: Message
+            if (likes.includes(id)) {
+                rep = await msg.channel.send(`<@${user.id}>, Unliked this tweet! ${this.discord.getEmoji("sagiriBleh")}`)
+                await twitter.post(`favorites/destroy`, {id})
+            } else {
+                rep = await msg.channel.send(`<@${user.id}>, Liked this tweet! ${this.discord.getEmoji("gabYes")}`)
+                await twitter.post(`favorites/create`, {id})
+            }
+            rep.delete({timeout: 3000})
         })
     }
 }

@@ -152,8 +152,8 @@ export default class Reddit extends Command {
         }
         if (subreddit) {
             if (args[2]) {
-                const query = Functions.combineArgs(args, 2)
-                if (args[2].toLowerCase() === "hot") {
+                const query = Functions.combineArgs(args, 2).trim()
+                if (args[2].toLowerCase() === "hot" || !query) {
                     posts = await reddit.getSubreddit(subreddit).getHot()
                 } else if (args[2].toLowerCase() === "new") {
                     posts = await reddit.getSubreddit(subreddit).getNew()
