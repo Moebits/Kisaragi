@@ -39,11 +39,13 @@ export default class GuildCreate {
         let mainChannel = mainChannels[index]
         if (!mainChannel) mainChannel = await discord.fetchFirstMessage(guild).then((m) => m?.channel) as TextChannel
 
-        if (!guild.me?.hasPermission(["MANAGE_MESSAGES", "SEND_MESSAGES", "ADD_REACTIONS", "EMBED_LINKS", "ATTACH_FILES", "USE_EXTERNAL_EMOJIS", "CONNECT", "SPEAK"])) {
-            await mainChannel.send(`The permissions **Manage Messages**, **Send Messages**, **Add Reactions**, **Embed Links**, **Attach Files**, **Use External Emojis**, **Connect**, and **Speak** are required. Invite the bot again with sufficient permissions.`)
-            .catch(() => null)
-            await guild.leave()
-            return
+        if (guild.id !== "333949691962195969") {
+            if (!guild.me?.hasPermission(["MANAGE_MESSAGES", "SEND_MESSAGES", "ADD_REACTIONS", "EMBED_LINKS", "ATTACH_FILES", "USE_EXTERNAL_EMOJIS", "CONNECT", "SPEAK"])) {
+                await mainChannel.send(`The permissions **Manage Messages**, **Send Messages**, **Add Reactions**, **Embed Links**, **Attach Files**, **Use External Emojis**, **Connect**, and **Speak** are required. Invite the bot again with sufficient permissions.`)
+                .catch(() => null)
+                await guild.leave()
+                return
+            }
         }
 
         SQLQuery.initGuild(message)

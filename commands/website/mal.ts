@@ -26,7 +26,7 @@ export default class Mal extends Command {
             \`=>mal satania\`
             \`=>mal tenpi\`
             `,
-            aliases: ["animelist", "anilist"],
+            aliases: ["myanimelist"],
             random: "none",
             cooldown: 10
         })

@@ -47,7 +47,7 @@ export default class NPM extends Command {
             .setTitle(`**${result[i].name}** ${discord.getEmoji("gabStare")}`)
             .setURL(result[i].links ? result[i].links.npm : "None")
             .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png", "https://www.npmjs.com/")
-            .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
+            .setThumbnail(`https://i.imgur.com/CJ70ktz.png`)
             .setDescription(
             `${discord.getEmoji("star")}_Version:_ **${result[i].version}**\n` +
             `${discord.getEmoji("star")}_Publisher:_ ${result[i].publisher.username}\n` +
