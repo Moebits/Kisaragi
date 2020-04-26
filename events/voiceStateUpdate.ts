@@ -8,7 +8,8 @@ export default class VoiceStateUpdate {
 
     public run = async (oldState: VoiceState, newState: VoiceState) => {
         const msg = await this.discord.fetchFirstMessage(newState.guild)
-        const sql = new SQLQuery(msg!)
+        if (!msg) return
+        const sql = new SQLQuery(msg)
         const leaveVoiceChannel = async () => {
             const connected = newState.guild.voice?.connection?.channel
             const listening = newState.channel?.members.filter((m) => {
