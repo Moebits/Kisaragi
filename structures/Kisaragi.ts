@@ -171,7 +171,7 @@ export class Kisaragi extends Client {
         }
     }
 
-    /** Mute responses in large guilds */
+    /** Mute auto responses/whitelist bot farm protection on bot list servers */
     public checkMuted = (message: Message) => {
         const muted = [
             "110373943822540800",
@@ -180,26 +180,10 @@ export class Kisaragi extends Client {
             "446425626988249089",
             "333949691962195969"
         ]
-        const mutedUsers = [
-            "321714991050784770",
-            "955798657884569600",
-            "395526710101278721",
-            "255048840615428107",
-            "165811958828761089",
-            "187316528100802560",
-            "205680187394752512",
-            "187316528100802560",
-            "245225589332639747"
-        ]
-        if (!message.guild) {
-            if (mutedUsers.includes(message.author.id)) return true
-            return false
-        }
+        if (!message.guild) return false
         if (muted.includes(message.guild.id)) {
             return true
         } else {
-            const found = message.guild.members.cache.find((m) => mutedUsers.includes(m.id))
-            if (found) return true
             return false
         }
     }

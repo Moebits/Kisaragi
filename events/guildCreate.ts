@@ -39,11 +39,17 @@ export default class GuildCreate {
         let mainChannel = mainChannels[index]
         if (!mainChannel) mainChannel = await discord.fetchFirstMessage(guild).then((m) => m?.channel) as TextChannel
 
-        if (guild.id !== "333949691962195969") {
+        if (!discord.checkMuted(message) || guild.id !== "333949691962195969") {
+            const chan = guild.channels.cache.find((c) => c.permissionsFor(guild.me!)?.has("SEND_MESSAGES") ?? false) as TextChannel
             if (!guild.me?.hasPermission(["MANAGE_MESSAGES", "SEND_MESSAGES", "ADD_REACTIONS", "EMBED_LINKS", "ATTACH_FILES", "USE_EXTERNAL_EMOJIS", "CONNECT", "SPEAK"])) {
-                const chan = guild.channels.cache.find((c) => c.permissionsFor(guild.me!)?.has("SEND_MESSAGES") ?? false) as TextChannel
                 await (chan ?? mainChannel).send(`The permissions **Manage Messages**, **Send Messages**, **Add Reactions**, **Embed Links**, **Attach Files**, **Use External Emojis**, **Connect**, and **Speak** are required. Invite the bot again with sufficient permissions.`)
                 .catch(() => null)
+                await guild.leave()
+                return
+            }
+
+            const bots = guild.members.cache.filter((m) => m.user.bot).size
+            if (Math.floor(bots/guild.memberCount*1.0)*100 > 60) {
                 await guild.leave()
                 return
             }
