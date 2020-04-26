@@ -11,13 +11,10 @@ export default class MessageReactionAdd {
     public run = async (reaction: MessageReaction, user: User) => {
         const discord = this.discord
         if (user.id === discord.user!.id) return
-        if (reaction.partial) reaction = await reaction.fetch()
         const sql = new SQLQuery(reaction.message)
         const embeds = new Embeds(this.discord, reaction.message)
 
         const retriggerEmbed = async (reaction: MessageReaction) => {
-            if (!reaction.message.partial) return
-            reaction.message = await reaction.message.fetch()
             if (reaction.message.author.id === discord.user!.id) {
                 if (active.has(reaction.message.id)) return
                 const newArray = await SQLQuery.selectColumn("collectors", "message", true)
@@ -51,7 +48,10 @@ export default class MessageReactionAdd {
                 }
             }
         }
-        retriggerEmbed(reaction)
+        if (reaction.partial) {
+            reaction = await reaction.fetch()
+            retriggerEmbed(reaction)
+        }
 
         const addReactionRole = async (reaction: MessageReaction, user: User) => {
             const reactionroles = await sql.fetchColumn("special roles", "reaction roles")
