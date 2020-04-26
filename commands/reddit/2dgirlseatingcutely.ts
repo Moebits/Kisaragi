@@ -2,11 +2,11 @@ import {Message, MessageEmbed} from "discord.js"
 import snoowrap from "snoowrap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
-import Reddit from "../website/reddit"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Oauth2} from "./../../structures/Oauth2"
 import {Permission} from "./../../structures/Permission"
+import Reddit from "./reddit"
 
 export default class $2DGirlsEatingCutely extends Command {
     constructor(discord: Kisaragi, message: Message) {

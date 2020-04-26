@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 36, date: "4/26/2020", changes: "Added a section for twitter, and you can now reply/like/retweet twitter posts."},
             {num: 35, date: "4/24/2020", changes: "Added \`redditoauth\` so that you can upvote, downvote, comment on, save, and subscribe to posts/subreddits directly."},
             {num: 34, date: "4/24/2020", changes: "Added some subreddit specific commands such as \`animemes\` and \`animeirl\`... I was bored."},
             {num: 33, date: "4/24/2020", changes: "Added a voice recognition system that can be toggled with \`voice\`. Although, it isn't too good."},

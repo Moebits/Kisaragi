@@ -411,7 +411,7 @@ export class Embeds {
     // Create Help Embed
     public createHelpEmbed = async (embeds: MessageEmbed[]) => {
         let page = 8
-        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Misc 2", "Mod", "Music", "Music 2", "Music 3", "Reddit", "Video", "Waifu", "Website", "Website 2", "Website 3"]
+        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Misc 2", "Mod", "Music", "Music 2", "Music 3", "Reddit", "Twitter", "Video", "Waifu", "Website", "Website 2", "Website 3"]
         let compressed = false
         const longDescription: string[] = []
         const commandCount: number[] = []
@@ -459,6 +459,7 @@ export class Embeds {
             this.discord.getEmoji("arrowLeft"),
             this.discord.getEmoji("musicThree"),
             this.discord.getEmoji("reddit"),
+            this.discord.getEmoji("twitter"),
             this.discord.getEmoji("miscTwo"),
             this.discord.getEmoji("websiteThree"),
             this.discord.getEmoji("botDeveloper")
@@ -493,6 +494,7 @@ export class Embeds {
         const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
         const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
         const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reddit") && user.bot === false
+        const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitter") && user.bot === false
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
         const waifuCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("waifu") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
@@ -520,6 +522,7 @@ export class Embeds {
         const musicTwo = msg.createReactionCollector(musicTwoCheck)
         const musicThree = msg.createReactionCollector(musicThreeCheck)
         const reddit = msg.createReactionCollector(redditCheck)
+        const twitter = msg.createReactionCollector(twitterCheck)
         const video = msg.createReactionCollector(videoCheck)
         const waifu = msg.createReactionCollector(waifuCheck)
         const web = msg.createReactionCollector(webCheck)
@@ -528,7 +531,7 @@ export class Embeds {
         const left = msg.createReactionCollector(leftCheck)
         const right = msg.createReactionCollector(rightCheck)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, video, waifu, web, webTwo, webThree]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, twitter, video, waifu, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
@@ -581,7 +584,7 @@ export class Embeds {
             "admin", "anime", "config", "fun", "game",
             "heart", "image", "info", "japanese", "level", "lewd", "misc",
             "mod", "music", "musicTwo", "video", "waifu", "website", "websiteTwo",
-            "musicThree", "reddit", "miscTwo", "websiteThree", "botDeveloper"
+            "musicThree", "reddit", "twitter", "miscTwo", "websiteThree", "botDeveloper"
         ]
         let compressed = false
         const longDescription: string[] = []
@@ -630,6 +633,7 @@ export class Embeds {
             this.discord.getEmoji("arrowLeft"),
             this.discord.getEmoji("musicThree"),
             this.discord.getEmoji("reddit"),
+            this.discord.getEmoji("twitter"),
             this.discord.getEmoji("miscTwo"),
             this.discord.getEmoji("websiteThree"),
             this.discord.getEmoji("botDeveloper")
@@ -658,6 +662,7 @@ export class Embeds {
         const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
         const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
         const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reddit") && user.bot === false
+        const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitter") && user.bot === false
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
         const waifuCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("waifu") && user.bot === false
         const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
@@ -685,6 +690,7 @@ export class Embeds {
         const musicTwo = msg.createReactionCollector(musicTwoCheck)
         const musicThree = msg.createReactionCollector(musicThreeCheck)
         const reddit = msg.createReactionCollector(redditCheck)
+        const twitter = msg.createReactionCollector(twitterCheck)
         const video = msg.createReactionCollector(videoCheck)
         const waifu = msg.createReactionCollector(waifuCheck)
         const web = msg.createReactionCollector(webCheck)
@@ -693,7 +699,7 @@ export class Embeds {
         const left = msg.createReactionCollector(leftCheck)
         const right = msg.createReactionCollector(rightCheck)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, video, waifu, web, webTwo, webThree]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, twitter, video, waifu, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
