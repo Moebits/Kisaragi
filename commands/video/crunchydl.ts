@@ -23,9 +23,8 @@ export default class CrunchyDL extends Command {
             description: "Downloads an anime episode from Crunchyroll (or just the subs).",
             help:
             `
-            _Note: Due to massive file sizes, I only support downloading one episode at a time. Add \`dub\` to download the dub version, if it is available._
+            _Note: You now need to convert the m3u8 file yourself (use VLC or FFmpeg), because of extremely high processing times (10-20 minutes). Add \`dub\` to download the dub version, if it is available._
             \`crunchydl dub? query epNum?/url\` - Downloads the anime episode by url/query.
-            \`crunchydl dub? mp3 query epNum?/url\` - Downloads the anime episode as an mp3.
             \`crunchydl subs query epNum?/url\` - Downloads just the subs.
             `,
             examples:
@@ -39,13 +38,15 @@ export default class CrunchyDL extends Command {
         })
     }
 
-    public downloadEpisode = async (stream: string, dest: string, resolution?: number) => {
+    public downloadEpisode = async (stream: string, dest: string, resolution?: number, skipConversion?: boolean) => {
         this.procBlock.setGlobalProcBlock()
-        if (!resolution) resolution = 480 // reduce
+        if (!resolution) resolution = 480
         const manifest = await axios.get(stream).then((r) => r.data)
         const m3u8 = Functions.parsem3u8(manifest)
         let playlist = m3u8.playlists.find((p: any) => p.attributes.RESOLUTION.height === resolution)
+        if (!playlist) playlist = m3u8.playlists.find((p: any) => p.attributes.RESOLUTION.height === 720)
         if (!playlist) playlist = m3u8.playlists.find((p: any) => p.attributes.RESOLUTION.height === 480)
+        if (skipConversion) return playlist.uri
         await new Promise((resolve) => {
             ffmpeg(playlist.uri).outputOptions(["-vcodec", "copy", "-acodec", "copy"]).save(dest)
             .on("end", () => resolve())
@@ -54,6 +55,7 @@ export default class CrunchyDL extends Command {
     }
 
     public getVilos = async (url: string, sessionID: string) => {
+        try {
         const html = await axios.get(url, {headers: {Cookie: `session_id=${sessionID}`, ...this.headers}}).then((r) => r.data)
         const vilos = JSON.parse(html.match(/(?<=vilos.config.media = )(.*?)(?=;)/)?.[0])
         const title = vilos.metadata.title
@@ -90,6 +92,9 @@ export default class CrunchyDL extends Command {
         obj.series = series.replace(/\//g, "").replace(/\?/g, "").replace(/\\/g, "")
         obj.thumbnail = thumbnail
         return obj
+        } catch {
+            return Promise.reject("Error")
+        }
     }
 
     public getEpisode = async (mediaID: string, sessionID: string) => {
@@ -111,7 +116,7 @@ export default class CrunchyDL extends Command {
         const images = new Images(discord, message)
         const video = new Video(discord, message)
         const crunchy = new crunchyCmd(discord, message)
-        if (this.procBlock.getGlobalProcBlock()) return message.reply(`Sorry, someone is already downloading a video. I can only handle one request at a time ${discord.getEmoji("hanaDesires")}`)
+        // if (this.procBlock.getGlobalProcBlock()) return message.reply(`Sorry, someone is already downloading a video. I can only handle one request at a time ${discord.getEmoji("hanaDesires")}`)
         let input = Functions.combineArgs(args, 1)
         let setSubs = false
         let setMP3 = false
@@ -146,9 +151,14 @@ export default class CrunchyDL extends Command {
             url = link
         }
         const unblockURL = "https://api2.cr-unblocker.com/start_session"
-        const sess = await axios.get(unblockURL).then((r) => r.data)
+        const sess = await axios.get(unblockURL, {headers: this.headers}).then((r) => r.data)
         const sessionID = sess.data.session_id
-        const vilos = await this.getVilos(url, sessionID)
+        let vilos: any
+        try {
+            vilos = await this.getVilos(url, sessionID)
+        } catch {
+            return message.reply(`Sorry, there was an error with processing this request. Try again later.`)
+        }
         const folder = path.join(__dirname, `../../../assets/misc/videos/${vilos.series}`)
         if (!fs.existsSync(folder)) fs.mkdirSync(folder, {recursive: true})
         const dest = path.join(folder, `./${vilos.title}.mp4`)
@@ -165,16 +175,17 @@ export default class CrunchyDL extends Command {
                 await msg.delete()
                 return message.reply("It looks like this anime doesn't have a dub up on Crunchyroll.")
             }
-            await this.downloadEpisode(vilos.dub[0].url, dest)
-            const fileLink = await images.upload(dest)
+            const fileLink = await this.downloadEpisode(vilos.dub[0].url, dest, 1080, true)
+            // const fileLink = await images.upload(dest)
             crunchyEmbed
             .setURL(url)
             .setDescription(
                 `${discord.getEmoji("star")}_Anime:_ **${vilos.series}**\n` +
                 `${discord.getEmoji("star")}_Episode:_ **${vilos.title} (${episodeNum}) (Dub)**\n` +
-                `Downloaded this episode! The file is way too massive for attachments. Download it [**here**](${fileLink})`
+                `Fetched this video stream! You can convert m3u8 files with [**VLC**](https://www.videolan.org/vlc/index.html) or [**FFmpeg**](https://www.ffmpeg.org/). Since this is a very processing heavy task, you must do it yourself. Download the file [**here**](${fileLink})`
             )
         } else if (setMP3) {
+            return message.reply(`The mp3 sub command has been disabled, because the bot is no longer doing file conversions.`)
             if (!vilos.sub[0]) {
                 await msg.delete()
                 return message.reply("It looks like this anime isn't on Crunchyroll.")
@@ -221,14 +232,14 @@ export default class CrunchyDL extends Command {
                 await msg.delete()
                 return message.reply("It looks like this anime isn't on Crunchyroll.")
             }
-            await this.downloadEpisode(vilos.sub[0].url, dest)
-            const fileLink = await images.upload(dest)
+            const fileLink = await this.downloadEpisode(vilos.sub[0].url, dest, 720, true)
+            // const fileLink = await images.upload(dest)
             crunchyEmbed
             .setURL(url)
             .setDescription(
                 `${discord.getEmoji("star")}_Anime:_ **${vilos.series}**\n` +
                 `${discord.getEmoji("star")}_Episode:_ **${vilos.title} (${episodeNum})**\n` +
-                `Downloaded this episode! The file is way too massive for attachments. Download it [**here**](${fileLink})`
+                `Fetched this video stream! You can convert m3u8 files with [**VLC**](https://www.videolan.org/vlc/index.html) or [**FFmpeg**](https://www.ffmpeg.org/). Since this is a very processing heavy task, you must do it yourself. Download the file [**here**](${fileLink})`
             )
         }
         await msg.delete()
