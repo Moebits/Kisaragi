@@ -149,6 +149,14 @@ export default class Mod extends Command {
                 if (String(ascii) === "off") {
                     await sql.updateColumn("blocks", "ascii name toggle", "on")
                     description += `${discord.getEmoji("star")}Ascii names are **on**!\n`
+                    const members = message.guild!.members.cache.map((m) => m)
+                    for (let i = 0; i < members.length; i++) {
+                        if (members[i].displayName.match(/[^\x00-\x7F]/g)) {
+                            let newName = members[i].displayName.replace(/[^\x00-\x7F]/g, "").trim()
+                            if (!newName) newName = "User"
+                            await members[i].setNickname(newName, "Non-ascii characters in name").catch(() => null)
+                        }
+                    }
                 } else {
                     await sql.updateColumn("blocks", "ascii name toggle", "off")
                     description += `${discord.getEmoji("star")}Ascii names are **off**!\n`

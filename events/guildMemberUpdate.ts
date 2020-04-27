@@ -9,12 +9,13 @@ export default class GuildMemberUpdate {
     public run = async (oldMember: GuildMember, newMember: GuildMember) => {
         const discord = this.discord
         const message = await discord.fetchFirstMessage(newMember.guild)
-        const sql = new SQLQuery(message!)
-        const embeds = new Embeds(discord, message!)
+        if (!message) return
+        const sql = new SQLQuery(message)
+        const embeds = new Embeds(discord, message)
 
         let [setNick, setNewRole, setRemoveRole] = [false, false, false]
 
-        if (oldMember.nickname !== newMember.nickname) setNick = true
+        if (oldMember.displayName !== newMember.displayName) setNick = true
         if (oldMember.roles.cache.size < newMember.roles.cache.size) setNewRole = true
         if (oldMember.roles.cache.size > newMember.roles.cache.size) setRemoveRole = true
 
@@ -30,8 +31,8 @@ export default class GuildMemberUpdate {
                 .setDescription(
                     `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> (${newMember.user.tag})**\n` +
                     `${discord.getEmoji("star")}_User ID:_ \`${newMember.id}\`\n` +
-                    `${discord.getEmoji("star")}_Old Nickname:_ **${oldMember.nickname ?? oldMember.displayName}**\n` +
-                    `${discord.getEmoji("star")}_New Nickname:_ **${newMember.nickname ?? newMember.displayName}**\n`
+                    `${discord.getEmoji("star")}_Old Nickname:_ **${oldMember.displayName}**\n` +
+                    `${discord.getEmoji("star")}_New Nickname:_ **$newMember.displayName}**\n`
                 )
                 .setFooter(`${newMember.guild.name} • ${Functions.formatDate(new Date())}`, newMember.guild.iconURL({format: "png", dynamic: true}) ?? "")
                 await memberChannel.send(logEmbed).catch(() => null)
@@ -94,5 +95,16 @@ export default class GuildMemberUpdate {
             }
         }
         if (setRemoveRole) logRoleRemoval(oldMember, newMember)
+
+        const asciiNames = async (member: GuildMember) => {
+            const toggle = await sql.fetchColumn("blocks", "ascii name toggle")
+            if (!toggle || toggle === "off") return
+            if (member.displayName.match(/[^\x00-\x7F]/g)) {
+                let newName = member.displayName.replace(/[^\x00-\x7F]/g, "").trim()
+                if (!newName) newName = "User"
+                await member.setNickname(newName, "Non-ascii characters in name").catch(() => null)
+            }
+        }
+        if (setNick) asciiNames(newMember)
     }
 }
