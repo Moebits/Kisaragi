@@ -54,9 +54,9 @@ export default class CrunchyDL extends Command {
         this.procBlock.setGlobalProcBlock(true)
     }
 
-    public getVilos = async (url: string, sessionID: string) => {
+    public getVilos = async (url: string) => {
         try {
-        const html = await axios.get(url, {headers: {Cookie: `session_id=${sessionID}`, ...this.headers}}).then((r) => r.data)
+        const html = await axios.get(url, {headers: {...this.headers}}).then((r) => r.data)
         const vilos = JSON.parse(html.match(/(?<=vilos.config.media = )(.*?)(?=;)/)?.[0])
         const title = vilos.metadata.title
         const series = vilos.metadata.up_next.series_title
@@ -150,12 +150,12 @@ export default class CrunchyDL extends Command {
             link = `https://www.crunchyroll.com${link}`
             url = link
         }
-        const unblockURL = "https://api2.cr-unblocker.com/start_session"
-        const sess = await axios.get(unblockURL, {headers: this.headers}).then((r) => r.data)
-        const sessionID = sess.data.session_id
+        // const unblockURL = "https://api2.cr-unblocker.com/start_session"
+        // const sess = await axios.get(unblockURL, {headers: this.headers}).then((r) => r.data)
+        // const sessionID = sess.data.session_id
         let vilos: any
         try {
-            vilos = await this.getVilos(url, sessionID)
+            vilos = await this.getVilos(url)
         } catch {
             return message.reply(`Sorry, there was an error with processing this request. Try again later.`)
         }
