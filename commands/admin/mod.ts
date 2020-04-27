@@ -9,10 +9,26 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Mod extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configure moderation settings.",
-            aliases: [],
+            description: "Configures moderation settings for the server.",
+            help:
+            `
+            \`mod @role/id\` - Set the admin role.
+            \`mod !@role/id!\` - Set the mod role.
+            \`mod #@role/id#\` - Sets the mute role.
+            \`mod $@role/id$\` - Sets the restricted role.
+            \`mod (@role/id)\` - Sets the warn one role.
+            \`mod [@role/id]\` - Sets the warn two role.
+            \`mod none/mute/kick/ban\` - Sets the warn penalty.
+            \`mod num\` - Sets the warn threshold.
+            \`mod ascii\` - Toggles the removal of non-ascii characters in names.
+            `,
+            examples:
+            `
+            \`=>mod @role !@role! #@role# $@role$\`
+            `,
+            aliases: ["moderation"],
             guildOnly: true,
-            cooldown: 3
+            cooldown: 10
         })
     }
 
@@ -22,7 +38,7 @@ export default class Mod extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        if (!perms.checkAdmin()) return
+        if (!message.member?.permissions.has("ADMINISTRATOR") || message.author.id !== message.guild?.ownerID) return message.reply(`You must have the **Administrator** permission or be the owner of this guild in order to use this command. ${discord.getEmoji("sagiriBleh")}`)
         const loading = message.channel.lastMessage
         loading?.delete()
         const input = Functions.combineArgs(args, 1)
@@ -179,11 +195,10 @@ export default class Mod extends Command {
                 description += `${discord.getEmoji("star")}Warn penalty set to **${warnPenalty!}**!\n`
             }
 
+            if (!description) description = `${discord.getEmoji("star")}No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
-            return
-
+            return msg.channel.send(responseEmbed)
         }
 
         await embeds.createPrompt(modPrompt)

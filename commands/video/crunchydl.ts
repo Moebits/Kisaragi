@@ -20,18 +20,16 @@ export default class CrunchyDL extends Command {
     public readonly baseURL = "https://api.crunchyroll.com/"
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Downloads an anime episode from Crunchyroll (or just the subs).",
+            description: "Downloads the subs of an anime episode from Crunchyroll.",
             help:
             `
-            _Note: You now need to convert the m3u8 file yourself (use VLC or FFmpeg), because of extremely high processing times (10-20 minutes). Add \`dub\` to download the dub version, if it is available._
-            \`crunchydl dub? query epNum?/url\` - Downloads the anime episode by url/query.
-            \`crunchydl subs query epNum?/url\` - Downloads just the subs.
+            \`crunchydl query epNum?/url\` - Downloads the subs of the anime episode by url/query.
             `,
             examples:
             `
             \`=>crunchydl dragon maid 1\`
-            \`=>crunchydl mp3 konosuba 6\`
-            \`=>crunchydl subs kiniro mosaic 5\`
+            \`=>crunchydl konosuba 6\`
+            \`=>crunchydl kiniro mosaic 5\`
             `,
             aliases: ["animedl", "animedownload", "crunchydownload"],
             cooldown: 200
@@ -118,13 +116,13 @@ export default class CrunchyDL extends Command {
         const crunchy = new crunchyCmd(discord, message)
         // if (this.procBlock.getGlobalProcBlock()) return message.reply(`Sorry, someone is already downloading a video. I can only handle one request at a time ${discord.getEmoji("hanaDesires")}`)
         let input = Functions.combineArgs(args, 1)
-        let setSubs = false
         let setMP3 = false
         let setDub = false
+        let setSub = false
         let url = ""
-        if (/subs/.test(input)) {
-            input = input.replace("subs", "").trim()
-            setSubs = true
+        if (/sub/.test(input)) {
+            input = input.replace("sub", "").trim()
+            setSub = true
         }
         if (/dub/.test(input)) {
             input = input.replace("dub", "").trim()
@@ -185,7 +183,7 @@ export default class CrunchyDL extends Command {
                 `Fetched this video stream! You can convert m3u8 files with [**VLC**](https://www.videolan.org/vlc/index.html) or [**FFmpeg**](https://www.ffmpeg.org/). Since this is a very processing heavy task, you must do it yourself. Download the file [**here**](${fileLink})`
             )
         } else if (setMP3) {
-            return message.reply(`The mp3 sub command has been disabled, because the bot is no longer doing file conversions.`)
+            return message.reply(`The mp3 sub command was disabled.`)
             if (!vilos.sub[0]) {
                 await msg.delete()
                 return message.reply("It looks like this anime isn't on Crunchyroll.")
@@ -215,19 +213,7 @@ export default class CrunchyDL extends Command {
                     `Downloaded this episode as an mp3! Get the original file [**here**](${originalLink})`
                 )
             }
-        } else if (setSubs) {
-            const data = await axios.get(vilos.subtitles[0].url, {headers: this.headers}).then((r) => r.data)
-            const subDest = path.join(__dirname, `../../../assets/misc/dump/${vilos.title}.txt`)
-            fs.writeFileSync(subDest, data)
-            attachment = new MessageAttachment(subDest)
-            crunchyEmbed
-            .setURL(url)
-            .setDescription(
-                `${discord.getEmoji("star")}_Anime:_ **${vilos.series}**\n` +
-                `${discord.getEmoji("star")}_Episode:_ **${vilos.title} (${episodeNum})**\n` +
-                `Downloaded the subs for this episode!`
-            )
-        } else {
+        } else if (setSub) {
             if (!vilos.sub[0]) {
                 await msg.delete()
                 return message.reply("It looks like this anime isn't on Crunchyroll.")
@@ -240,6 +226,18 @@ export default class CrunchyDL extends Command {
                 `${discord.getEmoji("star")}_Anime:_ **${vilos.series}**\n` +
                 `${discord.getEmoji("star")}_Episode:_ **${vilos.title} (${episodeNum})**\n` +
                 `Fetched this video stream! You can convert m3u8 files with [**VLC**](https://www.videolan.org/vlc/index.html) or [**FFmpeg**](https://www.ffmpeg.org/). Since this is a very processing heavy task, you must do it yourself. Download the file [**here**](${fileLink})`
+            )
+        } else {
+            const data = await axios.get(vilos.subtitles[0].url, {headers: this.headers}).then((r) => r.data)
+            const subDest = path.join(__dirname, `../../../assets/misc/dump/${vilos.title}.txt`)
+            fs.writeFileSync(subDest, data)
+            attachment = new MessageAttachment(subDest)
+            crunchyEmbed
+            .setURL(url)
+            .setDescription(
+                `${discord.getEmoji("star")}_Anime:_ **${vilos.series}**\n` +
+                `${discord.getEmoji("star")}_Episode:_ **${vilos.title} (${episodeNum})**\n` +
+                `Downloaded the subs for this episode!`
             )
         }
         await msg.delete()

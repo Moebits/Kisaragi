@@ -14,13 +14,13 @@ export default class Crunchyroll extends Command {
             help:
             `
             \`crunchyroll url/query\` - Searches crunchyroll for the url/query.
-            \`crunchyroll download/dl dub/mp3/subs? url/query\` - Downloads an anime episode. This is an alias, see \`crunchydl\`.
+            \`crunchyroll download/dl url/query\` - This is an alias for the command \`crunchydl\`.
             `,
             examples:
             `
             \`=>crunchyroll kiniro mosaic\`
             \`=>crunchyroll konosuba\`
-            \`=>crunchyroll download mp3 is the order a rabbit 3\`
+            \`=>crunchyroll download is the order a rabbit 3\`
             `,
             aliases: ["cr", "crunchy"],
             random: "string",
