@@ -23,3 +23,8 @@ _Double click on the same reaction to toggle a compact form of the help menu._
 
 Here is a temporary command list, it might be a little out of date. [**Commands**](https://github.com/Tenpi/Kisaragi/wiki/Command-list)
 
+## I have a feature request
+
+Please let me know by submitting an issue or using the `feedback` command on the bot. I'm not a good programmer so I can't guarantee
+
+that it will be added, but I appreciate the idea.

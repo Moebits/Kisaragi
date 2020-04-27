@@ -45,7 +45,7 @@ export default class Privacy extends Command {
             ${discord.getEmoji("star")}_Joining Servers:_ Any server admin will be able to add you onto their server with the \`add\` command as long as they know your user id or tag. You are always notified
             when this occurs.
             **Delete Information**
-            ${discord.getEmoji("star")}_Data Deletion:_ All oauth commands have a an option to revoke your token. To revoke your twitter
+            ${discord.getEmoji("star")}_Data Deletion:_ All oauth commands have an option to revoke your token. To revoke your twitter
             token you need to manually click on "revoke access" in your application settings. To delete all guild data, just remove the bot from your server.
             ${discord.getEmoji("star")}_Account Deletion:_ If you delete your discord account all user-specific settings and oauth2 data on your account is deleted.
         `))

@@ -92,10 +92,6 @@ export default class Reddit extends Command {
         const perms = new Permission(discord, message)
         const oauth2 = new Oauth2(discord, message)
 
-        if (discord.checkMuted(message)) {
-            if (!perms.checkNSFW()) return
-        }
-
         const reddit = new snoowrap({
             userAgent: "kisaragi bot v1.0 by /u/imtenpi",
             clientId: process.env.REDDIT_APP_ID,

@@ -36,9 +36,7 @@ export default class TwitterCommand extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const oauth2 = new Oauth2(discord, message)
-        if (discord.checkMuted(message)) {
-            if (!perms.checkNSFW()) return
-        }
+
         const twitter = new Twitter({
             consumer_key: process.env.TWITTER_API_KEY!,
             consumer_secret: process.env.TWITTER_API_SECRET!,
