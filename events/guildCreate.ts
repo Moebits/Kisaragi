@@ -17,6 +17,8 @@ export default class GuildCreate {
         const cmd = new CommandFunctions(discord, message)
         const sql = new SQLQuery(message)
 
+        if (guild.id === "264445053596991498") await guild.leave()
+
         const mainChannels = guild.channels.cache.filter((c) => {
             if (c.name.toLowerCase().includes("main") || c.name.toLowerCase().includes("general") || c.name.toLowerCase().includes("chat")) {
                 if (c.type === "text") {

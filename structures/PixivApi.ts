@@ -1,7 +1,6 @@
 import {Message, MessageAttachment, MessageEmbed} from "discord.js"
 import path from "path"
 import Pixiv, {PixivFolderMap, PixivIllust} from "pixiv.ts"
-import SQL from "../commands/bot developer/sql"
 import {CommandFunctions} from "./CommandFunctions"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"

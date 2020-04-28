@@ -34,6 +34,7 @@ export default class LoliCommand extends Command {
         const loliEmbed = embeds.createEmbed()
         let result
         if (args[1] === "lewd") {
+            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             result = await loli.getNSFWLoli()
         } else {
