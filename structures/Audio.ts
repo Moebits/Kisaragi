@@ -1505,7 +1505,7 @@ export class Audio {
                 const rep = await this.message.channel.send(`<@${user.id}>, Enter the cutoff frequency and filter width (in Hz).`)
                 await this.embeds.createPrompt(getParams)
                 rep.delete()
-                const settings = this.getSettings as any
+                const settings = this.getSettings() as any
                 const queue = this.getQueue() as any
                 settings.filters.push(pass[i])
                 const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a ${pass[i]} filter, please wait...`)
@@ -1541,7 +1541,7 @@ export class Audio {
                 const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency, and the filter width (in Hz).`)
                 await this.embeds.createPrompt(getParams)
                 rep.delete()
-                const settings = this.getSettings as any
+                const settings = this.getSettings() as any
                 const queue = this.getQueue() as any
                 settings.filters.push(shelf[i])
                 const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a ${shelf[i]} filter, please wait...`)
@@ -1576,7 +1576,7 @@ export class Audio {
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency (in Hz), and the resonance (Q Factor).`)
             await this.embeds.createPrompt(getParams)
             rep.delete()
-            const settings = this.getSettings as any
+            const settings = this.getSettings() as any
             const queue = this.getQueue() as any
             settings.filters.push("peak")
             const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a peak filter, please wait...`)
