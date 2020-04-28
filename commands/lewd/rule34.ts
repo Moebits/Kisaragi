@@ -78,7 +78,6 @@ export default class Rule34 extends Command {
             // @ts-ignore
             images = rawImages.map((i) => i.data)
         }
-        console.log(images)
         const rule34Array: MessageEmbed[] = []
         for (let i = 0; i < images.length; i++) {
             const img = images[i]

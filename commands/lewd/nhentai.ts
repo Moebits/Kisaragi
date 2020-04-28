@@ -28,7 +28,7 @@ export default class $nHentai extends Command {
             aliases: ["nh"],
             random: "none",
             cooldown: 15,
-            unlist: true
+            nsfw: true
         })
     }
 

@@ -26,11 +26,6 @@ export default class Random extends Command {
 
     public specificCommand = async (name: string) => {
         const args: string[] = [name]
-        switch (name) {
-            case "azurlane":
-                break
-            default:
-        }
         await cmd.runCommand(this.message, args)
     }
 
@@ -68,6 +63,8 @@ export default class Random extends Command {
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
                 const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message) as Command
                 if (!cmdClass.options.random || cmdClass.options.random === "ignore") continue
+                if (cmdClass.options.unlist) continue
+                if (discord.checkMuted(message)) if (cmdClass.options.nsfw) continue
                 pathArray.push(`${subDir[i]}/${commands[j]}`)
                 commandArray.push(commands[j])
             }

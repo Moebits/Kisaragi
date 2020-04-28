@@ -4,6 +4,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 export default class AzurLane extends Command {
     private readonly defaults = [
@@ -61,6 +62,8 @@ export default class AzurLane extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         let query = Functions.combineArgs(args, 1).trim().replace(/ +/g, "_")
         if (!query) {
             query = this.defaults[Math.floor(Math.random()*this.defaults.length)].trim().replace(/ +/g, "_")

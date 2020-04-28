@@ -5,12 +5,6 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
-// \`kitsune ecchi\` - Gets a random ecchi image.
-// \`kitsune lewd\` - Gets a random nsfw image.
-
-// \`=>kitsune ecchi\`
-//  \`=>kitsune lewd\`
-
 export default class Kitsune extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -18,6 +12,8 @@ export default class Kitsune extends Command {
             help:
             `
             \`kitsune\` - Gets a random sfw image.
+            \`kitsune ecchi\` - Gets a random ecchi image.
+            \`kitsune lewd\` - Gets a random nsfw image.
             `,
             examples:
             `
@@ -26,7 +22,7 @@ export default class Kitsune extends Command {
             aliases: ["k", "foxgirl"],
             random: "none",
             cooldown: 10,
-            unlist: true
+            nsfw: true
         })
     }
 
@@ -40,12 +36,10 @@ export default class Kitsune extends Command {
         let image: NekoRequestResults
         let title: string
         if (args[1] === "lewd") {
-            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             image = await neko.nsfw.kitsune()
             title = "Lewd Kitsune"
         } else if (args[1] === "ecchi") {
-            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             image = await neko.nsfw.eroKitsune()
             title = "Ecchi Kitsune"

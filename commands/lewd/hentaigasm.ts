@@ -23,7 +23,7 @@ export default class Hentaigasm extends Command {
             `,
             aliases: [],
             cooldown: 20,
-            unlist: true
+            nsfw: true
         })
     }
 

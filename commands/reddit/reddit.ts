@@ -46,6 +46,7 @@ export default class Reddit extends Command {
             const post = await reddit.getSubmission(postIDS[i]).fetch() as snoowrap.Submission
             if (imagesOnly && post.selftext) continue
             if (post.over_18) {
+                if (discord.checkMuted(this.message)) return []
                 if (!this.perms.checkNSFW(true)) continue
             }
             const commentArray: string[] = []
@@ -106,6 +107,7 @@ export default class Reddit extends Command {
             this.user = args[1].match(/(?<=user\/)(.*?)(?=$|\/)/) ? args[1].match(/(?<=user\/)(.*?)(?=$|\/)/)?.[0] : null
             if (this.postID) {
                 const redditArray = await this.getSubmissions(reddit, [this.postID])
+                if (!redditArray[0]) return message.reply(`No search results found.`)
                 return message.channel.send(redditArray[0])
             }
         }
@@ -183,6 +185,7 @@ export default class Reddit extends Command {
         }
         if (!postIDS.join("")) return this.noResults()
         const redditArray = await this.getSubmissions(reddit, postIDS)
+        if (!redditArray[0]) return this.noResults()
         let msg: Message
         if (redditArray.length === 1) {
             msg = await message.channel.send(redditArray[0])

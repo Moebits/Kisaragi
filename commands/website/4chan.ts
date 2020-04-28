@@ -29,7 +29,8 @@ export default class $4chan extends Command {
             \`=>4chan images c cute\`
             `,
             aliases: ["4", "4ch"],
-            cooldown: 15
+            cooldown: 15,
+            nsfw: true
         })
     }
 

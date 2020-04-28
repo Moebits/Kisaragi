@@ -31,7 +31,8 @@ export default class Usage extends Command {
             guildOnly: true,
             aliases: ["activity"],
             random: "none",
-            cooldown: 5
+            cooldown: 5,
+            nsfw: true
         })
     }
 

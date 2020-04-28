@@ -27,7 +27,8 @@ export default class Wikipedia extends Command {
             `,
             aliases: ["w", "wiki"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

@@ -1,5 +1,6 @@
 import axios from "axios"
 import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, MessageAttachment, Role, TextChannel, User} from "discord.js"
+import * as muted from "../assets/json/muted.json"
 import {message} from "../test/login"
 import * as config from "./../config.json"
 import {Embeds} from "./Embeds"
@@ -173,17 +174,15 @@ export class Kisaragi extends Client {
 
     /** Mute auto responses/whitelist bot farm protection on bot list servers */
     public checkMuted = (message: Message) => {
-        const muted = [
-            "110373943822540800",
-            "264445053596991498",
-            "450100127256936458",
-            "446425626988249089",
-            "333949691962195969"
-        ]
-        if (!message.guild) return false
-        if (muted.includes(message.guild.id)) {
+        if (!message.guild) {
+            if (muted.users.includes(message.author.id)) return true
+            return false
+        }
+        if (muted.guilds.includes(message.guild.id)) {
             return true
         } else {
+            const found = message.guild.members.cache.find((m) => muted.users.includes(m.id))
+            if (found) return true
             return false
         }
     }

@@ -50,6 +50,7 @@ export default class Help extends Command {
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
                 const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
                 if (cmdClass.options.unlist === true) continue
+                if (discord.checkMuted(message)) if (cmdClass.options.nsfw === true) continue
                 help += `${discord.getEmoji("star")}\`${commands[j]}\`` + ` -> _${cmdClass.options.description}_\n`
             }
             const emojiMap: any = {

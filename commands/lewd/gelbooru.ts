@@ -7,8 +7,6 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
- // \`gelbooru r18\` - Get a random r18 image.
-// \`gelbooru r18 tag\` - Get an r18 image with the tag.
 export default class Gelbooru extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -19,6 +17,8 @@ export default class Gelbooru extends Command {
             \`gelbooru\` - Get a random image.
             \`gelbooru link/id\` - Gets the image from the link.
             \`gelbooru tag\` - Gets an image with the tag.
+            \`gelbooru r18\` - Get a random r18 image.
+            \`gelbooru r18 tag\` - Get an r18 image with the tag.
             `,
             examples:
             `
@@ -28,7 +28,7 @@ export default class Gelbooru extends Command {
             aliases: ["gel"],
             random: "none",
             cooldown: 20,
-            unlist: true
+            nsfw: true
         })
     }
 
@@ -38,8 +38,7 @@ export default class Gelbooru extends Command {
         const embeds = new Embeds(discord, message)
         const gelbooru = Booru("gelbooru", process.env.GELBOORU_API_KEY)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
-        if (!perms.checkNSFW()) return
+        if (discord.checkMuted(message)) if (!perms.checkBotDev()) return
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const gelbooruEmbed = embeds.createEmbed()
         .setAuthor("gelbooru", "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png")
@@ -49,7 +48,6 @@ export default class Gelbooru extends Command {
         if (!args[1]) {
             tags = ["pantyhose", "rating:safe"]
         } else if (args[1].toLowerCase() === "r18") {
-            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["pantyhose"]

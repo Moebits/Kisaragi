@@ -13,6 +13,7 @@ interface CommandOptions {
   botPermission: string
   random: "none" | "string" | "specific" | "ignore"
   unlist: boolean
+  nsfw: boolean
 }
 
 export class Command {
@@ -31,9 +32,10 @@ export class Command {
       permission = "SEND_MESSAGES",
       botPermission = "SEND_MESSAGES",
       random = "ignore" as "none" | "string" | "specific" | "ignore",
-      unlist = false
+      unlist = false,
+      nsfw = false
     }) {
-      this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, random, unlist}
+      this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, random, unlist, nsfw}
     }
 
   get help() {

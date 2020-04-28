@@ -5,11 +5,6 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
-// \`neko lewd\` - Posts a random nsfw neko image.
-// \`neko lewd gif\` - Posts a random nsfw neko gif.
-// \`=>neko lewd gif\`
-// \`=>neko lewd\`
-
 export default class Neko extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -18,6 +13,10 @@ export default class Neko extends Command {
             `
             \`neko\` - Posts a random neko image.
             \`neko gif\` - Posts a random neko gif.
+            \`neko lewd\` - Posts a random nsfw neko image.
+            \`neko lewd gif\` - Posts a random nsfw neko gif.
+            \`=>neko lewd gif\`
+            \`=>neko lewd\`
             `,
             examples:
             `
@@ -26,7 +25,7 @@ export default class Neko extends Command {
             aliases: ["catgirl"],
             random: "none",
             cooldown: 10,
-            unlist: true
+            nsfw: true
         })
     }
 
@@ -36,6 +35,7 @@ export default class Neko extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const neko = new nekoClient()
+        if (discord.checkMuted(message)) if (!perms.checkBotDev()) return
 
         let image: NekoRequestResults
         let title: string
@@ -43,7 +43,6 @@ export default class Neko extends Command {
             image = await neko.sfw.nekoGif()
             title = "Neko Gif"
         } else if (args[1] === "lewd") {
-            if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return
             if (args[2] === "gif") {
                 image = await neko.nsfw.nekoGif()
