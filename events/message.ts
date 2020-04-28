@@ -196,7 +196,7 @@ export default class MessageEvent {
             message.reply(`My prefix is set to "**${prefix}**"!\n`)
           }
         }
-        if (message.content.match(/https?:\/\//)) {
+        if (!message.content.trim().startsWith(prefix) && message.content.match(/https?:\/\//)) {
           await links.postLink()
           return
         }

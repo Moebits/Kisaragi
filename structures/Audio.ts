@@ -556,7 +556,7 @@ export class Audio {
 
     public time = () => {
         const dispatcher = this.message.guild?.voice?.connection?.dispatcher
-        const time = Math.floor(Number(dispatcher?.streamTime) / 1000)
+        const time = Math.floor(Number(dispatcher?.streamTime) / 1000.0)
         if (Number.isNaN(time)) return 0
         return time
     }
@@ -868,7 +868,7 @@ export class Audio {
                         }
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new speed. Add \`pitch\` to also change the pitch along with the speed.`)
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new speed, eg \`1.5x\`. Add \`pitch\` to also change the pitch along with the speed.`)
                     await this.embeds.createPrompt(getSpeedChange)
                     rep.delete()
                     const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the speed of the file..._`)

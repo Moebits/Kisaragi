@@ -53,7 +53,6 @@ export default class Play extends Command {
         }
 
         const loading = message.channel.lastMessage
-        if (loading) await loading?.delete()
 
         let queue = audio.getQueue() as any
         let setYT = false
@@ -117,6 +116,7 @@ export default class Play extends Command {
         await message.channel.send(queueEmbed)
         queue = audio.getQueue() as any
         if (setLoop) queue[0].looping = true
+        if (loading) await loading?.delete()
         if (queue.length === 1 && !queue[0].playing) {
             if (setReverse) {
                 await audio.reverse(audio.next())
