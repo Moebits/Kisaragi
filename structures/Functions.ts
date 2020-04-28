@@ -515,7 +515,7 @@ export class Functions {
     public static googleTranslate = async (text: string) => {
         const translate = require("@vitalets/google-translate-api")
         const result = await translate(text, {to: "en"})
-        return result as string
+        return result.text as string
     }
 
     /** Remove bad words, or checks a string for bad words. */
