@@ -67,16 +67,17 @@ export default class MessageEvent {
           if (globalChat && !message.content.startsWith(prefix) && !message.author.bot) {
             const globalChannel = message.guild.channels.cache.find((c) => c.id === globalChat)
             if (message.channel.id === globalChannel?.id) {
+              if (globalChatCool.has(message.author.id)) return message.reply(`**global chat** is under a 3 second cooldown! ${this.discord.getEmoji("kannaHungry")}`)
               if (message.content.length > 100) return message.reply(`There is a limit of 100 characters on the global chat ${this.discord.getEmoji("sagiriBleh")}`)
               if (message.content.includes("@")) return message.reply(`The **@** character is banned ${this.discord.getEmoji("kannaFU")}`)
-              if (globalChatCool.has(message.author.id)) return message.reply(`**global chat** is under a 3 second cooldown! ${this.discord.getEmoji("kannaHungry")}`)
+              const cleaned = message.content.replace(/@/g, `@\u200b`)
+              const translated = await Functions.googleTranslate(cleaned)
+              if (Functions.badWords(translated, true)) return message.reply(`You can't post messages containing profane/dirty words ${this.discord.getEmoji("sagiriBleh")}`)
               let globalChannels = await SQLQuery.selectColumn("special channels", "global chat")
               globalChannels = globalChannels.filter(Boolean)
               for (let i = 0; i < globalChannels.length; i++) {
                 if (globalChannels[i] === message.channel.id) continue
                 const sourceChan = message.channel as TextChannel
-                const cleaned = message.content.replace(/@/g, `@\u200b`)
-                const translated = await Functions.googleTranslate(cleaned)
                 const chan = this.discord.channels.cache.find((c) => c.id === globalChannels[i]) as TextChannel
                 chan.send(`\`#${sourceChan.name}\` ${message.author.tag} -> ${translated}`)
                 globalChatCool.add(message.author.id)

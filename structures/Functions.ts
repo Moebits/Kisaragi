@@ -517,4 +517,12 @@ export class Functions {
         const result = await translate(text, {to: "en"})
         return result as string
     }
+
+    /** Remove bad words, or checks a string for bad words. */
+    public static badWords = <T extends boolean | undefined = false>(text: string, checkOnly?: T): T extends true ? boolean : string => {
+        const Filter = require("bad-words")
+        const filter = new Filter()
+        if (checkOnly) return filter.isProfane(text)
+        return filter.clean(text)
+    }
 }
