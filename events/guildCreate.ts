@@ -51,8 +51,7 @@ export default class GuildCreate {
             }
 
             const bots = guild.members.cache.filter((m) => m.user.bot).size
-            const users = guild.members.cache.filter((m) => !m.user.bot).size
-            if (users > 5 && Math.floor(bots/guild.memberCount*1.0)*100 > 60) {
+            if (Math.floor(bots/guild.memberCount*1.0)*100 > 60) {
                 await guild.leave()
                 return
             }
