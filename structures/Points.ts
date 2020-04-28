@@ -21,7 +21,7 @@ export class Points {
             const curr = JSON.parse(roles[i])
             if (Number(user.level) >= Number(curr.level)) {
                 const role = this.message.guild?.roles.cache.get(curr.role)
-                if (!role) continue
+                if (!role || this.message.member?.roles.cache.has(role.id)) continue
                 try {
                     await this.message.member?.roles.add(role)
                 } catch {

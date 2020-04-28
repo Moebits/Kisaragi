@@ -19,15 +19,18 @@ export default class Warn extends Command {
             \`=>warn @user stop spamming\`
             `,
             aliases: [],
-            cooldown: 3,
-            unlist: true
+            cooldown: 10
         })
     }
 
-    public checkWarns = async (discord: Kisaragi, message: Message, embeds: Embeds, sql: SQLQuery, warnLog: any, userID: any, warnThreshold: string, warnPenalty: string, warnOneRole: any, warnTwoRole: any) => {
+    public checkWarns = async (warnLog: any, userID: any, warnThreshold: string, warnPenalty: string, warnOneRole: any, warnTwoRole: any) => {
+        const discord = this.discord
+        const message = this.message
+        const embeds = new Embeds(discord, message)
+        const sql = new SQLQuery(message)
         const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userID)
         if (!member) return
-        const warnReason = `Exceeded the threshold of ${warnThreshold[0]} warns.`
+        const warnReason = `Exceeded the threshold of ${warnThreshold} warns.`
         const dmEmbed = embeds.createEmbed()
         const guildEmbed = embeds.createEmbed()
         const dm = await member.createDM()
@@ -35,36 +38,28 @@ export default class Warn extends Command {
             if (warnLog[i].user === userID) {
                 if (warnLog[i].warns.length >= 1) {
                     if (warnOneRole) {
-                        if (!member!.roles.cache.has(warnOneRole.id)) {
-                            await member!.roles.add(warnOneRole)
-                            message.channel.send(
-                                `<@${userID}>, you were given the ${warnOneRole} role because you have one warn.`
-                            )
+                        if (!member.roles.cache.has(warnOneRole.id)) {
+                            await member.roles.add(warnOneRole)
+                            await message.channel.send(`<@${userID}>, you were given the ${warnOneRole} role because you have one warn.`)
                         }
                     }
                 }
                 if (warnLog[i].warns.length >= 2) {
                     if (warnTwoRole) {
-                        if (!member!.roles.cache.has(warnTwoRole.id)) {
-                            await member!.roles.add(warnTwoRole)
-                            message.channel.send(
-                                `<@${userID}>, you were given the ${warnTwoRole} role because you have two warns.`
-                            )
+                        if (!member.roles.cache.has(warnTwoRole.id)) {
+                            await member.roles.add(warnTwoRole)
+                            await message.channel.send(`<@${userID}>, you were given the ${warnTwoRole} role because you have two warns.`)
                         }
                     }
                 }
                 if (warnLog[i].warns.length >= Number(warnThreshold)) {
-                    switch (warnPenalty[0].toLowerCase().trim()) {
+                    switch (warnPenalty.toLowerCase().trim()) {
                         case "ban":
                             dmEmbed
                             .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
                             .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were banned from ${message.guild!.name} for reason:_ **${warnReason}**`)
-                            try {
-                                await dm.send(dmEmbed).catch(() => null)
-                            } catch (err) {
-                                console.log(err)
-                            }
+                            await dm.send(dmEmbed).catch(() => null)
                             guildEmbed
                             .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
                             .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
@@ -77,11 +72,7 @@ export default class Warn extends Command {
                             .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
                             .setTitle(`**You Were Kicked** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were kicked from ${message.guild!.name} for reason:_ **${warnReason}**`)
-                            try {
-                                await dm.send(dmEmbed).catch(() => null)
-                            } catch (err) {
-                                console.log(err)
-                            }
+                            await dm.send(dmEmbed).catch(() => null)
                             guildEmbed
                             .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
                             .setTitle(`**Member Kicked** ${discord.getEmoji("kannaFU")}`)
@@ -100,11 +91,7 @@ export default class Warn extends Command {
                             .setAuthor("mute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
                             .setTitle(`**You Were Muted** ${discord.getEmoji("sagiriBleh")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were muted from ${message.guild!.name} for reason:_ **${warnReason}**`)
-                            try {
-                                await dm.send(dmEmbed).catch(() => null)
-                            } catch (err) {
-                                console.log(err)
-                            }
+                            await dm.send(dmEmbed).catch(() => null)
                             guildEmbed
                             .setAuthor("mute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
                             .setTitle(`**Member Muted** ${discord.getEmoji("sagiriBleh")}`)
@@ -130,12 +117,11 @@ export default class Warn extends Command {
         const warnOne = await sql.fetchColumn("special roles", "warn one")
         const warnTwo = await sql.fetchColumn("special roles", "warn two")
         let warnLog = await sql.fetchColumn("warns", "warn log") as any
-        let setInit = false
-        if (!warnLog) warnLog = [""]; setInit = true
+        if (!warnLog) warnLog = []
 
         let warnOneRole, warnTwoRole
-        if (warnOne) warnOneRole = message.guild!.roles.cache.find((r: Role) => r.id === warnOne[0])
-        if (warnTwo) warnTwoRole = message.guild!.roles.cache.find((r: Role) => r.id === warnTwo[0])
+        if (warnOne) warnOneRole = message.guild!.roles.cache.find((r: Role) => r.id === warnOne)
+        if (warnTwo) warnTwoRole = message.guild!.roles.cache.find((r: Role) => r.id === warnTwo)
 
         const reasonArray: string[] = []
         const userArray: string[] = []
@@ -154,7 +140,7 @@ export default class Warn extends Command {
             for (let j = 0; j < warnLog.length; j++) {
                 if (!warnLog[j]) break
                 warnLog[j] = JSON.parse(warnLog[j])
-                if (userArray[i] === warnLog[j].user ? warnLog[j].user.toString() : null) {
+                if (userArray[i] === warnLog[j].user) {
                     warnLog[j].warns.push(reason)
                     found = true
                 }
@@ -162,10 +148,9 @@ export default class Warn extends Command {
             if (!found) {
                 warnLog.push({user: `${userArray[i]}`, warns: [`${reason}`]})
             }
-            await this.checkWarns(discord, message, embeds, sql, warnLog, userArray[i], warnThreshold, warnPenalty, warnOneRole, warnTwoRole)
+            await this.checkWarns(warnLog, userArray[i], warnThreshold, warnPenalty, warnOneRole, warnTwoRole)
         }
 
-        if (setInit) warnLog = warnLog.filter(Boolean)
         await sql.updateColumn("warns", "warn log", warnLog)
 
         let users = ""
