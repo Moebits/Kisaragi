@@ -1,4 +1,5 @@
 import {Guild, GuildAuditLogsEntry, GuildMember, Message, Role, TextChannel, User} from "discord.js"
+import ascii from "fold-to-ascii"
 import {Embeds} from "./../structures/Embeds"
 import {Functions} from "./../structures/Functions"
 import {Kisaragi} from "./../structures/Kisaragi"
@@ -100,7 +101,7 @@ export default class GuildMemberUpdate {
             const toggle = await sql.fetchColumn("blocks", "ascii name toggle")
             if (!toggle || toggle === "off") return
             if (member.displayName.match(/[^\x00-\x7F]/g)) {
-                let newName = member.displayName.replace(/[^\x00-\x7F]/g, "").trim()
+                let newName = ascii.foldReplacing(member.displayName).trim()
                 if (!newName) newName = "User"
                 await member.setNickname(newName, "Non-ascii characters in name").catch(() => null)
             }

@@ -4,22 +4,21 @@ import * as config from "./../../config.json"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Donate extends Command {
+export default class Review extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Posts my patreon and ko-fi links.",
+          description: "Write a review of my bot.",
           help:
           `
-          \`donate\` - Posts donation links
+          \`review\` - Write a review
           `,
           examples:
           `
-          \`=>donate\`
+          \`=>review\`
           `,
           aliases: [],
           random: "none",
-          cooldown: 5,
-          unlist: true
+          cooldown: 5
         })
     }
 
@@ -28,13 +27,11 @@ export default class Donate extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
 
-        const donateEmbed = embeds.createEmbed()
-        .setTitle(`**Donation Links** ${discord.getEmoji("kannaBear")}`)
+        const reviewEmbed = embeds.createEmbed()
+        .setTitle(`**Review** ${discord.getEmoji("raphi")}`)
         .setDescription(
-            `Here are my donation links if you want to support me!\n` +
-            `[**Patreon**](${config.patreon})\n` +
-            `[**Ko-fi**](${config.kofi})`
+            `You can leave a review of my bot [**here**](https://bots.ondiscord.xyz/bots/593838271650332672/review).\n`
         )
-        return message.channel.send(donateEmbed)
+        return message.channel.send(reviewEmbed)
     }
 }

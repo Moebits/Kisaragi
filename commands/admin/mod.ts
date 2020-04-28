@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import Ascii from "fold-to-ascii"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -152,7 +153,7 @@ export default class Mod extends Command {
                     const members = message.guild!.members.cache.map((m) => m)
                     for (let i = 0; i < members.length; i++) {
                         if (members[i].displayName.match(/[^\x00-\x7F]/g)) {
-                            let newName = members[i].displayName.replace(/[^\x00-\x7F]/g, "").trim()
+                            let newName = Ascii.foldReplacing(members[i].displayName).trim()
                             if (!newName) newName = "User"
                             await members[i].setNickname(newName, "Non-ascii characters in name").catch(() => null)
                         }
