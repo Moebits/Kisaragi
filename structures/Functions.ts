@@ -510,4 +510,11 @@ export class Functions {
         }
         return obj
     }
+
+    /** Translate text to english */
+    public static googleTranslate = async (text: string) => {
+        const translate = require("@vitalets/google-translate-api")
+        const result = await translate(text, {to: "en"})
+        return result as string
+    }
 }

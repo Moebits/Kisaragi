@@ -9,6 +9,7 @@ import {Kisaragi} from "../structures/Kisaragi.js"
 import {Block} from "./../structures/Block"
 import {Detector} from "./../structures/Detector"
 import {Embeds} from "./../structures/Embeds"
+import {Functions} from "./../structures/Functions"
 import {Generate} from "./../structures/Generate"
 import {Haiku} from "./../structures/Haiku"
 import {Letters} from "./../structures/Letters"
@@ -75,8 +76,9 @@ export default class MessageEvent {
                 if (globalChannels[i] === message.channel.id) continue
                 const sourceChan = message.channel as TextChannel
                 const cleaned = message.content.replace(/@/g, `@\u200b`)
+                const translated = await Functions.googleTranslate(cleaned)
                 const chan = this.discord.channels.cache.find((c) => c.id === globalChannels[i]) as TextChannel
-                chan.send(`\`#${sourceChan.name}\` ${message.author.tag} -> ${cleaned}`)
+                chan.send(`\`#${sourceChan.name}\` ${message.author.tag} -> ${translated}`)
                 globalChatCool.add(message.author.id)
                 setTimeout(() => {
                   globalChatCool.delete(message.author.id)
