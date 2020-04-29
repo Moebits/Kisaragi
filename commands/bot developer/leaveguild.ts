@@ -21,22 +21,25 @@ export default class LeaveGuild extends Command {
         const perms = new Permission(discord, message)
         if (!perms.checkBotDev()) return
 
-        const guildID = args[1]
+        let guildID: string
+        let silent = false
+        if (args[1] === "silent") {
+            guildID = args[2]
+            silent = true
+        } else {
+            guildID = args[1]
+        }
         const reason = Functions.combineArgs(args, 2)
         const guild = discord.guilds.cache.find((g: Guild) => g.id.toString() === guildID) as Guild
         const name = guild.name
 
-        const msg = await discord.fetchFirstMessage(guild)
-        await (msg?.channel as TextChannel).send(`I am leaving this guild at the request of the bot developer. Message sent: **${reason ? reason : "None provided!"}**`)
-
-        try {
-            guild.leave()
-        } catch (err) {
-            console.log(err)
-        } finally {
-            await SQLQuery.deleteGuild(guildID)
+        if (!silent) {
+            const msg = await discord.fetchFirstMessage(guild)
+            await (msg?.channel as TextChannel).send(`I am leaving this guild. Message from bot developer: **${reason ? reason : "None provided!"}**`)
         }
 
-        message.channel.send(`Left the guild **${name}**!`)
+        await guild.leave()
+        await SQLQuery.deleteGuild(guildID)
+        await message.channel.send(`Left the guild **${name}**!`)
     }
 }
