@@ -632,6 +632,7 @@ export class Audio {
             queues.set(this.message.guild?.id, queue)
         } else {
             queues.set(this.message.guild?.id, [])
+            musicSettings.set(this.message.guild?.id, null)
         }
     }
 

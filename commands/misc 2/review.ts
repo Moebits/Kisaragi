@@ -30,7 +30,7 @@ export default class Review extends Command {
         const reviewEmbed = embeds.createEmbed()
         .setTitle(`**Review** ${discord.getEmoji("raphi")}`)
         .setDescription(
-            `You can leave a review of my bot [**here**](https://bots.ondiscord.xyz/bots/593838271650332672/review).\n`
+            `You can leave a review of my bot [**here**](${config.review}).\n`
         )
         return message.channel.send(reviewEmbed)
     }

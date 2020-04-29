@@ -1,6 +1,7 @@
 import {Collection, Emoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, User} from "discord.js"
 import fs from "fs"
 import path from "path"
+import {CommandFunctions} from "./CommandFunctions"
 import {Functions} from "./Functions"
 import {Images} from "./Images"
 import {Kisaragi} from "./Kisaragi.js"
@@ -55,13 +56,22 @@ export class Embeds {
     }
 
     /** Create Reaction Embed */
-    public createReactionEmbed = async (embeds: MessageEmbed[], collapseOn?: boolean, download?: boolean, startPage?: number) => {
+    public createReactionEmbed = async (embeds: MessageEmbed[], collapseOn?: boolean, download?: boolean, startPage?: number, dm?: User) => {
         let page = 0
-        if (startPage) page = startPage
+        if (startPage) page = startPage - 1
         const insertEmbeds = embeds
         await this.updateEmbed(embeds, page, this.message.author!)
         const reactions: Emoji[] = [this.discord.getEmoji("right"), this.discord.getEmoji("left"), this.discord.getEmoji("tripleRight"), this.discord.getEmoji("tripleLeft")]
-        const msg = await this.message.channel.send(embeds[page])
+        let msg: Message
+        if (dm) {
+            try {
+                msg = await dm.send(embeds[page])
+            } catch {
+                return this.message
+            }
+        } else {
+            msg = await this.message.channel.send(embeds[page])
+        }
         for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
 
         if (collapseOn) {
@@ -135,7 +145,7 @@ export class Embeds {
                 Functions.removeDirectory(src)
             })
         }
-        await msg.react(this.discord.getEmoji("numberSelect"))
+        if (!dm) await msg.react(this.discord.getEmoji("numberSelect"))
         if (download) await msg.react(this.discord.getEmoji("download"))
         const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
@@ -206,13 +216,13 @@ export class Embeds {
             async function getPageNumber(response: Message) {
                 if (Number.isNaN(Number(response.content)) || Number(response.content) > embeds.length) {
                     const rep = await response.reply("That page number is invalid.")
-                    await rep.delete({timeout: 2000})
+                    await rep.delete({timeout: 2000}).catch(() => null)
                 } else {
                     page = Number(response.content) - 1
                     const embed = await self.updateEmbed(embeds, page, user, msg)
                     msg.edit(embed)
                 }
-                await response.delete()
+                await response.delete().catch(() => null)
             }
             const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
             await reaction.users.remove(user).catch(() => null)
@@ -502,6 +512,7 @@ export class Embeds {
         const webThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteThree") && user.bot === false
         const leftCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowLeft") && user.bot === false
         const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowRight") && user.bot === false
+        const dmCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("dm") && user.bot === false
 
         const admin = msg.createReactionCollector(adminCheck)
         const anime = msg.createReactionCollector(animeCheck)
@@ -530,6 +541,7 @@ export class Embeds {
         const webThree = msg.createReactionCollector(webThreeCheck)
         const left = msg.createReactionCollector(leftCheck)
         const right = msg.createReactionCollector(rightCheck)
+        const dm = msg.createReactionCollector(dmCheck)
 
         const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, twitter, video, waifu, web, webTwo, webThree]
 
@@ -568,6 +580,7 @@ export class Embeds {
             await msg.reactions.removeAll()
             pageIndex++
             for (let i = 0; i < pages[pageIndex].length; i++) await msg.react(pages[pageIndex][i])
+            if (pageIndex === pages.length -1) await msg.react(this.discord.getEmoji("dm"))
         })
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -575,6 +588,17 @@ export class Embeds {
             await msg.reactions.removeAll()
             pageIndex--
             for (let i = 0; i < pages[pageIndex].length; i++) await msg.react(pages[pageIndex][i])
+        })
+
+        const dmSet = new Set()
+        dm.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
+            if (dmSet.has(user.id)) return
+            const msg = this.message
+            msg.author = user
+            const cmd = new CommandFunctions(this.discord, msg)
+            await cmd.runCommand(msg, ["help", "dm", "delete"])
+            dmSet.add(user.id)
         })
     }
 
@@ -670,6 +694,7 @@ export class Embeds {
         const webThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteThree") && user.bot === false
         const leftCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowLeft") && user.bot === false
         const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowRight") && user.bot === false
+        const dmCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("dm") && user.bot === false
 
         const admin = msg.createReactionCollector(adminCheck)
         const anime = msg.createReactionCollector(animeCheck)
@@ -698,6 +723,7 @@ export class Embeds {
         const webThree = msg.createReactionCollector(webThreeCheck)
         const left = msg.createReactionCollector(leftCheck)
         const right = msg.createReactionCollector(rightCheck)
+        const dm = msg.createReactionCollector(dmCheck)
 
         const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, twitter, video, waifu, web, webTwo, webThree]
 
@@ -736,6 +762,7 @@ export class Embeds {
             await msg.reactions.removeAll()
             pageIndex++
             for (let i = 0; i < pages[pageIndex].length; i++) await msg.react(pages[pageIndex][i])
+            if (pageIndex === pages.length - 1) await msg.react(this.discord.getEmoji("dm"))
         })
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -743,6 +770,17 @@ export class Embeds {
             await msg.reactions.removeAll()
             pageIndex--
             for (let i = 0; i < pages[pageIndex].length; i++) await msg.react(pages[pageIndex][i])
+        })
+
+        const dmSet = new Set()
+        dm.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
+            if (dmSet.has(user.id)) return
+            const msg = this.message
+            msg.author = user
+            const cmd = new CommandFunctions(this.discord, msg)
+            await cmd.runCommand(msg, ["help", "dm", "delete"])
+            dmSet.add(user.id)
         })
     }
 

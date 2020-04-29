@@ -82,7 +82,7 @@ export default class Embed extends Command {
             `${discord.getEmoji("cancel")} - Quits the embed creator\n`
         )
 
-        const reactions = ["info", "title", "description", "image", "thumbnail", "author", "authorImage", "footer", "footerImage", "color", "url", "json", "done", "cancel"]
+        const reactions = ["info", "title", "description", "image", "thumbnail", "author", "authorImage", "footer", "footerImage", "color", "url", "json", "done", "xcancel"]
 
         const msg = await message.channel.send(infoEmbed)
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
@@ -100,7 +100,7 @@ export default class Embed extends Command {
         const urlCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("url") && user.bot === false
         const jsonCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("json") && user.bot === false
         const doneCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("done") && user.bot === false
-        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("cancel") && user.bot === false
+        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("xcancel") && user.bot === false
         const info = msg.createReactionCollector(infoCheck)
         const title = msg.createReactionCollector(titleCheck)
         const description = msg.createReactionCollector(descriptionCheck)
