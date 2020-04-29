@@ -86,8 +86,8 @@ export default class JSONCommand extends Command {
         }
 
         if (!json || json === "null" || json === "undefined") return message.reply(`No JSON found, the ID is invalid ${discord.getEmoji("kannaFacepalm")}`)
-
-        const link = await images.hastebinUpload(JSON.stringify(json, null, 4).replace(/(?<!: )(")(?!,| |$)/g, "")).catch(() => {
+        // .replace(/(?<!: )(")(?!,| |$)/g, "")
+        const link = await images.hastebinUpload(JSON.stringify(json, null, 4)).catch(() => {
             return message.reply(`Something went wrong ${discord.getEmoji("kannaFacepalm")}`)
         }) as string
 
