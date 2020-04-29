@@ -9,6 +9,7 @@ export default class GuildDelete {
     constructor(private readonly discord: Kisaragi) {}
 
     public run = async (guild: Guild) => {
+        if (!guild.available) return
         const discord = this.discord
         const message = await this.discord.fetchFirstMessage(guild) as Message
         const star = discord.getEmoji("star")
