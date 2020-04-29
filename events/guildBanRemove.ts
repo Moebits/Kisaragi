@@ -9,8 +9,9 @@ export default class GuildBanRemove {
     public run = async (guild: Guild, user: User) => {
         const discord = this.discord
         const message = await discord.fetchFirstMessage(guild)
-        const sql = new SQLQuery(message!)
-        const embeds = new Embeds(discord, message!)
+        if (!message) return
+        const sql = new SQLQuery(message)
+        const embeds = new Embeds(discord, message)
 
         const logUnban = async (guild: Guild, user: User) => {
             const modLog = await sql.fetchColumn("logs", "mod log")

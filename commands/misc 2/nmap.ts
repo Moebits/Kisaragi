@@ -46,6 +46,7 @@ export default class Nmap extends Command {
                 resolve()
             })
             quickscan.on("error", (err: Error) => {
+                console.log(err)
                 return this.invalidQuery(embeds.createEmbed()
                 .setAuthor("nmap", "https://miro.medium.com/max/450/1*e0PvOyJqlUEGd8h3WHWEnA.jpeg", "https://nmap.org/")
                 .setTitle(`**Nmap Scan** ${discord.getEmoji("kannaSpook")}`))

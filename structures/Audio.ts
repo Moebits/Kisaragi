@@ -888,7 +888,7 @@ export class Audio {
                     return
                 } else if (reaction.emoji.name === "skip") {
                     await reaction.users.remove(user)
-                    const rep = await this.message.channel.send(`<@${user.id}>, Skipped this track!`)
+                    const rep = await this.message.channel.send(`<@${user.id}>, Skipping this track! **If you added effects, be patient because they need to be re-applied.**`)
                     rep.delete({timeout: 3000})
                     await this.skip()
                     this.setProcBlock(true)
@@ -921,7 +921,7 @@ export class Audio {
                         position = response.content
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new song position, eg. \`1:00\`.`)
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new song position, eg. \`1:00\`. You can also fastforward or rewind, eg. \`+10\` and \`-10\`.`)
                     await this.embeds.createPrompt(getPositionChange)
                     rep.delete()
                     await this.scrub(position)
@@ -1147,6 +1147,7 @@ export class Audio {
                     if (nowPlaying) await this.message.channel.send(nowPlaying)
                 } else {
                     connection.channel.leave()
+                    this.deleteQueue()
                     return this.message.channel.send(`There are no more songs left in the queue, left the voice channel.`)
                 }
             }
@@ -1187,6 +1188,13 @@ export class Audio {
     }
 
     public scrub = (position: string) => {
+        if (position.startsWith("+")) {
+            position = position.replace("+", "")
+            return this.fastforward(position)
+        } else if (position.startsWith("-")) {
+            position = position.replace("-", "")
+            return this.rewind(position)
+        }
         const connection = this.message.guild?.voice?.connection
         if (!connection) return
         const seconds = this.parseSeconds(position)
