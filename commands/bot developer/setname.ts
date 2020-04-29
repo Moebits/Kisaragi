@@ -5,19 +5,19 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class SetAvatar extends Command {
+export default class SetName extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Changes the bot's avatar.",
+            description: "Changes the bot's username.",
             help:
             `
-            \`setavatar url?\` - Sets the avatar.
+            \`setname name\` - Sets the username.
             `,
             examples:
             `
-            \`=>setavatar\`
+            \`=>setname kisaragi\`
             `,
-            aliases: ["setav"],
+            aliases: ["setusername"],
             cooldown: 5
         })
     }
@@ -29,16 +29,11 @@ export default class SetAvatar extends Command {
         const embeds = new Embeds(discord, message)
         if (!perms.checkBotDev()) return
 
-        let image: string | undefined
-        if (!args[1]) {
-            image = await discord.fetchLastAttachment(message)
-        } else {
-            image = args[1]
-        }
+        const username = Functions.combineArgs(args, 1).trim()
 
-        if (!image) return message.reply("No avatar found!")
-        await discord.user!.setAvatar(image)
+        if (!username) return message.reply("No username specified!")
+        await discord.user!.setUsername(username)
 
-        return message.reply(`Avatar successfully set! ${discord.getEmoji("aquaUp")}`)
+        return message.reply(`Username changed! ${discord.getEmoji("aquaUp")}`)
     }
 }

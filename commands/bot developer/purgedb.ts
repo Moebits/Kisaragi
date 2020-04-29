@@ -10,7 +10,8 @@ export default class Order extends Command {
         super(discord, message, {
             description: "Deletes all data from the database.",
             aliases: ["resetdb"],
-            cooldown: 3
+            cooldown: 3,
+            unlist: true
         })
     }
 
@@ -23,8 +24,8 @@ export default class Order extends Command {
         if (!perms.checkBotDev()) return
         const purgeEmbed = embeds.createEmbed()
 
-        await SQLQuery.purgeDB()
-        await SQLQuery.initGuild(message)
+        // await SQLQuery.purgeDB()
+        // await SQLQuery.initGuild(message)
         purgeEmbed
         .setTitle(`**Purge** ${discord.getEmoji("gabStare")}`)
         .setDescription("**Purged the database**!")
