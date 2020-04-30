@@ -79,7 +79,7 @@ export default class Embed extends Command {
             `${discord.getEmoji("url")} - Sets the url of the embed\n` +
             `${discord.getEmoji("json")} - Creates an embed from JSON data\n` +
             `${discord.getEmoji("done")} - Sends the embed\n` +
-            `${discord.getEmoji("cancel")} - Quits the embed creator\n`
+            `${discord.getEmoji("xcancel")} - Quits the embed creator\n`
         )
 
         const reactions = ["info", "title", "description", "image", "thumbnail", "author", "authorImage", "footer", "footerImage", "color", "timestamp", "url", "json", "done", "xcancel"]
