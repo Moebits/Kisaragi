@@ -82,7 +82,7 @@ export default class Embed extends Command {
             `${discord.getEmoji("cancel")} - Quits the embed creator\n`
         )
 
-        const reactions = ["info", "title", "description", "image", "thumbnail", "author", "authorImage", "footer", "footerImage", "color", "url", "json", "done", "xcancel"]
+        const reactions = ["info", "title", "description", "image", "thumbnail", "author", "authorImage", "footer", "footerImage", "color", "timestamp", "url", "json", "done", "xcancel"]
 
         const msg = await message.channel.send(infoEmbed)
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
@@ -97,6 +97,7 @@ export default class Embed extends Command {
         const footerCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("footer") && user.bot === false
         const footerImageCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("footerImage") && user.bot === false
         const colorCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("color") && user.bot === false
+        const timestampCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("timestamp") && user.bot === false
         const urlCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("url") && user.bot === false
         const jsonCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("json") && user.bot === false
         const doneCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("done") && user.bot === false
@@ -111,6 +112,7 @@ export default class Embed extends Command {
         const footer = msg.createReactionCollector(footerCheck)
         const footerImage = msg.createReactionCollector(footerImageCheck)
         const color = msg.createReactionCollector(colorCheck)
+        const timestamp = msg.createReactionCollector(timestampCheck)
         const json = msg.createReactionCollector(jsonCheck)
         const url = msg.createReactionCollector(urlCheck)
         const done = msg.createReactionCollector(doneCheck)
@@ -322,6 +324,23 @@ export default class Embed extends Command {
             await embeds.createPrompt(getContent, true)
             rep.delete()
             embed.setColor(content.toUpperCase())
+            msg.edit(embed)
+            onInfo = false
+            this.setProcBlock(true)
+        })
+
+        timestamp.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user).catch(() => null)
+            if (this.getProcBlock()) {
+                const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
+                return proc.delete({timeout: 3000})
+            }
+            this.setProcBlock()
+            const rep = await this.message.channel.send(`<@${user.id}>, Set the timestamp of this embed (type \`now\` for the time now).`)
+            await embeds.createPrompt(getContent, true)
+            rep.delete()
+            const date = content === "now" ? Date.now() : new Date(content)
+            embed.setTimestamp(date)
             msg.edit(embed)
             onInfo = false
             this.setProcBlock(true)

@@ -52,6 +52,8 @@ export default class Unmute extends Command {
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
             if (!members) continue
             await member.roles.remove(mute)
+            const data = {type: "unmute", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
+            discord.emit("caseUpdate", data)
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             muteEmbed

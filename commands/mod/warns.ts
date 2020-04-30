@@ -31,12 +31,29 @@ export default class Warns extends Command {
         })
     }
 
+    public deleteCase = async (hash: string) => {
+        const sql = new SQLQuery(this.message)
+        let cases = await sql.fetchColumn("warns", "cases")
+        if (!cases) return
+        cases = cases.map((c: any) => JSON.parse(c))
+        cases = cases.filter((c: any) => c.type === "warn")
+        for (let i = 0; i < cases.length; i++) {
+            if (cases[i].hash === hash) {
+                cases[i] = ""
+                cases = cases.filter(Boolean)
+                break
+            }
+        }
+        await sql.updateColumn("warns", "cases", cases)
+    }
+
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
+        const self = this
         if (!await perms.checkMod()) return
         const loading = message.channel.lastMessage
         loading?.delete()
@@ -97,6 +114,11 @@ export default class Warns extends Command {
             let [setUser, setDelete, setPurge] = [false, false, false]
 
             if (msg.content.toLowerCase() === "destroy") {
+                for (let i = 0; i < warnLog.length; i++) {
+                    for (let j = 0; j < warnLog[i].warns.length; j++) {
+                        await self.deleteCase(warnLog[i].warns[j].hash)
+                    }
+                }
                 await sql.updateColumn("warns", "warn log", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All warns were destroyed!`)
@@ -146,6 +168,9 @@ export default class Warns extends Command {
                 let found = false
                 for (let i = 0; i < warnLog.length; i++) {
                     if (warnLog[i].user === member.id) {
+                        for (let j = 0; j < warnLog[i].warns.length; j++) {
+                            await self.deleteCase(warnLog[i].warns[j].hash)
+                        }
                         warnLog[i].warns = []
                         await sql.updateColumn("warns", "warn log", warnLog)
                         found = true
@@ -199,7 +224,8 @@ export default class Warns extends Command {
                 let found = false
                 for (let i = 0; i < warnLog.length; i++) {
                     if (warnLog[i].user === member.id) {
-                        if (warnLog[i].warns.length > num + 1) return msg.reply("Could not find that warning!")
+                        if (warnLog[i].warns.length < num + 1) return msg.reply("Could not find that warning!")
+                        await self.deleteCase(warnLog[i].warns[num].hash)
                         warnLog[i].warns[num] = ""
                         warnLog[i].warns = warnLog[i].warns.filter(Boolean)
                         await sql.updateColumn("warns", "warn log", warnLog)

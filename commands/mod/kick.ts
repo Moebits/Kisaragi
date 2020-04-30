@@ -58,6 +58,8 @@ export default class Kick extends Command {
             const dm = await member.createDM()
             try {
                 await member.kick(reason)
+                const data = {type: "kick", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
+                discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Kick Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }

@@ -32,7 +32,6 @@ export default class Remove extends Command {
         const message = this.message
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
-        embeds
         if (!await perms.checkAdmin()) return
         if (!args[1]) return message.reply(`You need to specify whether you are removing a **channel**, **role**, or **emoji** ${discord.getEmoji("kannaCurious")}`)
 

@@ -54,6 +54,8 @@ export default class Mute extends Command {
             if (!member) continue
             try {
                 await member.roles.add(mute)
+                const data = {type: "mute", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
+                discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
             }

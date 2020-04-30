@@ -56,6 +56,8 @@ export default class Unban extends Command {
             .setDescription(`${discord.getEmoji("star")}_You were unbanned from ${message.guild!.name} for reason:_ **${reason}**`)
             try {
                 await message.guild!.members.unban(user, reason)
+                const data = {type: "unban", user: user.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
+                discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }

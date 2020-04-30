@@ -58,6 +58,8 @@ export default class VCMute extends Command {
             const dm = await member.createDM()
             try {
                 await member.voice.setMute(true, reason)
+                const data = {type: "vcmute", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
+                discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Mute Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }

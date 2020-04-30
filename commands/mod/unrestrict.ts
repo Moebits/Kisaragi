@@ -52,6 +52,8 @@ export default class Unrestrict extends Command {
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i]) as GuildMember
             if (!member) continue
             await member.roles.remove(restrict)
+            const data = {type: "unrestrict", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
+            discord.emit("caseUpdate", data)
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             restrictEmbed

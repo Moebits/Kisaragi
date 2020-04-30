@@ -53,7 +53,8 @@ export default class TempMute extends Command {
             }
         }
         if (!timeArray[0]) return message.reply(`You must provide a time limit ${discord.getEmoji("kannaFacepalm")}`)
-        const seconds = Functions.parseCalenderSeconds(timeArray.join(" "))
+        const rawTime = timeArray.join(" ")
+        const seconds = Functions.parseCalenderSeconds(rawTime)
 
         const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
 
@@ -68,12 +69,15 @@ export default class TempMute extends Command {
             tempMuteEmbed
             .setAuthor("tempmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
             .setTitle(`**You Were Temp Muted** ${discord.getEmoji("sagiriBleh")}`)
-            .setDescription(`${discord.getEmoji("star")}_You were temp muted from **${message.guild!.name}** for **${timeArray.join(" ")}**, reason:_ **${reason}**`)
+            .setDescription(`${discord.getEmoji("star")}_You were temp muted from **${message.guild!.name}** for **${rawTime}**, reason:_ **${reason}**`)
             const dm = await member.createDM()
             const id = member.id
             try {
                 await member.roles.add(mute).catch(() => null)
+                const data = {type: "tempmute", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, time: rawTime, context: message.url}
+                discord.emit("caseUpdate", data)
                 let tempArr = await SQLQuery.redisGet(`${message.guild?.id}_tempmute`)
+                tempArr = JSON.parse(tempArr)
                 if (!tempArr) tempArr = [] as any
                 tempArr.push({member: id, time: seconds*1000, reason})
                 await SQLQuery.redisSet(`${message.guild?.id}_tempmute`, JSON.stringify(tempArr))
@@ -82,6 +86,7 @@ export default class TempMute extends Command {
                     newArr = JSON.parse(newArr)
                     if (!newArr) return
                     const index = newArr.findIndex((i: any) => i.member === id)
+                    if (index === -1) return
                     const curr = newArr[index]
                     const time = Number(curr.time)-60000
                     if (time <= 0) {
@@ -98,11 +103,13 @@ export default class TempMute extends Command {
                 setTimeout(async () => {
                     await member.roles.remove(mute).catch(() => null)
                     const index = tempArr.findIndex((i: any) => i.member === id)
+                    if (index === -1) return
                     tempArr[index] = null
                     tempArr = tempArr.filter(Boolean)?.[0] ?? null
                     await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, tempArr)
                 }, seconds*1000)
-            } catch {
+            } catch (e) {
+                console.log(e)
                 return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
             await dm.send(tempMuteEmbed).catch(() => null)
@@ -111,7 +118,7 @@ export default class TempMute extends Command {
         tempMuteEmbed
         .setAuthor("tempmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
         .setTitle(`**Member Temp Muted** ${discord.getEmoji("sagiriBleh")}`)
-        .setDescription(`${discord.getEmoji("star")}_Successfully temp muted ${members.join(", ")} for the duration **${timeArray.join(" ")}** for reason:_ **${reason}**`)
+        .setDescription(`${discord.getEmoji("star")}_Successfully temp muted ${members.join(", ")} for the duration **${rawTime}** for reason:_ **${reason}**`)
         message.channel.send(tempMuteEmbed)
         return
     }

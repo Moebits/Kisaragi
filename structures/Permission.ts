@@ -109,9 +109,8 @@ export class Permission {
     /** Continue temporary bans */
     public continueTempBans = async () => {
         let tempArr = await SQLQuery.redisGet(`${this.message.guild?.id}_tempban`)
+        tempArr = JSON.parse(tempArr)
         if (tempArr) {
-            tempArr = JSON.parse(tempArr)
-            if (!tempArr) return
             for (let i = 0; i < tempArr.length; i++) {
                 const current = tempArr[i]
                 setInterval(async () => {
@@ -119,6 +118,7 @@ export class Permission {
                     newArr = JSON.parse(newArr)
                     if (!newArr) return
                     const index = newArr.findIndex((i: any) => i.member === current.id)
+                    if (index === -1) return
                     const curr = newArr[index]
                     const time = Number(curr.time)-60000
                     if (time <= 0) {
@@ -147,9 +147,8 @@ export class Permission {
         const mute = await this.sql.fetchColumn("special roles", "mute role")
         if (!mute) return
         let tempArr = await SQLQuery.redisGet(`${this.message.guild?.id}_tempmute`)
+        tempArr = JSON.parse(tempArr)
         if (tempArr) {
-            tempArr = JSON.parse(tempArr)
-            if (!tempArr) return
             for (let i = 0; i < tempArr.length; i++) {
                 const current = tempArr[i]
                 setInterval(async () => {
@@ -157,6 +156,7 @@ export class Permission {
                     newArr = JSON.parse(newArr)
                     if (!newArr) return
                     const index = newArr.findIndex((i: any) => i.member === current.id)
+                    if (index === -1) return
                     const curr = newArr[index]
                     const time = Number(curr.time)-60000
                     if (time <= 0) {

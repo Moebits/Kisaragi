@@ -35,7 +35,7 @@ export class Embeds {
         const embed = new MessageEmbed()
         embed
         .setColor(color)
-        .setTimestamp(embed.timestamp!)
+        .setTimestamp(Date.now())
         .setFooter(`Responded in ${this.functions.responseTime()}`, this.message?.author?.displayAvatarURL({format: "png", dynamic: true}))
         return embed
     }

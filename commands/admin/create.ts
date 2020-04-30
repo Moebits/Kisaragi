@@ -32,7 +32,6 @@ export default class Create extends Command {
         const message = this.message
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
-        embeds
         if (!await perms.checkAdmin()) return
         if (!args[1]) return message.reply(`You need to specify whether you are creating a **channel**, **role**, or **emoji** ${discord.getEmoji("kannaCurious")}`)
 

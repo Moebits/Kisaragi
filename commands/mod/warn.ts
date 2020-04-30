@@ -139,7 +139,7 @@ export default class Warn extends Command {
 
         for (let i = 0; i < userArray.length; i++) {
             const hash = Functions.randomString(16)
-            const data = {type: "warn", reason, hash, user: userArray[i], date: Date.now(), executor: message.author.id, executorTag: message.author.tag, guild: message.guild?.id}
+            const data = {type: "warn", reason, hash, user: userArray[i], date: Date.now(), executor: message.author.id, executorTag: message.author.tag, guild: message.guild?.id, context: message.url}
             let found = false
             for (let j = 0; j < warnLog.length; j++) {
                 if (!warnLog[j]) break

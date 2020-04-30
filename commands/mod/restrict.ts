@@ -54,6 +54,8 @@ export default class Restrict extends Command {
             if (!member) continue
             try {
                 await member.roles.add(restrict)
+                const data = {type: "restrict", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
+                discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
             }

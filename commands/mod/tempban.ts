@@ -51,7 +51,8 @@ export default class TempBan extends Command {
             }
         }
         if (!timeArray[0]) return message.reply(`You must provide a time limit ${discord.getEmoji("kannaFacepalm")}`)
-        const seconds = Functions.parseCalenderSeconds(timeArray.join(" "))
+        const rawTime = timeArray.join(" ")
+        const seconds = Functions.parseCalenderSeconds(rawTime)
 
         const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
 
@@ -66,12 +67,15 @@ export default class TempBan extends Command {
             tempBanEmbed
             .setAuthor("tempban", "https://cdn.discordapp.com/emojis/579870079735562261.png")
             .setTitle(`**You Were Temp Banned** ${discord.getEmoji("kannaFU")}`)
-            .setDescription(`${discord.getEmoji("star")}_You were temp banned from **${message.guild!.name}** for **${timeArray.join(" ")}**, reason:_ **${reason}**`)
+            .setDescription(`${discord.getEmoji("star")}_You were temp banned from **${message.guild!.name}** for **${rawTime}**, reason:_ **${reason}**`)
             const dm = await user.createDM()
             const id = user.id
             try {
                 await message.guild?.members.ban(user, {reason, days: 7})
+                const data = {type: "tempban", user: user.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, time: rawTime, context: message.url}
+                discord.emit("caseUpdate", data)
                 let tempArr = await SQLQuery.redisGet(`${message.guild?.id}_tempban`)
+                tempArr = JSON.parse(tempArr)
                 if (!tempArr) tempArr = [] as any
                 tempArr.push({member: id, time: seconds*1000, reason})
                 await SQLQuery.redisSet(`${message.guild?.id}_tempban`, JSON.stringify(tempArr))
@@ -80,6 +84,7 @@ export default class TempBan extends Command {
                     newArr = JSON.parse(newArr)
                     if (!newArr) return
                     const index = newArr.findIndex((i: any) => i.member === id)
+                    if (index === -1) return
                     const curr = newArr[index]
                     const time = Number(curr.time)-60000
                     if (time <= 0) {
@@ -96,11 +101,13 @@ export default class TempBan extends Command {
                 setTimeout(async () => {
                     await message.guild?.members.unban(id, reason).catch(() => null)
                     const index = tempArr.findIndex((i: any) => i.member === id)
+                    if (index === -1) return
                     tempArr[index] = null
                     tempArr = tempArr.filter(Boolean)?.[0] ?? null
                     await SQLQuery.redisSet(`${this.message.guild?.id}_tempban`, tempArr)
                 }, seconds*1000)
-            } catch {
+            } catch (e) {
+                console.log(e)
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
             await dm.send(tempBanEmbed).catch(() => null)
@@ -109,7 +116,7 @@ export default class TempBan extends Command {
         tempBanEmbed
         .setAuthor("tempban", "https://cdn.discordapp.com/emojis/579870079735562261.png")
         .setTitle(`**Member Temp Banned** ${discord.getEmoji("kannaFU")}`)
-        .setDescription(`${discord.getEmoji("star")}_Successfully temp banned ${members.join(", ")} for the duration **${timeArray.join(" ")}** for reason:_ **${reason}**`)
+        .setDescription(`${discord.getEmoji("star")}_Successfully temp banned ${members.join(", ")} for the duration **${rawTime}** for reason:_ **${reason}**`)
         message.channel.send(tempBanEmbed)
         return
     }

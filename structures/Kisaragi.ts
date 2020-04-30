@@ -73,7 +73,7 @@ export class Kisaragi extends Client {
     // Fetch Message
     public fetchMessage = async (msg: Message, messageID: string) => {
         if (!messageID?.trim()) return undefined
-        const channels = msg.guild!.channels.cache.map((c: GuildChannel) => {if (c.type === "text") return c as TextChannel})
+        const channels = msg.guild!.channels.cache.map((c: GuildChannel) => {if (c.type === "text" && c.permissionsFor(this.user!)?.has("VIEW_CHANNEL")) return c as TextChannel})
         const msgArray: Message[] = []
         for (let i = 0; i < channels.length; i++) {
             const found = await channels[i]?.messages.fetch({limit: 1, around: messageID})?.then((m) => m.map((m) => m))
@@ -202,5 +202,15 @@ export class Kisaragi extends Client {
         for (let i = 0; i < urls.length; i++) {
             await axios.post(urls[i], data[i], {headers: headers[i]})
         }
+    }
+
+    /** Parses a message url */
+    public parseMessageURL = (url: string) => {
+        const matches = url.match(/\d{15,}/g)?.map((m) => m)
+        if (!matches) throw Error("did not provide a message link")
+        const guildID = matches[0]
+        const channelID = matches[1]
+        const messageID = matches[2]
+        return {guildID, channelID, messageID}
     }
 }

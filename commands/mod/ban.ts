@@ -58,6 +58,8 @@ export default class Ban extends Command {
             const dm = await user.createDM()
             try {
                 await message.guild?.members.ban(user, {reason, days: 7})
+                const data = {type: "ban", user: user.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
+                discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }

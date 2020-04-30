@@ -58,6 +58,8 @@ export default class Deafen extends Command {
             const dm = await member.createDM()
             try {
                 await member.voice.setDeaf(true, reason)
+                const data = {type: "deafen", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
+                discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Deafen Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
