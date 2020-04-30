@@ -76,6 +76,7 @@ export default class Embed extends Command {
             `${discord.getEmoji("footer")} - Sets the footer text\n` +
             `${discord.getEmoji("footerImage")} - Sets the footer image\n` +
             `${discord.getEmoji("color")} - Sets the color of the embed\n` +
+            `${discord.getEmoji("timestamp")} - Sets the timestamp\n` +
             `${discord.getEmoji("url")} - Sets the url of the embed\n` +
             `${discord.getEmoji("json")} - Creates an embed from JSON data\n` +
             `${discord.getEmoji("done")} - Sends the embed\n` +
