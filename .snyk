@@ -1,0 +1,70 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - cloudinary > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - mw-dict > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - pinterest-node-api > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - snoowrap > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - tumblr.js > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - app-store-scraper > cheerio > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - gdprofiles > cheerio > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - google-it > cheerio > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - mdn-docs-search > cheerio > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - nhentai-js > cheerio > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - wikijs > cheerio > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - archiver > async > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - fluent-ffmpeg > async > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - pm2 > async > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - google-play-scraper > eslint > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - upload-gphotos > inquirer > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - 4chanapi.js > request-promise-native > request-promise-core > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - imdb-api > request-promise-native > request-promise-core > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - jsdom > request-promise-native > request-promise-core > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - geometry-dash-api > request-promise > request-promise-core > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - node-spotify-api > request-promise > request-promise-core > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - snoowrap > request-promise > request-promise-core > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - kuroshiro-analyzer-kuromoji > kuromoji > async > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - pm2 > @pm2/js-api > async > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - pm2 > pm2-deploy > async > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - twitch-webhooks > portfinder > async > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - bandcamp-scraper > scrape-it > cheerio > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - google-play-scraper > eslint > inquirer > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - google-play-scraper > eslint > table > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - pm2 > vizion > async > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - soundcloud.ts > audioconcat > fluent-ffmpeg > async > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
+    - bandcamp-scraper > scrape-it > cheerio-req > cheerio > lodash:
+        patched: '2020-04-30T23:36:00.558Z'
