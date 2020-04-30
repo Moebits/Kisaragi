@@ -42,6 +42,7 @@ export class AudioEffects {
         }
         const inDest = await this.convertToFormat(filepath, "aiff")
         // const ext = path.extname(filepath).replace(".", "")
+        fileDest = fileDest.replace(/(_)(.*?)(?=_)/g, "")
         let outDest = fileDest.slice(0, -4) + `.aiff`
         let index = 0
         while (fs.existsSync(outDest)) {

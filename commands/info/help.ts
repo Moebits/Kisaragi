@@ -148,9 +148,9 @@ export default class Help extends Command {
                     .addField(`${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${commands.length})`, help)
                 }
                 dmEmbed
-                .setAuthor("help", "https://cdn.discordapp.com/emojis/705326226147115028.gif")
+                .setAuthor("help", "https://cdn.discordapp.com/emojis/705492897579139172.gif")
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
-                .setDescription(`_Note: Reactions cannot be removed in dm's, so you have to remove them yourself. Running commands in dm's is supported, so you can use \`help (command)\` for detailed help here._`)
+                .setDescription(`_Note: Reactions cannot be removed in dm's, so you have to remove them yourself. Running commands in dm's is supported, so you can use \`help (command)\` for detailed help here. Always use \`help dm\` for the dm-compatible command list, the bot can't scroll pages on the regular one._`)
                 .addField("Additional Links", `[**Invite**](${config.invite}) | [**Server**](${config.support}) | [**Github**](${config.repo}) | [**Review**](${config.review})`)
                 dmEmbeds.push(dmEmbed)
             }
@@ -182,7 +182,7 @@ export default class Help extends Command {
             const helpEmbed = embeds.createEmbed()
             helpEmbed
             .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${this.emojiMap[subDir[i]]}`)
-            .setAuthor("help", "https://cdn.discordapp.com/emojis/705326226147115028.gif")
+            .setAuthor("help", "https://cdn.discordapp.com/emojis/705492897579139172.gif")
             .setImage(this.imageMap[subDir[i]])
             .setThumbnail(this.thumbMap[subDir[i]])
             .setDescription(
