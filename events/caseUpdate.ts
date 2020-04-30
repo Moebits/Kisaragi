@@ -27,7 +27,7 @@ export default class CaseUpdate {
         const msg = await modLog?.send(embed).then((m) => m.id).catch(() => null)
         const data = {...instance, case: caseNumber, message: msg}
         cases.push(data)
-        await sql.updateColumn("warns", "cases", data)
+        await sql.updateColumn("warns", "cases", cases)
         return
     }
 

@@ -18,8 +18,10 @@ export default class GuildBanAdd {
                 const modChannel = guild?.channels.cache.get(modLog)! as TextChannel
                 const log = await guild.fetchAuditLogs({type: "MEMBER_BAN_ADD", limit: 1}).then((l) => l.entries.first())
                 .catch(async () => {
-                    return modChannel.send(`I need the **View Audit Logs** permission in order to log guild bans.`).catch(() => null)
+                    await modChannel.send(`I need the **View Audit Logs** permission in order to log guild bans.`).catch(() => null)
+                    return
                 }) as GuildAuditLogsEntry
+                if (!log) return
                 const data = {type: "ban", user: (log.target as User).id, executor: log.executor.id, date: Date.now(), guild: guild.id, reason: log.reason}
                 discord.emit("caseUpdate", data)
             }

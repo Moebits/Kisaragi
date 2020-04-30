@@ -76,12 +76,15 @@ export default class GuildMemberRemove {
         const logKick = async (member: GuildMember) => {
             const modLog = await sql.fetchColumn("logs", "mod log")
             if (modLog) {
+                await Functions.timeout(1000)
+                const calc = Date.now() - 10000
                 const modChannel = member.guild?.channels.cache.get(modLog)! as TextChannel
-                const log = await member.guild.fetchAuditLogs({type: "MEMBER_KICK", limit: 1}).then((l) => l.entries.first())
+                const log = await member.guild.fetchAuditLogs({type: "MEMBER_KICK", limit: 5}).then((l) => l.entries.find((e) => (e.target as User).id === member.id))
                 .catch(async () => {
-                    return modChannel.send(`I need the **View Audit Logs** permission in order to log guild kicks.`).catch(() => null)
+                    await modChannel.send(`I need the **View Audit Logs** permission in order to log guild kicks.`).catch(() => null)
+                    return
                 }) as GuildAuditLogsEntry
-                if (member.id !== (log?.target as User).id) return
+                if (!log || member.id !== (log?.target as User).id || log.createdTimestamp > calc) return
                 const data = {type: "kick", user: (log.target as User).id, executor: log.executor.id, date: Date.now(), guild: member.guild.id, reason: log.reason}
                 discord.emit("caseUpdate", data)
             }

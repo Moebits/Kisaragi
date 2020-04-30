@@ -20,7 +20,8 @@ export default class GoogleImageCommand extends Command {
             `,
             aliases: ["i", "image", "googleimages"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

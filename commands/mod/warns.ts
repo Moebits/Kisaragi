@@ -57,11 +57,10 @@ export default class Warns extends Command {
                 warnings = "None"
             } else {
                 for (let j = 0; j < warnLog[i].warns.length; j++) {
-                    warnLog[i].warns[j] = JSON.parse(warnLog[i].warns[j])
                     warnings += `**${j + 1} => **\n` +
-                    `_Date:_ ${Functions.formatDate(warnLog[i].warns[j].date)}\n` +
-                    `_Moderator:_ ${Functions.formatDate(warnLog[i].warns[j].executorTag)}\n` +
-                    `_Reason:_ ${Functions.formatDate(warnLog[i].warns[j].reason)}\n`
+                    `_Date:_ \`${Functions.formatDate(warnLog[i].warns[j].date)}\`\n` +
+                    `_Moderator:_ ${warnLog[i].warns[j].executorTag}\n` +
+                    `_Reason:_ ${warnLog[i].warns[j].reason}\n`
                 }
             }
             const warnEmbed = embeds.createEmbed()
@@ -179,9 +178,9 @@ export default class Warns extends Command {
                     if (warnLog[i].user === member.id) {
                         for (let j = 0; j < warnLog[i].warns.length; j++) {
                             warns += `**${j + 1} => **\n` +
-                            `_Date:_ ${Functions.formatDate(warnLog[i].warns[j].date)}\n` +
-                            `_Moderator:_ ${Functions.formatDate(warnLog[i].warns[j].executorTag)}\n` +
-                            `_Reason:_ ${Functions.formatDate(warnLog[i].warns[j].reason)}\n`
+                            `_Date:_ \`${Functions.formatDate(warnLog[i].warns[j].date)}\`\n` +
+                            `_Moderator:_ ${warnLog[i].warns[j].executorTag}\n` +
+                            `_Reason:_ ${warnLog[i].warns[j].reason}\n`
                         }
                         found = true
                     }

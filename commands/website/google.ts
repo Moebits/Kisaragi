@@ -21,7 +21,8 @@ export default class Google extends Command {
             `,
             aliases: ["g"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 
