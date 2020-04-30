@@ -11,7 +11,7 @@ import Reddit from "./reddit"
 export default class Animeblush extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Adorable blushing.",
+            description: "Anime blushing.",
             help:
             `
             \`animeblush\` - Gets a random post from r/animeblush

@@ -53,7 +53,7 @@ export default class Patreon extends Command {
         const creating = details.creation_name
         const patrons = details.patron_count
         const sum = (details.pledge_sum / 100.0).toFixed(2)
-        const description = Functions.cleanHTML(details.summary.replace(/\<br\>/g, "\n").replace(/&lt;/g, "<").replace(/&gt;/g, ">"))
+        const description = Functions.cleanHTML(Functions.decodeEntities(details.summary)).replace(/\n+/, "\n")
         const url = details.url
         const fb = json.data?.included[0]?.attributes?.facebook
         const tw = json.data?.included[0]?.attributes?.twitter

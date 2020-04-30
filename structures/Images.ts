@@ -44,7 +44,7 @@ export class Images {
         const dimensions = sizeOf(`${folder}${path.basename(images[0])}`)
         const gif = new GifEncoder(dimensions.width, dimensions.height)
         gif.pipe(file)
-        gif.setQuality(10)
+        gif.setQuality(20)
         gif.setDelay(0)
         gif.setRepeat(0)
         gif.writeHeader()

@@ -47,9 +47,9 @@ export default class ConstrainGIF extends Command {
         if (!url) return message.reply(`Could not find a gif ${discord.getEmoji("kannaCurious")}`)
         const frames = await gifFrames({url, frames: "all", cumulative: true})
         if (String(constrain).includes(".")) {
-            constrain = Math.round(frames / constrain)
+            constrain = Math.round(frames.length / constrain)
         }
-        if (constrain >= frames.length) return message.reply(`It looks like the gif doesn't even have this many frames ${discord.getEmoji("kannaFacepalm")}`)
+        if (constrain >= frames.length) return message.reply(`Adding frames to or slowing down a gif is not supported, because it requires more information than what is available in the original. ${discord.getEmoji("kannaFacepalm")}`)
         const newFrames = Functions.constrain(frames, constrain) as any[]
         const random = Math.floor(Math.random() * 10000)
         const dir = path.join(__dirname, `../../../assets/images/dump/${random}/`)
