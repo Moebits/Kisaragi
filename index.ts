@@ -96,8 +96,8 @@ Functions.youtubeReSubscribe()
 if (config.testing === "off") SQLQuery.redisSet("state", JSON.stringify([]))
 
 // @ts-ignore
-process.on("unhandledRejection", (error: Error) => console.error(error))
-process.on("uncaughtException", (error: Error) => console.error(error))
+process.on("unhandledRejection", (error) => console.error(error))
+process.on("uncaughtException", (error) => console.error(error))
 
 process.on("exit", () => {
     discord.user?.setPresence({activity: {name: "Bot is restarting...", type: "WATCHING"}, status: "dnd"})

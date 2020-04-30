@@ -102,7 +102,7 @@ export class CommandFunctions {
     }
 
     public findCommand = async (cmd: string) => {
-        let cmdPath = await SQLQuery.fetchCommand(cmd, "psath")
+        let cmdPath = await SQLQuery.fetchCommand(cmd, "path")
         loop1:
         if (!cmdPath) {
             const directories = fs.readdirSync(path.join(__dirname, `../commands/`))

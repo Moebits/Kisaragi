@@ -2,6 +2,7 @@ import {GuildMember, Message, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
+import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
@@ -134,20 +135,24 @@ export default class Warn extends Command {
         }
 
         const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
+        const modLog = await sql.fetchColumn("logs", "mod log")
 
         for (let i = 0; i < userArray.length; i++) {
+            const hash = Functions.randomString(16)
+            const data = {type: "warn", reason, hash, user: userArray[i], date: Date.now(), executor: message.author.id, executorTag: message.author.tag, guild: message.guild?.id}
             let found = false
             for (let j = 0; j < warnLog.length; j++) {
                 if (!warnLog[j]) break
                 warnLog[j] = JSON.parse(warnLog[j])
                 if (userArray[i] === warnLog[j].user) {
-                    warnLog[j].warns.push(reason)
+                    warnLog[j].warns.push(data)
                     found = true
                 }
             }
             if (!found) {
-                warnLog.push({user: `${userArray[i]}`, warns: [`${reason}`]})
+                warnLog.push({user: `${userArray[i]}`, warns: [data]})
             }
+            if (modLog) discord.emit("caseUpdate", data)
             await this.checkWarns(warnLog, userArray[i], warnThreshold, warnPenalty, warnOneRole, warnTwoRole)
         }
 

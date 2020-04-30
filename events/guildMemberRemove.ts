@@ -79,24 +79,11 @@ export default class GuildMemberRemove {
                 const modChannel = member.guild?.channels.cache.get(modLog)! as TextChannel
                 const log = await member.guild.fetchAuditLogs({type: "MEMBER_KICK", limit: 1}).then((l) => l.entries.first())
                 .catch(async () => {
-                    return modChannel.send(`I need the **View Audit Logs** permission in order to log guild bans.`).catch(() => null)
+                    return modChannel.send(`I need the **View Audit Logs** permission in order to log guild kicks.`).catch(() => null)
                 }) as GuildAuditLogsEntry
                 if (member.id !== (log?.target as User).id) return
-                const target = log?.target ? `**${(log.target as User).tag}** \`(${(log.target as User).id})\`` : "Unknown"
-                const executor = log?.executor ? `**${log.executor.tag}** \`(${log.executor.id})\`` : "Unknown"
-                const kickEmbed = embeds.createEmbed()
-                kickEmbed
-                .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
-                .setTitle(`**Member Kicked** ${discord.getEmoji("kannaFU")}`)
-                .setThumbnail((log?.target as User)?.displayAvatarURL({format: "png", dynamic: true}) ?? "")
-                .setDescription(
-                    `${discord.getEmoji("star")}_Target:_ ${target}\n` +
-                    `${discord.getEmoji("star")}_Executor:_ ${executor}\n` +
-                    `${discord.getEmoji("star")}_Audit Log ID:_ \`${log?.id ?? "Unknown"}\`\n` +
-                    `${discord.getEmoji("star")}_Reason:_ ${log?.reason ?? "Unknown"}\n`
-                )
-                .setFooter(`${member.guild.name} • ${Functions.formatDate(log?.createdAt ?? new Date())}`, member.guild.iconURL({format: "png", dynamic: true}) ?? "")
-                await modChannel.send(kickEmbed).catch(() => null)
+                const data = {type: "kick", user: (log.target as User).id, executor: log.executor.id, date: Date.now(), guild: member.guild.id, reason: log.reason}
+                discord.emit("caseUpdate", data)
             }
         }
         logKick(member)

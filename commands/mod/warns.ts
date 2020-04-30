@@ -57,7 +57,11 @@ export default class Warns extends Command {
                 warnings = "None"
             } else {
                 for (let j = 0; j < warnLog[i].warns.length; j++) {
-                    warnings += `**${j + 1} => **\n` + `${warnLog[i].warns[j]}\n`
+                    warnLog[i].warns[j] = JSON.parse(warnLog[i].warns[j])
+                    warnings += `**${j + 1} => **\n` +
+                    `_Date:_ ${Functions.formatDate(warnLog[i].warns[j].date)}\n` +
+                    `_Moderator:_ ${Functions.formatDate(warnLog[i].warns[j].executorTag)}\n` +
+                    `_Reason:_ ${Functions.formatDate(warnLog[i].warns[j].reason)}\n`
                 }
             }
             const warnEmbed = embeds.createEmbed()
@@ -118,7 +122,7 @@ export default class Warns extends Command {
                     let found = false
                     for (let i = 0; i < warnLog.length; i++) {
                         if (warnLog[i].user === member.id) {
-                            warnLog[i].warns[num] = tempMsg
+                            warnLog[i].warns[num].reason = tempMsg
                             await sql.updateColumn("warns", "warn log", warnLog)
                             found = true
                         }
@@ -174,7 +178,10 @@ export default class Warns extends Command {
                 for (let i = 0; i < warnLog.length; i++) {
                     if (warnLog[i].user === member.id) {
                         for (let j = 0; j < warnLog[i].warns.length; j++) {
-                            warns += `**${j + 1} => **\n` + `${warnLog[i].warns[j]}\n`
+                            warns += `**${j + 1} => **\n` +
+                            `_Date:_ ${Functions.formatDate(warnLog[i].warns[j].date)}\n` +
+                            `_Moderator:_ ${Functions.formatDate(warnLog[i].warns[j].executorTag)}\n` +
+                            `_Reason:_ ${Functions.formatDate(warnLog[i].warns[j].reason)}\n`
                         }
                         found = true
                     }
@@ -194,7 +201,7 @@ export default class Warns extends Command {
                 for (let i = 0; i < warnLog.length; i++) {
                     if (warnLog[i].user === member.id) {
                         if (warnLog[i].warns.length > num + 1) return msg.reply("Could not find that warning!")
-                        warnLog[i].warns[num] = 0
+                        warnLog[i].warns[num] = ""
                         warnLog[i].warns = warnLog[i].warns.filter(Boolean)
                         await sql.updateColumn("warns", "warn log", warnLog)
                         found = true

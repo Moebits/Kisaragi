@@ -1,7 +1,6 @@
 import {Collection, Message, MessageAttachment, TextChannel} from "discord.js"
 import path from "path"
 import * as responses from "../assets/json/responses.json"
-import SQL from "../commands/bot developer/sql"
 import * as config from "../config.json"
 import {CommandFunctions} from "../structures/CommandFunctions"
 import {Cooldown} from "../structures/Cooldown.js"
