@@ -86,31 +86,31 @@ export default class Help extends Command {
     }
 
     public thumbMap: any = {
-        "admin": "https://cdn.discordapp.com/emojis/684279514125172744.gif",
-        "anime": "https://cdn.discordapp.com/emojis/684275759157870602.gif",
-        "bot developer": "https://cdn.discordapp.com/emojis/684256668598403100.gif",
-        "config": "https://cdn.discordapp.com/emojis/684275301756174338.gif",
-        "fun": "https://cdn.discordapp.com/emojis/684279343609937930.gif",
-        "game": "https://cdn.discordapp.com/emojis/684262253289406479.gif",
-        "heart": "https://cdn.discordapp.com/emojis/684263535488139321.gif",
-        "lewd": "https://cdn.discordapp.com/emojis/684268240377348116.gif",
-        "info": "https://cdn.discordapp.com/emojis/684264132832133127.gif",
-        "weeb": "https://cdn.discordapp.com/emojis/684264672798441483.gif",
-        "level": "https://cdn.discordapp.com/emojis/684265359137570846.gif",
-        "image": "https://cdn.discordapp.com/emojis/705175389403742378.gif",
-        "misc": "https://cdn.discordapp.com/emojis/684269087857311908.gif",
-        "misc 2": "https://cdn.discordapp.com/emojis/695493739639996437.gif",
-        "mod": "https://cdn.discordapp.com/emojis/684270341689835591.gif",
-        "music": "https://cdn.discordapp.com/emojis/684270605134200857.gif",
-        "music 2": "https://cdn.discordapp.com/emojis/687861928781021214.gif",
-        "music 3": "https://cdn.discordapp.com/emojis/696502229728755813.gif",
+        "admin": "https://cdn.discordapp.com/emojis/705317767007567923.gif",
+        "anime": "https://cdn.discordapp.com/emojis/705317073479532616.gif",
+        "bot developer": "https://cdn.discordapp.com/emojis/705318281761914911.gif",
+        "config": "https://cdn.discordapp.com/emojis/705317790143479818.gif",
+        "fun": "https://cdn.discordapp.com/emojis/705328715483316245.gif",
+        "game": "https://cdn.discordapp.com/emojis/705318256474456064.gif",
+        "heart": "https://cdn.discordapp.com/emojis/705318232009211954.gif",
+        "lewd": "https://cdn.discordapp.com/emojis/705318022193086514.gif",
+        "info": "https://cdn.discordapp.com/emojis/705318209045135423.gif",
+        "weeb": "https://cdn.discordapp.com/emojis/705318087620165654.gif",
+        "level": "https://cdn.discordapp.com/emojis/705318055395459134.gif",
+        "image": "https://cdn.discordapp.com/emojis/705316317997039822.gif",
+        "misc": "https://cdn.discordapp.com/emojis/705317919256739932.gif",
+        "misc 2": "https://cdn.discordapp.com/emojis/705315393505591307.gif",
+        "mod": "https://cdn.discordapp.com/emojis/705317892371120200.gif",
+        "music": "https://cdn.discordapp.com/emojis/705317102478950470.gif",
+        "music 2": "https://cdn.discordapp.com/emojis/705316441745784873.gif",
+        "music 3": "https://cdn.discordapp.com/emojis/705329464032100393.gif",
         "reddit": "https://cdn.discordapp.com/emojis/704096939519770685.png",
         "twitter": "https://cdn.discordapp.com/emojis/704105504942718987.png",
-        "video": "https://cdn.discordapp.com/emojis/689575172130209814.gif",
-        "waifu": "https://cdn.discordapp.com/emojis/695484678085410908.gif",
-        "website": "https://cdn.discordapp.com/emojis/684270969417760779.gif",
-        "website 2": "https://cdn.discordapp.com/emojis/684271413284175902.gif",
-        "website 3": "https://cdn.discordapp.com/emojis/691011174673809528.gif"
+        "video": "https://cdn.discordapp.com/emojis/705315341915390043.gif",
+        "waifu": "https://cdn.discordapp.com/emojis/705315862667853865.gif",
+        "website": "https://cdn.discordapp.com/emojis/705317129238478909.gif",
+        "website 2": "https://cdn.discordapp.com/emojis/705317817771098132.gif",
+        "website 3": "https://cdn.discordapp.com/emojis/705315365810339921.gif"
     }
 
     public run = async (args: string[]) => {
@@ -148,7 +148,7 @@ export default class Help extends Command {
                     .addField(`${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${commands.length})`, help)
                 }
                 dmEmbed
-                .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
+                .setAuthor("help", "https://cdn.discordapp.com/emojis/705326226147115028.gif")
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
                 .setDescription(`_Note: Reactions cannot be removed in dm's, so you have to remove them yourself. Running commands in dm's is supported, so you can use \`help (command)\` for detailed help here._`)
                 .addField("Additional Links", `[**Invite**](${config.invite}) | [**Server**](${config.support}) | [**Github**](${config.repo}) | [**Review**](${config.review})`)
@@ -182,7 +182,7 @@ export default class Help extends Command {
             const helpEmbed = embeds.createEmbed()
             helpEmbed
             .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${this.emojiMap[subDir[i]]}`)
-            .setAuthor("help", "https://cdn.discordapp.com/emojis/579856442551697418.gif")
+            .setAuthor("help", "https://cdn.discordapp.com/emojis/705326226147115028.gif")
             .setImage(this.imageMap[subDir[i]])
             .setThumbnail(this.thumbMap[subDir[i]])
             .setDescription(
