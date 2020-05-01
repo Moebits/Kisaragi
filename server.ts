@@ -89,9 +89,4 @@ export default class Server {
     }
 }
 
-/*if (config.testing === "off") {
-    const server = new Server()
-    server.run()
-}*/
-
 export {yt}

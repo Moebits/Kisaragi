@@ -7,8 +7,6 @@ import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 
-let loggedIn = false
-
 const discord = new Kisaragi({
     disableMentions: "everyone",
     restTimeOffset: 0,
@@ -78,15 +76,11 @@ const start = async (): Promise<void> => {
     Logger.log(`Loaded a total of ${commandCounter} commands.`)
     Logger.log(`Loaded a total of ${evtFiles.length} events.`)
 
-    // if (config.testing === "on") {
     const server = new Server()
     server.run()
-    // }
+
     const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
-    console.log("LOGGING IN")
-    console.log(loggedIn)
-    if (!loggedIn) await discord.login(token)
-    loggedIn = true
+    await discord.login(token)
     discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
     discord.setUsername(discord.user!.username)
 
@@ -101,6 +95,6 @@ start()
 process.on("unhandledRejection", (error) => console.error(error))
 process.on("uncaughtException", (error) => console.error(error))
 
-process.on("exit", () => {
-    discord.user?.setPresence({activity: {name: "Bot is restarting...", type: "WATCHING"}, status: "dnd"})
+process.on("SIGTERM", () => {
+    discord.destroy()
 })
