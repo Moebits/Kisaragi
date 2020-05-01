@@ -141,7 +141,12 @@ export default class SoundCloud extends Command {
                 .setAuthor("soundcloud", "https://i1.sndcdn.com/avatars-000681921569-32qkcn-t500x500.jpg", "https://soundcloud.com/")
                 .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
             }
-            const file = await soundcloud.util.downloadTrack(track, src)
+            let file: string
+            try {
+                file = await soundcloud.util.downloadTrack(track, src)
+            } catch {
+                return message.channel.send(`Sorry but the Soundcloud token expired. Let the developer know with the \`feedback\` command.`)
+            }
             const stats = fs.statSync(file)
             if (stats.size > 8000000) {
                 const link = await images.upload(file)
