@@ -28,11 +28,12 @@ export default class GuildIcon extends Command {
         const embeds = new Embeds(discord, message)
 
         const guildIconEmbed = embeds.createEmbed()
-        const icon = message.guild!.iconURL({format: "png", size: 2048, dynamic: true})
+        const icon = message.guild!.iconURL({format: "png", dynamic: true})
         if (!icon) return message.reply(`This guild doesn't have an icon ${discord.getEmoji("kannaFacepalm")}`)
 
         await message.channel.send(guildIconEmbed
             .setDescription(`**${message.guild!.name}'s Icon**`)
+            .setURL(icon)
             .setImage(icon))
     }
 }

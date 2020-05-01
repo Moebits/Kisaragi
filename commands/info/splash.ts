@@ -33,6 +33,7 @@ export default class Splash extends Command {
 
         await message.channel.send(splashEmbed
             .setDescription(`**${message.guild!.name}'s Splash Screen**`)
+            .setURL(splash)
             .setImage(splash))
     }
 }

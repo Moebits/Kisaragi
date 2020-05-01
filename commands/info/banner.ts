@@ -33,6 +33,7 @@ export default class Banner extends Command {
 
         await message.channel.send(bannerEmbed
             .setDescription(`**${message.guild!.name}'s Banner**`)
+            .setURL(banner)
             .setImage(banner))
     }
 }

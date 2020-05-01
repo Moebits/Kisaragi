@@ -35,10 +35,12 @@ export default class Avatar extends Command {
           .setImage(message.author!.displayAvatarURL({format: "png", size: 2048, dynamic: true})))
         }
 
-        for (const [, user] of message.mentions.users) {
-        await message.channel.send(avatarEmbed
-          .setDescription(`**${user.username}'s Profile Picture**`)
-          .setImage(user.displayAvatarURL({format: "png", size: 2048, dynamic: true})))
+        for (const [key, user] of message.mentions.users) {
+          const avatar = user.displayAvatarURL({format: "png", dynamic: true})
+          await message.channel.send(avatarEmbed
+            .setDescription(`**${user.username}'s Profile Picture**`)
+            .setURL(avatar)
+            .setImage(avatar))
     }
   }
 }
