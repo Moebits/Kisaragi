@@ -42,18 +42,18 @@ export default class Detect extends Command {
         const loading = message.channel.lastMessage
         loading?.delete()
         const input = Functions.combineArgs(args, 1)
-        if (input.trim()) {
-            message.content = input.trim()
-            await detectPrompt(message)
-            return
-        }
-
         const links = await sql.fetchColumn("detection", "links")
         const anime = await sql.fetchColumn("detection", "anime")
         const pfp = await sql.fetchColumn("detection", "pfp")
         const weeb = await sql.fetchColumn("detection", "weeb")
         const normie = await sql.fetchColumn("detection", "normie")
         const response = await sql.fetchColumn("detection", "response")
+        if (input.trim()) {
+            message.content = input.trim()
+            await detectPrompt(message)
+            return
+        }
+
         const detectEmbed = embeds.createEmbed()
         detectEmbed
         .setTitle(`**Detection Settings** ${discord.getEmoji("sagiriBleh")}`)
