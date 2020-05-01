@@ -30,6 +30,8 @@ export default class Chat extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
 
+        if (discord.checkMuted(message)) return message.reply(`This server was blacklisted on the global`)
+
         const channel = await sql.fetchColumn("special channels", "global chat")
         if (!channel) {
             await sql.updateColumn("special channels", "global chat", message.channel.id)

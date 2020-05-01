@@ -58,4 +58,8 @@ export class Block {
             }
         }
     }
+
+    public containsInvite = () => {
+        return /(?<=(discord.gg|discordapp.com\/invite)\/)[a-z0-9]+/gi.test(this.message.content)
+    }
 }
