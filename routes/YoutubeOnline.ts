@@ -1,8 +1,8 @@
 import {Collection, WebhookClient} from "discord.js"
 import {Express, NextFunction, Request, Response} from "express"
 import {yt} from "../server"
-import {Kisaragi} from "./Kisaragi"
-import {SQLQuery} from "./SQLQuery"
+import {Kisaragi} from "../structures/Kisaragi"
+import {SQLQuery} from "../structures/SQLQuery"
 
 export class YoutubeOnline {
     public static youtubeRoutes = (app: Express) => {
@@ -90,7 +90,7 @@ export class YoutubeOnline {
                 })
                 if (!current.mention) current.mention = ""
                 const message = `${current.mention}[**${data.channel.name}**](${data.channel.link}) uploaded a new video, [**${data.video.title}**](${data.video.link})! ${data.video.link}`
-                await webhook.send(message, {avatarURL: "https://cdn.discordapp.com/avatars/593838271650332672/78ec2f4a3d4ab82a40791cb522cf36f5.png?size=2048", username: "Kisaragi"})
+                await webhook.send(message, {avatarURL: Kisaragi.pfp, username: Kisaragi.username})
                 webhook.destroy()
             }
         })

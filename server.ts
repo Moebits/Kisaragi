@@ -3,9 +3,9 @@ import express from "express"
 import path from "path"
 import ytNotification from "youtube-notification"
 import config from "./config.json"
+import {YoutubeOnline} from "./routes/YoutubeOnline"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
-import {YoutubeOnline} from "./structures/YoutubeOnline"
 
 let yt: any
 if (!yt) {

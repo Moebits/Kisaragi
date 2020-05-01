@@ -6,9 +6,21 @@ import * as config from "./../config.json"
 import {Embeds} from "./Embeds"
 import {SQLQuery} from "./SQLQuery"
 export class Kisaragi extends Client {
+    public static username = "Kisaragi"
+    public static pfp = "https://cdn.discordapp.com/avatars/593838271650332672/78ec2f4a3d4ab82a40791cb522cf36f5.png?size=2048"
     private starIndex = 0
     constructor(options: ClientOptions) {
         super(options)
+    }
+
+    /** Set the pfp */
+    public setPfp = (pfp: string) => {
+        Kisaragi.pfp = pfp
+    }
+
+    /** Set the username */
+    public setUsername = (username: string) => {
+        Kisaragi.username = username
     }
 
     /** Get emojis (my servers) */

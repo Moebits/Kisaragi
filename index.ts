@@ -80,6 +80,8 @@ const start = async (): Promise<void> => {
 
         const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
         await discord.login(token)
+        discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
+        discord.setUsername(discord.user!.username)
 
         if (config.testing === "on") {
             const server = new Server()
