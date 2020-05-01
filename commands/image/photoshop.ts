@@ -720,6 +720,7 @@ export default class Photoshop extends Command {
                 degrees = -degrees
             }
             image.rotate(degrees)
+            image.autocrop()
             let newDest = path.join(__dirname, `../../images/${seed}_rotate`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
