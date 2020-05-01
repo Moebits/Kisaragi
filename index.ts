@@ -63,39 +63,34 @@ const start = async (): Promise<void> => {
         }))
     }
 
-    setTimeout(async () => {
+    const evtFiles = fs.readdirSync("./events/")
 
-        const evtFiles = fs.readdirSync("./events/")
+    evtFiles.forEach((file: string) => {
+        if (!file.endsWith(".ts") && !file.endsWith(".js")) return
+        const eventName = file.split(".")[0]
+        Logger.log(`Loading Event: ${eventName}`)
+        const event = new (require(path.join(__dirname, `./events/${eventName}`)).default)(discord)
+        discord.on(eventName, (...args: any) => event.run(...args))
+    })
 
-        evtFiles.forEach((file: string) => {
-            if (!file.endsWith(".ts") && !file.endsWith(".js")) return
-            const eventName = file.split(".")[0]
-            Logger.log(`Loading Event: ${eventName}`)
-            const event = new (require(path.join(__dirname, `./events/${eventName}`)).default)(discord)
-            discord.on(eventName, (...args: any) => event.run(...args))
-        })
+    Logger.log(`Loaded a total of ${commandCounter} commands.`)
+    Logger.log(`Loaded a total of ${evtFiles.length} events.`)
 
-        Logger.log(`Loaded a total of ${commandCounter} commands.`)
-        Logger.log(`Loaded a total of ${evtFiles.length} events.`)
+    // if (config.testing === "on") {
+    const server = new Server()
+    server.run()
+    // }
+    const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
+    await discord.login(token)
+    discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
+    discord.setUsername(discord.user!.username)
 
-        const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
-        await discord.login(token)
-        discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
-        discord.setUsername(discord.user!.username)
-
-        //if (config.testing === "on") {
-            const server = new Server()
-            server.run()
-        //}
-
-    }, 1000)
+    Functions.pollTwitch(discord)
+    Functions.youtubeReSubscribe()
+    if (config.testing === "off") SQLQuery.redisSet("state", JSON.stringify([]))
 }
 
 start()
-
-Functions.pollTwitch(discord)
-Functions.youtubeReSubscribe()
-if (config.testing === "off") SQLQuery.redisSet("state", JSON.stringify([]))
 
 // @ts-ignore
 process.on("unhandledRejection", (error) => console.error(error))
