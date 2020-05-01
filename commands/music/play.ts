@@ -109,7 +109,7 @@ export default class Play extends Command {
                 const link = await audio.songPickerSC(song, setFirst)
                 if (!link) return message.reply("No results were found for your query!")
                 song = link
-                file = await audio.download(link)
+                file = await audio.download(link, song)
                 queueEmbed = await audio.queueAdd(link, file)
             }
         }

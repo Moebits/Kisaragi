@@ -97,4 +97,5 @@ process.on("uncaughtException", (error) => console.error(error))
 
 process.on("SIGTERM", () => {
     discord.destroy()
+    process.exit(0)
 })

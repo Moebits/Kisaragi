@@ -1049,12 +1049,18 @@ export class Audio {
         return Math.round(duration)
     }
 
-    public download = async (song: string) => {
+    public download = async (song: string, query?: string) => {
         let file = ""
         if (song?.match(/youtube.com|youtu.be/)) {
             file = await this.youtube.util.downloadMP3(song, "./tracks")
         } else if (song?.match(/soundcloud.com/)) {
+            try {
             file = await this.soundcloud.util.downloadTrack(song, "./tracks")
+            } catch {
+                await this.message.channel.send("The Soundcloud token has expired, so the bot will search YouTube as fallback. Let the developer know with the \`feedback\` command.")
+                const link = await this.songPickerYT(query ?? song, true)
+                return link ? this.download(link) : ""
+            }
         } else {
             let name = song.split("#").shift()?.split("?").shift()?.split("/").pop()
             name = name?.match(/.(mp3|wav|ogg|webm)/) ? name : name + ".mp3"
