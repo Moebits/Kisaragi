@@ -61,7 +61,7 @@ export default class DetectChannels extends Command {
             }
             const detectEmbed = embeds.createEmbed()
             detectEmbed
-            .setTitle(`**Ignored Anime Detection Channels** ${discord.getEmoji("kisaragibawls")}`)
+            .setTitle(`**Ignored Anime Detection Channels** ${discord.getEmoji("kisaragiBawls")}`)
             .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
             .setDescription(Functions.multiTrim(`
                 Channels in this list will be exempt from anime detection.
@@ -87,7 +87,7 @@ export default class DetectChannels extends Command {
         async function detectPrompt(msg: Message) {
             let ignored = await sql.fetchColumn("detection", "ignored")
             const responseEmbed = embeds.createEmbed()
-            responseEmbed.setTitle(`**Ignored Anime Detection Channels** ${discord.getEmoji("kisaragibawls")}`)
+            responseEmbed.setTitle(`**Ignored Anime Detection Channels** ${discord.getEmoji("kisaragiBawls")}`)
             if (!ignored) ignored = []
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed

@@ -194,6 +194,7 @@ export class Settings {
         links: "on",
         anime: "off",
         pfp: "off",
+        response: "on",
         weeb: null,
         normie: null,
         ignored: null

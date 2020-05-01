@@ -25,11 +25,10 @@ export class Detector {
 
     public detectAnime = async () => {
         const sql = new SQLQuery(this.message)
-        const anime = await sql.fetchColumn("detection", "pfp") as unknown as string
+        const anime = await sql.fetchColumn("detection", "anime") as unknown as string
         if (await this.detectIgnore()) return
-        if (!anime) return
-        if (anime === "off") return
-        if (this.message.author!.id === this.discord.user!.id) return
+        if (!anime || anime === "off") return
+        if (this.message.author.id === this.discord.user!.id) return
         if (this.message.attachments.size) {
             const urls = this.message.attachments.map((a) => a.url)
             for (let i = 0; i < urls.length; i++) {
@@ -44,7 +43,7 @@ export class Detector {
     }
 
     public swapRoles = async (member?: GuildMember, counter?: boolean) => {
-        if (this.message.author!.bot) return
+        if (this.message.author.bot) return
         const sql = new SQLQuery(this.message)
         const pfp = await sql.fetchColumn("detection", "pfp") as unknown as string
         if (!pfp || pfp === "off") return

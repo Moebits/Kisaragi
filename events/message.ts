@@ -146,44 +146,44 @@ export default class MessageEvent {
           }
           everyoneBan(message)
         }
-        if (responses.text[message.content.trim().toLowerCase()]) {
-          const response = message.content.trim().toLowerCase()
-          if (!message.author!.bot) {
-            if (responseTextCool.has(message.author.id) || responseTextCool.has(message.guild?.id)) {
-              const reply = await message.channel.send(`<@${message.author.id}>, **${response}** is under a 3 second cooldown! ${this.discord.getEmoji("kannaHungry")}`)
-              reply.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
-              return
+        const responseToggle = await sql.fetchColumn("detection", "response")
+        if (responseToggle === "on") {
+          if (responses.text[message.content.trim().toLowerCase()]) {
+            const response = message.content.trim().toLowerCase()
+            if (!message.author!.bot) {
+              if (responseTextCool.has(message.author.id) || responseTextCool.has(message.guild?.id)) {
+                const reply = await message.channel.send(`<@${message.author.id}>, **${response}** is under a 3 second cooldown! ${this.discord.getEmoji("kannaHungry")}`)
+                reply.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+                return
+              }
+              const id = message.guild?.id ?? message.author.id
+              responseTextCool.add(id)
+              setTimeout(() => responseTextCool.delete(id), 3000)
+              let text = responses.text[response]
+              if (text === "f") {
+                text = this.discord.getEmoji("FU")
+              } else if (text === "rip") {
+                text = this.discord.getEmoji("rip")
+              } else if (Array.isArray(text)) {
+                text = text.join("")
+              }
+              return message.channel.send(text)
             }
-            const id = message.guild?.id ?? message.author.id
-            responseTextCool.add(id)
-            setTimeout(() => responseTextCool.delete(id), 3000)
-            let text = responses.text[response]
-            if (text === "f") {
-              text = this.discord.getEmoji("FU")
-            } else if (text === "rip") {
-              text = this.discord.getEmoji("rip")
-            } else if (Array.isArray(text)) {
-              text = text.join("")
-            }
-            return message.channel.send(text)
           }
-        }
-        if (responses.image[message.content.trim().toLowerCase()]) {
-          const response = message.content.trim().toLowerCase()
-          if (!message.author!.bot) {
-            if (responseImageCool.has(message.author.id) || responseImageCool.has(message.guild?.id)) {
-              const reply = await message.channel.send(`<@${message.author.id}>, **${response}** is under a 10 second cooldown!`)
-              reply.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
-              return
+          if (responses.image[message.content.trim().toLowerCase()]) {
+            const response = message.content.trim().toLowerCase()
+            if (!message.author!.bot) {
+              if (responseImageCool.has(message.author.id) || responseImageCool.has(message.guild?.id)) {
+                const reply = await message.channel.send(`<@${message.author.id}>, **${response}** is under a 10 second cooldown!`)
+                reply.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+                return
+              }
+              const id = message.guild?.id ?? message.author.id
+              responseImageCool.add(id)
+              setTimeout(() => responseImageCool.delete(id), 10000)
+              return message.channel.send(new MessageAttachment(responses.image[response]))
             }
-            const id = message.guild?.id ?? message.author.id
-            responseImageCool.add(id)
-            setTimeout(() => responseImageCool.delete(id), 10000)
-            return message.channel.send(new MessageAttachment(responses.image[response]))
-          }
-       }
-        if (message.content.trim().toLowerCase() === "i love you") {
-            message.channel.send(`I love you more, <@${message.author.id}>!`)
+         }
         }
         if (this.discord.checkBotMention(message)) {
           const args = message.content.slice(`<@!${this.discord.user?.id}>`.length).trim().split(/ +/g)
