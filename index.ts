@@ -7,6 +7,8 @@ import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 
+let loggedIn = false
+
 const discord = new Kisaragi({
     disableMentions: "everyone",
     restTimeOffset: 0,
@@ -81,7 +83,10 @@ const start = async (): Promise<void> => {
     server.run()
     // }
     const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
-    await discord.login(token)
+    console.log("LOGGING IN")
+    console.log(loggedIn)
+    if (!loggedIn) await discord.login(token)
+    loggedIn = true
     discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
     discord.setUsername(discord.user!.username)
 
