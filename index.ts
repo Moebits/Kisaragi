@@ -83,10 +83,10 @@ const start = async (): Promise<void> => {
         discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
         discord.setUsername(discord.user!.username)
 
-        if (config.testing === "on") {
+        //if (config.testing === "on") {
             const server = new Server()
             server.run()
-        }
+        //}
 
     }, 1000)
 }

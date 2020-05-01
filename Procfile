@@ -1,2 +1,1 @@
-worker: npm run bot
-web: npm run server
+web: npm run bot
