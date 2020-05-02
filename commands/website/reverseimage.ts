@@ -44,6 +44,7 @@ export default class ReverseImage extends Command {
                 resolve()
             })
         })
+        console.log(data)
         await new Promise((resolve) => {
             osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
             .find("div.rc > div.s > div > div > a")
@@ -54,6 +55,7 @@ export default class ReverseImage extends Command {
                 resolve()
             })
         })
+        console.log(data2)
         await new Promise((resolve) => {
             osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
             .find("div.rc > div.s > div")
@@ -63,6 +65,7 @@ export default class ReverseImage extends Command {
                 resolve()
             })
         })
+        console.log(data3)
         const newArray: any[] = []
         for (let i = 0; i < data.length; i++) {
             const obj = {} as any

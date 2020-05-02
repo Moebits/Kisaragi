@@ -8,26 +8,26 @@ export default class MessageDeleteBulk {
 
     public run = async (messages: Collection<string, Message>) => {
         const discord = this.discord
-        let message = messages.find((m) => {
+        const message = messages.find((m) => {
             if (m.partial) return false
-            if (m.author.bot) {
+            if (m.author?.bot) {
                 return false
             } else {
                 return true
             }
         })
         if (!message) return
-        if (message.partial) message = await message.fetch()
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
-        if (message.author.bot) return
+        if (message.author?.bot) return
         if (message.author.id === discord.user!.id) return
 
         const logDeleted = async (messages: Message[]) => {
             const messageLog = await sql.fetchColumn("logs", "message log")
             const prefix = await SQLQuery.fetchPrefix(messages[0])
             let message = messages.find((m) => {
-                if (m.author.bot) {
+                if (m.partial) return false
+                if (m.author?.bot) {
                     return false
                 } else {
                     if (m.content.includes(prefix)) {
