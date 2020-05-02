@@ -17,7 +17,7 @@ export default class Help extends Command {
             \`help\` - Lists all commands
             \`help command\` - Gets detailed help on a command
             \`help !category\` - Only post the specific category
-            \`help dm\` - Sends a compact list throughdm's
+            \`help dm\` - Sends a compact list through dm's
             `,
             examples:
             `

@@ -23,7 +23,8 @@ export default class SpotifyCommand extends Command {
             `,
             aliases: [],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 
