@@ -1,3 +1,4 @@
+import axios from "axios"
 import {Message, MessageEmbed} from "discord.js"
 import osmosis from "osmosis"
 import {Command} from "../../structures/Command"
@@ -33,46 +34,23 @@ export default class ReverseImage extends Command {
 
     public revSearch = async (image: string) => {
         const data: any[] = []
-        const data2: any[] = []
-        const data3: any[] = []
         await new Promise((resolve) => {
             osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
-            .find("div.rc > div.r > a")
-            .set({url: "@href", title: "h3"})
+            .find("div.rc")
+            .set({url: "div.r > a > @href", title: "div.r > a > h3", image: "div.s > div > div > a > @href", desc: "div.s > div > span"})
             .data(function(d) {
+                d.image = d.image.match(/(?<=imgurl=)(.*?)(jpg)/) ? d.image.match(/(?<=imgurl=)(.*?)(jpg)/)[0] : ""
                 data.push(d)
                 resolve()
             })
         })
-        console.log(data)
-        await new Promise((resolve) => {
-            osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
-            .find("div.rc > div.s > div > div > a")
-            .set({image: "@href"})
-            .data(function(d) {
-                d.image = d.image.match(/(?<=imgurl=)(.*?)(jpg)/) ? d.image.match(/(?<=imgurl=)(.*?)(jpg)/)[0] : ""
-                data2.push(d)
-                resolve()
-            })
-        })
-        console.log(data2)
-        await new Promise((resolve) => {
-            osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
-            .find("div.rc > div.s > div")
-            .set({desc: "span"})
-            .data(function(d) {
-                data3.push(d)
-                resolve()
-            })
-        })
-        console.log(data3)
         const newArray: any[] = []
         for (let i = 0; i < data.length; i++) {
             const obj = {} as any
             obj.url = data[i]?.url ?? "None"
             obj.title = data[i]?.title ?? "None"
-            obj.image = data2[i]?.image ?? ""
-            obj.desc = data3[i]?.desc ?? "None"
+            obj.image = data[i]?.image ?? ""
+            obj.desc = data[i]?.desc ?? "None"
             newArray.push(obj)
         }
         return newArray
