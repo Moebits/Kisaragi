@@ -41,7 +41,7 @@ export default class DiscordBotList extends Command {
             const bot = data[i]
             const owner = await discord.users.fetch(bot.owners[0])
             const website = bot.website ? `[**Website**](${bot.website})\n` : ""
-            const support = bot.support ? `[**Support**](${bot.support})\n` : ""
+            const support = bot.support ? `[**Support**](https://discord.gg/${bot.support})\n` : ""
             const github = bot.github ? `[**Github**](${bot.github})\n` : ""
             const invite = bot.invite ? `[**Invite**](${bot.invite})\n` : ""
             const botEmbed = embeds.createEmbed()
@@ -59,8 +59,9 @@ export default class DiscordBotList extends Command {
                 `${discord.getEmoji("star")}_Prefix:_ **${bot.prefix.replace(/\*/, "\*")}**\n` +
                 `${discord.getEmoji("star")}_Upvotes:_ **${bot.points}**\n` +
                 `${discord.getEmoji("star")}_Monthly Upvotes:_ **${bot.monthlyPoints}**\n` +
+                `${discord.getEmoji("star")}_Servers:_ **${bot.server_count}**\n` +
                 `${discord.getEmoji("star")}_Added:_ \`${Functions.formatDate(bot.date)}\`\n` +
-                `${discord.getEmoji("star")}_Tags:_ **${bot.tags.join(", ")}**\n` +
+                `${discord.getEmoji("star")}_Tags:_ ${bot.tags[0] ? `**${bot.tags.join(", ")}**` : "None"}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${bot.shortdesc.replace(/\*/, "\*")}\n` +
                 website + support + github + invite
             )
