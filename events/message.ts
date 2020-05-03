@@ -216,14 +216,14 @@ export default class MessageEvent {
         let setEmbed = false
         if ((message.channel as TextChannel).permissionsFor(message.guild.me!)?.has(["EMBED_LINKS"])) setEmbed = true
         const permMessage =
-          `The bot is missing permissions that break or prevent the execution of most commands, if not all of them.${setEmbed ? "" : " " + this.discord.getEmoji("kannaFacepalm")}\n` +
+          `Sorry, but the bot is missing permissions that break or prevent the execution of most commands, if not all of them.${setEmbed ? "" : " " + this.discord.getEmoji("kannaFacepalm")}\n` +
           `\`Send Messages\` - Um... everything? If you can see this message, the bot has this one at least.\n` +
-          `\`Embed Links\` - Everything. Needed to post message embeds.\n` +
           `\`Use External Emojis\` - Everything. Needed to post and react with custom emojis (all emojis are custom).\n` +
-          `\`Add Reactions + Read Message History\` - Large amount. Needed to add reactions to the bots own messages.\n` +
-          `\`Manage Messages\` - Large amount. Needed to bulk delete the bots own reactions (help command), delete your reactions, and delete your response to a reaction (page scrolling, page jumps).\n` +
-          `\`Attach Files\` - Moderate amount. Needed to upload downloaded content (downloading images from embeds).\n` +
-          `\`Connect + Speak\` - Moderate amount. Needed by all music and recording commands (one of the primary features of the bot).\n` +
+          `\`Embed Links\` - Everything. Needed to post message embeds.\n` +
+          `\`Add Reactions + Read Message History\` - Nearly everything. Needed to add reactions to the bots own messages.\n` +
+          `\`Manage Messages\` - Nearly everything. Needed to bulk delete the bots own reactions (page scrolling on help command), delete your reactions (all reaction menus), and delete your response to a reaction (all reactions that take user input).\n` +
+          `\`Attach Files\` - Large amount. Needed to upload downloaded content (downloading images from embeds).\n` +
+          `\`Connect + Speak\` - Large amount. Needed by all music and recording commands (one of the primary features of the bot).\n` +
           `**Please give the bot sufficient permissions.**`
         const permEmbed = embeds.createEmbed()
         permEmbed
