@@ -31,7 +31,7 @@ export default class Help extends Command {
     }
 
     public emojiMap: any = {
-        "admin": this.discord.getEmoji("chikaYay"),
+        "admin": this.discord.getEmoji("raphiOMG"),
         "anime": this.discord.getEmoji("gabYes"),
         "bot developer": this.discord.getEmoji("no"),
         "config": this.discord.getEmoji("akariLurk"),

@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 38, date: "5/3/2020", changes: "Added \`gallery\` and revamped the moderation case system."},
             {num: 37, date: "4/29/2020", changes: "You can now send the compact help list to your direct messages. Running commands in dm's is not yet tested but it should be supported."},
             {num: 36, date: "4/26/2020", changes: "Added a section for twitter, and you can now reply/like/retweet twitter posts."},
             {num: 35, date: "4/24/2020", changes: "Added \`redditoauth\` so that you can upvote, downvote, comment on, save, and subscribe to posts/subreddits directly."},

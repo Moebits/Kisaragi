@@ -67,6 +67,7 @@ export default class MessageEvent {
               if (message.content.length > 100) return message.reply(`There is a limit of 100 characters on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
               if (message.mentions.users.size) return message.reply(`You can't mention anyone on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
               if (block.containsInvite()) return message.reply(`You can't post invite links on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
+              if (message.attachments.first()) message.content = message.attachments.first()!.url
               const cleaned = message.content.replace(/@/g, `@\u200b`)
               const translated = await Functions.googleTranslate(cleaned)
               if (Functions.badWords(translated, true)) return message.reply(`You can't post messages containing profane/dirty words ${this.discord.getEmoji("sagiriBleh")}`)
@@ -86,6 +87,8 @@ export default class MessageEvent {
           }
           block.blockWord()
           block.blockInvite()
+          block.everyone()
+          block.gallery()
           detect.detectAnime()
           detect.swapRoles()
           const haikuEmbed = haiku.haiku()
@@ -118,33 +121,6 @@ export default class MessageEvent {
             firstMessage.add(message.guild.id)
             pointCool.set(message.guild.id, new Set())
           }
-
-          const everyoneBan = async (msg: Message) => {
-            if (msg.content.includes("@everyone") || msg.content.includes("@here")) {
-              if (msg.member?.hasPermission("MENTION_EVERYONE") || await perms.checkMod(true)) return
-              const toggle = await sql.fetchColumn("blocks", "everyone ban toggle")
-              if (toggle === "on") {
-                try {
-                  await msg.member?.ban({reason: "Mentioning everyone", days: 7})
-                  const banEmbed = embeds.createEmbed()
-                  .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
-                  .setTitle(`**Member Banned** ${this.discord.getEmoji("kannaFU")}`)
-                  .setDescription(`${this.discord.getEmoji("star")}_Successfully banned <@${msg.author.id}> for reason:_ **Mentioning everyone without having the permission to do so.**`)
-                  message.channel.send(banEmbed)
-                  const dmEmbed = embeds.createEmbed()
-                  dmEmbed
-                  .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
-                  .setTitle(`**You Were Banned** ${this.discord.getEmoji("kannaFU")}`)
-                  .setDescription(`${this.discord.getEmoji("star")}_You were banned from ${msg.guild!.name} for reason:_ **Mentioning everyone without having the permission to do so.**`)
-                  const dm = await msg.author.createDM()
-                  await msg.author.send(dmEmbed).catch(() => null)
-                } catch {
-                  // Do nothing
-                }
-              }
-            }
-          }
-          everyoneBan(message)
         }
         const responseToggle = await sql.fetchColumn("detection", "response")
         if (responseToggle === "on") {
@@ -221,8 +197,8 @@ export default class MessageEvent {
           `\`Use External Emojis\` - Everything. Needed to post and react with custom emojis (all emojis are custom).\n` +
           `\`Embed Links\` - Everything. Needed to post message embeds.\n` +
           `\`Add Reactions + Read Message History\` - Nearly everything. Needed to add reactions to the bots own messages.\n` +
-          `\`Manage Messages\` - Nearly everything. Needed to bulk delete the bots own reactions (page scrolling on help command), delete your reactions (all reaction menus), and delete your response to a reaction (all reactions that take user input).\n` +
-          `\`Attach Files\` - Large amount. Needed to upload downloaded content (downloading images from embeds).\n` +
+          `\`Manage Messages\` - Nearly everything. Needed to bulk delete the bots own reactions (page scrolling on help command), delete your reactions (all reaction embeds), and delete your response to a reaction (all reactions that take user input).\n` +
+          `\`Attach Files\` - Large amount. Needed by all image commands (uploading local files) and to download images from embeds.\n` +
           `\`Connect + Speak\` - Large amount. Needed by all music and recording commands (one of the primary features of the bot).\n` +
           `**Please give the bot sufficient permissions.**`
         const permEmbed = embeds.createEmbed()

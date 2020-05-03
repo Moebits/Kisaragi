@@ -84,7 +84,8 @@ export class Settings {
         "yt channels": null,
         "twitch channels": null,
         "global chat": null,
-        "linked": null
+        "linked": null,
+        "gallery": null
     }
 
     private readonly specialRoleSettings: Init = {

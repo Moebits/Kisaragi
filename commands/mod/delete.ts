@@ -14,19 +14,21 @@ export default class Delete extends Command {
             \`delete number\` - Deletes the number of messages, up to 1000
             \`delete number user id\` - Deletes the last x messages by the user
             \`delete number query\` - Deletes the last x messages containing the query
+            \`delete number text\` - Deletes only text messages
+            \`delete number image\` - Deletes only messages with images
             `,
             examples:
             `
             \`=>delete 1000\`
             \`=>delete 100 badWord\`
             `,
-            aliases: ["del", "prune", "purge"],
+            aliases: ["del", "purge"],
             guildOnly: true,
             cooldown: 10
         })
     }
 
-    public bulkDelete = async (num: number, message: Message, userID: boolean, search: boolean, args: string[], query: string) => {
+    public bulkDelete = async (num: number, message: Message, userID: boolean, search: boolean, args: string[], query: string, text: boolean, image: boolean) => {
         const msgArray: string[] = []
         if (userID) {
             const messages = await message.channel.messages.fetch({limit: num}).then((c) => c.map((m: Message) => m))
@@ -46,6 +48,16 @@ export default class Delete extends Command {
                 }
             }
             await message.channel.bulkDelete(msgArray, true)
+        } else if (text) {
+            const messages = await message.channel.messages.fetch({limit: num}).then((c) => c.map((m: Message) => m))
+            for (let i = 0; i < messages.length; i++) {
+                if (!message.attachments.size) msgArray.push(messages[i].id)
+            }
+        } else if (image) {
+            const messages = await message.channel.messages.fetch({limit: num}).then((c) => c.map((m: Message) => m))
+            for (let i = 0; i < messages.length; i++) {
+                if (message.attachments.size) msgArray.push(messages[i].id)
+            }
         } else {
             await message.channel.bulkDelete(num, true)
         }
@@ -61,10 +73,16 @@ export default class Delete extends Command {
         const num: number = Number(args[1]) + 2
         let userID = false
         let search = false
+        let text = false
+        let image = false
         let query = ""
         if (args[2]) {
             if (args[2].match(/\d+/g)) {
                 userID = true
+            } else if (args[2].match(/text/i)) {
+                text = true
+            } else if (args[2].match(/image/i)) {
+                image = true
             } else {
                 query = Functions.combineArgs(args, 2)
                 search = true
@@ -86,13 +104,13 @@ export default class Delete extends Command {
         }
 
         if (num <= 100) {
-            await this.bulkDelete(num, message, userID, search, args, query)
+            await this.bulkDelete(num, message, userID, search, args, query, text, image)
         } else {
             const iterations = Math.floor(num / 100)
             for (let i = 0; i <= iterations; i++) {
-                await this.bulkDelete(100, message, userID, search, args, query)
+                await this.bulkDelete(100, message, userID, search, args, query, text, image)
             }
-            await this.bulkDelete(num % 100, message, userID, search, args, query)
+            await this.bulkDelete(num % 100, message, userID, search, args, query, text, image)
         }
 
         if (userID) {
@@ -106,6 +124,12 @@ export default class Delete extends Command {
         } else if (search) {
             delEmbed
             .setDescription(`Deleted the last **${args[1]}** messages containing **${query}**!`)
+        } else if (text) {
+            delEmbed
+            .setDescription(`Deleted the last **${args[1]}** text messages!`)
+        } else if (image) {
+            delEmbed
+            .setDescription(`Deleted the last **${args[1]}** messages containing images!`)
         } else {
             delEmbed
             .setDescription(`Deleted **${args[1]}** messages in this channel!`)

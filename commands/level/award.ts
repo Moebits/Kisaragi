@@ -34,12 +34,12 @@ export default class Award extends Command {
         let users = input.match(/(?<=<@)(.*?)(?=>)/g)?.map((u) => u)
         if (!users) users = input.match(/\d{17,}/g)?.map((u) => u)
         if (!users) return message.reply(`You must mention a user ${discord.getEmoji("kannaFacepalm")}`)
-        const newMsg = input
+        let newMsg = input
+        users = Functions.removeDuplicates(users)
         for (let i = 0; i < users.length; i++) {
-            newMsg.replace(users[i], "")
+            newMsg = newMsg.replace(users[i], "")
         }
         const amount = newMsg.match(/(?<!<@)(^-?\d+|-?\d+$|(?<= )-?\d+)(?!>)/)?.[0] ?? 0
-        users = Functions.removeDuplicates(users)
         for (let i = 0; i < users.length; i++) {
             try {
                 await points.giveScore(users[i].replace("!", ""), Number(amount))

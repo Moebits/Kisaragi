@@ -46,7 +46,7 @@ export default class Zero extends Command {
         .setAuthor("zero", "https://image.flaticon.com/icons/png/512/594/594712.png")
         .setTitle(`**Point Reset** ${discord.getEmoji("kaosWTF")}`)
         .setDescription(
-            `${discord.getEmoji("star")}Your points were reset back to **0**!`
+            `${discord.getEmoji("star")}Reset <@${user}>'s points back to **0**!`
         )
         return message.channel.send(zeroEmbed)
     }

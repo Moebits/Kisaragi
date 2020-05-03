@@ -98,7 +98,7 @@ export default class Logs extends Command {
                 .setDescription(`${discord.getEmoji("star")}Logging settings were wiped!`)
                 return msg.channel.send(responseEmbed)
             }
-            if (msg.content.toLowerCase() === "delete") {
+            if (msg.content.toLowerCase().startsWith("delete")) {
                 let desc = ""
                 if (/message/i.test(msg.content)) {
                     await sql.updateColumn("logs", "message log", null)

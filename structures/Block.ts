@@ -1,7 +1,8 @@
 import {Message} from "discord.js"
+import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
+import {Permission} from "./Permission"
 import {SQLQuery} from "./SQLQuery"
-
 export class Block {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
     public blockWord = async () => {
@@ -61,5 +62,52 @@ export class Block {
 
     public containsInvite = () => {
         return /(?<=(discord.gg|discordapp.com\/invite)\/)[a-z0-9]+/gi.test(this.message.content)
+    }
+
+    public everyone = async () => {
+        const msg = this.message
+        const embeds = new Embeds(this.discord, msg)
+        const sql = new SQLQuery(msg)
+        const perms = new Permission(this.discord, msg)
+        if (msg.content.includes("@everyone") || msg.content.includes("@here")) {
+          if (msg.member?.hasPermission("MENTION_EVERYONE") || await perms.checkMod(true)) return
+          const toggle = await sql.fetchColumn("blocks", "everyone ban toggle")
+          if (toggle === "on") {
+            try {
+              await msg.member?.ban({reason: "Mentioning everyone", days: 7})
+              const banEmbed = embeds.createEmbed()
+              .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+              .setTitle(`**Member Banned** ${this.discord.getEmoji("kannaFU")}`)
+              .setDescription(`${this.discord.getEmoji("star")}_Successfully banned <@${msg.author.id}> for reason:_ **Mentioning everyone without having the permission to do so.**`)
+              msg.channel.send(banEmbed)
+              const dmEmbed = embeds.createEmbed()
+              dmEmbed
+              .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+              .setTitle(`**You Were Banned** ${this.discord.getEmoji("kannaFU")}`)
+              .setDescription(`${this.discord.getEmoji("star")}_You were banned from ${msg.guild!.name} for reason:_ **Mentioning everyone without having the permission to do so.**`)
+              const dm = await msg.author.createDM()
+              await msg.author.send(dmEmbed).catch(() => null)
+            } catch {
+              // Do nothing
+            }
+          }
+        }
+    }
+
+    public gallery = async () => {
+        const message = this.message
+        const sql = new SQLQuery(message)
+        if (message.attachments.size) return
+        const gallery = await sql.fetchColumn("special channels", "gallery")
+        if (!gallery) return
+        if (gallery.includes(message.channel.id)) {
+            try {
+                await message.delete()
+                const rep = await message.reply(`You can only post images in this channel! ${this.discord.getEmoji("raphiOMG")}`)
+                rep.delete({timeout: 3000})
+            } catch {
+                return message.channel.send(`I need the **Manage Messages** permission to enforce gallery channels ${this.discord.getEmoji("kannaFacepalm")}`)
+            }
+        }
     }
 }

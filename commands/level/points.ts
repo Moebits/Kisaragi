@@ -168,8 +168,7 @@ export default class Points extends Command {
 
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
-            return
+            return msg.channel.send(responseEmbed)
         }
 
         embeds.createPrompt(levelPrompt)

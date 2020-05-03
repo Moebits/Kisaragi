@@ -98,6 +98,10 @@ export default class MessageReactionAdd {
             if (reaction.emoji.id === starEmoji.match(/\d+/)?.[0] || reaction.emoji.toString() === starEmoji) {
                 const starThreshold = await sql.fetchColumn("special channels", "star threshold")
                 if (!(reaction.count >= Number(starThreshold))) return
+                let active = await SQLQuery.redisGet("starboard")
+                active = JSON.parse(active)
+                if (!active) active = []
+                if (active.includes(reaction.message.id)) return
                 const starChannelID = await sql.fetchColumn("special channels", "starboard")
                 const starChannel = reaction.message.guild.channels.cache.get(starChannelID) as TextChannel
                 const content = reaction.message.embeds?.[0] ? reaction.message.embeds[0].description : reaction.message.content
@@ -110,7 +114,9 @@ export default class MessageReactionAdd {
                 .setDescription(`[**Message Link**](${reaction.message.url})\n` + content)
                 .setImage(reaction.message.attachments.first() ? reaction.message.attachments.first()!.url : "")
                 .setFooter(`${reaction.message.author.tag} • #${(reaction.message.channel as TextChannel).name}`, reaction.message.author.displayAvatarURL({format: "png", dynamic: true}))
-                await starChannel?.send(starEmbed)
+                const msg = await starChannel?.send(starEmbed)
+                active.push(msg.id)
+                await SQLQuery.redisSet("starboard", JSON.stringify(active))
             }
         }
         starboard(reaction)
