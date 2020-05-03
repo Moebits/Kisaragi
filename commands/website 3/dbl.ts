@@ -31,7 +31,7 @@ export default class DiscordBotList extends Command {
         const embeds = new Embeds(discord, message)
         const headers = {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36",
-            "cookie": process.env.TOGGG_COOKIE
+            "cookie": process.env.TOGG_COOKIE
         }
         const search = Functions.combineArgs(args, 1)
         const data = await axios.get(`https://top.gg/api/bots?search=${search}`, {headers}).then((r) => r.data.results)
