@@ -207,13 +207,33 @@ export default class MessageEvent {
       const pathFind = await cmdFunctions.findCommand(cmd)
       if (!pathFind) return cmdFunctions.noCommand(cmd)
       const cmdPath = new (require(pathFind).default)(this.discord, message)
-      sql.usageStatistics(pathFind)
 
       if (cmdPath.options.guildOnly) {
         if (message.channel.type === "dm") return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
       }
 
+      if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild.me!)?.has(["MANAGE_MESSAGES", "SEND_MESSAGES", "ADD_REACTIONS", "EMBED_LINKS", "ATTACH_FILES", "USE_EXTERNAL_EMOJIS", "CONNECT", "SPEAK", "READ_MESSAGE_HISTORY"])) {
+        let setEmbed = false
+        if ((message.channel as TextChannel).permissionsFor(message.guild.me!)?.has(["EMBED_LINKS"])) setEmbed = true
+        const permMessage =
+          `The bot is missing permissions that break or prevent the execution of most commands, if not all of them.${setEmbed ? "" : " " + this.discord.getEmoji("kannaFacepalm")}\n` +
+          `\`Send Messages\` - Um... everything? If you can see this message, the bot has this one at least.\n` +
+          `\`Embed Links\` - Everything. Needed to post message embeds.\n` +
+          `\`Use External Emojis\` - Everything. Needed to post and react with custom emojis (all emojis are custom).\n` +
+          `\`Add Reactions + Read Message History\` - Large amount. Needed to add reactions to the bots own messages.\n` +
+          `\`Manage Messages\` - Large amount. Needed to bulk delete the bots own reactions (help command), delete your reactions, and delete your response to a reaction (page scrolling, page jumps).\n` +
+          `\`Attach Files\` - Moderate amount. Needed to upload downloaded content (downloading images from embeds).\n` +
+          `\`Connect + Speak\` - Moderate amount. Needed by all music and recording commands (one of the primary features of the bot).\n` +
+          `**Please give the bot sufficient permissions.**`
+        const permEmbed = embeds.createEmbed()
+        permEmbed
+        .setTitle(`**Missing Permissions** ${this.discord.getEmoji("kannaFacepalm")}`)
+        .setDescription(permMessage)
+        return setEmbed ? message.channel.send(permEmbed) : message.channel.send(permMessage)
+      }
+
       const cooldown = new Cooldown(this.discord, message)
+      sql.usageStatistics(pathFind)
       const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown, this.cooldowns)
       if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return message.reply({embed: onCooldown})
 
