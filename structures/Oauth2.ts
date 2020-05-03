@@ -112,7 +112,7 @@ export class Oauth2 {
             }
             // @ts-ignore
             await post.reply(text)
-            await Functions.timeout(100)
+            await Functions.timeout(1000)
             const newDesc = await this.redditCmd.getSubmissions(reddit, [postID], false, true)
             await msg.edit(msg.embeds[0].setDescription(newDesc))
             const rep2 = await msg.channel.send(`<@${user.id}>, Commented on this post! ${this.discord.getEmoji("gabYes")}`)
