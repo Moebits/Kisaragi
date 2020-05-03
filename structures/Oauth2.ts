@@ -112,11 +112,10 @@ export class Oauth2 {
             }
             // @ts-ignore
             await post.reply(text)
-            const rep2 = await msg.channel.send(`<@${user.id}>, Commented on this post! ${this.discord.getEmoji("gabYes")}`)
-            rep2.delete({timeout: 5000})
-            await Functions.timeout(5000)
             const newDesc = await this.redditCmd.getSubmissions(reddit, [postID], false, true)
             await msg.edit(msg.embeds[0].setDescription(newDesc))
+            const rep2 = await msg.channel.send(`<@${user.id}>, Commented on this post! ${this.discord.getEmoji("gabYes")}`)
+            rep2.delete({timeout: 3000})
         })
 
         save.on("collect", async (reaction, user) => {
