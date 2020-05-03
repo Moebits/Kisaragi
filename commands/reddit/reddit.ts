@@ -36,7 +36,7 @@ export default class Reddit extends Command {
         })
     }
 
-    public getSubmissions = async (reddit: snoowrap, postIDS: string[], imagesOnly?: boolean) => {
+    public getSubmissions = async <T extends boolean | undefined = false>(reddit: snoowrap, postIDS: string[], imagesOnly?: boolean, descOnly?: T): Promise<T extends true ? string : MessageEmbed[]> => {
         const discord = this.discord
         const embeds = new Embeds(this.discord, this.message)
         const redditArray: MessageEmbed[] = []
@@ -46,7 +46,7 @@ export default class Reddit extends Command {
             const post = await reddit.getSubmission(postIDS[i]).fetch() as snoowrap.Submission
             if (imagesOnly && post.selftext) continue
             if (post.over_18) {
-                if (discord.checkMuted(this.message)) return []
+                if (discord.checkMuted(this.message)) return [] as any
                 if (!this.perms.checkNSFW(true)) continue
             }
             const commentArray: string[] = []
@@ -70,9 +70,10 @@ export default class Reddit extends Command {
             )
             .setImage(post.url)
             .setThumbnail(post.thumbnail.startsWith("https") ? post.thumbnail : `https://www.redditstatic.com/icon.png`)
+            if (descOnly) return redditEmbed.description as any
             redditArray.push(redditEmbed)
         }
-        return redditArray
+        return redditArray as any
     }
 
     public noResults = async () => {

@@ -59,8 +59,8 @@ export class Oauth2 {
             const post = await reddit.getSubmission(postID).fetch() as snoowrap.Submission
             // @ts-ignore
             await post.upvote()
-            const newEmbed = await this.redditCmd.getSubmissions(reddit, [postID])
-            await msg.edit(newEmbed[0])
+            const newDesc = await this.redditCmd.getSubmissions(reddit, [postID], false, true)
+            await msg.edit(msg.embeds[0].setDescription(newDesc))
             const rep2 = await msg.channel.send(`<@${user.id}>, Upvoted this post! ${this.discord.getEmoji("aquaUp")}`)
             rep2.delete({timeout: 3000})
         })
@@ -79,8 +79,8 @@ export class Oauth2 {
             const post = await reddit.getSubmission(postID).fetch() as snoowrap.Submission
             // @ts-ignore
             await post.downvote()
-            const newEmbed = await this.redditCmd.getSubmissions(reddit, [postID])
-            await msg.edit(newEmbed[0])
+            const newDesc = await this.redditCmd.getSubmissions(reddit, [postID], false, true)
+            await msg.edit(msg.embeds[0].setDescription(newDesc))
             const rep2 = await msg.channel.send(`<@${user.id}>, Downvoted this post! ${this.discord.getEmoji("sagiriBleh")}`)
             rep2.delete({timeout: 3000})
         })
@@ -112,8 +112,9 @@ export class Oauth2 {
             }
             // @ts-ignore
             await post.reply(text)
-            const newEmbed = await this.redditCmd.getSubmissions(reddit, [postID])
-            await msg.edit(newEmbed[0])
+            await Functions.timeout(100)
+            const newDesc = await this.redditCmd.getSubmissions(reddit, [postID], false, true)
+            await msg.edit(msg.embeds[0].setDescription(newDesc))
             const rep2 = await msg.channel.send(`<@${user.id}>, Commented on this post! ${this.discord.getEmoji("gabYes")}`)
             rep2.delete({timeout: 3000})
         })
@@ -168,8 +169,8 @@ export class Oauth2 {
                 rep2 = await msg.channel.send(`<@${user.id}>, Subscribed to this subreddit! ${this.discord.getEmoji("aquaUp")}`)
             }
             rep2.delete({timeout: 3000})
-            const newEmbed = await this.redditCmd.getSubmissions(reddit, [postID])
-            await msg.edit(newEmbed[0])
+            const newDesc = await this.redditCmd.getSubmissions(reddit, [postID], false, true)
+            await msg.edit(msg.embeds[0].setDescription(newDesc))
         })
     }
 
