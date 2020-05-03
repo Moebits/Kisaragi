@@ -18,6 +18,7 @@ export default class Eval extends Command {
   public clean = (text: string) => {
     if (!text) return text
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203))
+    .replace(process.env.TOKEN, "insert token here lol")
   }
 
   public run = async (args: string[]) => {
