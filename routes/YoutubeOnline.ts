@@ -42,14 +42,15 @@ export class YoutubeOnline {
             res.status(200).end()
             if (!exists || req.body.refresh) {
                 new Promise((resolve) => {
-                    const interval = setInterval(async () => {
+                    const reSub = async () => {
                         const config = await SQLQuery.fetchColumn("yt", "config", "channel id", req.body.channel)
                         if (!config) {
-                            clearInterval(interval)
                             resolve()
                         }
                         yt.subscribe(req.body.channel)
-                    }, 432000)
+                        setTimeout(reSub, 432000)
+                    }
+                    setTimeout(reSub, 432000)
                 })
             }
         })

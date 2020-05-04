@@ -47,21 +47,12 @@ export class CommandFunctions {
             const cmd = command[i].split(" ")
             const timeout = Number(frequency[i]) * 3600000
             let rawTimeLeft = await sql.fetchColumn("auto", "timeout")
+            if (!rawTimeLeft) rawTimeLeft = []
             let timeLeft = timeout
-            if (rawTimeLeft) {
-                if (rawTimeLeft[i]) {
-                    let remaining = Number(rawTimeLeft[i])
-                    if (remaining <= 0) remaining = timeout
-                    timeLeft = remaining
-                } else {
-                    rawTimeLeft[i] = timeout
-                    await sql.updateColumn("auto", "timeout", rawTimeLeft)
-                    timeLeft = timeout
-                }
-            } else {
-                rawTimeLeft = [timeout]
-                await sql.updateColumn("auto", "timeout", rawTimeLeft)
-                timeLeft = timeout
+            if (rawTimeLeft[i]) {
+                let remaining = Number(rawTimeLeft[i])
+                if (remaining <= 0) remaining = timeout
+                timeLeft = remaining
             }
             const guildMsg = await guildChannel.messages.fetch({limit: 1}).then((m) => m.first())
             const update = async () => {
