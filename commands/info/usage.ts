@@ -93,7 +93,7 @@ export default class Usage extends Command {
                     const name = discord.guilds.cache.get(Object.keys(usage)[i])?.name
                     if (!name) continue
                     if (Object.keys(usage)[i] === "total") Object.keys(usage)[i] = "Total"
-                    description += `${discord.getEmoji("star")}**${name}**\`${Object.keys(usage)[i]}\`: **${Object.values(usage)[i] ?? 0}** uses\n`
+                    description += `${name} \`(${Object.keys(usage)[i]})\`: **${Object.values(usage)[i] ?? 0}** uses\n`
                 }
             } else if (args[1] === "user") {
                 const users = await SQLQuery.selectColumn("misc", "user id")
@@ -109,7 +109,7 @@ export default class Usage extends Command {
                     const name = discord.users.cache.get(Object.keys(usage)[i])?.tag
                     if (!name) continue
                     if (Object.keys(usage)[i] === "total") Object.keys(usage)[i] = "Total"
-                    description += `${discord.getEmoji("star")}**${name}**\`${Object.keys(usage)[i]}\`: **${Object.values(usage)[i] ?? 0}** uses\n`
+                    description += `${name} \`(${Object.keys(usage)[i]})\`: **${Object.values(usage)[i] ?? 0}** uses\n`
                 }
             }
             const splits = Util.splitMessage(description, {maxLength: 1800, char: "\n"})

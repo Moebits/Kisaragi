@@ -560,6 +560,8 @@ export class SQLQuery {
         await SQLQuery.insertInto("misc", "user id", this.message.author.id)
       } catch {
         // Do nothing
+      } finally {
+        await SQLQuery.updateColumn("misc", "username", this.message.author.tag, "user id", this.message.author.id)
       }
       userUsage = {}
     } else {
