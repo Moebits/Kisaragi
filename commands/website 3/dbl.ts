@@ -12,12 +12,14 @@ export default class DiscordBotList extends Command {
             description: "Searches for bots on top.gg (discord bot list).",
             help:
             `
+            _Note: You can refine the search by specifying a certain \`property:value\`. Example: username:kisaragi, prefix:=>, owners:ID_
             \`dbl\` - Search for random bots.
             \`dbl query\` - Searches for bots with the query.
             `,
             examples:
             `
             \`=>dbl anime\`
+            \`=>dbl prefix:+ shortdesc:anime\`
             `,
             aliases: ["topgg", "discordbotlist"],
             random: "none",
@@ -34,7 +36,7 @@ export default class DiscordBotList extends Command {
             "cookie": process.env.TOPGG_COOKIE
         }
         const search = Functions.combineArgs(args, 1)
-        const data = await axios.get(`https://top.gg/api/bots?search=${search}&limit=50&sort=date`, {headers}).then((r) => r.data.results)
+        const data = await axios.get(`https://top.gg/api/bots?search=${encodeURI(search)}&limit=50&sort=date`, {headers}).then((r) => r.data.results)
 
         const botArray: MessageEmbed[] = []
         const max = data.length < 25 ? data.length : 25
