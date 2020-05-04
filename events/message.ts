@@ -64,7 +64,7 @@ export default class MessageEvent {
             const globalChannel = message.guild.channels.cache.find((c) => c.id === globalChat)
             if (message.channel.id === globalChannel?.id) {
               if (globalChatCool.has(message.author.id)) return message.reply(`**global chat** is under a 3 second cooldown! ${this.discord.getEmoji("kannaHungry")}`)
-              if (message.content.length > 100) return message.reply(`There is a limit of 100 characters on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
+              if (message.content.length > 300) return message.reply(`There is a limit of 300 characters on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
               if (message.mentions.users.size) return message.reply(`You can't mention anyone on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
               if (block.containsInvite()) return message.reply(`You can't post invite links on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
               if (message.attachments.first()) message.content = message.attachments.first()!.url
