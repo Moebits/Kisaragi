@@ -103,10 +103,10 @@ export class Block {
         if (gallery.includes(message.channel.id)) {
             try {
                 await message.delete()
-                const rep = await message.reply(`You can only post images in this channel! ${this.discord.getEmoji("raphiOMG")}`)
+                const rep = await message.reply(`This is a gallery channel, you can only post images here!`)
                 rep.delete({timeout: 3000})
             } catch {
-                return message.channel.send(`I need the **Manage Messages** permission to enforce gallery channels ${this.discord.getEmoji("kannaFacepalm")}`)
+                return message.channel.send(`I need the **Manage Messages** permission to delete text messages in gallery channels ${this.discord.getEmoji("kannaFacepalm")}`)
             }
         }
     }

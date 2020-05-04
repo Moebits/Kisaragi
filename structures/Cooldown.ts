@@ -26,8 +26,8 @@ export class Cooldown {
                 const cooldownEmbed = this.embeds.createEmbed()
                 const timeLeft = (expirationTime - now) / 1000
                 cooldownEmbed
-                .setTitle(`**Command Cooldown!** ${this.discord.getEmoji("kannaHungry")}`)
-                .setDescription(`${this.discord.getEmoji("star")}**${cmd}** is on cooldown! Wait **${timeLeft.toFixed(2)}** more seconds before trying again.`)
+                .setTitle(`**Command Rate Limit!** ${this.discord.getEmoji("kannaHungry")}`)
+                .setDescription(`${this.discord.getEmoji("star")}You hit the rate limit for **${cmd}**! Wait **${timeLeft.toFixed(2)}** seconds before trying again.`)
                 return cooldownEmbed
             }
         }
@@ -37,8 +37,8 @@ export class Cooldown {
                 const cooldownEmbed = this.embeds.createEmbed()
                 const timeLeft = (expirationTime - now) / 1000
                 cooldownEmbed
-                .setTitle(`**Command Cooldown!** ${this.discord.getEmoji("kannaHungry")}`)
-                .setDescription(`${this.discord.getEmoji("star")}Cooldown is **active**! Wait **${timeLeft.toFixed(2)}** more seconds before trying again.`)
+                .setTitle(`**Global Rate Limit!** ${this.discord.getEmoji("kannaHungry")}`)
+                .setDescription(`${this.discord.getEmoji("star")}You hit the global rate limit! Wait **${timeLeft.toFixed(2)}** seconds before trying again.`)
                 return cooldownEmbed
             }
         }

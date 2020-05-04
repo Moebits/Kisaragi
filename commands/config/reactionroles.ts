@@ -230,10 +230,10 @@ export default class ReactionRoles extends Command {
                             editDesc += `${discord.getEmoji("star")}State is **on**!\n`
                         }
                         if (reaction.message && reaction.emoji) {
-                            const foundMsg = await discord.fetchMessage(message, nMessage)
+                            const foundMsg = await discord.fetchMessage(message, reaction.message)
                             const id = nEmoji.match(/\d+/)?.[0] ?? nEmoji
-                            if (!foundMsg?.reactions.cache.has(id)) {
-                                await foundMsg?.react(id)
+                            if (foundMsg && !foundMsg.reactions.cache.has(id)) {
+                                await foundMsg.react(id)
                                 editDesc += `${discord.getEmoji("star")}This message didn't have this reaction, so I added it!\n`
                             }
                         }
@@ -332,8 +332,8 @@ export default class ReactionRoles extends Command {
             if (setMessage && setEmoji) {
                 const foundMsg = await discord.fetchMessage(message, newMessage)
                 const id = newEmoji.match(/\d+/)?.[0] ?? newEmoji
-                if (!foundMsg?.reactions.cache.has(id)) {
-                    await foundMsg?.react(id)
+                if (foundMsg && !foundMsg.reactions.cache.has(id)) {
+                    await foundMsg.react(id)
                     description += `${discord.getEmoji("star")}This message didn't have this reaction, so I added it!\n`
                 }
             }
