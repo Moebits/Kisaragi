@@ -19,6 +19,7 @@ export default class Event extends Command {
       const message = this.message
       const perms = new Permission(discord, message)
       if (!perms.checkBotDev()) return
+      if (!message.guild || !message.member) return
 
       const event = Functions.combineArgs(args, 1).trim()
       switch (event) {
@@ -41,7 +42,7 @@ export default class Event extends Command {
             discord.emit(event, message)
             break
         case "messageDeleteBulk":
-            const col = new Collection()
+            const col = new Collection() as any
             col.set(message.id, message)
             discord.emit(event, col)
             break
@@ -72,7 +73,7 @@ export default class Event extends Command {
             discord.emit(event, discord.getEmoji("chinoSmug"))
             break
         default:
-            discord.emit(event)
+            discord.emit(event as any)
       }
       return message.reply("Triggered the event!")
   }

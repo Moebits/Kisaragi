@@ -70,7 +70,7 @@ const start = async (): Promise<void> => {
         const eventName = file.split(".")[0]
         Logger.log(`Loading Event: ${eventName}`)
         const event = new (require(path.join(__dirname, `./events/${eventName}`)).default)(discord)
-        discord.on(eventName, (...args: any) => event.run(...args))
+        discord.on(eventName as any, (...args: any) => event.run(...args))
     })
 
     Logger.log(`Loaded a total of ${commandCounter} commands.`)

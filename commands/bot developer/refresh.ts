@@ -52,7 +52,7 @@ export default class Reload extends Command {
               delete require.cache[require.resolve(`../../events/${events[i].slice(0, -3)}`)]
               const event = new (require(`../../events/${events[i].slice(0, -3)}`).default)(discord)
               discord.removeAllListeners(events[i].slice(0, -3))
-              discord.on(events[i].slice(0, -3), (...args: any) => event.run(...args))
+              discord.on(events[i].slice(0, -3) as any, (...args: any) => event.run(...args))
             } catch {
               continue
             }
