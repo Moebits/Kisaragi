@@ -11,6 +11,7 @@ export default class GuildMemberRemove {
     public run = async (member: GuildMember) => {
         const discord = this.discord
         const firstMsg = await this.discord.fetchFirstMessage(member.guild) as Message
+        if (!firstMsg) return
         const sql = new SQLQuery(firstMsg)
         if (member.guild.me?.permissions.has("MANAGE_GUILD")) {
             const bans = await member.guild.fetchBans()

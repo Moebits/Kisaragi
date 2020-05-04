@@ -32,7 +32,7 @@ export default class NumberCommand extends Command {
 
         const gameLoop = async () => {
             try {
-                const collected = await message.channel.awaitMessages(filter, {max: 1, time: 60000, errors: ["time"]}).then((c) => c.first()?.content.trim().toLowerCase())
+                const collected = await message.channel.awaitMessages(filter, {max: 1, time: 60000}).then((c) => c.first()?.content.trim().toLowerCase())
                 if (!collected) return message.reply(`Quit, no message was sent ${discord.getEmoji("kannaFacepalm")}`)
                 if (!Number(collected)) {
                     await message.channel.send(`This is not a number! Try again. Type **quit** to give up.`)
@@ -44,7 +44,7 @@ export default class NumberCommand extends Command {
                 } else if (Number(collected) < num) {
                     await message.channel.send(`That number is too small! Type **quit** to give up.`)
                     return gameLoop()
-                } else if (Number(collected) < num) {
+                } else if (Number(collected) > num) {
                     await message.channel.send(`That number is too big! Type **quit** to give up.`)
                     return gameLoop()
                 }
