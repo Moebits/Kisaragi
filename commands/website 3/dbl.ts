@@ -34,10 +34,11 @@ export default class DiscordBotList extends Command {
             "cookie": process.env.TOPGG_COOKIE
         }
         const search = Functions.combineArgs(args, 1)
-        const data = await axios.get(`https://top.gg/api/bots?search=${search}`, {headers}).then((r) => r.data.results)
+        const data = await axios.get(`https://top.gg/api/bots?search=${search}&limit=50&sort=date`, {headers}).then((r) => r.data.results)
 
         const botArray: MessageEmbed[] = []
-        for (let i = 0; i < data.length; i++) {
+        const max = data.length < 25 ? data.length : 25
+        for (let i = 0; i < max; i++) {
             const bot = data[i]
             const owner = await discord.users.fetch(bot.owners[0])
             const website = bot.website ? `[**Website**](${bot.website})\n` : ""
