@@ -73,6 +73,7 @@ export class Points {
                 const user = JSON.parse(scores[i])
                 if (user.id === id) {
                     user.score = 0
+                    user.level = 0
                     scores[i] = JSON.stringify(user)
                     await sql.updateColumn("points", "scores", scores)
                 }
@@ -100,8 +101,12 @@ export class Points {
 
                     if (newLevel > user.level) {
                         let levelUpMessage = await sql.fetchColumn("points", "level message")
-                        levelUpMessage = levelUpMessage.replace("user", `<@${this.message.author!.id}>`).replace("tag", `**${this.message.author.tag}**`).replace("name", `**${this.message.author.username}**`)
+                        levelUpMessage = levelUpMessage.replace("user", `<@${user.id}>`)
                         levelUpMessage = levelUpMessage.replace("newlevel", `**${newLevel}**`).replace("newlevel", `**${newLevel}**`).replace("totalpoints", `**${user.score}**`)
+                        if (levelUpMessage.includes("tag") || levelUpMessage.includes("name")) {
+                            const userObj = await this.discord.users.fetch(user.id)
+                            levelUpMessage = levelUpMessage.replace("name", userObj.username).replace("tag", userObj.tag)
+                        }
                         user.level = newLevel
                         scores[i] = JSON.stringify(user)
                         await sql.updateColumn("points", "scores", scores)

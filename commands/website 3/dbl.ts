@@ -13,7 +13,7 @@ export default class DiscordBotList extends Command {
             help:
             `
             _Note: You can refine the search by specifying a certain \`property:value\`. Example: username:kisaragi, prefix:=>, owners:ID_
-            \`dbl\` - Search for random bots.
+            \`dbl\` - Search for new bots.
             \`dbl query\` - Searches for bots with the query.
             `,
             examples:
@@ -62,7 +62,7 @@ export default class DiscordBotList extends Command {
                 `${discord.getEmoji("star")}_Prefix:_ **${bot.prefix.replace(/\*/, "\*")}**\n` +
                 `${discord.getEmoji("star")}_Upvotes:_ **${bot.points}**\n` +
                 `${discord.getEmoji("star")}_Monthly Upvotes:_ **${bot.monthlyPoints}**\n` +
-                `${discord.getEmoji("star")}_Servers:_ **${bot.server_count}**\n` +
+                `${discord.getEmoji("star")}_Servers:_ **${bot.server_count ?? 0}**\n` +
                 `${discord.getEmoji("star")}_Added:_ \`${Functions.formatDate(bot.date)}\`\n` +
                 `${discord.getEmoji("star")}_Tags:_ ${bot.tags[0] ? `**${bot.tags.join(", ")}**` : "None"}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${bot.shortdesc.replace(/\*/, "\*")}\n` +
