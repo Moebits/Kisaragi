@@ -11,6 +11,7 @@ export default class Raw {
     constructor(private readonly discord: Kisaragi) {}
 
     public run = async (event: any) => {
+        /*
         if (!events.hasOwnProperty(event.t)) return
         const {d: data} = event
         const user = this.discord.users.cache.get(data.user_id)
@@ -26,7 +27,7 @@ export default class Raw {
         if (!reaction) {
         const emoji = new GuildEmoji(this.discord, data.emoji, this.discord.guilds.cache.get(data.guild_id) as Guild)
         reaction = new MessageReaction(this.discord, emoji, message)
-    }
-        this.discord.emit(events[event.t], reaction, user)
+        }
+        this.discord.emit(events[event.t], reaction, user)*/
     }
 }
