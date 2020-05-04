@@ -24,7 +24,7 @@ export default class MessageReactionRemove {
                 if (test) {
                     const member = reaction.message.guild?.members.cache.get(user.id)
                     const exists = member?.roles.cache.get(reactionrole.role)
-                    if (exists) return
+                    if (!exists) return
                     try {
                         const roleName = reaction.message.guild?.roles.cache.get(reactionrole.role)?.name
                         await reaction.message.member?.roles.remove(reactionrole.role)
@@ -36,7 +36,8 @@ export default class MessageReactionRemove {
                             .setDescription(`${this.discord.getEmoji("star")}Removed the role **${roleName}** in the guild **${reaction.message.guild?.name}**`)
                             await user.send(dmEmbed).catch(() => null)
                         }
-                    } catch {
+                    } catch (e) {
+                        console.log(e)
                         const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message)
                         try {
                             await foundMsg?.channel.send(`I need the **Manage Roles** permission in order to remove this reaction role ${this.discord.getEmoji("kannaFacepalm")}`)

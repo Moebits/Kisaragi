@@ -78,7 +78,8 @@ export default class MessageReactionAdd {
                             .setDescription(`${this.discord.getEmoji("star")}Added the role **${roleName}** in the guild **${reaction.message.guild?.name}**`)
                             await user.send(dmEmbed).catch(() => null)
                         }
-                    } catch {
+                    } catch (e) {
+                        console.log(e)
                         const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message)
                         try {
                             await foundMsg?.channel.send(`I need the **Manage Roles** permission in order to add this reaction role ${this.discord.getEmoji("kannaFacepalm")}`)
