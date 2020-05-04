@@ -24,7 +24,7 @@ export default class MessageReactionRemove {
                 if (test) {
                     const member = reaction.message.guild?.members.cache.get(user.id)
                     const exists = member?.roles.cache.get(reactionrole.role)
-                    if (!exists) return
+                    if (exists) return
                     try {
                         const roleName = reaction.message.guild?.roles.cache.get(reactionrole.role)?.name
                         await reaction.message.member?.roles.remove(reactionrole.role)
