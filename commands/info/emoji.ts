@@ -80,14 +80,14 @@ export default class Emoji extends Command {
             } else  {
                 emojiFound = discord.emojis.cache.find((emoji: GuildEmoji) => emoji.name.toLowerCase() === emojiName.toLowerCase())
             }
-            if (emojiFound === undefined) {
+            if (!emojiFound) {
                 message.channel.send(emojiEmbed
                 .setDescription("Could not find that emoji!"))
                 return
             }
 
             message.channel.send(emojiEmbed
-            .setDescription(`**${emojiFound!.name} Emoji**`)
+            .setDescription(`**${emojiFound.name} Emoji**`)
             .setImage(this.getImage(emojiFound)))
             return
 
