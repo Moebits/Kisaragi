@@ -12,10 +12,13 @@ export default class GuildCreate {
     public run = async (guild: Guild) => {
         const discord = this.discord
         const message = await this.discord.fetchFirstMessage(guild) as Message
+        if (!message && guild.id !== "333949691962195969") {
+            await guild.leave()
+            return
+        }
         const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
-        const sql = new SQLQuery(message)
 
         const mainChannels = guild.channels.cache.filter((c) => {
             if (c.name.toLowerCase().includes("main") || c.name.toLowerCase().includes("general") || c.name.toLowerCase().includes("chat")) {
@@ -39,7 +42,7 @@ export default class GuildCreate {
         let mainChannel = mainChannels[index]
         if (!mainChannel) mainChannel = await discord.fetchFirstMessage(guild).then((m) => m?.channel) as TextChannel
 
-        if (!discord.checkMuted(message) || guild.id !== "333949691962195969") {
+        if (!discord.checkMuted(message)) {
             const bots = guild.members.cache.filter((m) => m.user.bot).size
             if (Math.floor(bots/guild.memberCount*1.0)*100 > 60) {
                 await guild.leave()
