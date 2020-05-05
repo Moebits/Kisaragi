@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, TextChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
@@ -37,7 +37,7 @@ export default class Delete extends Command {
                     msgArray.push(messages[i].id)
                 }
             }
-            await message.channel.bulkDelete(msgArray, true)
+            await (message.channel as TextChannel).bulkDelete(msgArray, true)
         } else if (search) {
             const messages = await message.channel.messages.fetch({limit: num}).then((c) => c.map((m: Message) => m))
             for (let i = 0; i < messages.length; i++) {
@@ -47,7 +47,7 @@ export default class Delete extends Command {
                     msgArray.push(messages[i].id)
                 }
             }
-            await message.channel.bulkDelete(msgArray, true)
+            await (message.channel as TextChannel).bulkDelete(msgArray, true)
         } else if (text) {
             const messages = await message.channel.messages.fetch({limit: num}).then((c) => c.map((m: Message) => m))
             for (let i = 0; i < messages.length; i++) {
@@ -59,7 +59,7 @@ export default class Delete extends Command {
                 if (message.attachments.size) msgArray.push(messages[i].id)
             }
         } else {
-            await message.channel.bulkDelete(num, true)
+            await (message.channel as TextChannel).bulkDelete(num, true)
         }
     }
 
