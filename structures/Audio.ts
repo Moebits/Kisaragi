@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, StreamDispatcher, User, VoiceConnection} from "discord.js"
+import {Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, StreamDispatcher, TextChannel, User, VoiceConnection} from "discord.js"
 import fs from "fs"
 import mp3Duration from "mp3-duration"
 import path from "path"
@@ -30,6 +30,16 @@ export class Audio {
     private readonly soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID)
     private readonly embeds = new Embeds(this.discord, this.message)
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+
+    public checkMusicPermissions = () => {
+        const message = this.message
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["MANAGE_MESSAGES", "CONNECT", "SPEAK"])) {
+            message.channel.send(`The bot needs the permissions **Manage Messages**, **Connect**, and **Speak** for all music commands. ${this.discord.getEmoji("kannaFacepalm")}`)
+            return false
+        } else {
+            return true
+        }
+    }
 
     public checkMusicPlaying = () => {
         const connection = this.message.guild?.voice?.connection

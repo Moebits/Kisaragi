@@ -41,6 +41,7 @@ export default class Play extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPermissions()) return
 
         let voiceChannel = message.guild?.voice?.channel!
         let connection = message.guild?.voice?.connection!

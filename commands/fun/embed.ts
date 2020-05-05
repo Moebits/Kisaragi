@@ -1,4 +1,4 @@
-import {Collection, Message, MessageEmbed, MessageReaction, User} from "discord.js"
+import {Collection, Message, MessageEmbed, MessageReaction, TextChannel, User} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -56,6 +56,10 @@ export default class Embed extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            message.channel.send(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
+            return
+        }
 
         const infoEmbed = embeds.createEmbed()
         let embed = new MessageEmbed()

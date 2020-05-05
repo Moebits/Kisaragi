@@ -35,6 +35,7 @@ export default class Loop extends Command {
             args.shift()
             return cmd.runCommand(message, ["play", "loop", ...args])
         }
+        if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         audio.loop()
         const queue = audio.getQueue() as any

@@ -28,6 +28,7 @@ export default class Volume extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
 
         if (!Number(args[1])) return this.message.reply(`What do you want to set the volume to ${discord.getEmoji("kannaCurious")}`)

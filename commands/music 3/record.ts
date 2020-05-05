@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, MessageAttachment, TextChannel} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -36,6 +36,10 @@ export default class Record extends Command {
         const fx = new AudioEffects(discord, message)
         const images = new Images(discord, message)
         const name = Functions.combineArgs(args, 1) ? Functions.combineArgs(args, 1) : message.author.tag
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["CONNECT", "SPEAK"])) {
+            await message.channel.send(`The bot needs the permissions **Connect** and **Speak** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
+            return
+        }
 
         let voiceChannel = message.guild?.voice?.channel!
         let connection = message.guild?.voice?.connection!

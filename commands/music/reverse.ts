@@ -42,6 +42,7 @@ export default class Reverse extends Command {
             args.shift()
             return cmd.runCommand(message, ["play", "reverse", ...args])
         }
+        if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         const rep = await message.reply("_Reversing the file, please wait..._")
         let file = ""

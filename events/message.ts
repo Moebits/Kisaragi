@@ -188,18 +188,16 @@ export default class MessageEvent {
         if (message.channel.type === "dm") return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds. ${this.discord.getEmoji("smugFace")}`)
       }
 
-      if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild.me!)?.has(["MANAGE_MESSAGES", "SEND_MESSAGES", "ADD_REACTIONS", "EMBED_LINKS", "ATTACH_FILES", "USE_EXTERNAL_EMOJIS", "CONNECT", "SPEAK", "READ_MESSAGE_HISTORY"])) {
+      if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild.me!)?.has(["SEND_MESSAGES", "READ_MESSAGE_HISTORY", "ADD_REACTIONS", "EMBED_LINKS", "ATTACH_FILES", "USE_EXTERNAL_EMOJIS", "CONNECT", "SPEAK"])) {
         let setEmbed = false
         if ((message.channel as TextChannel).permissionsFor(message.guild.me!)?.has(["EMBED_LINKS"])) setEmbed = true
         const permMessage =
           `Sorry, but the bot is missing permissions that break or prevent the execution of most commands, if not all of them.${setEmbed ? "" : " " + this.discord.getEmoji("kannaFacepalm")}\n` +
           `\`Send Messages\` - Um... everything? If you can see this message, the bot has this one at least.\n` +
-          `\`Use External Emojis\` - Everything. Needed to post and react with custom emojis (all emojis are custom).\n` +
-          `\`Embed Links\` - Everything. Needed to post message embeds.\n` +
-          `\`Add Reactions + Read Message History\` - Nearly everything. Needed to add reactions to the bots own messages.\n` +
-          `\`Manage Messages\` - Nearly everything. Needed to bulk delete the bots own reactions (page scrolling on help command), delete your reactions (all reaction embeds), and delete your response to a reaction (all reactions that take user input).\n` +
-          `\`Attach Files\` - Large amount. Needed by all image commands (uploading local files) and to download images from embeds.\n` +
-          `\`Connect + Speak\` - Large amount. Needed by all music and recording commands (one of the primary features of the bot).\n` +
+          `\`Use External Emojis\` - Needed to post and react with custom emojis.\n` +
+          `\`Embed Links\` - Needed to post message embeds.\n` +
+          `\`Add Reactions + Read Message History\` - Needed to add reactions to the bots own messages.\n` +
+          `\`Attach Files\` - Needed by all image commands (uploading local files) and to download images from embeds.\n` +
           `**Please give the bot sufficient permissions.**`
         const permEmbed = embeds.createEmbed()
         permEmbed

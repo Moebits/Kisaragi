@@ -1,4 +1,4 @@
-import {Message, MessageEmbed, MessageReaction, User} from "discord.js"
+import {Message, MessageEmbed, MessageReaction, TextChannel, User} from "discord.js"
 import minesweeper from "discord.js-minesweeper"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -111,6 +111,10 @@ export default class Minesweeper extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            await message.channel.send(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
+            return
+        }
 
         if (args[1] === "spoiler") {
             let rows = 5

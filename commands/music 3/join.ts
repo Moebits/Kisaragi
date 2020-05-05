@@ -50,7 +50,7 @@ export default class Join extends Command {
         try {
             await voiceChannel.join()
         } catch {
-            return message.reply("This is not a voice channel!")
+            return message.reply(`This is not a voice channel, or I don't have the **Connect** permission. ${discord.getEmoji("kannaFacepalm")}`)
         }
         return message.channel.send(`Joined the channel **<#${voiceChannel.id}>**!`)
     }

@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, TextChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -30,6 +30,10 @@ export default class Voice extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["CONNECT", "SPEAK"])) {
+            await message.channel.send(`The bot needs the permissions **Connect** and **Speak** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
+            return
+        }
 
         const voice = await sql.fetchColumn("config", "voice")
         if (!voice || voice === "off") {

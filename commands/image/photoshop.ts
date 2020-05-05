@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Collection, Message, MessageReaction, User} from "discord.js"
+import {Collection, Message, MessageReaction, TextChannel, User} from "discord.js"
 import fs from "fs"
 import jimp from "jimp"
 import path from "path"
@@ -168,6 +168,10 @@ export default class Photoshop extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
+        if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            message.channel.send(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
+            return
+        }
         const seed = Math.floor(Math.random() * 10000)
         let url: string | undefined
         if (args[1]) {

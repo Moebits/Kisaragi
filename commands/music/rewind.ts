@@ -28,6 +28,7 @@ export default class Rewind extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
 
         let rewind = args[1] ? args[1] : "0"

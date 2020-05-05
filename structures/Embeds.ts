@@ -1,4 +1,4 @@
-import {Collection, Emoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, User} from "discord.js"
+import {Collection, Emoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, TextChannel, User} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {CommandFunctions} from "./CommandFunctions"
@@ -212,6 +212,11 @@ export class Embeds {
         })
 
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 3000})
+                return
+            }
             const self = this
             async function getPageNumber(response: Message) {
                 if (Number.isNaN(Number(response.content)) || Number(response.content) > embeds.length) {
@@ -576,6 +581,11 @@ export class Embeds {
         }
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 3000})
+                return
+            }
             if (pageIndex === pages.length - 1) return reaction.users.remove(user)
             await msg.reactions.removeAll()
             pageIndex++
@@ -584,6 +594,11 @@ export class Embeds {
         })
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 3000})
+                return
+            }
             if (pageIndex === 0) return reaction.users.remove(user)
             await msg.reactions.removeAll()
             pageIndex--
@@ -758,6 +773,11 @@ export class Embeds {
         }
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 3000})
+                return
+            }
             if (pageIndex === pages.length - 1) return reaction.users.remove(user)
             await msg.reactions.removeAll()
             pageIndex++
@@ -766,6 +786,11 @@ export class Embeds {
         })
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 3000})
+                return
+            }
             if (pageIndex === 0) return reaction.users.remove(user)
             await msg.reactions.removeAll()
             pageIndex--
