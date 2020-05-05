@@ -66,7 +66,7 @@ export default class Rank extends Command {
         `${discord.getEmoji("star")}**${percent.toFixed(1)}%** of the way there!`)
         .attachFiles([attachment])
         .setImage(`attachment://rankBar.jpg`)
-        .setThumbnail(message.author!.displayAvatarURL())
+        .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
         await message.channel.send(rankEmbed)
         fs.unlink(image, () => null)
     }
