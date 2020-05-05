@@ -67,10 +67,10 @@ const start = async (): Promise<void> => {
 
     evtFiles.forEach((file: string) => {
         if (!file.endsWith(".ts") && !file.endsWith(".js")) return
-        const eventName = file.split(".")[0]
+        const eventName = file.split(".")[0] as any
         Logger.log(`Loading Event: ${eventName}`)
         const event = new (require(path.join(__dirname, `./events/${eventName}`)).default)(discord)
-        discord.on(eventName as any, (...args: any) => event.run(...args))
+        discord.on(eventName, (...args: any) => event.run(...args))
     })
 
     Logger.log(`Loaded a total of ${commandCounter} commands.`)

@@ -228,6 +228,6 @@ export class Kisaragi extends Client {
 
     /** Temp override */
     public emit = (event: any, ...args: any) => {
-        return super.emit(event, args)
+        return super.emit(event, ...args)
     }
 }
