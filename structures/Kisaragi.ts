@@ -225,4 +225,9 @@ export class Kisaragi extends Client {
         const messageID = matches[2]
         return {guildID, channelID, messageID}
     }
+
+    /** Temp override */
+    public emit = (event: any, ...args: any) => {
+        return super.emit(event, args)
+    }
 }
