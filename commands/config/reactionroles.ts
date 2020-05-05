@@ -75,7 +75,7 @@ export default class ReactionRoles extends Command {
             .setTitle(`**Reaction Roles** ${discord.getEmoji("tohruThumbsUp2")}`)
             .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
             .setDescription(Functions.multiTrim(`
-                Add and remove reaction roles. [To get a message ID you need to enable developer mode in settings, then when you right click there will be a new option "Copy ID".](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
+                Add and remove reaction roles. [To copy a message ID you need to enable developer mode in settings.](https://is.gd/t2ClBu)
                 newline
                 __Current Settings__
                 ${settings}
