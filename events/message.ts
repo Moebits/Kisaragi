@@ -192,12 +192,12 @@ export default class MessageEvent {
         let setEmbed = false
         if ((message.channel as TextChannel).permissionsFor(message.guild.me!)?.has(["EMBED_LINKS"])) setEmbed = true
         const permMessage =
-          `Sorry, but the bot is missing permissions that break or prevent the execution of most commands, if not all of them.${setEmbed ? "" : " " + this.discord.getEmoji("kannaFacepalm")}\n` +
+          `Sorry, but the bot is missing permissions that break or prevent the execution of most commands, if not all of them.${setEmbed ? "" : " " + this.discord.getEmoji("kannaFacepalm").toString()}\n` +
           `\`Send Messages\` - Um... everything? If you can see this message, the bot has this one at least.\n` +
           `\`Use External Emojis\` - Needed to post and react with custom emojis.\n` +
           `\`Embed Links\` - Needed to post message embeds.\n` +
           `\`Add Reactions + Read Message History\` - Needed to add reactions to the bots own messages.\n` +
-          `\`Attach Files\` - Needed by all image commands (uploading local files) and to download images from embeds.\n` +
+          `\`Attach Files\` - Needed to upload local files, specifically images.\n` +
           `**Please give the bot sufficient permissions.**`
         const permEmbed = embeds.createEmbed()
         permEmbed
