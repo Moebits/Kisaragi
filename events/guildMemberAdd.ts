@@ -14,7 +14,8 @@ export default class GuildMemberAdd {
     public run = async (member: GuildMember) => {
         const discord = this.discord
         const firstMsg = await this.discord.fetchFirstMessage(member.guild)
-        const sql = new SQLQuery(firstMsg as Message)
+        if (!firstMsg) return
+        const sql = new SQLQuery(firstMsg)
         if (member.guild.me?.permissions.has("MANAGE_GUILD")) {
             const bans = await member.guild.fetchBans()
             if (bans.has(member.id)) return
