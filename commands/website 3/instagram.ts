@@ -34,7 +34,7 @@ export default class Instagram extends Command {
             "scheme": "https",
             "accept": "*/*",
             "accept-language": "en-US,en;q=0.9",
-            "cookie": "PHPSESSID=5qsgj4sq4vflghc8b1i1hi11vu; _ga=GA1.2.2124161850.1585104044; _gid=GA1.2.1696025883.1585104044; __gads=ID=750ff2c0c4c22d10:T=1585104044:S=ALNI_MYIsmHP-PZTNitXn2QaqikzghKhAg; _fbp=fb.1.1585104045302.310021285; fontsLoaded=true; _gat=1",
+            "cookie": "ezoadgid_186623=-1; ezoref_186623=; ezoab_186623=mod65; ezCMPCCS=true; PHPSESSID=3s67lmlj5gmgis0bos9ia3dq5b; ezepvv=0; lp_186623=https://commentpicker.com/; ezovid_186623=2124215431; ezovuuid_186623=44614aed-e28a-4e1b-5db2-f2ad604de7c3; ezds=ffid%3D1%2Cw%3D1536%2Ch%3D864; ezohw=w%3D722%2Ch%3D722; _ga=GA1.2.146244480.1588807356; _gid=GA1.2.1869096421.1588807356; __utma=131166109.146244480.1588807356.1588807356.1588807356.1; __utmc=131166109; __utmz=131166109.1588807356.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utmt_e=1; __utmt_f=1; ezosuigeneris=c487f241405e1fbd809e4fff20c7326e; fontsLoaded=true; _fbp=fb.1.1588807358271.1083904862; ezouspvh=557; __gads=ID=4dad6b2a7543a6eb:T=1588807358:S=ALNI_MZI8nIoZONzMqqR6-mp9Da9Jy8_aA; cookieconsent_status=dismiss; active_template::186623=pub_site.1588807381; ezopvc_186623=3; ezovuuidtime_186623=1588807382; ezouspvv=456; ezouspva=5; ezux_lpl_186623=1588807404392|070a324c-8def-4d2d-423e-ae85638e8e46|false; ezux_ifep_186623=true; __qca=P0-1133709876-1588807409974; __utmb=131166109.12.8.1588807445103; ezux_et_186623=55; ezux_tos_186623=77",
             "referer": "https://commentpicker.com/instagram-username.php",
             "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",

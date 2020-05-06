@@ -127,7 +127,6 @@ export class Embeds {
                 await this.images.downloadImages(images, src)
                 const downloads = fs.readdirSync(src).map((m) => src + m)
                 await Functions.createZip(downloads, dest)
-                if (rep) rep.delete()
                 const stats = fs.statSync(dest)
                 if (stats.size > 8000000) {
                     const link = await this.images.upload(dest)
@@ -142,6 +141,7 @@ export class Embeds {
                     const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
                     await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
                 }
+                if (rep) rep.delete()
                 Functions.removeDirectory(src)
             })
         }
@@ -362,10 +362,21 @@ export class Embeds {
                 await this.images.downloadImages(images, src)
                 const downloads = fs.readdirSync(src).map((m) => src + m)
                 await Functions.createZip(downloads, dest)
+                const stats = fs.statSync(dest)
+                if (stats.size > 8000000) {
+                    const link = await this.images.upload(dest)
+                    const downloadEmbed = this.createEmbed()
+                    downloadEmbed
+                    .setAuthor("download", "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+                    .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
+                    .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
+                    await msg.channel.send(downloadEmbed)
+                } else {
+                    const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
+                    const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
+                    await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
+                }
                 if (rep) rep.delete()
-                const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
-                const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
-                await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
                 Functions.removeDirectory(src)
             })
         }

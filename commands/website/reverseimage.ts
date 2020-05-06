@@ -7,7 +7,10 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class ReverseImage extends Command {
-    private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
+    private readonly headers = {
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+        "cookie": "CGIC=Inx0ZXh0L2h0bWwsYXBwbGljYXRpb24veGh0bWwreG1sLGFwcGxpY2F0aW9uL3htbDtxPTAuOSxpbWFnZS93ZWJwLGltYWdlL2FwbmcsKi8qO3E9MC44LGFwcGxpY2F0aW9uL3NpZ25lZC1leGNoYW5nZTt2PWIzO3E9MC45; NID=204=ufJdduiEohFFqDqwIJntAQAXrgxSNpFZvH4fsIAHlKIE8rJmi3_Dt13L032L9cKycAJ9WQd4QjkR7MrewWuqTh9HcMY_P1wwOMbG1KOIPux4h5yIbk3O0mWDskLaa0f66YLZZcxUc36PGkM2ruB4Ca-fJ8Cxg4l1_E4JNCgSRh8; 1P_JAR=2020-05-06-23"
+    }
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Reverse image searches an image, avatar, or guild icon.",
@@ -36,7 +39,7 @@ export default class ReverseImage extends Command {
         const data: any[] = []
         await new Promise((resolve) => {
             osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
-            .find("div.rc")
+            .find("div.g > div.rc")
             .set({url: "div.r > a > @href", title: "div.r > a > h3", image: "div.s > div > div > a > @href", desc: "div.s > div > span"})
             .data(function(d) {
                 d.image = d.image.match(/(?<=imgurl=)(.*?)(jpg)/) ? d.image.match(/(?<=imgurl=)(.*?)(jpg)/)[0] : ""
