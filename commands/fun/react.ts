@@ -4,15 +4,16 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Pickle extends Command {
+export default class React extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: `Adds a reaction to the last message.`,
+            description: `Adds a reaction to a message.`,
             help:
             `
             \`react emoji/name/id\` - Adds a reaction from this server
             \`react dev emoji/name/id\` - Adds a reaction from the developer's servers.
             \`react global emoji/name/id\` - Finds a reaction from all servers that the bot is in.
+            \`react msg/message id dev?/global? emoji/name/id\` - Adds a reaction to the specified message instead of the last one.
             `,
             examples:
             `
@@ -28,7 +29,18 @@ export default class Pickle extends Command {
         const message = this.message
         if (!args[1]) return message.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)
 
-        const lastMessage = await discord.getLastMessage(message)
+        let lastMessage = await discord.getLastMessage(message)
+
+        if (args[1] === "msg" || args[1] === "message") {
+            const msg = await discord.fetchMessage(message, args[2]) ?? message
+            if (msg) {
+                lastMessage = msg
+            } else {
+                return message.reply(`Can't find this message ${discord.getEmoji("kannaFacepalm")}`)
+            }
+            args.shift()
+            args.shift()
+        }
         let emoji: GuildEmoji | string | null
         switch (args[1]) {
             case "dev":
