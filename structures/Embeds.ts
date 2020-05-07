@@ -245,7 +245,7 @@ export class Embeds {
                 rep.delete({timeout: 3000})
                 return
             }
-            const desc = await msg.channel.send(msg.embeds[0].description)
+            const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, ""))
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
             await Functions.timeout(10000)
             desc.delete()
@@ -347,7 +347,7 @@ export class Embeds {
                         rep.delete({timeout: 3000})
                         return
                     }
-                    const desc = await msg.channel.send(msg.embeds[0].description)
+                    const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, ""))
                     const rep2 = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
                     await Functions.timeout(10000)
                     desc.delete()
@@ -503,7 +503,7 @@ export class Embeds {
                 rep.delete({timeout: 3000})
                 return
             }
-            const desc = await msg.channel.send(msg.embeds[0].description)
+            const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, ""))
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
             await Functions.timeout(10000)
             desc.delete()
