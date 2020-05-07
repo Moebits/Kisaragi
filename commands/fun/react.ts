@@ -41,7 +41,7 @@ export default class React extends Command {
             args.shift()
             args.shift()
         }
-        let emoji: GuildEmoji | string | null
+        let emoji: GuildEmoji | null
         switch (args[1]) {
             case "dev":
                 if (!args[2]) return message.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)
@@ -49,10 +49,10 @@ export default class React extends Command {
                 break
             case "global":
                 if (!args[2]) return message.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)
-                emoji = discord.getEmojiGlobal(args[2])
+                emoji = discord.getEmojiGlobal(args[2], true)
                 break
             default:
-                emoji = discord.getEmojiServer(args[1], message)
+                emoji = discord.getEmojiServer(args[1], message, true)
         }
         if (!emoji) return message.reply(`Could not find this emoji ${discord.getEmoji("kannaFacepalm")}`)
 

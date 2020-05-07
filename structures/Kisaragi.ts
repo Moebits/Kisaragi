@@ -43,31 +43,33 @@ export class Kisaragi extends Client {
     }
 
     /** Get emoji (all servers) */
-    public getEmojiGlobal = (resolvable: string) => {
-        if (!resolvable) return null
+    public getEmojiGlobal = <B extends boolean = false>(resolvable: string, noString?: B): B extends true ? GuildEmoji | null : string | null => {
+        if (!resolvable) return null as any
         let emoji: GuildEmoji | undefined
         if (Number(resolvable)) {
             emoji = this.emojis.cache.find((e) => e.id === resolvable)
         } else {
             emoji = this.emojis.cache.find((e) => e.name === resolvable)
         }
-        if (!emoji) return null
+        if (!emoji) return null as any
+        if (noString) return emoji as any
         const emojiTag = emoji.animated ? `<${emoji.identifier}>` : `<:${emoji.identifier}>`
-        return emojiTag
+        return emojiTag as any
     }
 
     /** Get emoji (current server) */
-    public getEmojiServer = (resolvable: string, message: Message) => {
-        if (!resolvable || !message.guild) return null
+    public getEmojiServer = <B extends boolean = false>(resolvable: string, message: Message, noString?: B): B extends true ? GuildEmoji | null : string | null => {
+        if (!resolvable || !message.guild) return null as any
         let emoji: GuildEmoji | undefined
         if (Number(resolvable)) {
             emoji = message.guild.emojis.cache.find((e) => e.id === resolvable)
         } else {
             emoji = message.guild.emojis.cache.find((e) => e.name === resolvable)
         }
-        if (!emoji) return null
+        if (!emoji) return null as any
+        if (noString) return emoji as any
         const emojiTag = emoji.animated ? `<${emoji.identifier}>` : `<:${emoji.identifier}>`
-        return emojiTag
+        return emojiTag as any
     }
 
     /** Find a role in the guild */
