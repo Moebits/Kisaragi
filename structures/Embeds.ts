@@ -109,16 +109,18 @@ export class Embeds {
         if (download) {
             const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("download") && user.bot === false
             const download = msg.createReactionCollector(downloadCheck)
+            let downloaded = false
 
             download.on("collect", async (reaction: MessageReaction, user: User) => {
+                await reaction.users.remove(user).catch(() => null)
+                if (downloaded) return
+                downloaded = true
                 const images: string[] = []
                 for (let i = 0; i < embeds.length; i++) {
                     if (embeds[i].image?.url) {
                         images.push(embeds[i].image?.url!)
                     }
                 }
-                await reaction.users.remove(user).catch(() => null)
-                download.stop()
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
                 const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
@@ -382,16 +384,18 @@ export class Embeds {
         if (download) {
             const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("download") && user.bot === false
             const download = msg.createReactionCollector(downloadCheck)
+            let downloaded = false
 
             download.on("collect", async (reaction: MessageReaction, user: User) => {
+                await reaction.users.remove(user).catch(() => null)
+                if (downloaded) return
+                downloaded = true
                 const images: string[] = []
                 for (let i = 0; i < embeds.length; i++) {
                     if (embeds[i].image?.url) {
                         images.push(embeds[i].image?.url!)
                     }
                 }
-                await reaction.users.remove(user).catch(() => null)
-                download.stop()
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
                 const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
@@ -482,7 +486,7 @@ export class Embeds {
 
         repost.on("collect", async (reaction: MessageReaction, user: User) => {
             await this.message.channel.send(`<@${user.id}>, I reposted this embed.`)
-            await this.createReactionEmbed(embeds)
+            await this.createReactionEmbed(embeds, true, true)
             await reaction.users.remove(user).catch(() => null)
         })
     }

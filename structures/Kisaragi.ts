@@ -42,7 +42,7 @@ export class Kisaragi extends Client {
         }
     }
 
-    /** Get emojis (all servers) */
+    /** Get emoji (all servers) */
     public getEmojiGlobal = (resolvable: string) => {
         if (!resolvable) return null
         let emoji: GuildEmoji | undefined
@@ -50,6 +50,20 @@ export class Kisaragi extends Client {
             emoji = this.emojis.cache.find((e) => e.id === resolvable)
         } else {
             emoji = this.emojis.cache.find((e) => e.name === resolvable)
+        }
+        if (!emoji) return null
+        const emojiTag = emoji.animated ? `<${emoji.identifier}>` : `<:${emoji.identifier}>`
+        return emojiTag
+    }
+
+    /** Get emoji (current server) */
+    public getEmojiServer = (resolvable: string, message: Message) => {
+        if (!resolvable || !message.guild) return null
+        let emoji: GuildEmoji | undefined
+        if (Number(resolvable)) {
+            emoji = message.guild.emojis.cache.find((e) => e.id === resolvable)
+        } else {
+            emoji = message.guild.emojis.cache.find((e) => e.name === resolvable)
         }
         if (!emoji) return null
         const emojiTag = emoji.animated ? `<${emoji.identifier}>` : `<:${emoji.identifier}>`
@@ -229,5 +243,12 @@ export class Kisaragi extends Client {
     /** Temp override */
     public emit = (event: any, ...args: any) => {
         return super.emit(event, ...args)
+    }
+
+    /** Gets the last message on the channel */
+    public getLastMessage = async (message: Message) => {
+        const prefix = await SQLQuery.fetchPrefix(message)
+        const messages = await message.channel.messages.fetch({limit: 100})
+        return messages.find((m) => !m.content.includes("**Loading**") && !m.content.startsWith(prefix)) ?? message
     }
 }

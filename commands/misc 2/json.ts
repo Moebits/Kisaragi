@@ -80,9 +80,7 @@ export default class JSONCommand extends Command {
                 if (emoji) {json = emoji; break ifLoop}
             }
         } else {
-            const prefix = await SQLQuery.fetchPrefix(message)
-            const messages = await message.channel.messages.fetch({limit: 100})
-            json = await this.getEmbed(messages.find((m) => !m.content.includes("**Loading**") && !m.content.startsWith(prefix)) ?? message)
+            json = await this.getEmbed(await discord.getLastMessage(message))
         }
 
         if (!json || json === "null" || json === "undefined") return message.reply(`No JSON found, the ID is invalid ${discord.getEmoji("kannaFacepalm")}`)
