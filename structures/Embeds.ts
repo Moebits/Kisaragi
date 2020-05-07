@@ -61,7 +61,7 @@ export class Embeds {
         if (startPage) page = startPage - 1
         const insertEmbeds = embeds
         await this.updateEmbed(embeds, page, this.message.author!)
-        const reactions: Emoji[] = [this.discord.getEmoji("right"), this.discord.getEmoji("left"), this.discord.getEmoji("tripleRight"), this.discord.getEmoji("tripleLeft")]
+        const reactions: Emoji[] = [this.discord.getEmoji("right"), this.discord.getEmoji("left"), this.discord.getEmoji("fastscroll")]
         let msg: Message
         if (dm) {
             try {
@@ -150,15 +150,13 @@ export class Embeds {
         await msg.react(this.discord.getEmoji("copy"))
         const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
-        const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
-        const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleLeft") && user.bot === false
+        const fastScrollCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fastscroll") && user.bot === false
         const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
         const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("copy") && user.bot === false
 
         const forward = msg.createReactionCollector(forwardCheck)
         const backward = msg.createReactionCollector(backwardCheck)
-        const tripleForward = msg.createReactionCollector(tripleForwardCheck)
-        const tripleBackward = msg.createReactionCollector(tripleBackwardCheck)
+        const fastScroll = msg.createReactionCollector(fastScrollCheck)
         const numberSelect = msg.createReactionCollector(numberSelectCheck)
         const copy = msg.createReactionCollector(copyCheck)
 
@@ -168,33 +166,12 @@ export class Embeds {
         await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         await this.sql.updateColumn("collectors", "download", download, "message", msg.id)
 
+        let fast = false
         backward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === 0) {
-                page = embeds.length - 1
+                page = fast ? (embeds.length - 1) - Math.floor(embeds.length/5) : embeds.length - 1
             } else {
-                page--
-            }
-            const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
-            await reaction.users.remove(user).catch(() => null)
-        })
-
-        forward.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (page === embeds.length - 1) {
-                page = 0
-            } else {
-                page++
-            }
-            const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
-            await reaction.users.remove(user).catch(() => null)
-        })
-
-        tripleBackward.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (page === 0) {
-                page = (embeds.length - 1) - Math.floor(embeds.length/5)
-            } else {
-                page -= Math.floor(embeds.length/5)
+                page -= fast ? Math.floor(embeds.length/5) : 1
             }
             if (page < 0) page += embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
@@ -202,16 +179,25 @@ export class Embeds {
             await reaction.users.remove(user).catch(() => null)
         })
 
-        tripleForward.on("collect", async (reaction: MessageReaction, user: User) => {
+        forward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === embeds.length - 1) {
-                page = 0 + Math.floor(embeds.length/5)
+                page = fast ? Math.floor(embeds.length/5) : 0
             } else {
-                page += Math.floor(embeds.length/5)
+                page += fast ? Math.floor(embeds.length/5) : 1
             }
             if (page > embeds.length - 1) page -= embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
+        })
+
+        fastScroll.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
+            if (fast === false) {
+                fast = true
+            } else {
+                fast = false
+            }
         })
 
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -238,11 +224,11 @@ export class Embeds {
             await numReply.delete()
         })
 
-        const copyBlock = new Set()
+        let copyOn = false
         copy.on("collect", async (reaction: MessageReaction, user: User) => {
             const id = msg.guild ? msg.guild.id : user.id
             await reaction.users.remove(user).catch(() => null)
-            if (copyBlock.has(id)) return
+            if (copyOn) return
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
@@ -252,11 +238,11 @@ export class Embeds {
             if (!content) return
             const desc = await msg.channel.send(content)
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
-            copyBlock.add(id)
+            copyOn = true
             await Functions.timeout(10000)
             desc.delete()
             rep.delete()
-            copyBlock.delete(id)
+            copyOn = false
         })
         return msg
     }
@@ -292,25 +278,8 @@ export class Embeds {
                     await this.updateEmbed(embeds, page, this.message.author!, msg)
                     msg.edit(embeds[page])
                     break
-
-            case "tripleRight":
-                    if (page === embeds.length - 1) {
-                        page = 0
-                    } else {
-                        page++
-                    }
-                    await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit(embeds[page])
-                    break
-            case "tripleLeft":
-                    if (page === 0) {
-                        page = (embeds.length - 1) - Math.floor(embeds.length/5)
-                    } else {
-                        page -= Math.floor(embeds.length/5)
-                    }
-                    if (page < 0) page *= -1
-                    await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit(embeds[page])
+            case "fastScroll":
+                    // Do nothing
                     break
             case "numberSelect":
                     const rep3 = await msg.reply(`The page selection function is disabled on old embeds. However, you can repost it.`)
@@ -373,16 +342,14 @@ export class Embeds {
         await msg.react(this.discord.getEmoji("repost"))
         const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
-        const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
-        const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleLeft") && user.bot === false
+        const fastScrollCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fastScroll") && user.bot === false
         const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
         const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("copy") && user.bot === false
         const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("repost") && user.bot === false
 
         const forward = msg.createReactionCollector(forwardCheck)
         const backward = msg.createReactionCollector(backwardCheck)
-        const tripleForward = msg.createReactionCollector(tripleForwardCheck)
-        const tripleBackward = msg.createReactionCollector(tripleBackwardCheck)
+        const fastScroll = msg.createReactionCollector(fastScrollCheck)
         const numberSelect = msg.createReactionCollector(numberSelectCheck)
         const repost = msg.createReactionCollector(repostCheck)
         const copy = msg.createReactionCollector(copyCheck)
@@ -452,33 +419,12 @@ export class Embeds {
             })
         }
 
+        let fast = false
         backward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === 0) {
-                page = embeds.length - 1
+                page = fast ? (embeds.length - 1) - Math.floor(embeds.length/5) : embeds.length - 1
             } else {
-                page--
-            }
-            const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
-            await reaction.users.remove(user).catch(() => null)
-        })
-
-        forward.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (page === embeds.length - 1) {
-                page = 0
-            } else {
-                page++
-            }
-            const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
-            await reaction.users.remove(user).catch(() => null)
-        })
-
-        tripleBackward.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (page === 0) {
-                page = (embeds.length - 1) - Math.floor(embeds.length/5)
-            } else {
-                page -= Math.floor(embeds.length/5)
+                page -= fast ? Math.floor(embeds.length/5) : 1
             }
             if (page < 0) page += embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
@@ -486,16 +432,25 @@ export class Embeds {
             await reaction.users.remove(user).catch(() => null)
         })
 
-        tripleForward.on("collect", async (reaction: MessageReaction, user: User) => {
+        forward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === embeds.length - 1) {
-                page = 0 + Math.floor(embeds.length/5)
+                page = fast ? Math.floor(embeds.length/5) : 0
             } else {
-                page += Math.floor(embeds.length/5)
+                page += fast ? Math.floor(embeds.length/5) : 1
             }
             if (page > embeds.length - 1) page -= embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
+        })
+
+        fastScroll.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
+            if (fast === false) {
+                fast = true
+            } else {
+                fast = false
+            }
         })
 
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -504,11 +459,11 @@ export class Embeds {
             rep3.delete({timeout: 3000})
         })
 
-        const copyBlock = new Set()
+        let copyOn = false
         copy.on("collect", async (reaction: MessageReaction, user: User) => {
             const id = msg.guild ? msg.guild.id : user.id
             await reaction.users.remove(user).catch(() => null)
-            if (copyBlock.has(id)) return
+            if (copyOn) return
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
@@ -518,11 +473,11 @@ export class Embeds {
             if (!content) return
             const desc = await msg.channel.send(content)
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
-            copyBlock.add(id)
+            copyOn = true
             await Functions.timeout(10000)
             desc.delete()
             rep.delete()
-            copyBlock.delete(id)
+            copyOn = false
         })
 
         repost.on("collect", async (reaction: MessageReaction, user: User) => {

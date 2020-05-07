@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 40, date: "5/6/2020", changes: "Removed triple arrows for fast scrolling in favor of a toggled fast scroll."},
             {num: 39, date: "5/6/2020", changes: "Added a new copy reaction. The \`emojis\` command was modified to return just the emojis by default."},
             {num: 38, date: "5/3/2020", changes: "Added \`gallery\` and revamped the moderation case system."},
             {num: 37, date: "4/29/2020", changes: "You can now send the compact help list to your direct messages. Running commands in dm's is not yet tested but it should be supported."},
