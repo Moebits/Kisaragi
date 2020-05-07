@@ -79,9 +79,9 @@ export default class MessageReactionAdd {
                     } catch {
                         const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message)
                         try {
-                            await foundMsg?.channel.send(`I need the **Manage Roles** permission in order to add this reaction role ${this.discord.getEmoji("kannaFacepalm")}`)
+                            await foundMsg?.channel.send(`I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
                         } catch {
-                            await user.send(`I need the **Manage Roles** permission in order to add this reaction role ${this.discord.getEmoji("kannaFacepalm")}`)
+                            await user.send(`I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
                             .catch(() => null)
                         }
                     }
