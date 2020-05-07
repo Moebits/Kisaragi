@@ -10,6 +10,7 @@ export default class Emojis extends Command {
             description: "Info on all emojis.",
             help:
             `
+            _Note: To display all emojis with no info, use \`emoji list\` instead._
             \`emojis\` - Posts all of the emojis
             `,
             examples:

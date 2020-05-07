@@ -1,4 +1,4 @@
-import {GuildMember, Message, MessageEmbed} from "discord.js"
+import {GuildMember, Message, MessageEmbed, TextChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -18,6 +18,7 @@ export default class Guild extends Command {
             `,
             guildOnly: true,
             aliases: ["server"],
+            botPermission: "MANAGE_GUILD",
             random: "none",
             cooldown: 5
         })
@@ -27,6 +28,10 @@ export default class Guild extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has("MANAGE_GUILD")) {
+            message.reply(`The bot needs the permission **Manage Server** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
+            return false
+        }
         const guildImg = message.guild?.bannerURL() ? message.guild.bannerURL({format: "png"}) : (message.guild?.splashURL() ? message.guild.splashURL({format: "png"}) : "")
         const inviteURL = await discord.getInvite(message.guild)
 

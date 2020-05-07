@@ -147,17 +147,20 @@ export class Embeds {
         }
         if (!dm) await msg.react(this.discord.getEmoji("numberSelect"))
         if (download) await msg.react(this.discord.getEmoji("download"))
+        await msg.react(this.discord.getEmoji("copy"))
         const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
         const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
         const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleLeft") && user.bot === false
         const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
+        const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("copy") && user.bot === false
 
         const forward = msg.createReactionCollector(forwardCheck)
         const backward = msg.createReactionCollector(backwardCheck)
         const tripleForward = msg.createReactionCollector(tripleForwardCheck)
         const tripleBackward = msg.createReactionCollector(tripleBackwardCheck)
         const numberSelect = msg.createReactionCollector(numberSelectCheck)
+        const copy = msg.createReactionCollector(copyCheck)
 
         await SQLQuery.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", insertEmbeds, "message", msg.id)
@@ -213,7 +216,7 @@ export class Embeds {
 
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -234,6 +237,20 @@ export class Embeds {
             await this.createPrompt(getPageNumber)
             await numReply.delete()
         })
+
+        copy.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 3000})
+                return
+            }
+            const desc = await msg.channel.send(msg.embeds[0].description)
+            const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
+            await Functions.timeout(10000)
+            desc.delete()
+            rep.delete()
+        })
         return msg
     }
 
@@ -248,6 +265,7 @@ export class Embeds {
                 description.push(embeds[i].description!)
                 thumbnail.push(embeds[i].thumbnail!)
             }
+        await msg.reactions.cache.find((r) => r.emoji.name === emoji)?.users.remove(user).catch(() => null)
         switch (emoji) {
             case "right":
                     if (page === embeds.length - 1) {
@@ -288,10 +306,52 @@ export class Embeds {
                     msg.edit(embeds[page])
                     break
             case "numberSelect":
-                    // Do nothing
+                    const rep3 = await msg.reply(`The page selection function is disabled on old embeds. However, you can repost it.`)
+                    rep3.delete({timeout: 3000})
                     break
             case "download":
-                    // Do nothing
+                    const images: string[] = []
+                    for (let i = 0; i < embeds.length; i++) {
+                        if (embeds[i].image?.url) {
+                            images.push(embeds[i].image?.url!)
+                        }
+                    }
+                    const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
+                    const rand = Math.floor(Math.random()*10000)
+                    const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
+                    const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
+                    if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
+                    await this.images.downloadImages(images, src)
+                    const downloads = fs.readdirSync(src).map((m) => src + m)
+                    await Functions.createZip(downloads, dest)
+                    const stats = fs.statSync(dest)
+                    if (stats.size > 8000000) {
+                        const link = await this.images.upload(dest)
+                        const downloadEmbed = this.createEmbed()
+                        downloadEmbed
+                        .setAuthor("download", "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+                        .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
+                        .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
+                        await msg.channel.send(downloadEmbed)
+                    } else {
+                        const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
+                        const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
+                        await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
+                    }
+                    if (rep) rep.delete()
+                    Functions.removeDirectory(src)
+                    break
+            case "copy":
+                    if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+                        const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
+                        rep.delete({timeout: 3000})
+                        return
+                    }
+                    const desc = await msg.channel.send(msg.embeds[0].description)
+                    const rep2 = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
+                    await Functions.timeout(10000)
+                    desc.delete()
+                    rep2.delete()
                     break
             case "collapse":
                     for (let i = 0; i < embeds.length; i++) {
@@ -308,13 +368,17 @@ export class Embeds {
         const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
         const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
         const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleLeft") && user.bot === false
+        const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
+        const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("copy") && user.bot === false
         const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("repost") && user.bot === false
 
         const forward = msg.createReactionCollector(forwardCheck)
         const backward = msg.createReactionCollector(backwardCheck)
         const tripleForward = msg.createReactionCollector(tripleForwardCheck)
         const tripleBackward = msg.createReactionCollector(tripleBackwardCheck)
+        const numberSelect = msg.createReactionCollector(numberSelectCheck)
         const repost = msg.createReactionCollector(repostCheck)
+        const copy = msg.createReactionCollector(copyCheck)
 
         if (collapseOn) {
             const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
@@ -425,6 +489,25 @@ export class Embeds {
             const embed = await this.updateEmbed(embeds, page, user, msg)
             msg.edit(embed)
             await reaction.users.remove(user).catch(() => null)
+        })
+
+        numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
+            const rep3 = await msg.reply(`The page selection function is disabled on old embeds. However, you can repost it.`)
+            rep3.delete({timeout: 3000})
+        })
+        copy.on("collect", async (reaction: MessageReaction, user: User) => {
+            await reaction.users.remove(user).catch(() => null)
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 3000})
+                return
+            }
+            const desc = await msg.channel.send(msg.embeds[0].description)
+            const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
+            await Functions.timeout(10000)
+            desc.delete()
+            rep.delete()
         })
 
         repost.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -593,7 +676,7 @@ export class Embeds {
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -606,7 +689,7 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -785,7 +868,7 @@ export class Embeds {
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -798,7 +881,7 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
