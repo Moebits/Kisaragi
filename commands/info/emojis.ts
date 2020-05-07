@@ -70,6 +70,7 @@ export default class Emojis extends Command {
 
         const split = Util.splitMessage(emojis, {maxLength: 2000, char: "<"})
         for (let i = 0; i < split.length; i++) {
+            if (split.length > 1) split[i] = `<${split[i]}`
             message.channel.send(split[i])
         }
     }
