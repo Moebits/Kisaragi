@@ -238,8 +238,11 @@ export class Embeds {
             await numReply.delete()
         })
 
+        const copyBlock = new Set()
         copy.on("collect", async (reaction: MessageReaction, user: User) => {
+            const id = msg.guild ? msg.guild.id : msg.author.id
             await reaction.users.remove(user).catch(() => null)
+            if (copyBlock.has(id)) return
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
@@ -247,9 +250,11 @@ export class Embeds {
             }
             const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, ""))
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
+            copyBlock.add(id)
             await Functions.timeout(10000)
             desc.delete()
             rep.delete()
+            copyBlock.delete(id)
         })
         return msg
     }
@@ -496,8 +501,12 @@ export class Embeds {
             const rep3 = await msg.reply(`The page selection function is disabled on old embeds. However, you can repost it.`)
             rep3.delete({timeout: 3000})
         })
+
+        const copyBlock = new Set()
         copy.on("collect", async (reaction: MessageReaction, user: User) => {
+            const id = msg.guild ? msg.guild.id : msg.author.id
             await reaction.users.remove(user).catch(() => null)
+            if (copyBlock.has(id)) return
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
@@ -505,9 +514,11 @@ export class Embeds {
             }
             const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, ""))
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
+            copyBlock.add(id)
             await Functions.timeout(10000)
             desc.delete()
             rep.delete()
+            copyBlock.delete(id)
         })
 
         repost.on("collect", async (reaction: MessageReaction, user: User) => {
