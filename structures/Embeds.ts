@@ -253,6 +253,7 @@ export class Embeds {
             const content = msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "")
             if (!content) return
             const desc = await msg.channel.send(content)
+            await desc.suppressEmbeds()
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
             copyOn = true
             await Functions.timeout(10000)
@@ -260,6 +261,7 @@ export class Embeds {
             rep.delete()
             copyOn = false
         })
+
         return msg
     }
 
@@ -520,6 +522,7 @@ export class Embeds {
             const content = msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "")
             if (!content) return
             const desc = await msg.channel.send(content)
+            await desc.suppressEmbeds()
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
             copyOn = true
             await Functions.timeout(10000)
