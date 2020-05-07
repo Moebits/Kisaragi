@@ -240,7 +240,7 @@ export class Embeds {
 
         const copyBlock = new Set()
         copy.on("collect", async (reaction: MessageReaction, user: User) => {
-            const id = msg.guild ? msg.guild.id : msg.author.id
+            const id = msg.guild ? msg.guild.id : user.id
             await reaction.users.remove(user).catch(() => null)
             if (copyBlock.has(id)) return
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
@@ -248,7 +248,9 @@ export class Embeds {
                 rep.delete({timeout: 3000})
                 return
             }
-            const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, ""))
+            const content = msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "")
+            if (!content) return
+            const desc = await msg.channel.send(content)
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
             copyBlock.add(id)
             await Functions.timeout(10000)
@@ -504,7 +506,7 @@ export class Embeds {
 
         const copyBlock = new Set()
         copy.on("collect", async (reaction: MessageReaction, user: User) => {
-            const id = msg.guild ? msg.guild.id : msg.author.id
+            const id = msg.guild ? msg.guild.id : user.id
             await reaction.users.remove(user).catch(() => null)
             if (copyBlock.has(id)) return
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
@@ -512,7 +514,9 @@ export class Embeds {
                 rep.delete({timeout: 3000})
                 return
             }
-            const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, ""))
+            const content = msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "")
+            if (!content) return
+            const desc = await msg.channel.send(content)
             const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
             copyBlock.add(id)
             await Functions.timeout(10000)
