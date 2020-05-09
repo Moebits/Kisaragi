@@ -134,6 +134,7 @@ export default class Help extends Command {
                     let help = ""
                     const k = (i*step)+j
                     if (!subDir[k]) break
+                    let counter = 0
                     const commands = fs.readdirSync(path.join(__dirname, `../../commands/${subDir[k]}`))
                     for (let m = 0; m < commands.length; m++) {
                         commands[m] = commands[m].slice(0, -3)
@@ -142,10 +143,11 @@ export default class Help extends Command {
                         if (cmdClass.options.unlist === true) continue
                         if (discord.checkMuted(message)) if (cmdClass.options.nsfw === true) continue
                         help += `\`${commands[m]}\` `
+                        counter++
                     }
                     if (subDir[k] === "japanese") subDir[k] = "weeb"
                     dmEmbed
-                    .addField(`${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${commands.length})`, help)
+                    .addField(`${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${counter})`, help)
                 }
                 dmEmbed
                 .setAuthor("help", "https://cdn.discordapp.com/emojis/705492897579139172.gif")
