@@ -18,7 +18,6 @@ export default class Guild extends Command {
             `,
             guildOnly: true,
             aliases: ["server"],
-            botPermission: "MANAGE_GUILD",
             random: "none",
             cooldown: 5
         })
@@ -28,9 +27,8 @@ export default class Guild extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has("MANAGE_GUILD")) {
-            message.reply(`The bot needs the permission **Manage Server** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
-            return false
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["MANAGE_GUILD", "BAN_MEMBERS"])) {
+            return message.reply(`The bot needs the permission **Manage Server** and **Ban Members** in order to use this command. This is for counting the amount of invites and bans. ${this.discord.getEmoji("kannaFacepalm")}`)
         }
         const guildImg = message.guild?.bannerURL() ? message.guild.bannerURL({format: "png"}) : (message.guild?.splashURL() ? message.guild.splashURL({format: "png"}) : "")
         const inviteURL = await discord.getInvite(message.guild)

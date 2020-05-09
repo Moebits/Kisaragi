@@ -34,7 +34,7 @@ export default class Privacy extends Command {
         .setAuthor("privacy policy", "https://digitalchamber.org/wp-content/uploads/2020/01/policy-initiatives-icon-blue-blockchain-alliance.png")
         .setTitle(`**Privacy Policy** ${discord.getEmoji("kannaPat")}`)
         .setDescription(Functions.multiTrim(`
-            By adding Kisaragi to your server, or by authorizing her with oauth2, every member in the server automatically **agrees** to this privacy policy. If this is not the case, leave the server or remove the bot. Information is not shared.
+            By adding Kisaragi to your server, or by authorizing her with oauth2, every member in the server automatically **agrees** to this privacy policy. Otherwise, kick the bot or leave the server. Your information is not shared.
             **Public Information**
             ${discord.getEmoji("star")}_Guilds:_ The bot collects public information of every guild that she is on, including but not limited to: guild name, members, roles, channels, and emojis.
             This is required for bot functionality.

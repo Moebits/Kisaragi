@@ -57,18 +57,22 @@ export default class BanSync extends Command {
             await Promise.all(banList.map(async (b) => {
                 if (!currList.includes(b)) {
                     await message.guild?.members.ban(b)
+                    await Functions.timeout(100)
+                    if (discord.checkMuted(message)) await Functions.timeout(1000)
                 }
             }))
             if (perfect) {
                 await Promise.all(currList.map(async (c) => {
                     if (!banList.includes(c)) {
                         await message.guild?.members.unban(c)
+                        await Functions.timeout(100)
+                        if (discord.checkMuted(message)) await Functions.timeout(1000)
                     }
                 }))
             }
             return message.reply(`Synced this guild's ban list with **${guild.name}**! ${discord.getEmoji("aquaUp")}`)
         } catch {
-            return message.reply(`I need the **Manage Server** permission in both servers, and the **Ban Members** permission in the current one. ${discord.getEmoji("kannaFacepalm")}`)
+            return message.reply(`I need the **Manage Server** and the **Ban Members** permission in both servers. ${discord.getEmoji("kannaFacepalm")}`)
         }
     }
 }

@@ -93,6 +93,7 @@
     "discord.js-minesweeper": "^1.0.5",
     "dotenv": "^8.0.0",
     "dropbox": "^4.0.30",
+    "dropbox-v2-api": "^2.4.17",
     "emoji-regex": "^8.0.0",
     "erlpack": "github:discordapp/erlpack",
     "express": "^4.17.1",

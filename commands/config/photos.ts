@@ -24,6 +24,10 @@ export default class Photos extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         if (!await perms.checkAdmin()) return
+        let channels = await sql.fetchColumn("images", "image channels")
+        let folders = await sql.fetchColumn("images", "dropbox folders")
+        let albums = await sql.fetchColumn("images", "google albums")
+        const notify = await sql.fetchColumn("images", "notify toggle")
         const loading = message.channel.lastMessage
         loading?.delete()
         const input = Functions.combineArgs(args, 1)
@@ -33,10 +37,6 @@ export default class Photos extends Command {
             return
         }
 
-        let channels = await sql.fetchColumn("images", "image channels")
-        let folders = await sql.fetchColumn("images", "dropbox folders")
-        let albums = await sql.fetchColumn("images", "google albums")
-        const notify = await sql.fetchColumn("images", "notify toggle")
         const step = 3.0
         const increment = Math.ceil((channels ? channels.length : 1) / step)
         const photosArray: MessageEmbed[] = []
@@ -89,10 +89,10 @@ export default class Photos extends Command {
         async function photoPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Photo Downloader/Uploader** ${discord.getEmoji("gabYes")}`)
-            let setChannel, setFolder, setAlbum, setNotify, setInit
-            if (!channels) channels = [""]; setInit = true
-            if (!folders) folders = [""]; setInit = true
-            if (!albums) albums = [""]; setInit = true
+            let [setChannel, setFolder, setAlbum, setNotify] = [false, false, false, false]
+            if (!channels) channels = []
+            if (!folders) folders = []
+            if (!albums) albums = []
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
@@ -132,13 +132,13 @@ export default class Photos extends Command {
                 const tempMsg = newMsg.slice(1).join(" ")
                 const num = Number(newMsg[0]) - 1
                 if (tempMsg) {
-                    const tempChan = tempMsg.match(/\d+/g)
-                    const tempFolder = tempMsg.replace(/\d+/g, "").replace(/<#/g, "").replace(/>/g, "").replace(/(?<=\[)(.*?)(?=\])/g, "")
+                    const tempChan = tempMsg.match(/\d+/g)?.[0] ?? ""
+                    const tempAlbum = tempMsg.replace(/\d+/g, "").replace(/<#/g, "").replace(/>/g, "").replace(/(?<=\[)(.*?)(?=\])/g, "")
                     .replace(/\[/g, "").replace(/\]/g, "").replace(/notify/g, "").replace(/\s+/g, " ").trim()
-                    const tempAlbum = tempMsg.match(/(?<=\[)(.*?)(?=\])/g)
+                    const tempFolder = tempMsg.match(/(?<=\[)(.*?)(?=\])/g)?.[0] ?? ""
                     let editDesc = ""
                     if (tempChan) {
-                        channels[num] = tempChan[0]
+                        channels[num] = tempChan
                         await sql.updateColumn("images", "image channels", channels)
                         editDesc += `${discord.getEmoji("star")}Channel set to **${tempChan}**!\n`
                     }
@@ -148,7 +148,7 @@ export default class Photos extends Command {
                         editDesc += `${discord.getEmoji("star")}Dropbox folder set to **${tempFolder}**!\n`
                     }
                     if (tempAlbum) {
-                        albums[num] = tempAlbum[0]
+                        albums[num] = tempAlbum
                         await sql.updateColumn("images", "google albums", albums)
                         editDesc += `${discord.getEmoji("star")}Google album set to **${tempAlbum}**!\n`
                     }
@@ -157,12 +157,12 @@ export default class Photos extends Command {
                     return msg.channel.send(responseEmbed.setDescription("No edits specified!"))
                 }
             }
-            const newChan = msg.content.match(/\d+/g)
-            const newFolder = msg.content.replace(/\d+/g, "").replace(/<#/g, "").replace(/>/g, "").replace(/(?<=\[)(.*?)(?=\])/g, "")
+            const newChan = msg.content.match(/\d+/g)?.[0] ?? ""
+            const newAlbum = msg.content.replace(/\d+/g, "").replace(/<#/g, "").replace(/>/g, "").replace(/(?<=\[)(.*?)(?=\])/g, "")
             .replace(/\[/g, "").replace(/\]/g, "").replace(/notify/g, "").replace(/\s+/g, " ").trim()
-            const newAlbum = msg.content.match(/(?<=\[)(.*?)(?=\])/g)
-
+            const newFolder = msg.content.match(/(?<=\[)(.*?)(?=\])/g)?.[0] ?? ""
             if (msg.content.match(/notify/gi)) setNotify = true
+
             if (newChan) setChannel = true
             if (newFolder) setFolder = true
             if (newAlbum) setAlbum = true
@@ -170,22 +170,19 @@ export default class Photos extends Command {
             let description = ""
 
             if (setChannel) {
-                channels.push(newChan![0])
-                if (setInit) channels = channels.filter(Boolean)
+                channels.push(newChan)
                 await sql.updateColumn("images", "image channels", channels)
                 description += `${discord.getEmoji("star")}Channel set to <#${newChan}>!\n`
             }
 
             if (setFolder) {
                 folders.push(newFolder)
-                if (setInit) folders = folders.filter(Boolean)
                 await sql.updateColumn("images", "dropbox folders", folders)
                 description += `${discord.getEmoji("star")}Dropbox folder set to **${newFolder}**!\n`
             }
 
             if (setAlbum) {
-                albums.push(newAlbum![0])
-                if (setInit) albums = albums.filter(Boolean)
+                albums.push(newAlbum)
                 await sql.updateColumn("images", "google albums", albums)
                 description += `${discord.getEmoji("star")}Google album set to **${newAlbum}**!\n`
             }
@@ -202,9 +199,7 @@ export default class Photos extends Command {
 
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
-            return
-
+            return msg.channel.send(responseEmbed)
         }
 
         await embeds.createPrompt(photoPrompt)

@@ -58,13 +58,15 @@ export default class Instagram extends Command {
                 .setAuthor("instagram", "https://clipartart.com/images/new-instagram-clipart-15.jpg", "https://www.instagram.com/")
                 .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`))
             }
-            const html = await axios.get(`https://www.instagram.com/${name}`, {headers: this.headers}).then((r) => r.data)
-            .catch(() => {
+            let html = ""
+            try {
+                html = await axios.get(`https://www.instagram.com/${name}`, {headers: this.headers}).then((r) => r.data)
+            } catch {
                 return this.invalidQuery(embeds.createEmbed()
                 .setAuthor("instagram", "https://clipartart.com/images/new-instagram-clipart-15.jpg", "https://www.instagram.com/")
                 .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`))
-            })
-            const json = JSON.parse(html.match(/({"config":)((.|\n)*?)(?=;<\/script>)/g)?.[0])
+            }
+            const json = JSON.parse(html.match(/({"config":)((.|\n)*?)(?=;<\/script>)/g)?.[0]!)
             const user = json.entry_data.ProfilePage[0].graphql.user
             const followers = user.edge_followed_by.count
             const following = user.edge_follow.count
@@ -105,13 +107,15 @@ export default class Instagram extends Command {
         }
 
         const text = Functions.combineArgs(args, 1).trim().replace(/ +/g, "")
-        const html = await axios.get(`https://www.instagram.com/explore/tags/${text}/`, {headers: this.headers}).then((r) => r.data)
-        .catch(() => {
+        let html = ""
+        try {
+            html = await axios.get(`https://www.instagram.com/explore/tags/${text}/`, {headers: this.headers}).then((r) => r.data)
+        } catch {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor("instagram", "https://clipartart.com/images/new-instagram-clipart-15.jpg", "https://www.instagram.com/")
             .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`))
-        })
-        const json = JSON.parse(html.match(/({"config":)((.|\n)*?)(?=;<\/script>)/g)?.[0])
+        }
+        const json = JSON.parse(html.match(/({"config":)((.|\n)*?)(?=;<\/script>)/g)?.[0]!)
         const posts = json.entry_data.TagPage[0].graphql.hashtag.edge_hashtag_to_media.edges
         const max = posts.length > 20 ? 20 : posts.length
         const instagramArray: MessageEmbed[] = []

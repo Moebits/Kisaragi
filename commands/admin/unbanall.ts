@@ -32,12 +32,14 @@ export default class UnbanAll extends Command {
         if (!await perms.checkAdmin()) return
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        if (!message.guild?.me?.hasPermission("MANAGE_GUILD") || !message.guild.me.hasPermission("BAN_MEMBERS")) return message.reply(`I need the **Manage Server** and **Ban Members** permissions ${discord.getEmoji("kannaFacepalm")}`)
+        if (!message.guild?.me?.hasPermission(["MANAGE_GUILD", "BAN_MEMBERS"])) return message.reply(`I need the **Manage Server** and **Ban Members** permissions ${discord.getEmoji("kannaFacepalm")}`)
         const banList = await message.guild!.fetchBans().then((e) => e.map((b) => b.user.id))
 
         for (let i = 0; i < banList.length; i++) {
             try {
                 await message.guild?.members.unban(banList[i], "Unbanning all members")
+                await Functions.timeout(100)
+                if (discord.checkMuted(message)) await Functions.timeout(1000)
             } catch {
                 continue
             }

@@ -57,8 +57,7 @@ export default class Embed extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has("MANAGE_MESSAGES")) {
-            message.reply(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
-            return
+            return message.reply(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
         }
 
         const infoEmbed = embeds.createEmbed()
@@ -138,7 +137,7 @@ export default class Embed extends Command {
         let content = ""
         const getContent = async (response: Message) => {
             content = response.content
-            if (response.attachments.first()) content = response.attachments.first()!.url
+            if (response.attachments.size) content = response.attachments.first()!.url
             await response.delete()
         }
 
@@ -193,9 +192,11 @@ export default class Embed extends Command {
                 return proc.delete({timeout: 3000})
             }
             this.setProcBlock()
-            const rep = await this.message.channel.send(`<@${user.id}>, Post an image for this embed (png, jpg, gif).`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Post an image for this embed (png, jpg, gif). Type \`me\` for your profile pic, and \`guild\` for the guild icon.`)
             await embeds.createPrompt(getContent, true)
             rep.delete()
+            if (content === "me") content = user.displayAvatarURL({format: "png", dynamic: true})
+            if (content === "guild") content = this.message.guild?.iconURL({format: "png", dynamic: true}) ?? ""
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
                 rep2.delete({timeout: 3000})
@@ -215,9 +216,11 @@ export default class Embed extends Command {
                 return proc.delete({timeout: 3000})
             }
             this.setProcBlock()
-            const rep = await this.message.channel.send(`<@${user.id}>, Post a thumbnail for this embed (png, jpg, gif).`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Post a thumbnail for this embed (png, jpg, gif). Type \`me\` for your profile pic, and \`guild\` for the guild icon.`)
             await embeds.createPrompt(getContent, true)
             rep.delete()
+            if (content === "me") content = user.displayAvatarURL({format: "png", dynamic: true})
+            if (content === "guild") content = this.message.guild?.iconURL({format: "png", dynamic: true}) ?? ""
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This thumbnail is invalid.`)
                 rep2.delete({timeout: 3000})
@@ -259,9 +262,11 @@ export default class Embed extends Command {
                 return proc.delete({timeout: 3000})
             }
             this.setProcBlock()
-            const rep = await this.message.channel.send(`<@${user.id}>, Post an author image for this embed (png, jpg, gif).`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Post an author image for this embed (png, jpg, gif). Type \`me\` for your profile pic, and \`guild\` for the guild icon.`)
             await embeds.createPrompt(getContent, true)
             rep.delete()
+            if (content === "me") content = user.displayAvatarURL({format: "png", dynamic: true})
+            if (content === "guild") content = this.message.guild?.iconURL({format: "png", dynamic: true}) ?? ""
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
                 rep2.delete({timeout: 3000})
@@ -303,9 +308,11 @@ export default class Embed extends Command {
                 return proc.delete({timeout: 3000})
             }
             this.setProcBlock()
-            const rep = await this.message.channel.send(`<@${user.id}>, Post a footer image for this embed (png, jpg, gif).`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Post a footer image for this embed (png, jpg, gif). Type \`me\` for your profile pic, and \`guild\` for the guild icon.`)
             await embeds.createPrompt(getContent, true)
             rep.delete()
+            if (content === "me") content = user.displayAvatarURL({format: "png", dynamic: true})
+            if (content === "guild") content = this.message.guild?.iconURL({format: "png", dynamic: true}) ?? ""
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
                 rep2.delete({timeout: 3000})
