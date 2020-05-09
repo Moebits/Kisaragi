@@ -8,6 +8,7 @@ import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "./../../structures/Permission"
 
 export default class Play extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -41,6 +42,7 @@ export default class Play extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        const perms = new Permission(discord, message)
         if (!audio.checkMusicPermissions()) return
 
         let voiceChannel = message.guild?.voice?.channel!
@@ -101,6 +103,7 @@ export default class Play extends Command {
                 setFirst = true
             }
             if (setYT) {
+                if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
                 const link = await audio.songPickerYT(song, setFirst)
                 if (!link) return message.reply("No results were found for your query!")
                 song = link

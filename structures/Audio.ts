@@ -10,6 +10,7 @@ import {AudioEffects} from "./AudioEffects"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
+import {Permission} from "./Permission"
 import {Video} from "./Video"
 
 const numMap = {
@@ -1393,6 +1394,8 @@ export class Audio {
             await this.songPickerSC(query)
         })
         youtube.on("collect", async (reaction, user) => {
+            const perms = new Permission(discord, message)
+            if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
             youtube.stop()
             await reaction.users.remove(user)
             await this.songPickerYT(query)
