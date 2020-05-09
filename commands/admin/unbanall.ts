@@ -21,7 +21,8 @@ export default class UnbanAll extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

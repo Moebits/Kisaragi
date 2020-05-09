@@ -36,7 +36,8 @@ export default class YoutubeCommand extends Command {
             `,
             aliases: ["yt"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

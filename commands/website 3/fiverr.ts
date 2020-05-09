@@ -34,7 +34,8 @@ export default class Fiverr extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            unlist: true
         })
     }
 

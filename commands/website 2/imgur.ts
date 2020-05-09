@@ -21,7 +21,8 @@ export default class Imgur extends Command {
             `,
             aliases: ["img", "image"],
             random: "string",
-            cooldown: 5
+            cooldown: 5,
+            nsfw: true
         })
     }
 

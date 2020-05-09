@@ -24,7 +24,8 @@ export default class BanSync extends Command {
             `,
             guildOnly: true,
             aliases: ["syncbans"],
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 
