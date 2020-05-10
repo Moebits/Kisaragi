@@ -19,7 +19,8 @@ export default class Nmap extends Command {
             \`=>nmap google.com\`
             `,
             aliases: [],
-            cooldown: 10
+            cooldown: 10,
+            unlist: true
         })
     }
 
