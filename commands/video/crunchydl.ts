@@ -32,7 +32,8 @@ export default class CrunchyDL extends Command {
             \`=>crunchydl kiniro mosaic 5\`
             `,
             aliases: ["animedl", "animedownload", "crunchydownload"],
-            cooldown: 200
+            cooldown: 200,
+            nsfw: true
         })
     }
 

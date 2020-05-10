@@ -823,6 +823,7 @@ export class Audio {
         const reactors = [resume, pause, scrub, reverse, speed, pitch, loop, abloop, skip, volume, eq, fx, clear, mp3]
         for (let i = 0; i < reactors.length; i++) {
             reactors[i].on("collect", async (reaction, user) => {
+                if (discord.checkMuted(reaction.message)) reaction.emoji.name = reaction.emoji.name.replace("png", "")
                 let test = true
                 if (reaction.emoji.name === "reverse") test = false
                 if (reaction.emoji.name === "speed") test = false

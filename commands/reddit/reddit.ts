@@ -32,7 +32,8 @@ export default class Reddit extends Command {
             `,
             aliases: ["r"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

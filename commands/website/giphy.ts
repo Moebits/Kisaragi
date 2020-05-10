@@ -21,7 +21,8 @@ export default class GiphyCommand extends Command {
             `,
             aliases: ["gif"],
             random: "none",
-            cooldown: 5
+            cooldown: 5,
+            nsfw: true
         })
     }
 

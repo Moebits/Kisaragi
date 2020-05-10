@@ -104,8 +104,8 @@ export default class Help extends Command {
         "music": "https://cdn.discordapp.com/emojis/705317102478950470.gif",
         "music 2": "https://cdn.discordapp.com/emojis/705316441745784873.gif",
         "music 3": "https://cdn.discordapp.com/emojis/705329464032100393.gif",
-        "reddit": "https://cdn.discordapp.com/emojis/704096939519770685.png",
-        "twitter": "https://cdn.discordapp.com/emojis/704105504942718987.png",
+        "reddit": "https://cdn.discordapp.com/emojis/709173418016112681.gif",
+        "twitter": "https://cdn.discordapp.com/emojis/709176292293083217.gif",
         "video": "https://cdn.discordapp.com/emojis/705315341915390043.gif",
         "waifu": "https://cdn.discordapp.com/emojis/705315862667853865.gif",
         "website": "https://cdn.discordapp.com/emojis/705317129238478909.gif",
@@ -147,10 +147,10 @@ export default class Help extends Command {
                     }
                     if (subDir[k] === "japanese") subDir[k] = "weeb"
                     dmEmbed
-                    .addField(`${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${counter})`, help)
+                    .addField(`${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${counter})`.trim(), help)
                 }
                 dmEmbed
-                .setAuthor("help", "https://cdn.discordapp.com/emojis/705492897579139172.gif")
+                .setAuthor("help", discord.muted ? "" : "https://cdn.discordapp.com/emojis/705492897579139172.gif")
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
                 .setDescription(`_Note: Reactions cannot be removed in dm's, so you have to remove them yourself. Running commands in dm's is supported, so you can use \`help (command)\` for detailed help here. Always use \`help dm\` for the dm-compatible command list, the bot can't scroll pages on the regular one._`)
                 .addField("Additional Links", `[**Invite**](${config.invite}) | [**Server**](${config.support}) | [**Github**](${config.repo}) | [**Review**](${config.review})`)
@@ -184,9 +184,9 @@ export default class Help extends Command {
             const helpEmbed = embeds.createEmbed()
             helpEmbed
             .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${this.emojiMap[subDir[i]]}`)
-            .setAuthor("help", "https://cdn.discordapp.com/emojis/705492897579139172.gif")
+            .setAuthor("help", discord.muted ? "" : "https://cdn.discordapp.com/emojis/705492897579139172.gif")
             .setImage(this.imageMap[subDir[i]])
-            .setThumbnail(this.thumbMap[subDir[i]])
+            .setThumbnail(discord.muted ? "" : this.thumbMap[subDir[i]])
             .setDescription(
                 `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` +
                 `To display only one category, use \`help !(category)\` ${discord.getEmoji("gabYes")}\n` +

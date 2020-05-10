@@ -21,7 +21,8 @@ export default class Stockings extends Command {
             `,
             aliases: ["leggings", "tights"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

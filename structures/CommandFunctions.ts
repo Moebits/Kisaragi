@@ -77,7 +77,7 @@ export class CommandFunctions {
     }
 
     public noCommand = async (input: string, noMsg?: boolean) => {
-        if (noMsg) return
+        if (noMsg || this.discord.checkMuted(this.message)) return
         if (noCmdCool.has(this.message.guild!.id)) return
         const commands = await SQLQuery.selectColumn("commands", "command")
         for (let i = 0; i < commands.length; i++) {

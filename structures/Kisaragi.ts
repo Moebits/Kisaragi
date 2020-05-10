@@ -1,7 +1,6 @@
 import axios from "axios"
 import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, MessageAttachment, Role, TextChannel, User} from "discord.js"
 import * as muted from "../assets/json/muted.json"
-import {message} from "../test/login"
 import * as config from "./../config.json"
 import {Embeds} from "./Embeds"
 import {SQLQuery} from "./SQLQuery"
@@ -9,6 +8,7 @@ export class Kisaragi extends Client {
     public static username = "Kisaragi"
     public static pfp = "https://cdn.discordapp.com/avatars/593838271650332672/78ec2f4a3d4ab82a40791cb522cf36f5.png?size=2048"
     private starIndex = 0
+    public muted = false
     constructor(options: ClientOptions) {
         super(options)
     }
@@ -33,12 +33,12 @@ export class Kisaragi extends Client {
                 this.starIndex = 0
             }
         }
-        const emoji = this.emojis.cache.find((e) => (e.name === name) && (e.guild.ownerID === process.env.OWNER_ID))
+        const emoji = this.emojis.cache.find((e) => (muted ? e.name === `${name}png` : e.name === name) && (e.guild.ownerID === process.env.OWNER_ID))
         if (emoji) {
             return emoji as unknown as GuildEmoji
         } else {
             // Confused Anime
-            return this.emojis.cache.get("579870079311937557") as unknown as GuildEmoji
+            return muted ? "" as unknown as GuildEmoji : this.emojis.cache.get("579870079311937557") as unknown as GuildEmoji
         }
     }
 

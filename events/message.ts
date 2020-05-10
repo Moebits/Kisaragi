@@ -211,7 +211,9 @@ export default class MessageEvent {
       const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown, this.cooldowns)
       if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return message.reply({embed: onCooldown})
 
+      this.discord.muted = false
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
+      this.discord.muted = this.discord.checkMuted(message)
 
       cmdPath.run(args).then(() => {
           const msgCheck = message.channel.messages

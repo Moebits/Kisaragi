@@ -25,7 +25,8 @@ export default class TwitterCommand extends Command {
             `,
             aliases: ["t"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

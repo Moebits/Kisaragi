@@ -30,7 +30,8 @@ export default class Newgrounds extends Command {
             `,
             aliases: ["ng"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 
