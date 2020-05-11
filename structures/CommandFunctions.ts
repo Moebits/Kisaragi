@@ -44,6 +44,7 @@ export class CommandFunctions {
         for (let i = 0; i < command.length; i++) {
             if (!toggle?.[i] || toggle[i] === "inactive") continue
             const guildChannel = (this.message.guild?.channels.cache.find((c) => c.id === channel[i])) as TextChannel
+            if (!guildChannel) return
             const cmd = command[i].split(" ")
             const timeout = Number(frequency[i]) * 3600000
             let rawTimeLeft = await sql.fetchColumn("auto", "timeout")

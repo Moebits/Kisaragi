@@ -93,6 +93,7 @@ export default class MessageReactionAdd {
         const starboard = async (reaction: MessageReaction) => {
             if (!reaction.count || !reaction.message.guild) return
             const starEmoji = await sql.fetchColumn("guilds", "star emoji")
+            if (!starEmoji) return
             if (reaction.emoji.id === starEmoji.match(/\d+/)?.[0] || reaction.emoji.toString() === starEmoji) {
                 const starThreshold = await sql.fetchColumn("guilds", "star threshold")
                 if (!(reaction.count >= Number(starThreshold))) return

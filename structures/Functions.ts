@@ -440,6 +440,7 @@ export class Functions {
             const channels = await SQLQuery.selectColumn("twitch", "channel")
             if (!channels?.[0]) return
             const streams = await twitch.helix.streams.getStreams({userName: channels})
+            if (!streams.data) return
             const currentStreamers: string[] = []
             for (let i = 0; i < streams.data.length; i++) {
                 if (!activeStreams.has(streams.data[i].userDisplayName)) {
@@ -468,6 +469,7 @@ export class Functions {
         if (config.testing === "on") return
         const yt: any[] = []
         const configs = await SQLQuery.selectColumn("yt", "config")
+        if (!configs) return
         for (let i = 0; i < configs.length; i++) {
             for (let j = 0; j < configs[i].length; j++) {
                 const current = JSON.parse(configs[i][j])
