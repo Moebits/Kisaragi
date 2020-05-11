@@ -183,6 +183,7 @@ export default class MessageEvent {
       const pathFind = await cmdFunctions.findCommand(cmd)
       if (!pathFind) return cmdFunctions.noCommand(cmd)
       const cmdPath = new (require(pathFind).default)(this.discord, message)
+      if (cmdPath.options.nsfw && this.discord.checkMuted(message)) return
 
       if (cmdPath.options.guildOnly) {
         if (message.channel.type === "dm") return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds. ${this.discord.getEmoji("smugFace")}`)
@@ -214,6 +215,7 @@ export default class MessageEvent {
       this.discord.muted = false
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
       this.discord.muted = this.discord.checkMuted(message)
+      if (cmdPath.options.unlist && message.author.id !== process.env.OWNER_ID) return message.reply(`Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
 
       cmdPath.run(args).then(() => {
           const msgCheck = message.channel.messages
