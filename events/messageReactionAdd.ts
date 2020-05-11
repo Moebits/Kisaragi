@@ -114,7 +114,7 @@ export default class MessageReactionAdd {
                 .setImage(reaction.message.attachments.first() ? reaction.message.attachments.first()!.url : "")
                 .setFooter(`${reaction.message.author.tag} • #${(reaction.message.channel as TextChannel).name}`, reaction.message.author.displayAvatarURL({format: "png", dynamic: true}))
                 const msg = await starChannel?.send(starEmbed)
-                active.push(msg.id)
+                active.push(reaction.message.id)
                 await SQLQuery.redisSet("starboard", JSON.stringify(active))
             }
         }
