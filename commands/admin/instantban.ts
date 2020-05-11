@@ -110,30 +110,30 @@ export default class InstantBan extends Command {
             if (setPfp) {
                 if (String(pfpBan) === "off") {
                     await sql.updateColumn("guilds", "pfp ban toggle", "on")
-                    description += `${discord.getEmoji("star")}Profile picture bans are now **on**!`
+                    description += `${discord.getEmoji("star")}Profile picture bans are now **on**!\n`
                 } else {
                     await sql.updateColumn("guilds", "pfp ban toggle", "off")
-                    description += `${discord.getEmoji("star")}Profile picture bans are now **off**!`
+                    description += `${discord.getEmoji("star")}Profile picture bans are now **off**!\n`
                 }
             }
 
             if (setLeave) {
                 if (String(leaveBan) === "off") {
                     await sql.updateColumn("guilds", "leaver ban toggle", "on")
-                    description += `${discord.getEmoji("star")}Leave bans are now **on**!`
+                    description += `${discord.getEmoji("star")}Leave bans are now **on**!\n`
                 } else {
                     await sql.updateColumn("guilds", "leaver ban toggle", "off")
-                    description += `${discord.getEmoji("star")}Leave bans are now **off**!`
+                    description += `${discord.getEmoji("star")}Leave bans are now **off**!\n`
                 }
             }
 
             if (setEveryone) {
                 if (String(everyoneBan) === "off") {
                     await sql.updateColumn("guilds", "everyone ban toggle", "on")
-                    description += `${discord.getEmoji("star")}Everyone bans are now **on**!`
+                    description += `${discord.getEmoji("star")}Everyone bans are now **on**!\n`
                 } else {
                     await sql.updateColumn("guilds", "everyone ban toggle", "off")
-                    description += `${discord.getEmoji("star")}Everyone bans are now **off**!`
+                    description += `${discord.getEmoji("star")}Everyone bans are now **off**!\n`
                 }
             }
 

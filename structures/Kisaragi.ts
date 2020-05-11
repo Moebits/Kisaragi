@@ -151,7 +151,7 @@ export class Kisaragi extends Client {
         const channels = guild.channels.cache.filter((c: GuildChannel) => {
             if (c.type === "text") {
                 const perms = c.permissionsFor(this.user?.id!)!
-                if (perms?.has("SEND_MESSAGES") && perms?.has("VIEW_CHANNEL")) {
+                if (perms?.has("VIEW_CHANNEL")) {
                     return true
                 }
             }
