@@ -24,10 +24,10 @@ export default class Photos extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         if (!await perms.checkAdmin()) return
-        let channels = await sql.fetchColumn("images", "image channels")
-        let folders = await sql.fetchColumn("images", "dropbox folders")
-        let albums = await sql.fetchColumn("images", "google albums")
-        const notify = await sql.fetchColumn("images", "notify toggle")
+        let channels = await sql.fetchColumn("guilds", "image channels")
+        let folders = await sql.fetchColumn("guilds", "dropbox folders")
+        let albums = await sql.fetchColumn("guilds", "google albums")
+        const notify = await sql.fetchColumn("guilds", "notify toggle")
         const loading = message.channel.lastMessage
         loading?.delete()
         const input = Functions.combineArgs(args, 1)
@@ -100,10 +100,10 @@ export default class Photos extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("images", "image channels", null)
-                await sql.updateColumn("images", "dropbox folders", null)
-                await sql.updateColumn("images", "google albums", null)
-                await sql.updateColumn("images", "notify toggle", "on")
+                await sql.updateColumn("guilds", "image channels", null)
+                await sql.updateColumn("guilds", "dropbox folders", null)
+                await sql.updateColumn("guilds", "google albums", null)
+                await sql.updateColumn("guilds", "notify toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
                 msg.channel.send(responseEmbed)
@@ -119,9 +119,9 @@ export default class Photos extends Command {
                         channels = channels.filter(Boolean)
                         albums = albums.filter(Boolean)
                         folders= folders.filter(Boolean)
-                        await sql.updateColumn("images", "image channels", channels)
-                        await sql.updateColumn("images", "google albums", albums)
-                        await sql.updateColumn("images", "dropbox folders", folders)
+                        await sql.updateColumn("guilds", "image channels", channels)
+                        await sql.updateColumn("guilds", "google albums", albums)
+                        await sql.updateColumn("guilds", "dropbox folders", folders)
                         return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
                     return msg.channel.send(responseEmbed.setDescription("Setting not found!"))
@@ -139,17 +139,17 @@ export default class Photos extends Command {
                     let editDesc = ""
                     if (tempChan) {
                         channels[num] = tempChan
-                        await sql.updateColumn("images", "image channels", channels)
+                        await sql.updateColumn("guilds", "image channels", channels)
                         editDesc += `${discord.getEmoji("star")}Channel set to **${tempChan}**!\n`
                     }
                     if (tempFolder) {
                         folders[num] = tempFolder
-                        await sql.updateColumn("images", "dropbox folders", folders)
+                        await sql.updateColumn("guilds", "dropbox folders", folders)
                         editDesc += `${discord.getEmoji("star")}Dropbox folder set to **${tempFolder}**!\n`
                     }
                     if (tempAlbum) {
                         albums[num] = tempAlbum
-                        await sql.updateColumn("images", "google albums", albums)
+                        await sql.updateColumn("guilds", "google albums", albums)
                         editDesc += `${discord.getEmoji("star")}Google album set to **${tempAlbum}**!\n`
                     }
                     return msg.channel.send(responseEmbed.setDescription(editDesc))
@@ -171,28 +171,28 @@ export default class Photos extends Command {
 
             if (setChannel) {
                 channels.push(newChan)
-                await sql.updateColumn("images", "image channels", channels)
+                await sql.updateColumn("guilds", "image channels", channels)
                 description += `${discord.getEmoji("star")}Channel set to <#${newChan}>!\n`
             }
 
             if (setFolder) {
                 folders.push(newFolder)
-                await sql.updateColumn("images", "dropbox folders", folders)
+                await sql.updateColumn("guilds", "dropbox folders", folders)
                 description += `${discord.getEmoji("star")}Dropbox folder set to **${newFolder}**!\n`
             }
 
             if (setAlbum) {
                 albums.push(newAlbum)
-                await sql.updateColumn("images", "google albums", albums)
+                await sql.updateColumn("guilds", "google albums", albums)
                 description += `${discord.getEmoji("star")}Google album set to **${newAlbum}**!\n`
             }
 
             if (setNotify) {
                 if (notify.join("") === "on") {
-                    await sql.updateColumn("images", "notify toggle", "off")
+                    await sql.updateColumn("guilds", "notify toggle", "off")
                     description += `${discord.getEmoji("star")}Upload notify is **off**!\n`
                 } else {
-                    await sql.updateColumn("images", "notify toggle", "on")
+                    await sql.updateColumn("guilds", "notify toggle", "on")
                     description += `${discord.getEmoji("star")}Upload notify is **on**!\n`
                 }
             }

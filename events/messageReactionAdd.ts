@@ -54,7 +54,7 @@ export default class MessageReactionAdd {
         }
 
         const addReactionRole = async (reaction: MessageReaction, user: User) => {
-            const reactionroles = await sql.fetchColumn("special roles", "reaction roles")
+            const reactionroles = await sql.fetchColumn("guilds", "reaction roles")
             if (!reactionroles?.[0]) return
             for (let i = 0; i < reactionroles.length; i++) {
                 const reactionrole = JSON.parse(reactionroles[i])
@@ -92,15 +92,15 @@ export default class MessageReactionAdd {
 
         const starboard = async (reaction: MessageReaction) => {
             if (!reaction.count || !reaction.message.guild) return
-            const starEmoji = await sql.fetchColumn("special channels", "star emoji")
+            const starEmoji = await sql.fetchColumn("guilds", "star emoji")
             if (reaction.emoji.id === starEmoji.match(/\d+/)?.[0] || reaction.emoji.toString() === starEmoji) {
-                const starThreshold = await sql.fetchColumn("special channels", "star threshold")
+                const starThreshold = await sql.fetchColumn("guilds", "star threshold")
                 if (!(reaction.count >= Number(starThreshold))) return
                 let active = await SQLQuery.redisGet("starboard")
                 active = JSON.parse(active)
                 if (!active) active = []
                 if (active.includes(reaction.message.id)) return
-                const starChannelID = await sql.fetchColumn("special channels", "starboard")
+                const starChannelID = await sql.fetchColumn("guilds", "starboard")
                 const starChannel = reaction.message.guild.channels.cache.get(starChannelID) as TextChannel
                 const content = reaction.message.embeds?.[0] ? reaction.message.embeds[0].description : reaction.message.content
                 const starEmbed = embeds.createEmbed()

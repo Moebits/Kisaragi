@@ -17,7 +17,7 @@ export class Embeds {
 
     /** Updates the guild embed color */
     public updateColor = async () => {
-        const color = await this.sql.fetchColumn("config", "embed colors")
+        const color = await this.sql.fetchColumn("guilds", "embed colors")
         if (!color || String(color) === "default") {
             colors.set(this.message.guild?.id, "default")
         } else if (String(color) === "random") {

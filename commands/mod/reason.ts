@@ -35,14 +35,14 @@ export default class Reason extends Command {
         if (!caseNumber) return message.reply(`You need to specify a case number ${discord.getEmoji("kannaFacepalm")}`)
         let reason = Functions.combineArgs(args, 2).trim()
         if (!reason) reason = "None provided!"
-        let cases = await sql.fetchColumn("warns", "cases")
+        let cases = await sql.fetchColumn("guilds", "cases")
         cases = cases.map((c: any) => JSON.parse(c))
         if (!cases) return message.reply(`This server has no cases. You need to enable **mod log** in \`logs\` to record them. ${discord.getEmoji("kannaFacepalm")}`)
         const index = cases.findIndex((c: any) => Number(c.case) === caseNumber)
         if (index === -1) return message.reply(`Invalid case number ${discord.getEmoji("kannaFacepalm")}`)
 
         cases[index].reason = reason
-        await sql.updateColumn("warns", "cases", cases)
+        await sql.updateColumn("guilds", "cases", cases)
 
         const msg = await discord.fetchMessage(message, cases[index].message)
 

@@ -47,7 +47,7 @@ export default class ReactionRoles extends Command {
             return
         }
 
-        const reactions = await sql.fetchColumn("special roles", "reaction roles")
+        const reactions = await sql.fetchColumn("guilds", "reaction roles")
         const step = 3.0
         const increment = Math.ceil((reactions ? reactions.length : 1) / step)
         const reactArray: MessageEmbed[] = []
@@ -102,7 +102,7 @@ export default class ReactionRoles extends Command {
         async function reactPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             .setTitle(`**Reaction Roles** ${discord.getEmoji("tohruThumbsUp2")}`)
-            let reactionroles = await sql.fetchColumn("special roles", "reaction roles")
+            let reactionroles = await sql.fetchColumn("guilds", "reaction roles")
             if (!reactionroles) reactionroles = []
             let [setToggle, setMessage, setEmoji, setRole, setDM] = [false, false, false, false, false]
 
@@ -112,7 +112,7 @@ export default class ReactionRoles extends Command {
                 return msg.channel.send(responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("special roles", "reaction roles", null)
+                await sql.updateColumn("guilds", "reaction roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Reaction role settings were wiped!`)
                 return msg.channel.send(responseEmbed)
@@ -123,7 +123,7 @@ export default class ReactionRoles extends Command {
                 if (reactionroles ? reactionroles[num - 1] : false) {
                     reactionroles[num - 1] = ""
                     reactionroles = reactionroles.filter(Boolean)
-                    await sql.updateColumn("special roles", "reaction roles", reactionroles)
+                    await sql.updateColumn("guilds", "reaction roles", reactionroles)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                     return msg.channel.send(responseEmbed)
@@ -152,7 +152,7 @@ export default class ReactionRoles extends Command {
                         }
                     }
                     reactionroles[num-1] = JSON.stringify(reaction)
-                    await sql.updateColumn("special roles", "reaction roles", reactionroles)
+                    await sql.updateColumn("guilds", "reaction roles", reactionroles)
                     responseEmbed
                     .setDescription(desc)
                     return msg.channel.send(responseEmbed)
@@ -243,7 +243,7 @@ export default class ReactionRoles extends Command {
                         }
                         if (!editDesc) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
                         reactionroles[num] = JSON.stringify(reaction)
-                        await sql.updateColumn("special roles", "reaction roles", reactionroles)
+                        await sql.updateColumn("guilds", "reaction roles", reactionroles)
                         responseEmbed
                         .setDescription(editDesc)
                         return msg.channel.send(responseEmbed)
@@ -348,7 +348,7 @@ export default class ReactionRoles extends Command {
 
             if (!description) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             reactionroles.push(obj)
-            await sql.updateColumn("special roles", "reaction roles", reactionroles)
+            await sql.updateColumn("guilds", "reaction roles", reactionroles)
 
             responseEmbed
             .setDescription(description)

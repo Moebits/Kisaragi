@@ -21,7 +21,7 @@ export default class GuildMemberUpdate {
         if (oldMember.roles.cache.size > newMember.roles.cache.size) setRemoveRole = true
 
         const logNick = async (oldMember: GuildMember, newMember: GuildMember) => {
-            const memberLog = await sql.fetchColumn("logs", "member log")
+            const memberLog = await sql.fetchColumn("guilds", "member log")
             if (memberLog) {
                 const memberChannel = newMember.guild?.channels.cache.get(memberLog)! as TextChannel
                 const logEmbed = embeds.createEmbed()
@@ -42,7 +42,7 @@ export default class GuildMemberUpdate {
         if (setNick) logNick(oldMember, newMember)
 
         const logNewRole = async (oldMember: GuildMember, newMember: GuildMember) => {
-            const memberLog = await sql.fetchColumn("logs", "member log")
+            const memberLog = await sql.fetchColumn("guilds", "member log")
             if (memberLog) {
                 const newRole = newMember.roles.cache.find((r) => {
                     if (oldMember.roles.cache.has(r.id)) {
@@ -70,7 +70,7 @@ export default class GuildMemberUpdate {
         if (setNewRole) logNewRole(oldMember, newMember)
 
         const logRoleRemoval = async (oldMember: GuildMember, newMember: GuildMember) => {
-            const memberLog = await sql.fetchColumn("logs", "member log")
+            const memberLog = await sql.fetchColumn("guilds", "member log")
             if (memberLog) {
                 const oldRole = oldMember.roles.cache.find((r) => {
                     if (newMember.roles.cache.has(r.id)) {
@@ -98,7 +98,7 @@ export default class GuildMemberUpdate {
         if (setRemoveRole) logRoleRemoval(oldMember, newMember)
 
         const asciiNames = async (member: GuildMember) => {
-            const toggle = await sql.fetchColumn("blocks", "ascii name toggle")
+            const toggle = await sql.fetchColumn("guilds", "ascii name toggle")
             if (!toggle || toggle === "off") return
             if (member.displayName.match(/[^\x00-\x7F]/g)) {
                 let newName = ascii.foldReplacing(member.displayName).trim()

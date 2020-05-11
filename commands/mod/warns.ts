@@ -33,7 +33,7 @@ export default class Warns extends Command {
 
     public deleteCase = async (hash: string) => {
         const sql = new SQLQuery(this.message)
-        let cases = await sql.fetchColumn("warns", "cases")
+        let cases = await sql.fetchColumn("guilds", "cases")
         if (!cases) return
         cases = cases.map((c: any) => JSON.parse(c))
         cases = cases.filter((c: any) => c.type === "warn")
@@ -44,7 +44,7 @@ export default class Warns extends Command {
                 break
             }
         }
-        await sql.updateColumn("warns", "cases", cases)
+        await sql.updateColumn("guilds", "cases", cases)
     }
 
     public run = async (args: string[]) => {
@@ -66,7 +66,7 @@ export default class Warns extends Command {
 
         const warnArray: MessageEmbed[] = []
         let warnings = ""
-        let warnLog = await sql.fetchColumn("warns", "warn log")
+        let warnLog = await sql.fetchColumn("guilds", "warn log")
         if (!warnLog) warnLog = []
         for (let i = 0; i < warnLog.length; i++) {
             warnLog[i] = JSON.parse(warnLog[i])
@@ -109,8 +109,8 @@ export default class Warns extends Command {
         async function warnPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
-            const warnOne = await sql.fetchColumn("special roles", "warn one")
-            const warnTwo = await sql.fetchColumn("special roles", "warn two")
+            const warnOne = await sql.fetchColumn("guilds", "warn one")
+            const warnTwo = await sql.fetchColumn("guilds", "warn two")
             let [setUser, setDelete, setPurge] = [false, false, false]
 
             if (msg.content.toLowerCase() === "destroy") {
@@ -119,7 +119,7 @@ export default class Warns extends Command {
                         await self.deleteCase(warnLog[i].warns[j].hash)
                     }
                 }
-                await sql.updateColumn("warns", "warn log", null)
+                await sql.updateColumn("guilds", "warn log", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All warns were destroyed!`)
                 return msg.channel.send(responseEmbed)
@@ -144,7 +144,7 @@ export default class Warns extends Command {
                     for (let i = 0; i < warnLog.length; i++) {
                         if (warnLog[i].user === member.id) {
                             warnLog[i].warns[num].reason = tempMsg
-                            await sql.updateColumn("warns", "warn log", warnLog)
+                            await sql.updateColumn("guilds", "warn log", warnLog)
                             found = true
                         }
                     }
@@ -172,7 +172,7 @@ export default class Warns extends Command {
                             await self.deleteCase(warnLog[i].warns[j].hash)
                         }
                         warnLog[i].warns = []
-                        await sql.updateColumn("warns", "warn log", warnLog)
+                        await sql.updateColumn("guilds", "warn log", warnLog)
                         found = true
                         if (warnLog[i].warns.length < 1) {
                             if (warnOneRole) {
@@ -228,7 +228,7 @@ export default class Warns extends Command {
                         await self.deleteCase(warnLog[i].warns[num].hash)
                         warnLog[i].warns[num] = ""
                         warnLog[i].warns = warnLog[i].warns.filter(Boolean)
-                        await sql.updateColumn("warns", "warn log", warnLog)
+                        await sql.updateColumn("guilds", "warn log", warnLog)
                         found = true
                         if (warnLog[i].warns.length < 1) {
                             if (warnOneRole) {

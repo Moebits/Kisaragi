@@ -13,7 +13,7 @@ export default class GuildBanAdd {
         const embeds = new Embeds(discord, message!)
 
         const logBan = async (guild: Guild, user: User) => {
-            const modLog = await sql.fetchColumn("logs", "mod log")
+            const modLog = await sql.fetchColumn("guilds", "mod log")
             if (modLog) {
                 const modChannel = guild?.channels.cache.get(modLog)! as TextChannel
                 const log = await guild.fetchAuditLogs({type: "MEMBER_BAN_ADD", limit: 1}).then((l) => l.entries.first())

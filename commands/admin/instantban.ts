@@ -43,10 +43,10 @@ export default class InstantBan extends Command {
             return
         }
 
-        const pfpBan = await sql.fetchColumn("blocks", "pfp ban toggle")
-        const leaveBan = await sql.fetchColumn("blocks", "leaver ban toggle")
-        const everyoneBan = await sql.fetchColumn("blocks", "everyone ban toggle")
-        const defChannel = await sql.fetchColumn("blocks", "default channel")
+        const pfpBan = await sql.fetchColumn("guilds", "pfp ban toggle")
+        const leaveBan = await sql.fetchColumn("guilds", "leaver ban toggle")
+        const everyoneBan = await sql.fetchColumn("guilds", "everyone ban toggle")
+        const defChannel = await sql.fetchColumn("guilds", "default channel")
         const instantBanEmbed = embeds.createEmbed()
         instantBanEmbed
         .setTitle(`**Instant Bans** ${discord.getEmoji("mexShrug")}`)
@@ -86,9 +86,9 @@ export default class InstantBan extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("blocks", "pfp ban toggle", "off")
-                await sql.updateColumn("blocks", "leaver ban toggle", "off")
-                await sql.updateColumn("blocks", "everyone ban toggle", "off")
+                await sql.updateColumn("guilds", "pfp ban toggle", "off")
+                await sql.updateColumn("guilds", "leaver ban toggle", "off")
+                await sql.updateColumn("guilds", "everyone ban toggle", "off")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were disabled!`)
                 msg.channel.send(responseEmbed)
@@ -103,36 +103,36 @@ export default class InstantBan extends Command {
 
             if (setChannel) {
                 const channel = msg.guild?.channels.cache.find((c) => c === msg.mentions.channels.first())
-                await sql.updateColumn("blocks", "default channel", channel?.id)
+                await sql.updateColumn("guilds", "default channel", channel?.id)
                 description += `${discord.getEmoji("star")}Default channel set to <#${channel!.id}>!\n`
             }
 
             if (setPfp) {
                 if (String(pfpBan) === "off") {
-                    await sql.updateColumn("blocks", "pfp ban toggle", "on")
+                    await sql.updateColumn("guilds", "pfp ban toggle", "on")
                     description += `${discord.getEmoji("star")}Profile picture bans are now **on**!`
                 } else {
-                    await sql.updateColumn("blocks", "pfp ban toggle", "off")
+                    await sql.updateColumn("guilds", "pfp ban toggle", "off")
                     description += `${discord.getEmoji("star")}Profile picture bans are now **off**!`
                 }
             }
 
             if (setLeave) {
                 if (String(leaveBan) === "off") {
-                    await sql.updateColumn("blocks", "leaver ban toggle", "on")
+                    await sql.updateColumn("guilds", "leaver ban toggle", "on")
                     description += `${discord.getEmoji("star")}Leave bans are now **on**!`
                 } else {
-                    await sql.updateColumn("blocks", "leaver ban toggle", "off")
+                    await sql.updateColumn("guilds", "leaver ban toggle", "off")
                     description += `${discord.getEmoji("star")}Leave bans are now **off**!`
                 }
             }
 
             if (setEveryone) {
                 if (String(everyoneBan) === "off") {
-                    await sql.updateColumn("blocks", "everyone ban toggle", "on")
+                    await sql.updateColumn("guilds", "everyone ban toggle", "on")
                     description += `${discord.getEmoji("star")}Everyone bans are now **on**!`
                 } else {
-                    await sql.updateColumn("blocks", "everyone ban toggle", "off")
+                    await sql.updateColumn("guilds", "everyone ban toggle", "off")
                     description += `${discord.getEmoji("star")}Everyone bans are now **off**!`
                 }
             }

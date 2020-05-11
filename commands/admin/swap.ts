@@ -33,9 +33,9 @@ export default class Swap extends Command {
         const sql = new SQLQuery(message)
         const detect = new Detector(discord, message)
         if (!await perms.checkAdmin()) return
-        const pfp = await sql.fetchColumn("detection", "pfp")
-        const weeb = await sql.fetchColumn("detection", "weeb")
-        const normie = await sql.fetchColumn("detection", "normie")
+        const pfp = await sql.fetchColumn("guilds", "pfp")
+        const weeb = await sql.fetchColumn("guilds", "weeb")
+        const normie = await sql.fetchColumn("guilds", "normie")
         if (!pfp || pfp === "off") return message.reply("Cannot use this command, have not set the weeb and normie roles!")
         let weebCounter = 0
         let normieCounter = 0

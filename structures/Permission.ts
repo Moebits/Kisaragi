@@ -11,7 +11,7 @@ export class Permission {
     public checkMod = async (ignore?: boolean) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
         if (this.message.author.id === this.discord.user!.id) return true
-        const mod = await this.sql.fetchColumn("special roles", "mod role")
+        const mod = await this.sql.fetchColumn("guilds", "mod role")
         if (!mod) {
             if (ignore) return false
             this.message.reply("In order to use moderator commands, you must first " +
@@ -34,7 +34,7 @@ export class Permission {
     public checkAdmin = async (ignore?: boolean) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
         if (this.message.author.id === this.discord.user!.id) return true
-        const admin = await this.sql.fetchColumn("special roles", "admin role")
+        const admin = await this.sql.fetchColumn("guilds", "admin role")
         if (!admin) {
             if (ignore) return false
             this.message.reply("In order to use administrator commands, you must first " +
@@ -144,7 +144,7 @@ export class Permission {
 
     /** Continue temporary mute */
     public continueTempMutes = async () => {
-        const mute = await this.sql.fetchColumn("special roles", "mute role")
+        const mute = await this.sql.fetchColumn("guilds", "mute role")
         if (!mute) return
         let tempArr = await SQLQuery.redisGet(`${this.message.guild?.id}_tempmute`)
         tempArr = JSON.parse(tempArr)

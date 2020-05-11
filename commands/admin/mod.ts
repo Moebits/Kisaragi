@@ -49,15 +49,15 @@ export default class Mod extends Command {
             return
         }
 
-        const ascii = await sql.fetchColumn("blocks", "ascii name toggle")
-        const mute = await sql.fetchColumn("special roles", "mute role")
-        const restrict = await sql.fetchColumn("special roles", "restricted role")
-        const warnOne = await sql.fetchColumn("special roles", "warn one")
-        const warnTwo = await sql.fetchColumn("special roles", "warn two")
-        const admin = await sql.fetchColumn("special roles", "admin role")
-        const mod = await sql.fetchColumn("special roles", "mod role")
-        const warnPen = await sql.fetchColumn("warns", "warn penalty")
-        const warnThresh = await sql.fetchColumn("warns", "warn threshold")
+        const ascii = await sql.fetchColumn("guilds", "ascii name toggle")
+        const mute = await sql.fetchColumn("guilds", "mute role")
+        const restrict = await sql.fetchColumn("guilds", "restricted role")
+        const warnOne = await sql.fetchColumn("guilds", "warn one")
+        const warnTwo = await sql.fetchColumn("guilds", "warn two")
+        const admin = await sql.fetchColumn("guilds", "admin role")
+        const mod = await sql.fetchColumn("guilds", "mod role")
+        const warnPen = await sql.fetchColumn("guilds", "warn penalty")
+        const warnThresh = await sql.fetchColumn("guilds", "warn threshold")
 
         const modEmbed = embeds.createEmbed()
         modEmbed
@@ -101,7 +101,7 @@ export default class Mod extends Command {
         message.channel.send(modEmbed)
 
         async function modPrompt(msg: Message) {
-            const ascii = await sql.fetchColumn("blocks", "ascii name toggle")
+            const ascii = await sql.fetchColumn("guilds", "ascii name toggle")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)
             let [setAscii, setMute, setRestrict, setWarnOne, setWarnTwo, setWarnPenalty, setWarnThreshold, setAdmin, setMod] = [] as boolean[]
@@ -112,13 +112,13 @@ export default class Mod extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("blocks", "ascii name toggle", "off")
-                await sql.updateColumn("special roles", "mute role", null)
-                await sql.updateColumn("special roles", "restricted role", null)
-                await sql.updateColumn("special roles", "warn one", null)
-                await sql.updateColumn("special roles", "warn one", null)
-                await sql.updateColumn("warns", "warn penalty", "none")
-                await sql.updateColumn("warns", "warn threshold", null)
+                await sql.updateColumn("guilds", "ascii name toggle", "off")
+                await sql.updateColumn("guilds", "mute role", null)
+                await sql.updateColumn("guilds", "restricted role", null)
+                await sql.updateColumn("guilds", "warn one", null)
+                await sql.updateColumn("guilds", "warn one", null)
+                await sql.updateColumn("guilds", "warn penalty", "none")
+                await sql.updateColumn("guilds", "warn threshold", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 msg.channel.send(responseEmbed)
@@ -148,7 +148,7 @@ export default class Mod extends Command {
 
             if (setAscii) {
                 if (String(ascii) === "off") {
-                    await sql.updateColumn("blocks", "ascii name toggle", "on")
+                    await sql.updateColumn("guilds", "ascii name toggle", "on")
                     description += `${discord.getEmoji("star")}Ascii names are **on**!\n`
                     const members = message.guild!.members.cache.map((m) => m)
                     for (let i = 0; i < members.length; i++) {
@@ -159,48 +159,48 @@ export default class Mod extends Command {
                         }
                     }
                 } else {
-                    await sql.updateColumn("blocks", "ascii name toggle", "off")
+                    await sql.updateColumn("guilds", "ascii name toggle", "off")
                     description += `${discord.getEmoji("star")}Ascii names are **off**!\n`
                 }
             }
 
             if (setAdmin) {
-                await sql.updateColumn("special roles", "admin role", String(adminRole!))
+                await sql.updateColumn("guilds", "admin role", String(adminRole!))
                 description += `${discord.getEmoji("star")}Admin role set to <@&${adminRole!}>!\n`
             }
 
             if (setMod) {
-                await sql.updateColumn("special roles", "mod role", String(modRole!))
+                await sql.updateColumn("guilds", "mod role", String(modRole!))
                 description += `${discord.getEmoji("star")}Mod role set to <@&${modRole!}>!\n`
             }
 
             if (setMute) {
-                await sql.updateColumn("special roles", "mute role", String(muteRole!))
+                await sql.updateColumn("guilds", "mute role", String(muteRole!))
                 description += `${discord.getEmoji("star")}Mute role set to <@&${muteRole!}>!\n`
             }
 
             if (setRestrict) {
-                await sql.updateColumn("special roles", "restricted role", String(restrictRole!))
+                await sql.updateColumn("guilds", "restricted role", String(restrictRole!))
                 description += `${discord.getEmoji("star")}Restricted role set to <@&${restrictRole!}>!\n`
             }
 
             if (setWarnOne) {
-                await sql.updateColumn("special roles", "warn one", String(warnOneRole!))
+                await sql.updateColumn("guilds", "warn one", String(warnOneRole!))
                 description += `${discord.getEmoji("star")}Warn one role set to <@&${warnOneRole!}>!\n`
             }
 
             if (setWarnTwo) {
-                await sql.updateColumn("special roles", "warn two", String(warnTwoRole!))
+                await sql.updateColumn("guilds", "warn two", String(warnTwoRole!))
                 description += `${discord.getEmoji("star")}Warn two role set to <@&${warnTwoRole!}>!\n`
             }
 
             if (setWarnThreshold) {
-                await sql.updateColumn("warns", "warn threshold", String(warnThreshold!))
+                await sql.updateColumn("guilds", "warn threshold", String(warnThreshold!))
                 description += `${discord.getEmoji("star")}Warn threshold set to **${warnThreshold!}**!\n`
             }
 
             if (setWarnPenalty) {
-                await sql.updateColumn("warns", "warn penalty", String(warnPenalty!))
+                await sql.updateColumn("guilds", "warn penalty", String(warnPenalty!))
                 description += `${discord.getEmoji("star")}Warn penalty set to **${warnPenalty!}**!\n`
             }
 

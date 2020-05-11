@@ -37,15 +37,14 @@ export default class Order extends Command {
             await SQLQuery.foreignKeys(tables[i])
         }*/
 
-        /*let ids = await SQLQuery.selectColumn("guilds", "guild id")
-        console.log(ids)
+        let ids = await SQLQuery.selectColumn("guilds", "guild id")
         ids = Functions.removeDuplicates(ids)
 
         for (let i = 0; i < ids.length; i++) {
             const g = discord.guilds.cache.get(ids[i])
             const msg = await discord.fetchFirstMessage(g || message.guild!)
             await SQLQuery.initGuild(msg || message, true)
-        }*/
+        }
         await SQLQuery.orderTables()
         orderEmbed
         .setTitle(`**Order** ${discord.getEmoji("gabStare")}`)

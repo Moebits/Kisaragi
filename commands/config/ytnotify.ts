@@ -73,7 +73,7 @@ export default class YTNotify extends Command {
             return
         }
 
-        const channels = await sql.fetchColumn("special channels", "yt channels")
+        const channels = await sql.fetchColumn("guilds", "yt channels")
         const yt = await this.getYT(channels)
         const step = 3.0
         const increment = Math.ceil((yt ? yt.length : 1) / step)
@@ -129,7 +129,7 @@ export default class YTNotify extends Command {
         }
 
         async function ytPrompt(msg: Message) {
-            let channels = await sql.fetchColumn("special channels", "yt channels")
+            let channels = await sql.fetchColumn("guilds", "yt channels")
             if (!channels) channels = []
             const yt = channels[0] ? await self.getYT(channels) : []
             const responseEmbed = embeds.createEmbed()
@@ -141,7 +141,7 @@ export default class YTNotify extends Command {
                 return msg.channel.send(responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("special channels", "yt channels", null)
+                await sql.updateColumn("guilds", "yt channels", null)
                 await axios.delete(`${config.kisaragiAPI}/youtube`, {data: {channels, guild: message.guild?.id}})
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}YT Notify settings were wiped!`)
@@ -155,7 +155,7 @@ export default class YTNotify extends Command {
                     const index = channels.findIndex((c: string) => c === channel)
                     channels[index] = ""
                     channels = channels.filter(Boolean)
-                    await sql.updateColumn("special channels", "yt channels", channels)
+                    await sql.updateColumn("guilds", "yt channels", channels)
                     await axios.delete(`${config.kisaragiAPI}/youtube`, {data: {channels: [channel], guild: message.guild?.id}})
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
@@ -240,6 +240,10 @@ export default class YTNotify extends Command {
             const request = {} as any
             request.guild = message.guild?.id
 
+            if (channels.length >= 5) {
+                return msg.channel.send(responseEmbed.setDescription("You can set a maximum of 5 youtube channels!"))
+            }
+
             if (setChannel) {
                 const found = channels.find((c: string) => c === newChannel)
                 if (!found) channels.push(newChannel)
@@ -282,7 +286,7 @@ export default class YTNotify extends Command {
             }
             if (!description) return message.reply(`No edits were made ${discord.getEmoji("kannaFacepalm")}`)
             await axios.post(`${config.kisaragiAPI}/youtube`, request)
-            await sql.updateColumn("special channels", "yt channels", channels)
+            await sql.updateColumn("guilds", "yt channels", channels)
             responseEmbed
             .setDescription(description)
             return msg.channel.send(responseEmbed)

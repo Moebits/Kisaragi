@@ -23,7 +23,7 @@ export default class MessageDeleteBulk {
         if (message.author.id === discord.user!.id) return
 
         const logDeleted = async (messages: Message[]) => {
-            const messageLog = await sql.fetchColumn("logs", "message log")
+            const messageLog = await sql.fetchColumn("guilds", "message log")
             const prefix = await SQLQuery.fetchPrefix(messages[0])
             let message = messages.find((m) => {
                 if (m.partial) return false

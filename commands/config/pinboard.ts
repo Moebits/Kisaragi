@@ -45,8 +45,8 @@ export default class Pinboard extends Command {
             return
         }
 
-        const pinboard = await sql.fetchColumn("special channels", "pinboard")
-        const nsfwPinboard = await sql.fetchColumn("special channels", "nsfw pinboard")
+        const pinboard = await sql.fetchColumn("guilds", "pinboard")
+        const nsfwPinboard = await sql.fetchColumn("guilds", "nsfw pinboard")
 
         const pinboardEmbed = embeds.createEmbed()
         pinboardEmbed
@@ -81,8 +81,8 @@ export default class Pinboard extends Command {
                 return msg.channel.send(responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("special channels", "pinboard", null)
-                await sql.updateColumn("special channels", "nsfw pinboard", null)
+                await sql.updateColumn("guilds", "pinboard", null)
+                await sql.updateColumn("guilds", "nsfw pinboard", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Pinboard settings were wiped!`)
                 return msg.channel.send(responseEmbed)
@@ -100,14 +100,14 @@ export default class Pinboard extends Command {
             if (setPin) {
                 const channelTest = msg.guild?.channels.cache.get(newPin)
                 if (!channelTest) return msg.reply(`Invalid pinboard channel!`)
-                await sql.updateColumn("special channels", "pinboard", newPin)
+                await sql.updateColumn("guilds", "pinboard", newPin)
                 description += `${discord.getEmoji("star")}Pinboard channel set to <#${newPin}>!\n`
             }
 
             if (setNSFW) {
                 const channelTest = msg.guild?.channels.cache.get(newNSFW)
                 if (!channelTest) return msg.reply(`Invalid nsfw pinboard channel!`)
-                await sql.updateColumn("special channels", "nsfw pinboard", newNSFW)
+                await sql.updateColumn("guilds", "nsfw pinboard", newNSFW)
                 description += `${discord.getEmoji("star")}NSFW pinboard channel set to <#${newNSFW}>!\n`
             }
 

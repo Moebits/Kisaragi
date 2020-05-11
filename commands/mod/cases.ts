@@ -36,7 +36,7 @@ export default class Cases extends Command {
         const embeds = new Embeds(discord, message)
         if (!await perms.checkMod()) return
 
-        let cases = await sql.fetchColumn("warns", "cases")
+        let cases = await sql.fetchColumn("guilds", "cases")
         cases = cases.map((c: any) => JSON.parse(c))
         if (!cases) return message.reply(`This server has no cases. Cases are only recorded if you have the **mod log** on, which you can enable in \`logs\`. ${discord.getEmoji("kannaFacepalm")}`)
 

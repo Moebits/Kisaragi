@@ -15,7 +15,7 @@ export default class MessageUpdate {
         if (newMessage.author.id === discord.user!.id) return
 
         const logUpdated = async (oldMsg: Message, newMsg: Message) => {
-            const messageLog = await sql.fetchColumn("logs", "message log")
+            const messageLog = await sql.fetchColumn("guilds", "message log")
             if (messageLog) {
                 if (oldMsg.content === newMsg.content) return
                 const msgChannel = newMsg.guild?.channels.cache.get(messageLog)! as TextChannel

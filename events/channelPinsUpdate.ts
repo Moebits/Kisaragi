@@ -47,8 +47,8 @@ export default class ChannelPinsUpdate {
         const message = channel.lastMessage!
         const sql = new SQLQuery(message)
 
-        const pinboardID = await sql.fetchColumn("special channels", "pinboard")
-        const nsfwPinboardID = await sql.fetchColumn("special channels", "nsfw pinboard")
+        const pinboardID = await sql.fetchColumn("guilds", "pinboard")
+        const nsfwPinboardID = await sql.fetchColumn("guilds", "nsfw pinboard")
         if (!pinboardID && !nsfwPinboardID) return
         const pinboard = channel.guild.channels.cache.get(pinboardID ?? "")!
         const nsfwPinboard = channel.guild.channels.cache.get(nsfwPinboardID ?? "")

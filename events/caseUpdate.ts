@@ -11,7 +11,7 @@ export default class CaseUpdate {
         const discord = this.discord
         const user = await discord.users.fetch(instance.user)
         const executor = await discord.users.fetch(instance.executor)
-        const modLogID =  await sql.fetchColumn("logs", "mod log")
+        const modLogID =  await sql.fetchColumn("guilds", "mod log")
         const modLog = discord.channels.cache.get(modLogID ?? "") as TextChannel
         const caseNumber = cases.length + 1
         let channelName = ""

@@ -52,13 +52,13 @@ export default class Leave extends Command {
             return
         }
         const leaveEmbed = embeds.createEmbed()
-        const leaveMsg = await sql.fetchColumn("welcome leaves", "leave message")
-        const leaveToggle = await sql.fetchColumn("welcome leaves", "leave toggle")
-        const leaveChannel = await sql.fetchColumn("welcome leaves", "leave channel")
-        const leaveImages = await sql.fetchColumn("welcome leaves", "leave bg images")
-        const leaveText = await sql.fetchColumn("welcome leaves", "leave bg text")
-        const leaveColor = await sql.fetchColumn("welcome leaves", "leave bg color")
-        const leaveBGToggle = await sql.fetchColumn("welcome leaves", "leave bg toggle")
+        const leaveMsg = await sql.fetchColumn("guilds", "leave message")
+        const leaveToggle = await sql.fetchColumn("guilds", "leave toggle")
+        const leaveChannel = await sql.fetchColumn("guilds", "leave channel")
+        const leaveImages = await sql.fetchColumn("guilds", "leave bg images")
+        const leaveText = await sql.fetchColumn("guilds", "leave bg text")
+        const leaveColor = await sql.fetchColumn("guilds", "leave bg color")
+        const leaveBGToggle = await sql.fetchColumn("guilds", "leave bg toggle")
         const attachment = await images.createCanvas(message.member!, leaveImages, leaveText, leaveColor, false, false, leaveBGToggle) as MessageAttachment
         const urls: string[] = []
         for (let i = 0; i < leaveImages?.length ?? 0; i++) {
@@ -119,13 +119,13 @@ export default class Leave extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("welcome leaves", "leave message", "user has left guild!")
-                await sql.updateColumn("welcome leaves", "leave channel", null)
-                await sql.updateColumn("welcome leaves", "leave toggle", "off")
-                await sql.updateColumn("welcome leaves", "leave bg images", ["https://data.whicdn.com/images/210153523/original.gif"])
-                await sql.updateColumn("welcome leaves", "leave bg text", "tag left! There are now count members.")
-                await sql.updateColumn("welcome leaves", "leave bg color", "rainbow")
-                await sql.updateColumn("welcome leaves", "leave bg toggle", "on")
+                await sql.updateColumn("guilds", "leave message", "user has left guild!")
+                await sql.updateColumn("guilds", "leave channel", null)
+                await sql.updateColumn("guilds", "leave toggle", "off")
+                await sql.updateColumn("guilds", "leave bg images", ["https://data.whicdn.com/images/210153523/original.gif"])
+                await sql.updateColumn("guilds", "leave bg text", "tag left! There are now count members.")
+                await sql.updateColumn("guilds", "leave bg color", "rainbow")
+                await sql.updateColumn("guilds", "leave bg toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Leave settings were reset!`)
                 msg.channel.send(responseEmbed)
@@ -155,46 +155,46 @@ export default class Leave extends Command {
             }
             let description = ""
             if (setMsg) {
-                await sql.updateColumn("welcome leaves", "leave message", String(newMsg.trim()))
+                await sql.updateColumn("guilds", "leave message", String(newMsg.trim()))
                 description += `${discord.getEmoji("star")}Leave Message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
                 const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
                 if (!channel) return message.reply(`Invalid channel name ${discord.getEmoji("kannaFacepalm")}`)
-                await sql.updateColumn("welcome leaves", "leave channel", channel.id)
+                await sql.updateColumn("guilds", "leave channel", channel.id)
                 setOn = true
                 description += `${discord.getEmoji("star")}Leave channel set to <#${channel.id}>!\n`
             }
             if (setOn) {
-                await sql.updateColumn("welcome leaves", "leave toggle", "on")
+                await sql.updateColumn("guilds", "leave toggle", "on")
                 description += `${discord.getEmoji("star")}Leave Messages are **on**!\n`
             }
             if (setOff) {
-                await sql.updateColumn("welcome leaves", "leave toggle", "off")
+                await sql.updateColumn("guilds", "leave toggle", "off")
                 description += `${discord.getEmoji("star")}Leave Messages are **off**!\n`
             }
             if (setImage) {
                 let images = newImage!.map((i) => i)
                 images = Functions.removeDuplicates(images)
-                await sql.updateColumn("welcome leaves", "leave bg images", images)
+                await sql.updateColumn("guilds", "leave bg images", images)
                 description += `${discord.getEmoji("star")}Background image(s) set to **${Functions.checkChar(images.join(", "), 500, ",")}**!\n`
             }
             if (setBGText) {
-                await sql.updateColumn("welcome leaves", "leave bg text", String(newBGText![0].replace(/\[/g, "").replace(/\]/g, "")))
+                await sql.updateColumn("guilds", "leave bg text", String(newBGText![0].replace(/\[/g, "").replace(/\]/g, "")))
                 description += `${discord.getEmoji("star")}Background text set to **${newBGText![0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
             }
             if (setBGColor) {
-                await sql.updateColumn("welcome leaves", "leave bg color", String(newBGColor![0]))
+                await sql.updateColumn("guilds", "leave bg color", String(newBGColor![0]))
                 description += `${discord.getEmoji("star")}Background color set to **${newBGColor![0]}**!\n`
             }
 
             if (setBGToggle) {
-                const toggle = await sql.fetchColumn("welcome leaves", "leave bg toggle")
+                const toggle = await sql.fetchColumn("guilds", "leave bg toggle")
                 if (!toggle || toggle === "off") {
-                    await sql.updateColumn("welcome leaves", "leave bg toggle", "on")
+                    await sql.updateColumn("guilds", "leave bg toggle", "on")
                     description += `${discord.getEmoji("star")}Background text and picture is **on**!\n`
                 } else {
-                    await sql.updateColumn("welcome leaves", "leave bg toggle", "off")
+                    await sql.updateColumn("guilds", "leave bg toggle", "off")
                     description += `${discord.getEmoji("star")}Background text and picture is **off**!\n`
                 }
             }

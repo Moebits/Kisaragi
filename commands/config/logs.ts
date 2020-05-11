@@ -45,10 +45,10 @@ export default class Logs extends Command {
             return
         }
 
-        const messageLog = await sql.fetchColumn("logs", "message log")
-        const modLog = await sql.fetchColumn("logs", "mod log")
-        const userLog = await sql.fetchColumn("logs", "user log")
-        const memberLog = await sql.fetchColumn("logs", "member log")
+        const messageLog = await sql.fetchColumn("guilds", "message log")
+        const modLog = await sql.fetchColumn("guilds", "mod log")
+        const userLog = await sql.fetchColumn("guilds", "user log")
+        const memberLog = await sql.fetchColumn("guilds", "member log")
 
         const logEmbed = embeds.createEmbed()
         logEmbed
@@ -90,10 +90,10 @@ export default class Logs extends Command {
                 return msg.channel.send(responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("logs", "message log", null)
-                await sql.updateColumn("logs", "mod log", null)
-                await sql.updateColumn("logs", "user log", null)
-                await sql.updateColumn("logs", "member log", null)
+                await sql.updateColumn("guilds", "message log", null)
+                await sql.updateColumn("guilds", "mod log", null)
+                await sql.updateColumn("guilds", "user log", null)
+                await sql.updateColumn("guilds", "member log", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Logging settings were wiped!`)
                 return msg.channel.send(responseEmbed)
@@ -101,19 +101,19 @@ export default class Logs extends Command {
             if (msg.content.toLowerCase().startsWith("delete")) {
                 let desc = ""
                 if (/message/i.test(msg.content)) {
-                    await sql.updateColumn("logs", "message log", null)
+                    await sql.updateColumn("guilds", "message log", null)
                     desc +=  `${discord.getEmoji("star")}Removed the message log channel!\n`
                 }
                 if (/mod/i.test(msg.content)) {
-                    await sql.updateColumn("logs", "mod log", null)
+                    await sql.updateColumn("guilds", "mod log", null)
                     desc +=  `${discord.getEmoji("star")}Removed the mod log channel!\n`
                 }
                 if (/user/i.test(msg.content)) {
-                    await sql.updateColumn("logs", "user log", null)
+                    await sql.updateColumn("guilds", "user log", null)
                     desc +=  `${discord.getEmoji("star")}Removed the user log channel!\n`
                 }
                 if (/member/i.test(msg.content)) {
-                    await sql.updateColumn("logs", "member log", null)
+                    await sql.updateColumn("guilds", "member log", null)
                     desc +=  `${discord.getEmoji("star")}Removed the member log channel!\n`
                 }
                 if (!desc) desc = `No deletions were made ${discord.getEmoji("kannaFacepalm")}\n`
@@ -138,28 +138,28 @@ export default class Logs extends Command {
             if (setMsg) {
                 const channelTest = msg.guild?.channels.cache.get(newMsg)
                 if (!channelTest) return msg.reply(`Invalid message log channel!`)
-                await sql.updateColumn("logs", "message log", newMsg)
+                await sql.updateColumn("guilds", "message log", newMsg)
                 description += `${discord.getEmoji("star")}Message log channel set to <#${newMsg}>!\n`
             }
 
             if (setMod) {
                 const channelTest = msg.guild?.channels.cache.get(newMod)
                 if (!channelTest) return msg.reply(`Invalid mod log channel!`)
-                await sql.updateColumn("logs", "mod log", newMod)
+                await sql.updateColumn("guilds", "mod log", newMod)
                 description += `${discord.getEmoji("star")}Mod log channel set to <#${newMod}>!\n`
             }
 
             if (setUser) {
                 const channelTest = msg.guild?.channels.cache.get(newUser)
                 if (!channelTest) return msg.reply(`Invalid user log channel!`)
-                await sql.updateColumn("logs", "user log", newUser)
+                await sql.updateColumn("guilds", "user log", newUser)
                 description += `${discord.getEmoji("star")}User log channel set to <#${newUser}>!\n`
             }
 
             if (setMember) {
                 const channelTest = msg.guild?.channels.cache.get(newMember)
                 if (!channelTest) return msg.reply(`Invalid member log channel!`)
-                await sql.updateColumn("logs", "member log", newMember)
+                await sql.updateColumn("guilds", "member log", newMember)
                 description += `${discord.getEmoji("star")}Member log channel set to <#${newMember}>!\n`
             }
 

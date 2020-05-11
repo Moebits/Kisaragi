@@ -25,14 +25,14 @@ export default class VoiceStateUpdate {
                 const msg = await this.discord.fetchFirstMessage(newState.guild)
                 const audio = new Audio(this.discord, msg!)
                 audio.deleteQueue()
-                await sql.updateColumn("config", "voice", "off")
+                await sql.updateColumn("guilds", "voice", "off")
                 newState.guild.voice?.connection?.channel.leave()
             }
         }
         leaveVoiceChannel()
 
         const linkedChannel = async () => {
-            const linked = await sql.fetchColumn("special channels", "linked")
+            const linked = await sql.fetchColumn("guilds", "linked")
             if (!linked || oldState.channelID === newState.channelID) return
             for (let i = 0; i < linked.length; i++) {
                 const curr = JSON.parse(linked[i])

@@ -25,25 +25,7 @@ const pgPool = new Pool({
 })
 
 const tableList = [
-  "birthdays",
-  "blocks",
-  "channels",
-  "emojis",
-  "guilds",
-  "images",
-  "logs",
-  "points",
-  "prefixes",
-  "roles",
-  "special channels",
-  "special roles",
-  "users",
-  "warns",
-  "welcome leaves",
-  "captcha",
-  "auto",
-  "detection",
-  "config"
+  "guilds"
 ]
 
 export class SQLQuery {
@@ -142,7 +124,7 @@ export class SQLQuery {
   public static fetchPrefix = async (message: Message, update?: boolean): Promise<string> => {
     if (!message?.guild?.id) return "=>"
     const query: QueryArrayConfig = {
-        text: `SELECT prefix FROM prefixes WHERE "guild id" = $1`,
+        text: `SELECT prefix FROM guilds WHERE "guild id" = $1`,
         rowMode: "array",
         values: [message.guild?.id]
     }
@@ -223,7 +205,7 @@ export class SQLQuery {
   // Update Prefix
   public static updatePrefix = async (message: Message, prefix: string): Promise<void> => {
   const query: QueryConfig = {
-      text: `UPDATE "prefixes" SET "prefix" = $1 WHERE "guild id" = $2`,
+      text: `UPDATE "guilds" SET "prefix" = $1 WHERE "guild id" = $2`,
       values: [prefix, message.guild?.id]
     }
   await SQLQuery.runQuery(query, true)
@@ -269,7 +251,6 @@ export class SQLQuery {
   // Remove a guild from all tables
   public static deleteGuild = async (guildID: string): Promise<void> => {
       for (let i = 0; i < tableList.length; i++) {
-        if (tableList[i] === "points") continue
         const query: QueryConfig = {
           text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
           values: [guildID]
@@ -342,7 +323,6 @@ export class SQLQuery {
   /** Deletes all rows from all tables. */
   public static purgeDB = async () => {
     for (let i = 0; i < tableList.length; i++) {
-      if (tableList[i] === "points") continue
       await SQLQuery.purgeTable(tableList[i])
     }
     return

@@ -43,7 +43,7 @@ export default class LevelChannels extends Command {
             return
         }
 
-        const channels = await sql.fetchColumn("points", "level channels")
+        const channels = await sql.fetchColumn("guilds", "level channels")
         const step = 5.0
         const increment = Math.ceil((channels ? channels.length : 1) / step)
         const detectArray: MessageEmbed[] = []
@@ -85,7 +85,7 @@ export default class LevelChannels extends Command {
         }
 
         async function detectPrompt(msg: Message) {
-            let channels = await sql.fetchColumn("points", "level channels")
+            let channels = await sql.fetchColumn("guilds", "level channels")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Level Channels** ${discord.getEmoji("think")}`)
             if (!channels) channels = []
@@ -96,7 +96,7 @@ export default class LevelChannels extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("points", "level channels", null)
+                await sql.updateColumn("guilds", "level channels", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
                 msg.channel.send(responseEmbed)
@@ -109,7 +109,7 @@ export default class LevelChannels extends Command {
                 if (newMsg) {
                     channels[num] = ""
                     channels = channels.filter(Boolean)
-                    await sql.updateColumn("points", "level channels", channels)
+                    await sql.updateColumn("guilds", "level channels", channels)
                     return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
                     return msg.channel.send(responseEmbed.setDescription("Setting not found!"))
@@ -125,7 +125,7 @@ export default class LevelChannels extends Command {
                 channels.push(newChan[i])
                 description += `${discord.getEmoji("star")}Added <#${newChan[i]}>!\n`
             }
-            await sql.updateColumn("points", "level channels", channels)
+            await sql.updateColumn("guilds", "level channels", channels)
             responseEmbed
             .setDescription(description)
             return msg.channel.send(responseEmbed)

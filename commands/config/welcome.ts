@@ -51,13 +51,13 @@ export default class Welcome extends Command {
             return
         }
         const welcomeEmbed = embeds.createEmbed()
-        const welcomeMsg = await sql.fetchColumn("welcome leaves", "welcome message")
-        const welcomeToggle = await sql.fetchColumn("welcome leaves", "welcome toggle")
-        const welcomeChannel = await sql.fetchColumn("welcome leaves", "welcome channel")
-        const welcomeImages = await sql.fetchColumn("welcome leaves", "welcome bg images")
-        const welcomeText = await sql.fetchColumn("welcome leaves", "welcome bg text")
-        const welcomeColor = await sql.fetchColumn("welcome leaves", "welcome bg color")
-        const welcomeBGToggle = await sql.fetchColumn("welcome leaves", "welcome bg toggle")
+        const welcomeMsg = await sql.fetchColumn("guilds", "welcome message")
+        const welcomeToggle = await sql.fetchColumn("guilds", "welcome toggle")
+        const welcomeChannel = await sql.fetchColumn("guilds", "welcome channel")
+        const welcomeImages = await sql.fetchColumn("guilds", "welcome bg images")
+        const welcomeText = await sql.fetchColumn("guilds", "welcome bg text")
+        const welcomeColor = await sql.fetchColumn("guilds", "welcome bg color")
+        const welcomeBGToggle = await sql.fetchColumn("guilds", "welcome bg toggle")
         const attachment = await images.createCanvas(message.member!, welcomeImages, welcomeText, welcomeColor, false, false, welcomeBGToggle) as MessageAttachment
         const urls: string[] = []
         for (let i = 0; i < welcomeImages?.length ?? 0; i++) {
@@ -119,13 +119,13 @@ export default class Welcome extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("welcome leaves", "welcome message", "Welcome to guild, user!")
-                await sql.updateColumn("welcome leaves", "welcome channel", null)
-                await sql.updateColumn("welcome leaves", "welcome toggle", "off")
-                await sql.updateColumn("welcome leaves", "welcome bg images", ["https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif"])
-                await sql.updateColumn("welcome leaves", "welcome bg text", "Welcome tag! There are now count members.")
-                await sql.updateColumn("welcome leaves", "welcome bg color", "rainbow")
-                await sql.updateColumn("welcome leaves", "welcome bg toggle", "on")
+                await sql.updateColumn("guilds", "welcome message", "Welcome to guild, user!")
+                await sql.updateColumn("guilds", "welcome channel", null)
+                await sql.updateColumn("guilds", "welcome toggle", "off")
+                await sql.updateColumn("guilds", "welcome bg images", ["https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif"])
+                await sql.updateColumn("guilds", "welcome bg text", "Welcome tag! There are now count members.")
+                await sql.updateColumn("guilds", "welcome bg color", "rainbow")
+                await sql.updateColumn("guilds", "welcome bg toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Welcome settings were reset!`)
                 msg.channel.send(responseEmbed)
@@ -156,46 +156,46 @@ export default class Welcome extends Command {
             }
             let description = ""
             if (setMsg) {
-                await sql.updateColumn("welcome leaves", "welcome message", String(newMsg.trim()))
+                await sql.updateColumn("guilds", "welcome message", String(newMsg.trim()))
                 description += `${discord.getEmoji("star")}Welcome message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
                 const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
                 if (!channel) return message.reply(`Invalid channel name ${discord.getEmoji("kannaFacepalm")}`)
-                await sql.updateColumn("welcome leaves", "welcome channel", channel.id)
+                await sql.updateColumn("guilds", "welcome channel", channel.id)
                 setOn = true
                 description += `${discord.getEmoji("star")}Welcome channel set to <#${channel.id}>!\n`
             }
             if (setOn) {
-                await sql.updateColumn("welcome leaves", "welcome toggle", "on")
+                await sql.updateColumn("guilds", "welcome toggle", "on")
                 description += `${discord.getEmoji("star")}Welcome messages are **on**!\n`
             }
             if (setOff) {
-                await sql.updateColumn("welcome leaves", "welcome toggle", "off")
+                await sql.updateColumn("guilds", "welcome toggle", "off")
                 description += `${discord.getEmoji("star")}Welcome messages are **off**!\n`
             }
             if (setImage) {
                 let images = newImg!.map((i) => i)
                 images = Functions.removeDuplicates(images)
-                await sql.updateColumn("welcome leaves", "welcome bg images", images)
+                await sql.updateColumn("guilds", "welcome bg images", images)
                 description += `${discord.getEmoji("star")}Background image(s) set to **${Functions.checkChar(images.join(", "), 500, ",")}**!\n`
             }
             if (setBGText) {
-                await sql.updateColumn("welcome leaves", "welcome bg text", String(newBGText![0].replace(/\[/g, "").replace(/\]/g, "")))
+                await sql.updateColumn("guilds", "welcome bg text", String(newBGText![0].replace(/\[/g, "").replace(/\]/g, "")))
                 description += `${discord.getEmoji("star")}Background text set to **${newBGText![0].replace(/\[/g, "").replace(/\]/g, "")}**\n`
             }
             if (setBGColor) {
-                await sql.updateColumn("welcome leaves", "welcome bg color", String(newBGColor![0].trim()))
+                await sql.updateColumn("guilds", "welcome bg color", String(newBGColor![0].trim()))
                 description += `${discord.getEmoji("star")}Background color set to **${newBGColor![0].trim()}**!\n`
             }
 
             if (setBGToggle) {
-                const toggle = await sql.fetchColumn("welcome leaves", "welcome bg toggle")
+                const toggle = await sql.fetchColumn("guilds", "welcome bg toggle")
                 if (!toggle || toggle === "off") {
-                    await sql.updateColumn("welcome leaves", "welcome bg toggle", "on")
+                    await sql.updateColumn("guilds", "welcome bg toggle", "on")
                     description += `${discord.getEmoji("star")}Background text and picture is **on**!\n`
                 } else {
-                    await sql.updateColumn("welcome leaves", "welcome bg toggle", "off")
+                    await sql.updateColumn("guilds", "welcome bg toggle", "off")
                     description += `${discord.getEmoji("star")}Background text and picture is **off**!\n`
                 }
             }

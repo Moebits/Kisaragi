@@ -231,7 +231,7 @@ export default class Auto extends Command {
             let description = ""
 
             if (setCmd) {
-                if (cmd.length === 10) {
+                if (cmd.length >= 10) {
                     return msg.channel.send(responseEmbed.setDescription("You can only set 10 auto commands!"))
                 } else {
                     cmd.push(newCmd)

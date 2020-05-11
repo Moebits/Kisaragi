@@ -27,7 +27,7 @@ export default class Leaderboard extends Command {
       const embeds = new Embeds(discord, message)
       const sql = new SQLQuery(message)
 
-      let scores = await sql.fetchColumn("points", "scores")
+      let scores = await sql.fetchColumn("guilds", "scores")
       if (!scores?.[0]) return message.reply(`This server has no scores ${discord.getEmoji("kannaFacepalm")}`)
       scores = scores.sort((a: any, b: any) => (Number(JSON.parse(a).score) > Number(JSON.parse(b).score)) ? -1 : 1)
       const iterations = Math.ceil(message.guild!.memberCount / 10)

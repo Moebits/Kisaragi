@@ -30,7 +30,7 @@ export default class GuildMemberSpeaking {
 
         const voiceRecognition = async (connection: VoiceConnection) => {
             if (!speaking) return
-            const voice = await sql.fetchColumn("config", "voice")
+            const voice = await sql.fetchColumn("guilds", "voice")
             if (!voice || voice === "off") return
             if (cooldowns.has(member.id)) {
                 if (cooldownWarning.has(member.id)) return

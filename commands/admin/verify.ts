@@ -31,12 +31,12 @@ export default class Verify extends Command {
         const embeds = new Embeds(discord, message)
         const captchaClass = new Captcha(discord, message)
         const sql = new SQLQuery(message)
-        const vToggle = await sql.fetchColumn("captcha", "verify toggle")
+        const vToggle = await sql.fetchColumn("guilds", "verify toggle")
         if (vToggle === "off") return message.reply(`Looks like verification is disabled. Enable it in the **captcha** command.`)
-        const vRole = await sql.fetchColumn("captcha", "verify role")
-        const cType = await sql.fetchColumn("captcha", "captcha type")
-        const color = await sql.fetchColumn("captcha", "captcha color")
-        const difficulty = await sql.fetchColumn("captcha", "difficulty")
+        const vRole = await sql.fetchColumn("guilds", "verify role")
+        const cType = await sql.fetchColumn("guilds", "captcha type")
+        const color = await sql.fetchColumn("guilds", "captcha color")
+        const difficulty = await sql.fetchColumn("guilds", "difficulty")
 
         const role = message.guild!.roles.cache.find((r: Role) => r.id === vRole)
         if (!role) {

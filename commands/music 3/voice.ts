@@ -35,7 +35,7 @@ export default class Voice extends Command {
             return
         }
 
-        const voice = await sql.fetchColumn("config", "voice")
+        const voice = await sql.fetchColumn("guilds", "voice")
         if (!voice || voice === "off") {
             let voiceChannel = message.guild?.voice?.channel!
             let connection = message.guild?.voice?.connection!
@@ -47,10 +47,10 @@ export default class Voice extends Command {
                 return message.reply(`You must join a voice channel first. How do you want the bot to hear you ${discord.getEmoji("kannaFacepalm")}`)
             }
             connection.play(Functions.silence(), {type: "opus"})
-            await sql.updateColumn("config", "voice", "on")
+            await sql.updateColumn("guilds", "voice", "on")
             return message.reply(`Voice recognition was turned **on**! It's recommended to use **push to talk**. Try saying **hi** or **hello**! ${discord.getEmoji("aquaUp")}`)
         } else {
-            await sql.updateColumn("config", "voice", "off")
+            await sql.updateColumn("guilds", "voice", "off")
             return message.reply(`Voice recognition was turned **off**! ${discord.getEmoji("mexShrug")}`)
         }
     }

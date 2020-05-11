@@ -44,9 +44,9 @@ export default class Config extends Command {
             return
         }
 
-        let color = await sql.fetchColumn("config", "embed colors")
+        let color = await sql.fetchColumn("guilds", "embed colors")
         if (!color) color = ["default"]
-        const permCheck = await sql.fetchColumn("config", "permissions")
+        const permCheck = await sql.fetchColumn("guilds", "permissions")
         const configEmbed = embeds.createEmbed()
         configEmbed
         .setTitle(`**Bot Config Settings** ${discord.getEmoji("gabStare")}`)
@@ -81,8 +81,8 @@ export default class Config extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("config", "embed colors", "default")
-                await sql.updateColumn("config", "permissions", "role")
+                await sql.updateColumn("guilds", "embed colors", "default")
+                await sql.updateColumn("guilds", "permissions", "role")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 msg.channel.send(responseEmbed)
@@ -103,13 +103,13 @@ export default class Config extends Command {
             let description = ""
 
             if (setColor) {
-                await sql.updateColumn("config", "embed colors", newColor)
+                await sql.updateColumn("guilds", "embed colors", newColor)
                 await embeds.updateColor()
                 description += `${discord.getEmoji("star")}Embed colors are set to **${newColor?.join(", ")}!**\n`
             }
 
             if (setPerm) {
-                await sql.updateColumn("config", "permissions", newPerm)
+                await sql.updateColumn("guilds", "permissions", newPerm)
                 description += `${discord.getEmoji("star")}Permission check set to **${newPerm}!**\n`
             }
 

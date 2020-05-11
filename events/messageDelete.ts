@@ -15,7 +15,7 @@ export default class MessageDelete {
         if (message.author.id === discord.user!.id) return
 
         const logDeleted = async (message: Message) => {
-            const messageLog = await sql.fetchColumn("logs", "message log")
+            const messageLog = await sql.fetchColumn("guilds", "message log")
             const prefix = await SQLQuery.fetchPrefix(message)
             if (messageLog) {
                 const content = message.content ? message.content : ""

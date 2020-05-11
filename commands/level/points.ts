@@ -45,11 +45,11 @@ export default class Points extends Command {
             return
         }
 
-        const pointToggle = await sql.fetchColumn("points", "point toggle")
-        const pointRange = await sql.fetchColumn("points", "point range")
-        const pointThreshold = await sql.fetchColumn("points", "point threshold")
-        const pointTimeout = await sql.fetchColumn("points", "point timeout")
-        const levelMsg = await sql.fetchColumn("points", "level message")
+        const pointToggle = await sql.fetchColumn("guilds", "point toggle")
+        const pointRange = await sql.fetchColumn("guilds", "point range")
+        const pointThreshold = await sql.fetchColumn("guilds", "point threshold")
+        const pointTimeout = await sql.fetchColumn("guilds", "point timeout")
+        const levelMsg = await sql.fetchColumn("guilds", "level message")
         const levelEmbed = embeds.createEmbed()
         levelEmbed
         .setTitle(`**Point Settings** ${discord.getEmoji("mexShrug")}`)
@@ -101,18 +101,18 @@ export default class Points extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("points", "point range", [10, 20])
-                await sql.updateColumn("points", "point threshold", 1000)
-                await sql.updateColumn("points", "point timeout", 60000)
-                await sql.updateColumn("points", "point toggle", "off")
-                await sql.updateColumn("points", "level message", "Congrats user, you are now level newlevel!")
+                await sql.updateColumn("guilds", "point range", [10, 20])
+                await sql.updateColumn("guilds", "point threshold", 1000)
+                await sql.updateColumn("guilds", "point timeout", 60000)
+                await sql.updateColumn("guilds", "point toggle", "off")
+                await sql.updateColumn("guilds", "level message", "Congrats user, you are now level newlevel!")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Level settings were reset!`)
                 msg.channel.send(responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "destroy") {
-                await sql.updateColumn("points", "scores", null)
+                await sql.updateColumn("guilds", "scores", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Points were destroyed for every member in the guild!`)
                 msg.channel.send(responseEmbed)
@@ -140,29 +140,29 @@ export default class Points extends Command {
             }
 
             if (setMsg) {
-                await sql.updateColumn("points", "level message", newMsg)
+                await sql.updateColumn("guilds", "level message", newMsg)
                 description += `${discord.getEmoji("star")}Level message set to **${newMsg}**\n`
             }
 
             if (setOn) {
-                await sql.updateColumn("points", "point toggle", "on")
+                await sql.updateColumn("guilds", "point toggle", "on")
                 description += `${discord.getEmoji("star")}Leveling is now **enabled**!\n`
             }
             if (setOff) {
-                await sql.updateColumn("points", "point toggle", "off")
+                await sql.updateColumn("guilds", "point toggle", "off")
                 description += `${discord.getEmoji("star")}Leveling is now **disabled**!\n`
             }
             if (setRange) {
-                await sql.updateColumn("points", "point range", newRange)
+                await sql.updateColumn("guilds", "point range", newRange)
                 description += `${discord.getEmoji("star")}Point range set to **${newRange}**!\n`
             }
             if (setThreshold) {
-                await sql.updateColumn("points", "point threshold", String(newThreshold))
+                await sql.updateColumn("guilds", "point threshold", String(newThreshold))
                 description += `${discord.getEmoji("star")}Point threshold set to **${newThreshold}**!\n`
             }
             if (setTimeout) {
                 const timeout = Math.floor(parseInt(String(newTimeout), 10)*1000)
-                await sql.updateColumn("points", "point timeout", timeout)
+                await sql.updateColumn("guilds", "point timeout", timeout)
                 description += `${discord.getEmoji("star")}Point timeout set to **${timeout}**!\n`
             }
 

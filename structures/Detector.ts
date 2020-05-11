@@ -13,7 +13,7 @@ export class Detector {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
     public detectIgnore = async () => {
         const sql = new SQLQuery(this.message)
-        const ignored = await sql.fetchColumn("detection", "ignored")
+        const ignored = await sql.fetchColumn("guilds", "ignored")
         if (!ignored) return false
         for (let i = 0; i < ignored.length; i++) {
             if (this.message.channel.id === ignored[i]) {
@@ -25,7 +25,7 @@ export class Detector {
 
     public detectAnime = async () => {
         const sql = new SQLQuery(this.message)
-        const anime = await sql.fetchColumn("detection", "anime") as unknown as string
+        const anime = await sql.fetchColumn("guilds", "anime") as unknown as string
         if (await this.detectIgnore()) return
         if (!anime || anime === "off") return
         if (this.message.author.id === this.discord.user!.id) return
@@ -45,12 +45,12 @@ export class Detector {
     public swapRoles = async (member?: GuildMember, counter?: boolean) => {
         if (this.message.author.bot) return
         const sql = new SQLQuery(this.message)
-        const pfp = await sql.fetchColumn("detection", "pfp") as unknown as string
+        const pfp = await sql.fetchColumn("guilds", "pfp") as unknown as string
         if (!pfp || pfp === "off") return
         if (!member) member = this.message.member!
         if (!member || member.user.bot || !member.user.displayAvatarURL()) return
-        const weeb = await sql.fetchColumn("detection", "weeb") as unknown as string
-        const normie = await sql.fetchColumn("detection", "normie") as unknown as string
+        const weeb = await sql.fetchColumn("guilds", "weeb") as unknown as string
+        const normie = await sql.fetchColumn("guilds", "normie") as unknown as string
         const weebRole = this.message.guild!.roles.cache.find((r: Role) => r.id === weeb)
         const normieRole = this.message.guild!.roles.cache.find((r: Role) => r.id === normie)
         const data = await axios.get(`${this.openCVURL}${member.user.displayAvatarURL({format: "png"})}`).then((r) => r.data)

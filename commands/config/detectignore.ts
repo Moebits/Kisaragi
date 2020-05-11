@@ -43,7 +43,7 @@ export default class DetectChannels extends Command {
             return
         }
 
-        const ignored = await sql.fetchColumn("detection", "ignored")
+        const ignored = await sql.fetchColumn("guilds", "ignored")
         const step = 5.0
         const increment = Math.ceil((ignored ? ignored.length : 1) / step)
         const detectArray: MessageEmbed[] = []
@@ -85,7 +85,7 @@ export default class DetectChannels extends Command {
         }
 
         async function detectPrompt(msg: Message) {
-            let ignored = await sql.fetchColumn("detection", "ignored")
+            let ignored = await sql.fetchColumn("guilds", "ignored")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Ignored Anime Detection Channels** ${discord.getEmoji("kisaragiBawls")}`)
             if (!ignored) ignored = []
@@ -96,7 +96,7 @@ export default class DetectChannels extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("detection", "ignored", null)
+                await sql.updateColumn("guilds", "ignored", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
                 msg.channel.send(responseEmbed)
@@ -108,7 +108,7 @@ export default class DetectChannels extends Command {
                 if (newMsg) {
                     ignored[num] = ""
                     ignored = ignored.filter(Boolean)
-                    await sql.updateColumn("detection", "ignored", ignored)
+                    await sql.updateColumn("guilds", "ignored", ignored)
                     return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
                     return msg.channel.send(responseEmbed.setDescription("Setting not found!"))
@@ -124,7 +124,7 @@ export default class DetectChannels extends Command {
                 ignored.push(newChan[i])
                 description += `${discord.getEmoji("star")}Added <#${newChan[i]}>!\n`
             }
-            await sql.updateColumn("detection", "ignored", ignored)
+            await sql.updateColumn("guilds", "ignored", ignored)
             responseEmbed
             .setDescription(description)
             return msg.channel.send(responseEmbed)

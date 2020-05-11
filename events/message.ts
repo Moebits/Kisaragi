@@ -59,7 +59,7 @@ export default class MessageEvent {
 
       if (!this.discord.checkMuted(message)) {
         if (message.guild) {
-          const globalChat = await sql.fetchColumn("special channels", "global chat")
+          const globalChat = await sql.fetchColumn("guilds", "global chat")
           if (globalChat && !message.content.startsWith(prefix) && !message.author.bot) {
             const globalChannel = message.guild.channels.cache.find((c) => c.id === globalChat)
             if (message.channel.id === globalChannel?.id) {
@@ -71,7 +71,7 @@ export default class MessageEvent {
               const cleaned = message.content.replace(/@/g, `@\u200b`)
               const translated = await Functions.googleTranslate(cleaned)
               if (Functions.badWords(translated, true)) return message.reply(`You can't post messages containing profane or dirty words. ${this.discord.getEmoji("sagiriBleh")}`)
-              let globalChannels = await SQLQuery.selectColumn("special channels", "global chat")
+              let globalChannels = await SQLQuery.selectColumn("guilds", "global chat")
               globalChannels = globalChannels.filter(Boolean)
               for (let i = 0; i < globalChannels.length; i++) {
                 if (globalChannels[i] === message.channel.id) continue
@@ -107,7 +107,7 @@ export default class MessageEvent {
           if (!pointCool.get(message.guild.id)?.has(message.author.id)) {
             points.calcScore()
             pointCool.get(message.guild.id)?.add(message.author.id)
-            const pointTimeout = await sql.fetchColumn("points", "point timeout")
+            const pointTimeout = await sql.fetchColumn("guilds", "point timeout")
             setTimeout(() => {
               pointCool.get(message.guild?.id ?? "")?.delete(message.author.id)
             }, pointTimeout ? Number(pointTimeout) : 60000)
@@ -122,7 +122,7 @@ export default class MessageEvent {
             pointCool.set(message.guild.id, new Set())
           }
         }
-        const responseToggle = await sql.fetchColumn("detection", "response")
+        const responseToggle = await sql.fetchColumn("guilds", "response")
         if (responseToggle === "on") {
           if (responses.text[message.content.trim().toLowerCase()]) {
             const response = message.content.trim().toLowerCase()

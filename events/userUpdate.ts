@@ -23,7 +23,7 @@ export default class UserUpdate {
             const embeds = new Embeds(discord, message)
 
             const logUsername = async (oldUser: User, newUser: User) => {
-                const memberLog = await sql.fetchColumn("logs", "member log")
+                const memberLog = await sql.fetchColumn("guilds", "member log")
                 if (memberLog) {
                     const memberChannel = guild?.channels.cache.get(memberLog)! as TextChannel
                     const logEmbed = embeds.createEmbed()
@@ -44,7 +44,7 @@ export default class UserUpdate {
             if (setUsername) logUsername(oldUser, newUser)
 
             const logAvatar = async (oldUser: User, newUser: User) => {
-                const memberLog = await sql.fetchColumn("logs", "member log")
+                const memberLog = await sql.fetchColumn("guilds", "member log")
                 if (memberLog) {
                     const memberChannel = guild?.channels.cache.get(memberLog)! as TextChannel
                     const logEmbed = embeds.createEmbed()

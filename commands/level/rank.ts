@@ -38,7 +38,7 @@ export default class Rank extends Command {
         const ctx = canvas.getContext("2d")
         ctx.fillStyle = "black"
         ctx.fillRect(0, 0, 200, 5)
-        const pointThreshold = await sql.fetchColumn("points", "point threshold").then((p) => Number(p))
+        const pointThreshold = await sql.fetchColumn("guilds", "point threshold").then((p) => Number(p))
 
         const {score, level} = await points.fetchScore()
 

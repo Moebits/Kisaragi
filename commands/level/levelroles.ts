@@ -45,7 +45,7 @@ export default class LevelRoles extends Command {
             return
         }
 
-        const levelRoles = await sql.fetchColumn("points", "level roles")
+        const levelRoles = await sql.fetchColumn("guilds", "level roles")
         const step = 3.0
         const increment = Math.ceil((levelRoles ? levelRoles.length : 1) / step)
         const levelArray: MessageEmbed[] = []
@@ -102,7 +102,7 @@ export default class LevelRoles extends Command {
 
         async function levelPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
-            let roles = await sql.fetchColumn("points", "level roles")
+            let roles = await sql.fetchColumn("guilds", "level roles")
             if (!roles) roles = []
             responseEmbed.setTitle(`**Level Up Roles** ${discord.getEmoji("meguDance")}`)
             let [setRole, setLevel, setMsg] = [false, false, false]
@@ -113,7 +113,7 @@ export default class LevelRoles extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("points", "level roles", null)
+                await sql.updateColumn("guilds", "level roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Level role settings were reset!`)
                 msg.channel.send(responseEmbed)
@@ -125,7 +125,7 @@ export default class LevelRoles extends Command {
                 if (newMsg) {
                         roles[num] = ""
                         roles = roles.filter(Boolean)
-                        await sql.updateColumn("points", "level roles", roles)
+                        await sql.updateColumn("guilds", "level roles", roles)
                         return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
                     return msg.channel.send(responseEmbed.setDescription("Setting not found!"))
@@ -158,7 +158,7 @@ export default class LevelRoles extends Command {
                     }
                     if (!editDesc) return message.reply(`No edits were made ${discord.getEmoji("kannaFacepalm")}`)
                     roles[num] = curr
-                    await sql.updateColumn("points", "level roles", roles)
+                    await sql.updateColumn("guilds", "level roles", roles)
 
                     return msg.channel.send(responseEmbed.setDescription(editDesc))
                 } else {
@@ -196,7 +196,7 @@ export default class LevelRoles extends Command {
             }
             if (!description) return message.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             roles.push(obj)
-            await sql.updateColumn("points", "level roles", roles)
+            await sql.updateColumn("guilds", "level roles", roles)
             responseEmbed
             .setDescription(description)
             return msg.channel.send(responseEmbed)

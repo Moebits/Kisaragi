@@ -45,7 +45,7 @@ export default class ChannelLink extends Command {
             await linkPrompt(message)
             return
         }
-        const linked = await sql.fetchColumn("special channels", "linked")
+        const linked = await sql.fetchColumn("guilds", "linked")
         const step = 3.0
         const increment = Math.ceil((linked ? linked.length : 1) / step)
         const linkArray: MessageEmbed[] = []
@@ -97,7 +97,7 @@ export default class ChannelLink extends Command {
         }
 
         async function linkPrompt(msg: Message) {
-            let linked = await sql.fetchColumn("special channels", "linked")
+            let linked = await sql.fetchColumn("guilds", "linked")
             let [setText, setVoice] = [] as boolean[]
             if (!linked) linked = []
             const responseEmbed = embeds.createEmbed()
@@ -109,7 +109,7 @@ export default class ChannelLink extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("special channels", "linked", null)
+                await sql.updateColumn("guilds", "linked", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 msg.channel.send(responseEmbed)
@@ -121,7 +121,7 @@ export default class ChannelLink extends Command {
                     if (linked[num - 1]) {
                         linked[num - 1] = ""
                         linked = linked.filter(Boolean)
-                        await sql.updateColumn("special channels", "linked", linked)
+                        await sql.updateColumn("guilds", "linked", linked)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                         msg.channel.send(responseEmbed)
@@ -137,15 +137,15 @@ export default class ChannelLink extends Command {
             if (msg.content.toLowerCase().startsWith("toggle")) {
                 const newMsg = Number(msg.content.replace(/toggle/g, "").trim())
                 const num = newMsg - 1
-                const testLink = await sql.fetchColumn("special channels", "linked")
+                const testLink = await sql.fetchColumn("guilds", "linked")
                 if (newMsg && testLink?.[num]) {
                         if (testLink[num].state === "off") {
                             testLink[num].state = "on"
-                            await sql.updateColumn("special channels", "linked", testLink)
+                            await sql.updateColumn("guilds", "linked", testLink)
                             return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **on**!`))
                         } else {
                             testLink[num].state = "off"
-                            await sql.updateColumn("special channels", "linked", testLink)
+                            await sql.updateColumn("guilds", "linked", testLink)
                             return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **off**!`))
                         }
                 } else {
@@ -189,7 +189,7 @@ export default class ChannelLink extends Command {
                         linked[num].state = "off"
                         editDesc += `${discord.getEmoji("star")}Status set to **off**!\n`
                     }
-                    await sql.updateColumn("special channels", "linked", linked)
+                    await sql.updateColumn("guilds", "linked", linked)
                     return msg.channel.send(responseEmbed.setDescription(editDesc))
                 } else {
                     return msg.channel.send(responseEmbed.setDescription("No edits specified!"))
@@ -236,7 +236,7 @@ export default class ChannelLink extends Command {
 
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             linked.push(obj)
-            await sql.updateColumn("special channels", "linked", linked)
+            await sql.updateColumn("guilds", "linked", linked)
             responseEmbed
             .setDescription(description)
             return msg.channel.send(responseEmbed)
