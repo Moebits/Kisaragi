@@ -134,7 +134,7 @@ export class Embeds {
                     const link = await this.images.upload(dest)
                     const downloadEmbed = this.createEmbed()
                     downloadEmbed
-                    .setAuthor("download", "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+                    .setAuthor("download", this.discord.checkMuted(reaction.message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif")
                     .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
                     .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
                     await msg.channel.send(downloadEmbed)
@@ -338,7 +338,7 @@ export class Embeds {
                         const link = await this.images.upload(dest)
                         const downloadEmbed = this.createEmbed()
                         downloadEmbed
-                        .setAuthor("download", "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+                        .setAuthor("download", this.discord.checkMuted(msg) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif")
                         .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
                         .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
                         await msg.channel.send(downloadEmbed)
@@ -442,7 +442,7 @@ export class Embeds {
                     const link = await this.images.upload(dest)
                     const downloadEmbed = this.createEmbed()
                     downloadEmbed
-                    .setAuthor("download", "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+                    .setAuthor("download", this.discord.checkMuted(reaction.message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif")
                     .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
                     .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
                     await msg.channel.send(downloadEmbed)
