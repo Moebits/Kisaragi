@@ -49,7 +49,8 @@ export default class MessageEvent {
         }
       }
 
-      const prefix = await SQLQuery.fetchPrefix(message)
+      let prefix = await SQLQuery.fetchPrefix(message)
+      if (!prefix) prefix = "=>"
 
       if (message.author.bot) return
       if (await this.discord.blacklistStop(message)) return
