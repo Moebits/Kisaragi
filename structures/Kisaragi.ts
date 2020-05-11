@@ -33,12 +33,12 @@ export class Kisaragi extends Client {
                 this.starIndex = 0
             }
         }
-        const emoji = this.emojis.cache.find((e) => (muted ? e.name === `${name}png` : e.name === name) && (e.guild.ownerID === process.env.OWNER_ID))
+        const emoji = this.emojis.cache.find((e) => (this.muted ? e.name === `${name}png` : e.name === name) && (e.guild.ownerID === process.env.OWNER_ID))
         if (emoji) {
             return emoji as unknown as GuildEmoji
         } else {
             // Confused Anime
-            return muted ? "" as unknown as GuildEmoji : this.emojis.cache.get("579870079311937557") as unknown as GuildEmoji
+            return this.muted ? "" as unknown as GuildEmoji : this.emojis.cache.get("579870079311937557") as unknown as GuildEmoji
         }
     }
 
