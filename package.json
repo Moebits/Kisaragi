@@ -180,7 +180,7 @@
     "shorturl-2": "0.0.7",
     "snoowrap": "^1.20.1",
     "sodium": "^3.0.2",
-    "soundcloud.ts": "^0.2.2",
+    "soundcloud.ts": "^0.2.3",
     "sox-stream": "^2.0.3",
     "stackexchange": "^1.2.0",
     "svg-captcha": "^1.4.0",
