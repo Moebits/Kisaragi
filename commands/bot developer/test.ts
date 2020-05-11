@@ -19,7 +19,11 @@ export default class Test extends Command {
         const discord = this.discord
         const pixiv = new PixivApi(discord, message)
 
-        await pixiv.animeEndpoint("all")
-        console.log("done")
+        const g = discord.guilds.cache.get(args[1])
+        const msg = await discord.fetchFirstMessage(g || message.guild!)
+        await SQLQuery.initGuild(msg || message, true)
+
+        // await pixiv.animeEndpoint("all")
+        message.channel.send("done")
     }
 }
