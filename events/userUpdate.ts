@@ -26,6 +26,7 @@ export default class UserUpdate {
                 const memberLog = await sql.fetchColumn("guilds", "member log")
                 if (memberLog) {
                     const memberChannel = guild?.channels.cache.get(memberLog)! as TextChannel
+                    if (!memberChannel) return
                     const logEmbed = embeds.createEmbed()
                     logEmbed
                     .setAuthor("username", "https://cdn.discordapp.com/emojis/623182675355762690.png")
@@ -47,6 +48,7 @@ export default class UserUpdate {
                 const memberLog = await sql.fetchColumn("guilds", "member log")
                 if (memberLog) {
                     const memberChannel = guild?.channels.cache.get(memberLog)! as TextChannel
+                    if (!memberChannel) return
                     const logEmbed = embeds.createEmbed()
                     logEmbed
                     .setAuthor("profile picture", "https://cdn.discordapp.com/emojis/607052423172718607.png")
