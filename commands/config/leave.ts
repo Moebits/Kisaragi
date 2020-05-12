@@ -30,7 +30,8 @@ export default class Leave extends Command {
             `,
             guildOnly: true,
             aliases: ["farewell"],
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

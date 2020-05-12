@@ -20,7 +20,8 @@ export default class Define extends Command {
             `,
             aliases: ["def", "definition", "word", "dictionary"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

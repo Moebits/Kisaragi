@@ -30,7 +30,8 @@ export default class Welcome extends Command {
             `,
             guildOnly: true,
             aliases: ["greeting"],
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

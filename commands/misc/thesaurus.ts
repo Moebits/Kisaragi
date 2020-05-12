@@ -20,7 +20,8 @@ export default class Thesaurus extends Command {
             `,
             aliases: ["synonym"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 
