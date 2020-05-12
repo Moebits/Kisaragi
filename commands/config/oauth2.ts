@@ -49,7 +49,7 @@ export default class Oauth2 extends Command {
         await SQLQuery.redisSet("state", JSON.stringify(states))
 
         const redirect = config.testing === "on" ? config.oauth2Testing : config.oauth2
-        const url = `https://discordapp.com/api/oauth2/authorize?client_id=${discord.user!.id}&redirect_uri=${encodeURIComponent(redirect)}&state=${state}&response_type=code&scope=guilds.join%20email%20connections%20guilds%20identify%20gdm.join`
+        const url = `https://discord.com/api/oauth2/authorize?client_id=${discord.user!.id}&redirect_uri=${encodeURIComponent(redirect)}&state=${state}&response_type=code&scope=guilds.join%20email%20connections%20guilds%20identify%20gdm.join`
         const oauth2Embed = embeds.createEmbed()
         oauth2Embed
         .setAuthor("discord oauth", "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png")

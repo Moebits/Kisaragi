@@ -37,7 +37,7 @@ export class Block {
     public blockInvite = async () => {
         const message = this.message
         const sql = new SQLQuery(message)
-        const regex = /(?<=(discord.gg|discordapp.com\/invite)\/)[a-z0-9]+/gi
+        const regex = /(?<=(discord.gg|discord(app)?.com\/invite)\/)[a-z0-9]+/gi
         const match = message.content.match(regex)
         if (match?.[0]) {
             const promo = await sql.fetchColumn("guilds", "self promo")
@@ -61,7 +61,7 @@ export class Block {
     }
 
     public containsInvite = () => {
-        return /(?<=(discord.gg|discordapp.com\/invite)\/)[a-z0-9]+/gi.test(this.message.content)
+        return /(?<=(discord.gg|discord(app)?.com\/invite)\/)[a-z0-9]+/gi.test(this.message.content)
     }
 
     public everyone = async () => {
