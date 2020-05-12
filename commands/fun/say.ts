@@ -23,26 +23,14 @@ export default class Say extends Command {
 
     public run = async (args: string[]) => {
         const message = this.message
-        message.channel.startTyping()
-        const loading = message.channel.lastMessage
-        loading?.delete()
 
-        const prefix = await SQLQuery.fetchPrefix(message)
+        let prefix = await SQLQuery.fetchPrefix(message)
+        if (!prefix) prefix = "=>"
 
         const rawText = Functions.combineArgs(args, 1)
         if (!rawText) return message.reply("You did not provide any text.")
 
-        await Functions.timeout(1000)
-        await message.channel.send(Functions.checkChar(rawText, 2000, "."))
-        message.channel.stopTyping(true)
-        if (message.content.startsWith(prefix[0])) {
-            try {
-                await message.delete()
-            } catch {
-                // Do nothing
-            }
-        }
-        return
-
+        await message.channel.send(Functions.checkChar(rawText, 2000, "."), {disableMentions: "all"})
+        if (message.content.startsWith(prefix)) await message.delete().catch(() => null)
     }
 }

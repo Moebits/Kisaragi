@@ -249,7 +249,8 @@ export class Kisaragi extends Client {
 
     /** Gets the last message on the channel */
     public getLastMessage = async (message: Message) => {
-        const prefix = await SQLQuery.fetchPrefix(message)
+        let prefix = await SQLQuery.fetchPrefix(message)
+        if (!prefix) prefix = "=>"
         const messages = await message.channel.messages.fetch({limit: 100})
         return messages.find((m) => !m.content.includes("**Loading**") && !m.content.startsWith(prefix)) ?? message
     }

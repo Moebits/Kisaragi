@@ -133,7 +133,7 @@ export class SQLQuery {
         await SQLQuery.initGuild(message)
         return "=>"
       } else {
-        return String(result)
+        return String(result) ? String(result) : "=>"
       }
   }
 
