@@ -6,10 +6,10 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Help extends Command {
+export default class Feedback extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Sends feedback, bug reports, or suggestions to the developer.",
+            description: "Sends bug reports or suggestions to the developer.",
             help:
             `
             \`feedback msg\` - Sends feedback to the developer
@@ -19,7 +19,8 @@ export default class Help extends Command {
             \`=>feedback some feedback\`
             `,
             aliases: ["suggest", "suggestion", "bug", "report"],
-            cooldown: 10
+            cooldown: 10,
+            guildOnly: true
         })
     }
 
@@ -28,14 +29,6 @@ export default class Help extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const feedChannel = discord.channels.cache.get(config.feedback) as TextChannel
-        let [channelName, guildName] = ["", ""]
-        if (message.guild) {
-            channelName = (message.channel as TextChannel).name
-            guildName = message.guild.name
-        } else {
-            channelName = "DM"
-            guildName = "DM"
-        }
         const invite = await discord.getInvite(message.guild)
         const feedback = Functions.combineArgs(args, 1).trim()
         if (!feedback) return message.reply(`What is the feedback that you want to send ${discord.getEmoji("kannaCurious")}`)
@@ -45,14 +38,13 @@ export default class Help extends Command {
         .setTitle(`**Bot Feedback** ${discord.getEmoji("tohruSmug")}`)
         .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
         .setDescription(
-            `${discord.getEmoji("star")}_User:_ **${message.author.tag}**\n` +
-            `${discord.getEmoji("star")}_Guild:_ **${guildName}**\n` +
-            `${discord.getEmoji("star")}_Channel:_ **${channelName}**\n` +
+            `${discord.getEmoji("star")}_User:_ **${message.author.tag}** \`(${message.author.id})\`\n` +
+            `${discord.getEmoji("star")}_Guild:_ **${message.guild?.name}** \`(${message.guild?.id})\`\n` +
+            `${discord.getEmoji("star")}_Channel:_ **${(message.channel as TextChannel).name}**\n` +
             `${discord.getEmoji("star")}_Invite:_ ${invite}\n` +
             `${discord.getEmoji("star")}_Feedback:_ ${Functions.checkChar(feedback, 1700, " ")}`
         )
         feedChannel?.send(feedEmbed)
-        message.reply(`Your feedback was successfully sent! I will get back to if I implement your suggestion ${discord.getEmoji("gabYes")}`)
-        return
+        return message.reply(`Your message was successfully sent! I will get back to you if I implement your suggestion ${discord.getEmoji("gabYes")}`)
     }
 }
