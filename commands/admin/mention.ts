@@ -45,7 +45,7 @@ export default class Mention extends Command {
         }
         try {
             await role.setMentionable(true)
-            await message.channel.send(`<@&${role.id}>`)
+            await message.channel.send(`<@&${role.id}>`, {allowedMentions: {parse: ["roles", "users"]}})
             await role.setMentionable(false)
         } catch {
             return message.reply("Could not mention this role, I need the **Manage Roles** permission.")
