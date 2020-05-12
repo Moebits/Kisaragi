@@ -22,7 +22,8 @@ export default class $8kun extends Command {
             `
             \`=>8kun animu\`
             `,
-            cooldown: 3
+            cooldown: 3,
+            unlist: true
         })
     }
 

@@ -36,7 +36,8 @@ export default class Deviantart extends Command {
             `,
             aliases: ["da", "deviant"],
             random: "none",
-            cooldown: 30
+            cooldown: 30,
+            nsfw: true
         })
     }
 
