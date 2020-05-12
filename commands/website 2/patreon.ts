@@ -18,7 +18,8 @@ export default class Patreon extends Command {
             \`=>patreon synthion\`
             `,
             aliases: [],
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

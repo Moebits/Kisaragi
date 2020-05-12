@@ -22,7 +22,8 @@ export default class Instagram extends Command {
             `,
             aliases: ["insta"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

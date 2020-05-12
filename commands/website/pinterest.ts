@@ -29,7 +29,8 @@ export default class Pinterest extends Command {
             `,
             aliases: ["pint"],
             random: "string",
-            cooldown: 15
+            cooldown: 15,
+            nsfw: true
         })
     }
 
