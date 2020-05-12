@@ -1,6 +1,7 @@
 import {GuildEmoji, Message} from "discord.js"
 import fs from "fs"
 import path from "path"
+import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 
 export class Generate {
@@ -13,12 +14,13 @@ export class Generate {
         const subDir = fs.readdirSync(commandDir)
         for (let i = 0; i < subDir.length; i++) {
             const commands = fs.readdirSync(path.join(__dirname, `../commands/${subDir[i]}`))
+            commandDesc += `### ${Functions.toProperCase(subDir[i])}\n`
             for (let j = 0; j < commands.length; j++) {
                 commands[j] = commands[j].slice(0, -3)
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
                 const cmdClass = new (require(`../commands/${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
                 if (cmdClass.options.unlist === true) continue
-                commandDesc += `\`${commands[j]}\`` + ` -> _${cmdClass.options.description}_\\\n`
+                commandDesc += `- \`${commands[j]}\`` + ` -> _${cmdClass.options.description}_\\\n`
             }
         }
         return commandDesc
