@@ -28,12 +28,12 @@ export default class Splash extends Command {
         const embeds = new Embeds(discord, message)
 
         const splashEmbed = embeds.createEmbed()
-        const splash = message.guild?.splashURL({format: "png", size: 2048})
+        const splash = message.guild?.splashURL({format: "png"})
         if (!splash) return message.reply(`This guild doesn't have a splash screen ${discord.getEmoji("kannaFacepalm")}`)
 
         await message.channel.send(splashEmbed
-            .setDescription(`**${message.guild!.name}'s Splash Screen**`)
-            .setURL(splash)
-            .setImage(splash))
+        .setDescription(`**${message.guild!.name}'s Splash Screen**`)
+        .setURL(splash)
+        .setImage(splash))
     }
 }

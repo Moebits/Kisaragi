@@ -53,7 +53,7 @@ export default class Points extends Command {
         const levelEmbed = embeds.createEmbed()
         levelEmbed
         .setTitle(`**Point Settings** ${discord.getEmoji("mexShrug")}`)
-        .setThumbnail(message.guild!.iconURL() as string)
+        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
         .setDescription(Functions.multiTrim(`
             Configure general point settings. To set level up roles, use **levelroles** instead. To disable points on
             individual channels, use **levelchannels** instead.
