@@ -8,7 +8,7 @@ import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 
 const discord = new Kisaragi({
-    disableMentions: "everyone",
+    allowedMentions: {parse: ["users"]},
     restTimeOffset: 0,
     partials: ["MESSAGE", "CHANNEL", "REACTION"]
 })
