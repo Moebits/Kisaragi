@@ -17,14 +17,10 @@ _Double click on the same reaction to toggle a compact form of the help menu._
 
 `=>help command` - Detailed help information, such as arguments, usage, and an example image.
 
-`=>help !section` - Only posts the help menu page for that section.
+`=>help !category` - Only posts the help menu page for that category.
 
-## Command List
-
-Here is a temporary command list, it might be a little out of date. [**Commands**](https://github.com/Tenpi/Kisaragi/wiki/Command-list)
+`=>help dm` - Compact help list that is compatible in dm's.
 
 ## I have a feature request
 
-Please let me know by submitting an issue or using the `feedback` command on the bot. I'm not a good programmer so I can't guarantee
-
-that it will be added, but I appreciate the idea.
+Please let me know by submitting an issue or using the `feedback` command on the bot. I'm not a good programmer so I can't guarantee that it will be added, but I appreciate the idea.
