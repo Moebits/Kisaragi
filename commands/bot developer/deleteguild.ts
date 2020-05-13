@@ -9,7 +9,8 @@ export default class DeleteGuild extends Command {
         super(discord, message, {
             description: "Deletes a guild (created by the bot).",
             aliases: ["dg"],
-            cooldown: 3
+            cooldown: 3,
+            nsfw: true
         })
     }
 

@@ -8,7 +8,8 @@ export default class CreateGuild extends Command {
         super(discord, message, {
             description: "Creates a new guild.",
             aliases: ["cg"],
-            cooldown: 3
+            cooldown: 3,
+            nsfw: true
         })
     }
 
