@@ -26,8 +26,10 @@ export default class Test extends Command {
         if (!perms.checkBotDev()) return
 
         const g = discord.guilds.cache.get(args[1])
-        const msg = await discord.fetchFirstMessage(g || message.guild!)
-        await SQLQuery.initGuild(msg || message, true)
+        if (!g) return message.reply("Not in this server")
+        const msg = await discord.fetchFirstMessage(g!)
+        if (!msg) return message.reply("Can't fetch the message")
+        await SQLQuery.initGuild(msg, true)
         /*const generate = new Generate(discord, message)
         const str = generate.generateCommands()
         const dest = path.join(__dirname, "../../../assets/misc/dump/commands.md")

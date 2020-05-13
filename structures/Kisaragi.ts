@@ -151,7 +151,7 @@ export class Kisaragi extends Client {
         const channels = guild.channels.cache.filter((c: GuildChannel) => {
             if (c.type === "text") {
                 const perms = c.permissionsFor(this.user?.id!)!
-                if (perms?.has("VIEW_CHANNEL")) {
+                if (perms?.has(["SEND_MESSAGES"])) {
                     return true
                 }
             }
@@ -159,10 +159,12 @@ export class Kisaragi extends Client {
         })
         const channel = channels?.first() as TextChannel
         try {
-            const lastMsg = await channel?.messages?.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
+            const lastMsg = await channel?.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
             return lastMsg
         } catch {
-            return channel.lastMessage
+            const lastMsg = channel?.messages.cache.first()
+            if (lastMsg) return lastMsg
+            return channel?.lastMessage
         }
     }
 
