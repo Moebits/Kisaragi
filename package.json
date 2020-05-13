@@ -192,7 +192,7 @@
     "twitch": "^4.0.9",
     "twitch-webhooks": "^4.0.9",
     "twitter": "^1.7.1",
-    "typescript": "^3.9.2",
+    "typescript": "^3.8.3",
     "unzip": "^0.1.11",
     "upload-gphotos": "^4.2.1",
     "urban.js": "^2.4.3",
