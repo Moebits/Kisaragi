@@ -146,12 +146,12 @@ export class Kisaragi extends Client {
         }
     }
 
-    // Fetch First Message in a Guild
+    /* Fetch a message from a Guild */
     public fetchFirstMessage = async (guild: Guild) => {
         const channels = guild.channels.cache.filter((c: GuildChannel) => {
             if (c.type === "text") {
-                const perms = c.permissionsFor(this.user?.id!)!
-                if (perms?.has(["READ_MESSAGE_HISTORY"])) {
+                const perms = c.permissionsFor(this.user?.id!)
+                if (perms?.has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
                     return true
                 }
             }
@@ -159,7 +159,7 @@ export class Kisaragi extends Client {
         })
         const channel = channels?.first() as TextChannel
         try {
-            const lastMsg = await channel?.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
+            const lastMsg = await channel?.messages.fetch({limit: 1}).then((c) => c.first())
             return lastMsg
         } catch {
             const lastMsg = channel?.messages.cache.first()
