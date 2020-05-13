@@ -147,7 +147,8 @@ export class Kisaragi extends Client {
     }
 
     /* Fetch a message from a Guild */
-    public fetchFirstMessage = async (guild: Guild) => {
+    public fetchFirstMessage = async (guild: Guild | undefined) => {
+        if (!guild) return null
         const channels = guild.channels.cache.filter((c: GuildChannel) => {
             if (c.type === "text") {
                 const perms = c.permissionsFor(this.user?.id!)
