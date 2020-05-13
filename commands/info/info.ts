@@ -56,7 +56,7 @@ export default class Info extends Command {
             `${discord.getEmoji("star")}_Library_: **Discord.js ${pack.dependencies["discord.js"].replace("^", "v")}**\n` +
             `${discord.getEmoji("star")}_Runtime:_ **Node.js ${pack.engines.node.replace("^", "v")}**\n` +
             `${discord.getEmoji("star")}_Language:_ **Typescript ${pack.dependencies.typescript.replace("^", "v")}**\n` +
-            `${discord.getEmoji("star")}_Database:_ **PG SQL v11.7**\n` +
+            `${discord.getEmoji("star")}_Database:_ **PostgreSQL v11.7**\n` +
             `${discord.getEmoji("star")}_Guilds:_ **${discord.guilds.cache.size}**\n` +
             `${discord.getEmoji("star")}_Channels:_ **${discord.channels.cache.size}**\n` +
             `${discord.getEmoji("star")}_Users:_ **${discord.users.cache.size}**\n` +

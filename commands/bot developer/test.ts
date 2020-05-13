@@ -25,16 +25,17 @@ export default class Test extends Command {
         const perms = new Permission(discord, message)
         if (!perms.checkBotDev()) return
 
-        /*const g = discord.guilds.cache.get(args[1])
+        const g = discord.guilds.cache.get(args[1])
         const msg = await discord.fetchFirstMessage(g || message.guild!)
-        await SQLQuery.initGuild(msg || message, true)*/
-        const generate = new Generate(discord, message)
+        await SQLQuery.initGuild(msg || message, true)
+        /*const generate = new Generate(discord, message)
         const str = generate.generateCommands()
         const dest = path.join(__dirname, "../../../assets/misc/dump/commands.md")
         fs.writeFileSync(dest, str)
-        const attachment = new MessageAttachment(dest)
+        const attachment = new MessageAttachment(dest)*/
 
         // await pixiv.animeEndpoint("all")
-        message.channel.send(attachment)
+        // await message.channel.send(attachment)
+        await message.channel.send("done")
     }
 }

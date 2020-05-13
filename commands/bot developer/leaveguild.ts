@@ -31,6 +31,7 @@ export default class LeaveGuild extends Command {
         }
         const reason = Functions.combineArgs(args, 2)
         const guild = discord.guilds.cache.find((g: Guild) => g.id.toString() === guildID) as Guild
+        if (!guild) return message.reply(`Not in this server ${discord.getEmoji("kannaFacepalm")}`)
         const name = guild.name
 
         if (!silent) {
