@@ -159,10 +159,10 @@ export class Images {
                 if (!last) break
                 const aArray = messages.map((msg) => msg.attachments.map((a) => a.url))
                 const eArray = messages.map((msg: Message) => msg.embeds.map(((e) => e.image?.url)))
-                const filteredArray = [...aArray, ...eArray].flat(Infinity)
+                const filteredArray = [...aArray, ...eArray].flat(Infinity) as string[]
                 for (let i = 0; i < filteredArray.length; i++) {
                     if (filteredArray[i]) {
-                        const url = filteredArray[i].match(/.(png|jpg|gif)/) ? filteredArray[i] : filteredArray[i] + ".png"
+                        const url = filteredArray[i]?.match(/.(png|jpg|gif)/) ? filteredArray[i] : filteredArray[i] + ".png"
                         attachments.push(url)
                     }
                 }

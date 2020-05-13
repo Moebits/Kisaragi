@@ -1,4 +1,4 @@
-import {Collection, Emoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, TextChannel, User} from "discord.js"
+import {Collection, Emoji, GuildEmoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, TextChannel, User} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {CommandFunctions} from "./CommandFunctions"
@@ -679,12 +679,13 @@ export class Embeds {
                     }
                 }
                 const filtered = pages.flat(Infinity).filter((e) => {
+                    if (Array.isArray(e)) return false
                     if (e.name === "arrowLeft" || e.name === "arrowRight") {
                         return false
                     } else {
                         return true
                     }
-                })
+                }) as unknown as GuildEmoji[]
                 const curr = filtered.findIndex((e) => e.name === reaction.emoji.name)
                 page = i
                 const embed = await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
@@ -871,12 +872,13 @@ export class Embeds {
                     }
                 }
                 const filtered = pages.flat(Infinity).filter((e) => {
+                    if (Array.isArray(e)) return false
                     if (e.name === "arrowLeft" || e.name === "arrowRight") {
                         return false
                     } else {
                         return true
                     }
-                })
+                }) as unknown as GuildEmoji[]
                 const curr = filtered.findIndex((e) => e.name === reaction.emoji.name)
                 page = i
                 const embed = await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)

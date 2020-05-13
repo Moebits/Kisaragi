@@ -125,7 +125,7 @@
     "ip": "^1.1.5",
     "isomorphic-fetch": "^2.2.1",
     "jikan-node": "^1.2.0",
-    "jimp": "^0.9.5",
+    "jimp": "^0.10.3",
     "js-base64": "^2.5.2",
     "jsdom": "^15.1.1",
     "kaomojilib": "^1.1.4",
