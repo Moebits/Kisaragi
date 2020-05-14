@@ -54,8 +54,7 @@ export default class GuildMemberRemove {
         const leaveBan = async (discord: Kisaragi) => {
             const leaveBanToggle = await sql.fetchColumn("guilds", "leaver ban toggle")
             const banEmbed = embeds.createEmbed()
-            if (!(leaveBanToggle === "on")) return
-
+            if (!leaveBanToggle || leaveBanToggle === "off") return
             const now = Math.ceil(Date.now())
             const joinDate = member.joinedTimestamp!
             if ((now - joinDate) <= 300000) {
@@ -69,7 +68,7 @@ export default class GuildMemberRemove {
                 banEmbed
                 .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
                 .setDescription(`${discord.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`)
-                await member.ban({reason})
+                await member.ban({reason}).catch(() => null)
             }
         }
         leaveBan(this.discord)

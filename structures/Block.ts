@@ -51,7 +51,7 @@ export class Block {
             try {
                 const invites = await message.guild?.fetchInvites()
                 if (invites?.has(match[0].trim())) del = false
-            } finally {
+            } catch {
                 // Do nothing
             }
             if (del) {
