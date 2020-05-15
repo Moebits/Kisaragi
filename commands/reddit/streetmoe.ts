@@ -11,7 +11,7 @@ import Reddit from "./reddit"
 export default class Streetmoe extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Anime characters in everyday streetwear.",
+            description: "Anime characters wearing streetwear.",
             help:
             `
             \`streetmoe\` - Gets a random post from r/streetmoe

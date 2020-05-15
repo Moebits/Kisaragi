@@ -22,7 +22,8 @@ export default class Gabrieldropout extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

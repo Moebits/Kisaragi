@@ -2,16 +2,16 @@ import {Message, MessageEmbed} from "discord.js"
 import snoowrap from "snoowrap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
-import Reddit from "./reddit"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Oauth2} from "./../../structures/Oauth2"
 import {Permission} from "./../../structures/Permission"
+import Reddit from "./reddit"
 
 export default class Moestash extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Crossposts from redditbooru.",
+            description: "Lots of moe art.",
             help:
             `
             \`moestash\` - Gets a random post from r/moestash
@@ -22,7 +22,8 @@ export default class Moestash extends Command {
             `,
             aliases: ["redditbooru"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

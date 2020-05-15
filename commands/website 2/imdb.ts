@@ -19,7 +19,8 @@ export default class IMDB extends Command {
             `,
             aliases: ["movie", "film"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

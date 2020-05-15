@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Logs extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configures logging settings (messages, users, audit logs, etc).",
+            description: "Configures logging settings (message log, mod log, etc).",
             help:
             `
             \`logs\` - Opens the logs prompt

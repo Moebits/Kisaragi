@@ -20,7 +20,8 @@ export default class Email extends Command {
             \`=>email (pic of cute anime girl)\`
             `,
             aliases: ["gmail", "mail"],
-            cooldown: 3
+            cooldown: 3,
+            nsfw: true
         })
     }
 

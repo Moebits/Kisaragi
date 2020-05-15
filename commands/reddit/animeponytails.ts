@@ -11,7 +11,7 @@ import Reddit from "./reddit"
 export default class Animeponytails extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Anime girls with ponytails.",
+            description: "For people with a ponytail fetish...",
             help:
             `
             \`animeponytails\` - Gets a random post from r/animeponytails
@@ -22,7 +22,8 @@ export default class Animeponytails extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

@@ -25,7 +25,8 @@ export default class Github extends Command {
             `,
             aliases: ["gh"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

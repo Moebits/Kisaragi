@@ -11,7 +11,7 @@ import Reddit from "./reddit"
 export default class Awwnime extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Cute anime girls (and boys?)",
+            description: "Cute anime girls.",
             help:
             `
             \`awwnime\` - Gets a random post from r/awwnime
