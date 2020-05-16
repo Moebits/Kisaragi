@@ -6,10 +6,6 @@ import {Functions} from "./../structures/Functions"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
 
-const blockedWords = [
-    "furry"
-]
-
 export default class GuildCreate {
     constructor(private readonly discord: Kisaragi) {}
 
@@ -20,14 +16,6 @@ export default class GuildCreate {
             await guild.leave()
             return
         }
-        let left = false
-        blockedWords.forEach(async (w) => {
-            if (guild.name.toLowerCase().includes(w)) {
-                await guild.leave()
-                left = true
-            }
-        })
-        if (left) return
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
 
