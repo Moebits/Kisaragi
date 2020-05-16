@@ -33,6 +33,11 @@ export default class OsuCommand extends Command {
         })
     }
 
+    public getAccuracy = (miss: string | number, $50: string | number, $100: string | number, $300: string | number) => {
+        const calc = (50 * Number($50) + 100 * Number($100) + 300 * Number($300)) / 300.0 * (Number(miss) + Number($50) + Number($100) + Number($300))
+        return `${calc.toFixed(2)}%`
+    }
+
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
@@ -115,6 +120,7 @@ export default class OsuCommand extends Command {
             for (let i = 0; i < recent.length; i++) {
                 const beatmap = await osu.beatmaps.get({b: recent[i].beatmap_id})
                 const osuEmbed = embeds.createEmbed()
+                const accuracy = this.getAccuracy(recent[i].countmiss, recent[i].count50, recent[i].count100, recent[i].count300)
                 osuEmbed
                 .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
                 .setTitle(`**${playername}'s Recent Plays** ${discord.getEmoji("kannaSip")}`)
@@ -124,6 +130,7 @@ export default class OsuCommand extends Command {
                 .setDescription(
                     `${discord.getEmoji("star")}_Beatmap:_**${beatmap[0].title}**\n` +
                     `${discord.getEmoji("star")}_Rank:_**${recent[i].rank}**\n` +
+                    `${discord.getEmoji("star")}_Accuracy:_**${accuracy}**\n` +
                     `${discord.getEmoji("star")}_Max Combo:_**${recent[i].maxcombo}**\n` +
                     `${discord.getEmoji("star")}_Perfect Combo:_**${recent[i].perfect === "1" ? "Yes" : "No"}**\n` +
                     `${discord.getEmoji("star")}_Date:_**${Functions.formatDate(new Date(recent[i].date))}**\n` +
@@ -160,6 +167,7 @@ export default class OsuCommand extends Command {
             const osuArray: MessageEmbed[] = []
             for (let i = 0; i < best.length; i++) {
                 const beatmap = await osu.beatmaps.get({b: best[i].beatmap_id})
+                const accuracy = this.getAccuracy(best[i].countmiss, best[i].count50, best[i].count100, best[i].count300)
                 const osuEmbed = embeds.createEmbed()
                 osuEmbed
                 .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
@@ -171,6 +179,7 @@ export default class OsuCommand extends Command {
                     `${discord.getEmoji("star")}_Beatmap:_**${beatmap[0].title}**\n` +
                     `${discord.getEmoji("star")}_PP:_**${best[i].pp}**\n` +
                     `${discord.getEmoji("star")}_Rank:_**${best[i].rank}**\n` +
+                    `${discord.getEmoji("star")}_Accuracy:_**${accuracy}**\n` +
                     `${discord.getEmoji("star")}_Max Combo:_**${best[i].maxcombo}**\n` +
                     `${discord.getEmoji("star")}_Perfect Combo:_**${best[i].perfect === "1" ? "Yes" : "No"}**\n` +
                     `${discord.getEmoji("star")}_Date:_**${Functions.formatDate(new Date(best[i].date))}**\n` +
