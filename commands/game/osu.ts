@@ -34,7 +34,7 @@ export default class OsuCommand extends Command {
     }
 
     public getAccuracy = (miss: string | number, $50: string | number, $100: string | number, $300: string | number) => {
-        const calc = (50 * Number($50) + 100 * Number($100) + 300 * Number($300)) / 300.0 * (Number(miss) + Number($50) + Number($100) + Number($300))
+        const calc = ((50 * Number($50) + 100 * Number($100) + 300 * Number($300)) / 300.0 * (Number(miss) + Number($50) + Number($100) + Number($300))) * 100.0
         return `${calc.toFixed(2)}%`
     }
 
