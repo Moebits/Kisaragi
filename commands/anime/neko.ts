@@ -1,6 +1,7 @@
 import axios from "axios"
 import {Message, MessageEmbed} from "discord.js"
 import nekoClient, {NekoRequestResults} from "nekos.life"
+import querystring from "querystring"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
 import {Embeds} from "./../../structures/Embeds"
@@ -13,14 +14,18 @@ export default class Neko extends Command {
             description: "Posts images of catgirls.",
             help:
             `
-            \`neko\` - Posts neko images.
-            \`neko lewd\` - Posts nsfw neko images.
+            _Note: Different tags are separated by comma._
+            \`neko\` - Posts random neko images.
+            \`neko tags\` - Searches for images matching the tags.
+            \`neko lewd\` - Posts random nsfw neko images.
+            \`neko lewd tags\` - Searches for nsfw images matching the tags.
             \`neko gif\` - Posts a random neko gif.
             \`neko gif lewd\` - Posts a random nsfw neko gif.
             `,
             examples:
             `
             \`=>neko\`
+            \`=>neko :o\`
             \`=>neko lewd\`
             `,
             aliases: ["nekos", "catgirl", "catgirls"],
@@ -58,12 +63,18 @@ export default class Neko extends Command {
         }
 
         let nsfw = false
+        let tags = Functions.combineArgs(args, 1)
         if (args[1]?.toLowerCase() === "lewd") {
             if (!perms.checkNSFW()) return
+            tags = Functions.combineArgs(args, 2)
             nsfw = true
         }
-
-        const data = await axios.get(`https://nekos.moe/api/v1/random/image?count=100&nsfw=${nsfw}`, {headers}).then((r) => r.data.images)
+        let data: any
+        if (tags) {
+            data = await axios.get(`https://nekos.moe/api/v1/random/image?count=100&nsfw=${nsfw}`, {headers}).then((r) => r.data.images)
+        } else {
+            data = await axios.post(`https://nekos.moe/api/v1/images/search`, querystring.stringify({nsfw, tags: tags.split(","), limit: 50}), {headers}).then((r) => r.data.images)
+        }
 
         const nekoEmbeds: MessageEmbed[] = []
         for (let i = 0; i < data.length; i++) {

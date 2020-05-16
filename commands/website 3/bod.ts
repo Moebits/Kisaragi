@@ -1,5 +1,6 @@
 import axios from "axios"
 import {Message, MessageEmbed} from "discord.js"
+import {querystring} from "querystring"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -33,7 +34,7 @@ export default class BotsOnDiscord extends Command {
         }
 
         const query = Functions.combineArgs(args, 1).trim()
-        const response = await axios.get(`https://bots.ondiscord.xyz/api/bots/search?query=${query}`, {headers}).then((r) => r.data)
+        const response = await axios.post(`https://bots.ondiscord.xyz/api/bots/search`, querystring.stringify({query}), {headers}).then((r) => r.data)
 
         const botArray: MessageEmbed[] = []
         for (let i = 0; i < response.results.length; i++) {
