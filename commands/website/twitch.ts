@@ -24,7 +24,8 @@ export default class Twitch extends Command {
             `,
             aliases: ["tw"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 
