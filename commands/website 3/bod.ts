@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Message, MessageEmbed} from "discord.js"
-import {querystring} from "querystring"
+import querystring from "querystring"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
