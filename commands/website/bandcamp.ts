@@ -3,9 +3,9 @@ import type {Message, MessageEmbed} from "discord.js"
 import Giphy, {MultiResponse} from "giphy-api"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
+import {Permission} from "../../structures/Permission"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permission} from "../../structures/Permission"
 
 export default class Bandcamp extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -30,8 +30,6 @@ export default class Bandcamp extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const bandcampEmbed = embeds.createEmbed()
         bandcampEmbed
         .setAuthor("bandcamp", "https://s4.bcbits.com/img/favicon/favicon-32x32.png", "https://bandcamp.com/")
@@ -94,6 +92,8 @@ export default class Bandcamp extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const query = Functions.combineArgs(args, 1)
 
