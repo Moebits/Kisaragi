@@ -212,12 +212,12 @@ export default class MessageEvent {
       sql.usageStatistics(pathFind)
       const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown, this.cooldowns)
       if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return message.reply({embed: onCooldown})
+      if (cmdPath.options.unlist && message.author.id !== process.env.OWNER_ID) return message.reply(`Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
 
       this.discord.muted = false
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
       this.discord.muted = this.discord.checkMuted(message)
-      if (cmdPath.options.unlist && message.author.id !== process.env.OWNER_ID) return message.reply(`Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
-
+      
       cmdPath.run(args).then(() => {
           const msgCheck = message.channel.messages
           if (msgCheck.cache.has(msg.id)) msg.delete({timeout: 1000})
