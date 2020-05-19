@@ -34,8 +34,8 @@ export class Audio {
 
     public checkMusicPermissions = () => {
         const message = this.message
-        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["MANAGE_MESSAGES", "CONNECT", "SPEAK"])) {
-            message.reply(`The bot needs the permissions **Manage Messages**, **Connect**, and **Speak** for all music commands. ${this.discord.getEmoji("kannaFacepalm")}`)
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["CONNECT", "SPEAK"])) {
+            message.reply(`The bot needs the permissions **Connect** and **Speak** for all music commands. ${this.discord.getEmoji("kannaFacepalm")}`)
             return false
         } else {
             return true

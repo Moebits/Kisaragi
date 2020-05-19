@@ -33,6 +33,7 @@ export default class Awwnime extends Command {
         const perms = new Permission(discord, message)
         const redditCmd = new Reddit(discord, message)
         const oauth2 = new Oauth2(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const reddit = new snoowrap({
             userAgent: "kisaragi bot v1.0 by /u/imtenpi",

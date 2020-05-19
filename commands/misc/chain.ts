@@ -20,7 +20,8 @@ export default class Chain extends Command {
             \`=>chain reactionroles [messageID] @role1 !emoji1! & reactionroles [messageID] @role2 !emoji2!\`
             `,
             aliases: [],
-            cooldown: 200
+            cooldown: 200,
+            nsfw: true
         })
     }
 

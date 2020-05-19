@@ -7,6 +7,7 @@ import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class SoundCloud extends Command {
     private user = null as any
@@ -43,6 +44,8 @@ export default class SoundCloud extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const images = new Images(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         if (args[1]?.match(/soundcloud.com/)) {
             const matches = args[1].replace("www.", "").replace("https://soundcloud.com", "").match(/(?<=\/)(.*?)(?=$|\/)/g)

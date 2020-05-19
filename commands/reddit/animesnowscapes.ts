@@ -2,11 +2,11 @@ import {Message, MessageEmbed} from "discord.js"
 import snoowrap from "snoowrap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
-import Reddit from "./reddit"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Oauth2} from "./../../structures/Oauth2"
 import {Permission} from "./../../structures/Permission"
+import Reddit from "./reddit"
 
 export default class Animesnowscapes extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -33,6 +33,7 @@ export default class Animesnowscapes extends Command {
         const perms = new Permission(discord, message)
         const redditCmd = new Reddit(discord, message)
         const oauth2 = new Oauth2(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const reddit = new snoowrap({
             userAgent: "kisaragi bot v1.0 by /u/imtenpi",

@@ -27,7 +27,8 @@ export default class Download extends Command {
             \`=>download gif 100\`
             `,
             aliases: ["dl"],
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

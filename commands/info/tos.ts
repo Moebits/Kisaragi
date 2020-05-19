@@ -37,7 +37,7 @@ export default class TOS extends Command {
             By using Kisaragi, you **agree** to abide by the terms of service. This bot has zero relation with Discord, it's only the service that it's used on.
             **Bot Spam and Misuse**
             ${discord.getEmoji("star")}_Content:_ Everything posted by the bot falls under your responsibility, not the bot or developer. If the bot posts something "questionable" it's because of the input you gave it. I do make an effort to filter such content, but it's impossible to filter everything on the internet.
-            ${discord.getEmoji("star")}_API Spam:_ Don't use this bot to spam Discord's API (or any API it uses). Don't abuse commands that function on other commands (chain, random).
+            ${discord.getEmoji("star")}_API Spam:_ Don't use this bot to spam Discord's API (or any API it uses).
             ${discord.getEmoji("star")}_Global Chat:_ Don't post anything inappropriate, offensive, or spam. This is a public chat visible to everyone who enables it.
             ${discord.getEmoji("star")}_Oauth2:_ Don't abuse oauth2 commands or share oauth2 links created by the bot.
             ${discord.getEmoji("star")}_Abusing Bugs:_ This bot is a beta version, and there could be bugs that crash the bot. Please report these bugs with the \`feedback\` command.
