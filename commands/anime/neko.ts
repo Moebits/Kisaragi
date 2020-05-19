@@ -73,7 +73,7 @@ export default class Neko extends Command {
         if (tags) {
             data = await axios.get(`https://nekos.moe/api/v1/random/image?count=100&nsfw=${nsfw}`, {headers}).then((r) => r.data.images)
         } else {
-            data = await axios.post(`https://nekos.moe/api/v1/images/search`, querystring.stringify({nsfw, tags: tags.split(","), limit: 50}), {headers}).then((r) => r.data.images)
+            data = await axios.post(`https://nekos.moe/api/v1/images/search`, {nsfw, tags: tags.split(","), limit: 50}, {headers}).then((r) => r.data.images)
         }
 
         const nekoEmbeds: MessageEmbed[] = []

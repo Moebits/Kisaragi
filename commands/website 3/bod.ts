@@ -34,7 +34,7 @@ export default class BotsOnDiscord extends Command {
         }
 
         const query = Functions.combineArgs(args, 1).trim()
-        const response = await axios.post(`https://bots.ondiscord.xyz/api/bots/search`, querystring.stringify({query}), {headers}).then((r) => r.data)
+        const response = await axios.post(`https://bots.ondiscord.xyz/api/bots/search`, {query, sort: "relevance", limit: 30}, {headers}).then((r) => r.data)
 
         const botArray: MessageEmbed[] = []
         for (let i = 0; i < response.results.length; i++) {
