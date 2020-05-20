@@ -43,6 +43,7 @@ export default class Danbooru extends Command {
         const danbooruEmbed = embeds.createEmbed()
         .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")
         .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
+        if (!perms.checkNSFW()) return
 
         let tags: string[] = []
         if (!args[1]) {

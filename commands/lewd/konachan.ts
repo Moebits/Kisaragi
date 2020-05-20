@@ -43,6 +43,7 @@ export default class Konachan extends Command {
         const konachanEmbed = embeds.createEmbed()
         .setTitle(`**Konachan Image** ${discord.getEmoji("gabLewd")}`)
         .setAuthor("konachan", "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE")
+        if (!perms.checkNSFW()) return
 
         let tags: string[] = []
         if (!args[1]) {

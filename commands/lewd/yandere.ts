@@ -43,6 +43,7 @@ export default class Yandere extends Command {
         const yandereEmbed = embeds.createEmbed()
         .setAuthor("yandere", "https://i.imgur.com/5DiQTnW.png")
         .setTitle(`**Yandere Image** ${discord.getEmoji("gabLewd")}`)
+        if (!perms.checkNSFW()) return
 
         let tags: string[] = []
         if (!args[1]) {
