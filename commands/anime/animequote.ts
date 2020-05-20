@@ -1,9 +1,9 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permission} from "../../structures/Permission"}
 
 const animeQuotes = require("animequotes")
 
