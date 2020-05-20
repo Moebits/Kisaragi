@@ -21,7 +21,7 @@ export default class LoliCommand extends Command {
             aliases: ["l"],
             cooldown: 5,
             random: "none",
-            unlist: true
+            nsfw: true
         })
     }
 
@@ -32,7 +32,7 @@ export default class LoliCommand extends Command {
         const perms = new Permission(discord, message)
         const loli = new Loli()
         const loliEmbed = embeds.createEmbed()
-        let result
+        let result: any
         if (args[1] === "lewd") {
             if (!perms.checkBotDev()) return
             if (!perms.checkNSFW()) return

@@ -1,6 +1,7 @@
 import type {Message, MessageEmbed} from "discord.js"
 import TwitchClient from "twitch"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -33,6 +34,8 @@ export default class Twitch extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const twitch = TwitchClient.withCredentials(process.env.TWITCH_CLIENT_ID!, process.env.TWITCH_ACCESS_TOKEN!)
 
         if (args[1]?.match(/twitch.tv/)) {

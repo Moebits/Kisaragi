@@ -3,6 +3,7 @@ import fs from "fs"
 import yt from "youtube.ts"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
+import {Permission} from "../../structures/Permission"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -36,8 +37,7 @@ export default class YoutubeCommand extends Command {
             `,
             aliases: ["yt"],
             random: "string",
-            cooldown: 10,
-            nsfw: true
+            cooldown: 10
         })
     }
 
@@ -122,9 +122,10 @@ export default class YoutubeCommand extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const youtube = new yt(process.env.GOOGLE_API_KEY!)
         if (!args[1]) {
             return this.noQuery(embeds.createEmbed()

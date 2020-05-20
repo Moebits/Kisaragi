@@ -20,7 +20,8 @@ export default class Random extends Command {
             \`=>random\`
             `,
             aliases: ["r", "rc", "rand", "randomcommand"],
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

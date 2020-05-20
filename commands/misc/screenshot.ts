@@ -22,7 +22,8 @@ export default class Screenshot extends Command {
             \`=>screenshot mobile https://www.youtube.com/c/Tenpi\`
             `,
           aliases: ["screencap"],
-          cooldown: 15
+          cooldown: 15,
+          nsfw: true
         })
     }
 

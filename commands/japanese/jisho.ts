@@ -22,7 +22,8 @@ export default class Jisho extends Command {
             `,
             aliases: ["kanji"],
             random: "string",
-            cooldown: 5
+            cooldown: 5,
+            nsfw: true
         })
     }
 

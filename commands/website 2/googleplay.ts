@@ -3,6 +3,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class GooglePlay extends Command {
     constructor(discord: Kisaragi, message: Message) {

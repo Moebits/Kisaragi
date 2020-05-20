@@ -4,6 +4,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Chibi extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -28,6 +29,8 @@ export default class Chibi extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const imageArray: MessageEmbed[] = []
 
         const links = await images.parseImgurAlbum("eG8Tzu7", 10)

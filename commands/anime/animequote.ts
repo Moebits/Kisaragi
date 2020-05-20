@@ -3,6 +3,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"}
 
 const animeQuotes = require("animequotes")
 
@@ -51,6 +52,8 @@ export default class AnimeQuote extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const animeQuoteEmbed = embeds.createEmbed()
         .setAuthor("animequotes", "https://discordemoji.com/assets/emoji/KannaCurious.png")

@@ -1,5 +1,6 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
@@ -28,6 +29,8 @@ export default class Kawaii extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const imageArray: MessageEmbed[] = []
 
         const links = await images.parseImgurAlbum("K746bJw", 10)

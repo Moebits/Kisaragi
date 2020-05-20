@@ -21,7 +21,8 @@ export default class BotsOnDiscord extends Command {
             `,
             aliases: ["botsondiscord"],
             random: "none",
-            cooldown: 15
+            cooldown: 15,
+            nsfw: true
         })
     }
 
@@ -56,7 +57,7 @@ export default class BotsOnDiscord extends Command {
                 `${discord.getEmoji("star")}_Prefix:_ **${bot.prefix}**\n` +
                 `${discord.getEmoji("star")}_Reviews:_ ${discord.getEmoji("thumbsUp")} **${bot.reviews.totalPositive}** ${discord.getEmoji("thumbsDown")} **${bot.reviews.totalNegative}**\n` +
                 `${discord.getEmoji("star")}_Invites:_ **${bot.invitesAllTime}**\n` +
-                `${discord.getEmoji("star")}_Guilds:_ **${bot.stats.guildCount}**\n` +
+                `${discord.getEmoji("star")}_Guilds:_ **${bot.stats?.guildCount ?? 0}**\n` +
                 `${discord.getEmoji("star")}_Added:_ **${Functions.formatDate(bot.dates.firstApproved)}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${bot.description}\n` +
                 website + support + invite
