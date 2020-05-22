@@ -5,6 +5,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class FlickrCommand extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -29,6 +30,8 @@ export default class FlickrCommand extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const email = args[1]
         if (!email) return message.reply(`You must provide an email address ${discord.getEmoji("kannaCurious")}`)
         await message.channel.bulkDelete(2)

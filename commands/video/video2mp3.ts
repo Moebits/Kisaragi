@@ -3,6 +3,7 @@ import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -36,6 +37,8 @@ export default class ConstrainGIF extends Command {
         const images = new Images(discord, message)
         const video = new Video(discord, message)
         const cmd = new CommandFunctions(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const regex = new RegExp(/.(mp4|avi|mov|mkv|flv|swf|wmv)/)
         let url: string | undefined
         if (args[1]) {

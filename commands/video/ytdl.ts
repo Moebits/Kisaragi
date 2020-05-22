@@ -4,6 +4,7 @@ import gifFrames from "gif-frames"
 import path from "path"
 import Youtube from "youtube.ts"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -25,8 +26,7 @@ export default class Ytdl extends Command {
             \`=>ytdl https://youtu.be/mLJQ0HO5Alc\`
             `,
             aliases: ["youtube download"],
-            cooldown: 20,
-            nsfw: true
+            cooldown: 20
         })
     }
 
@@ -37,6 +37,8 @@ export default class Ytdl extends Command {
         const images = new Images(discord, message)
         const video = new Video(discord, message)
         const cmd = new CommandFunctions(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         if (!args[1]) return message.reply(`What video do you want to download ${discord.getEmoji("kannaCurious")}`)
         if (args[1].toLowerCase() === "mp3") {
             return cmd.runCommand(message, ["youtube", "download", "mp3", Functions.combineArgs(args, 2)])

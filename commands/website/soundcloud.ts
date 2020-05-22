@@ -3,11 +3,11 @@ import fs from "fs"
 import Soundcloud from "soundcloud.ts"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
+import {Permission} from "../../structures/Permission"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permission} from "../../structures/Permission"
 
 export default class SoundCloud extends Command {
     private user = null as any

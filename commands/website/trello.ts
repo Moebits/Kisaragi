@@ -1,6 +1,7 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Trello} from "trello-for-wolves"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -29,6 +30,8 @@ export default class Twitch extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const trello = new Trello({key: process.env.TRELLO_API_KEY!, token: process.env.TRELLO_TOKEN!})
         const query = Functions.combineArgs(args, 1)

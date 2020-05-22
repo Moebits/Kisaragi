@@ -5,6 +5,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class DiscordBotList extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -31,6 +32,8 @@ export default class DiscordBotList extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const headers = {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36",
             "cookie": process.env.TOPGG_COOKIE

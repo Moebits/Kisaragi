@@ -1,6 +1,7 @@
 import {Message} from "discord.js"
 import nekoClient from "nekos.life"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
@@ -26,6 +27,8 @@ export default class Cuddle extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const neko = new nekoClient()
 
         let user = message.author

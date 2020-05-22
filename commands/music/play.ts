@@ -43,6 +43,7 @@ export default class Play extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         if (!audio.checkMusicPermissions()) return
 
         let voiceChannel = message.guild?.voice?.channel!

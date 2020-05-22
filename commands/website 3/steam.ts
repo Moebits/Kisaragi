@@ -4,6 +4,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Steam extends Command {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
@@ -20,8 +21,7 @@ export default class Steam extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 10,
-            nsfw: true
+            cooldown: 10
         })
     }
 
@@ -29,6 +29,8 @@ export default class Steam extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         let term = Functions.combineArgs(args, 1)
         if (!term) term = "anime"
         const data = await axios.get(`https://store.steampowered.com/api/storesearch/?term=${term}&l=english&cc=US`, {headers: this.headers}).then((r) => r.data)

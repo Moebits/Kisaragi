@@ -4,6 +4,7 @@ import gifFrames from "gif-frames"
 import path from "path"
 import Youtube from "youtube.ts"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Audio} from "./../../structures/Audio"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
@@ -39,6 +40,8 @@ export default class Video2GIF extends Command {
         const video = new Video(discord, message)
         const audio = new Audio(discord, message)
         const cmd = new CommandFunctions(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const youtube = new Youtube(process.env.GOOGLE_API_KEY!)
         const regex = new RegExp(/.(mp4|avi|mov|mkv|flv|swf|wmv)/)
         let url: string | undefined

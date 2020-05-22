@@ -3,6 +3,7 @@ import {Message, MessageEmbed} from "discord.js"
 import osmosis from "osmosis"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
+import {Permission} from "../../structures/Permission"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
@@ -63,6 +64,8 @@ export default class ReverseImage extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         let image: string | undefined | null
         if (!args[1]) {

@@ -1,10 +1,10 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permission} from "../../structures/Permission"
 
 export default class Chibi extends Command {
     constructor(discord: Kisaragi, message: Message) {

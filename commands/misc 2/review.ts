@@ -18,7 +18,8 @@ export default class Review extends Command {
           `,
           aliases: [],
           random: "none",
-          cooldown: 5
+          cooldown: 5,
+          unlist: true
         })
     }
 

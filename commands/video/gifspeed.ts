@@ -8,6 +8,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Images} from "../../structures/Images"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class ConstrainGIF extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -35,6 +36,8 @@ export default class ConstrainGIF extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const regex = new RegExp(/.gif/)
         args[1] = args[1].replace(/x/g, "")
         let constrain = Number(args[1]) ?? 20
