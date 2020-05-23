@@ -33,6 +33,7 @@ export default class RedditOauth extends Command {
         const message = this.message
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         if (args[1] === "delete" || args[1] === "revoke") {
             await SQLQuery.revokeRedditOauth(message.author.id)
             const oauth2Embed = embeds.createEmbed()

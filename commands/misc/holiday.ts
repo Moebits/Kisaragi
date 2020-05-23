@@ -41,9 +41,9 @@ export default class Holiday extends Command {
                 const holidayData = await axios.get(args[1], {headers})
                 const imageRegex = /(?<=image" content=")(.*?)(?=(\s))/gm
                 const pg2Regex = /(?<=description" content=")(.*?)(?="(\s))/gm
-                const rawDescription = holidayData.data.match(pg2Regex)[0]
+                const rawDescription = holidayData.data.match(pg2Regex)?.[0]
                 const description = rawDescription.replace(/&hellip;/g, "...").replace(/&#8217;/g, "'").replace(/&#8211;/g, "-").trim()
-                const image = holidayData.data.match(imageRegex)[0].replace(/"/g, "")
+                const image = holidayData.data.match(imageRegex)?.[0].replace(/"/g, "")
                 const holidayEmbed = embeds.createEmbed()
                 holidayEmbed
                 .setAuthor("days of the year", "https://media.daysoftheyear.com/20181228141243/logo.jpg")
@@ -62,10 +62,10 @@ export default class Holiday extends Command {
                     inputMonth = i + 1
                 }
             }
-            if (!inputMonth) inputMonth = parseInt(args[1][0], 10)
+            if (!inputMonth) inputMonth = parseInt(args[1]?.[0], 10)
             if (!args[2]) {
                 inputDay = args[1].match(/\/\d+/g)
-                if (inputDay![0]) inputDay  = parseInt(inputDay![0].replace(/\//g, ""), 10)
+                if (inputDay?.[0]) inputDay  = parseInt(inputDay?.[0].replace(/\//g, ""), 10)
             } else {
                 inputDay = parseInt(args[2], 10)
             }
@@ -80,13 +80,13 @@ export default class Holiday extends Command {
         const url = `https://www.daysoftheyear.com/days/${year}/${month < 10 ? `0${month}` : month}/${day < 10 ? `0${day}` : day}/`
         const data = await axios.get(url, {headers})
         const matchArray = data.data.match(pg1Regex)
-        const holidayName = Functions.toProperCase(matchArray[0].replace(/-/g, " ").replace(/\//g, ""))
+        const holidayName = Functions.toProperCase(matchArray?.[0].replace(/-/g, " ").replace(/\//g, ""))
         const date = `${monthNames[month - 1]} ${day}`
-        const url2 = `https://www.daysoftheyear.com/days/${matchArray[0]}`
+        const url2 = `https://www.daysoftheyear.com/days/${matchArray?.[0]}`
         const holidayData = await axios.get(url2, {headers})
-        const rawDescription = holidayData.data.match(pg2Regex)[0]
+        const rawDescription = holidayData.data.match(pg2Regex)?.[0]
         const description = rawDescription.replace(/&hellip;/g, "...").replace(/&#8217;/g, "'").replace(/&#8211;/g, "-").trim()
-        const image = holidayData.data.match(imageRegex)[0].replace(/"/g, "")
+        const image = holidayData.data.match(imageRegex)?.[0].replace(/"/g, "")
 
         const holidayEmbed = embeds.createEmbed()
         holidayEmbed
