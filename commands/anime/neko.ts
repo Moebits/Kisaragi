@@ -69,16 +69,16 @@ export default class Neko extends Command {
             tags = Functions.combineArgs(args, 2)
             nsfw = true
         }
-        let data: any
-        if (tags) {
-            data = await axios.get(`https://nekos.moe/api/v1/random/image?count=100&nsfw=${nsfw}`, {headers}).then((r) => r.data.images)
+        let result: any
+        if (!tags) {
+            result = await axios.get(`https://nekos.moe/api/v1/random/image?count=100&nsfw=${nsfw}`, {headers}).then((r) => r.data.images)
         } else {
-            data = await axios.post(`https://nekos.moe/api/v1/images/search`, {nsfw, tags: tags.split(","), limit: 50}, {headers}).then((r) => r.data.images)
+            result = await axios.post(`https://nekos.moe/api/v1/images/search`, {nsfw, tags: tags.split(","), limit: 50}, {headers}).then((r) => r.data.images)
         }
 
         const nekoEmbeds: MessageEmbed[] = []
-        for (let i = 0; i < data.length; i++) {
-            const image = data[i]
+        for (let i = 0; i < result.length; i++) {
+            const image = result[i]
             const nekoEmbed = embeds.createEmbed()
             nekoEmbed
             .setAuthor("nekos.moe", "https://nekos.moe/static/favicon/favicon-32x32.png", "https://nekos.moe/")
