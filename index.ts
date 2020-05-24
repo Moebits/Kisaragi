@@ -1,3 +1,4 @@
+import {Constants} from "discord.js"
 import fs from "fs"
 import path from "path"
 import * as config from "./config.json"
@@ -12,6 +13,9 @@ const discord = new Kisaragi({
     restTimeOffset: 0,
     partials: ["MESSAGE", "CHANNEL", "REACTION"]
 })
+
+// @ts-ignore
+Constants.DefaultOptions.ws.properties.$browser = "Discord iOS"
 
 const dumps = [
     `../assets/images/dump`,
@@ -79,8 +83,6 @@ const start = async (): Promise<void> => {
     const server = new Server()
     server.run()
 
-    // @ts-ignore
-    discord.options.ws.properties.$browser = "Discord iOS"
     const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
     await discord.login(token)
     discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
