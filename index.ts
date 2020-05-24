@@ -15,7 +15,11 @@ const discord = new Kisaragi({
 })
 
 // @ts-ignore
-Constants.DefaultOptions.ws.properties.$browser = "Discord iOS"
+discord.options.ws.properties.$browser = "Discord iOS"
+// @ts-ignore
+discord.options.ws.properties.$device = "iPhone XR"
+// @ts-ignore
+discord.options.ws.properties.$os = "iOS 13.5"
 
 const dumps = [
     `../assets/images/dump`,
