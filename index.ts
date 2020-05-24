@@ -79,6 +79,8 @@ const start = async (): Promise<void> => {
     const server = new Server()
     server.run()
 
+    // @ts-ignore
+    discord.options.ws.properties.$browser = "Discord iOS"
     const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
     await discord.login(token)
     discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
