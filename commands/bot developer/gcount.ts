@@ -21,7 +21,7 @@ export default class GCount extends Command {
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         if (!perms.checkBotDev()) return
-        discord.user!.setPresence({activity: {type: "PLAYING", name: `=>help | ${this.discord.guilds.cache.size} guilds`, url: "https://www.twitch.tv/imtenpi"}, status: "dnd"})
+        discord.user!.setPresence({activity: {type: "PLAYING", name: `=>help | ${this.discord.guilds.cache.size} guilds`, url: "https://www.twitch.tv/imtenpi"}, status: "online"})
         discord.postGuildCount()
     }
 }
