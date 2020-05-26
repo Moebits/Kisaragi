@@ -1,5 +1,6 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -20,8 +21,7 @@ export default class Define extends Command {
             `,
             aliases: ["def", "definition", "word", "dictionary"],
             random: "string",
-            cooldown: 10,
-            nsfw: true
+            cooldown: 10
         })
     }
 
@@ -29,6 +29,8 @@ export default class Define extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const dictionary = new CollegiateDictionary(process.env.DICTIONARY_API_KEY)
         let word = Functions.combineArgs(args, 1)
         if (!word) {
