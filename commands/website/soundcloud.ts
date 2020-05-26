@@ -67,7 +67,7 @@ export default class SoundCloud extends Command {
                 .setTitle(`**Soundcloud User** ${discord.getEmoji("karenSugoi")}`))
             }
             const soundcloudArray: MessageEmbed[] = []
-            const users = await soundcloud.users.scrape(query)
+            const users = await soundcloud.users.searchAlt(query)
             for (let i = 0; i < users.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
@@ -99,7 +99,7 @@ export default class SoundCloud extends Command {
                 .setTitle(`**Soundcloud Playlist** ${discord.getEmoji("karenSugoi")}`))
             }
             const soundcloudArray: MessageEmbed[] = []
-            const playlists = await soundcloud.playlists.scrape(query)
+            const playlists = await soundcloud.playlists.searchAlt(query)
             for (let i = 0; i < playlists.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
@@ -137,7 +137,7 @@ export default class SoundCloud extends Command {
             if (/soundcloud.com/.test(query)) {
                 track = query
             } else {
-                track = await soundcloud.tracks.scrape(query).then((r) => r[0].permalink_url)
+                track = await soundcloud.tracks.searchAlt(query).then((r) => r[0].permalink_url)
             }
             if (!track) {
                 return this.invalidQuery(embeds.createEmbed()
@@ -181,7 +181,7 @@ export default class SoundCloud extends Command {
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
         }
         const soundcloudArray: MessageEmbed[] = []
-        const tracks = await soundcloud.tracks.scrape(query)
+        const tracks = await soundcloud.tracks.searchAlt(query)
         for (let i = 0; i < tracks.length; i++) {
             const soundcloudEmbed = embeds.createEmbed()
             soundcloudEmbed
@@ -199,7 +199,7 @@ export default class SoundCloud extends Command {
                 `${discord.getEmoji("star")}_Likes:_ **${tracks[i].likes_count}**\n` +
                 `${discord.getEmoji("star")}_Reposts:_ **${tracks[i].reposts_count}**\n` +
                 `${discord.getEmoji("star")}_Comments:_ **${tracks[i].comment_count}**\n`+
-                `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(tracks[i].description, 500, "")}`
+                `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(tracks[i].description ?? "None", 500, "")}`
             )
             soundcloudArray.push(soundcloudEmbed)
         }

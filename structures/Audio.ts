@@ -3,7 +3,7 @@ import {Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, S
 import fs from "fs"
 import mp3Duration from "mp3-duration"
 import path from "path"
-import Soundcloud, {SoundCloudTrack} from "soundcloud.ts"
+import Soundcloud from "soundcloud.ts"
 import Youtube from "youtube.ts"
 import * as defaults from "./../assets/json/defaultSongs.json"
 import {AudioEffects} from "./AudioEffects"
@@ -683,7 +683,7 @@ export class Audio {
             queueObj.image = image
             queueObj.duration = duration as string
         } else if (link?.match(/soundcloud.com/)) {
-            const info = await this.soundcloud.tracks.getURL(link) as SoundCloudTrack
+            const info = await this.soundcloud.tracks.getAlt(link)
             const image = info.artwork_url
             const title = info.title
             const artist = info.user.username
@@ -1314,7 +1314,7 @@ export class Audio {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const results = await this.soundcloud.tracks.scrape(query)
+        const results = await this.soundcloud.tracks.searchAlt(query)
         const links = results.map((r) => r.permalink_url)
         if (first) return links[0]
         const titles = results.map((r) => r.title)
