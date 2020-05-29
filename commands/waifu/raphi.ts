@@ -20,7 +20,8 @@ export default class Raphi extends Command {
             `,
             aliases: ["raphiel"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

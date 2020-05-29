@@ -20,7 +20,8 @@ export default class Karen extends Command {
             `,
             aliases: ["karenkujo"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

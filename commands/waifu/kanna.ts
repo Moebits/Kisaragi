@@ -20,7 +20,8 @@ export default class Kanna extends Command {
             `,
             aliases: ["kannakamui"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

@@ -20,7 +20,8 @@ export default class Vigne extends Command {
             `,
             aliases: ["vignette"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

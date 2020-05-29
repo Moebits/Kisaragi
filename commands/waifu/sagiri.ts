@@ -20,7 +20,8 @@ export default class Sagiri extends Command {
             `,
             aliases: ["sagiriizumi"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 

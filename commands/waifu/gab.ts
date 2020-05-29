@@ -20,7 +20,8 @@ export default class Gab extends Command {
             `,
             aliases: ["gabriel", "tenma"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            nsfw: true
         })
     }
 
