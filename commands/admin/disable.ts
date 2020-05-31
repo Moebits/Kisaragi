@@ -113,7 +113,6 @@ export default class Disable extends Command {
             const disabledArr: string[] = []
             for (let i = 0; i < newCategories.length; i++) {
                 if (categories.includes(newCategories[i])) {
-                    Functions.arrayRemove(categories, newCategories[i])
                     enabledArr.push(newCategories[i])
                 } else {
                     disabledArr.push(newCategories[i])
@@ -129,6 +128,9 @@ export default class Disable extends Command {
             if (!description) description = `${discord.getEmoji("star")}No changes made, canceled the prompt. ${discord.getEmoji("kannaFacepalm")}`
 
             categories = [...categories, ...newCategories]
+            for (let i = 0; i < enabledArr.length; i++) {
+                Functions.arrayRemove(categories, enabledArr[i])
+            }
             await sql.updateColumn("guilds", "disabled categories", categories)
             responseEmbed
             .setDescription(description)
