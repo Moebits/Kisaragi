@@ -55,7 +55,7 @@ export class Settings {
         "warn threshold": 3,
         "cases": null,
         "blocked words": null,
-        "disabled commands": null,
+        "disabled categories": null,
         "pfp ban toggle": "off",
         "leaver ban toggle": "off",
         "everyone ban toggle": "off",

@@ -51,7 +51,11 @@ export default class Play extends Command {
 
         if (!connection && message.member?.voice.channel) {
             voiceChannel = message.member.voice.channel
-            connection = await message.member.voice.channel.join()
+            try {
+                connection = await message.member.voice.channel.join()
+            } catch {
+                return message.reply(`I need the **Connect** permission to connect to this channel. ${discord.getEmoji("kannaFacepalm")}`)
+            }
         } else if (!message.member?.voice.channel) {
             return message.reply(`You must join a voice channel first. How will you listen to the song ${discord.getEmoji("kannaFacepalm")}`)
         }

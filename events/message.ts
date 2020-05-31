@@ -208,6 +208,13 @@ export default class MessageEvent {
         return setEmbed ? message.channel.send(permEmbed) : message.channel.send(permMessage)
       }
 
+      let category = path.dirname(cmdPath).replace(/\.\.\//, "")
+      if (category === "japanese") category = "weeb"
+      const disabledCategories = await sql.fetchColumn("guilds", "disabled categories")
+      if (disabledCategories?.includes(category)) {
+        return message.reply(`Sorry, commands in the category **${category}** were disabled on this server. ${this.discord.getEmoji("mexShrug")}`)
+      }
+
       const cooldown = new Cooldown(this.discord, message)
       sql.usageStatistics(pathFind)
       const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown, this.cooldowns)
@@ -217,12 +224,12 @@ export default class MessageEvent {
       this.discord.muted = false
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
       this.discord.muted = this.discord.checkMuted(message)
-      
+
       cmdPath.run(args).then(() => {
           const msgCheck = message.channel.messages
           if (msgCheck.cache.has(msg.id)) msg.delete({timeout: 1000})
         }).catch((err: Error) => {
-        message.channel.send(this.discord.cmdError(message, err))
+          message.channel.send(this.discord.cmdError(message, err))
       })
     }
   }

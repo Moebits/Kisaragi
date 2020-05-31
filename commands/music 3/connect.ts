@@ -1,23 +1,23 @@
 import {Message, VoiceChannel} from "discord.js"
+import {Audio} from "../../structures/Audio"
 import {Command} from "../../structures/Command"
-import {Audio} from "./../../structures/Audio"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
 
-export default class Join extends Command {
+export default class Connect extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Joins a voice channel.",
+            description: "Connects to a voice channel.",
             help:
             `
-            \`join channel/mention/id?\` - Joins the channel you are in, or the channel mentioned.
+            \`connect channel/mention/id?\` - Joins the channel you are in, or the channel mentioned.
             `,
             examples:
             `
-            \`=>join\`
+            \`=>connect\`
             `,
-            aliases: ["connect"],
+            aliases: ["join"],
             guildOnly: true,
             cooldown: 10
         })
