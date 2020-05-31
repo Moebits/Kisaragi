@@ -121,10 +121,6 @@ export class CommandFunctions {
         }
     }
 
-    public getCategory = (cmd: string) => {
-
-    }
-
     // Assert Last Command Worked
     public assertLast = async <T extends string | boolean>(test: T, timeout?: number): Promise<T extends true ? number : boolean> => {
         type assertLast = Promise<T extends true ? number : boolean>

@@ -211,7 +211,7 @@ export default class MessageEvent {
       let category = path.dirname(pathFind.replace(/..\/commands\//, "../").slice(0, -3)).replace(/\.\.\//, "")
       if (category === "japanese") category = "weeb"
       const disabledCategories = await sql.fetchColumn("guilds", "disabled categories")
-      if (disabledCategories?.includes(category)) {
+      if (disabledCategories?.includes(category) && cmd !== "help") {
         return message.reply(`Sorry, commands in the category **${category}** were disabled on this server. ${this.discord.getEmoji("mexShrug")}`)
       }
 
