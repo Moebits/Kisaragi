@@ -113,7 +113,7 @@ export default class Disable extends Command {
             const disabledArr: string[] = []
             for (let i = 0; i < newCategories.length; i++) {
                 if (categories.includes(newCategories[i])) {
-                    categories = Functions.arrayRemove(categories, newCategories[i])
+                    Functions.arrayRemove(categories, newCategories[i])
                     enabledArr.push(newCategories[i])
                 } else {
                     disabledArr.push(newCategories[i])

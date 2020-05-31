@@ -186,6 +186,7 @@ export class Functions {
               i--
             }
          }
+        return arr
     }
 
     // Random Color
