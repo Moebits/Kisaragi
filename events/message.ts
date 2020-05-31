@@ -208,7 +208,7 @@ export default class MessageEvent {
         return setEmbed ? message.channel.send(permEmbed) : message.channel.send(permMessage)
       }
 
-      let category = path.dirname(cmdPath).replace(/\.\.\//, "")
+      let category = path.dirname(pathFind.replace(/..\/commands\//, "../").slice(0, -3)).replace(/\.\.\//, "")
       if (category === "japanese") category = "weeb"
       const disabledCategories = await sql.fetchColumn("guilds", "disabled categories")
       if (disabledCategories?.includes(category)) {
