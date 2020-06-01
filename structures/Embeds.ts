@@ -696,7 +696,7 @@ export class Embeds {
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order to remove it's reactions. Alternatively, you can use \`help dm\` to get all commands with no permissions. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -709,7 +709,7 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order to remove it's reactions. Alternatively, you can use \`help dm\` to get all commands with no permissions. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -889,7 +889,7 @@ export class Embeds {
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order to remove it's reactions. Alternatively, you can use \`help dm\` to get all commands with no permissions. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -902,7 +902,7 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order scroll pages. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order to remove it's reactions. Alternatively, you can use \`help dm\` to get all commands with no permissions. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
