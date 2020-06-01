@@ -536,9 +536,10 @@ export class Embeds {
         })
     }
 
-    // Create Help Embed
-    public createHelpEmbed = async (embeds: MessageEmbed[]) => {
+    /** Create Help Embed */
+    public createHelpEmbed = async (embeds: MessageEmbed[], reactionPage?: number) => {
         let page = 8
+        if (reactionPage === 2) page = 17
         const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Misc 2", "Mod", "Music", "Music 2", "Music 3", "Reddit", "Twitter", "Video", "Waifu", "Website", "Website 2", "Website 3"]
         let compressed = false
         const longDescription: string[] = []
@@ -595,13 +596,18 @@ export class Embeds {
 
         const pages = [page1, page2]
         let pageIndex = 0
+        if (reactionPage === 2) pageIndex = 1
         const msg = await this.message.channel.send(embeds[page])
         await SQLQuery.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
         await this.sql.updateColumn("collectors", "collapse", true, "message", msg.id)
         await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         await this.sql.updateColumn("collectors", "help", true, "message", msg.id)
-        for (let i = 0; i < page1.length; i++) await msg.react(page1[i])
+        if (reactionPage === 2) {
+            for (let i = 0; i < page2.length; i++) await msg.react(page2[i])
+        } else {
+            for (let i = 0; i < page1.length; i++) await msg.react(page1[i])
+        }
 
         const adminCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("admin") && user.bot === false
         const animeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("anime") && user.bot === false
@@ -696,7 +702,7 @@ export class Embeds {
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order to remove it's reactions. Alternatively, you can use \`help dm\` to get all commands with no permissions. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove it's reactions. Alternatively, you can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -709,7 +715,7 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order to remove it's reactions. Alternatively, you can use \`help dm\` to get all commands with no permissions. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove it's reactions. Alternatively, you can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -889,7 +895,7 @@ export class Embeds {
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order to remove it's reactions. Alternatively, you can use \`help dm\` to get all commands with no permissions. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove it's reactions. Alternatively, you can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }
@@ -902,7 +908,7 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** in order to remove it's reactions. Alternatively, you can use \`help dm\` to get all commands with no permissions. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove it's reactions. Alternatively, you can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
                 rep.delete({timeout: 3000})
                 return
             }

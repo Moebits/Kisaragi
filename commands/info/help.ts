@@ -119,7 +119,7 @@ export default class Help extends Command {
         const embeds = new Embeds(discord, message)
         const subDir = fs.readdirSync(path.join(__dirname, "../../commands"))
         const helpEmbedArray: MessageEmbed[] = []
-        if (args[1] && !args[1].startsWith("!") && args[1]?.toLowerCase() !== "dm") {
+        if (args[1] && !args[1].startsWith("!") && args[1]?.toLowerCase() !== "dm" && args[1] !== "2") {
             const helpDir = new (require(path.join(__dirname, "./helpInfo")).default)(this.discord, this.message)
             await helpDir.run(args)
             return
@@ -197,7 +197,11 @@ export default class Help extends Command {
         if (setIndex > -1) {
             return message.channel.send(helpEmbedArray[setIndex])
         } else {
-            embeds.createHelpEmbed(helpEmbedArray)
+            if (args[1] === "2") {
+                embeds.createHelpEmbed(helpEmbedArray, 2)
+            } else {
+                embeds.createHelpEmbed(helpEmbedArray)
+            }
         }
     }
 }
