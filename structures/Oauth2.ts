@@ -35,7 +35,7 @@ export class Oauth2 {
 
         const refreshToken = await this.sql.fetchColumn("oauth2", "reddit refresh", "user id", this.message.author.id)
 
-        let options = {username: process.env.REDDIT_USERNAME, password: process.env.REDDIT_PASSWORD} as any
+        let options = {refreshToken: process.env.REDDIT_REFRESH_TOKEN} as any
         if (refreshToken) options = {refreshToken}
 
         const reddit = new snoowrap({

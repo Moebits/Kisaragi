@@ -99,8 +99,7 @@ export default class Reddit extends Command {
             userAgent: "kisaragi bot v1.0 by /u/imtenpi",
             clientId: process.env.REDDIT_APP_ID,
             clientSecret: process.env.REDDIT_APP_SECRET,
-            username: process.env.REDDIT_USERNAME,
-            password: process.env.REDDIT_PASSWORD
+            refreshToken: process.env.REDDIT_REFRESH_TOKEN
         })
 
         if (args[1]?.match(/reddit.com/)) {
