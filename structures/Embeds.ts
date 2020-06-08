@@ -702,8 +702,8 @@ export class Embeds {
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove it's reactions. Alternatively, you can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 3000})
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 5000})
                 return
             }
             if (pageIndex === pages.length - 1) return reaction.users.remove(user)
@@ -715,8 +715,8 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove it's reactions. Alternatively, you can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 3000})
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 5000})
                 return
             }
             if (pageIndex === 0) return reaction.users.remove(user)
@@ -895,8 +895,8 @@ export class Embeds {
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove it's reactions. Alternatively, you can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 3000})
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 5000})
                 return
             }
             if (pageIndex === pages.length - 1) return reaction.users.remove(user)
@@ -908,8 +908,8 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove it's reactions. Alternatively, you can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 3000})
+                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
+                rep.delete({timeout: 5000})
                 return
             }
             if (pageIndex === 0) return reaction.users.remove(user)

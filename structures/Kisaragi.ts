@@ -223,15 +223,18 @@ export class Kisaragi extends Client {
         if (config.testing === "on") return
         const urls = [
             `https://discord.bots.gg/api/v1/bots/${this.user!.id}/stats`,
-            `https://discordbotlist.com/api/v1/bots/${this.user!.id}/stats`
+            `https://discordbotlist.com/api/v1/bots/${this.user!.id}/stats`,
+            `https://bots.ondiscord.xyz/bot-api/bots/${this.user!.id}/guilds`
         ]
         const headers = [
             {authorization: process.env.DISCORD_BOTS_TOKEN},
-            {authorization: process.env.DISCORD_BOTLIST_TOKEN}
+            {authorization: process.env.DISCORD_BOTLIST_TOKEN},
+            {authorization: process.env.BOTS_ON_DISCORD_KEY}
         ]
         const data = [
             {guildCount: this.guilds.cache.size},
-            {guilds: this.guilds.cache.size, users: this.users.cache.size}
+            {guilds: this.guilds.cache.size, users: this.users.cache.size},
+            {guildCount: this.guilds.cache.size}
         ]
         for (let i = 0; i < urls.length; i++) {
             await axios.post(urls[i], data[i], {headers: headers[i]})
