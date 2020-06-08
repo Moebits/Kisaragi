@@ -1,4 +1,4 @@
-import {Constants} from "discord.js"
+import {Intents} from "discord.js"
 import fs from "fs"
 import path from "path"
 import * as config from "./config.json"
@@ -8,10 +8,14 @@ import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 
+const intents = new Intents(Intents.ALL)
+intents.remove(["GUILD_MESSAGE_TYPING", "DIRECT_MESSAGE_TYPING"])
+
 const discord = new Kisaragi({
     allowedMentions: {parse: ["users"]},
     restTimeOffset: 0,
-    partials: ["MESSAGE", "CHANNEL", "REACTION"]
+    partials: ["MESSAGE", "CHANNEL", "REACTION"],
+    ws: {intents}
 })
 
 // @ts-ignore
