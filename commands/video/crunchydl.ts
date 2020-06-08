@@ -5,6 +5,7 @@ import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
 import {Audio} from "../../structures/Audio"
+import {Permission} from "../../structures/Permission"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -115,6 +116,7 @@ export default class CrunchyDL extends Command {
         const images = new Images(discord, message)
         const video = new Video(discord, message)
         const crunchy = new crunchyCmd(discord, message)
+        const perms = new Permission(discord, message)
         // if (this.procBlock.getGlobalProcBlock()) return message.reply(`Sorry, someone is already downloading a video. I can only handle one request at a time ${discord.getEmoji("hanaDesires")}`)
         let input = Functions.combineArgs(args, 1)
         let setMP3 = false
@@ -170,6 +172,7 @@ export default class CrunchyDL extends Command {
         .setImage(vilos.thumbnail)
         const msg = await message.channel.send(`**Downloading this anime episode, this is going to take awhile...** ${discord.getEmoji("gabCircle")}`)
         if (setDub) {
+            if (!perms.checkBotDev()) return
             if (!vilos.dub[0]) {
                 await msg.delete()
                 return message.reply("It looks like this anime doesn't have a dub up on Crunchyroll.")
@@ -215,6 +218,7 @@ export default class CrunchyDL extends Command {
                 )
             }
         } else if (setSub) {
+            if (!perms.checkBotDev()) return
             if (!vilos.sub[0]) {
                 await msg.delete()
                 return message.reply("It looks like this anime isn't on Crunchyroll.")

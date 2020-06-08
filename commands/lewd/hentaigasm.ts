@@ -11,7 +11,7 @@ export default class Hentaigasm extends Command {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Search or download hentai from hentaigasm.",
+            description: "Search or hentai on hentaigasm.",
             help:
             `
             \`hentaigasm\` - Gets the front page results.
@@ -129,7 +129,7 @@ export default class Hentaigasm extends Command {
                 // `${discord.getEmoji("star")}_Comments:_ **${comments}**\n` +
                 // `${discord.getEmoji("star")}_Likes:_ **${likes}**\n` +
                 `${discord.getEmoji("star")}_Page:_ [**${hentaiName}**](${hentaiLink})\n` +
-                `${discord.getEmoji("star")}_Download:_ [**Download Link**](${encodeURI(download)})\n` +
+                `${discord.getEmoji("star")}_Link:_ [**Direct Link**](${encodeURI(download)})\n` +
                 Functions.checkChar(commentDesc, 1000, "\n")
             )
             gasmArray.push(gasmEmbed)
