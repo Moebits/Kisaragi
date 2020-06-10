@@ -93,7 +93,7 @@ export class Detector {
                 const pixivArtist = source?.raw?.data?.member_name ? source?.raw?.data?.member_id ? `[${source?.raw?.data?.member_name}](https://www.pixiv.net/en/users/${source.raw.data.member_id})` : source?.raw?.data?.member_name : "Not found"
                 description +=
                 `Title: ${source?.raw?.data?.title ?? "Not found"} Artist: ${pixivArtist} Similarity: ${source.similarity}\n` +
-                `Source: ${source?.raw?.data?.pixiv_id ? `https://www.pixiv.net/en/artworks/${source?.raw?.data?.pixiv_id}` : "Not found"}**\n`
+                `Source: ${source?.raw?.data?.pixiv_id ? `https://www.pixiv.net/en/artworks/${source?.raw?.data?.pixiv_id}` : "Not found"}\n`
                 url = `https://www.pixiv.net/en/artworks/${source?.raw?.data?.pixiv_id}`
                 break
             default:

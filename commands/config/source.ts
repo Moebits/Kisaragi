@@ -9,7 +9,7 @@ import {SQLQuery} from "../../structures/SQLQuery"
 export default class Source extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Configure auto reverse image search channels.",
+            description: "Configure auto image reverse search channels.",
             help:
             `
             \`source\` - Opens the source prompt
@@ -22,7 +22,7 @@ export default class Source extends Command {
             \`=>source #channel\`
             `,
             guildOnly: true,
-            aliases: ["autoreverseimage"],
+            aliases: ["autosaucenao"],
             cooldown: 10
         })
     }
@@ -64,7 +64,7 @@ export default class Source extends Command {
             .setTitle(`**Source Channels** ${discord.getEmoji("tohruThumbsUp2")}`)
             .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
             .setDescription(Functions.multiTrim(`
-                Add source-lookup (auto reverse searches images) channels.
+                Channels added to this list will have all images reverse-searched on saucenao. This is only effective on anime artwork.
                 newline
                 __Current Settings__
                 ${description}
