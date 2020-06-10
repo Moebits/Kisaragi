@@ -52,7 +52,7 @@ export default class Config extends Command {
         .setTitle(`**Bot Config Settings** ${discord.getEmoji("gabStare")}`)
         .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
         .setDescription(Functions.multiTrim(`
-        Configure bot settings. (Permission checks are not implemented yet)
+        Configure bot settings. (Sorry, permission checks are not implemented yet)
         newline
         __Current Settings__
         ${discord.getEmoji("star")}Embed colors are set to **${color.join(", ")}**

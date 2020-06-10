@@ -10,7 +10,7 @@ const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
 export default class Hiragana extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Converts text to hiragana.",
+            description: "Converts japanese text to hiragana.",
             help:
             `
             \`hiragana text\` - Converts text to hiragana

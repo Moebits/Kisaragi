@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 42, date: "6/10/2020", changes: "Added \`source\` to automatically search pictures in certain channels on saucenao."},
             {num: 41, date: "5/11/2020", changes: "Forget the previous change, I reverted back to triple arrows because I like them more."},
             {num: 40, date: "5/6/2020", changes: "Removed triple arrows for fast scrolling in favor of a toggled fast scroll."},
             {num: 39, date: "5/6/2020", changes: "Added a new copy reaction. The \`emojis\` command was modified to return just the emojis by default."},

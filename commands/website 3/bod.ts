@@ -9,7 +9,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 export default class BotsOnDiscord extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Searches for bots on bots on discord.",
+            description: "Searches for bots on bots.ondiscord.xyz.",
             help:
             `
             \`bod\` - Gets random bots

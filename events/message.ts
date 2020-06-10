@@ -92,6 +92,7 @@ export default class MessageEvent {
           block.gallery()
           detect.detectAnime()
           detect.swapRoles()
+          detect.source()
           const haikuEmbed = haiku.haiku()
           if (haikuEmbed) {
             if (haikuCool.has(message.author.id) || haikuCool.has(message.guild?.id)) {

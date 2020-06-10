@@ -10,7 +10,7 @@ const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
 export default class Katakana extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Converts text to katakana.",
+            description: "Converts japanese text to katakana.",
             help:
             `
             \`katakana text\` - Converts the text tokatakana

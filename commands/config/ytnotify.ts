@@ -115,7 +115,6 @@ export default class YTNotify extends Command {
                 ${discord.getEmoji("star")}Type **toggle (setting number)** to toggle the state.
                 ${discord.getEmoji("star")}Type **delete (setting number)** to delete a setting.
                 ${discord.getEmoji("star")}Type **edit (setting number)** to edit the the role mention.
-                ${discord.getEmoji("star")}Type **refresh** to refresh all subscriptions that could have been stopped (eg. server restart).
                 ${discord.getEmoji("star")}Type **reset** to reset all settings.
                 ${discord.getEmoji("star")}Type **cancel** to exit.
             `))
