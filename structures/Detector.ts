@@ -111,7 +111,7 @@ export class Detector {
         const sql = new SQLQuery(this.message)
         const embeds = new Embeds(this.discord, this.message)
         const channels = await sql.fetchColumn("guilds", "source")
-        if (!channels.includes(this.message.channel.id)) return
+        if (!channels?.includes(this.message.channel.id)) return
         const images = this.message.attachments.map((a) => a.url)
         const sagiri = Sagiri(process.env.SAUCENAO_API_KEY!)
         for (let i = 0; i < images.length; i++) {
