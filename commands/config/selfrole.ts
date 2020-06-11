@@ -32,7 +32,6 @@ export default class Selfrole extends Command {
         const embeds = new Embeds(discord, message)
         if (!await perms.checkMod()) return
         let selfroles = await sql.fetchColumn("guilds", "self roles")
-        selfroles = selfroles ? JSON.parse(selfroles) : null
 
         if (!selfroles) return message.reply(`You have not set any selfroles, do so in the \`selfroles\` command ${discord.getEmoji("raphi")}`)
         if (!args[1]) return message.reply(`What role are you asking for ${discord.getEmoji("kannaCurious")}`)

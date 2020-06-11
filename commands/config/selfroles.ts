@@ -43,7 +43,7 @@ export default class Selfroles extends Command {
         // If not admin, only shows the role list.
         if (!await perms.checkAdmin(true) || args[1] === "list") {
             const selfroles = await sql.fetchColumn("guilds", "self roles")
-            const step = 3.0
+            const step = 7.0
             const increment = Math.ceil((selfroles ? selfroles.length : 1) / step)
             const selfArray: MessageEmbed[] = []
             for (let i = 0; i < increment; i++) {
@@ -53,7 +53,7 @@ export default class Selfroles extends Command {
                         const value = (i*step)+j
                         if (!selfroles) settings = "None"
                         if (!selfroles[value]) break
-                        settings += `${i + 1} **=>** ` +  `<@&${selfroles[value]}>`
+                        settings += `${value + 1} **=>** ` +  `<@&${selfroles[value]}>\n`
                     } else {
                         settings = "None"
                     }
@@ -84,7 +84,7 @@ export default class Selfroles extends Command {
         }
 
         const selfroles = await sql.fetchColumn("guilds", "self roles")
-        const step = 3.0
+        const step = 7.0
         let increment = Math.ceil((selfroles ? selfroles.length : 1) / step)
         if (increment === 0) increment = 1
         const selfArray: MessageEmbed[] = []
