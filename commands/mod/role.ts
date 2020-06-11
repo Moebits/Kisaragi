@@ -62,6 +62,7 @@ export default class Role extends Command {
               } catch {
                 return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
               }
+              break
             }
             default:
               return message.reply(`You must specify whether you want to **add** or **del** a role ${discord.getEmoji("kannaFacepalm")}`)

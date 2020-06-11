@@ -54,10 +54,10 @@ export class Captcha {
             })
 
         await svg2img(captcha.data, function(error: Error, buffer: Buffer) {
-            fs.writeFileSync(path.join(__dirname, "../../assets/images/misc/captcha.png"), buffer)
+            fs.writeFileSync(path.join(__dirname, "../../assets/images/captcha.png"), buffer)
         })
 
-        const attachment = new MessageAttachment(path.join(__dirname, "../../assets/images/misc/captcha.png"), "captcha.png")
+        const attachment = new MessageAttachment(path.join(__dirname, "../../assets/images/captcha.png"), "captcha.png")
 
         const captchaEmbed = this.embeds.createEmbed()
         captchaEmbed
