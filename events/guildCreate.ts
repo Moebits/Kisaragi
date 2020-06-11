@@ -63,7 +63,6 @@ export default class GuildCreate {
 
         const logGuild = async (guild: Guild) => {
             const guildChannel = discord.channels.cache.get(config.guildLog) as TextChannel
-            const invite = await discord.getInvite(guild)
             const logEmbed = embeds.createEmbed()
             logEmbed
             .setAuthor("guild join", "https://discordemoji.com/assets/emoji/8994_TohruThumbsUp.gif")
@@ -75,8 +74,7 @@ export default class GuildCreate {
                 `${discord.getEmoji("star")}_Guild Owner:_ **${guild.owner?.user.tag}**\n` +
                 `${discord.getEmoji("star")}_Guild ID:_ \`${guild.id}\`\n` +
                 `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(guild.createdAt)}**\n` +
-                `${discord.getEmoji("star")}_Members:_ **${guild.memberCount}**\n` +
-                `${discord.getEmoji("star")}_Invite:_ ${invite}`
+                `${discord.getEmoji("star")}_Members:_ **${guild.memberCount}**\n`
             )
             guildChannel.send(logEmbed)
             return

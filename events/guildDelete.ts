@@ -19,7 +19,6 @@ export default class GuildDelete {
 
         const logGuild = async (guild: Guild) => {
             const guildChannel = discord.channels.cache.get(config.guildLog) as TextChannel
-            const invite = await discord.getInvite(guild)
             const logEmbed = embeds.createEmbed()
             logEmbed
             .setAuthor("guild leave", "https://steamuserimages-a.akamaihd.net/ugc/956342034402318288/74A95F211FAF8ABF470C3F5716A1D6C1A90B0C9F/")
@@ -31,8 +30,7 @@ export default class GuildDelete {
                 `${discord.getEmoji("star")}_Guild Owner:_ **${guild.owner?.user.tag}**\n` +
                 `${discord.getEmoji("star")}_Guild ID:_ \`${guild.id}\`\n` +
                 `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(guild.createdAt)}**\n` +
-                `${discord.getEmoji("star")}_Members:_ **${guild.memberCount}**\n` +
-                `${discord.getEmoji("star")}_Invite:_ ${invite}`
+                `${discord.getEmoji("star")}_Members:_ **${guild.memberCount}**\n`
             )
             await guildChannel.send(logEmbed)
             return
