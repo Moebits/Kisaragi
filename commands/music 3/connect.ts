@@ -41,7 +41,7 @@ export default class Connect extends Command {
                     voiceChannel = message.guild?.channels.cache.find((c) => c.id === args[1].match(/\d{15,}/)?.[0]) as VoiceChannel
                     if (!voiceChannel) return message.reply("Could not find a channel to join!")
                 } else {
-                    voiceChannel = message.guild?.channels.cache.find((c) => c.name.toLowerCase().includes(args[1].toLowerCase())) as VoiceChannel
+                    voiceChannel = message.guild?.channels.cache.find((c) => c.name.toLowerCase().includes(args[1].toLowerCase()) && c.type === "voice") as VoiceChannel
                     if (!voiceChannel) return message.reply("Could not find a channel to join!")
                 }
             }
@@ -52,6 +52,6 @@ export default class Connect extends Command {
         } catch {
             return message.reply(`This is not a voice channel, or I don't have the **Connect** permission. ${discord.getEmoji("kannaFacepalm")}`)
         }
-        return message.channel.send(`Joined the channel **<#${voiceChannel.id}>**!`)
+        return message.channel.send(`Connected to the channel **<#${voiceChannel.id}>**!`)
     }
 }

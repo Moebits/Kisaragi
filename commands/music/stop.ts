@@ -28,11 +28,9 @@ export default class Stop extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
-        if (!audio.checkMusicPermissions()) return
-        if (!audio.checkMusicPlaying()) return
 
         const voiceChannel = message.guild?.voice?.channel
-        if (!voiceChannel) return message.reply(`I am not in a voice channel ${discord.getEmoji("kannaCurious")}`)
+        if (!voiceChannel) return message.reply(`I am not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
         const memberVoice = message.member?.voice?.channel
         if (voiceChannel.id === memberVoice?.id) {
             audio.deleteQueue()
