@@ -26,7 +26,8 @@ export default class Ytdl extends Command {
             \`=>ytdl https://youtu.be/mLJQ0HO5Alc\`
             `,
             aliases: ["youtube download"],
-            cooldown: 20
+            cooldown: 20,
+            unlist: true
         })
     }
 

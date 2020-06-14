@@ -62,11 +62,13 @@ export default class Video2GIF extends Command {
         let src = ""
         let dest = ""
         if (/youtube.com/.test(url) || /youtu.be/.test(url)) {
+            return message.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
+            /*
             const video = await youtube.videos.get(url)
             const title = video.snippet.title
             src = path.join(__dirname, `../../videos/`)
             dest = path.join(__dirname, `../../videos/transform/${title}.gif`)
-            src = await youtube.util.downloadVideo(url, src)
+            src = await youtube.util.downloadVideo(url, src)*/
         } else {
             src = path.join(__dirname, `../../videos/${path.basename(url)}`)
             dest = path.join(__dirname, `../../videos/transform/${path.basename(url).slice(0, -4)}.gif`)

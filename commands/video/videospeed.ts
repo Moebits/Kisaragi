@@ -57,6 +57,8 @@ export default class Videospeed extends Command {
         let src = ""
         let dest = ""
         if (/youtube.com/.test(url) || /youtu.be/.test(url)) {
+            return message.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
+            /*
             const video = await youtube.videos.get(url)
             const seconds = audio.parseYTDuration(video.contentDetails.duration, true)
             console.log(seconds)
@@ -64,7 +66,7 @@ export default class Videospeed extends Command {
             const title = video.snippet.title
             src = path.join(__dirname, `../../videos/`)
             dest = path.join(__dirname, `../../videos/transform/${title}_speed.mp4`)
-            src = await youtube.util.downloadVideo(url, src)
+            src = await youtube.util.downloadVideo(url, src)*/
         } else {
             const ext = url.slice(-4)
             src = path.join(__dirname, `../../videos/${path.basename(url)}`)
