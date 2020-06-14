@@ -21,7 +21,7 @@ export default class LoliCommand extends Command {
             aliases: ["l"],
             cooldown: 5,
             random: "none",
-            nsfw: true
+            unlist: true
         })
     }
 
