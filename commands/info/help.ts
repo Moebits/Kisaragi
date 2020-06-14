@@ -105,7 +105,7 @@ export default class Help extends Command {
         "music 2": "https://cdn.discordapp.com/emojis/705316441745784873.gif",
         "music 3": "https://cdn.discordapp.com/emojis/705329464032100393.gif",
         "reddit": "https://cdn.discordapp.com/emojis/709173418016112681.gif",
-        "twitter": "https://cdn.discordapp.com/emojis/709176292293083217.gif",
+        "twitter": "https://cdn.discordapp.com/emojis/721795018435854417.gif",
         "video": "https://cdn.discordapp.com/emojis/705315341915390043.gif",
         "waifu": "https://cdn.discordapp.com/emojis/705315862667853865.gif",
         "website": "https://cdn.discordapp.com/emojis/705317129238478909.gif",
