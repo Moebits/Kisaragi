@@ -15,11 +15,10 @@ import {Video} from "./../../structures/Video"
 export default class Ytdl extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Short alias for youtube download.",
+            description: "Short alias for youtube download mp3.",
             help:
             `
-            \`ytdl url/query\` - Downloads the video
-            \`ytdl mp3 url/query\` - Downloads the video as an mp3
+            \`ytdl url/query\` - Downloads the video mp3
             `,
             examples:
             `
@@ -27,7 +26,7 @@ export default class Ytdl extends Command {
             `,
             aliases: ["youtube download"],
             cooldown: 20,
-            unlist: true
+            nsfw: true
         })
     }
 
@@ -44,7 +43,7 @@ export default class Ytdl extends Command {
         if (args[1].toLowerCase() === "mp3") {
             return cmd.runCommand(message, ["youtube", "download", "mp3", Functions.combineArgs(args, 2)])
         } else {
-            return cmd.runCommand(message, ["youtube", "download", Functions.combineArgs(args, 1)])
+            return cmd.runCommand(message, ["youtube", "download", "mp3", Functions.combineArgs(args, 1)])
         }
     }
 }

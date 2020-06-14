@@ -9,12 +9,6 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {ProcBlock} from "./../../structures/ProcBlock"
 
-/*
-\`youtube download/dl url/query\` - Downloads the video from the url
-\`youtube download/dl mp3 url/query\` - Downloads and converts the video to an mp3 file
-\`=>youtube download mp3 energy drink\`
-*/
-
 let ytEmbeds: MessageEmbed[] = []
 export default class YoutubeCommand extends Command {
     private video = null as any
@@ -31,12 +25,15 @@ export default class YoutubeCommand extends Command {
             \`youtube channel query\` - Searches for youtube channels
             \`youtube playlist query\` - Searches for youtube playlists
             \`youtube video query\` - Searches for videos (long form)
+            \`youtube download/dl url/query\` - Downloads the video from the url
+            \`youtube download/dl mp3 url/query\` - Downloads and converts the video to an mp3 file
             `,
             examples:
             `
             \`=>youtube anime\`
             \`=>youtube channel tenpi\`
             \`=>youtube playlist kawaii music\`
+            \`=>youtube download mp3 energy drink\`
             `,
             aliases: ["yt"],
             random: "string",
@@ -203,7 +200,7 @@ export default class YoutubeCommand extends Command {
 
         if (args[1] === "download" || args[1] === "dl") {
             msg.delete({timeout: 1000})
-            return message.reply(`Sorry, downloading YouTube videos is against their TOS.`)
+            if (discord.checkMuted(message)) return message.reply(`Sorry, this command was disabled, downloading YouTube videos is against their TOS.`)
             if (this.procBlock.getProcBlock()) return message.reply(`Please wait until the current download finishes ${discord.getEmoji("sagiriBleh")}`)
             this.procBlock.setProcBlock()
             const rand = Math.floor(Math.random()*10000)
@@ -256,6 +253,7 @@ export default class YoutubeCommand extends Command {
                 this.procBlock.setProcBlock(true)
                 return
             } else {
+                return message.reply(`Sorry, this command was disabled, downloading YouTube videos is against their TOS.`)
                 const query = Functions.combineArgs(args, 2).trim()
                 let video: string
                 if (/youtube.com/.test(query) || /youtu.be/.test(query)) {

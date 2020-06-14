@@ -48,9 +48,8 @@ export default class ConstrainGIF extends Command {
         }
         if (!url) return message.reply(`Could not find a video file ${discord.getEmoji("kannaCurious")}`)
         if (/youtube.com/.test(url) || /youtu.be/.test(url)) {
-            return message.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
-            /*
-            return cmd.runCommand(message, ["youtube", "download", "mp3", url])*/
+            if (discord.checkMuted(message)) return message.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
+            return cmd.runCommand(message, ["youtube", "download", "mp3", url])
         }
 
         if (!fs.existsSync(path.join(__dirname, `../../videos`))) fs.mkdirSync(path.join(__dirname, `../../videos`), {recursive: true})
