@@ -41,7 +41,7 @@ export default class YTNotify extends Command {
     }
 
     public getYT = async (channels: string[]) => {
-        const yt: any[] = []
+        let yt: any[] = []
         if (channels) {
             for (let i = 0; i < channels.length; i++) {
                 const config = await this.sql.fetchColumn("yt", "config", "channel id", channels[i])
@@ -53,6 +53,7 @@ export default class YTNotify extends Command {
             }
         }
         if (!yt?.[0]) yt.push({channel: null, text: null, guild: this.message.guild?.id, mention: "", state: "Off", id: null, token: null})
+        yt = Functions.removeDuplicates(yt)
         return yt
     }
 

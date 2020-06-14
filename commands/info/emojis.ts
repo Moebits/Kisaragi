@@ -57,7 +57,7 @@ export default class Emojis extends Command {
                 .setDescription(`${discord.getEmoji("star")}_Emoji Count:_ **${emojiArray.length}**\n` + description)
                 userEmbedArray.push(userEmbed)
             }
-            embeds.createReactionEmbed(userEmbedArray)
+            return embeds.createReactionEmbed(userEmbedArray)
         }
 
         const emojis = message.guild?.emojis.cache.map((e)=> {

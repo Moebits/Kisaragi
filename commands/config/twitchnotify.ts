@@ -34,7 +34,7 @@ export default class TwitchNotify extends Command {
     }
 
     public getTwitch = async (channels: string[], reset?: boolean) => {
-        const twitch: any[] = []
+        let twitch: any[] = []
         if (channels) {
             for (let i = 0; i < channels.length; i++) {
                 let config = await this.sql.fetchColumn("twitch", "config", "channel", channels[i])
@@ -53,6 +53,7 @@ export default class TwitchNotify extends Command {
             }
         }
         if (!twitch?.[0]) twitch.push({guild: this.message.guild?.id, channel: null, text: null, mention: null, state: "Off"})
+        twitch = Functions.removeDuplicates(twitch)
         return twitch
     }
 
