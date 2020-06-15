@@ -46,7 +46,7 @@ export class Audio {
         const connection = this.message.guild?.voice?.connection
         const queue = this.getQueue() as any
         if (!connection || !queue?.[0]) {
-            this.message.reply(`<@${this.message.author.id}>, You must be playing music in order to use this command ${this.discord.getEmoji("kannaFacepalm")}`)
+            this.message.reply(`You must be playing music in order to use this command ${this.discord.getEmoji("kannaFacepalm")}`)
             return false
         } else {
             return true
