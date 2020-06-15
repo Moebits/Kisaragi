@@ -232,16 +232,16 @@ export class Kisaragi extends Client {
             {authorization: process.env.DISCORD_BOTS_TOKEN},
             {authorization: process.env.DISCORD_BOTLIST_TOKEN},
             {authorization: process.env.BOTS_ON_DISCORD_KEY},
-            {"authorization": process.env.DBL_TOKEN, "Content-Type": "application/x-www-form-urlencoded"}
+            {"Authorization": process.env.DBL_TOKEN, "Content-Type": "application/x-www-form-urlencoded"}
         ]
         const data = [
             {guildCount: this.guilds.cache.size},
             {guilds: this.guilds.cache.size, users: this.users.cache.size},
             {guildCount: this.guilds.cache.size},
-            {server_count: this.guilds.cache.size}
+            querystring.stringify({server_count: this.guilds.cache.size})
         ]
         for (let i = 0; i < urls.length; i++) {
-            await axios.post(urls[i], querystring.stringify(data[i]), {headers: headers[i]})
+            await axios.post(urls[i], data[i], {headers: headers[i]})
         }
     }
 
