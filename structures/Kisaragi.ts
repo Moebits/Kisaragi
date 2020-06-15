@@ -1,6 +1,5 @@
 import axios from "axios"
 import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, MessageAttachment, Role, TextChannel, User} from "discord.js"
-import querystring from "querystring"
 import * as muted from "../assets/json/muted.json"
 import * as config from "./../config.json"
 import {Embeds} from "./Embeds"
@@ -241,7 +240,7 @@ export class Kisaragi extends Client {
             {server_count: this.guilds.cache.size}
         ]
         for (let i = 0; i < urls.length; i++) {
-            await axios.post(urls[i], querystring.stringify(data[i]), {headers: headers[i]})
+            await axios.post(urls[i], JSON.stringify(data[i]), {headers: headers[i]})
         }
     }
 
