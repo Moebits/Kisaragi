@@ -38,8 +38,7 @@ export default class Pokemon extends Command {
             `${discord.getEmoji("star")}_Height:_ **${(result.height / 10.0).toFixed(1)}m**\n` +
             `${discord.getEmoji("star")}_Weight:_ **${(result.weight / 10.0).toFixed(1)}kg**\n` +
             `${discord.getEmoji("star")}_Base Experience:_ **${result.base_experience}**\n` +
-            `${discord.getEmoji("star")}_Held Items:_ **${result.held_items?.[0] ? result.held_items.map((i: any) => i.item.name).join(", ") : "None"}**\n` +
-            `${discord.getEmoji("star")}_Base Experience:_ **${result.base_experience}**\n` +
+            `${discord.getEmoji("star")}_Held Items:_ **${result.held_items?.[0] ? result.held_items.map((i: any) => i.item.name.replace(/-/, " ")).join(", ") : "None"}**\n` +
             stats.join("\n")
         )
         return pokemonEmbed

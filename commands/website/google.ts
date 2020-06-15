@@ -1,5 +1,6 @@
 import {Message, MessageAttachment, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
+import {Permission} from "../../structures/Permission"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -31,6 +32,8 @@ export default class Google extends Command {
         const message = this.message
         const commands = new CommandFunctions(discord, message)
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkNSFW()) return
         let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()

@@ -52,7 +52,7 @@ export default class Safebooru extends Command {
         const safebooruEmbed = embeds.createEmbed()
         .setAuthor("safebooru", "https://safebooru.org/images/safechibi.png")
         .setTitle(`**Safebooru Search** ${discord.getEmoji("gabLewd")}`)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
+        if (!perms.checkNSFW()) return
 
         let tags: string[] = []
         if (!args[1]) {

@@ -70,6 +70,7 @@ export default class $4chan extends Command {
         const badChanEmbed = embeds.createEmbed()
         .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", "https://www.4chan.org/")
         .setTitle(`**4chan Search** ${discord.getEmoji("vigneDead")}`)
+        if (!perms.checkNSFW()) return
 
         if (args[1] === "images") {
             let board = args[2]

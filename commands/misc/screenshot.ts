@@ -6,6 +6,7 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Screenshot extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -31,6 +32,8 @@ export default class Screenshot extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkNSFW()) return
 
         let input = (args[1] === "return") ? Functions.combineArgs(args, 2) : Functions.combineArgs(args, 1)
         let setMobile = false

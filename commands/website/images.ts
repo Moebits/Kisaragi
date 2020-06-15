@@ -28,9 +28,9 @@ export default class GoogleImageCommand extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        if (!perms.checkNSFW()) return
         let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
