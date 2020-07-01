@@ -38,7 +38,10 @@ export default class Kancolle extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
-        const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
+        const headers = {
+            "referer": "https://kancolle.fandom.com/",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
+        }
 
         let query = Functions.combineArgs(args, 1)
         if (!query) {
@@ -69,11 +72,11 @@ export default class Kancolle extends Command {
             if (!res2.data.sections[index]?.title) {
                 done = true
                 continue
-            } else if (!res2.data.sections[index]?.content[0]?.elements.map((c: any) => c.text)) {
+            } else if (!res2.data.sections[index]?.content[0]?.elements?.map((c: any) => c.text)) {
                 index++
                 continue
             }
-            description += `${discord.getEmoji("star")}_${res2.data.sections[index]?.title}_: ${res2.data.sections[index]?.content[0]?.elements.map((c: any) => c.text).join("\n")}\n`
+            description += `${discord.getEmoji("star")}_${res2.data.sections[index]?.title}_: ${res2.data.sections[index]?.content[0]?.elements?.map((c: any) => c.text).join("\n")}\n`
             index++
         }
         const kancolleArray: MessageEmbed[] = []
@@ -93,6 +96,5 @@ export default class Kancolle extends Command {
         } else {
             embeds.createReactionEmbed(kancolleArray, true, true)
         }
-        return
     }
 }
