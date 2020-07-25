@@ -137,7 +137,7 @@ export default class SoundCloud extends Command {
             if (/soundcloud.com/.test(query)) {
                 track = query
             } else {
-                track = await soundcloud.tracks.searchAlt(query).then((r) => r[0].permalink_url)
+                track = await soundcloud.tracks.searchV2({q: query}).then((r) => r.collection[0].permalink_url)
             }
             if (!track) {
                 return this.invalidQuery(embeds.createEmbed()
@@ -181,7 +181,7 @@ export default class SoundCloud extends Command {
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
         }
         const soundcloudArray: MessageEmbed[] = []
-        const tracks = await soundcloud.tracks.searchAlt(query)
+        const tracks = await soundcloud.tracks.searchV2({q: query}).then((t) => t.collection)
         for (let i = 0; i < tracks.length; i++) {
             const soundcloudEmbed = embeds.createEmbed()
             soundcloudEmbed

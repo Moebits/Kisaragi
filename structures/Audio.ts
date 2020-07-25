@@ -683,7 +683,7 @@ export class Audio {
             queueObj.image = image
             queueObj.duration = duration as string
         } else if (link?.match(/soundcloud.com/)) {
-            const info = await this.soundcloud.tracks.getAlt(link)
+            const info = await this.soundcloud.tracks.getV2(link)
             const image = info.artwork_url
             const title = info.title
             const artist = info.user.username
@@ -1314,7 +1314,7 @@ export class Audio {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const results = await this.soundcloud.tracks.searchAlt(query)
+        const results = await this.soundcloud.tracks.searchV2({q: query}).then((t) => t.collection)
         const links = results.map((r) => r.permalink_url)
         if (first) return links[0]
         const titles = results.map((r) => r.title)
