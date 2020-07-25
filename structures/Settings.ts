@@ -18,7 +18,7 @@ export class Settings {
         "splash": this.message.guild!.splashURL({format: "png"}),
         "banner": this.message.guild!.bannerURL({format: "png"}),
         "region": this.message.guild!.region,
-        "owner": this.message.guild!.owner!.user.tag,
+        "owner": this.message.guild!.owner?.user.tag,
         "owner id": this.message.guild!.ownerID,
         "games": this.message.guild!.presences.cache.map((presence: Presence) => presence.activities.join("") ? presence.activities.map((a) => a?.name) : [null]).flat(Infinity),
         "channel list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.name),
