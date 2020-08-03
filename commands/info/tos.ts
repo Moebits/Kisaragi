@@ -32,6 +32,7 @@ export default class TOS extends Command {
         const termsOfService = embeds.createEmbed()
         termsOfService
         .setAuthor("tos", "https://www.symphonyenvironmental.com/wp-content/uploads/2019/10/Terms-and-conditions-icon-V2.png")
+        .setURL("https://kisaragi-site.herokuapp.com/terms")
         .setTitle(`**Terms of Service** ${discord.getEmoji("kannaPat")}`)
         .setDescription(Functions.multiTrim(`
             By using Kisaragi, you **agree** to abide by the terms of service. This bot has zero relation with Discord, it's only the service that it's used on.

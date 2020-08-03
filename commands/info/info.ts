@@ -63,6 +63,7 @@ export default class Info extends Command {
             `${discord.getEmoji("star")}_Emojis:_ **${discord.emojis.cache.size}**\n` +
             `${discord.getEmoji("star")}_Commands_: **${cmdCount}**\n`+
             `${discord.getEmoji("star")}_Prefix_: Your prefix is set to **${await SQLQuery.fetchPrefix(message)}**.\n`+
+            `[**Website**](${config.website})\n` +
             `[**Invite Link**](${config.invite})\n` +
             `[**Support Server**](${config.support})\n` +
             `[**Github Repository**](${config.repo})`

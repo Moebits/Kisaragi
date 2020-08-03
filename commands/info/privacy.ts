@@ -32,6 +32,7 @@ export default class Privacy extends Command {
         const privacyPolicy = embeds.createEmbed()
         privacyPolicy
         .setAuthor("privacy policy", "https://digitalchamber.org/wp-content/uploads/2020/01/policy-initiatives-icon-blue-blockchain-alliance.png")
+        .setURL("https://kisaragi-site.herokuapp.com/privacy")
         .setTitle(`**Privacy Policy** ${discord.getEmoji("kannaPat")}`)
         .setDescription(Functions.multiTrim(`
             By adding Kisaragi to your server, or by authorizing her with oauth2, every member in the server automatically **agrees** to this privacy policy. Otherwise, kick the bot or leave the server. Your information is not shared.

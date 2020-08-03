@@ -55,7 +55,7 @@ export default class MessageEvent {
       if (message.author.bot) return
       if (await this.discord.blacklistStop(message)) return
 
-      // const cmdstr = generate.generateCommands()
+      generate.generateJSON()
       // console.log(cmdstr)
 
       if (!this.discord.checkMuted(message)) {

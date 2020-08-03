@@ -53,7 +53,8 @@ export default class GettingStarted extends Command {
             `${discord.getEmoji("star")}By adding the bot to your server, you agree to the privacy policy in \`${prefix}privacy\` and the terms of service in \`${prefix}tos\`.\n` +
             `\n` +
             `I hope that you enjoy using this bot! ${discord.getEmoji("aquaUp")}\n` +
-            `If you need additional help, you can always join my [**support server**](${config.support}).`
+            `If you need additional help, you can always join my [**support server**](${config.support}).\n` +
+            `The command documentation is also on my [**website**](${config.website}).`
         )
         let msg = null as unknown as Message
         try {

@@ -1,3 +1,4 @@
+require("dotenv").config()
 import bodyParser from "body-parser"
 import express from "express"
 import path from "path"
@@ -74,6 +75,17 @@ export default class Server {
             }
         })
 
+        app.get("/commands", async (req, res) => {
+            res.status(200)
+            if (req.query.category) {
+                const commands = await SQLQuery.allCommands(req.query.category)
+                res.json(commands)
+            } else {
+                const commands = await SQLQuery.allCommands()
+                res.json(commands)
+            }
+        })
+
         app.get("/", (req, res) => {
             res.setHeader("Content-Type", "text/html;charset=utf-8")
             res.status(200).sendFile(path.join(__dirname, "../assets/html/index.html"))
@@ -90,3 +102,7 @@ export default class Server {
 }
 
 export {yt}
+
+/*When runnning server only build*/
+const server = new Server()
+server.run()

@@ -31,6 +31,8 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 44, date: "8/3/2020", changes: "Created a simple [**website**](https://kisaragi-site.herokuapp.com/) for the bot!"},
+            {num: 43, date: "7/27/2020", changes: "Fixed an issue with the soundcloud web scraping"},
             {num: 42, date: "6/10/2020", changes: "Added \`source\` to automatically search pictures in certain channels on saucenao."},
             {num: 41, date: "5/11/2020", changes: "Forget the previous change, I reverted back to triple arrows because I like them more."},
             {num: 40, date: "5/6/2020", changes: "Removed triple arrows for fast scrolling in favor of a toggled fast scroll."},

@@ -153,7 +153,7 @@ export default class Help extends Command {
                 .setAuthor("help", discord.muted ? "https://cdn.discordapp.com/emojis/709168391814119424.png" : "https://cdn.discordapp.com/emojis/705492897579139172.gif")
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
                 .setDescription(`_Note: Reactions cannot be removed in dm's, so you have to remove them yourself. Running commands in dm's is supported, so you can use \`help (command)\` for detailed help here. Always use \`help dm\` for the dm-compatible command list, the bot can't scroll pages on the regular one._`)
-                if (!discord.checkMuted(message)) dmEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Discord](${config.support}) | [Github](${config.repo}) | [Review](${config.review}) | [Vote](${config.vote})`)
+                if (!discord.checkMuted(message)) dmEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Discord](${config.support}) | [Github](${config.repo}) | [Review](${config.review}) | [Vote](${config.vote})`)
                 dmEmbeds.push(dmEmbed)
             }
             embeds.createReactionEmbed(dmEmbeds, false, false, 1, message.author)
@@ -191,7 +191,7 @@ export default class Help extends Command {
                 `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` +
                 `To display only one category, use \`help !(category)\` ${discord.getEmoji("gabYes")}\n` +
                 `_Click on a reaction twice to toggle compact mode._\n` + help)
-            if (!discord.checkMuted(message)) helpEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Discord](${config.support}) | [Github](${config.repo}) | [Review](${config.review}) | [Vote](${config.vote})`)
+            if (!discord.checkMuted(message)) helpEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Discord](${config.support}) | [Github](${config.repo}) | [Review](${config.review}) | [Vote](${config.vote})`)
             helpEmbedArray.push(helpEmbed)
         }
         if (setIndex > -1) {

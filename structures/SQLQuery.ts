@@ -554,4 +554,38 @@ export class SQLQuery {
     userUsage.total = Functions.sumObjectValues(userUsage, "total")
     await this.updateColumn("misc", "usage", userUsage, "user id", this.message.author.id)
   }
+
+  /** Retrieve all command info */
+  public static allCommands = async (category?: string) => {
+    const commands = await SQLQuery.selectColumn("commands", "command")
+    const commandArray = [] as any
+    for (let i = 0; i < commands.length; i++) {
+      const commandObj = {} as any
+      const command = commands[i]
+      commandObj.command = command
+      const aliases = await SQLQuery.fetchColumn("commands", "aliases", "command", commands)
+      const path = await SQLQuery.fetchColumn("commands", "path", "command", command)
+      const category = path.match(/(?<=commands\/)(.*?)(?=\/)/)?.[0] ?? "unknown"
+      const cooldown = await SQLQuery.fetchColumn("commands", "cooldown", "command", command)
+      const help = await SQLQuery.fetchColumn("commands", "help", "command", command)
+      const examples = await SQLQuery.fetchColumn("commands", "examples", "command", command)
+      commandObj.aliases = aliases ?? "none"
+      commandObj.category = category
+      commandObj.cooldown = cooldown
+      commandObj.help = Functions.multiTrim(help).replace(/`/g, "")
+      commandObj.examples = Functions.multiTrim(examples).replace(/`/g, "")
+      commandArray.push(commandObj)
+      console.log(JSON.stringify(commandObj, null, 4))
+    }
+    if (category) {
+      return commandArray.filter((a: any) => {
+        if (a.category.toLowerCase() === category.toLowerCase()) {
+          return true
+        } else {
+          return false
+        }
+      })
+    }
+    return commandArray
+  }
 }

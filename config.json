@@ -6,6 +6,7 @@
         "0xFF3EFE", 
         "0xEC69FF"  
     ],
+    "website": "https://kisaragi-site.herokuapp.com/",
     "support": "https://discord.gg/77yGmWM",
     "patreon": "https://www.patreon.com/imtenpi",
     "kofi": "https://ko-fi.com/imtenpi",
@@ -25,5 +26,5 @@
     "review": "https://bots.ondiscord.xyz/bots/593838271650332672/review",
     "vote": "https://top.gg/bot/593838271650332672/vote",
     "trello": "https://trello.com/b/ToodAuzu",
-    "testing": "off"
+    "testing": "on"
 }
