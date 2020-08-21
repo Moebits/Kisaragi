@@ -150,7 +150,7 @@ export default class Help extends Command {
                     .addField(`${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${counter})`.trim(), help)
                 }
                 dmEmbed
-                .setAuthor("help", discord.muted ? "https://cdn.discordapp.com/emojis/709168391814119424.png" : "https://cdn.discordapp.com/emojis/705492897579139172.gif")
+                .setAuthor("help", "https://i.imgur.com/qcSWLSf.png")
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
                 .setDescription(`_Note: Reactions cannot be removed in dm's, so you have to remove them yourself. Running commands in dm's is supported, so you can use \`help (command)\` for detailed help here. Always use \`help dm\` for the dm-compatible command list, the bot can't scroll pages on the regular one._`)
                 if (!discord.checkMuted(message)) dmEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Discord](${config.support}) | [Github](${config.repo}) | [Review](${config.review}) | [Vote](${config.vote})`)
@@ -184,7 +184,7 @@ export default class Help extends Command {
             const helpEmbed = embeds.createEmbed()
             helpEmbed
             .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${this.emojiMap[subDir[i]]}`)
-            .setAuthor("help", discord.muted ? "https://cdn.discordapp.com/emojis/709168391814119424.png" : "https://cdn.discordapp.com/emojis/705492897579139172.gif")
+            .setAuthor("help", "https://i.imgur.com/qcSWLSf.png")
             .setImage(this.imageMap[subDir[i]])
             .setThumbnail(discord.muted ? "" : this.thumbMap[subDir[i]])
             .setDescription(

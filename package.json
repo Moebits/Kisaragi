@@ -200,7 +200,7 @@
     "wikijs": "^6.0.0",
     "xkcd": "^1.1.3",
     "youtube-notification": "^1.1.0",
-    "youtube.ts": "^0.1.3",
+    "youtube.ts": "^0.1.6",
     "zlib-sync": "^0.1.5"
   },
   "devDependencies": {
