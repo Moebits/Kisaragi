@@ -1064,7 +1064,7 @@ export class Audio {
     public download = async (song: string, query?: string) => {
         let file = ""
         if (song?.match(/youtube.com|youtu.be/)) {
-            file = await this.youtube.util.downloadMP3(song, "./tracks")
+            file = await this.youtube.util.downloadMP3(song, "./tracks").then((f) => path.join(__dirname, f))
         } else if (song?.match(/soundcloud.com/)) {
             try {
                 file = await this.soundcloud.util.downloadTrack(song, "./tracks")

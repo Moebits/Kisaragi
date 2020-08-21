@@ -1,12 +1,11 @@
 import {Message, MessageEmbed} from "discord.js"
+import * as nhentai from "nhentai-js"
 import * as blacklist from "../../assets/json/blacklist.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
-
-const nhentai = require("nhentai-js")
 
 export default class $nHentai extends Command {
     private readonly embeds = new Embeds(this.discord, this.message)
