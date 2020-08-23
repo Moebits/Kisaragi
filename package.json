@@ -62,7 +62,7 @@
     "@types/twitter": "^1.7.0",
     "@types/unzip": "^0.1.1",
     "@types/ws": "^6.0.3",
-    "@vitalets/google-translate-api": "^2.8.0",
+    "@vitalets/google-translate-api": "^4.0.0",
     "anilist-node": "^1.4.0",
     "animequotes": "^1.0.0",
     "app-store-scraper": "^0.16.2",
