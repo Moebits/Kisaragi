@@ -255,11 +255,6 @@ export class Kisaragi extends Client {
         return {guildID, channelID, messageID}
     }
 
-    /** Temp override */
-    public emit = (event: any, ...args: any) => {
-        return super.emit(event, ...args)
-    }
-
     /** Gets the last message on the channel */
     public getLastMessage = async (message: Message) => {
         let prefix = await SQLQuery.fetchPrefix(message)

@@ -113,6 +113,7 @@ export default class SpotifyCommand extends Command {
         spotifyCollector.on("collect", async (reaction, user) => {
             await reaction.users.remove(user).catch(() => null)
             if (urls.has(msg.embeds[0].url)) return
+            if (!msg.embeds[0].url) return
             urls.add(msg.embeds[0].url)
             await message.channel.send(msg.embeds[0].url)
         })

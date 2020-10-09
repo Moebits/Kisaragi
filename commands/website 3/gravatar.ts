@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {DMChannel, Message} from "discord.js"
 import md5 from "md5"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -34,7 +34,7 @@ export default class FlickrCommand extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const email = args[1]
         if (!email) return message.reply(`You must provide an email address ${discord.getEmoji("kannaCurious")}`)
-        await message.channel.bulkDelete(2)
+        if (!(message.channel instanceof DMChannel)) await message.channel.bulkDelete(2)
         const hash = md5(email.trim().toLowerCase())
         const gravatarEmbed = embeds.createEmbed()
         .setAuthor("gravatar", "https://cdn.wpbeginner.com/wp-content/uploads/2012/08/gravatarlogo.jpg", "https://en.gravatar.com/")

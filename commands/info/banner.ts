@@ -28,7 +28,7 @@ export default class Banner extends Command {
         const embeds = new Embeds(discord, message)
 
         const bannerEmbed = embeds.createEmbed()
-        const banner = message.guild?.bannerURL({format: "png"})
+        const banner = message.guild?.bannerURL({format: "png", size: 1024})
         if (!banner) return message.reply(`This guild has no banner ${discord.getEmoji("kannaFacepalm")}`)
 
         await message.channel.send(bannerEmbed

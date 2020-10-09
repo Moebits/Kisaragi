@@ -42,7 +42,7 @@ export class Embeds {
 
     /** Updates an embed */
     public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean, helpIndex?: number, cmdCount?: number[]) => {
-        if (!embeds[page]) return
+        if (!embeds[page]) return null as any
         if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         if (help) {
             if (!helpIndex) helpIndex = 0
@@ -356,7 +356,7 @@ export class Embeds {
                         rep.delete({timeout: 3000})
                         return
                     }
-                    const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, ""))
+                    const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "") ?? "")
                     const rep2 = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
                     await Functions.timeout(10000)
                     desc.delete()
