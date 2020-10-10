@@ -144,6 +144,7 @@
     "mdn-docs-search": "^1.0.9",
     "mdn-search-docs": "^1.4.0",
     "mime": "^2.4.4",
+    "mkdirp": "^1.0.4",
     "moment": "^2.24.0",
     "mp3-duration": "^1.1.0",
     "mw-dict": "^3.0.0",
