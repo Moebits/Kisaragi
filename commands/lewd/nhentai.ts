@@ -36,13 +36,13 @@ export default class $nHentai extends Command {
     // nhentai Doujin
     public getNhentaiDoujin = (doujin: any, id: number) => {
         const discord = this.discord
-        const artists = doujin.tags.map((t) => t.type === "artist")
-        const categories = doujin.tags.map((t) => t.type === "category")
-        const characters = doujin.tags.map((t) => t.type === "character")
-        const parodies = doujin.tags.map((t) => t.type === "parody")
-        const groups = doujin.tags.map((t) => t.type === "group")
-        const languages = doujin.tags.map((t) => t.type === "language")
-        const tags = doujin.tags.map((t) => t.type === "tag")
+        const artists = doujin.tags.filter((t) => t.type === "artist").map((t) => t.name)
+        const categories = doujin.tags.filter((t) => t.type === "category").map((t) => t.name)
+        const characters = doujin.tags.filter((t) => t.type === "character").map((t) => t.name)
+        const parodies = doujin.tags.filter((t) => t.type === "parody").map((t) => t.name)
+        const groups = doujin.tags.filter((t) => t.type === "group").map((t) => t.name)
+        const languages = doujin.tags.filter((t) => t.type === "language").map((t) => t.name)
+        const tags = doujin.tags.filter((t) => t.type === "tag").map((t) => t.name)
         const checkArtists = artists ? Functions.checkChar(artists.join(" "), 50, ")") : "None"
         const checkCharacters = characters ? Functions.checkChar(characters.join(" "), 50, ")") : "None"
         const checkTags = tags ? Functions.checkChar(tags.join(" "), 50, ")") : "None"
@@ -74,11 +74,7 @@ export default class $nHentai extends Command {
 
     public nhentaiRandom = async (filter?: boolean) => {
         const perms = new Permission(this.discord, this.message)
-        let random = "0"
-        while (!await nhentai.doujinExists(random)) {
-            random = Math.floor(Math.random() * 1000000).toString()
-        }
-        const doujin = await nhentai.fetchDoujin(random)
+        const doujin = await nhentai.randomDoujin()
         if (filter) {
             for (let i = 0; i < doujin!.tags.length; i++) {
                 if (perms.loliFilter(doujin!.tags[i].name)) await this.nhentaiRandom(true)
