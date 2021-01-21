@@ -141,7 +141,7 @@ export default class Ugoira extends Command {
                 if (response.content?.trim() && Number.isNaN(Number(response.content))) {
                     const rep = await response.reply("You must pass a valid speed factor, eg. \`1.5x\` or \`0.5x\`.")
                     rep.delete({timeout: 3000})
-                } else {
+                } else if (response.content) {
                     factor = Number(response.content)
                 }
                 await response.delete()
