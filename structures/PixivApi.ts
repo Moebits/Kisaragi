@@ -94,29 +94,29 @@ export class PixivApi {
         if (r18) {
             if (ugoira) {
                 if (en) {
-                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18, type: "ugoira", moe: true})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18, type: "ugoira"})
                 } else {
-                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, r18, type: "ugoira", moe: true})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, r18, type: "ugoira"})
                 }
             } else {
                 if (en) {
-                    json = await this.pixiv.search.illusts({word: tag, en: true, r18, moe: true})
+                    json = await this.pixiv.search.illusts({word: tag, en: true, r18})
                 } else {
-                    json = await this.pixiv.search.illusts({word: tag, r18, moe: true})
+                    json = await this.pixiv.search.illusts({word: tag, r18})
                 }
             }
         } else {
             if (ugoira) {
                 if (en) {
-                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: false, type: "ugoira", moe: true})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, en: true, r18: false, type: "ugoira"})
                 } else {
-                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, r18: false, type: "ugoira", moe: true})
+                    json = await this.pixiv.search.illusts({word: `うごイラ ${tag}`, r18: false, type: "ugoira"})
                 }
             } else {
                 if (en) {
-                    json = await this.pixiv.search.illusts({word: tag, en: true, r18: false, moe: true})
+                    json = await this.pixiv.search.illusts({word: tag, en: true, r18: false})
                 } else {
-                    json = await this.pixiv.search.illusts({word: tag, r18: false, moe: true})
+                    json = await this.pixiv.search.illusts({word: tag, r18: false})
                 }
             }
         }
