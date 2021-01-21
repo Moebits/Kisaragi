@@ -43,13 +43,13 @@ export default class $nHentai extends Command {
         const groups = doujin.tags.filter((t) => t.type === "group").map((t) => t.name)
         const languages = doujin.tags.filter((t) => t.type === "language").map((t) => t.name)
         const tags = doujin.tags.filter((t) => t.type === "tag").map((t) => t.name)
-        const checkArtists = artists ? Functions.checkChar(artists.join(" "), 50, ")") : "None"
-        const checkCharacters = characters ? Functions.checkChar(characters.join(" "), 50, ")") : "None"
-        const checkTags = tags ? Functions.checkChar(tags.join(" "), 50, ")") : "None"
-        const checkParodies = parodies ? Functions.checkChar(parodies.join(" "), 50, ")") : "None"
-        const checkGroups = groups ? Functions.checkChar(groups.join(" "), 50, ")") : "None"
-        const checkLanguages = languages ? Functions.checkChar(languages.join(" "), 50, ")") : "None"
-        const checkCategories = categories ? Functions.checkChar(categories.join(" "), 50, ")") : "None"
+        const checkArtists = artists ? Functions.checkChar(artists.join(" "), 50, " ") : "None"
+        const checkCharacters = characters ? Functions.checkChar(characters.join(" "), 50, " ") : "None"
+        const checkTags = tags ? Functions.checkChar(tags.join(" "), 50, " ") : "None"
+        const checkParodies = parodies ? Functions.checkChar(parodies.join(" "), 50, " ") : "None"
+        const checkGroups = groups ? Functions.checkChar(groups.join(" "), 50, " ") : "None"
+        const checkLanguages = languages ? Functions.checkChar(languages.join(" "), 50, " ") : "None"
+        const checkCategories = categories ? Functions.checkChar(categories.join(" "), 50, " ") : "None"
         const doujinPages: MessageEmbed[] = []
         for (let i = 0; i < doujin.pages.length; i++) {
             const nhentaiEmbed = this.embeds.createEmbed()
@@ -74,18 +74,22 @@ export default class $nHentai extends Command {
 
     public nhentaiRandom = async (filter?: boolean) => {
         const perms = new Permission(this.discord, this.message)
-        const doujin = await nhentai.randomDoujin()
-        if (filter) {
-            for (let i = 0; i < doujin!.tags.length; i++) {
-                if (perms.loliFilter(doujin!.tags[i].name)) await this.nhentaiRandom(true)
-                for (let j = 0; j < blacklist.nhentai.length; j++) {
-                    if (doujin!.tags[i].name === blacklist.nhentai[j]) {
-                        await this.nhentaiRandom(true)
+        try {
+            const doujin = await nhentai.randomDoujin()
+            if (filter) {
+                for (let i = 0; i < doujin!.tags.length; i++) {
+                    if (perms.loliFilter(doujin!.tags[i].name)) await this.nhentaiRandom(true)
+                    for (let j = 0; j < blacklist.nhentai.length; j++) {
+                        if (doujin!.tags[i].name === blacklist.nhentai[j]) {
+                            await this.nhentaiRandom(true)
+                        }
                     }
                 }
             }
+            return doujin
+        } catch {
+            return this.nhentaiRandom(filter)
         }
-        return doujin
     }
 
     public run = async (args: string[]) => {
