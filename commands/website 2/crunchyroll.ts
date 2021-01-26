@@ -32,15 +32,15 @@ export default class Crunchyroll extends Command {
     public getEmbed = async (season: CrunchyrollSeason) => {
         const discord = this.discord
         const embeds = new Embeds(discord, this.message)
-        const anime = await crunchyroll.anime.get(season.name)
+        const anime = await crunchyroll.util.parseAnime(season)
         const episodes = await crunchyroll.anime.episodes(season).then((e) => e.map((e) => e.name))
         const eps = episodes.join("\n")
         const crunchyEmbed = embeds.createEmbed()
         crunchyEmbed
         .setAuthor("crunchyroll", "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png", "https://www.crunchyroll.com/")
         .setTitle(`**Crunchyroll Search** ${discord.getEmoji("himeHappy")}`)
-        .setImage(season.portrait_image.full_url)
-        .setThumbnail(season.landscape_image.full_url)
+        .setImage(season.portrait_image?.full_url ?? anime.portrait_image?.full_url)
+        .setThumbnail(season.landscape_image?.full_url ?? anime.portrait_image?.full_url)
         .setURL(anime.url)
         .setDescription(
             `${discord.getEmoji("star")}_Anime:_ **${season.name}**\n` +
