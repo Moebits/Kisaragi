@@ -1,19 +1,19 @@
 import axios from "axios"
+import crunchyroll from "crunchyroll.ts"
 import {Message, MessageAttachment} from "discord.js"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
 import {Audio} from "../../structures/Audio"
-import {Permission} from "../../structures/Permission"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Images} from "../../structures/Images"
 import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 import {ProcBlock} from "../../structures/ProcBlock"
 import {Video} from "../../structures/Video"
-import crunchyCmd from "../website 2/crunchyroll"
 
 export default class CrunchyDL extends Command {
     private readonly procBlock = new ProcBlock(this.discord, this.message)
@@ -115,7 +115,6 @@ export default class CrunchyDL extends Command {
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
         const video = new Video(discord, message)
-        const crunchy = new crunchyCmd(discord, message)
         const perms = new Permission(discord, message)
         // if (this.procBlock.getGlobalProcBlock()) return message.reply(`Sorry, someone is already downloading a video. I can only handle one request at a time ${discord.getEmoji("hanaDesires")}`)
         let input = Functions.combineArgs(args, 1)
@@ -143,13 +142,7 @@ export default class CrunchyDL extends Command {
                 epNum = Number(input.match(/\d+/)?.[0])
                 input = input.replace(/\d+/, "")
             }
-            const links = await crunchy.getSearchLinks(input)
-            if (!links?.[0]) return message.reply("No search results were found...")
-            const epLinks = await this.getEpisodeLinks(links[0])
-            const regex = new RegExp(`episode-${String(epNum)}-`)
-            let link = epLinks.find((e) => regex.test(e))
-            link = `https://www.crunchyroll.com${link}`
-            url = link
+            url = await crunchyroll.episode.get(input).then((e) => e.url)
         }
         // const unblockURL = "https://api2.cr-unblocker.com/start_session"
         // const sess = await axios.get(unblockURL, {headers: this.headers}).then((r) => r.data)

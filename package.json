@@ -83,6 +83,7 @@
     "cloudinary": "^1.20.0",
     "compress-images": "^1.9.5",
     "concat-stream": "^2.0.0",
+    "crunchyroll.ts": "0.0.1",
     "danbooru": "^3.1.0",
     "dblapi.js": "^2.4.0",
     "deepai": "^1.0.15",
