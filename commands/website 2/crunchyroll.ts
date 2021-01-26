@@ -32,7 +32,7 @@ export default class Crunchyroll extends Command {
     public getEmbed = async (season: CrunchyrollSeason) => {
         const discord = this.discord
         const embeds = new Embeds(discord, this.message)
-        const anime = await crunchyroll.util.parseAnime(season)
+        const anime = await crunchyroll.anime.get(season)
         const episodes = await crunchyroll.anime.episodes(season).then((e) => e.map((e) => e.name))
         const eps = episodes.join("\n")
         const crunchyEmbed = embeds.createEmbed()
