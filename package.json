@@ -176,6 +176,7 @@
     "prism-media": "^1.2.1",
     "redis": "^2.8.0",
     "request": "^2.88.0",
+    "rimraf": "^3.0.2",
     "sagiri": "^3.0.3",
     "sharp": "^0.25.1",
     "shorturl-2": "0.0.7",
