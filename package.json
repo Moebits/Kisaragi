@@ -167,7 +167,6 @@
     "osu.ts": "^0.1.1",
     "pg": "^7.18.2",
     "pinterest-node-api": "0.0.3",
-    "pixiv-app-api": "github:Tenpi/pixiv-app-api#fork",
     "pixiv-img": "^1.0.0",
     "pixiv.ts": "^0.4.1",
     "pm2": "^4.3.0",
