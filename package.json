@@ -13,7 +13,8 @@
     "pm2": "pm2-runtime start ecosystem.config.js --env production",
     "preinstall": "npx npm-force-resolutions",
     "clean": "del-cli --force dist/commands && del-cli --force dist/events && del-cli --force dist/structures",
-    "config": "python heroku-config.py"
+    "config": "python heroku-config.py",
+    "rimraf": "./node_modules/rimraf/bin.js"
   },
   "resolutions": {
     "graceful-fs": "4.2.3",
