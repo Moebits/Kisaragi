@@ -162,6 +162,7 @@
     "node-spotify-api": "^1.1.1",
     "node-weeb": "^1.0.4",
     "nodemailer": "^6.4.6",
+    "npm-force-resolutions": "0.0.3",
     "oauth": "^0.9.15",
     "openweather-apis": "^4.2.0",
     "opusscript": "0.0.7",
