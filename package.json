@@ -176,7 +176,6 @@
     "prism-media": "^1.2.1",
     "redis": "^2.8.0",
     "request": "^2.88.0",
-    "rimraf": "^3.0.2",
     "gif-frames": "github:Tenpi/gif-frames",
     "sagiri": "^3.0.3",
     "sharp": "^0.25.1",
