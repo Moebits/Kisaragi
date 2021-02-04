@@ -18,8 +18,7 @@
   "resolutions": {
     "graceful-fs": "4.2.3",
     "canvas": "2.6.1",
-    "lzma-native": "6.0.0",
-    "rimraf": "^3.0.2"
+    "lzma-native": "6.0.0"
   },
   "engines": {
     "node": "^13.10.0",
@@ -108,7 +107,6 @@
     "geometry-dash-api": "^2.0.0",
     "get-pixels": "^3.3.2",
     "gif-encoder": "^0.7.2",
-    "gif-frames": "github:Tenpi/gif-frames",
     "giphy-api": "^2.0.1",
     "github-api": "^3.2.2",
     "google": "^2.1.0",
@@ -179,6 +177,7 @@
     "redis": "^2.8.0",
     "request": "^2.88.0",
     "rimraf": "^3.0.2",
+    "gif-frames": "github:Tenpi/gif-frames",
     "sagiri": "^3.0.3",
     "sharp": "^0.25.1",
     "shorturl-2": "0.0.7",
