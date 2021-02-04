@@ -14,7 +14,7 @@
     "preinstall": "npx npm-force-resolutions",
     "clean": "del-cli --force dist/commands && del-cli --force dist/events && del-cli --force dist/structures",
     "config": "python heroku-config.py",
-    "heroku-prebuild": "npm i -g rimraf && npm i -g mkdirp"
+    "heroku-prebuild": "npm i -g rimraf && npm i -g mkdirp && npm i -g browserify && npm i -g uglifyjs"
   },
   "resolutions": {
     "graceful-fs": "4.2.3",
