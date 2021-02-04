@@ -13,14 +13,13 @@
     "pm2": "pm2-runtime start ecosystem.config.js --env production",
     "preinstall": "npx npm-force-resolutions",
     "clean": "del-cli --force dist/commands && del-cli --force dist/events && del-cli --force dist/structures",
-    "config": "python heroku-config.py",
-    "heroku-prebuild": "export NPM_CONFIG_PRODUCTION=false; export NODE_ENV=; NPM_CONFIG_PRODUCTION=false NODE_ENV=development npm install --only=dev --dev",
-    "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production;"
+    "config": "python heroku-config.py"
   },
   "resolutions": {
     "graceful-fs": "4.2.3",
     "canvas": "2.6.1",
-    "lzma-native": "6.0.0"
+    "lzma-native": "6.0.0",
+    "rimraf": "^3.0.2"
   },
   "engines": {
     "node": "^13.10.0",
