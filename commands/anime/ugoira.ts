@@ -131,6 +131,7 @@ export default class Ugoira extends Command {
         reverse.on("collect", async (reaction, user) => {
             let factor = 1.0
             let setReverse = false
+            let bad = false
             await reaction.users.remove(user)
             async function getSpeedChange(response: Message) {
                 response.content = response.content.replace("x", "")
@@ -141,6 +142,7 @@ export default class Ugoira extends Command {
                 if (response.content?.trim() && Number.isNaN(Number(response.content))) {
                     const rep = await response.reply("You must pass a valid speed factor, eg. \`1.5x\` or \`0.5x\`.")
                     rep.delete({timeout: 3000})
+                    bad = true
                 } else if (response.content) {
                     factor = Number(response.content)
                 }
@@ -149,6 +151,7 @@ export default class Ugoira extends Command {
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the speed change for this ugoira, eg \`2.0\`. Type \`reverse\` to also reverse the frames.`)
             await embeds.createPrompt(getSpeedChange)
             rep.delete()
+            if (bad) return
             await pixiv.util.downloadUgoira(String(pixivID), `assets/images/gifs/`, {speed: factor, reverse: setReverse})
             const outGif = new MessageAttachment(path.join(__dirname, `../../../assets/images/gifs/${pixivID}.gif`))
             await message.channel.send(outGif)

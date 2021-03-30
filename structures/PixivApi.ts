@@ -27,7 +27,7 @@ export class PixivApi {
         }
         const pixivEmbed = this.embeds.createEmbed()
         if (!image) return
-        const comments = await this.pixiv.illust.comments({illust_id: image.id})
+        const comments = await this.pixiv.illust.comments({illust_id: image?.id})
         const commentArray: string[] = []
         for (let i = 0; i <= 5; i++) {
                 if (!comments.comments[i]) break
@@ -56,7 +56,7 @@ export class PixivApi {
         pixivEmbed
         .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814", "https://www.pixiv.net/en/")
         .setTitle(`**Pixiv Image** ${this.discord.getEmoji("chinoSmug")}`)
-        .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image.id}`)
+        .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${image?.id}`)
         .setDescription(
         `${discord.getEmoji("star")}_Title:_ **${image.title}**\n` +
         `${discord.getEmoji("star")}_Artist:_ **${image.user.name}**\n` +
@@ -359,7 +359,7 @@ export class PixivApi {
                     } catch {
                         continue
                     }
-                    const comments = await this.pixiv.illust.comments({illust_id: illust.id})
+                    const comments = await this.pixiv.illust.comments({illust_id: illust?.id})
                     await Functions.timeout(500)
                     const commentArray: string[] = []
                     for (let i = 0; i <= 5; i++) {
@@ -371,7 +371,7 @@ export class PixivApi {
                     pixivEmbed
                     .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814", "https://www.pixiv.net/en/")
                     .setTitle(`**${Functions.toProperCase(endpoint)}** ${this.discord.getEmoji(emoji)}`)
-                    .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${illust.id}`)
+                    .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${illust?.id}`)
                     .setImage(pictures[i])
                     .setDescription(
                     `${discord.getEmoji("star")}_Title:_ **${illust.title}**\n` +
