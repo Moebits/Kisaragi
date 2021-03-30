@@ -33,7 +33,7 @@ export default class Crop extends Command {
         const y = Number(args[2]) ? Number(args[2]) : 0
         if (args[5]) {
             url = args[5]
-        } else if (Number.isNaN(Number(args[4]))) {
+        } else if (args[4] && Number.isNaN(Number(args[4]))) {
             url = args[4]
         } else {
             url = await discord.fetchLastAttachment(message)
