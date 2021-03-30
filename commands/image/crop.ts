@@ -40,8 +40,10 @@ export default class Crop extends Command {
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
-        const width = Number(args[3]) ? Number(args[3]) : image.bitmap.width
-        const height = Number(args[4]) ? Number(args[4]) : Math.floor(image.bitmap.height / (image.bitmap.width / width * 1.0))
+        let width = Number(args[3]) ? Number(args[3]) : image.bitmap.width
+        let height = Number(args[4]) ? Number(args[4]) : Math.floor(image.bitmap.height / (image.bitmap.width / width * 1.0))
+        if (width > image.bitmap.width) width = image.bitmap.width
+        if (height > image.bitmap.height) height = image.bitmap.height
         image.crop(x, y, width, height)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new MessageAttachment(buffer)

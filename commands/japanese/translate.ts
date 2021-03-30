@@ -22,7 +22,7 @@ export default class Japanese extends Command {
             \`=>translate これを日本語に翻訳する\`
             \`=>japanese this will be translated to japanese\`
             `,
-            aliases: ["tr", "trans", "japanese"],
+            aliases: ["tr", "trans", "japanese", "jp"],
             cooldown: 5
         })
     }
@@ -36,7 +36,7 @@ export default class Japanese extends Command {
         if (Object.keys(langs).includes(args[1])) {
             translateText = Functions.combineArgs(args, 2)
             code = args[1]
-        } else if (args[0] === "japanese") {
+        } else if (args[0] === "japanese" || args[0] === "jp") {
             code = "ja"
         }
 

@@ -20,7 +20,7 @@ export class PixivApi {
     // Create Pixiv Embed
     public createPixivEmbed = async (image: PixivIllust, noUpload?: boolean) => {
         const discord = this.discord
-        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         if (image.x_restrict !== 0) {
             if (!this.perms.checkNSFW(true)) return
             if (discord.checkMuted(this.message)) return
@@ -83,7 +83,7 @@ export class PixivApi {
     // Pixiv Image
     public getPixivImage = async (tag?: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
         const msg1 = await this.message.channel.send(`**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
-        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         let setFast = false
         if (tag && /fast/.test(tag)) {
             tag = tag.replace("fast", "").trim()
@@ -165,7 +165,7 @@ export class PixivApi {
 
     // Pixiv Image ID
     public getPixivImageID = async (tags: string) => {
-        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         let image: PixivIllust
         try {
             image = await this.pixiv.illust.get(tags)
@@ -185,7 +185,7 @@ export class PixivApi {
     public getPopularPixivImage = async () => {
         const msg1 = await this.message.channel.send(`**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
         const mode = "day_male"
-        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         const json = await this.pixiv.illust.ranking({mode})
         const illusts = this.pixiv.util.sort(json)
         if (msg1) msg1.delete()
@@ -221,7 +221,7 @@ export class PixivApi {
     public getPopularPixivR18Image = async () => {
         const msg1 = await this.message.channel.send(`**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
         const mode = "day_male_r18"
-        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         const json = await this.pixiv.illust.ranking({mode})
         const illusts = this.pixiv.util.sort(json)
         if (msg1) msg1.delete()
@@ -256,7 +256,7 @@ export class PixivApi {
     // Download pixiv images
     public downloadPixivImages = async (tag: string, r18?: boolean, folderMap?: PixivFolderMap[]) => {
         const embeds = new Embeds(this.discord, this.message)
-        if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+        if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         const msg1 = await this.message.channel.send(`**Downloading the pictures, please wait...** ${this.discord.getEmoji("gabCircle")}`)
         tag = tag.trim()
         const rand = Math.floor(Math.random()*10000)
@@ -351,7 +351,7 @@ export class PixivApi {
                 pixivArray.push(pixivEmbed)
             } else {
                 if (Number(id)) {
-                    if (!this.pixiv) this.pixiv = await Pixiv.login(process.env.PIXIV_NAME!, process.env.PIXIV_PASSWORD!)
+                    if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
                     await Functions.timeout(500)
                     let illust: PixivIllust
                     try {
