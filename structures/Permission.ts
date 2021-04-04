@@ -99,6 +99,7 @@ export class Permission {
 
     /** Filter loli content */
     public loliFilter = (tags: string) => {
+        return false
         if (/loli/gi.test(tags) || /shota/gi.test(tags) || /lolicon/gi.test(tags) || /shotacon/gi.test(tags)) {
             return true
         } else {
