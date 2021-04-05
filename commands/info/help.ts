@@ -153,7 +153,7 @@ export default class Help extends Command {
                 .setAuthor("help", "https://i.imgur.com/qcSWLSf.png")
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
                 .setDescription(`_Reactions cannot be removed in dm's, so remove them yourself._`)
-                if (!discord.checkMuted(message)) dmEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo}) | [Donate](${config.paypal}) | [Vote](${config.vote})`)
+                if (!discord.checkMuted(message)) dmEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo}) | [Vote](${config.vote})`)
                 dmEmbeds.push(dmEmbed)
             }
             embeds.createReactionEmbed(dmEmbeds, false, false, 1, message.author)
@@ -191,7 +191,7 @@ export default class Help extends Command {
                 `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` +
                 `To display only one category, use \`help !(category)\` ${discord.getEmoji("gabYes")}\n` +
                 `_Click on a reaction twice to toggle compact mode._\n` + help)
-            if (!discord.checkMuted(message)) helpEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo}) | [Donate](${config.paypal}) | [Vote](${config.vote})`)
+            if (!discord.checkMuted(message)) helpEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo}) | [Vote](${config.vote})`)
             helpEmbedArray.push(helpEmbed)
         }
         if (setIndex > -1) {
