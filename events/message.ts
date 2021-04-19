@@ -55,7 +55,7 @@ export default class MessageEvent {
       if (message.author.bot) return
       if (await this.discord.blacklistStop(message)) return
 
-      //generate.generateJSON()
+      // generate.generateJSON()
 
       if (!this.discord.checkMuted(message)) {
         if (message.guild) {
@@ -171,7 +171,8 @@ export default class MessageEvent {
           }
         }
         if (!message.content.trim().startsWith(prefix) && message.content.match(/https?:\/\//)) {
-          await links.postLink()
+          const linkToggle = await sql.fetchColumn("guilds", "links")
+          if (linkToggle === "on") await links.postLink()
           return
         }
       }

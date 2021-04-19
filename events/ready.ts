@@ -1,7 +1,7 @@
 import chalk from "chalk"
 import moment from "moment"
-import {Kisaragi} from "./../structures/Kisaragi"
-
+import {Kisaragi} from "../structures/Kisaragi"
+import {SQLQuery} from "../structures/SQLQuery"
 export default class Ready {
     constructor(private readonly discord: Kisaragi) {}
 
@@ -13,5 +13,7 @@ export default class Ready {
       console.log(chalk`{magentaBright ${logString}}`)
       console.log(chalk`{magentaBright ${readyString}}`)
       this.discord.postGuildCount()
-    }
+      this.discord.slashCommands()
+      SQLQuery.cleanup()
+  }
 }

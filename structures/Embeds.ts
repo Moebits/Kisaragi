@@ -169,6 +169,7 @@ export class Embeds {
         await this.sql.updateColumn("collectors", "collapse", collapseOn, "message", msg.id)
         await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         await this.sql.updateColumn("collectors", "download", download, "message", msg.id)
+        await this.sql.updateColumn("collectors", "timestamp", new Date().toISOString(), "message", msg.id)
 
         backward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === 0) {

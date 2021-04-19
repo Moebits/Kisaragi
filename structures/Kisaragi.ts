@@ -1,9 +1,14 @@
 import axios from "axios"
-import {Client, ClientOptions, Collection, Guild, GuildChannel, GuildEmoji, Message, MessageAttachment, Role, TextChannel, User} from "discord.js"
+import {APIMessage, Client, ClientOptions, Guild, GuildChannel, GuildEmoji, Message, MessageTarget, Role, TextChannel, User} from "discord.js"
+import fs from "fs"
+import path from "path"
 import querystring from "querystring"
 import * as muted from "../assets/json/muted.json"
+import {Command} from "../structures/Command"
 import * as config from "./../config.json"
+import {CommandFunctions} from "./CommandFunctions"
 import {Embeds} from "./Embeds"
+import {Functions} from "./Functions"
 import {SQLQuery} from "./SQLQuery"
 export class Kisaragi extends Client {
     public static username = "Kisaragi"
@@ -261,5 +266,108 @@ export class Kisaragi extends Client {
         if (!prefix) prefix = "=>"
         const messages = await message.channel.messages.fetch({limit: 100})
         return messages.find((m) => !m.content.includes("**Loading**") && !m.content.startsWith(prefix)) ?? message
+    }
+
+    /** Parse command arguments */
+    public parseCommandArgs = (help: string) => {
+        const data = help.match(/(?<=`)(.*?)(?=`)/gm) ?? []
+        const subArray: string[][] = []
+        let maxLen = 0
+        for (let i = 0; i < data.length; i++) {
+            const s = data[i].split(/ +/g)
+            if (s.length > maxLen) maxLen = s.length
+            subArray.push(s)
+        }
+        const newSubArray: string[] = []
+        for (let i = 0; i < maxLen; i++) {
+            const s: string[] = []
+            for (let j = 0; j < subArray.length; j++) {
+                if (subArray[j][i]) s.push(subArray[j][i])
+            }
+            newSubArray.push(Functions.removeDuplicates(s).join(" / "))
+        }
+        const options: any[] = []
+        for (let i = 1; i < newSubArray.length; i++) {
+            options.push({
+                name: i,
+                description: newSubArray[i].trim(),
+                required: newSubArray[i].includes("?") ? false : true,
+                type: 3
+            })
+        }
+        return options
+    }
+
+    /** Create APIMessage */
+    public createAPIMessage = async (interaction: any, content: any) => {
+        const {data, files} = await APIMessage.create(this.channels.resolve(interaction.channel_id) as MessageTarget, content).resolveData().resolveFiles()
+        return {...data, files}
+    }
+
+    /** Adds slash commands */
+    public slashCommands = async () => {
+        // @ts-ignore
+        // const commandIDs = await this.api.applications(this.user.id).guilds("582230160737042480").commands.get().then((c: any) => c.map((c: any) => c.id))
+        // @ts-ignore
+        // await Promise.all(commandIDs.map((id: string) => this.api.applications(this.user.id).guilds("582230160737042480").commands(id).delete()))
+
+        // @ts-ignore
+        this.ws.on("INTERACTION_CREATE", async (interaction: any) => {
+            console.log(interaction)
+            const {name, options} = interaction.data
+            const message = await this.channels.fetch(interaction.channel_id).then((c) => (c as TextChannel).lastMessage)
+            // @ts-ignore
+            message.member = interaction.member
+            const cmdFunc = new CommandFunctions(this, message!)
+            const args = options ? options.map((o: any) => o.value) : []
+            console.log(name)
+            console.log(args)
+            const response = await cmdFunc.runCommand(name, args)
+            console.log(response)
+
+            let data: any = {
+                content: response
+            }
+
+            if (typeof response !== "string") {
+                data = await this.createAPIMessage(interaction, response)
+            }
+
+            // @ts-ignore
+            await this.api.interactions(interaction.id, interaction.token).callback.post({
+                data: {
+                    type: 4,
+                    data
+                }
+            })
+        })
+
+        const cmdFiles: string[][] = []
+        const subDirectory = fs.readdirSync(path.join(__dirname, "../commands/"))
+        for (let i = 0; i < subDirectory.length; i++) {
+            const currDir = subDirectory[i]
+            const addFiles = fs.readdirSync(path.join(__dirname, `../commands/${currDir}`))
+            if (addFiles !== null) cmdFiles.push(addFiles)
+            await Promise.all(addFiles.map(async (file: string) => {
+                if (!file.endsWith(".ts") && !file.endsWith(".js")) return
+                const commandName = file.split(".")[0]
+                if (commandName === "empty" || commandName === "tempCodeRunnerFile") return
+                const command = new (require(path.join(__dirname, `../commands/${currDir}/${file}`)).default)(this, null) as Command
+                if (command.options.unlist === true) return
+                const data = {
+                    name: commandName,
+                    description: command.options.description,
+                    options: this.parseCommandArgs(command.options.help)
+                }
+                console.log(data)
+                try {
+                    // @ts-ignore
+                    await this.api.applications(this.user.id).guilds("582230160737042480").commands.post({data})
+                } catch (err) {
+                    console.log(commandName)
+                    console.log(err)
+                }
+            }))
+        }
     }
 }
