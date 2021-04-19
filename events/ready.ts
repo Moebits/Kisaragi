@@ -13,7 +13,7 @@ export default class Ready {
       console.log(chalk`{magentaBright ${logString}}`)
       console.log(chalk`{magentaBright ${readyString}}`)
       this.discord.postGuildCount()
-      this.discord.slashCommands()
+      // this.discord.slashCommands()
       SQLQuery.cleanup()
   }
 }
