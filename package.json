@@ -124,7 +124,7 @@
     "imgur": "^0.3.1",
     "inversify": "^5.0.1",
     "ip": "^1.1.5",
-    "isomorphic-fetch": "^2.2.1",
+    "isomorphic-fetch": "^3.0.0",
     "jikan-node": "^1.2.0",
     "jimp": "^0.10.3",
     "js-base64": "^2.5.2",
