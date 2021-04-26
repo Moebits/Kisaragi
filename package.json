@@ -104,7 +104,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "fold-to-ascii": "^5.0.0",
     "form-data": "^3.0.0",
-    "gdprofiles": "^1.0.2-rc.2",
+    "gdprofiles": "^1.0.2",
     "geometry-dash-api": "^2.0.0",
     "get-pixels": "^3.3.2",
     "gif-encoder": "^0.7.2",
