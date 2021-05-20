@@ -1068,7 +1068,8 @@ export class Audio {
         } else if (song?.match(/soundcloud.com/)) {
             try {
                 file = await this.soundcloud.util.downloadTrack(song, "./tracks")
-            } catch {
+            } catch (e) {
+                console.log(e)
                 await this.message.channel.send("The Soundcloud token has expired, so the bot will search YouTube as fallback. Let the developer know with the \`feedback\` command.")
                 const link = await this.songPickerYT(query ?? song, true)
                 return link ? this.download(link) : ""
