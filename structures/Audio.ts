@@ -717,7 +717,7 @@ export class Audio {
         const queue = this.getQueue() as any
         const pos = queue.push(queueObj)
         const topImg = kind === "youtube" ? "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png" :
-        (kind === "soundcloud" ? "https://www.harpfestival.co.uk/wp-content/uploads/2012/12/soundcloud-icon.png" : "https://clipartmag.com/images/musical-notes-png-11.png")
+        (kind === "soundcloud" ? "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png" : "https://clipartmag.com/images/musical-notes-png-11.png")
         const queueEmbed = this.embeds.createEmbed()
         queueEmbed
         .setAuthor(`${kind}`, topImg)
@@ -1328,7 +1328,7 @@ export class Audio {
             }
             const songEmbed = embeds.createEmbed()
             songEmbed
-            .setAuthor("soundcloud", "https://www.harpfestival.co.uk/wp-content/uploads/2012/12/soundcloud-icon.png", "https://www.soundcloud.com/")
+            .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://www.soundcloud.com/")
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("vigneXD")}`)
             .setThumbnail(images[i])
             .setDescription(description)
