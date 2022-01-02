@@ -59,6 +59,7 @@ export default class MessageEvent {
 
       if (!this.discord.checkMuted(message)) {
         if (message.guild) {
+          /* Global chat is discontinued
           const globalChat = await sql.fetchColumn("guilds", "global chat")
           if (globalChat && !message.content.startsWith(prefix) && !message.author.bot) {
             const globalChannel = message.guild.channels.cache.find((c) => c.id === globalChat)
@@ -84,7 +85,7 @@ export default class MessageEvent {
                 }, 3000)
               }
             }
-          }
+          }*/
           block.blockWord()
           block.blockInvite()
           block.everyone()

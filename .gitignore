@@ -24,3 +24,6 @@ assets/images/waifu2x/*
 assets/misc/videos/*
 assets/misc/tracks/*
 assets/misc/dump/*
+
+#Other
+.DS_Store

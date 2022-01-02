@@ -20,7 +20,8 @@ export default class Chat extends Command {
             `,
             aliases: ["globalchat", "gchat"],
             cooldown: 3,
-            guildOnly: true
+            guildOnly: true,
+            unlist: true
         })
     }
 
@@ -29,6 +30,8 @@ export default class Chat extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
+
+        return message.channel.send(`The global chat is discontinued, sorry!`)
 
         if (discord.checkMuted(message)) return message.reply(`This server was blacklisted on the global`)
 
