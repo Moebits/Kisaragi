@@ -625,9 +625,9 @@ export class Embeds {
         const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("misc") && user.bot === false
         const miscTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("miscTwo") && user.bot === false
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
-        const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
-        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
-        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
+        // const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
+        // const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
+        // const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
         const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reddit") && user.bot === false
         const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitter") && user.bot === false
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
@@ -654,9 +654,9 @@ export class Embeds {
         const misc = msg.createReactionCollector(miscCheck)
         const miscTwo = msg.createReactionCollector(miscTwoCheck)
         const mod = msg.createReactionCollector(modCheck)
-        const music = msg.createReactionCollector(musicCheck)
-        const musicTwo = msg.createReactionCollector(musicTwoCheck)
-        const musicThree = msg.createReactionCollector(musicThreeCheck)
+        // const music = msg.createReactionCollector(musicCheck)
+        // const musicTwo = msg.createReactionCollector(musicTwoCheck)
+        // const musicThree = msg.createReactionCollector(musicThreeCheck)
         const reddit = msg.createReactionCollector(redditCheck)
         const twitter = msg.createReactionCollector(twitterCheck)
         const video = msg.createReactionCollector(videoCheck)
@@ -668,7 +668,7 @@ export class Embeds {
         const right = msg.createReactionCollector(rightCheck)
         const dm = msg.createReactionCollector(dmCheck)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, twitter, video, waifu, web, webTwo, webThree]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, reddit, twitter, video, waifu, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
@@ -818,9 +818,9 @@ export class Embeds {
         const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("misc") && user.bot === false
         const miscTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("miscTwo") && user.bot === false
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
-        const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
-        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
-        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
+        // const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
+        // const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
+        // const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
         const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reddit") && user.bot === false
         const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitter") && user.bot === false
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
@@ -847,9 +847,9 @@ export class Embeds {
         const misc = msg.createReactionCollector(miscCheck)
         const miscTwo = msg.createReactionCollector(miscTwoCheck)
         const mod = msg.createReactionCollector(modCheck)
-        const music = msg.createReactionCollector(musicCheck)
-        const musicTwo = msg.createReactionCollector(musicTwoCheck)
-        const musicThree = msg.createReactionCollector(musicThreeCheck)
+        // const music = msg.createReactionCollector(musicCheck)
+        // const musicTwo = msg.createReactionCollector(musicTwoCheck)
+        // const musicThree = msg.createReactionCollector(musicThreeCheck)
         const reddit = msg.createReactionCollector(redditCheck)
         const twitter = msg.createReactionCollector(twitterCheck)
         const video = msg.createReactionCollector(videoCheck)
@@ -861,7 +861,7 @@ export class Embeds {
         const right = msg.createReactionCollector(rightCheck)
         const dm = msg.createReactionCollector(dmCheck)
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, twitter, video, waifu, web, webTwo, webThree]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, reddit, twitter, video, waifu, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
