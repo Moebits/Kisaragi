@@ -10,7 +10,7 @@
     "support": "https://discord.gg/77yGmWM",
     "patreon": "https://www.patreon.com/imtenpi",
     "kofi": "https://ko-fi.com/imtenpi",
-    "invite": "https://discord.com/api/oauth2/authorize?client_id=CLIENTID&permissions=2113793271&scope=bot",
+    "invite": "https://discord.com/oauth2/authorize?client_id=CLIENTID&scope=bot&permissions=543279148279",
     "oauth2": "https://kisaragi-discord-bot.herokuapp.com/discord",
     "oauth2Testing": "http://localhost:5000/discord",
     "twitterRedirect": "https://kisaragi-discord-bot.herokuapp.com/twitter",

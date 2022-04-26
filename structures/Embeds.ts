@@ -541,7 +541,7 @@ export class Embeds {
     public createHelpEmbed = async (embeds: MessageEmbed[], reactionPage?: number) => {
         let page = 8
         if (reactionPage === 2) page = 17
-        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Misc 2", "Mod", "Music", "Music 2", "Music 3", "Reddit", "Twitter", "Video", "Waifu", "Website", "Website 2", "Website 3"]
+        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Misc 2", "Mod", "Reddit", "Twitter", "Video", "Waifu", "Website", "Website 2", "Website 3"]
         let compressed = false
         const longDescription: string[] = []
         const commandCount: number[] = []
@@ -577,8 +577,8 @@ export class Embeds {
             this.discord.getEmoji("lewd"),
             this.discord.getEmoji("misc"),
             this.discord.getEmoji("mod"),
-            this.discord.getEmoji("music"),
-            this.discord.getEmoji("musicTwo"),
+            // this.discord.getEmoji("music"),
+            // this.discord.getEmoji("musicTwo"),
             this.discord.getEmoji("video"),
             this.discord.getEmoji("waifu"),
             this.discord.getEmoji("website"),
@@ -587,7 +587,7 @@ export class Embeds {
 
         const page2 = [
             this.discord.getEmoji("arrowLeft"),
-            this.discord.getEmoji("musicThree"),
+            // this.discord.getEmoji("musicThree"),
             this.discord.getEmoji("reddit"),
             this.discord.getEmoji("twitter"),
             this.discord.getEmoji("miscTwo"),
@@ -743,8 +743,8 @@ export class Embeds {
         const emojiMap: string[] = [
             "admin", "anime", "config", "fun", "game",
             "heart", "image", "info", "japanese", "level", "lewd", "misc",
-            "mod", "music", "musicTwo", "video", "waifu", "website", "websiteTwo",
-            "musicThree", "reddit", "twitter", "miscTwo", "websiteThree", "botDeveloper"
+            "mod", "video", "waifu", "website", "websiteTwo",
+            "reddit", "twitter", "miscTwo", "websiteThree", "botDeveloper"
         ]
         let compressed = false
         const longDescription: string[] = []
@@ -781,8 +781,8 @@ export class Embeds {
             this.discord.getEmoji("lewd"),
             this.discord.getEmoji("misc"),
             this.discord.getEmoji("mod"),
-            this.discord.getEmoji("music"),
-            this.discord.getEmoji("musicTwo"),
+            // this.discord.getEmoji("music"),
+            // this.discord.getEmoji("musicTwo"),
             this.discord.getEmoji("video"),
             this.discord.getEmoji("waifu"),
             this.discord.getEmoji("website"),
@@ -791,7 +791,7 @@ export class Embeds {
 
         const page2 = [
             this.discord.getEmoji("arrowLeft"),
-            this.discord.getEmoji("musicThree"),
+            // this.discord.getEmoji("musicThree"),
             this.discord.getEmoji("reddit"),
             this.discord.getEmoji("twitter"),
             this.discord.getEmoji("miscTwo"),
