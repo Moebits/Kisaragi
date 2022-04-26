@@ -8,6 +8,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Record extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -35,6 +36,8 @@ export default class Record extends Command {
         const audio = new Audio(discord, message)
         const fx = new AudioEffects(discord, message)
         const images = new Images(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
         const name = Functions.combineArgs(args, 1) ? Functions.combineArgs(args, 1) : message.author.tag
         if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["CONNECT", "SPEAK"])) {
             await message.channel.send(`The bot needs the permissions **Connect** and **Speak** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)

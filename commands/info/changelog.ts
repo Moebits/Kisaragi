@@ -31,6 +31,7 @@ export default class Changelog extends Command {
 
         // {num: 1, date: "", changes: ""},
         const changelog = [
+            {num: 45, date: "4/26/2022", changes: "Removed all music commands to comply with Discord TOS. Got rid of the global chat due to spam."},
             {num: 44, date: "8/3/2020", changes: "Created a simple [**website**](https://kisaragi-site.herokuapp.com/) for the bot!"},
             {num: 43, date: "7/27/2020", changes: "Fixed an issue with the soundcloud web scraping"},
             {num: 42, date: "6/10/2020", changes: "Added \`source\` to automatically search pictures in certain channels on saucenao."},

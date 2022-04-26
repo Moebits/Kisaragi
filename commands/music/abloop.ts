@@ -3,6 +3,7 @@ import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
+import {Permission} from "../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class ABLoop extends Command {
@@ -29,6 +30,8 @@ export default class ABLoop extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         const queue = audio.getQueue() as any

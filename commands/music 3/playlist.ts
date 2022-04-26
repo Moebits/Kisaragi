@@ -5,6 +5,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
+import {Permission} from "../../structures/Permission"
 
 export default class Playlists extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -33,6 +34,8 @@ export default class Playlists extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const sql = new SQLQuery(message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
         let playlists = [{name: null, songs: [], length: 0}]
         const exists = await sql.fetchColumn("misc", "playlists", "user id", message.author.id)
         if (!exists) {

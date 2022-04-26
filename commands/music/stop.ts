@@ -4,6 +4,7 @@ import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Stop extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -28,6 +29,8 @@ export default class Stop extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
 
         const voiceChannel = message.guild?.voice?.channel
         if (!voiceChannel) return message.reply(`I am not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)

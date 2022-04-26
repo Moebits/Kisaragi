@@ -5,6 +5,7 @@ import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Loop extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -31,6 +32,8 @@ export default class Loop extends Command {
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
         const audio = new Audio(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
         if (Functions.combineArgs(args, 1).trim()) {
             args.shift()
             return cmd.runCommand(message, ["play", "loop", ...args])

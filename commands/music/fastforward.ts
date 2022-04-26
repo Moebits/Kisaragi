@@ -4,6 +4,7 @@ import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Fastforward extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -28,6 +29,8 @@ export default class Fastforward extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
 

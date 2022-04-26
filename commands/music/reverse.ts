@@ -5,6 +5,7 @@ import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Reverse extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -32,6 +33,8 @@ export default class Reverse extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const cmd = new CommandFunctions(discord, message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
         const queue = audio.getQueue() as any
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {

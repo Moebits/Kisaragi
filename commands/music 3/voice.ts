@@ -5,6 +5,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
+import {Permission} from "../../structures/Permission"
 
 export default class Voice extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -30,6 +31,8 @@ export default class Voice extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
         if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["CONNECT", "SPEAK"])) {
             await message.channel.send(`The bot needs the permissions **Connect** and **Speak** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
             return

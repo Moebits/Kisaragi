@@ -4,6 +4,7 @@ import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Highpass extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -30,7 +31,9 @@ export default class Highpass extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
-                if (!audio.checkMusicPermissions()) return
+        const perms = new Permission(discord, message)
+        if (!perms.checkBotDev()) return
+        if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         const queue = audio.getQueue() as any
         let setDownload = false

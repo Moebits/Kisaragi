@@ -103,5 +103,21 @@ export default class GuildMemberAdd {
             }
         }
         logJoin(member)
+
+        const logsEnabledDMs = async (member: GuildMember) => {
+            const messageLog = await sql.fetchColumn("guilds", "message log")
+            if (messageLog) {
+                const embed = embeds.createEmbed()
+                embed
+                .setTitle(`**Logs Enabled** ${discord.getEmoji("kannaHungry")}`)
+                .setThumbnail(member.user.displayAvatarURL({format: "png", dynamic: true}))
+                .setDescription(
+                    `${discord.getEmoji("star")}_Privacy Notice:_ The guild **${member.guild.name}** has deleted message logging enabled. This means that if you post
+                    a message and then delete it, it could still be present on a channel within that guild. If you don't agree with this, we suggest leaving that guild.`
+                )
+                await member.send(embed).catch(() => null)
+            }
+        }
+        logsEnabledDMs(member)
     }
 }
