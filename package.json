@@ -27,9 +27,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tenpi/Kisaragi.git"
+    "url": "git+https://github.com/Pripy/Kisaragi.git"
   },
-  "author": "Tenpi",
+  "author": "Pripy",
   "license": "MIT",
   "dependencies": {
     "4chanapi.js": "^1.1.1",
@@ -91,7 +91,7 @@
     "del-cli": "^3.0.1",
     "deviantart.ts": "^0.2.6",
     "deviantnode": "^0.2.1",
-    "discord.js": "github:Tenpi/discord.js#include-default",
+    "discord.js": "github:Pripy/discord.js#include-default",
     "discord.js-minesweeper": "^1.0.5",
     "dotenv": "^8.0.0",
     "dropbox": "^4.0.30",
@@ -108,7 +108,7 @@
     "geometry-dash-api": "^2.0.0",
     "get-pixels": "^3.3.2",
     "gif-encoder": "^0.7.2",
-    "gif-frames": "github:Tenpi/gif-frames",
+    "gif-frames": "github:Pripy/gif-frames",
     "giphy-api": "^2.0.1",
     "github-api": "^3.2.2",
     "google": "^2.1.0",
@@ -188,7 +188,7 @@
     "stackexchange": "^1.2.0",
     "svg-captcha": "^1.4.0",
     "svg2img": "^0.6.1",
-    "syllable": "github:Tenpi/syllable",
+    "syllable": "github:Pripy/syllable",
     "tenorjs": "^1.0.7",
     "trello-for-wolves": "^2.0.2",
     "tumblr.js": "^2.0.2",

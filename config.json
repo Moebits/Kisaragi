@@ -16,7 +16,7 @@
     "twitterRedirect": "https://kisaragi-discord-bot.herokuapp.com/twitter",
     "twitterRedirectTesting": "http://localhost:5000/twitter",
     "redditRedirect": "https://kisaragi-discord-bot.herokuapp.com/reddit",
-    "repo": "https://github.com/Tenpi/Kisaragi",
+    "repo": "https://github.com/Pripy/Kisaragi",
     "imagesAPI": "https://tenpi-images.herokuapp.com",
     "openCVAPI": "https://tenpi-opencv.herokuapp.com",
     "animeAPI": "https://anime-pictures.herokuapp.com",
