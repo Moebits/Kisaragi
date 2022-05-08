@@ -52,7 +52,7 @@ export default class Info extends Command {
         .setDescription(
             `${discord.getEmoji("star")}_Description:_ ${description}\n` +
             `${discord.getEmoji("star")}_Version:_ **${pack.version}**\n` +
-            `${discord.getEmoji("star")}_Creator_: **Pripy#2238**\n` +
+            `${discord.getEmoji("star")}_Creator_: **Tenpi#2238**\n` +
             `${discord.getEmoji("star")}_Library_: **Discord.js ${pack.dependencies["discord.js"].replace("^", "v")}**\n` +
             `${discord.getEmoji("star")}_Runtime:_ **Node.js ${pack.engines.node.replace("^", "v")}**\n` +
             `${discord.getEmoji("star")}_Language:_ **Typescript ${pack.dependencies.typescript.replace("^", "v")}**\n` +
