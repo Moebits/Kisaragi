@@ -1,7 +1,7 @@
 # Kisaragi Discord Bot
 ![Best Girl](https://vignette.wikia.nocookie.net/mudae/images/7/73/Kisaragi_%28AL%294.png/revision/latest?cb=20191205095054)
 
-**Unmaintained**
+**Unmaintained** \
 This project is no longer in development and I have no plans to update it for discord api changes. It will probably stop working in the future.
 
 This is my first programming project, a discord bot mainly to search anime pictures and websites, play music, and provide some server utilities. Invite the bot [**here**](https://discordapp.com/oauth2/authorize?client_id=593838271650332672&permissions=2113793271&scope=bot)!
