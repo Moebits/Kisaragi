@@ -1,14 +1,10 @@
 # Kisaragi Discord Bot
 ![Best Girl](https://vignette.wikia.nocookie.net/mudae/images/7/73/Kisaragi_%28AL%294.png/revision/latest?cb=20191205095054)
 
-![GitHub repo size](https://img.shields.io/github/repo-size/tenpi/kisaragi)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/tenpi/kisaragi)
-![GitHub last commit](https://img.shields.io/github/last-commit/tenpi/kisaragi)
-[![HitCount](http://hits.dwyl.io/tenpi/kisaragi.svg)](http://hits.dwyl.io/tenpi/kisaragi)
+**Unmaintained**
+This project is no longer in development and I have no plans to update it for discord api changes. It will probably stop working in the future.
 
 This is my first programming project, a discord bot mainly to search anime pictures and websites, play music, and provide some server utilities. Invite the bot [**here**](https://discordapp.com/oauth2/authorize?client_id=593838271650332672&permissions=2113793271&scope=bot)!
-
-This project is still a wip (beta version) so there might be commands that don't work as intended or which throw an exception.
 
 ## Help
 _Double click on the same reaction to toggle a compact form of the help menu._
