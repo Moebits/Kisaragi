@@ -1,6 +1,9 @@
 # Kisaragi Discord Bot
 ![Best Girl](https://vignette.wikia.nocookie.net/mudae/images/7/73/Kisaragi_%28AL%294.png/revision/latest?cb=20191205095054)
 
+**Update - 12/1/2022**
+Because of the discontinuation of the free heroku hosting plans, this bot is discontinued and will be offline indefinitely. If you know of another way to host a backend app for free, then feel free to open an issue about it. 
+
 This is my first programming project, a discord bot mainly to search anime pictures and websites, play music, and provide some server utilities. Invite the bot [**here**](https://discordapp.com/oauth2/authorize?client_id=593838271650332672&permissions=2113793271&scope=bot)!
 
 ## Help
