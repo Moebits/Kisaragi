@@ -27,9 +27,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Pripy/Kisaragi.git"
+    "url": "git+https://github.com/Moebits/Kisaragi.git"
   },
-  "author": "Pripy",
+  "author": "Moebits",
   "license": "MIT",
   "dependencies": {
     "4chanapi.js": "^1.1.1",
@@ -207,7 +207,6 @@
     "zlib-sync": "^0.1.5"
   },
   "devDependencies": {
-    "@tenpi/tslint": "^1.0.7",
     "chai": "^4.2.0",
     "mocha": "^6.2.1",
     "ts-mockito": "^2.3.1",
