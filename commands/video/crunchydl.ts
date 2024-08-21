@@ -1,5 +1,5 @@
 import axios from "axios"
-import crunchyroll from "crunchyroll.ts"
+// import crunchyroll from "crunchyroll.ts"
 import {Message, MessageAttachment} from "discord.js"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"

@@ -44,7 +44,8 @@ export default class MessageEvent {
       if (message.partial) {
         try {
           message = await message.fetch()
-        } catch {
+        } catch (e) {
+          console.log(e)
           return
         }
       }

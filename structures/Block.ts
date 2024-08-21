@@ -3,6 +3,7 @@ import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
 import {Permission} from "./Permission"
 import {SQLQuery} from "./SQLQuery"
+
 export class Block {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
     public blockWord = async () => {

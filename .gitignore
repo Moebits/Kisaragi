@@ -1,6 +1,7 @@
 #Sensitive data
 .env
 dist/.env
+dump.rdb
 
 #Node modules
 node_modules

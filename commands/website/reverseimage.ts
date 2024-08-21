@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Message, MessageEmbed} from "discord.js"
-import osmosis from "osmosis"
+// import osmosis from "osmosis"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Permission} from "../../structures/Permission"
@@ -38,7 +38,7 @@ export default class ReverseImage extends Command {
 
     public revSearch = async (image: string) => {
         const data: any[] = []
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
             .find("div.g > div.rc")
             .set({url: "div.r > a > @href", title: "div.r > a > h3", image: "div.s > div > div > a > @href", desc: "div.s > div > span"})

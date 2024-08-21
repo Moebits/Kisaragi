@@ -39,7 +39,7 @@ export default class Yandere extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-        const yandere = Booru("yande.re", process.env.KONACHAN_API_KEY)
+        const yandere = Booru("yande.re", process.env.KONACHAN_API_KEY as any)
         const yandereEmbed = embeds.createEmbed()
         .setAuthor("yandere", "https://i.imgur.com/5DiQTnW.png")
         .setTitle(`**Yandere Image** ${discord.getEmoji("gabLewd")}`)

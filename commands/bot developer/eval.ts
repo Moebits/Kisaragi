@@ -70,7 +70,7 @@ export default class Eval extends Command {
           .setTitle(`**Javascript Code Eval** ${discord.getEmoji("kaosWTF")}`)
           .setDescription(Functions.checkChar(this.clean(evaled), 2000, ""))
           message.channel.send(evalEmbed)
-        } catch (error) {
+        } catch (error: any) {
           message.channel.send(`\`ERROR\` \`\`\`xl\n${this.clean(error)}\n\`\`\``)
         }
   }

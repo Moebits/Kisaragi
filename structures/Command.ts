@@ -1,5 +1,6 @@
 import {Message, MessageEmbed} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
+
 interface CommandOptions {
   params: string
   description: string

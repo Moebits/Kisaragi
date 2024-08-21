@@ -92,6 +92,7 @@ export default class TempBan extends Command {
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
                         await SQLQuery.redisSet(`${this.message.guild?.id}_tempban`, newArr)
+                        // @ts-expect-error
                         clearInterval()
                         return
                     }

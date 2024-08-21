@@ -1,6 +1,5 @@
 import archiver from "archiver"
 import axios from "axios"
-import child_process from "child_process"
 import crypto from "crypto"
 import {Message, Util} from "discord.js"
 import emojiRegex from "emoji-regex"
@@ -40,7 +39,7 @@ export class Functions {
 
     // Await Stream
     public static awaitStream = async (readStream: stream.Readable, writeStream: stream.Writable) => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             readStream.pipe(writeStream)
             readStream.on("end", () => {
                 resolve()
@@ -294,7 +293,7 @@ export class Functions {
     // Create a zip file
     public static createZip = async (files: string[], dest: string) => {
         dest = dest.endsWith(".zip") ? dest : dest + ".zip"
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             const stream = fs.createWriteStream(dest)
             const zip = archiver("zip")
 
@@ -314,7 +313,7 @@ export class Functions {
     // Zip a directory
     public static zipDir = async (dir: string, dest: string) => {
         dest = dest.endsWith(".zip") ? dest : dest + ".zip"
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             const stream = fs.createWriteStream(dest)
             const zip = archiver("zip")
             zip.pipe(stream)

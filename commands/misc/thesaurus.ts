@@ -47,7 +47,7 @@ export default class Thesaurus extends Command {
         let result
         try {
             result = await thesaurus.lookup(word.trim())
-        } catch (error) {
+        } catch (error: any) {
             thesaurusEmbed
             .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
             .setTitle(`**Thesaurus** ${discord.getEmoji("raphi")}`)

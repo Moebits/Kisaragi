@@ -57,7 +57,7 @@ export default class TwitterOauth extends Command {
 
         let oauthToken = ""
         let oauthSecret = ""
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             oauth.getOAuthRequestToken((e, token, secret) => {
                 oauthToken = token
                 oauthSecret = secret

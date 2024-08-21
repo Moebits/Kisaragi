@@ -20,7 +20,7 @@ export class CommandFunctions {
             if (msg.channel.type === "dm") return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
         }
         let data: any
-        await new Promise(async (resolve, reject) => {
+        await new Promise<void>(async (resolve, reject) => {
             await cp.run(args).then((d: any) => {
                 data = d
                 resolve()

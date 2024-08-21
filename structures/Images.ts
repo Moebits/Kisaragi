@@ -1,5 +1,5 @@
 import axios from "axios"
-import * as Canvas from "canvas"
+import Canvas from "@napi-rs/canvas"
 import {v2 as cloudinary} from "cloudinary"
 import concat from "concat-stream"
 import {DMChannel, GuildMember, Message, MessageAttachment, NewsChannel, TextChannel} from "discord.js"
@@ -40,7 +40,7 @@ export class Images {
 
     /** Encodes a new gif. */
     public encodeGif = async (images: string[], folder: string, file: string | stream.Writable) => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
         const dimensions = sizeOf(`${folder}${path.basename(images[0])}`)
         const gif = new GifEncoder(dimensions.width, dimensions.height)
         gif.pipe(file)
@@ -70,7 +70,7 @@ export class Images {
 
     /** Compresses images and gifs. */
     public compressImages = (src: string, dest: string) => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             const imgInput = src
             const imgOutput = dest
             compressImages(imgInput, imgOutput, {compress_force: true, statistic: false, autoupdate: true}, false,
@@ -87,7 +87,7 @@ export class Images {
 
     /** Downloads and extracts a zip file. */
     public downloadZip = async (url: string, path: string) => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             const writeStream = request({url, headers: this.headers}).pipe(unzip.Extract({path}))
             writeStream.on("finish", () => {
                 resolve()
@@ -205,7 +205,7 @@ export class Images {
             return attachment
         }
 
-        function wrapText(context: CanvasRenderingContext2D, txt: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+        function wrapText(context: any, txt: string, x: number, y: number, maxWidth: number, lineHeight: number) {
             const cars = txt.split("\n")
             for (let i = 0; i < cars.length; i++) {
                 let line = ""
@@ -255,7 +255,7 @@ export class Images {
             for (let i = 0; i < frames.length; i++) {
                 const readStream = frames[i].getImage()
                 const writeStream = fs.createWriteStream(path.join(dir, `./image${frames[i].frameIndex}.jpg`))
-                await new Promise((resolve) => {
+                await new Promise<void>((resolve) => {
                     readStream.pipe(writeStream).on("finish", () => resolve())
                 })
                 files.push(path.join(dir, `./image${frames[i].frameIndex}.jpg`))
@@ -313,7 +313,7 @@ export class Images {
                 return canvas.toDataURL("image/png")
             }
 
-            const attachment = new MessageAttachment(canvas.toBuffer(), `welcome.jpg`)
+            const attachment = new MessageAttachment(canvas.toBuffer("image/jpeg"), `welcome.jpg`)
             return attachment
         }
     }
@@ -322,7 +322,7 @@ export class Images {
     public fileIOUpload = async (file: string) => {
         const fd = new FormData()
         let res: any
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             fd.append("file", fs.createReadStream(file))
             fd.pipe(concat({encoding: "buffer"}, async (data: any) => {
                 const result = await axios.post("https://file.io/?expires=1w", data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)
@@ -373,7 +373,7 @@ export class Images {
             } while (files.length > 10)
             const promiseArray: any[] = []
             for (let i = 0; i < deletionQueue.length; i++) {
-                const promise = new Promise((resolve)=> {
+                const promise = new Promise<void>((resolve)=> {
                     fs.unlink(deletionQueue[i], () => resolve())
                 })
                 promiseArray.push(promise)
@@ -399,7 +399,7 @@ export class Images {
                 links.push(result)
             } else {
                 const fd = new FormData()
-                await new Promise((resolve) => {
+                await new Promise<void>((resolve) => {
                     fd.append("images", fs.createReadStream(files[i]))
                     fd.pipe(concat({encoding: "buffer"}, async (data: any) => {
                         const result = await axios.post(url, data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)

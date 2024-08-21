@@ -77,10 +77,10 @@ export default class $nHentai extends Command {
         try {
             const doujin = await nhentai.randomDoujin()
             if (filter) {
-                for (let i = 0; i < doujin!.tags.length; i++) {
-                    if (perms.loliFilter(doujin!.tags[i].name)) await this.nhentaiRandom(true)
+                for (let i = 0; i < doujin!.tags.all.length; i++) {
+                    if (perms.loliFilter(doujin!.tags.all[i].name)) await this.nhentaiRandom(true)
                     for (let j = 0; j < blacklist.nhentai.length; j++) {
-                        if (doujin!.tags[i].name === blacklist.nhentai[j]) {
+                        if (doujin!.tags.all[i].name === blacklist.nhentai[j]) {
                             await this.nhentaiRandom(true)
                         }
                     }
@@ -123,7 +123,7 @@ export default class $nHentai extends Command {
                 let counter = 0
                 let index = Math.floor(Math.random() * (result.doujins.length - result.doujins.length/2) + result.doujins.length/2)
                 let doujin = result.doujins[index]
-                while (perms.loliFilter(doujin.tags.map((t) => t.name).join(""))) {
+                while (perms.loliFilter(doujin.tags.all.map((t) => t.name).join(""))) {
                     index = Math.floor(Math.random() * (result.doujins.length - result.doujins.length/2) + result.doujins.length/2)
                     doujin = result.doujins[index]
                     if (counter >= result.doujins.length) {

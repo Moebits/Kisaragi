@@ -9,6 +9,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
+
 export default class Waifu2x extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {

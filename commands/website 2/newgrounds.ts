@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Message, MessageEmbed} from "discord.js"
-import osmosis from "osmosis"
+// import osmosis from "osmosis"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -67,7 +67,7 @@ export default class Newgrounds extends Command {
         const self = this
         const data: any[] = []
         let data2: any[] = []
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             const titleFind = skipAudio ? "div > div > div > h4" : "div > div > div > div > h4"
             const authorFind = skipAudio ? "div > div > div > span > strong" : "div > div > div > div > span > strong"
             osmosis.get(`${search}${query}`).headers(this.headers)
@@ -99,7 +99,7 @@ export default class Newgrounds extends Command {
     public audioData = async (search: string, query: string) => {
         const self = this
         const data: any[] = []
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             osmosis.get(`${search}${query}`).headers(this.headers)
             .find("ul > li > div > a")
             .set({url: "@href", image: "div > div > img > @src", title: "div > div > div > div > h4", author: "div > div > div > div > span > strong",
@@ -125,7 +125,7 @@ export default class Newgrounds extends Command {
         const voteDiv = type === "Audio" ? "div > div > div > div > dl > dd:nth(3)" : "div > div > div > div > dl > dd:nth(2)"
         const dateDiv = type === "Audio" ? "div > div > div > div > dl > dd:nth(5)" : "div > div > div > div > dl > dd:nth(4)"
         let data: any
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             osmosis.get(link).headers(this.headers)
             .find("div.body-center > div > div")
             // > dl:nth-child(1) > dd:nth-child(1)
@@ -144,7 +144,7 @@ export default class Newgrounds extends Command {
             })
         })
         if (type === "Art" && !data.image) {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 osmosis.get(link).headers(this.headers)
                 .find("div.body-center > div > div")
                 .set({image: "div > div > div > div.image > a > img > @src"})
@@ -193,7 +193,7 @@ export default class Newgrounds extends Command {
         let i = 1
         let done = false
         while (!done) {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 osmosis.get(`https://www.newgrounds.com/search/conduct/art?suitabilities=etma&terms=${query}`).headers(this.headers)
                 .find("div.portalitem-art-icons-medium")
                 .set({url: `div:nth-child(${i}) > a > @href`, image: `div:nth-child(${i}) > a > div > img > @src`, title: `div:nth-child(${i}) > a > h4`, author: `div:nth-child(${i}) > a > span`})

@@ -1,7 +1,7 @@
 import {GuildChannel, Message, MessageAttachment, TextChannel} from "discord.js"
 import fs from "fs"
 import path from "path"
-import {GPhotos} from "upload-gphotos"
+// import {GPhotos} from "upload-gphotos"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
 import {Embeds} from "./../../structures/Embeds"

@@ -45,7 +45,7 @@ export default class Cuddle extends Command {
         if (name === "someone") flavorText = `Who knows ${discord.getEmoji("kannaCurious")}`
         if (name === "me") flavorText = `Thank you ${discord.getEmoji("kannaWave")}`
 
-        const image = await neko.sfw.cuddle()
+        const image = await neko.cuddle()
 
         const cuddleEmbed = embeds.createEmbed()
         cuddleEmbed

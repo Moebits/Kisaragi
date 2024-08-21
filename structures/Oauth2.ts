@@ -11,10 +11,14 @@ import {Kisaragi} from "./Kisaragi.js"
 import {SQLQuery} from "./SQLQuery"
 
 export class Oauth2 {
-    private readonly sql = new SQLQuery(this.message)
-    private readonly embeds = new Embeds(this.discord, this.message)
-    private readonly redditCmd = new RedditCmd(this.discord, this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly sql: SQLQuery
+    private readonly embeds: Embeds
+    private readonly redditCmd: RedditCmd
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.sql = new SQLQuery(this.message)
+        this.embeds = new Embeds(this.discord, this.message)
+        this.redditCmd = new RedditCmd(this.discord, this.message)
+    }
 
     /** Add Reddit options to a reddit embed */
     public redditOptions = async (msg: Message) => {

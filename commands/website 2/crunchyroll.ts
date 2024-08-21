@@ -1,4 +1,4 @@
-import crunchyroll, {CrunchyrollSeason} from "crunchyroll.ts"
+// import crunchyroll, {CrunchyrollSeason} from "crunchyroll.ts"
 import {Message, MessageEmbed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"

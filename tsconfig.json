@@ -6,14 +6,15 @@
 		"allowSyntheticDefaultImports": true,
 		"resolveJsonModule": true,
 		"noEmitOnError": false,
-		"target": "es6",
-		"lib": ["es2019"],
+		"target": "es2022",
+		"lib": ["es2022"],
 		"esModuleInterop": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"noUnusedLocals": false,
 		"noImplicitAny": false,
 		"strictNullChecks": true,
+		"skipLibCheck": true,
 		"strict": true
 	},
 	"exclude": [

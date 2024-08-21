@@ -1,3 +1,4 @@
+import "dotenv/config"
 import {Intents} from "discord.js"
 import fs from "fs"
 import path from "path"
@@ -90,22 +91,21 @@ const start = async (): Promise<void> => {
     Logger.log(`Loaded a total of ${commandCounter} commands.`)
     Logger.log(`Loaded a total of ${evtFiles.length} events.`)
 
-    const server = new Server()
-    server.run()
+    //const server = new Server()
+    //server.run()
 
     const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
     await discord.login(token)
     discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
     discord.setUsername(discord.user!.username)
 
-    Functions.pollTwitch(discord)
-    Functions.youtubeReSubscribe()
+    //Functions.pollTwitch(discord)
+    //Functions.youtubeReSubscribe()
     if (config.testing === "off") SQLQuery.redisSet("state", JSON.stringify([]))
 }
 
 start()
 
-// @ts-ignore
 process.on("unhandledRejection", (error) => console.error(error))
 process.on("uncaughtException", (error) => console.error(error))
 

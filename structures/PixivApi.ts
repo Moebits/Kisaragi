@@ -10,12 +10,17 @@ import {Permission} from "./Permission"
 import {SQLQuery} from "./SQLQuery"
 
 export class PixivApi {
-    private readonly images = new Images(this.discord, this.message)
-    private readonly embeds = new Embeds(this.discord, this.message)
-    private readonly cmd = new CommandFunctions(this.discord, this.message)
-    private readonly perms = new Permission(this.discord, this.message)
+    private readonly images: Images
+    private readonly embeds: Embeds
+    private readonly cmd: CommandFunctions
+    private readonly perms: Permission
     private pixiv: Pixiv | null = null
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.images = new Images(this.discord, this.message)
+        this.embeds = new Embeds(this.discord, this.message)
+        this.cmd = new CommandFunctions(this.discord, this.message)
+        this.perms = new Permission(this.discord, this.message)
+    }
 
     // Create Pixiv Embed
     public createPixivEmbed = async (image: PixivIllust, noUpload?: boolean) => {
@@ -46,7 +51,7 @@ export class PixivApi {
             .setThumbnail(`attachment://author.png`)
             .setImage(`attachment://image.png`)
         } else {
-            const illustImage = await this.images.upload(url)
+            const illustImage = await this.images.upload(url) as string
             const authorImage = await this.images.upload(authorUrl)
             pixivEmbed
             .setImage(encodeURI(illustImage))

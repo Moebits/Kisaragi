@@ -1,4 +1,4 @@
-import canvas, {Canvas} from "canvas"
+import canvas from "@napi-rs/canvas"
 import {Message, MessageAttachment} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -42,7 +42,7 @@ export default class $8ball extends Command {
         ctx.drawImage(heart, can.width/3, 0, can.width/3, can.height)
         ctx.drawImage(av2, (can.width/3)*2, 0, can.width/3, can.height)
 
-        const attachment = new MessageAttachment(can.toBuffer(), "ship.png")
+        const attachment = new MessageAttachment(can.toBuffer("image/png"), "ship.png")
 
         message.channel.send(
             `Aww, what a cute shipping! ${discord.getEmoji("gabrielLick")}\n` +

@@ -6,8 +6,10 @@ import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
 
 export class Captcha {
-    private readonly embeds = new Embeds(this.discord, this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly embeds: Embeds
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.embeds = new Embeds(this.discord, this.message)
+    }
 
     public createCaptcha = async (type: string, color: string, difficulty: string) => {
 

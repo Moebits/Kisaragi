@@ -10,6 +10,7 @@ import {CommandFunctions} from "./CommandFunctions"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {SQLQuery} from "./SQLQuery"
+
 export class Kisaragi extends Client {
     public static username = "Kisaragi"
     public static pfp = "https://cdn.discordapp.com/avatars/593838271650332672/78ec2f4a3d4ab82a40791cb522cf36f5.png?size=2048"

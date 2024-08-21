@@ -90,7 +90,7 @@ export default class Config extends Command {
             }
 
             let newColor = (msg.content.match(/default/gi) || msg.content.match(/random/gi) ||
-            msg.content.match(/(\s|^)#[0-9a-f]{3,6}/gi))
+            msg.content.match(/(\s|^)#[0-9a-f]{3,6}/gi)) as string[]
             const newPerm = (msg.content.match(/role/gi) || msg.content.match(/perm/gi))
 
             if (newColor) {

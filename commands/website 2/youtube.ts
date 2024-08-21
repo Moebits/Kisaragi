@@ -43,7 +43,7 @@ export default class YoutubeCommand extends Command {
 
     public ytChannelEmbed = async (discord: Kisaragi, embeds: Embeds, youtube: yt, channelLink: string) => {
         const channel = await youtube.channels.get(channelLink)
-        const channelBanner = channel.brandingSettings.image.bannerImageUrl
+        const channelBanner = channel.brandingSettings.image.bannerExternalUrl
         const keywords = channel.brandingSettings.channel.keywords
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed

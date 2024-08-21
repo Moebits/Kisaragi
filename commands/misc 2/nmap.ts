@@ -41,7 +41,7 @@ export default class Nmap extends Command {
 
         let data = "" as any
         quickscan.startScan()
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             quickscan.on("complete", (d: any) => {
                 data = d
                 resolve()

@@ -45,7 +45,7 @@ export default class Kiss extends Command {
         if (name === "someone") flavorText = `Weird ${discord.getEmoji("gabuChrist")}`
         if (name === "me") flavorText = `Thanks ${discord.getEmoji("gabYes")}`
 
-        const image = await neko.sfw.kiss()
+        const image = await neko.kiss()
 
         const kissEmbed = embeds.createEmbed()
         kissEmbed

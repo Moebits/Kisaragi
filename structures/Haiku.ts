@@ -1,7 +1,9 @@
 import {Message} from "discord.js"
 import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
-import {syllable} from "syllable"
+
+const syllable = require("syllable")
+
 export class Haiku {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 

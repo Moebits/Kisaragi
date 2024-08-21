@@ -16,9 +16,12 @@ import {Kisaragi} from "./Kisaragi"
 const pipeline = util.promisify(stream.pipeline)
 export class AudioEffects {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-    private readonly images = new Images(this.discord, this.message)
-    private readonly embeds = new Embeds(this.discord, this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly images: Images
+    private readonly embeds: Embeds
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.embeds = new Embeds(this.discord, this.message)
+        this.images = new Images(this.discord, this.message)
+    }
 
     public getDir = () => {
         const dir = child_process.execSync("cd")
@@ -61,7 +64,7 @@ export class AudioEffects {
             output: {type: "aiff"},
             effects: ["gain", "-50", ...effect.split(" "), "gain", "-n", "-1"]
         })
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             input
             .on("error", (err) => console.log(err))
             .pipe(transform)
@@ -236,7 +239,7 @@ export class AudioEffects {
         if (ext === "ogg") return fs.createReadStream(filepath)
         const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
         const newDest = `./tracks/transform/${filename}.ogg`
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             ffmpeg(filepath).toFormat("ogg").outputOptions(["-c:a", "libopus", "-b:a", "96k"]).save(newDest)
             .on("end", () => resolve())
         })
@@ -249,7 +252,7 @@ export class AudioEffects {
         const ext = path.extname(filepath).replace(".", "")
         const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
         const newDest = `./tracks/transform/${filename}.wav`
-        await new Promise((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
             ffmpeg(filepath).inputOptions(["-f", "s16le", "-ar", "44.1k", "-ac", channels]).save(newDest)
             .on("end", () => resolve())
             .on("error", () => reject())
@@ -266,7 +269,7 @@ export class AudioEffects {
         const ext = path.extname(filepath).replace(".", "")
         const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
         const newDest = `./tracks/transform/${filename}.${format}`
-        await new Promise((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
             ffmpeg(filepath).toFormat(format).outputOptions("-bitexact").save(newDest)
             .on("end", () => resolve())
             .on("error", () => reject())

@@ -1,12 +1,13 @@
 import {Message} from "discord.js"
 import fs from "fs"
 import {Command} from "../../structures/Command"
-import * as config from "./../../config.json"
-import * as pack from "./../../package.json"
+import config from "./../../config.json"
+import pack from "./../../package.json"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
+
 export default class Info extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -55,7 +56,7 @@ export default class Info extends Command {
             `${discord.getEmoji("star")}_Creator_: **Tenpi#2238**\n` +
             `${discord.getEmoji("star")}_Library_: **Discord.js ${pack.dependencies["discord.js"].replace("^", "v")}**\n` +
             `${discord.getEmoji("star")}_Runtime:_ **Node.js ${pack.engines.node.replace("^", "v")}**\n` +
-            `${discord.getEmoji("star")}_Language:_ **Typescript ${pack.dependencies.typescript.replace("^", "v")}**\n` +
+            `${discord.getEmoji("star")}_Language:_ **Typescript ${pack.devDependencies.typescript.replace("^", "v")}**\n` +
             `${discord.getEmoji("star")}_Database:_ **PostgreSQL v11.7**\n` +
             `${discord.getEmoji("star")}_Guilds:_ **${discord.guilds.cache.size}**\n` +
             `${discord.getEmoji("star")}_Channels:_ **${discord.channels.cache.size}**\n` +

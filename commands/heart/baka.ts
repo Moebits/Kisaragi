@@ -45,7 +45,7 @@ export default class Baka extends Command {
         if (name === "someone") flavorText = `Who knows ${discord.getEmoji("kannaCurious")}`
         if (name === "me") flavorText = `How rude ${discord.getEmoji("kannaFU")}`
 
-        const image = await neko.sfw.baka()
+        const image = await neko.baka()
 
         const bakaEmbed = embeds.createEmbed()
         bakaEmbed

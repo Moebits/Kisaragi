@@ -37,7 +37,7 @@ export default class Xkcd extends Command {
 
     public getComic = async (id?: number) => {
         let comic = "" as any
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             if (id) {
                 xkcd(id, (c: any) => {
                     comic = c

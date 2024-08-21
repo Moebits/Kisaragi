@@ -45,7 +45,7 @@ export default class Tickle extends Command {
         if (name === "someone") flavorText = `That's cute ${discord.getEmoji("vigneDead")}`
         if (name === "me") flavorText = `I'm not a fan ${discord.getEmoji("karenAnger")}`
 
-        const image = await neko.sfw.tickle()
+        const image = await neko.tickle()
 
         const tickleEmbed = embeds.createEmbed()
         tickleEmbed

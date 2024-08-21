@@ -36,7 +36,7 @@ export default class Gelbooru extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const gelbooru = Booru("gelbooru", process.env.GELBOORU_API_KEY)
+        const gelbooru = Booru("gelbooru", process.env.GELBOORU_API_KEY as any)
         const perms = new Permission(discord, message)
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const gelbooruEmbed = embeds.createEmbed()

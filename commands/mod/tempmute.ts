@@ -94,6 +94,7 @@ export default class TempMute extends Command {
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
                         await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, newArr)
+                        // @ts-expect-error
                         clearInterval()
                         return
                     }

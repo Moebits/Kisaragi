@@ -35,7 +35,7 @@ export class Video {
         const vidDest = path.join(__dirname, `../videos/transform/`)
         const newDest = path.join(__dirname, `../videos/${name}.mp4`)
         if (!fs.existsSync(vidDest)) fs.mkdirSync(vidDest, {recursive: true})
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             ffmpeg().input(audioFile).input(imgFile)
             .outputOptions([...this.iphoneFlags, "-tune", "stillimage", "-c:a", "aac", "-b:a", "192k", "-shortest"])
             .save(newDest)
@@ -55,7 +55,7 @@ export class Video {
         const vidDest = path.join(__dirname, `../videos/transform/`)
         if (!fs.existsSync(vidDest)) fs.mkdirSync(vidDest, {recursive: true})
         if (!newDest) newDest = path.join(vidDest, `./${name}.gif`)
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             ffmpeg(videoFile).outputOptions(["-ss", start, "-t", length, "-filter_complex", "[0:v]fps=12,scale=480:-1,split[a][b];[a]palettegen[p];[b][p]paletteuse"])
             .format("gif").save(newDest)
             .on("end", () => {
@@ -74,7 +74,7 @@ export class Video {
         const vidDest = path.join(__dirname, `../videos/transform/`)
         if (!fs.existsSync(vidDest)) fs.mkdirSync(vidDest, {recursive: true})
         if (!newDest) newDest = path.join(vidDest, `./${name}_speed.mp4`)
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             ffmpeg(videoFile).outputOptions([...this.iphoneFlags, "-filter_complex", `[0:v]setpts=${1.0/factor}*PTS[v];[0:a]atempo=${factor}[a]`, "-map", "[v]", "-map", "[a]"])
             .save(newDest)
             .on("end", () => {
@@ -91,7 +91,7 @@ export class Video {
         const vidDest = path.join(__dirname, `../videos/transform/`)
         if (!fs.existsSync(vidDest)) fs.mkdirSync(vidDest, {recursive: true})
         if (!newDest) newDest = path.join(vidDest, `./${name}_reverse.mp4`)
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             ffmpeg(videoFile).outputOptions([...this.iphoneFlags, "-vf", "reverse", "-af", "areverse"])
             .save(newDest)
             .on("end", () => {
@@ -108,7 +108,7 @@ export class Video {
         const mp3Dest = path.join(__dirname, `../tracks/transform/`)
         if (!fs.existsSync(mp3Dest)) fs.mkdirSync(mp3Dest, {recursive: true})
         if (!newDest) newDest = path.join(mp3Dest, `./${name}.mp3`)
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             ffmpeg(videoFile).format("mp3")
             .save(newDest)
             .on("end", () => {

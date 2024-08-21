@@ -53,14 +53,14 @@ export default class StackExchange extends Command {
         }
         let result = "" as any
         let answerResult = "" as any
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             stack.search.search({...filter, sort: "relevance"}, (err: any, res: any) => {
                 result = res
                 resolve()
             })
         })
         const ids = result.items.map((q) => q.question_id)
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             stack.questions.answers({...filter, sort: "votes"}, (err: any, res: any) => {
                 answerResult = res
                 resolve()

@@ -1,4 +1,4 @@
-import canvas from "canvas"
+import canvas from "@napi-rs/canvas"
 import {Message, MessageAttachment} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -62,7 +62,7 @@ export default class RGB extends Command {
         ctx.fillText(str, 0, 95)
         ctx.strokeText(str, 0, 95)
 
-        const attachment = new MessageAttachment(can.toBuffer(), "color.png")
+        const attachment = new MessageAttachment(can.toBuffer("image/png"), "color.png")
 
         const colorEmbed = embeds.createEmbed()
         .setTitle(`**RGB Color** ${discord.getEmoji("RaphiSmile")}`)

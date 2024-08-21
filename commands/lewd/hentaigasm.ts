@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Message, MessageEmbed} from "discord.js"
-import osmosis from "osmosis"
+// import osmosis from "osmosis"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -32,7 +32,7 @@ export default class Hentaigasm extends Command {
         let i = 1
         let done = false
         while (!done) {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 osmosis.get(url).headers(this.headers)
                 .find("ul.comment-list")
                 .set({author: `li:nth-child(${i}) > div > div > div.comment-meta > b > span > cite`, text: `li:nth-child(${i}) > div > div > div.comment-content > p`})
@@ -58,7 +58,7 @@ export default class Hentaigasm extends Command {
         let views = ""
         let comments = ""
         let likes = ""
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             osmosis.get(url).headers(this.headers)
             .find("div#sidebar > div")
             .set({views: "span.views > i.count", comments: "span.comments > i.count", likes: "span['dp-post-likes likes'] > i.count"})
@@ -76,7 +76,7 @@ export default class Hentaigasm extends Command {
         let url =  `http://hentaigasm.com/?orderby=date`
         if (query) url = `http://hentaigasm.com/?s=${query?.replace(/ +/g, "+")}`
         const data = [] as any[]
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             osmosis.get(url).headers(this.headers)
             .find("div.thumb > a")
             .set({url: "@href", thumb: "span > img > @src"})

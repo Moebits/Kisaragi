@@ -4,8 +4,10 @@ import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
 export class Permission {
-    private readonly sql = new SQLQuery(this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly sql: SQLQuery
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.sql = new SQLQuery(this.message)
+    }
 
     /** Check Mod */
     public checkMod = async (ignore?: boolean) => {
@@ -127,6 +129,7 @@ export class Permission {
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
                         await SQLQuery.redisSet(`${this.message.guild?.id}_tempban`, newArr)
+                        // @ts-expect-error
                         clearInterval()
                         return
                     }
@@ -166,6 +169,7 @@ export class Permission {
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
                         await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, newArr)
+                        // @ts-expect-error
                         clearInterval()
                         return
                     }

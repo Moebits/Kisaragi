@@ -10,10 +10,15 @@ import {SQLQuery} from "./SQLQuery"
 const colors = new Collection()
 
 export class Embeds {
-    private readonly functions = new Functions(this.message)
-    private readonly sql = new SQLQuery(this.message)
-    private readonly images = new Images(this.discord, this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly functions: Functions
+    private readonly sql: SQLQuery
+    private readonly images: Images
+    
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.functions = new Functions(this.message)
+        this.sql = new SQLQuery(this.message)
+        this.images = new Images(this.discord, this.message)
+    }
 
     /** Updates the guild embed color */
     public updateColor = async () => {

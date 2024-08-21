@@ -1,6 +1,5 @@
 import bandcamp from "bandcamp-scraper"
 import type {Message, MessageEmbed} from "discord.js"
-import Giphy, {MultiResponse} from "giphy-api"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Permission} from "../../structures/Permission"
@@ -102,7 +101,7 @@ export default class Bandcamp extends Command {
         }
 
         let data: any = []
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             bandcamp.search({query}, (err, res) => {
                 data = res
                 resolve()

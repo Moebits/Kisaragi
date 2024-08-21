@@ -62,7 +62,7 @@ export default class ConstrainGIF extends Command {
         for (let i = 0; i < newFrames.length; i++) {
             const readStream = newFrames[i].getImage()
             const writeStream = fs.createWriteStream(path.join(dir, `./image${newFrames[i].frameIndex}.jpg`))
-            const prom = new Promise((resolve) => {
+            const prom = new Promise<void>((resolve) => {
                 readStream.pipe(writeStream).on("finish", () => resolve())
             })
             files.push(path.join(dir, `./image${newFrames[i].frameIndex}.jpg`))

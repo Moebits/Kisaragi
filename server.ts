@@ -38,8 +38,8 @@ export default class Server {
             res.setHeader("Content-Type", "text/html;charset=utf-8")
             if (req.query.code) {
                 try {
-                    if (!await this.checkState(req.query.state)) return res.status(400).sendFile(path.join(__dirname, "../assets/html/expired.html"))
-                    await SQLQuery.redditOuath(req.query.code)
+                    if (!await this.checkState(req.query.state as string)) return res.status(400).sendFile(path.join(__dirname, "../assets/html/expired.html"))
+                    await SQLQuery.redditOuath(req.query.code as string)
                     res.status(200).sendFile(path.join(__dirname, "../assets/html/authorized.html"))
                 } catch {
                     res.status(400).sendFile(path.join(__dirname, "../assets/html/rejected.html"))
@@ -54,7 +54,7 @@ export default class Server {
             res.setHeader("Content-Type", "text/html;charset=utf-8")
             if (req.query.oauth_token) {
                 try {
-                    await SQLQuery.twitterOauth(req.query.oauth_token, req.query.oauth_verifier)
+                    await SQLQuery.twitterOauth(req.query.oauth_token as string, req.query.oauth_verifier as string)
                     res.status(200).sendFile(path.join(__dirname, "../assets/html/authorized.html"))
                 } catch {
                     res.status(400).sendFile(path.join(__dirname, "../assets/html/rejected.html"))
@@ -67,8 +67,8 @@ export default class Server {
         app.get("/discord", async (req, res) => {
             res.setHeader("Content-Type", "text/html;charset=utf-8")
             if (req.query.code) {
-                if (!await this.checkState(req.query.state)) return res.status(400).sendFile(path.join(__dirname, "../assets/html/expired.html"))
-                await SQLQuery.initOauth2(req.query.code)
+                if (!await this.checkState(req.query.state as string)) return res.status(400).sendFile(path.join(__dirname, "../assets/html/expired.html"))
+                await SQLQuery.initOauth2(req.query.code as string)
                 res.status(200).sendFile(path.join(__dirname, "../assets/html/authorized.html"))
             } else {
                 res.status(200).sendFile(path.join(__dirname, "../assets/html/index.html"))
@@ -78,7 +78,7 @@ export default class Server {
         app.get("/commands", async (req, res) => {
             res.status(200)
             if (req.query.category) {
-                const commands = await SQLQuery.allCommands(req.query.category)
+                const commands = await SQLQuery.allCommands(req.query.category as string)
                 res.json(commands)
             } else {
                 const commands = await SQLQuery.allCommands()

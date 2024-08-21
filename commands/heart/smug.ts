@@ -45,7 +45,7 @@ export default class Smug extends Command {
         if (name === "someone") flavorText = `Cool ${discord.getEmoji("raphi")}`
         if (name === "me") flavorText = `Hmm alright ${discord.getEmoji("tohruThink")}`
 
-        const image = await neko.sfw.smug()
+        const image = await neko.smug()
 
         const smugEmbed = embeds.createEmbed()
         smugEmbed

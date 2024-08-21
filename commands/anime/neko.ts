@@ -17,8 +17,6 @@ export default class Neko extends Command {
             _Note: Different tags are separated by comma._
             \`neko\` - Posts random neko images.
             \`neko tags\` - Searches for images matching the tags.
-            \`neko lewd\` - Posts random nsfw neko images.
-            \`neko lewd tags\` - Searches for nsfw images matching the tags.
             \`neko gif\` - Posts a random neko gif.
             \`neko gif lewd\` - Posts a random nsfw neko gif.
             `,
@@ -43,13 +41,8 @@ export default class Neko extends Command {
 
         if (args[1]?.toLowerCase() === "gif") {
             const neko = new nekoClient()
-            let image = await neko.sfw.nekoGif()
+            let image = await neko.nekoGif()
             let title = "Neko Gif"
-            if (args[2] === "lewd") {
-                if (!perms.checkNSFW()) return
-                image = await neko.nsfw.nekoGif()
-                title = "Lewd Neko Gif"
-            }
             const nekoEmbed = embeds.createEmbed()
             nekoEmbed
             .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)

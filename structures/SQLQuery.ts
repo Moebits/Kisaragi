@@ -1,5 +1,4 @@
 import axios from "axios"
-import bluebird from "bluebird"
 import chalk from "chalk"
 import {Message} from "discord.js"
 import {Base64 as base64} from "js-base64"
@@ -7,21 +6,24 @@ import moment from "moment"
 import {Pool, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
 import querystring from "querystring"
 import * as Redis from "redis"
-import * as config from "../config.json"
+import config from "../config.json"
 import {Command} from "./Command"
 import {Functions} from "./Functions"
 import {Settings} from "./Settings"
 
-const RedisAsync = bluebird.promisifyAll(Redis)
-const redis = RedisAsync.createClient({
+const redis = Redis.createClient({
   url: process.env.REDIS_URL
-}) as any
+})
+redis.connect()
+
 const pgPool = new Pool({
-  connectionString: process.env.PG_URL,
-  ssl: {
-    rejectUnauthorized: false
-  },
-  max: 2
+  host: process.env.PG_HOST,
+  user: process.env.PG_USER,
+  database: process.env.PG_DATABASE,
+  password: process.env.PG_PASSWORD,
+  port: Number(process.env.PG_PORT),
+  ssl: false,
+  max: 20
 })
 
 const tableList = [
@@ -35,7 +37,7 @@ export class SQLQuery {
   public static runQuery = async (query: QueryConfig | QueryArrayConfig, newData?: boolean): Promise<string[][]> => {
       const start = Date.now()
       let redisResult = null
-      if (!newData) redisResult = await redis.getAsync(JSON.stringify(query)) as any
+      if (!newData) redisResult = await redis.get(JSON.stringify(query)) as any
       if (redisResult) {
         // SQLQuery.logQuery(Object.values(query)[0], start, true)
         return (JSON.parse(redisResult))?.[0]
@@ -44,7 +46,7 @@ export class SQLQuery {
         try {
             const result: QueryResult<string[]> = await pgClient.query(query)
             // SQLQuery.logQuery(Object.values(query)[0], start)
-            await redis.setAsync(JSON.stringify(query), JSON.stringify(result.rows))
+            await redis.set(JSON.stringify(query), JSON.stringify(result.rows))
             return result.rows
           } catch (error) {
             // console.log(error.stack)
@@ -69,22 +71,22 @@ export class SQLQuery {
 
   // Flush Redis DB
   public static flushDB = async (): Promise<void> => {
-      await redis.flushdbAsync()
+      await redis.flushDb()
     }
 
   /** Redis Set */
   public static redisSet = async (key: string, value: string | null, expiration?: number) => {
     if (value === null) value = "null"
     if (expiration) {
-      await redis.setAsync(key, value, "EX", expiration)
+      await redis.setEx(key, expiration, value)
     } else {
-      await redis.setAsync(key, value)
+      await redis.set(key, value)
     }
   }
 
   /** Redis Get */
   public static redisGet = async (key: string) => {
-    const result = await redis.getAsync(key) as any
+    const result = await redis.get(key) as any
     return result
   }
 

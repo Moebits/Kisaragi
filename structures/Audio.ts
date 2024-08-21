@@ -25,12 +25,18 @@ const procBlock = new Collection()
 
 export class Audio {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-    private readonly fx = new AudioEffects(this.discord, this.message)
-    private readonly video = new Video(this.discord, this.message)
-    private readonly youtube = new Youtube(process.env.GOOGLE_API_KEY!)
-    private readonly soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID)
-    private readonly embeds = new Embeds(this.discord, this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly fx: AudioEffects
+    private readonly video: Video
+    private readonly youtube: Youtube
+    private readonly soundcloud: Soundcloud
+    private readonly embeds: Embeds
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.embeds = new Embeds(this.discord, this.message)
+        this.soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID)
+        this.youtube = new Youtube(process.env.GOOGLE_API_KEY!)
+        this.video = new Video(this.discord, this.message)
+        this.fx = new AudioEffects(this.discord, this.message)
+    }
 
     public checkMusicPermissions = () => {
         const message = this.message
@@ -1052,7 +1058,7 @@ export class Audio {
     public getDuration = async () => {
         const queue = this.getQueue() as any
         let duration = 0
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             mp3Duration(queue[0].file, function(err: Error, d: number) {
                 duration = d
                 resolve()
@@ -1403,7 +1409,7 @@ export class Audio {
             await this.songPickerYT(query)
         })
         let finalLink = ""
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             for (let i = 0; i < numCollectors.length; i++) {
                 numCollectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
                     const link = links[numMap[i+1][page]]
@@ -1513,7 +1519,7 @@ export class Audio {
         const shelf = ["highshelf", "lowshelf"]
         const shelfCol = [highshelf, lowshelf]
 
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
         for (let i = 0; i < pass.length; i++) {
             passCol[i].on("collect", async (reaction, user) => {
                 if (this.getProcBlock()) {
@@ -1679,7 +1685,7 @@ export class Audio {
             await response.delete()
             return rArgs
         }
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
         reverb.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)

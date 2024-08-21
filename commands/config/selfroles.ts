@@ -162,7 +162,7 @@ export default class Selfroles extends Command {
                 }
             }
 
-            let roles = msg.content.replace(/<@&/g, "").replace(/>/g, "").match(/\s?\d+/g)
+            let roles = msg.content.replace(/<@&/g, "").replace(/>/g, "").match(/\s?\d+/g) as string[]
             if (!roles) return message.reply("These roles are invalid!")
             roles = roles.map((r: string) => r.trim())
 

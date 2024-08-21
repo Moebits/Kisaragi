@@ -6,6 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Oauth2} from "./../../structures/Oauth2"
 import {Permission} from "./../../structures/Permission"
+
 export default class TwitterCommand extends Command {
     private user = null as any
     private search = null as any

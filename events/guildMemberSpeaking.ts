@@ -39,7 +39,7 @@ export default class GuildMemberSpeaking {
             }
             const recording = connection.receiver.createStream(member.id, {mode: "pcm", end: "silence"})
             const pcm = path.join(__dirname, `../../assets/misc/tracks/${member.user.tag}_voice.pcm`)
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 recording.pipe(fs.createWriteStream(pcm)).on("finish", () => resolve())
             })
             let wavDest = await fx.pcmToWav(pcm, true)

@@ -4,6 +4,7 @@ import {Embeds} from "./../structures/Embeds"
 import {Functions} from "./../structures/Functions"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
+
 export default class TwitchOnline {
     constructor(private readonly discord: Kisaragi) {}
 

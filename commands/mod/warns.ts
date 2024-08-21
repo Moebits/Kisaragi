@@ -70,7 +70,7 @@ export default class Warns extends Command {
         if (!warnLog) warnLog = []
         for (let i = 0; i < warnLog.length; i++) {
             warnLog[i] = JSON.parse(warnLog[i])
-            if (warnLog === []) {
+            if (warnLog.length === 0) {
                 warnings = "None"
             } else {
                 for (let j = 0; j < warnLog[i].warns.length; j++) {

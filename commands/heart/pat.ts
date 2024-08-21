@@ -45,7 +45,7 @@ export default class Pat extends Command {
         if (name === "someone") flavorText = `Free pats ${discord.getEmoji("AquaWut")}`
         if (name === "me") flavorText = `Thanks ${discord.getEmoji("yes")}`
 
-        const image = await neko.sfw.pat()
+        const image = await neko.pat()
 
         const patEmbed = embeds.createEmbed()
         patEmbed

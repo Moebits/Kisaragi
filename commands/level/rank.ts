@@ -1,4 +1,4 @@
-import {createCanvas} from "canvas"
+import {createCanvas} from "@napi-rs/canvas"
 import {Message, MessageAttachment} from "discord.js"
 import fs from "fs"
 import path from "path"

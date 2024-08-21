@@ -39,7 +39,7 @@ export default class Danbooru extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-        const danbooru = Booru("danbooru", process.env.DANBOORU_API_KEY)
+        const danbooru = Booru("danbooru", process.env.DANBOORU_API_KEY as any)
         const danbooruEmbed = embeds.createEmbed()
         .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")
         .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
