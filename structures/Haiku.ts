@@ -1,6 +1,7 @@
 import {Message} from "discord.js"
 import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
+import {syllable} from "syllable"
 export class Haiku {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
@@ -8,7 +9,6 @@ export class Haiku {
     public haiku = () => {
         const embeds = new Embeds(this.discord, this.message)
         const wordArray = this.message.content.replace(/\s+/g, " ").split(" ")
-        const syllable = require("syllable")
         let lineCount1 = 0
         let lineCount2 = 0
         let lineCount3 = 0

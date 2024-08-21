@@ -188,7 +188,7 @@
     "stackexchange": "^1.2.0",
     "svg-captcha": "^1.4.0",
     "svg2img": "^0.6.1",
-    "syllable": "github:Moebits/syllable",
+    "syllable": "^5.0.1",
     "tenorjs": "^1.0.7",
     "trello-for-wolves": "^2.0.2",
     "tumblr.js": "^2.0.2",
