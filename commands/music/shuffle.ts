@@ -35,7 +35,9 @@ export default class Shuffle extends Command {
         if (!audio.checkMusicPlaying()) return
         audio.shuffle()
         const rep = await message.reply("Shuffled the queue!")
-        rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+        await Functions.timeout(3000)
+        rep.delete().catch(() => null)
+        message.delete().catch(() => null)
         return
     }
 }

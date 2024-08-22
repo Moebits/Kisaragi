@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -35,20 +35,20 @@ export default class Itunes extends Command {
 
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("itunes", "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", "https://fnd.io/")
+            .setAuthor({name: "itunes", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", url: "https://fnd.io/"})
             .setTitle(`**Itunes Search** ${discord.getEmoji("RaphiSmile")}`))
         }
 
         const url = `https://itunes.apple.com/search?country=US&entity=song&explicit=no&lang=en&media=music&term=${query}`
         const response = await axios.get(url, {headers}).then((r) => r.data)
-        const itunesArray: MessageEmbed[] = []
+        const itunesArray: EmbedBuilder[] = []
         for (let i = 0; i < response.results.length; i++) {
             const track = response.results[i]
             const minutes = Math.floor(track.trackTimeMillis / 60000)
             const seconds = Math.floor((track.trackTimeMillis % (minutes*60000)) / 1000)
             const itunesEmbed = embeds.createEmbed()
             itunesEmbed
-            .setAuthor("itunes", "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", "https://fnd.io/")
+            .setAuthor({name: "itunes", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", url: "https://fnd.io/"})
             .setTitle(`**Itunes Search** ${discord.getEmoji("RaphiSmile")}`)
             .setImage(track.artworkUrl100)
             .setURL(track.trackViewUrl)
@@ -67,12 +67,12 @@ export default class Itunes extends Command {
 
         if (!itunesArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("itunes", "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", "https://fnd.io/")
+            .setAuthor({name: "itunes", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", url: "https://fnd.io/"})
             .setTitle(`**Itunes Search** ${discord.getEmoji("RaphiSmile")}`))
         }
 
         if (itunesArray.length === 1) {
-            message.channel.send(itunesArray[0])
+            message.channel.send({embeds: [itunesArray[0]]})
         } else {
             embeds.createReactionEmbed(itunesArray)
         }

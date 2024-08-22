@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
@@ -73,7 +73,7 @@ export default class ConstrainGIF extends Command {
         const file = fs.createWriteStream(path.join(dir, `./animated.gif`))
         await images.encodeGif(files, dir, file)
         msg.delete()
-        const attachment = new MessageAttachment(path.join(dir, `./animated.gif`), "animated.gif")
-        return message.reply(`Constrained a **${frames.length}** frame gif down to **${files.length}** frames!`, attachment)
+        const attachment = new AttachmentBuilder(path.join(dir, `./animated.gif`), {name: "animated.gif"})
+        return message.reply({content: `Constrained a **${frames.length}** frame gif down to **${files.length}** frames!`, files: [attachment]})
     }
 }

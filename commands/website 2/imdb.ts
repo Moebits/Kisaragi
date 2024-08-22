@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -38,7 +38,7 @@ export default class IMDB extends Command {
 
         const result = await imdb.get({name: query})
         const imdbEmbed = embeds.createEmbed()
-        .setAuthor("imdb", "https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/171_Imdb_logo_logos-512.png", "https://www.imdb.com/")
+        .setAuthor({name: "imdb", iconURL: "https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/171_Imdb_logo_logos-512.png", url: "https://www.imdb.com/"})
         .setTitle(`**IMDb Search** ${discord.getEmoji("yaoi")}`)
         .setImage(result.poster)
         .setURL(result.imdburl)
@@ -54,6 +54,6 @@ export default class IMDB extends Command {
             `${discord.getEmoji("star")}_Actors:_ ${Functions.checkChar(result.actors, 100, ",")}\n` +
             `${discord.getEmoji("star")}_Synopsis:_ ${Functions.checkChar(result.plot, 1500, " ")}\n`
         )
-        return message.channel.send(imdbEmbed)
+        return message.channel.send({embeds: [imdbEmbed]})
     }
 }

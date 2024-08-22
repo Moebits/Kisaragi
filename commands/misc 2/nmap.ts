@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import nmap from "node-nmap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -31,7 +31,7 @@ export default class Nmap extends Command {
         const text = Functions.combineArgs(args, 1)
         if (!text) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("nmap", "https://miro.medium.com/max/450/1*e0PvOyJqlUEGd8h3WHWEnA.jpeg", "https://nmap.org/")
+            .setAuthor({name: "nmap", iconURL: "https://miro.medium.com/max/450/1*e0PvOyJqlUEGd8h3WHWEnA.jpeg", url: "https://nmap.org/"})
             .setTitle(`**Nmap Scan** ${discord.getEmoji("kannaSpook")}`), "You must specify a host name or ip address.")
         }
         if (/127.0.0.1|localhost/gi.test(text) && message.author.id !== process.env.OWNER_ID) {
@@ -49,11 +49,11 @@ export default class Nmap extends Command {
             quickscan.on("error", (err: Error) => {
                 console.log(err)
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor("nmap", "https://miro.medium.com/max/450/1*e0PvOyJqlUEGd8h3WHWEnA.jpeg", "https://nmap.org/")
+                .setAuthor({name: "nmap", iconURL: "https://miro.medium.com/max/450/1*e0PvOyJqlUEGd8h3WHWEnA.jpeg", url: "https://nmap.org/"})
                 .setTitle(`**Nmap Scan** ${discord.getEmoji("kannaSpook")}`))
             })
         })
-        const nmapArray: MessageEmbed[] = []
+        const nmapArray: EmbedBuilder[] = []
         for (let i = 0; i < data.length; i++) {
             const info = data[i]
             if (!info.hostname) continue
@@ -63,7 +63,7 @@ export default class Nmap extends Command {
             }).join("") : "None"
             const nmapEmbed = embeds.createEmbed()
             nmapEmbed
-            .setAuthor("nmap", "https://miro.medium.com/max/450/1*e0PvOyJqlUEGd8h3WHWEnA.jpeg", "https://nmap.org/")
+            .setAuthor({name: "nmap", iconURL: "https://miro.medium.com/max/450/1*e0PvOyJqlUEGd8h3WHWEnA.jpeg", url: "https://nmap.org/"})
             .setTitle(`**Nmap Scan** ${discord.getEmoji("kannaSpook")}`)
             .setURL(`https://${info.hostname}`)
             .setDescription(
@@ -77,7 +77,7 @@ export default class Nmap extends Command {
         }
 
         if (nmapArray.length === 1) {
-            message.channel.send(nmapArray[0])
+            message.channel.send({embeds: [nmapArray[0]]})
         } else {
             embeds.createReactionEmbed(nmapArray)
         }

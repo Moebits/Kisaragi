@@ -1,4 +1,4 @@
-import type {Message, MessageEmbed} from "discord.js"
+import type {Message, EmbedBuilder} from "discord.js"
 import Giphy, {MultiResponse} from "giphy-api"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -45,11 +45,11 @@ export default class GiphyCommand extends Command {
             const result = await giphy.trending()
             gif = result.data
         }
-        const giphyArray: MessageEmbed[] = []
+        const giphyArray: EmbedBuilder[] = []
         for (let i = 0; i < gif.length; i++) {
             const giphyEmbed = embeds.createEmbed()
             giphyEmbed
-            .setAuthor("giphy", "https://media0.giphy.com/media/YJBNjrvG5Ctmo/giphy.gif", "https://giphy.com/")
+            .setAuthor({name: "giphy", iconURL: "https://media0.giphy.com/media/YJBNjrvG5Ctmo/giphy.gif", url: "https://giphy.com/"})
             .setTitle(`**Giphy Gif** ${discord.getEmoji("raphi")}`)
             .setURL(gif[i].url)
             .setDescription(
@@ -62,7 +62,7 @@ export default class GiphyCommand extends Command {
         }
 
         if (giphyArray.length === 1) {
-            message.channel.send(giphyArray[0])
+            message.channel.send({embeds: [giphyArray[0]]})
         } else {
             embeds.createReactionEmbed(Functions.shuffleArray(giphyArray), true, true)
         }

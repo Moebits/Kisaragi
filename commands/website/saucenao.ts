@@ -1,4 +1,4 @@
-import {Message, MessageEmbed, User} from "discord.js"
+import {Message, User} from "discord.js"
 import Sagiri from "sagiri"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -73,15 +73,15 @@ export default class Saucenao extends Command {
 
         if (args[1]) {
             if (args[1] === "guild") {
-                image = message.guild?.iconURL({format: "png", dynamic: true})
+                image = message.guild?.iconURL({extension: "png"})
                 author = message.author
             } else if (args[1] === "me") {
-                image = message.author.displayAvatarURL({format: "png", dynamic: true})
+                image = message.author.displayAvatarURL({extension: "png"})
                 author = message.author
             } else if (args[1].match(/\d{15,}/)) {
                 const id = args[1].match(/\d{15,}/)?.[0]
                 const user = message.guild?.members.cache.find((m) => m.id === id)
-                image = user?.user.displayAvatarURL({format: "png", dynamic: true})
+                image = user?.user.displayAvatarURL({extension: "png"})
                 author = user?.user
             } else {
                 image = args[1]
@@ -91,7 +91,7 @@ export default class Saucenao extends Command {
             const result = await discord.fetchLastAttachment(message, true)
             if (!result) {
                 author = message.author
-                image = message.author.displayAvatarURL({format: "png", dynamic: true})
+                image = message.author.displayAvatarURL({extension: "png"})
             } else {
                 image = result.image
                 author = result.author
@@ -100,7 +100,7 @@ export default class Saucenao extends Command {
 
         if (!image) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("saucenao", "https://www.userlogos.org/files/logos/zoinzberg/SauceNAO_2.png", "https://saucenao.com/")
+            .setAuthor({name: "saucenao", iconURL: "https://www.userlogos.org/files/logos/zoinzberg/SauceNAO_2.png", url: "https://saucenao.com/"})
             .setTitle(`**Saucenao Search** ${discord.getEmoji("gabrielLick")}`), "No image could be found.")
         }
 
@@ -108,12 +108,12 @@ export default class Saucenao extends Command {
         const {description, url} = this.getDetails(source)
         const siteEmbed = embeds.createEmbed()
         siteEmbed
-        .setAuthor("saucenao", "https://www.userlogos.org/files/logos/zoinzberg/SauceNAO_2.png", "https://saucenao.com/")
+        .setAuthor({name: "saucenao", iconURL: "https://www.userlogos.org/files/logos/zoinzberg/SauceNAO_2.png", url: "https://saucenao.com/"})
         .setTitle(`**Saucenao Search** ${discord.getEmoji("gabrielLick")}`)
-        .setThumbnail(author?.displayAvatarURL({format: "png", dynamic: true}) ?? "")
+        .setThumbnail(author?.displayAvatarURL({extension: "png"}) ?? "")
         .setURL(url)
         .setImage(image)
         .setDescription(Functions.checkChar(description, 2000, " "))
-        return message.channel.send(siteEmbed)
+        return message.channel.send({embeds: [siteEmbed]})
     }
 }

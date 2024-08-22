@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed, Util} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -41,10 +41,10 @@ export default class Wattpad extends Command {
         const result = await axios.get(`https://api.wattpad.com/v4/stories?query=${query}`, {headers})
         const rand = Math.floor(Math.random()*result.data.stories.length)
         const story = result.data.stories[rand]
-        const wattpadArray: MessageEmbed[] = []
+        const wattpadArray: EmbedBuilder[] = []
         const wattpadEmbed = embeds.createEmbed()
         wattpadEmbed
-        .setAuthor("wattpad", "https://www.syfy.com/sites/syfy/files/styles/amp_metadata_content_image_min_696px_wide/public/2017/10/wattpad.jpg", "https://www.wattpad.com/")
+        .setAuthor({name: "wattpad", iconURL: "https://www.syfy.com/sites/syfy/files/styles/amp_metadata_content_image_min_696px_wide/public/2017/10/wattpad.jpg", url: "https://www.wattpad.com/"})
         .setTitle(`**Wattpad Story** ${discord.getEmoji("RaphiSmile")}`)
         .setURL(story.url)
         .setImage(story.cover)
@@ -87,11 +87,11 @@ export default class Wattpad extends Command {
             `${discord.getEmoji("star")}_Votes_ **${partVotes[i]}**\n` +
             `${discord.getEmoji("star")}_Comments:_ **${partComments[i]}**\n` +
             `${match}`
-            const splits = Util.splitMessage(description, {maxLength: 2000, char: "."})
+            const splits = Functions.splitMessage(description, {maxLength: 2000, char: "."})
             for (let j = 0; j < splits.length; j++) {
                 const wattpadEmbed = embeds.createEmbed()
                 wattpadEmbed
-                .setAuthor("wattpad", "https://www.syfy.com/sites/syfy/files/styles/amp_metadata_content_image_min_696px_wide/public/2017/10/wattpad.jpg", "https://www.wattpad.com/")
+                .setAuthor({name: "wattpad", iconURL: "https://www.syfy.com/sites/syfy/files/styles/amp_metadata_content_image_min_696px_wide/public/2017/10/wattpad.jpg", url: "https://www.wattpad.com/"})
                 .setTitle(`**Wattpad Story** ${discord.getEmoji("RaphiSmile")}`)
                 .setURL(partURLS[i])
                 .setImage(partPhotos[i])
@@ -101,7 +101,7 @@ export default class Wattpad extends Command {
             }
         }
         if (wattpadArray.length === 1) {
-            message.channel.send(wattpadArray[0])
+            message.channel.send({embeds: [wattpadArray[0]]})
         } else {
             embeds.createReactionEmbed(wattpadArray, false, true)
         }

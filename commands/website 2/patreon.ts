@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -32,7 +32,7 @@ export default class Patreon extends Command {
         let query = Functions.combineArgs(args, 1).trim()
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("patreon", "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg", "https://www.patreon.com/")
+            .setAuthor({name: "patreon", iconURL: "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg", url: "https://www.patreon.com/"})
             .setTitle(`**Patreon Search** ${discord.getEmoji("raphi")}`), "You must provide a creator name.")
         }
         if (query.match(/patreon.com/)) {
@@ -41,7 +41,7 @@ export default class Patreon extends Command {
         const response = await axios.get(`https://www.patreon.com/${query}`, {headers})
         if (!response.data.match(/(?<="related": "https:\/\/www.patreon.com\/api\/campaigns\/)(.*?)(?=")/)) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("patreon", "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg", "https://www.patreon.com/")
+            .setAuthor({name: "patreon", iconURL: "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg", url: "https://www.patreon.com/"})
             .setTitle(`**Patreon Search** ${discord.getEmoji("raphi")}`))
         }
         const id = response.data.match(/(?<="related": "https:\/\/www.patreon.com\/api\/campaigns\/)(.*?)(?=")/)[0]
@@ -62,7 +62,7 @@ export default class Patreon extends Command {
         const yt = json.data?.included[0]?.attributes?.youtube
         const patreonEmbed = embeds.createEmbed()
         patreonEmbed
-        .setAuthor("patreon", "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg", "https://www.patreon.com/")
+        .setAuthor({name: "patreon", iconURL: "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg", url: "https://www.patreon.com/"})
         .setTitle(`**Patreon Search** ${discord.getEmoji("raphi")}`)
         .setURL(url)
         .setImage(cover)
@@ -80,6 +80,6 @@ export default class Patreon extends Command {
             `${discord.getEmoji("star")}_Facebook:_ ${fb ? fb : "None"}\n` +
             `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(description, 1700, " ")}`
         )
-        return message.channel.send(patreonEmbed)
+        return message.channel.send({embeds: [patreonEmbed]})
     }
 }

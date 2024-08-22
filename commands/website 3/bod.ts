@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import querystring from "querystring"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -37,7 +37,7 @@ export default class BotsOnDiscord extends Command {
         const query = Functions.combineArgs(args, 1).trim()
         const response = await axios.post(`https://bots.ondiscord.xyz/api/bots/search`, {query, sort: "relevance", limit: 30}, {headers}).then((r) => r.data)
 
-        const botArray: MessageEmbed[] = []
+        const botArray: EmbedBuilder[] = []
         for (let i = 0; i < response.results.length; i++) {
             const bot = response.results[i]
             const botEmbed = embeds.createEmbed()
@@ -45,7 +45,7 @@ export default class BotsOnDiscord extends Command {
             const support = bot.serverInviteCode ? `[**Support Server**](https://discord.gg/${bot.serverInviteCode})\n` : ""
             const invite = bot.inviteUrl ? `[**Bot Invite**](${bot.inviteUrl})\n` : ""
             botEmbed
-            .setAuthor("bots on discord", "https://cdn.discordapp.com/avatars/437086154215391233/984253b49d32657982a3a5980a302d7e.jpg?size=512", "https://bots.ondiscord.xyz/")
+            .setAuthor({name: "bots on discord", iconURL: "https://cdn.discordapp.com/avatars/437086154215391233/984253b49d32657982a3a5980a302d7e.jpg?size=512", url: "https://bots.ondiscord.xyz/"})
             .setTitle(`**BOD Search** ${discord.getEmoji("kannaCurious")}`)
             .setURL(`https://bots.ondiscord.xyz/bots/${bot.clientId}`)
             .setThumbnail(`https://cdn.discordapp.com/avatars/${bot.clientId}/${bot.avatarHash}.png`)
@@ -66,7 +66,7 @@ export default class BotsOnDiscord extends Command {
         }
 
         if (botArray.length === 1) {
-            message.channel.send(botArray[0])
+            message.channel.send({embeds: [botArray[0]]})
         } else {
             embeds.createReactionEmbed(botArray)
         }

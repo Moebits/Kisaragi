@@ -1,6 +1,5 @@
 import axios from "axios"
-import DBL from "dblapi.js"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -40,7 +39,7 @@ export default class DiscordBotList extends Command {
         const search = Functions.combineArgs(args, 1)
         const data = await axios.get(`https://top.gg/api/bots?search=${encodeURI(search)}&limit=50&sort=date`, {headers}).then((r) => r.data.results)
 
-        const botArray: MessageEmbed[] = []
+        const botArray: EmbedBuilder[] = []
         const max = data.length < 25 ? data.length : 25
         for (let i = 0; i < max; i++) {
             const bot = data[i]
@@ -51,7 +50,7 @@ export default class DiscordBotList extends Command {
             const invite = bot.invite ? `[**Invite**](${bot.invite})\n` : ""
             const botEmbed = embeds.createEmbed()
             botEmbed
-            .setAuthor("discord bot list", "https://top.gg/images/dblnew.png")
+            .setAuthor({name: "discord bot list", iconURL: "https://top.gg/images/dblnew.png"})
             .setTitle(`**DBL Search** ${discord.getEmoji("RaphiSmile")}`)
             .setURL(`https://top.gg/bot/${bot.id}`)
             .setThumbnail(`https://images.discordapp.net/avatars/${bot.id}/${bot.avatar}.png`)
@@ -74,7 +73,7 @@ export default class DiscordBotList extends Command {
         }
 
         if (botArray.length === 1) {
-            message.channel.send(botArray[0])
+            message.channel.send({embeds: [botArray[0]]})
         } else {
             embeds.createReactionEmbed(botArray)
         }

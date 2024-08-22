@@ -28,10 +28,10 @@ export default class Ping extends Command {
 
         const pingEmbed = embeds.createEmbed()
 
-        const msg = await message.channel.send(pingEmbed
-        .setDescription("Ping?")) as Message
-        msg.edit(pingEmbed
+        const msg = await message.channel.send({embeds: [pingEmbed
+        .setDescription("Ping?")]}) as Message
+        msg.edit({embeds: [pingEmbed
         .setTitle(`**Ping** ${discord.getEmoji("kannaHungry")}`)
-        .setDescription(`Ping is **${msg.createdTimestamp - message.createdTimestamp}ms**`))
+        .setDescription(`Ping is **${msg.createdTimestamp - message.createdTimestamp}ms**`)]})
     }
   }

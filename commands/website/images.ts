@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import GoogleImages from "google-images"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -34,7 +34,7 @@ export default class GoogleImageCommand extends Command {
         let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("google images", "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", "https://images.google.com/")
+            .setAuthor({name: "google images", iconURL: "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", url: "https://images.google.com/"})
             .setTitle(`**Image Search** ${discord.getEmoji("raphi")}`)
             )
         }
@@ -50,12 +50,12 @@ export default class GoogleImageCommand extends Command {
         }
 
         const result = await images.search(query)
-        const imagesArray: MessageEmbed[] = []
+        const imagesArray: EmbedBuilder[] = []
         for (let i = 0; i < result.length; i++) {
             const imageEmbed = embeds.createEmbed()
             const size = Math.floor(result[i].size/1024)
             imageEmbed
-            .setAuthor("google images", "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", "https://images.google.com/")
+            .setAuthor({name: "google images", iconURL: "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", url: "https://images.google.com/"})
             .setURL(result[i].url)
             .setTitle(`**Image Search** ${discord.getEmoji("raphi")}`)
             .setDescription(

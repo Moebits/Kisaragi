@@ -1,28 +1,24 @@
-import {Message, MessageAttachment} from "discord.js"
-import fs from "fs"
-import gifFrames from "gif-frames"
-import path from "path"
-import Youtube from "youtube.ts"
+import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import {CommandFunctions} from "./../../structures/CommandFunctions"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Images} from "./../../structures/Images"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {Video} from "./../../structures/Video"
+import {CommandFunctions} from "../../structures/CommandFunctions"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Images} from "../../structures/Images"
+import {Kisaragi} from "../../structures/Kisaragi"
+import {Video} from "../../structures/Video"
 
-export default class Ytdl extends Command {
+export default class YtMp3 extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Short alias for youtube download mp3.",
             help:
             `
-            \`ytdl url/query\` - Downloads the video mp3
+            \`ytmp3 url/query\` - Downloads the video mp3
             `,
             examples:
             `
-            \`=>ytdl https://youtu.be/mLJQ0HO5Alc\`
+            \`=>ytmp3 https://youtu.be/mLJQ0HO5Alc\`
             `,
             aliases: ["youtube download"],
             cooldown: 20,

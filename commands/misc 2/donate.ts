@@ -35,6 +35,6 @@ export default class Donate extends Command {
             `[**Patreon**](${config.patreon})\n` +
             `[**Ko-fi**](${config.kofi})`
         )
-        return message.channel.send(donateEmbed)
+        return message.channel.send({embeds: [donateEmbed]})
     }
 }

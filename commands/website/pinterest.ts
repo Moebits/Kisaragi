@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import GoogleImages from "google-images"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
-let pinArray: MessageEmbed[] = []
+let pinArray: EmbedBuilder[] = []
 
 export default class Pinterest extends Command {
     private user = null as any
@@ -38,18 +38,18 @@ export default class Pinterest extends Command {
         if (!msg) msg = ""
         const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
-        .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
+        .setAuthor({name: "pinterest", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", url: "https://www.pinterest.com/"})
         .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
         .setDescription(`No results were found. ${msg}Try searching on the pinterest website: ` +
         "[Pinterest Website](https://www.pinterest.com/)")
-        message.channel.send(pinterestEmbed)
+        message.channel.send({embeds: [pinterestEmbed]})
     }
 
     public pinterestPin = (discord: Kisaragi, message: Message, response: any) => {
         const embeds = new Embeds(discord, message)
         const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
-        .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
+        .setAuthor({name: "pinterest", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", url: "https://www.pinterest.com/"})
         .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
         .setURL(response.url)
         .setImage(response.image.original.url)
@@ -100,7 +100,7 @@ export default class Pinterest extends Command {
                 const pinDate = response.items[i].date_published
                 const pinEmbed = embeds.createEmbed()
                 pinEmbed
-                .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
+                .setAuthor({name: "pinterest", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", url: "https://www.pinterest.com/"})
                 .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
                 .setURL(pinUrl)
                 .setImage(pinImage ? pinImage : "")
@@ -116,7 +116,7 @@ export default class Pinterest extends Command {
                 return
             }
             if (pinArray.length === 1) {
-                message.channel.send(pinArray[0])
+                message.channel.send({embeds: [pinArray[0]]})
             } else {
                 embeds.createReactionEmbed(pinArray, true, true)
             }
@@ -136,7 +136,7 @@ export default class Pinterest extends Command {
                 const pinDate = response.items[i].date_published
                 const pinEmbed = embeds.createEmbed()
                 pinEmbed
-                .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
+                .setAuthor({name: "pinterest", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", url: "https://www.pinterest.com/"})
                 .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
                 .setURL(pinUrl)
                 .setImage(pinImage ? pinImage : "")
@@ -149,7 +149,7 @@ export default class Pinterest extends Command {
             }
             if (!pinArray.join("")) return this.pinterestError(discord, message, embeds)
             if (pinArray.length === 1) {
-                message.channel.send(pinArray[0])
+                message.channel.send({embeds: [pinArray[0]]})
             } else {
                 embeds.createReactionEmbed(pinArray, true, true)
             }
@@ -205,7 +205,7 @@ export default class Pinterest extends Command {
                 const pinDate = response.items[i].date_published
                 const pinEmbed = embeds.createEmbed()
                 pinEmbed
-                .setAuthor("pinterest", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", "https://www.pinterest.com/")
+                .setAuthor({name: "pinterest", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c52e.png", url: "https://www.pinterest.com/"})
                 .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
                 .setURL(pinUrl)
                 .setImage(pinImage ? pinImage : "")
@@ -222,7 +222,7 @@ export default class Pinterest extends Command {
 
         if (!pinArray.join("")) return this.pinterestError(discord, message, embeds)
         if (pinArray.length === 1) {
-                message.channel.send(pinArray[0])
+                message.channel.send({embeds: [pinArray[0]]})
         } else {
                 embeds.createReactionEmbed(pinArray, true, true)
         }

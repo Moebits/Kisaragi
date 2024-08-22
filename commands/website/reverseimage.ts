@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 // import osmosis from "osmosis"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -71,13 +71,13 @@ export default class ReverseImage extends Command {
         if (!args[1]) {
             image = await discord.fetchLastAttachment(message)
         } else if (args[1] === "guild") {
-            image = message.guild?.iconURL({format: "png", dynamic: true})
+            image = message.guild?.iconURL({extension: "png"})
         } else if (args[1] === "me") {
-            image = message.author.displayAvatarURL({format: "png", dynamic: true})
+            image = message.author.displayAvatarURL({extension: "png"})
         } else if (args[1].match(/\d{17,}/)) {
             const user = message.guild?.members.cache.find((m) => m.id === args[1].match(/\d{17,}/)![0])
             if (user) {
-                image = user?.user.displayAvatarURL({format: "png", dynamic: true})
+                image = user?.user.displayAvatarURL({extension: "png"})
             } else {
                 image = args[1]
             }
@@ -85,25 +85,27 @@ export default class ReverseImage extends Command {
             image = args[1]
         }
 
-        if (!image) image = message.author.displayAvatarURL({format: "png", dynamic: true})
-        const result = await Functions.promiseTimeout(10000, this.revSearch(image))
-        .catch(() => {
+        if (!image) image = message.author.displayAvatarURL({extension: "png"})
+        let result = [] as any[]
+        try {
+            result = await Functions.promiseTimeout(10000, this.revSearch(image))
+        } catch {
             const revEmbed = embeds.createEmbed()
-            .setAuthor("reverse image search", "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", "https://images.google.com/")
+            .setAuthor({name: "reverse image search", iconURL: "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", url: "https://images.google.com/"})
             .setTitle(`**Google Reverse Image Search** ${discord.getEmoji("gabSip")}`)
             .setURL(`https://www.google.com/searchbyimage?image_url=${image}`)
             .setThumbnail(image!)
             .setDescription(
                 `${discord.getEmoji("star")}Sorry, but no results were found. [**Here**](https://www.google.com/searchbyimage?image_url=${image}) is a direct link to the search.`
             )
-            return message.channel.send(revEmbed)
-        }) as any
+            return message.channel.send({embeds: [revEmbed]})
+        }
 
-        const revArray: MessageEmbed[] = []
+        const revArray: EmbedBuilder[] = []
         for (let i = 0; i < result.length; i++) {
             const revEmbed = embeds.createEmbed()
             revEmbed
-            .setAuthor("reverse image search", "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", "https://images.google.com/")
+            .setAuthor({name: "reverse image search", iconURL: "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", url: "https://images.google.com/"})
             .setTitle(`**Google Reverse Image Search** ${discord.getEmoji("gabSip")}`)
             .setURL(`https://www.google.com/searchbyimage?image_url=${image}`)
             .setThumbnail(image!)
@@ -118,7 +120,7 @@ export default class ReverseImage extends Command {
 
         if (!revArray[0]) return
         if (revArray.length === 1) {
-            message.channel.send(revArray[0])
+            message.channel.send({embeds: [revArray[0]]})
         } else {
             embeds.createReactionEmbed(revArray, true, true)
         }

@@ -1,4 +1,4 @@
-import {Message, MessageAttachment, MessageEmbed} from "discord.js"
+import {Message, AttachmentBuilder, EmbedBuilder} from "discord.js"
 import fs from "fs"
 import Soundcloud from "soundcloud.ts"
 import {Command} from "../../structures/Command"
@@ -63,15 +63,15 @@ export default class SoundCloud extends Command {
             const query = this.user || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+                .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
                 .setTitle(`**Soundcloud User** ${discord.getEmoji("karenSugoi")}`))
             }
-            const soundcloudArray: MessageEmbed[] = []
+            const soundcloudArray: EmbedBuilder[] = []
             const users = await soundcloud.users.searchV2({q: query}).then((u) => u.collection)
             for (let i = 0; i < users.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
-                .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+                .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
                 .setTitle(`**Soundcloud User** ${discord.getEmoji("karenSugoi")}`)
                 .setURL(users[i].permalink_url)
                 .setImage(users[i].avatar_url)
@@ -86,7 +86,7 @@ export default class SoundCloud extends Command {
                 soundcloudArray.push(soundcloudEmbed)
             }
             if (soundcloudArray.length === 1) {
-                return message.channel.send(soundcloudArray[0])
+                return message.channel.send({embeds: [soundcloudArray[0]]})
             }
             return embeds.createReactionEmbed(soundcloudArray, true, true)
         }
@@ -95,15 +95,15 @@ export default class SoundCloud extends Command {
             const query = this.playlist || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+                .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
                 .setTitle(`**Soundcloud Playlist** ${discord.getEmoji("karenSugoi")}`))
             }
-            const soundcloudArray: MessageEmbed[] = []
+            const soundcloudArray: EmbedBuilder[] = []
             const playlists = await soundcloud.playlists.searchV2({q: query}).then((p) => p.collection)
             for (let i = 0; i < playlists.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
-                .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+                .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
                 .setTitle(`**Soundcloud Playlist** ${discord.getEmoji("karenSugoi")}`)
                 .setURL(playlists[i].permalink_url)
                 .setImage(playlists[i].artwork_url!)
@@ -118,7 +118,7 @@ export default class SoundCloud extends Command {
                 soundcloudArray.push(soundcloudEmbed)
             }
             if (soundcloudArray.length === 1) {
-                return message.channel.send(soundcloudArray[0])
+                return message.channel.send({embeds: [soundcloudArray[0]]})
             }
             return embeds.createReactionEmbed(soundcloudArray, true, true)
         }
@@ -127,7 +127,7 @@ export default class SoundCloud extends Command {
             const query = Functions.combineArgs(args, 2).trim()
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+                .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
                 .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
             }
             const rand = Math.floor(Math.random()*10000)
@@ -141,7 +141,7 @@ export default class SoundCloud extends Command {
             }
             if (!track) {
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+                .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
                 .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
             }
             let file: string
@@ -155,20 +155,20 @@ export default class SoundCloud extends Command {
                 const link = await images.upload(file)
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
-                .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+                .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
                 .setURL(link)
                 .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
                 .setDescription(`${discord.getEmoji("star")}Downloaded the track! This file is too large for attachments. Download the file [**here**](${link}).\n`)
-                await message.channel.send(soundcloudEmbed)
+                await message.channel.send({embeds: [soundcloudEmbed]})
             } else {
-                const attachment = new MessageAttachment(file)
+                const attachment = new AttachmentBuilder(file)
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
-                .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+                .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
                 .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
                 .setDescription(`${discord.getEmoji("star")}Downloaded the track!\n`)
-                await message.channel.send(soundcloudEmbed)
-                await message.channel.send(attachment)
+                await message.channel.send({embeds: [soundcloudEmbed]})
+                await message.channel.send({files: [attachment]})
             }
             Functions.removeDirectory(src)
             return
@@ -177,15 +177,15 @@ export default class SoundCloud extends Command {
         const query = this.track || Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+            .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
         }
-        const soundcloudArray: MessageEmbed[] = []
+        const soundcloudArray: EmbedBuilder[] = []
         const tracks = await soundcloud.tracks.searchV2({q: query}).then((t) => t.collection)
         for (let i = 0; i < tracks.length; i++) {
             const soundcloudEmbed = embeds.createEmbed()
             soundcloudEmbed
-            .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://soundcloud.com/")
+            .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`)
             .setURL(tracks[i].permalink_url)
             .setThumbnail(tracks[i].user.avatar_url)
@@ -204,7 +204,7 @@ export default class SoundCloud extends Command {
             soundcloudArray.push(soundcloudEmbed)
         }
         if (soundcloudArray.length === 1) {
-            return message.channel.send(soundcloudArray[0])
+            return message.channel.send({embeds: [soundcloudArray[0]]})
         }
         return embeds.createReactionEmbed(soundcloudArray, true, true)
     }

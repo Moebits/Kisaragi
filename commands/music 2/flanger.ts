@@ -74,7 +74,9 @@ export default class Flanger extends Command {
             const embed = await audio.updateNowPlaying()
             queue[0].message.edit(embed)
             const rep = await message.reply("Applied a flanger effect to the file!")
-            rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+            await Functions.timeout(3000)
+        rep.delete().catch(() => null)
+        message.delete().catch(() => null)
         }
         return
     }

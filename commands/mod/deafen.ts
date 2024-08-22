@@ -52,7 +52,7 @@ export default class Deafen extends Command {
                 continue
             }
             deafenEmbed
-            .setAuthor("deafen", "https://cdn4.iconfinder.com/data/icons/music-audio-4/24/mute_sound_speaker_headphone_headset_music-512.png")
+            .setAuthor({name: "deafen", iconURL: "https://cdn4.iconfinder.com/data/icons/music-audio-4/24/mute_sound_speaker_headphone_headset_music-512.png"})
             .setTitle(`**You Were Deafened** ${discord.getEmoji("sataniaDead")}`)
             .setDescription(`${discord.getEmoji("star")}_You were deafened from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -63,14 +63,14 @@ export default class Deafen extends Command {
             } catch {
                 return message.reply(`I need the **Deafen Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(deafenEmbed).catch(() => null)
+            await dm.send({embeds: [deafenEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         deafenEmbed
-        .setAuthor("deafen", "https://cdn4.iconfinder.com/data/icons/music-audio-4/24/mute_sound_speaker_headphone_headset_music-512.png")
+        .setAuthor({name: "deafen", iconURL: "https://cdn4.iconfinder.com/data/icons/music-audio-4/24/mute_sound_speaker_headphone_headset_music-512.png"})
         .setTitle(`**Member Deafened** ${discord.getEmoji("sataniaDead")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully deafened ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send(deafenEmbed)
+        message.channel.send({embeds: [deafenEmbed]})
         return
     }
 }

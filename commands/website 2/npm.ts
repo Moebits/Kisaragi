@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -36,20 +36,20 @@ export default class NPM extends Command {
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setTitle(`**NPM Search** ${discord.getEmoji("gabStare")}`)
-            .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png", "https://www.npmjs.com/"))
+            .setAuthor({name: `npm`, iconURL: "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png", url: "https://www.npmjs.com/"}))
         }
         if (query.match(/npmjs.com/)) {
             query = query.match(/(?<=\/)(?:.(?!\/))+$/)![0].replace("search?q=", "")
         }
         const result = await npm(query, {sortBy: "popularity"})
-        const npmArray: MessageEmbed[] = []
+        const npmArray: EmbedBuilder[] = []
         for (let i = 0; i < result.length; i++) {
             const npmEmbed = embeds.createEmbed()
             const keywords = result[i].keywords ? result[i].keywords.join(", ") : "None"
             npmEmbed
             .setTitle(`**${result[i].name}** ${discord.getEmoji("gabStare")}`)
             .setURL(result[i].links ? result[i].links.npm : "None")
-            .setAuthor(`npm`, "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png", "https://www.npmjs.com/")
+            .setAuthor({name: `npm`, iconURL: "https://www.tomsquest.com/img/posts/2018-10-02-better-npm-ing/npm_logo.png", url: "https://www.npmjs.com/"})
             .setThumbnail(`https://i.imgur.com/CJ70ktz.png`)
             .setDescription(
             `${discord.getEmoji("star")}_Version:_ **${result[i].version}**\n` +
@@ -65,7 +65,7 @@ export default class NPM extends Command {
         if (npmArray.length > 1) {
             embeds.createReactionEmbed(npmArray)
         } else {
-            message.channel.send(npmArray[0])
+            message.channel.send({embeds: [npmArray[0]]})
         }
     }
 }

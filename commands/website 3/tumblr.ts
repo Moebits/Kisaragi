@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import Tumblr from "tumblr.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -31,7 +31,7 @@ export default class TumblrCommand extends Command {
         const embeds = new Embeds(discord, message)
         const tumblr = Tumblr.createClient({consumer_key: process.env.TUMBLR_API_KEY, returnPromises: true})
 
-        const tumblrArray: MessageEmbed[] = []
+        const tumblrArray: EmbedBuilder[] = []
         let posts: any
         let avatar = ""
         let setAvatar = false
@@ -39,7 +39,7 @@ export default class TumblrCommand extends Command {
             const blog = args[2]
             if (!blog) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("tumblr", "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", "https://www.tumblr.com/")
+                .setAuthor({name: "tumblr", iconURL: "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", url: "https://www.tumblr.com/"})
                 .setTitle(`**Tumblr Search** ${discord.getEmoji("chinoSmug")}`), "You must provide a blog name.")
             }
             const data = await (tumblr.blogPosts(blog) as any)
@@ -47,7 +47,7 @@ export default class TumblrCommand extends Command {
             avatar = info.avatar?.[0]?.url
             const tumblrEmbed = embeds.createEmbed()
             tumblrEmbed
-            .setAuthor("tumblr", "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", "https://www.tumblr.com/")
+            .setAuthor({name: "tumblr", iconURL: "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", url: "https://www.tumblr.com/"})
             .setTitle(`**Tumblr Search** ${discord.getEmoji("chinoSmug")}`)
             .setURL(info.url)
             .setImage(info.theme.header_image)
@@ -70,7 +70,7 @@ export default class TumblrCommand extends Command {
         }
         if (!posts?.[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("tumblr", "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", "https://www.tumblr.com/")
+            .setAuthor({name: "tumblr", iconURL: "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", url: "https://www.tumblr.com/"})
             .setTitle(`**Tumblr Search** ${discord.getEmoji("chinoSmug")}`))
         }
         for (let i = 0; i < posts.length; i++) {
@@ -81,7 +81,7 @@ export default class TumblrCommand extends Command {
             const link = post.link_url ? post.link_url : (post.type === "photo" ? post.image_permalink : (post.type === "video" ? post.permalink_url : post.short_url))
             const tumblrEmbed = embeds.createEmbed()
             tumblrEmbed
-            .setAuthor("tumblr", "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", "https://www.tumblr.com/")
+            .setAuthor({name: "tumblr", iconURL: "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", url: "https://www.tumblr.com/"})
             .setTitle(`**Tumblr Search** ${discord.getEmoji("chinoSmug")}`)
             .setImage(image)
             .setThumbnail(avatar)
@@ -97,7 +97,7 @@ export default class TumblrCommand extends Command {
             tumblrArray.push(tumblrEmbed)
         }
         if (tumblrArray.length === 1) {
-            await message.channel.send(tumblrArray[0])
+            await message.channel.send({embeds: [tumblrArray[0]]})
         } else {
             embeds.createReactionEmbed(tumblrArray, true, true)
         }

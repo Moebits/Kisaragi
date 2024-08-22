@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -33,19 +33,19 @@ export default class GooglePlay extends Command {
 
         if (!term) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("google play", "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_play.png", "https://play.google.com/store?hl=en_US")
+            .setAuthor({name: "google play", iconURL: "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_play.png", url: "https://play.google.com/store?hl=en_US"})
             .setTitle(`**Google Play Search** ${discord.getEmoji("PoiHug")}`))
         }
 
         const playstore = require("google-play-scraper")
 
         const res = await playstore.search({term, num: 50, fullDetail: true})
-        const playArray: MessageEmbed[] = []
+        const playArray: EmbedBuilder[] = []
         for (let i = 0; i < res.length; i++) {
             const app = res[i]
             const playEmbed = embeds.createEmbed()
             playEmbed
-            .setAuthor("google play", "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_play.png", "https://play.google.com/store?hl=en_US")
+            .setAuthor({name: "google play", iconURL: "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_play.png", url: "https://play.google.com/store?hl=en_US"})
             .setTitle(`**Google Play Search** ${discord.getEmoji("PoiHug")}`)
             .setURL(app.url)
             .setThumbnail(app.icon)
@@ -69,12 +69,12 @@ export default class GooglePlay extends Command {
 
         if (!playArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("google play", "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_play.png", "https://play.google.com/store?hl=en_US")
+            .setAuthor({name: "google play", iconURL: "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_play.png", url: "https://play.google.com/store?hl=en_US"})
             .setTitle(`**Google Play Search** ${discord.getEmoji("PoiHug")}`))
         }
 
         if (playArray.length === 1) {
-            message.channel.send(playArray[0])
+            message.channel.send({embeds: [playArray[0]]})
         } else {
             embeds.createReactionEmbed(playArray, true, true)
         }

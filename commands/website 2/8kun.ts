@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -58,7 +58,7 @@ export default class $8kun extends Command {
         const random = Math.floor(Math.random() * result.data[0].threads.length)
         const threads = result.data[random].threads
 
-        const chanArray: MessageEmbed[] = []
+        const chanArray: EmbedBuilder[] = []
         for (let i = 0; i < threads.length; i++) {
             const thread = threads[i]
             const chanEmbed = embeds.createEmbed()
@@ -66,7 +66,7 @@ export default class $8kun extends Command {
             const image = thread.filename ? `https://media.8kun.top/file_store/thumb/${thread.tim}${thread.ext}` : "https://8kun.top/index.html"
             const imageInfo = thread.filename ? `File: ${thread.filename}${thread.ext} (${Math.floor(thread.fsize / 1024)} KB, ${thread.w}x${thread.h})` : "None"
             chanEmbed
-            .setAuthor("8kun", "https://isitwetyet.com/wp-content/uploads/2019/10/8kun-logo-color.png", "https://8kun.top/index.html")
+            .setAuthor({name: "8kun", iconURL: "https://isitwetyet.com/wp-content/uploads/2019/10/8kun-logo-color.png", url: "https://8kun.top/index.html"})
             .setTitle(`**${thread.sub}** ${discord.getEmoji("raphi")}`)
             .setURL(url)
             .setImage(image)

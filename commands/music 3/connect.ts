@@ -1,4 +1,4 @@
-import {Message, VoiceChannel} from "discord.js"
+import {Message, VoiceChannel, ChannelType} from "discord.js"
 import {Audio} from "../../structures/Audio"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -31,20 +31,20 @@ export default class Connect extends Command {
         const perms = new Permission(discord, message)
         if (!perms.checkBotDev()) return
 
-        let voiceChannel = message.guild?.voice?.channel!
+        let voiceChannel = null as unknown as VoiceChannel
 
         if (message.member?.voice.channel) {
-            voiceChannel = message.member.voice.channel
+            voiceChannel = message.member.voice.channel as VoiceChannel
         } else if (!message.member?.voice.channel) {
             if (!args[1]) {
-                voiceChannel = message.guild?.channels.cache.find((c) => c.type === "voice") as VoiceChannel
+                voiceChannel = message.guild?.channels.cache.find((c) => c.type === ChannelType.GuildVoice) as VoiceChannel
                 if (!voiceChannel) return message.reply("Could not find a channel to join!")
             } else {
                 if (args[1].match(/\d{15,}/)) {
                     voiceChannel = message.guild?.channels.cache.find((c) => c.id === args[1].match(/\d{15,}/)?.[0]) as VoiceChannel
                     if (!voiceChannel) return message.reply("Could not find a channel to join!")
                 } else {
-                    voiceChannel = message.guild?.channels.cache.find((c) => c.name.toLowerCase().includes(args[1].toLowerCase()) && c.type === "voice") as VoiceChannel
+                    voiceChannel = message.guild?.channels.cache.find((c) => c.name.toLowerCase().includes(args[1].toLowerCase()) && c.type === ChannelType.GuildVoice) as VoiceChannel
                     if (!voiceChannel) return message.reply("Could not find a channel to join!")
                 }
             }

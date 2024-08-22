@@ -41,7 +41,9 @@ export default class Nightcore extends Command {
         const embed = await audio.updateNowPlaying()
         queue[0].message.edit(embed)
         const rep2 = await message.reply(`Applied a nightcore effect!`)
-        rep2.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+        await Functions.timeout(3000)
+        rep2.delete().catch(() => null)
+        message.delete().catch(() => null)
         return
     }
 }

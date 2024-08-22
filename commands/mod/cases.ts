@@ -1,4 +1,4 @@
-import {GuildChannel, Message, MessageEmbed, TextChannel} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -50,7 +50,7 @@ export default class Cases extends Command {
             }
         }
 
-        const caseArray: MessageEmbed[] = []
+        const caseArray: EmbedBuilder[] = []
         const step = 5.0
         const increment = Math.ceil(cases.length / step)
         for (let i = 0; i < increment; i++) {
@@ -71,15 +71,15 @@ export default class Cases extends Command {
             }
             const caseEmbed = embeds.createEmbed()
             caseEmbed
-            .setAuthor("cases", "https://botbind.s3.amazonaws.com/addons/moderation/icon.png")
+            .setAuthor({name: "cases", iconURL: "https://botbind.s3.amazonaws.com/addons/moderation/icon.png"})
             .setTitle(`**Moderation Cases** ${discord.getEmoji("chinoSmug")}`)
-            .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+            .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
             .setDescription(logs)
             caseArray.push(caseEmbed)
         }
 
         if (caseArray.length === 1) {
-            message.channel.send(caseArray[0])
+            message.channel.send({embeds: [caseArray[0]]})
         } else {
             embeds.createReactionEmbed(caseArray)
         }

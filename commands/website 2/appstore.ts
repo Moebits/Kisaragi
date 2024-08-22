@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -35,19 +35,19 @@ export default class AppStore extends Command {
         let term = Functions.combineArgs(args, 1).trim()
         if (!term) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", "https://fnd.io/")
+            .setAuthor({name: "app store", iconURL: "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", url: "https://fnd.io/"})
             .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`))
         }
         if (term.match(/apps.apple.com/)) {
             term = term.match(/(?<=app\/)(.*?)(?=\/)/)?.[0].replace(/-/g, " ")!
         }
         const response = await store.search({term})
-        const appArray: MessageEmbed[] = []
+        const appArray: EmbedBuilder[] = []
         for (let i = 0; i < response.length; i++) {
             const app = response[i]
             const appEmbed = embeds.createEmbed()
             appEmbed
-            .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", "https://fnd.io/")
+            .setAuthor({name: "app store", iconURL: "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", url: "https://fnd.io/"})
             .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`)
             .setURL(app.url)
             .setThumbnail(app.icon)
@@ -69,11 +69,11 @@ export default class AppStore extends Command {
         }
         if (!appArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("app store", "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", "https://fnd.io/")
+            .setAuthor({name: "app store", iconURL: "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", url: "https://fnd.io/"})
             .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`))
         }
         if (appArray.length === 1) {
-            message.channel.send(appArray[0])
+            message.channel.send({embeds: [appArray[0]]})
         } else {
             embeds.createReactionEmbed(appArray, true, true)
         }

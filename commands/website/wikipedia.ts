@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import fs from "fs"
 import path from "path"
 import wiki from "wikijs"
@@ -66,14 +66,13 @@ export default class Wikipedia extends Command {
 
             await Functions.timeout(500)
 
-            const attachment = new MessageAttachment(path.join(__dirname, "../../../assets/images/dump/wiki.png"))
+            const attachment = new AttachmentBuilder(path.join(__dirname, "../../../assets/images/dump/wiki.png"))
 
             const wikiEmbed = embeds.createEmbed()
             wikiEmbed
-            .setAuthor("wikipedia", "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", "https://en.wikipedia.org/wiki/Main_Page")
+            .setAuthor({name: "wikipedia", iconURL: "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", url: "https://en.wikipedia.org/wiki/Main_Page"})
             .setTitle(`**Wikipedia Article** ${discord.getEmoji("raphi")}`)
             .setURL(page.raw.fullurl)
-            .attachFiles([attachment])
             .setImage(`attachment://wiki.png`)
             .setThumbnail("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiFv5c96eAMFjLxlSiE9F5GYKgzrMBPlUygB9vZzOUetVipzIe")
             .setDescription(
@@ -81,13 +80,13 @@ export default class Wikipedia extends Command {
                 `${discord.getEmoji("star")}_Last Revision:_ **${Functions.formatDate(page.raw.touched)}**\n` +
                 `${discord.getEmoji("star")}_Summary:_ ${Functions.checkChar(summary, 1800, ".")}\n`
             )
-            message.channel.send(wikiEmbed)
+            message.channel.send({embeds: [wikiEmbed], files: [attachment]})
 
         } else {
 
             const wikiEmbed = embeds.createEmbed()
             wikiEmbed
-            .setAuthor("wikipedia", "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", "https://en.wikipedia.org/wiki/Main_Page")
+            .setAuthor({name: "wikipedia", iconURL: "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", url: "https://en.wikipedia.org/wiki/Main_Page"})
             .setTitle(`**Wikipedia Article** ${discord.getEmoji("raphi")}`)
             .setURL(page.raw.fullurl)
             .setImage(mainImg)
@@ -97,7 +96,7 @@ export default class Wikipedia extends Command {
                 `${discord.getEmoji("star")}_Last Revision:_ **${Functions.formatDate(page.raw.touched)}**\n` +
                 `${discord.getEmoji("star")}_Summary:_ ${Functions.checkChar(summary, 1800, ".")}\n`
             )
-            message.channel.send(wikiEmbed)
+            message.channel.send({embeds: [wikiEmbed]})
 
         }
 

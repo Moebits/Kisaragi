@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
@@ -59,7 +59,7 @@ export default class ConstrainGIF extends Command {
         await video.extractAudio(src, dest)
         const videoEmbed = embeds.createEmbed()
         videoEmbed
-        .setAuthor("ffmpeg", "https://cdn.iconscout.com/icon/free/png-512/ffmpeg-569477.png", "https://www.ffmpeg.org/")
+        .setAuthor({name: "ffmpeg", iconURL: "https://cdn.iconscout.com/icon/free/png-512/ffmpeg-569477.png", url: "https://www.ffmpeg.org/"})
         .setTitle(`**Video to mp3** ${discord.getEmoji("karenSugoi")}`)
         .setDescription(`${discord.getEmoji("star")}Converted this video to an mp3 file! ${discord.getEmoji("chinoSmug")}`)
 
@@ -73,10 +73,10 @@ export default class ConstrainGIF extends Command {
                 `${discord.getEmoji("star")}Converted this video to an mp3 file! ${discord.getEmoji("chinoSmug")}\n` +
                 `This file is too large for attachments. Download the file [**here**](${link}).`
             )
-            return message.channel.send(videoEmbed)
+            return message.channel.send({embeds: [videoEmbed]})
         }
-        const attachment = new MessageAttachment(dest)
-        await message.channel.send(videoEmbed)
-        await message.channel.send(attachment)
+        const attachment = new AttachmentBuilder(dest)
+        await message.channel.send({embeds: [videoEmbed]})
+        await message.channel.send({files: [attachment]})
     }
 }

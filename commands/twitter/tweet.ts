@@ -74,7 +74,7 @@ export default class Tweet extends Command {
         const user = await twitter.get("users/lookup", {user_id: twitterID}).then((u) => u[0])
         const twitterEmbed = embeds.createEmbed()
         twitterEmbed
-        .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", "https://twitter.com/")
+        .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
         .setTitle(`**Tweet Posted** ${discord.getEmoji("gabYes")}`)
         .setURL(`https://twitter.com/${user.screen_name}/status/${user.status.id_str}`)
         .setDescription(
@@ -84,6 +84,6 @@ export default class Tweet extends Command {
             )
         .setThumbnail(user.profile_image_url)
         .setImage(user.status.entities.media ? user.status.entities.media[0].media_url : user.profile_banner_url)
-        return message.channel.send(twitterEmbed)
+        return message.channel.send({embeds: [twitterEmbed]})
     }
 }

@@ -1,5 +1,5 @@
 // import crunchyroll, {CrunchyrollSeason} from "crunchyroll.ts"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
@@ -37,7 +37,7 @@ export default class Crunchyroll extends Command {
         const eps = episodes.join("\n")
         const crunchyEmbed = embeds.createEmbed()
         crunchyEmbed
-        .setAuthor("crunchyroll", "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png", "https://www.crunchyroll.com/")
+        .setAuthor({name: "crunchyroll", iconURL: "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png", url: "https://www.crunchyroll.com/"})
         .setTitle(`**Crunchyroll Search** ${discord.getEmoji("himeHappy")}`)
         .setImage(season.portrait_image?.full_url ?? anime.portrait_image?.full_url)
         .setThumbnail(season.landscape_image?.full_url ?? anime.portrait_image?.full_url)
@@ -71,11 +71,11 @@ export default class Crunchyroll extends Command {
 
         const seasons = await crunchyroll.season.search(query).catch(() => {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("crunchyroll", "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png", "https://www.crunchyroll.com/")
+            .setAuthor({name: "crunchyroll", iconURL: "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png", url: "https://www.crunchyroll.com/"})
             .setTitle(`**Crunchyroll Search** ${discord.getEmoji("himeHappy")}`))
         }) as CrunchyrollSeason[]
 
-        const crunchyArray: MessageEmbed[] = []
+        const crunchyArray: EmbedBuilder[] = []
         for (let i = 0; i < seasons.length; i++) {
             const crunchyEmbed = await this.getEmbed(seasons[i])
             crunchyArray.push(crunchyEmbed)

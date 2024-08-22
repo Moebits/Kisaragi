@@ -1,5 +1,5 @@
 import axios from "axios"
-import {DMChannel, Message} from "discord.js"
+import {DMChannel, Message, TextChannel} from "discord.js"
 import md5 from "md5"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -34,13 +34,13 @@ export default class FlickrCommand extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const email = args[1]
         if (!email) return message.reply(`You must provide an email address ${discord.getEmoji("kannaCurious")}`)
-        if (!(message.channel instanceof DMChannel)) await message.channel.bulkDelete(2)
+        if (message.channel instanceof TextChannel) await message.channel.bulkDelete(2)
         const hash = md5(email.trim().toLowerCase())
         const gravatarEmbed = embeds.createEmbed()
-        .setAuthor("gravatar", "https://cdn.wpbeginner.com/wp-content/uploads/2012/08/gravatarlogo.jpg", "https://en.gravatar.com/")
+        .setAuthor({name: "gravatar", iconURL: "https://cdn.wpbeginner.com/wp-content/uploads/2012/08/gravatarlogo.jpg", url: "https://en.gravatar.com/"})
         .setTitle(`**Gravatar Profile Picture** ${discord.getEmoji("kannaSpook")}`)
         .setImage(`https://www.gravatar.com/avatar/${hash}?size=500`)
-        await message.reply("Here is your gravatar profile picture", gravatarEmbed)
+        await message.reply({content: "Here is your gravatar profile picture", embeds: [gravatarEmbed]})
         return
     }
 }

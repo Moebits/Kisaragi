@@ -33,6 +33,6 @@ export default class Review extends Command {
         .setDescription(
             `You can leave a review of my bot [**here**](${config.review}).\n`
         )
-        return message.channel.send(reviewEmbed)
+        return message.channel.send({embeds: [reviewEmbed]})
     }
 }

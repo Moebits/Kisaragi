@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -52,7 +52,7 @@ export default class Fiverr extends Command {
         const gigs = json.listings.gigs
         const max = gigs.length > 10 ? 10 : gigs.length
 
-        const fiverrArray: MessageEmbed[] = []
+        const fiverrArray: EmbedBuilder[] = []
         for (let i = 0; i < max; i++) {
             const gig = gigs[i]
             const url = `https://www.fiverr.com${gig.gig_url}`
@@ -67,7 +67,7 @@ export default class Fiverr extends Command {
             const desc = Functions.checkChar(Functions.decodeEntities(Functions.cleanHTML(json2.description.content)), 1000, " ")
             const fiverrEmbed = embeds.createEmbed()
             fiverrEmbed
-            .setAuthor("fiverr", "https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/profile/photos/41433645/original/fiverr-logo.png", "https://www.fiverr.com/")
+            .setAuthor({name: "fiverr", iconURL: "https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/profile/photos/41433645/original/fiverr-logo.png", url: "https://www.fiverr.com/"})
             .setTitle(`**Fiverr Search** ${discord.getEmoji("tohruThink")}`)
             .setURL(url)
             .setThumbnail(gig.seller_img)
@@ -86,7 +86,7 @@ export default class Fiverr extends Command {
             fiverrArray.push(fiverrEmbed)
         }
         if (fiverrArray.length === 1) {
-            await message.channel.send(fiverrArray[0])
+            await message.channel.send({embeds: [fiverrArray[0]]})
         } else {
             embeds.createReactionEmbed(fiverrArray)
         }

@@ -1,5 +1,4 @@
-import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import Flickr from "flickr-sdk"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -30,13 +29,13 @@ export default class FlickrCommand extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const flickr = new Flickr(process.env.FLICKR_API_KEY)
+        const flickr = Flickr.createFlickr(process.env.FLICKR_API_KEY!)
 
         if (args[1] === "user") {
             const username = Functions.combineArgs(args, 2)?.trim()
             if (!username) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("flickr", "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", "https://www.flickr.com/")
+                .setAuthor({name: "flickr", iconURL: "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", url: "https://www.flickr.com/"})
                 .setTitle(`**Flickr Search** ${discord.getEmoji("RaphiSmile")}`))
             }
             const id = await flickr.people.findByUsername({username}).then((r: any) => JSON.parse(r.text))
@@ -45,7 +44,7 @@ export default class FlickrCommand extends Command {
             const avatar = `https://farm${info.person.iconfarm}.staticflickr.com/${info.person.iconserver}/buddyicons/${info.person.nsid}_r.jpg`
             const flickrEmbed = embeds.createEmbed()
             flickrEmbed
-            .setAuthor("flickr", "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", "https://www.flickr.com/")
+            .setAuthor({name: "flickr", iconURL: "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", url: "https://www.flickr.com/"})
             .setTitle(`**Flickr Search** ${discord.getEmoji("RaphiSmile")}`)
             .setURL(info.person.profileurl._content)
             .setThumbnail(avatar)
@@ -55,7 +54,7 @@ export default class FlickrCommand extends Command {
                 `${discord.getEmoji("star")}_Occupation:_ ${profile.occupation ? profile.occupation : "None"}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${profile.profile_description ? profile.profile_description : "None"}\n`
             )
-            await message.channel.send(flickrEmbed)
+            await message.channel.send({embeds: [flickrEmbed]})
             return
         }
         let text = Functions.combineArgs(args, 1)?.trim()
@@ -81,7 +80,7 @@ export default class FlickrCommand extends Command {
             const url = `https://www.flickr.com/photos/${info.owner.nsid}/${photo.id}/`
             const flickrEmbed = embeds.createEmbed()
             flickrEmbed
-            .setAuthor("flickr", "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", "https://www.flickr.com/")
+            .setAuthor({name: "flickr", iconURL: "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", url: "https://www.flickr.com/"})
             .setTitle(`**Flickr Search** ${discord.getEmoji("RaphiSmile")}`)
             .setURL(url)
             .setDescription(

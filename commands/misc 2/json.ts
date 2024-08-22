@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -94,10 +94,10 @@ export default class JSONCommand extends Command {
 
         const jsonEmbed = embeds.createEmbed()
         jsonEmbed
-        .setAuthor("json", "https://community.cdn.kony.com/sites/default/files/icon-json.png")
+        .setAuthor({name: "json", iconURL: "https://community.cdn.kony.com/sites/default/files/icon-json.png"})
         .setTitle(`**JSON Data** ${discord.getEmoji("kannaCurious")}`)
         .setURL(link)
         .setDescription(`${discord.getEmoji("star")}Find the JSON data [**here**](${link})`)
-        return message.channel.send(jsonEmbed)
+        return message.channel.send({embeds: [jsonEmbed]})
     }
 }

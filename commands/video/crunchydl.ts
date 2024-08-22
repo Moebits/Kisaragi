@@ -1,6 +1,6 @@
 import axios from "axios"
 // import crunchyroll from "crunchyroll.ts"
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
 import gifFrames from "gif-frames"
@@ -47,7 +47,7 @@ export default class CrunchyDL extends Command {
         if (!playlist) playlist = m3u8.playlists.find((p: any) => p.attributes.RESOLUTION.height === 720)
         if (!playlist) playlist = m3u8.playlists.find((p: any) => p.attributes.RESOLUTION.height === 480)
         if (skipConversion) return playlist.uri
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             ffmpeg(playlist.uri).outputOptions(["-vcodec", "copy", "-acodec", "copy"]).save(dest)
             .on("end", () => resolve())
         })
@@ -160,7 +160,7 @@ export default class CrunchyDL extends Command {
         let attachment = null as any
         const crunchyEmbed = embeds.createEmbed()
         crunchyEmbed
-        .setAuthor("crunchyroll", "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png")
+        .setAuthor({name: "crunchyroll", iconURL: "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png"})
         .setTitle(`**Crunchyroll Download** ${discord.getEmoji("himeHappy")}`)
         .setImage(vilos.thumbnail)
         const msg = await message.channel.send(`**Downloading this anime episode, this is going to take awhile...** ${discord.getEmoji("gabCircle")}`)
@@ -201,7 +201,7 @@ export default class CrunchyDL extends Command {
                     `Get the original file [**here**](${originalLink}).`
                 )
             } else {
-                attachment = new MessageAttachment(mp3Dest)
+                attachment = new AttachmentBuilder(mp3Dest)
                 crunchyEmbed
                 .setURL(url)
                 .setDescription(
@@ -229,7 +229,7 @@ export default class CrunchyDL extends Command {
             const data = await axios.get(vilos.subtitles[0].url, {headers: this.headers}).then((r) => r.data)
             const subDest = path.join(__dirname, `../../../assets/misc/dump/${vilos.title}.txt`)
             fs.writeFileSync(subDest, data)
-            attachment = new MessageAttachment(subDest)
+            attachment = new AttachmentBuilder(subDest)
             crunchyEmbed
             .setURL(url)
             .setDescription(
@@ -239,7 +239,7 @@ export default class CrunchyDL extends Command {
             )
         }
         await msg.delete()
-        await message.channel.send(crunchyEmbed)
+        await message.channel.send({embeds: [crunchyEmbed]})
         if (attachment) await message.channel.send(attachment)
         Functions.removeDirectory(folder)
     }

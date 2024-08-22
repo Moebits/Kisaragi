@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {breach, breaches} from "hibp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -32,11 +32,11 @@ export default class Pwned extends Command {
 
         if (!args[1]) {
             const result = await breaches()
-            const pwnedArray: MessageEmbed[] = []
+            const pwnedArray: EmbedBuilder[] = []
             for (let i = 0; i < result.length; i++) {
                 const pwnedEmbed = embeds.createEmbed()
                 pwnedEmbed
-                .setAuthor("have i been pwned", "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png")
+                .setAuthor({name: "have i been pwned", iconURL: "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png"})
                 .setTitle(`**Pwned Databases** ${discord.getEmoji("sagiriBleh")}`)
                 .setURL("https://haveibeenpwned.com/PwnedWebsites")
                 .setThumbnail(result[i].LogoPath)
@@ -56,12 +56,12 @@ export default class Pwned extends Command {
         const result = await breach(query)
         if (!result?.LogoPath) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("have i been pwned", "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png")
+            .setAuthor({name: "have i been pwned", iconURL: "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png"})
             .setTitle(`**Pwned Databases** ${discord.getEmoji("sagiriBleh")}`))
         }
         const pwnedEmbed = embeds.createEmbed()
         pwnedEmbed
-                .setAuthor("have i been pwned", "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png")
+                .setAuthor({name: "have i been pwned", iconURL: "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png"})
                 .setTitle(`**Pwned Databases** ${discord.getEmoji("sagiriBleh")}`)
                 .setURL("https://haveibeenpwned.com/PwnedWebsites")
                 .setThumbnail(result!.LogoPath)
@@ -72,6 +72,6 @@ export default class Pwned extends Command {
                     `${discord.getEmoji("star")}_Pwned Data:_ **${result!.DataClasses.join(", ")}**\n` +
                     `${discord.getEmoji("star")}_Description:_ ${result!.Description.replace(/<\/?[^>]+(>|$)/g, "")}\n`
                 )
-        message.channel.send(pwnedEmbed)
+        message.channel.send({embeds: [pwnedEmbed]})
     }
 }

@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -36,18 +36,18 @@ export default class Steam extends Command {
         const data = await axios.get(`https://store.steampowered.com/api/storesearch/?term=${term}&l=english&cc=US`, {headers: this.headers}).then((r) => r.data)
         if (!data.items?.[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("steam", "https://toppng.com/uploads/preview/steam-logo-png-steam-logo-black-11563631869uaboooqq1t.png", "https://store.steampowered.com/")
+            .setAuthor({name: "steam", iconURL: "https://toppng.com/uploads/preview/steam-logo-png-steam-logo-black-11563631869uaboooqq1t.png", url: "https://store.steampowered.com/"})
             .setTitle(`**Steam Store Search** ${discord.getEmoji("gabYes")}`))
         }
         const ids = data.items.map((i: any) => i.id)
-        const steamArray: MessageEmbed[] = []
+        const steamArray: EmbedBuilder[] = []
         for (let i = 0; i < ids.length; i++) {
             const details = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${ids[i]}`, {headers: this.headers}).then((r) => r.data[ids[i]].data)
             const price = details.price_overview ? details.price_overview.final_formatted : "$0"
             const desc = Functions.checkChar(Functions.decodeEntities(Functions.cleanHTML(details.about_the_game)), 1000, " ")
             const steamEmbed = embeds.createEmbed()
             steamEmbed
-            .setAuthor("steam", "https://toppng.com/uploads/preview/steam-logo-png-steam-logo-black-11563631869uaboooqq1t.png", "https://store.steampowered.com/")
+            .setAuthor({name: "steam", iconURL: "https://toppng.com/uploads/preview/steam-logo-png-steam-logo-black-11563631869uaboooqq1t.png", url: "https://store.steampowered.com/"})
             .setTitle(`**Steam Store Search** ${discord.getEmoji("gabYes")}`)
             .setURL(`https://store.steampowered.com/app/${details.steam_appid}/`)
             .setImage(details.header_image)
@@ -68,7 +68,7 @@ export default class Steam extends Command {
             steamArray.push(steamEmbed)
         }
         if (steamArray.length === 1) {
-            await message.channel.send(steamArray[0])
+            await message.channel.send({embeds: [steamArray[0]]})
         } else {
             embeds.createReactionEmbed(steamArray, true, true)
         }

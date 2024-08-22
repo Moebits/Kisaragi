@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Trello} from "trello-for-wolves"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -59,7 +59,7 @@ export default class Twitch extends Command {
             }
             const memberList = members.map((m) => m.fullName)
             const trelloEmbed = embeds.createEmbed()
-            .setAuthor("trello", "https://icons.iconarchive.com/icons/papirus-team/papirus-apps/512/trello-icon.png", "https://www.spotify.com/")
+            .setAuthor({name: "trello", iconURL: "https://icons.iconarchive.com/icons/papirus-team/papirus-apps/512/trello-icon.png", url: "https://www.spotify.com/"})
             .setTitle(`**Trello Board** ${discord.getEmoji("AquaWut")}`)
             .setImage(boardImage)
             .setThumbnail(avatar.avatarUrl ? `${avatar.avatarUrl}/original.png`: "")
@@ -70,17 +70,17 @@ export default class Twitch extends Command {
                 `${discord.getEmoji("star")}_Description:_ ${boardDesc?.trim() ?? "None"}\n` +
                 `${Functions.checkChar(cardDetails, 1700, " ")}`
             )
-            message.channel.send(trelloEmbed)
+            message.channel.send({embeds: [trelloEmbed]})
             return
         }
 
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("trello", "https://icons.iconarchive.com/icons/papirus-team/papirus-apps/512/trello-icon.png", "https://www.spotify.com/")
+            .setAuthor({name: "trello", iconURL: "https://icons.iconarchive.com/icons/papirus-team/papirus-apps/512/trello-icon.png", url: "https://www.spotify.com/"})
             .setTitle(`**Trello User** ${discord.getEmoji("AquaWut")}`))
         }
 
-        const trelloArray: MessageEmbed[] = []
+        const trelloArray: EmbedBuilder[] = []
         const result = await trello.search().searchMembers({query, limit: 20}).then((r) => r.json()) as any
         for (let i = 0; i < result.length; i++) {
             const userID = result[i].id
@@ -97,7 +97,7 @@ export default class Twitch extends Command {
                 boardLinks = result.map((b) => b.shortUrl).join("\n")
             }
             const trelloEmbed = embeds.createEmbed()
-            .setAuthor("trello", "https://icons.iconarchive.com/icons/papirus-team/papirus-apps/512/trello-icon.png", "https://www.spotify.com/")
+            .setAuthor({name: "trello", iconURL: "https://icons.iconarchive.com/icons/papirus-team/papirus-apps/512/trello-icon.png", url: "https://www.spotify.com/"})
             .setTitle(`**Trello User** ${discord.getEmoji("AquaWut")}`)
             .setThumbnail(avatar)
             .setURL(`https://trello.com/${userName}`)
@@ -111,7 +111,7 @@ export default class Twitch extends Command {
         }
 
         if (trelloArray.length === 1) {
-            message.channel.send(trelloArray[0])
+            message.channel.send({embeds: [trelloArray[0]]})
         } else {
             embeds.createReactionEmbed(trelloArray)
         }

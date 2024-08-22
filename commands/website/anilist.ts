@@ -1,5 +1,5 @@
 import Anilist from "anilist-node"
-import type {Message, MessageEmbed} from "discord.js"
+import type {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"

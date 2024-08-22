@@ -52,25 +52,25 @@ export default class Kick extends Command {
                 continue
             }
             vckickEmbed
-            .setAuthor("voice kick", "https://cdn1.iconfinder.com/data/icons/interface-filled-blue/32/Microphone_recorder_sound_voice-512.png")
+            .setAuthor({name: "voice kick", iconURL: "https://cdn1.iconfinder.com/data/icons/interface-filled-blue/32/Microphone_recorder_sound_voice-512.png"})
             .setTitle(`**You Were Voice Kicked** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(`${discord.getEmoji("star")}_You were voice kicked from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
             try {
-                await member.voice.kick(reason)
+                await member.voice.disconnect(reason)
                 const data = {type: "vckick", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Move Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(vckickEmbed).catch(() => null)
+            await dm.send({embeds: [vckickEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         vckickEmbed
-        .setAuthor("voice kick", "https://cdn1.iconfinder.com/data/icons/interface-filled-blue/32/Microphone_recorder_sound_voice-512.png")
+        .setAuthor({name: "voice kick", iconURL: "https://cdn1.iconfinder.com/data/icons/interface-filled-blue/32/Microphone_recorder_sound_voice-512.png"})
         .setTitle(`**Member Voice Kicked** ${discord.getEmoji("tohruSmug")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully voice kicked ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send(vckickEmbed)
+        message.channel.send({embeds: [vckickEmbed]})
         return
     }
 }
