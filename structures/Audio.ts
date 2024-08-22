@@ -1,7 +1,8 @@
 import axios from "axios"
 import {Collection, Message, AttachmentBuilder, EmbedBuilder, MessageReaction, TextChannel, User} from "discord.js"
-import {getVoiceConnection} from "@discordjs/voice"
+import {getVoiceConnection, createAudioPlayer, createAudioResource, AudioPlayerStatus, VoiceConnectionStatus, AudioPlayer} from "@discordjs/voice"
 import fs from "fs"
+import ffmpeg from "fluent-ffmpeg"
 import mp3Duration from "mp3-duration"
 import path from "path"
 import Soundcloud from "soundcloud.ts"
@@ -13,6 +14,7 @@ import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 import {Permission} from "./Permission"
 import {Video} from "./Video"
+import stream from "stream"
 
 const numMap = {
     1: [0, 3, 6, 9, 12, 15],
@@ -50,7 +52,7 @@ export class Audio {
     }
 
     public checkMusicPlaying = () => {
-        const connection = this.message.guild?.members.me?.voice?.connection
+        const connection = getVoiceConnection(this.message.guild!.id)
         const queue = this.getQueue() as any
         if (!connection || !queue?.[0]) {
             this.message.reply(`You must be playing music in order to use this command ${this.discord.getEmoji("kannaFacepalm")}`)
@@ -573,8 +575,11 @@ export class Audio {
     }
 
     public time = () => {
-        const dispatcher = this.message.guild?.members.me?.voice?.connection?.dispatcher
-        const time = Math.floor(Number(dispatcher?.streamTime) / 1000.0)
+        const connection = getVoiceConnection(this.message.guild!.id)
+        if (connection?.state.status !== VoiceConnectionStatus.Ready) return 0
+        const player = connection?.state.subscription?.player
+        if (player?.state.status !== AudioPlayerStatus.Playing) return 0
+        const time = Math.floor(player.state.resource.playbackDuration / 1000.0)
         if (Number.isNaN(time)) return 0
         return time
     }
@@ -763,27 +768,29 @@ export class Audio {
     }
 
     public pause = () => {
-        const connection = this.message.guild?.members.me?.voice?.connection
-        if (!connection) return
-        const player = connection.dispatcher
-        player.pause(true)
+        const connection = getVoiceConnection(this.message.guild!.id)
+        if (connection?.state.status !== VoiceConnectionStatus.Ready) return
+        const player = connection.state.subscription?.player
+        player?.pause(true)
         return true
     }
 
     public resume = () => {
-        const connection = this.message.guild?.members.me?.voice?.connection
-        if (!connection) return
-        const player = connection.dispatcher
-        player.resume()
+        const connection = getVoiceConnection(this.message.guild!.id)
+        if (connection?.state.status !== VoiceConnectionStatus.Ready) return
+        const player = connection.state.subscription?.player
+        player?.unpause()
         return true
     }
 
     public volume = (num: number) => {
         if (num < 0 || num > 200) return this.message.reply("The volume must be between 0 and 200.")
-        const connection = this.message.guild?.members.me?.voice?.connection
-        if (!connection) return
-        const player = connection.dispatcher
-        player.setVolumeLogarithmic(num/100.0)
+        const connection = getVoiceConnection(this.message.guild!.id)
+        if (connection?.state.status !== VoiceConnectionStatus.Ready) return
+        const player = connection.state.subscription?.player
+        if (player?.state.status !== AudioPlayerStatus.Playing) return 
+        const resource = player.state.resource
+        resource.volume!.setVolumeLogarithmic(num / 100.0)
         return true
     }
 
@@ -1119,20 +1126,23 @@ export class Audio {
         return newFile
     }
 
-    public play = async (file: string, start?: number) => {
-        const connection = this.message.guild?.members.me?.voice?.connection
+    public play = async (file: string, start: number = 0) => {
+        const connection = getVoiceConnection(this.message.guild!.id)
         if (!connection) return
-        let player = connection.dispatcher
-        const stream = file // await this.fx.streamOgg(file)
-        if (start) {
-            player = connection.play(stream, {seek: start, highWaterMark: 100})
+
+        let player: AudioPlayer
+        if (connection.state.status !== VoiceConnectionStatus.Ready) {
+            player = createAudioPlayer()
+            connection.subscribe(player)
         } else {
-            player = connection.play(stream, {highWaterMark: 100})
+            player = connection.state.subscription?.player!
         }
-        player.setBitrate(128)
-        player.setFEC(false)
-        player.setPLP(1)
-        if (player.paused) player.resume()
+
+        let seeked = ffmpeg({source: file}).setStartTime(start) as unknown as stream.Readable
+
+        const stream = createAudioResource(seeked, {inlineVolume: true})
+        player.play(stream)
+        if (player.state.status === AudioPlayerStatus.Paused) player.unpause()
         const queue = this.getQueue() as any
         const settings = this.getSettings() as any
         if (!queue[0]) await this.queueAdd(file, file)
@@ -1145,7 +1155,9 @@ export class Audio {
             }
         }
 
-        player.on("finish", async () => {
+        player.on("stateChange", async (oldState, newState) => {
+            const finished = (oldState.status === AudioPlayerStatus.Playing && newState.status === AudioPlayerStatus.Idle)
+            if (!finished) return
             const queue = this.getQueue() as any
             const settings = this.getSettings() as any
             let next: string
@@ -1173,7 +1185,9 @@ export class Audio {
                     const nowPlaying = await this.nowPlaying()
                     if (nowPlaying) await this.message.channel.send(nowPlaying)
                 } else {
-                    connection.channel.leave()
+                    player.stop()
+                    connection.disconnect()
+                    connection.destroy()
                     this.deleteQueue()
                     return this.message.channel.send(`There are no more songs left in the queue, left the voice channel.`)
                 }
@@ -1208,7 +1222,10 @@ export class Audio {
                 const nowPlaying = await this.nowPlaying()
                 if (nowPlaying) await this.message.channel.send(nowPlaying)
             } else {
-                this.message.guild?.members.me?.voice?.connection?.channel.leave()
+                const connection = getVoiceConnection(this.message.guild!.id)
+                if (connection?.state.status === VoiceConnectionStatus.Ready) connection.state.subscription?.player.stop()
+                connection?.disconnect()
+                connection?.destroy()
                 return this.message.channel.send(`There are no more songs in the queue, stopped playback.`)
             }
         }
@@ -1222,7 +1239,7 @@ export class Audio {
             position = position.replace("-", "")
             return this.rewind(position)
         }
-        const connection = this.message.guild?.members.me?.voice?.connection
+        const connection = getVoiceConnection(this.message.guild!.id)
         if (!connection) return
         const seconds = this.parseSeconds(position)
         if (Number.isNaN(seconds)) return this.message.reply("Provide the time in \`00:00\` format...").then((m) => setTimeout(() => m.delete(), 3000))

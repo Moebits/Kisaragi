@@ -1,8 +1,8 @@
 import {Message, VoiceChannel, ChannelType} from "discord.js"
+import {joinVoiceChannel} from "@discordjs/voice"
 import {Audio} from "../../structures/Audio"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
-import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
@@ -29,7 +29,7 @@ export default class Connect extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
+        if (!message.guild) return
 
         let voiceChannel = null as unknown as VoiceChannel
 
@@ -51,7 +51,7 @@ export default class Connect extends Command {
 
         }
         try {
-            await voiceChannel.join()
+            joinVoiceChannel({guildId: message.guild.id, channelId: voiceChannel.id, adapterCreator: message.guild.voiceAdapterCreator})
         } catch {
             return message.reply(`This is not a voice channel, or I don't have the **Connect** permission. ${discord.getEmoji("kannaFacepalm")}`)
         }

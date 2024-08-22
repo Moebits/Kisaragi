@@ -72,7 +72,7 @@ const start = async (): Promise<void> => {
             const commandName = file.split(".")[0]
             if (commandName === "empty" || commandName === "tempCodeRunnerFile") return
             const cmdFind = await SQLQuery.fetchCommand(commandName, "command")
-            const command = new (await import(path.join(__dirname, `./commands/${currDir}/${file}`)))(discord, null)
+            const command = new (require(path.join(__dirname, `./commands/${currDir}/${file}`)).default)(discord, null)
 
             if (!cmdFind) {
                 await SQLQuery.insertCommand(commandName, p, command)
@@ -90,7 +90,7 @@ const start = async (): Promise<void> => {
         if (!file.endsWith(".ts") && !file.endsWith(".js")) return
         const eventName = file.split(".")[0] as any
         Logger.log(`Loading Event: ${eventName}`)
-        const event = new (await import(path.join(__dirname, `./events/${eventName}`)))(discord)
+        const event = new (require(path.join(__dirname, `./events/${eventName}`)).default)(discord)
         if (eventName) {
         discord.on(eventName, (...args: any) => event.run(...args))
         }

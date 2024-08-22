@@ -1,4 +1,5 @@
 import {TextChannel, VoiceState} from "discord.js"
+import {getVoiceConnection} from "@discordjs/voice"
 import {Audio} from "./../structures/Audio"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
@@ -11,7 +12,7 @@ export default class VoiceStateUpdate {
         if (!msg) return
         const sql = new SQLQuery(msg)
         const leaveVoiceChannel = async () => {
-            const connected = newState.guild.members.voice?.connection?.channel
+            const connection = getVoiceConnection(newState.guild.id)
             const listening = newState.channel?.members.filter((m) => {
                 if (m.user.bot) {
                     return false
@@ -21,12 +22,13 @@ export default class VoiceStateUpdate {
                     return true
                 }
             })
-            if (connected && !newState.connection?.channel && !listening?.size) {
+            if (connection && !newState.channel && !listening?.size) {
                 const msg = await this.discord.fetchFirstMessage(newState.guild)
                 const audio = new Audio(this.discord, msg!)
                 audio.deleteQueue()
                 await sql.updateColumn("guilds", "voice", "off")
-                newState.guild.voice?.connection?.channel.leave()
+                connection.disconnect()
+                connection.destroy()
             }
         }
         leaveVoiceChannel()

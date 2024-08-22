@@ -17,9 +17,6 @@ export class Settings {
             "name": this.message.guild!.name,
             "guild id": this.message.guild!.id,
             "members": this.message.guild!.memberCount,
-            "icon": this.message.guild!.iconURL({extension: "png"}),
-            "splash": this.message.guild!.splashURL({extension: "png"}),
-            "banner": this.message.guild!.bannerURL({extension: "png"}),
             "prefix": "=>",
             "mod log": null,
             "message log": null,
@@ -111,9 +108,7 @@ export class Settings {
             "guild log": null,
             "sources": null
         }
-        this.tableMap = {
-            guilds: this.guildSettings
-        }
+        this.tableMap = {guilds: this.guildSettings}
     }
 
     // Populate async fields
@@ -124,6 +119,7 @@ export class Settings {
             "owner id": owner?.user.id
         }
         this.guildSettings = {...this.guildSettings, ...asyncSettings}
+        this.tableMap = {guilds: this.guildSettings}
     }
 
     // Initialize all tables

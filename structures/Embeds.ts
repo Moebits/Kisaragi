@@ -47,7 +47,7 @@ export class Embeds {
 
     /** Updates an embed */
     public updateEmbed = async (embeds: EmbedBuilder[], page: number, user: User, msg?: Message, help?: boolean, helpIndex?: number, cmdCount?: number[]) => {
-        if (!embeds[page]) return null as any
+        if (!embeds[page]) return null
         if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         if (help) {
             if (!helpIndex) helpIndex = 0
@@ -106,7 +106,7 @@ export class Embeds {
                     collapsed = false
                 }
                 const embed = await this.updateEmbed(embeds, page, user)
-                msg.edit(embed)
+                if (embed) msg.edit({embeds: [embed]})
                 await reaction.users.remove(user).catch(() => null)
             })
         }
@@ -183,7 +183,7 @@ export class Embeds {
                 page--
             }
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
+            if (embed) msg.edit({embeds: [embed]})
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -194,7 +194,7 @@ export class Embeds {
                 page++
             }
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
+            if (embed) msg.edit({embeds: [embed]})
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -206,7 +206,7 @@ export class Embeds {
             }
             if (page < 0) page += embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
+            if (embed) msg.edit({embeds: [embed]})
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -218,7 +218,7 @@ export class Embeds {
             }
             if (page > embeds.length - 1) page -= embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
+            if (embed) msg.edit({embeds: [embed]})
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -243,7 +243,7 @@ export class Embeds {
                 } else {
                     page = Number(response.content) - 1
                     const embed = await self.updateEmbed(embeds, page, user, msg)
-                    msg.edit(embed)
+                    if (embed) msg.edit({embeds: [embed]})
                 }
                 await response.delete().catch(() => null)
             }
@@ -422,7 +422,7 @@ export class Embeds {
                     collapsed = false
                 }
                 const embed = await this.updateEmbed(embeds, page, user)
-                msg.edit(embed)
+                if (embed) msg.edit({embeds: [embed]})
                 await reaction.users.remove(user).catch(() => null)
             })
         }
@@ -476,7 +476,7 @@ export class Embeds {
                 page--
             }
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
+            if (embed) msg.edit({embeds: [embed]})
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -487,7 +487,7 @@ export class Embeds {
                 page++
             }
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
+            if (embed) msg.edit({embeds: [embed]})
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -499,7 +499,7 @@ export class Embeds {
             }
             if (page < 0) page += embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
+            if (embed) msg.edit({embeds: [embed]})
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -511,7 +511,7 @@ export class Embeds {
             }
             if (page > embeds.length - 1) page -= embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            msg.edit(embed)
+            if (embed) msg.edit({embeds: [embed]})
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -708,7 +708,7 @@ export class Embeds {
                 const curr = filtered.findIndex((e) => e.name === reaction.emoji.name)
                 page = i
                 const embed = await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
-                msg.edit(embed)
+                if (embed) msg.edit({embeds: [embed]})
                 await reaction.users.remove(user).catch(() => null)
             })
         }
@@ -901,7 +901,7 @@ export class Embeds {
                 const curr = filtered.findIndex((e) => e.name === reaction.emoji.name)
                 page = i
                 const embed = await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
-                msg.edit(embed)
+                if (embed) msg.edit({embeds: [embed]})
                 await reaction.users.remove(user).catch(() => null)
             })
         }

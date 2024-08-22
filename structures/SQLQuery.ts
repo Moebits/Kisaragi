@@ -10,7 +10,8 @@ import config from "../config.json"
 import {Command} from "./Command"
 import {Functions} from "./Functions"
 import {Settings} from "./Settings"
-import CreateDB from "./CreateDB.sql"
+import fs from "fs"
+import path from "path"
 
 const redis = Redis.createClient({
   url: process.env.REDIS_URL
@@ -27,10 +28,6 @@ const pgPool = new Pool({
   max: 20
 })
 
-const tableList = [
-  "guilds"
-]
-
 export class SQLQuery {
   constructor(private readonly message: Message) {}
 
@@ -38,30 +35,33 @@ export class SQLQuery {
   public static run = async (query: QueryConfig | QueryArrayConfig, newData?: boolean): Promise<string[][]> => {
       const start = Date.now()
       let redisResult = null
-      if (!newData) redisResult = await redis.get(JSON.stringify(query)) as any
-      if (redisResult) {
-        // SQLQuery.logQuery(Object.values(query)[0], start, true)
-        return (JSON.parse(redisResult))?.[0]
-      } else {
-        const pgClient = await pgPool.connect()
+      if (!newData) {
         try {
-            const result: QueryResult<string[]> = await pgClient.query(query)
-            // SQLQuery.logQuery(Object.values(query)[0], start)
-            await redis.set(JSON.stringify(query), JSON.stringify(result.rows))
-            return result.rows
-          } catch (error) {
-            // console.log(error.stack)
-            return [["Error"]]
-          } finally {
-            // @ts-ignore
-            pgClient.release(true)
-          }
+          redisResult = await redis.get(JSON.stringify(query)) as any
+          // SQLQuery.logQuery(Object.values(query)[0], start, true)
+          if (redisResult) return (JSON.parse(redisResult))?.[0]
+        } catch {
+          // ignore
+        }
       }
-    }
+      const pgClient = await pgPool.connect()
+      try {
+          const result: QueryResult<string[]> = await pgClient.query(query)
+          // SQLQuery.logQuery(Object.values(query)[0], start)
+          await redis.set(JSON.stringify(query), JSON.stringify(result.rows))
+          return result.rows
+        } catch (error) {
+          // console.log(error.stack)
+          return [["Error"]]
+        } finally {
+          pgClient.release(true)
+        }
+  }
 
   /** Create the Database. */
   public static createDB = async () => {
-    return SQLQuery.run(CreateDB)
+    const sql = fs.readFileSync(path.join(__dirname, "CreateDB.sql")).toString()
+    return SQLQuery.run({text: sql})
   }
 
   /** Log query */
@@ -255,15 +255,13 @@ export class SQLQuery {
   await SQLQuery.run(query, true)
   }
 
-  /** Delete guild from all tables */
+  /** Delete the guild from database. */
   public static deleteGuild = async (guildID: string): Promise<void> => {
-      for (let i = 0; i < tableList.length; i++) {
-        const query: QueryConfig = {
-          text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
-          values: [guildID]
-        }
-        await SQLQuery.run(query, true)
+      const query: QueryConfig = {
+        text: `DELETE FROM "guilds" WHERE "guild id" = $1`,
+        values: [guildID]
       }
+      await SQLQuery.run(query, true)
   }
 
   /** Delete a row */
@@ -276,23 +274,20 @@ export class SQLQuery {
   }
 
   /** Deletes all entries in a table. */
-  public static purgeTable = async (table: string): Promise<void> => {
-    if (table === "points") return
+  public static dropTable = async (table: string): Promise<void> => {
     const query: QueryConfig = {
-      text: `DELETE FROM "${table}"`
+      text: `DROP TABLE "${table}"`
     }
     await SQLQuery.run(query, true)
   }
 
-  /** Order tables by guild member count */
+  /** Order guilds table by guild member count */
   public static orderTables = async (): Promise<void> => {
-      for (let i = 0; i < tableList.length; i++) {
-          const query: QueryConfig = {
-            text: `SELECT members FROM "${tableList[i]}" ORDER BY
-            CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members ASC`
-          }
-          await SQLQuery.run(query, true)
-      }
+        const query: QueryConfig = {
+          text: `SELECT members FROM "guilds" ORDER BY
+          CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members ASC`
+        }
+        await SQLQuery.run(query, true)
   }
 
   /** Initialize guild settings */
@@ -305,12 +300,10 @@ export class SQLQuery {
     const result = await SQLQuery.run(query, true)
     const found = result.find((id: string[]) => String(id) === message.guild?.id) as any
     if (!found || force) {
-          for (let i = 0; i < tableList.length; i++) {
-            try {
-              await SQLQuery.insertInto(tableList[i], "guild id", message.guild?.id)
-            } catch {
-              // Do nothing
-            }
+          try {
+            await SQLQuery.insertInto("guilds", "guild id", message.guild?.id)
+          } catch {
+            // Do nothing
           }
           await settings.initAll()
           await SQLQuery.orderTables()
@@ -329,8 +322,9 @@ export class SQLQuery {
 
   /** Deletes all rows from all tables. */
   public static purgeDB = async () => {
-    for (let i = 0; i < tableList.length; i++) {
-      await SQLQuery.purgeTable(tableList[i])
+    const tables = await SQLQuery.getTables()
+    for (let i = 0; i < tables.length; i++) {
+      await SQLQuery.dropTable(tables[i])
     }
     return
   }

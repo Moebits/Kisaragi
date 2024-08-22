@@ -253,8 +253,8 @@ export class Images {
             frames = Functions.constrain(frames, 50)
 
             for (let i = 0; i < frames.length; i++) {
-                const readStream = frames[i].getImage()
-                const writeStream = fs.createWriteStream(path.join(dir, `./image${frames[i].frameIndex}.jpg`))
+                const readStream = frames[i].getImage() as unknown as NodeJS.ReadableStream
+                const writeStream = fs.createWriteStream(path.join(dir, `./image${frames[i].frameIndex}.jpg`)) as unknown as NodeJS.WritableStream
                 await new Promise<void>((resolve) => {
                     readStream.pipe(writeStream).on("finish", () => resolve())
                 })
@@ -328,7 +328,7 @@ export class Images {
                 const result = await axios.post("https://file.io/?expires=1w", data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)
                 res = result.link
                 resolve()
-            }))
+            }) as unknown as NodeJS.WritableStream)
         })
         return res
     }
@@ -405,7 +405,7 @@ export class Images {
                         const result = await axios.post(url, data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)
                         links.push(result)
                         resolve()
-                    }))
+                    }) as unknown as NodeJS.WritableStream)
                 })
             }
         }

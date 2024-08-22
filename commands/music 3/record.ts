@@ -1,4 +1,5 @@
-import {Message, MessageAttachment, TextChannel} from "discord.js"
+import {Message, AttachmentBuilder, TextChannel} from "discord.js"
+import {getVoiceConnection, joinVoiceChannel, EndBehaviorType} from "@discordjs/voice"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -37,30 +38,28 @@ export default class Record extends Command {
         const fx = new AudioEffects(discord, message)
         const images = new Images(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
-        const name = Functions.combineArgs(args, 1) ? Functions.combineArgs(args, 1) : message.author.tag
-        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["CONNECT", "SPEAK"])) {
+        if (!message.guild) return
+        const name = Functions.combineArgs(args, 1) ? Functions.combineArgs(args, 1) : message.author.username
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has(["Connect", "Speak"])) {
             await message.channel.send(`The bot needs the permissions **Connect** and **Speak** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
             return
         }
 
-        let voiceChannel = message.guild?.voice?.channel!
-        let connection = message.guild?.voice?.connection!
+        let voiceChannel = message.member?.voice.channel
+        let connection = getVoiceConnection(message.guild.id)!
 
-        if (!connection && message.member?.voice.channel) {
-            voiceChannel = message.member.voice.channel
-            connection = await message.member.voice.channel.join()
+        if (!connection && voiceChannel) {
+            connection = joinVoiceChannel({channelId: voiceChannel.id, guildId: message.guild.id, adapterCreator: message.guild.voiceAdapterCreator, selfDeaf: false})
         } else if (!message.member?.voice.channel) {
             return message.reply(`You must join a voice channel first. What am I going to record ${discord.getEmoji("kannaFacepalm")}`)
         }
-        connection.play(Functions.silence(), {type: "opus"})
         const loading = message.channel.lastMessage
         loading?.delete()
-        const recording = connection.receiver.createStream(message.author.id, {mode: "pcm", end: "silence"})
+        const recording = connection.receiver.subscribe(message.author.id, {end: {behavior: EndBehaviorType.AfterSilence, duration: 1000}})
         const pcm = path.join(__dirname, `../../../assets/misc/tracks/${name}.pcm`)
         await message.channel.send(`Recording started! Please use **push to talk**, the recording will stop once the push button is released.`)
         await new Promise<void>((resolve) => {
-            recording.pipe(fs.createWriteStream(pcm)).on("finish", () => resolve())
+            recording.pipe(fs.createWriteStream(pcm) as unknown as NodeJS.WritableStream).on("finish", () => resolve())
         })
         let mp3Dest: string
         try {
@@ -74,23 +73,23 @@ export default class Record extends Command {
             const link = await images.upload(mp3Dest)
             const recordingEmbed = embeds.createEmbed()
             recordingEmbed
-            .setAuthor("recording", "https://previews.123rf.com/images/aayam4d/aayam4d1907/aayam4d190701016/127713669-record-button-icon-audio-video-recording-start-button-vector-art-illustration.jpg")
+            .setAuthor({name: "recording", iconURL: "https://previews.123rf.com/images/aayam4d/aayam4d1907/aayam4d190701016/127713669-record-button-icon-audio-video-recording-start-button-vector-art-illustration.jpg"})
             .setTitle(`**Voice Recording** ${discord.getEmoji("chinoSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}Recorded your voice! This file is too large for attachments, download it [**here**](${link}).`
             )
-            await message.channel.send(recordingEmbed)
+            await message.channel.send({embeds: [recordingEmbed]})
         } else {
-            const attachment = new MessageAttachment(mp3Dest)
+            const attachment = new AttachmentBuilder(mp3Dest)
             const recordingEmbed = embeds.createEmbed()
             recordingEmbed
-            .setAuthor("recording", "https://previews.123rf.com/images/aayam4d/aayam4d1907/aayam4d190701016/127713669-record-button-icon-audio-video-recording-start-button-vector-art-illustration.jpg")
+            .setAuthor({name: "recording", iconURL: "https://previews.123rf.com/images/aayam4d/aayam4d1907/aayam4d190701016/127713669-record-button-icon-audio-video-recording-start-button-vector-art-illustration.jpg"})
             .setTitle(`**Voice Recording** ${discord.getEmoji("chinoSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}Here is your voice recording!`
             )
-            await message.channel.send(recordingEmbed)
-            await message.channel.send(attachment)
+            await message.channel.send({embeds: [recordingEmbed]})
+            await message.channel.send({files: [attachment]})
         }
         return
     }

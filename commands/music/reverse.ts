@@ -34,7 +34,6 @@ export default class Reverse extends Command {
         const audio = new Audio(discord, message)
         const cmd = new CommandFunctions(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         const queue = audio.getQueue() as any
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {

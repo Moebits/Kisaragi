@@ -38,7 +38,7 @@ export class Functions {
     }
 
     // Await Stream
-    public static awaitStream = async (readStream: stream.Readable, writeStream: stream.Writable) => {
+    public static awaitStream = async (readStream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream) => {
         return new Promise<void>((resolve) => {
             readStream.pipe(writeStream)
             readStream.on("end", () => {
@@ -311,7 +311,7 @@ export class Functions {
     public static createZip = async (files: string[], dest: string) => {
         dest = dest.endsWith(".zip") ? dest : dest + ".zip"
         await new Promise<void>((resolve) => {
-            const stream = fs.createWriteStream(dest)
+            const stream = fs.createWriteStream(dest) as unknown as NodeJS.WritableStream
             const zip = archiver("zip")
 
             zip.pipe(stream)
@@ -331,7 +331,7 @@ export class Functions {
     public static zipDir = async (dir: string, dest: string) => {
         dest = dest.endsWith(".zip") ? dest : dest + ".zip"
         await new Promise<void>((resolve) => {
-            const stream = fs.createWriteStream(dest)
+            const stream = fs.createWriteStream(dest) as unknown as NodeJS.WritableStream
             const zip = archiver("zip")
             zip.pipe(stream)
             zip.directory(dir, false)

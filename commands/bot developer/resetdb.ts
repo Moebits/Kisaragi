@@ -1,15 +1,15 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import {Embeds} from "./../../structures/Embeds"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
+import {Embeds} from "../../structures/Embeds"
+import {Kisaragi} from "../../structures/Kisaragi"
+import {SQLQuery} from "../../structures/SQLQuery"
 
-export default class Order extends Command {
+export default class ResetDB extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Deletes all data from the database.",
-            aliases: ["resetdb"],
+            description: "Reconstructs the database.",
+            aliases: ["purgedb"],
             cooldown: 3,
             unlist: true
         })
@@ -22,13 +22,15 @@ export default class Order extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         if (!perms.checkBotDev()) return
-        const purgeEmbed = embeds.createEmbed()
+        
+        await SQLQuery.purgeDB()
+        await SQLQuery.createDB()
+        await SQLQuery.initGuild(message)
 
-        // await SQLQuery.purgeDB()
-        // await SQLQuery.initGuild(message)
+        const purgeEmbed = embeds.createEmbed()
         purgeEmbed
-        .setTitle(`**Purge** ${discord.getEmoji("gabStare")}`)
-        .setDescription("**Purged the database**!")
+        .setTitle(`**Reset** ${discord.getEmoji("gabStare")}`)
+        .setDescription("**Reconstructed the database**!")
         message.channel.send({embeds: [purgeEmbed]})
     }
 }

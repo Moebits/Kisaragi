@@ -5,14 +5,11 @@ import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
 import path from "path"
 import sox from "sox-stream"
-import stream from "stream"
-import util from "util"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {Images} from "./Images"
 import {Kisaragi} from "./Kisaragi"
 
-const pipeline = util.promisify(stream.pipeline)
 export class AudioEffects {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     private readonly images: Images
@@ -68,7 +65,7 @@ export class AudioEffects {
             .on("error", (err) => console.log(err))
             .pipe(transform)
             .on("error", (err) => console.log(err))
-            .pipe(output)
+            .pipe(output as unknown as NodeJS.WritableStream)
             .on("error", (err) => console.log(err))
             .on("finish", () => resolve())
         })

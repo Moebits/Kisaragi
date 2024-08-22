@@ -33,7 +33,6 @@ export default class Loop extends Command {
         const cmd = new CommandFunctions(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         if (Functions.combineArgs(args, 1).trim()) {
             args.shift()
             return cmd.runCommand(message, ["play", "loop", ...args])

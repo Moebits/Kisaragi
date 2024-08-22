@@ -9,8 +9,8 @@ import {Permission} from "../../structures/Permission"
 export default class Reboot extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Restarts the bot.",
-          aliases: ["reboot"],
+          description: "Reboots the bot.",
+          aliases: ["restart"],
           cooldown: 100
         })
     }

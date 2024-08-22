@@ -46,9 +46,9 @@ export default class Help extends Command {
         "misc": this.discord.getEmoji("karenXmas"),
         "misc 2": this.discord.getEmoji("sataniaDead"),
         "mod": this.discord.getEmoji("kannaFreeze"),
-        // "music": this.discord.getEmoji("PoiHug"),
-        // "music 2": this.discord.getEmoji("yes"),
-        // "music 3": this.discord.getEmoji("vigneDead"),
+        "music": this.discord.getEmoji("PoiHug"),
+        "music 2": this.discord.getEmoji("yes"),
+        "music 3": this.discord.getEmoji("vigneDead"),
         "reddit": this.discord.getEmoji("AquaWut"),
         "twitter": this.discord.getEmoji("gabSip"),
         "video": this.discord.getEmoji("vigneXD"),
@@ -73,9 +73,9 @@ export default class Help extends Command {
         "misc": "https://i.imgur.com/Rd9U6tc.png",
         "misc 2": "https://i.imgur.com/0ol5ajZ.png",
         "mod": "https://i.imgur.com/x3Y108l.png",
-        // "music": "https://i.imgur.com/eZ2IphP.png",
-        // "music 2": "https://i.imgur.com/fADrzzB.png",
-        // "music 3": "https://i.imgur.com/nKRy0NA.png",
+        "music": "https://i.imgur.com/eZ2IphP.png",
+        "music 2": "https://i.imgur.com/fADrzzB.png",
+        "music 3": "https://i.imgur.com/nKRy0NA.png",
         "reddit": "https://i.imgur.com/RxYtvDD.png",
         "twitter": "https://i.imgur.com/u19rOTB.png",
         "video": "https://i.imgur.com/qqUFolE.png",
@@ -101,9 +101,9 @@ export default class Help extends Command {
         "misc": "https://cdn.discordapp.com/emojis/705317919256739932.gif",
         "misc 2": "https://cdn.discordapp.com/emojis/705315393505591307.gif",
         "mod": "https://cdn.discordapp.com/emojis/705317892371120200.gif",
-        // "music": "https://cdn.discordapp.com/emojis/705317102478950470.gif",
-        // "music 2": "https://cdn.discordapp.com/emojis/705316441745784873.gif",
-        // "music 3": "https://cdn.discordapp.com/emojis/705329464032100393.gif",
+        "music": "https://cdn.discordapp.com/emojis/705317102478950470.gif",
+        "music 2": "https://cdn.discordapp.com/emojis/705316441745784873.gif",
+        "music 3": "https://cdn.discordapp.com/emojis/705329464032100393.gif",
         "reddit": "https://cdn.discordapp.com/emojis/709173418016112681.gif",
         "twitter": "https://cdn.discordapp.com/emojis/721795018435854417.gif",
         "video": "https://cdn.discordapp.com/emojis/705315341915390043.gif",
@@ -135,9 +135,6 @@ export default class Help extends Command {
                     const k = (i*step)+j
                     if (!subDir[k]) break
                     let counter = 0
-                    if (subDir[k] === "music") continue
-                    if (subDir[k] === "music 2") continue
-                    if (subDir[k] === "music 3") continue
                     const commands = fs.readdirSync(path.join(__dirname, `../../commands/${subDir[k]}`))
                     for (let m = 0; m < commands.length; m++) {
                         commands[m] = commands[m].slice(0, -3)
@@ -169,9 +166,6 @@ export default class Help extends Command {
         for (let i = 0; i < subDir.length; i++) {
             // if (unlistedDirs.includes(subDir[i])) continue
             let help = ""
-            if (subDir[i] === "music") continue
-            if (subDir[i] === "music 2") continue
-            if (subDir[i] === "music 3") continue
             const commands = fs.readdirSync(path.join(__dirname, `../../commands/${subDir[i]}`))
             for (let j = 0; j < commands.length; j++) {
                 commands[j] = commands[j].slice(0, -3)
