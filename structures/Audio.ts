@@ -1540,7 +1540,7 @@ export class Audio {
         .setAuthor({name: "equalizer", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
         .setTitle(`**Audio Equalizer** ${discord.getEmoji("RaphiSmile")}`)
         .setDescription(
-            `_These are the 7 different filter types that you can choose from:_\n` +
+            `_Here are the different filter types that you can choose from:_\n` +
             `${discord.getEmoji("highpass")}_Highpass Filter_ -> _Removes low frequencies._\n` +
             `${discord.getEmoji("highshelf")}_Highshelf Filter_ -> _Boosts/attenuates all frequencies above the cutoff frequency._\n` +
             `${discord.getEmoji("bandpass")}_Bandpass Filter_ -> _Removes both low frequencies and high frequencies._\n` +
@@ -1681,6 +1681,7 @@ export class Audio {
             resolve()
         })
         cancel.on("collect", (reaction, user) => {
+            this.setProcBlock(true)
             resolve()
         })
         })
@@ -1694,7 +1695,7 @@ export class Audio {
         .setAuthor({name: "effects", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
         .setTitle(`**Special Effects** ${discord.getEmoji("RaphiSmile")}`)
         .setDescription(
-            `_There are 11 different audio effects that you can add:_\n` +
+            `_Here are the different audio effects that you can add:_\n` +
             `${discord.getEmoji("reverb")}_Reverb_ -> _Emulates room reflections._\n` +
             `${discord.getEmoji("delay")}_Delay_ -> _Repeatedly replays the signal after a certain delay._\n` +
             `${discord.getEmoji("chorus")}_Chorus_ -> _Mixes the signal with delayed, pitch modulated copies._\n` +
@@ -2051,6 +2052,7 @@ export class Audio {
             resolve()
         })
         cancel.on("collect", (reaction, user) => {
+            this.setProcBlock(true)
             resolve()
         })
         })
