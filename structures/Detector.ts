@@ -1,7 +1,7 @@
 import axios from "axios"
 import {GuildMember, Message, Role} from "discord.js"
 import Sagiri from "sagiri"
-import * as config from "../config.json"
+import config from "../config.json"
 import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
@@ -34,7 +34,7 @@ export class Detector {
                 if (!data.numDetections.join("")) {
                     const reply = await this.message.reply("You can only post anime pictures!")
                     await this.message.delete()
-                    reply.delete({timeout: 10000})
+                    setTimeout(() => reply.delete(), 10000)
                 }
             }
         }
@@ -51,7 +51,7 @@ export class Detector {
         const normie = await sql.fetchColumn("guilds", "normie") as unknown as string
         const weebRole = this.message.guild!.roles.cache.find((r: Role) => r.id === weeb)
         const normieRole = this.message.guild!.roles.cache.find((r: Role) => r.id === normie)
-        const data = await axios.get(`${this.openCVURL}${member.user.displayAvatarURL({format: "png"})}`).then((r) => r.data)
+        const data = await axios.get(`${this.openCVURL}${member.user.displayAvatarURL({extension: "png"})}`).then((r) => r.data)
         if (!data.numDetections.join("")) {
             const found = member!.roles.cache.find((r: Role) => r === normieRole)
             if (found) {
@@ -120,7 +120,7 @@ export class Detector {
             const siteEmbed = embeds.createEmbed()
             siteEmbed
             .setDescription(description)
-            this.message.channel.send(siteEmbed)
+            this.message.channel.send({embeds: [siteEmbed]})
         }
     }
 }

@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import * as fs from "fs"
 import path from "path"
 import svgCaptcha from "svg-captcha"
@@ -59,19 +59,19 @@ export class Captcha {
             fs.writeFileSync(path.join(__dirname, "../../assets/images/captcha.png"), buffer)
         })
 
-        const attachment = new MessageAttachment(path.join(__dirname, "../../assets/images/captcha.png"), "captcha.png")
+        const attachment = new AttachmentBuilder(path.join(__dirname, "../../assets/images/captcha.png"), {name: "captcha.png"})
 
         const captchaEmbed = this.embeds.createEmbed()
         captchaEmbed
         .setTitle(`Captcha ${this.discord.getEmoji("kannaAngry")}`)
-        .attachFiles([attachment])
         .setImage(`attachment://captcha.png`)
         .setDescription(
             `${this.discord.getEmoji("star")}_Solve the captcha below. Type **cancel** to quit, or **skip** to get another captcha._`
         )
         return {
             captcha: captchaEmbed,
-            text: captcha.text
+            text: captcha.text,
+            files: [attachment]
         }
     }
 }

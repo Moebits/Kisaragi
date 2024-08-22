@@ -1,11 +1,12 @@
 import axios from "axios"
-import {Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, StreamDispatcher, TextChannel, User, VoiceConnection} from "discord.js"
+import {Collection, Message, AttachmentBuilder, EmbedBuilder, MessageReaction, TextChannel, User} from "discord.js"
+import {getVoiceConnection} from "@discordjs/voice"
 import fs from "fs"
 import mp3Duration from "mp3-duration"
 import path from "path"
 import Soundcloud from "soundcloud.ts"
 import Youtube from "youtube.ts"
-import * as defaults from "./../assets/json/defaultSongs.json"
+import defaults from "./../assets/json/defaultSongs.json"
 import {AudioEffects} from "./AudioEffects"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
@@ -40,7 +41,7 @@ export class Audio {
 
     public checkMusicPermissions = () => {
         const message = this.message
-        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["CONNECT", "SPEAK"])) {
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has(["Connect", "Speak"])) {
             message.reply(`The bot needs the permissions **Connect** and **Speak** for all music commands. ${this.discord.getEmoji("kannaFacepalm")}`)
             return false
         } else {
@@ -49,7 +50,7 @@ export class Audio {
     }
 
     public checkMusicPlaying = () => {
-        const connection = this.message.guild?.voice?.connection
+        const connection = this.message.guild?.members.me?.voice?.connection
         const queue = this.getQueue() as any
         if (!connection || !queue?.[0]) {
             this.message.reply(`You must be playing music in order to use this command ${this.discord.getEmoji("kannaFacepalm")}`)
@@ -572,7 +573,7 @@ export class Audio {
     }
 
     public time = () => {
-        const dispatcher = this.message.guild?.voice?.connection?.dispatcher
+        const dispatcher = this.message.guild?.members.me?.voice?.connection?.dispatcher
         const time = Math.floor(Number(dispatcher?.streamTime) / 1000.0)
         if (Number.isNaN(time)) return 0
         return time
@@ -726,7 +727,7 @@ export class Audio {
         (kind === "soundcloud" ? "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png" : "https://clipartmag.com/images/musical-notes-png-11.png")
         const queueEmbed = this.embeds.createEmbed()
         queueEmbed
-        .setAuthor(`${kind}`, topImg)
+        .setAuthor({name: `${kind}`, iconURL: topImg})
         .setTitle(`**Song Request** ${discord.getEmoji("aquaUp")}`)
         .setURL(queueObj.url)
         .setThumbnail(queueObj?.image ?? "")
@@ -762,7 +763,7 @@ export class Audio {
     }
 
     public pause = () => {
-        const connection = this.message.guild?.voice?.connection
+        const connection = this.message.guild?.members.me?.voice?.connection
         if (!connection) return
         const player = connection.dispatcher
         player.pause(true)
@@ -770,7 +771,7 @@ export class Audio {
     }
 
     public resume = () => {
-        const connection = this.message.guild?.voice?.connection
+        const connection = this.message.guild?.members.me?.voice?.connection
         if (!connection) return
         const player = connection.dispatcher
         player.resume()
@@ -779,7 +780,7 @@ export class Audio {
 
     public volume = (num: number) => {
         if (num < 0 || num > 200) return this.message.reply("The volume must be between 0 and 200.")
-        const connection = this.message.guild?.voice?.connection
+        const connection = this.message.guild?.members.me?.voice?.connection
         if (!connection) return
         const player = connection.dispatcher
         player.setVolumeLogarithmic(num/100.0)
@@ -793,7 +794,7 @@ export class Audio {
         if (!queue) return "It looks like you aren't playing anything..."
         const now = queue[0]
         const nowEmbed = await this.updateNowPlaying()
-        const msg = await this.message.channel.send(nowEmbed)
+        const msg = await this.message.channel.send({embeds: [nowEmbed]})
         now.message = msg
         const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear", "mp3"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
@@ -812,24 +813,24 @@ export class Audio {
         const clearCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("clear") && user.bot === false
         const mp3Check = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mp3") && user.bot === false
 
-        const resume = msg.createReactionCollector(resumeCheck)
-        const pause = msg.createReactionCollector(pauseCheck)
-        const scrub = msg.createReactionCollector(scrubCheck)
-        const skip = msg.createReactionCollector(skipCheck)
-        const loop = msg.createReactionCollector(loopCheck)
-        const abloop = msg.createReactionCollector(abLoopCheck)
-        const reverse = msg.createReactionCollector(reverseCheck)
-        const speed = msg.createReactionCollector(speedCheck)
-        const pitch = msg.createReactionCollector(pitchCheck)
-        const volume = msg.createReactionCollector(volumeCheck)
-        const eq = msg.createReactionCollector(eqCheck)
-        const fx = msg.createReactionCollector(fxCheck)
-        const clear = msg.createReactionCollector(clearCheck)
-        const mp3 = msg.createReactionCollector(mp3Check)
+        const resume = msg.createReactionCollector({filter: resumeCheck})
+        const pause = msg.createReactionCollector({filter: pauseCheck})
+        const scrub = msg.createReactionCollector({filter: scrubCheck})
+        const skip = msg.createReactionCollector({filter: skipCheck})
+        const loop = msg.createReactionCollector({filter: loopCheck})
+        const abloop = msg.createReactionCollector({filter: abLoopCheck})
+        const reverse = msg.createReactionCollector({filter: reverseCheck})
+        const speed = msg.createReactionCollector({filter: speedCheck})
+        const pitch = msg.createReactionCollector({filter: pitchCheck})
+        const volume = msg.createReactionCollector({filter: volumeCheck})
+        const eq = msg.createReactionCollector({filter: eqCheck})
+        const fx = msg.createReactionCollector({filter: fxCheck})
+        const clear = msg.createReactionCollector({filter: clearCheck})
+        const mp3 = msg.createReactionCollector({filter: mp3Check})
         const reactors = [resume, pause, scrub, reverse, speed, pitch, loop, abloop, skip, volume, eq, fx, clear, mp3]
         for (let i = 0; i < reactors.length; i++) {
             reactors[i].on("collect", async (reaction, user) => {
-                if (discord.checkMuted(reaction.message)) reaction.emoji.name = reaction.emoji.name.replace("png", "")
+                if (discord.checkMuted(reaction.message)) reaction.emoji.name = reaction.emoji.name?.replace("png", "")!
                 let test = true
                 if (reaction.emoji.name === "reverse") test = false
                 if (reaction.emoji.name === "speed") test = false
@@ -839,17 +840,17 @@ export class Audio {
                 if (this.getProcBlock() && !test) {
                     await reaction.users.remove(user)
                     const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                    proc.delete({timeout: 3000})
+                    setTimeout(() => proc.delete(), 3000)
                     return
                 }
                 this.setProcBlock()
-                await msg.edit(await this.updateNowPlaying())
+                await msg.edit({embeds: [await this.updateNowPlaying()]})
                 if (reaction.emoji.name === "reverse") {
                     await reaction.users.remove(user)
                     const rep = await this.message.channel.send(`<@${user.id}>, _Please wait, reversing the file..._`)
                     await this.reverse(now.file)
                     rep.delete()
-                    await msg.edit(await this.updateNowPlaying())
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
                     this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "volume") {
@@ -858,7 +859,7 @@ export class Audio {
                     async function getVolumeChange(response: Message) {
                         if (Number.isNaN(parseInt(response.content, 10)) || parseInt(response.content, 10) < 0 || parseInt(response.content, 10) > 200) {
                             const rep = await response.reply("You must pass a number between 0 and 200.")
-                            rep.delete({timeout: 3000})
+                            setTimeout(() => rep.delete(), 3000)
                         } else {
                             vol = parseInt(response.content, 10)
                         }
@@ -881,7 +882,7 @@ export class Audio {
                         }
                         if (response.content?.trim() && Number.isNaN(Number(response.content))) {
                             const rep = await response.reply("You must pass a valid speed factor, eg. \`1.5x\` or \`0.5x\`.")
-                            rep.delete({timeout: 3000})
+                            setTimeout(() => rep.delete(), 3000)
                         } else {
                             factor = Number(response.content)
                         }
@@ -893,7 +894,7 @@ export class Audio {
                     const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the speed of the file..._`)
                     await this.speed(now.file, factor, setPitch)
                     rep2.delete()
-                    await msg.edit(await this.updateNowPlaying())
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
                     this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "loop") {
@@ -901,14 +902,14 @@ export class Audio {
                     const loopText = settings.looping === true ? "Disabled looping!" : "Enabled looping!"
                     const rep = await this.message.channel.send(`<@${user.id}>, ${loopText}`)
                     this.loop()
-                    await msg.edit(await this.updateNowPlaying())
-                    rep.delete({timeout: 1000})
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
+                    setTimeout(() => rep.delete(), 1000)
                     this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "skip") {
                     await reaction.users.remove(user)
                     const rep = await this.message.channel.send(`<@${user.id}>, Skipping this track! **If you added effects, be patient because they need to be re-applied.**`)
-                    rep.delete({timeout: 3000})
+                    setTimeout(() => rep.delete(), 3000)
                     await this.skip()
                     this.setProcBlock(true)
                     return
@@ -918,7 +919,7 @@ export class Audio {
                     async function getPitchChange(response: Message) {
                         if (response.content?.trim() && Number.isNaN(Number(response.content))) {
                             const rep = await response.reply("You must pass in the amount of semitones, eg. \`12\` or \`-12\`.")
-                            rep.delete({timeout: 3000})
+                            setTimeout(() => rep.delete(), 3000)
                         } else {
                             semitones = Number(response.content)
                         }
@@ -930,7 +931,7 @@ export class Audio {
                     const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the pitch of the file..._`)
                     await this.pitch(now.file, semitones)
                     rep2.delete()
-                    await msg.edit(await this.updateNowPlaying())
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
                     this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "scrub") {
@@ -944,7 +945,7 @@ export class Audio {
                     await this.embeds.createPrompt(getPositionChange)
                     rep.delete()
                     await this.scrub(position)
-                    await msg.edit(await this.updateNowPlaying())
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
                     this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "abloop") {
@@ -952,9 +953,9 @@ export class Audio {
                     if (settings.ablooping === true) {
                         settings.ablooping = false
                         await this.play(queue[0].file)
-                        await msg.edit(await this.updateNowPlaying())
+                        await msg.edit({embeds: [await this.updateNowPlaying()]})
                         const rep = await this.message.channel.send(`<@${user.id}>, Disabled A-B looping!`)
-                        rep.delete({timeout: 3000})
+                        setTimeout(() => rep.delete(), 3000)
                         return
                     }
                     let start = "0"
@@ -969,9 +970,9 @@ export class Audio {
                     await this.embeds.createPrompt(getABLoop)
                     rep.delete()
                     const rep2 = await this.message.channel.send(`<@${user.id}>, Enabled A-B Looping!`)
-                    rep2.delete({timeout: 3000})
+                    setTimeout(() => rep2.delete(), 3000)
                     settings.ablooping = true
-                    await msg.edit(await this.updateNowPlaying())
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
                     this.setProcBlock(true)
                     await this.abloop(start, end)
                     return
@@ -979,8 +980,8 @@ export class Audio {
                     await reaction.users.remove(user)
                     await this.clear()
                     const rep = await this.message.channel.send(`<@${user.id}>, Cleared all effects that were applied to this song!`)
-                    rep.delete({timeout: 3000})
-                    await msg.edit(await this.updateNowPlaying())
+                    setTimeout(() => rep.delete(), 3000)
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
                     this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "mp3") {
@@ -991,13 +992,13 @@ export class Audio {
                 } else if (reaction.emoji.name === "eq") {
                     await reaction.users.remove(user)
                     const m = await this.equalizerMenu(true)
-                    await msg.edit(await this.updateNowPlaying())
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
                     m.delete()
                     return
                 } else if (reaction.emoji.name === "fx") {
                     await reaction.users.remove(user)
                     const m = await this.fxMenu(true)
-                    await msg.edit(await this.updateNowPlaying())
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
                     m.delete()
                     return
                 }
@@ -1047,7 +1048,7 @@ export class Audio {
         }
         const nowEmbed = this.embeds.createEmbed()
         nowEmbed
-        .setAuthor("playing", "https://clipartmag.com/images/musical-notes-png-11.png")
+        .setAuthor({name: "playing", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
         .setTitle(`**Now Playing** ${this.discord.getEmoji("chinoSmug")}`)
         .setURL(now.url)
         .setThumbnail(now.image ?? "")
@@ -1119,7 +1120,7 @@ export class Audio {
     }
 
     public play = async (file: string, start?: number) => {
-        const connection = this.message.guild?.voice?.connection
+        const connection = this.message.guild?.members.me?.voice?.connection
         if (!connection) return
         let player = connection.dispatcher
         const stream = file // await this.fx.streamOgg(file)
@@ -1207,7 +1208,7 @@ export class Audio {
                 const nowPlaying = await this.nowPlaying()
                 if (nowPlaying) await this.message.channel.send(nowPlaying)
             } else {
-                this.message.guild?.voice?.connection?.channel.leave()
+                this.message.guild?.members.me?.voice?.connection?.channel.leave()
                 return this.message.channel.send(`There are no more songs in the queue, stopped playback.`)
             }
         }
@@ -1221,10 +1222,10 @@ export class Audio {
             position = position.replace("-", "")
             return this.rewind(position)
         }
-        const connection = this.message.guild?.voice?.connection
+        const connection = this.message.guild?.members.me?.voice?.connection
         if (!connection) return
         const seconds = this.parseSeconds(position)
-        if (Number.isNaN(seconds)) return this.message.reply("Provide the time in \`00:00\` format...").then((m) => m.delete({timeout: 3000}))
+        if (Number.isNaN(seconds)) return this.message.reply("Provide the time in \`00:00\` format...").then((m) => setTimeout(() => m.delete(), 3000))
         const queue = this.getQueue() as any
         return this.play(queue[0].file, seconds)
     }
@@ -1236,7 +1237,7 @@ export class Audio {
         const endSec = this.parseSeconds(end)
         if (Number.isNaN(startSec) || Number.isNaN(endSec)) {
             const rep = await this.message.reply("Provide the time in \`00:00\` format...")
-            rep.delete({timeout: 3000})
+            setTimeout(() => rep.delete(), 3000)
             return
         }
         const diff = endSec - startSec
@@ -1265,9 +1266,9 @@ export class Audio {
     public mp3Download = async (userID: string) => {
         const queue = this.getQueue() as any
         const file = path.join(__dirname, "..", queue[0].file)
-        const attachment = new MessageAttachment(file, `${path.basename(file)}`)
+        const attachment = new AttachmentBuilder(file, {name: `${path.basename(file)}`})
         await this.message.channel.send(`<@${userID}>, Here is the download for this file!`)
-        await this.message.channel.send(attachment)
+        await this.message.channel.send({files: [attachment]})
         return
     }
 
@@ -1298,7 +1299,7 @@ export class Audio {
         const titles = results.map((r) => r.snippet.title)
         // @ts-ignore
         const images = results.map((r) => r.snippet.thumbnails?.maxres?.url ?? r.snippet.thumbnails.high.url)
-        const songArray: MessageEmbed[] = []
+        const songArray: EmbedBuilder[] = []
         for (let i = 0; i < links.length; i+=3) {
             let description = ""
             for (let j = 0; j < 3; j++) {
@@ -1307,11 +1308,11 @@ export class Audio {
             }
             const songEmbed = embeds.createEmbed()
             songEmbed
-            .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+            .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
             .setTitle(`**Youtube Search** ${discord.getEmoji("vigneXD")}`)
             .setThumbnail(images[i])
             .setDescription(description)
-            .setFooter(`Page ${Math.floor(i/3) + 1}/${Math.ceil(links.length / 3)}`, message.author.displayAvatarURL({format: "png", dynamic: true}))
+            .setFooter({text: `Page ${Math.floor(i/3) + 1}/${Math.ceil(links.length / 3)}`, iconURL: message.author.displayAvatarURL({extension: "png"})})
             songArray.push(songEmbed)
         }
         return this.playReactionEmbed(songArray, links, "youtube", query)
@@ -1326,7 +1327,7 @@ export class Audio {
         if (first) return links[0]
         const titles = results.map((r) => r.title)
         const images = results.map((r) => r.artwork_url)
-        const songArray: MessageEmbed[] = []
+        const songArray: EmbedBuilder[] = []
         for (let i = 0; i < links.length; i+=3) {
             let description = ""
             for (let j = 0; j < 3; j++) {
@@ -1335,21 +1336,21 @@ export class Audio {
             }
             const songEmbed = embeds.createEmbed()
             songEmbed
-            .setAuthor("soundcloud", "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", "https://www.soundcloud.com/")
+            .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://www.soundcloud.com/"})
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("vigneXD")}`)
             .setThumbnail(images[i])
             .setDescription(description)
-            .setFooter(`Page ${Math.floor(i/3) + 1}/${Math.ceil(links.length / 3)}`, message.author.displayAvatarURL({format: "png", dynamic: true}))
+            .setFooter({text: `Page ${Math.floor(i/3) + 1}/${Math.ceil(links.length / 3)}`, iconURL: message.author.displayAvatarURL({extension: "png"})})
             songArray.push(songEmbed)
         }
         return this.playReactionEmbed(songArray, links, "soundcloud", query)
     }
 
-    public playReactionEmbed = async (songArray: MessageEmbed[], links: string[], kind: string, query: string) => {
+    public playReactionEmbed = async (songArray: EmbedBuilder[], links: string[], kind: string, query: string) => {
         const message = this.message
         const discord = this.discord
         if (!songArray[0]) return null
-        const msg = await message.channel.send(songArray[0])
+        const msg = await message.channel.send({embeds: [songArray[0]]})
         const reactions = ["right", "left", "1n", "2n", "3n", "random"]
         await msg.react(discord.getEmoji(reactions[0]))
         await msg.react(discord.getEmoji(reactions[1]))
@@ -1367,14 +1368,14 @@ export class Audio {
         const randomCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("random") && user.bot === false
         const soundcloudCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("soundcloud") && user.bot === false
         const youtubeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("youtube") && user.bot === false
-        const right = msg.createReactionCollector(rightCheck)
-        const left = msg.createReactionCollector(leftCheck)
-        const one = msg.createReactionCollector(oneCheck)
-        const two = msg.createReactionCollector(twoCheck)
-        const three = msg.createReactionCollector(threeCheck)
-        const random = msg.createReactionCollector(randomCheck)
-        const soundcloud = msg.createReactionCollector(soundcloudCheck)
-        const youtube = msg.createReactionCollector(youtubeCheck)
+        const right = msg.createReactionCollector({filter: rightCheck})
+        const left = msg.createReactionCollector({filter: leftCheck})
+        const one = msg.createReactionCollector({filter: oneCheck})
+        const two = msg.createReactionCollector({filter: twoCheck})
+        const three = msg.createReactionCollector({filter: threeCheck})
+        const random = msg.createReactionCollector({filter: randomCheck})
+        const soundcloud = msg.createReactionCollector({filter: soundcloudCheck})
+        const youtube = msg.createReactionCollector({filter: youtubeCheck})
         const numCollectors = [one, two, three]
 
         let page = 0
@@ -1384,7 +1385,7 @@ export class Audio {
             } else {
                 page--
             }
-            msg.edit(songArray[page])
+            msg.edit({embeds: [songArray[page]]})
             await reaction.users.remove(user)
         })
         right.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -1393,7 +1394,7 @@ export class Audio {
             } else {
                 page++
             }
-            msg.edit(songArray[page])
+            msg.edit({embeds: [songArray[page]]})
             await reaction.users.remove(user)
         })
         soundcloud.on("collect", async (reaction, user) => {
@@ -1480,7 +1481,7 @@ export class Audio {
         const discord = this.discord
         const eqEmbed = this.embeds.createEmbed()
         eqEmbed
-        .setAuthor("equalizer", "https://clipartmag.com/images/musical-notes-png-11.png")
+        .setAuthor({name: "equalizer", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
         .setTitle(`**Audio Equalizer** ${discord.getEmoji("RaphiSmile")}`)
         .setDescription(
             `_These are the 7 different filter types that you can choose from:_\n` +
@@ -1493,7 +1494,7 @@ export class Audio {
             `${discord.getEmoji("lowpass")}_Lowpass Filter_ -> _Removes high frequencies._\n` +
             `_Frequency and width are in Hz. If applicable, resonance is a Q factor and gain is in decibels._`
         )
-        const msg = await this.message.channel.send(eqEmbed)
+        const msg = await this.message.channel.send({embeds: [eqEmbed]})
         const reactions = ["highpass", "highshelf", "bandpass", "peak", "bandreject", "lowshelf", "lowpass", "cancel"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
@@ -1505,14 +1506,14 @@ export class Audio {
         const lowshelfCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lowshelf") && user.bot === false
         const lowpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lowpass") && user.bot === false
         const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("cancel") && user.bot === false
-        const highpass = msg.createReactionCollector(highpassCheck)
-        const highshelf = msg.createReactionCollector(highshelfCheck)
-        const bandpass = msg.createReactionCollector(bandpassCheck)
-        const peak = msg.createReactionCollector(peakCheck)
-        const bandreject = msg.createReactionCollector(bandrejectCheck)
-        const lowshelf = msg.createReactionCollector(lowshelfCheck)
-        const lowpass = msg.createReactionCollector(lowpassCheck)
-        const cancel = msg.createReactionCollector(cancelCheck)
+        const highpass = msg.createReactionCollector({filter: highpassCheck})
+        const highshelf = msg.createReactionCollector({filter: highshelfCheck})
+        const bandpass = msg.createReactionCollector({filter: bandpassCheck})
+        const peak = msg.createReactionCollector({filter: peakCheck})
+        const bandreject = msg.createReactionCollector({filter: bandrejectCheck})
+        const lowshelf = msg.createReactionCollector({filter: lowshelfCheck})
+        const lowpass = msg.createReactionCollector({filter: lowpassCheck})
+        const cancel = msg.createReactionCollector({filter: cancelCheck})
 
         const pass = ["highpass", "bandpass", "bandreject", "lowpass"]
         const passCol = [highpass, bandpass, bandreject, lowpass]
@@ -1525,7 +1526,7 @@ export class Audio {
                 if (this.getProcBlock()) {
                     await reaction.users.remove(user)
                     const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                    proc.delete({timeout: 3000})
+                    setTimeout(() => proc.delete(), 3000)
                     return
                 }
                 this.setProcBlock()
@@ -1548,7 +1549,7 @@ export class Audio {
                 await this[pass[i]](queue[0].file, freq, width, false)
                 rep3.delete()
                 const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${pass[i]} filter!`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 resolve()
             })
@@ -1559,7 +1560,7 @@ export class Audio {
                 if (this.getProcBlock()) {
                     await reaction.users.remove(user)
                     const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                    proc.delete({timeout: 3000})
+                    setTimeout(() => proc.delete(), 3000)
                     return
                 }
                 this.setProcBlock()
@@ -1584,7 +1585,7 @@ export class Audio {
                 await this[pass[i]](queue[0].file, gain, freq, width, false)
                 rep3.delete()
                 const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${shelf[i]} filter!`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 resolve()
             })
@@ -1594,7 +1595,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1619,7 +1620,7 @@ export class Audio {
             await this.peak(queue[0].file, freq, resonance, gain)
             rep3.delete()
             const rep2 = await this.message.channel.send(`<@${user.id}>, Added a peak filter!`)
-            rep2.delete({timeout: 3000})
+            setTimeout(() => rep2.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1634,7 +1635,7 @@ export class Audio {
         if (clearProc) this.setProcBlock()
         const discord = this.discord
         const fxEmbed = this.embeds.createEmbed()
-        .setAuthor("effects", "https://clipartmag.com/images/musical-notes-png-11.png")
+        .setAuthor({name: "effects", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
         .setTitle(`**Special Effects** ${discord.getEmoji("RaphiSmile")}`)
         .setDescription(
             `_There are 11 different audio effects that you can add:_\n` +
@@ -1651,7 +1652,7 @@ export class Audio {
             `${discord.getEmoji("tremolo")}_Tremelo_ -> _Amplitude modulation with an LFO._`
         )
         const reactions = ["reverb", "delay", "chorus", "phaser", "flanger", "bitcrush", "upsample", "distortion", "compression", "allpass", "tremolo", "cancel"]
-        const msg = await this.message.channel.send(fxEmbed)
+        const msg = await this.message.channel.send({embeds: [fxEmbed]})
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
         const reverbCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reverb") && user.bot === false
@@ -1666,18 +1667,18 @@ export class Audio {
         const allpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("allpass") && user.bot === false
         const tremoloCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tremolo") && user.bot === false
         const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("cancel") && user.bot === false
-        const reverb = msg.createReactionCollector(reverbCheck)
-        const delay = msg.createReactionCollector(delayCheck)
-        const chorus = msg.createReactionCollector(chorusCheck)
-        const phaser = msg.createReactionCollector(phaserCheck)
-        const flanger = msg.createReactionCollector(flangerCheck)
-        const bitcrush = msg.createReactionCollector(bitcrushCheck)
-        const upsample = msg.createReactionCollector(upsampleCheck)
-        const distortion = msg.createReactionCollector(distortionCheck)
-        const compression = msg.createReactionCollector(compressionCheck)
-        const allpass = msg.createReactionCollector(allpassCheck)
-        const tremolo = msg.createReactionCollector(tremoloCheck)
-        const cancel = msg.createReactionCollector(cancelCheck)
+        const reverb = msg.createReactionCollector({filter: reverbCheck})
+        const delay = msg.createReactionCollector({filter: delayCheck})
+        const chorus = msg.createReactionCollector({filter: chorusCheck})
+        const phaser = msg.createReactionCollector({filter: phaserCheck})
+        const flanger = msg.createReactionCollector({filter: flangerCheck})
+        const bitcrush = msg.createReactionCollector({filter: bitcrushCheck})
+        const upsample = msg.createReactionCollector({filter: upsampleCheck})
+        const distortion = msg.createReactionCollector({filter: distortionCheck})
+        const compression = msg.createReactionCollector({filter: compressionCheck})
+        const allpass = msg.createReactionCollector({filter: allpassCheck})
+        const tremolo = msg.createReactionCollector({filter: tremoloCheck})
+        const cancel = msg.createReactionCollector({filter: cancelCheck})
         let argArray: any[] = []
         async function parseArgs(response: Message) {
             const rArgs = response.content.split(" ")
@@ -1690,7 +1691,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1713,7 +1714,7 @@ export class Audio {
             await this.reverb(file, amount, damping, room, stereo, preDelay, wetGain, reverse, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added reverb!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1722,7 +1723,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1740,7 +1741,7 @@ export class Audio {
             await this.delay(file, delaysDecays, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added delay!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1749,7 +1750,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1769,7 +1770,7 @@ export class Audio {
             await this.chorus(file, delay, decay, speed, depth, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added chorus!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1778,7 +1779,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1797,7 +1798,7 @@ export class Audio {
             await this.phaser(file, delay, decay, speed, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added phaser!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1806,7 +1807,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1830,7 +1831,7 @@ export class Audio {
             await this.flanger(file, delay, depth, regen, width, speed, shape, phase, interp, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added flanger!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1839,7 +1840,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1856,7 +1857,7 @@ export class Audio {
             await this.bitcrush(file, factor, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added bitcrushing!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1865,7 +1866,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1882,7 +1883,7 @@ export class Audio {
             await this.upsample(file, factor, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added upsampling!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1891,7 +1892,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1909,7 +1910,7 @@ export class Audio {
             await this.distortion(file, gain, color, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added distortion!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1918,7 +1919,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1935,7 +1936,7 @@ export class Audio {
             await this.compression(file, amount, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added compression!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1944,7 +1945,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1962,7 +1963,7 @@ export class Audio {
             await this.allPass(file, freq, width, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added an allpass filter!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })
@@ -1971,7 +1972,7 @@ export class Audio {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -1989,7 +1990,7 @@ export class Audio {
             await this.tremolo(file, speed, depth, false)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added tremolo!`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
             this.setProcBlock(true)
             resolve()
         })

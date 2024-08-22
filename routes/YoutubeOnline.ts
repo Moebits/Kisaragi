@@ -1,4 +1,4 @@
-import {Collection, WebhookClient} from "discord.js"
+import {WebhookClient} from "discord.js"
 import {Express, NextFunction, Request, Response} from "express"
 import {yt} from "../server"
 import {Kisaragi} from "../structures/Kisaragi"
@@ -85,13 +85,13 @@ export class YoutubeOnline {
                 const current = JSON.parse(config[i])
                 if (!current.id || !current.token) continue
                 if (!current.state || current.state === "Off") continue
-                const webhook = new WebhookClient(current.id, current.token, {
-                    disableMentions: "everyone",
-                    restTimeOffset: 0
+                const webhook = new WebhookClient({id: current.id, token: current.token}, {
+                    allowedMentions: {parse: ["users", "roles"]}, 
+                    rest: {offset: 0}
                 })
                 if (!current.mention) current.mention = ""
                 const message = `${current.mention}[**${data.channel.name}**](${data.channel.link}) uploaded a new video, [**${data.video.title}**](${data.video.link})! ${data.video.link}`
-                await webhook.send(message, {avatarURL: Kisaragi.pfp, username: Kisaragi.username})
+                await webhook.send({content: message, avatarURL: Kisaragi.pfp, username: Kisaragi.username})
                 webhook.destroy()
             }
         })

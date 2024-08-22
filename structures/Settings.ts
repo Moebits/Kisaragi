@@ -1,4 +1,4 @@
-import {GuildChannel, GuildEmoji, GuildMember, Message, Presence, Role} from "discord.js"
+import {Message} from "discord.js"
 import {SQLQuery} from "./SQLQuery"
 
 interface Init {
@@ -6,29 +6,20 @@ interface Init {
 }
 
 export class Settings {
-    private readonly tableMap: object
-    private readonly guildSettings: Init
     private readonly sql: SQLQuery
+    private tableMap: object
+    private guildSettings: Init
 
-    constructor(private readonly message: Message) {
+   constructor(private readonly message: Message) {
         this.sql = new SQLQuery(this.message)
 
         this.guildSettings = {
             "name": this.message.guild!.name,
             "guild id": this.message.guild!.id,
             "members": this.message.guild!.memberCount,
-            "icon": this.message.guild!.iconURL({format: "png", dynamic: true}),
-            "splash": this.message.guild!.splashURL({format: "png"}),
-            "banner": this.message.guild!.bannerURL({format: "png"}),
-            "region": this.message.guild!.region,
-            "owner": this.message.guild!.owner?.user.tag,
-            "owner id": this.message.guild!.ownerID,
-            "games": this.message.guild!.presences.cache.map((presence: Presence) => presence.activities.join("") ? presence.activities.map((a) => a?.name) : [null]).flat(Infinity),
-            "channel list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.name),
-            "category list": this.message.guild!.channels.cache.map((channel: GuildChannel) => channel.parent ? channel.parent.name : null),
-            "user list": this.message.guild!.members.cache.map((member: GuildMember) => member.displayName),
-            "role list": this.message.guild!.roles.cache.map((role: Role) => role.name),
-            "emoji list": this.message.guild!.emojis.cache.map((emoji: GuildEmoji) => emoji.name),
+            "icon": this.message.guild!.iconURL({extension: "png"}),
+            "splash": this.message.guild!.splashURL({extension: "png"}),
+            "banner": this.message.guild!.bannerURL({extension: "png"}),
             "prefix": "=>",
             "mod log": null,
             "message log": null,
@@ -116,15 +107,28 @@ export class Settings {
             "birthdays": null,
             "birthday channel": null,
             "birthday message": "Happy birthday to user!",
-            "birthday toggle": "off"
+            "birthday toggle": "off",
+            "guild log": null,
+            "sources": null
         }
         this.tableMap = {
             guilds: this.guildSettings
         }
     }
 
+    // Populate async fields
+    public populateAsync = async () => {
+        const owner = await this.message.guild?.fetchOwner()
+        const asyncSettings = {
+            "owner": owner?.user.username,
+            "owner id": owner?.user.id
+        }
+        this.guildSettings = {...this.guildSettings, ...asyncSettings}
+    }
+
     // Initialize all tables
     public initAll = async () => {
+        await this.populateAsync()
         const entries = Object.entries(this.tableMap)
         for (const [table, object] of entries) {
             const settings = Object.entries(object)

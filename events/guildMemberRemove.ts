@@ -1,4 +1,4 @@
-import {Guild, GuildAuditLogsEntry, GuildMember, Message, MessageAttachment, TextChannel, User} from "discord.js"
+import {GuildAuditLogsEntry, GuildMember, PartialGuildMember, AuditLogEvent, Message, AttachmentBuilder, TextChannel, User} from "discord.js"
 import {Embeds} from "./../structures/Embeds"
 import {Functions} from "./../structures/Functions"
 import {Images} from "./../structures/Images"
@@ -8,13 +8,13 @@ import {SQLQuery} from "./../structures/SQLQuery"
 export default class GuildMemberRemove {
     constructor(private readonly discord: Kisaragi) {}
 
-    public run = async (member: GuildMember) => {
+    public run = async (member: GuildMember | PartialGuildMember) => {
         const discord = this.discord
         const firstMsg = await this.discord.fetchFirstMessage(member.guild) as Message
         if (!firstMsg) return
         const sql = new SQLQuery(firstMsg)
-        if (member.guild.me?.permissions.has("MANAGE_GUILD")) {
-            const bans = await member.guild.fetchBans()
+        if (member.guild.members.me?.permissions.has("ManageGuild")) {
+            const bans = await member.guild.bans.fetch()
             if (bans.has(member.id)) return
         }
 
@@ -30,6 +30,7 @@ export default class GuildMemberRemove {
         const embeds = new Embeds(this.discord, defMsg)
 
         const leaveMessages = async () => {
+            if (member.partial) member = await member.fetch()
             const leaveToggle = await sql.fetchColumn("guilds", "leave toggle")
             if (!(leaveToggle === "on")) return
 
@@ -41,12 +42,12 @@ export default class GuildMemberRemove {
             const leaveBGToggle = await sql.fetchColumn("guilds", "leave bg toggle")
             const channel = member.guild.channels.cache.find((c) => c.id.toString() === String(leaveChannel)) as TextChannel
 
-            const attachment = await image.createCanvas(member, leaveImages, leaveText, leaveColor, false, false, leaveBGToggle) as MessageAttachment
+            const attachment = await image.createCanvas(member, leaveImages, leaveText, leaveColor, false, false, leaveBGToggle) as AttachmentBuilder
 
             const newMsg = String(leaveMsg).replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
             .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())
 
-            channel.send(newMsg, attachment)
+            channel.send({content: newMsg, files: [attachment]})
         }
 
         leaveMessages()
@@ -61,10 +62,10 @@ export default class GuildMemberRemove {
                 const channel = defaultChannel
                 const reason = "Joining and leaving in under 5 minutes."
                 banEmbed
-                .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+                .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
                 .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
                 .setDescription(`${discord.getEmoji("star")}_Successfully banned <@${member.user.id}> for reason:_ **${reason}**`)
-                if (channel) channel.send(banEmbed)
+                if (channel) channel.send({embeds: [banEmbed]})
                 banEmbed
                 .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
                 .setDescription(`${discord.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`)
@@ -73,33 +74,33 @@ export default class GuildMemberRemove {
         }
         leaveBan(this.discord)
 
-        const logKick = async (member: GuildMember) => {
+        const logKick = async (member: GuildMember | PartialGuildMember) => {
             const modLog = await sql.fetchColumn("guilds", "mod log")
             if (modLog) {
                 await Functions.timeout(1000)
                 const calc = Date.now() - 10000
                 const modChannel = member.guild?.channels.cache.get(modLog)! as TextChannel
-                const log = await member.guild.fetchAuditLogs({type: "MEMBER_KICK", limit: 5}).then((l) => l.entries.find((e) => (e.target as User).id === member.id))
+                const log = await member.guild.fetchAuditLogs({type: AuditLogEvent.MemberKick, limit: 5}).then((l) => l.entries.find((e) => (e.target as User).id === member.id))
                 .catch(async () => {
                     await modChannel.send(`I need the **View Audit Logs** permission in order to log guild kicks.`).catch(() => null)
                     return
                 }) as GuildAuditLogsEntry
                 if (!log || member.id !== (log?.target as User).id || log.createdTimestamp > calc) return
-                const data = {type: "kick", user: (log.target as User).id, executor: log.executor.id, date: Date.now(), guild: member.guild.id, reason: log.reason}
+                const data = {type: "kick", user: (log.target as User).id, executor: log.executor?.id, date: Date.now(), guild: member.guild.id, reason: log.reason}
                 discord.emit("caseUpdate", data)
             }
         }
         logKick(member)
 
-        const logLeave = async (member: GuildMember) => {
+        const logLeave = async (member: GuildMember | PartialGuildMember) => {
             const userLog = await sql.fetchColumn("guilds", "user log")
             if (userLog) {
                 const leaveChannel = member.guild?.channels.cache.get(userLog)! as TextChannel
                 const leaveEmbed = embeds.createEmbed()
                 leaveEmbed
-                .setAuthor("leave", "https://cdn.discordapp.com/emojis/593279118393475073.gif")
+                .setAuthor({name: "leave", iconURL: "https://cdn.discordapp.com/emojis/593279118393475073.gif"})
                 .setTitle(`**Member Left** ${discord.getEmoji("sagiriBleh")}`)
-                .setThumbnail(member.user.displayAvatarURL({format: "png", dynamic: true}))
+                .setThumbnail(member.user.displayAvatarURL({extension: "png"}))
                 .setDescription(
                     `${discord.getEmoji("star")}_Member:_ **<@!${member.id}> (${member.user.tag})**\n` +
                     `${discord.getEmoji("star")}_Member ID:_ \`${member.id}\`\n` +
@@ -107,8 +108,8 @@ export default class GuildMemberRemove {
                     `${discord.getEmoji("star")}_Account Creation Date:_ **${Functions.formatDate(member.user.createdAt)}**\n` +
                     `${discord.getEmoji("star")}_Guild Members:_ **${member.guild.members.cache.size}**\n`
                 )
-                .setFooter(`${member.guild.name} • ${Functions.formatDate(member.joinedAt ?? new Date())}`, member.guild.iconURL({format: "png", dynamic: true}) ?? "")
-                await leaveChannel.send(leaveEmbed).catch(() => null)
+                .setFooter({text: `${member.guild.name} • ${Functions.formatDate(member.joinedAt ?? new Date())}`, iconURL: member.guild.iconURL({extension: "png"}) ?? ""})
+                await leaveChannel.send({embeds: [leaveEmbed]}).catch(() => null)
             }
         }
         logLeave(member)

@@ -18,18 +18,18 @@ export class Block {
         const match = await sql.fetchColumn("guilds", "block match")
         if (String(match) === "exact") {
             if (words.some((w: string) => w.includes(message.content) || (asterisk ? message.content.match(/\*/g) : false))) {
-                if (!message.guild?.me?.permissions.has("MANAGE_MESSAGES")) return message.channel.send("I need the **Manage Messages** permission in order to delete the message with the blocked word.")
+                if (!message.guild?.members.me?.permissions.has("ManageMessages")) return message.channel.send("I need the **Manage Messages** permission in order to delete the message with the blocked word.")
                 const reply = await message.reply("Your post was removed because it contained a blocked word.")
                 await message.delete()
-                reply.delete({timeout: 10000})
+                setTimeout(() => reply.delete(), 10000)
             }
         } else {
             for (let i = 0; i < words.length; i++) {
                 if (message.content.includes(words[i]) || (asterisk ? message.content.match(/\*/g) : false)) {
-                    if (!message.guild?.me?.permissions.has("MANAGE_MESSAGES")) return message.channel.send("I need the **Manage Messages** permission in order to delete the message with the blocked word.")
+                    if (!message.guild?.members.me?.permissions.has("ManageMessages")) return message.channel.send("I need the **Manage Messages** permission in order to delete the message with the blocked word.")
                     const reply = await message.reply("Your post was removed because it contained a blocked word.")
                     await message.delete()
-                    reply.delete({timeout: 10000})
+                    setTimeout(() => reply.delete(), 10000)
                 }
             }
         }
@@ -50,7 +50,7 @@ export class Block {
             }
             let del = true
             try {
-                const invites = await message.guild?.fetchInvites()
+                const invites = await message.guild?.invites.fetch()
                 if (invites?.has(match[0].trim())) del = false
             } catch {
                 // Do nothing
@@ -58,7 +58,7 @@ export class Block {
             if (del) {
                 const reply = await message.reply("Your post was removed because it contained an invite to another server.")
                 await message.delete()
-                reply.delete({timeout: 10000})
+                setTimeout(() => reply.delete(), 10000)
             }
         }
     }
@@ -73,23 +73,23 @@ export class Block {
         const sql = new SQLQuery(msg)
         const perms = new Permission(this.discord, msg)
         if (msg.content.includes("@everyone") || msg.content.includes("@here")) {
-          if (msg.member?.hasPermission("MENTION_EVERYONE") || await perms.checkMod(true)) return
+          if (msg.member?.permissions.has("MentionEveryone") || await perms.checkMod(true)) return
           const toggle = await sql.fetchColumn("guilds", "everyone ban toggle")
           if (toggle === "on") {
             try {
-              await msg.member?.ban({reason: "Mentioning everyone", days: 7})
+              await msg.member?.ban({reason: "Mentioning everyone", deleteMessageSeconds: 7 * 24 * 60 * 60})
               const banEmbed = embeds.createEmbed()
-              .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+              .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
               .setTitle(`**Member Banned** ${this.discord.getEmoji("kannaFU")}`)
               .setDescription(`${this.discord.getEmoji("star")}_Successfully banned <@${msg.author.id}> for reason:_ **Mentioning everyone without having the permission to do so.**`)
-              msg.channel.send(banEmbed)
+              msg.channel.send({embeds: [banEmbed]})
               const dmEmbed = embeds.createEmbed()
               dmEmbed
-              .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+              .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
               .setTitle(`**You Were Banned** ${this.discord.getEmoji("kannaFU")}`)
               .setDescription(`${this.discord.getEmoji("star")}_You were banned from ${msg.guild!.name} for reason:_ **Mentioning everyone without having the permission to do so.**`)
               const dm = await msg.author.createDM()
-              await msg.author.send(dmEmbed).catch(() => null)
+              await msg.author.send({embeds: [dmEmbed]}).catch(() => null)
             } catch {
               // Do nothing
             }
@@ -107,7 +107,7 @@ export class Block {
             try {
                 await message.delete()
                 const rep = await message.reply(`This is a gallery channel, you can only post images here!`)
-                rep.delete({timeout: 3000})
+                setTimeout(() => rep.delete(), 3000)
             } catch {
                 return message.channel.send(`I need the **Manage Messages** permission to delete text messages in gallery channels ${this.discord.getEmoji("kannaFacepalm")}`)
             }

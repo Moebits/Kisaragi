@@ -1,5 +1,5 @@
 import "dotenv/config"
-import {Intents} from "discord.js"
+import {DefaultWebSocketManagerOptions, GatewayIntentBits, Partials} from "discord.js"
 import fs from "fs"
 import path from "path"
 import * as config from "./config.json"
@@ -9,22 +9,28 @@ import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 
-const intents = new Intents(Intents.ALL)
-intents.remove(["GUILD_MESSAGE_TYPING", "DIRECT_MESSAGE_TYPING"])
-
 const discord = new Kisaragi({
     allowedMentions: {parse: ["users"]},
-    restTimeOffset: 0,
-    partials: ["MESSAGE", "CHANNEL", "REACTION"],
-    ws: {intents}
+    intents: [
+        GatewayIntentBits.Guilds, 
+        GatewayIntentBits.GuildMembers, 
+        GatewayIntentBits.GuildPresences,
+        GatewayIntentBits.GuildModeration,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.DirectMessageReactions,
+        GatewayIntentBits.MessageContent
+    ],
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+    rest: {
+        offset: 0
+    }
 })
 
 // @ts-ignore
-discord.options.ws.properties.$browser = "Discord iOS"
-// @ts-ignore
-discord.options.ws.properties.$device = "iPhone XR"
-// @ts-ignore
-discord.options.ws.properties.$os = "iOS 13.5"
+DefaultWebSocketManagerOptions.identifyProperties.browser = "Discord iOS"
 
 const dumps = [
     `../assets/images/dump`,
@@ -48,7 +54,9 @@ for (let i = 0; i < dumps.length; i++) {
 }
 
 const start = async (): Promise<void> => {
-    // await SQLQuery.purgeTable("commands")
+    await SQLQuery.createDB()
+    //await SQLQuery.purgeTable("commands")
+
     let commandCounter = 0
     const cmdFiles: string[][] = []
     const subDirectory = fs.readdirSync(path.join(__dirname, "./commands/"))
@@ -64,7 +72,7 @@ const start = async (): Promise<void> => {
             const commandName = file.split(".")[0]
             if (commandName === "empty" || commandName === "tempCodeRunnerFile") return
             const cmdFind = await SQLQuery.fetchCommand(commandName, "command")
-            const command = new (require(path.join(__dirname, `./commands/${currDir}/${file}`)).default)(discord, null)
+            const command = new (await import(path.join(__dirname, `./commands/${currDir}/${file}`)))(discord, null)
 
             if (!cmdFind) {
                 await SQLQuery.insertCommand(commandName, p, command)
@@ -78,15 +86,15 @@ const start = async (): Promise<void> => {
 
     const evtFiles = fs.readdirSync("./events/")
 
-    evtFiles.forEach((file: string) => {
+    await Promise.all(evtFiles.map(async (file: string) => {
         if (!file.endsWith(".ts") && !file.endsWith(".js")) return
         const eventName = file.split(".")[0] as any
         Logger.log(`Loading Event: ${eventName}`)
-        const event = new (require(path.join(__dirname, `./events/${eventName}`)).default)(discord)
+        const event = new (await import(path.join(__dirname, `./events/${eventName}`)))(discord)
         if (eventName) {
         discord.on(eventName, (...args: any) => event.run(...args))
         }
-    })
+    }))
 
     Logger.log(`Loaded a total of ${commandCounter} commands.`)
     Logger.log(`Loaded a total of ${evtFiles.length} events.`)
@@ -96,7 +104,7 @@ const start = async (): Promise<void> => {
 
     const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
     await discord.login(token)
-    discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
+    discord.setPfp(discord.user!.displayAvatarURL({extension: "png"}))
     discord.setUsername(discord.user!.username)
 
     //Functions.pollTwitch(discord)
@@ -108,8 +116,4 @@ start()
 
 process.on("unhandledRejection", (error) => console.error(error))
 process.on("uncaughtException", (error) => console.error(error))
-
-process.on("SIGTERM", () => {
-    discord.destroy()
-    process.exit(0)
-})
+process.on("SIGTERM", () => discord.destroy())

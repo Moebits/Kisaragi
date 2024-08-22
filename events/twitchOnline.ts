@@ -1,7 +1,5 @@
-import {Guild, GuildAuditLogsEntry, Message, TextChannel, User, WebhookClient} from "discord.js"
+import {WebhookClient} from "discord.js"
 import {HelixStream} from "twitch"
-import {Embeds} from "./../structures/Embeds"
-import {Functions} from "./../structures/Functions"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
 
@@ -15,13 +13,13 @@ export default class TwitchOnline {
             const current = JSON.parse(config[i])
             if (!current.id || !current.token) continue
             if (!current.state || current.state === "Off") continue
-            const webhook = new WebhookClient(current.id, current.token, {
-                disableMentions: "everyone",
-                restTimeOffset: 0
+            const webhook = new WebhookClient({id: current.id, token: current.token}, {
+                allowedMentions: {parse: ["users", "roles"]},
+                rest: {offset: 0}
             })
             if (!current.mention) current.mention = ""
             const message = `${current.mention}[**${stream.userDisplayName}**](https://www.twitch.tv/${stream.userDisplayName}) is streaming on twitch! https://www.twitch.tv/${stream.userDisplayName}`
-            await webhook.send(message, {avatarURL: discord.user?.displayAvatarURL({format: "png", dynamic: true}), username: discord.user!.username})
+            await webhook.send({content: message, avatarURL: discord.user?.displayAvatarURL({extension: "png"}), username: discord.user!.username})
             webhook.destroy()
         }
     }

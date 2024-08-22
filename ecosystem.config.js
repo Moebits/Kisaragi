@@ -2,7 +2,6 @@ module.exports = {
   apps : [{
     name: "Kisaragi",
     script: "shard.js",
-
     args: "one two",
     instances: 1,
     autorestart: true,

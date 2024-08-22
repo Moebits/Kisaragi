@@ -1,7 +1,6 @@
 import axios from "axios"
-import {reject} from "bluebird"
 import child_process from "child_process"
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
 import path from "path"
@@ -89,24 +88,24 @@ export class AudioEffects {
             const link = await this.images.upload(fileDest)
             const effectEmbed = this.embeds.createEmbed()
             effectEmbed
-            .setAuthor("audio effect", "https://clipartmag.com/images/musical-notes-png-11.png")
+            .setAuthor({name: "audio effect", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
             .setTitle(`**Audio Effect Download** ${this.discord.getEmoji("kannaWave")}`)
             .setDescription(
                 `${this.discord.getEmoji("star")}This audio file is too large for attachments. Download it [**here**](${link}).\n`
             )
-            return this.message.channel.send(effectEmbed)
+            return this.message.channel.send({embeds: [effectEmbed]})
         } else {
             const attachName = path.basename(fileDest)
-            const attachment = new MessageAttachment(path.join(__dirname, fileDest), `${attachName}`)
+            const attachment = new AttachmentBuilder(path.join(__dirname, fileDest), {name: `${attachName}`})
             const effectEmbed = this.embeds.createEmbed()
             effectEmbed
-            .setAuthor("audio effect", "https://clipartmag.com/images/musical-notes-png-11.png")
+            .setAuthor({name: "audio effect", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
             .setTitle(`**Audio Effect Download** ${this.discord.getEmoji("kannaWave")}`)
             .setDescription(
                 `${this.discord.getEmoji("star")}Applied the **${effect}** effect to this mp3 file!\n`
             )
-            await this.message.channel.send(effectEmbed)
-            return this.message.channel.send(attachment)
+            await this.message.channel.send({embeds: [effectEmbed]})
+            return this.message.channel.send({files: [attachment]})
         }
     }
 

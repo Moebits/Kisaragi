@@ -14,10 +14,10 @@ export class Link {
 
     public linkRun = async (msg: Message, args: string[]) => {
         const onCooldown = this.cool.cmdCooldown(args[0], 30, linkCool)
-        if (onCooldown && (msg.author!.id !== process.env.OWNER_ID)) return msg.reply({embed: onCooldown})
+        if (onCooldown && (msg.author!.id !== process.env.OWNER_ID)) return msg.reply({embeds: [onCooldown]})
         const loading = await msg.channel.send(`**Fetching Link** ${this.discord.getEmoji("gabCircle")}`) as Message
         await this.cmd.runCommand(msg, args)
-        loading.delete({timeout: 1000})
+        setTimeout(() => loading.delete(), 1000)
     }
 
     public postLink = async () => {

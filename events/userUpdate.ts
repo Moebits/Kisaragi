@@ -1,4 +1,4 @@
-import {Guild, GuildAuditLogsEntry, GuildMember, Message, Role, TextChannel, User} from "discord.js"
+import {TextChannel, User} from "discord.js"
 import {Embeds} from "./../structures/Embeds"
 import {Functions} from "./../structures/Functions"
 import {Kisaragi} from "./../structures/Kisaragi"
@@ -30,17 +30,17 @@ export default class UserUpdate {
                     if (!memberChannel) return
                     const logEmbed = embeds.createEmbed()
                     logEmbed
-                    .setAuthor("username", "https://cdn.discordapp.com/emojis/623182675355762690.png")
+                    .setAuthor({name: "username", iconURL: "https://cdn.discordapp.com/emojis/623182675355762690.png"})
                     .setTitle(`**Username Change** ${discord.getEmoji("tohruSmug")}`)
-                    .setThumbnail(newUser.displayAvatarURL({format: "png", dynamic: true}) ?? "")
+                    .setThumbnail(newUser.displayAvatarURL({extension: "png"}) ?? "")
                     .setDescription(
                         `${discord.getEmoji("star")}_User:_ **<@!${newUser.id}> (${newUser.tag})**\n` +
                         `${discord.getEmoji("star")}_User ID:_ \`${newUser.id}\`\n` +
                         `${discord.getEmoji("star")}_Old Username:_ **${oldUser.username}**\n` +
                         `${discord.getEmoji("star")}_New Username:_ **${newUser.username}**\n`
                     )
-                    .setFooter(`${guild.name} • ${Functions.formatDate(new Date())}`, guild.iconURL({format: "png", dynamic: true}) ?? "")
-                    await memberChannel.send(logEmbed).catch(() => null)
+                    .setFooter({text: `${guild.name} • ${Functions.formatDate(new Date())}`, iconURL: guild.iconURL({extension: "png"}) ?? ""})
+                    await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
                 }
             }
             if (setUsername) logUsername(oldUser, newUser)
@@ -52,17 +52,17 @@ export default class UserUpdate {
                     if (!memberChannel) return
                     const logEmbed = embeds.createEmbed()
                     logEmbed
-                    .setAuthor("profile picture", "https://cdn.discordapp.com/emojis/607052423172718607.png")
+                    .setAuthor({name: "profile picture", iconURL: "https://cdn.discordapp.com/emojis/607052423172718607.png"})
                     .setTitle(`**Profile Picture Change** ${discord.getEmoji("KannaXD")}`)
-                    .setThumbnail(newUser.displayAvatarURL({format: "png", dynamic: true}))
+                    .setThumbnail(newUser.displayAvatarURL({extension: "png"}))
                     .setDescription(
-                        `${discord.getEmoji("star")}_User:_ **<@!${newUser.id}> (${newUser.tag})**\n` +
+                        `${discord.getEmoji("star")}_User:_ **<@!${newUser.id}> (${newUser.username})**\n` +
                         `${discord.getEmoji("star")}_User ID:_ \`${newUser.id}\`\n` +
-                        `${discord.getEmoji("star")}_Old Avatar:_ [**Link**](${oldUser.displayAvatarURL({format: "png", dynamic: true})})\n` +
-                        `${discord.getEmoji("star")}_New Avatar:_ [**Link**](${newUser.displayAvatarURL({format: "png", dynamic: true})})\n`
+                        `${discord.getEmoji("star")}_Old Avatar:_ [**Link**](${oldUser.displayAvatarURL({extension: "png"})})\n` +
+                        `${discord.getEmoji("star")}_New Avatar:_ [**Link**](${newUser.displayAvatarURL({extension: "png"})})\n`
                     )
-                    .setFooter(`${guild.name} • ${Functions.formatDate(new Date())}`, guild.iconURL({format: "png", dynamic: true}) ?? "")
-                    await memberChannel.send(logEmbed).catch(() => null)
+                    .setFooter({text: `${guild.name} • ${Functions.formatDate(new Date())}`, iconURL: guild.iconURL({extension: "png"}) ?? ""})
+                    await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
                 }
             }
             if (setAvatar) logAvatar(oldUser, newUser)

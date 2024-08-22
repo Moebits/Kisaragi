@@ -8,8 +8,6 @@
     ],
     "website": "https://kisaragi.moe/",
     "support": "",
-    "patreon": "",
-    "kofi": "",
     "invite": "https://discord.com/oauth2/authorize?client_id=CLIENTID&scope=bot&permissions=543279148279",
     "oauth2": "https://kisaragi-discord-bot.herokuapp.com/discord",
     "oauth2Testing": "http://localhost:5000/discord",
@@ -23,9 +21,11 @@
     "kisaragiAPI": "https://kisaragi-discord-bot.herokuapp.com",
     "guildLog": "683760526840692761",
     "feedback": "683756932317577232",
-    "review": "https://bots.ondiscord.xyz/bots/593838271650332672/review",
-    "vote": "https://top.gg/bot/593838271650332672/vote",
+    "review": "",
+    "vote": "",
     "trello": "https://trello.com/b/ToodAuzu",
     "paypal": "",
+    "patreon": "",
+    "kofi": "",
     "testing": "off"
 }

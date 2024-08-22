@@ -1,5 +1,5 @@
-import {Guild, Message, TextChannel} from "discord.js"
-import * as config from "../config.json"
+import {Guild, Message, TextChannel, ChannelType} from "discord.js"
+import config from "../config.json"
 import {CommandFunctions} from "./../structures/CommandFunctions"
 import {Embeds} from "./../structures/Embeds"
 import {Functions} from "./../structures/Functions"
@@ -13,7 +13,7 @@ export default class GuildCreate {
         const discord = this.discord
         const message = await this.discord.fetchFirstMessage(guild) as Message
         if (!message && guild.id !== "264445053596991498") {
-            const chan = guild.channels.cache.find(((c) => c.permissionsFor(guild.me!)?.has("SEND_MESSAGES") ?? false))
+            const chan = guild.channels.cache.find(((c) => c.permissionsFor(guild.members.me!)?.has("SendMessages") ?? false))
             if (chan) await (chan as TextChannel).send(`The permissions **View Channel** and **Read Message History** are required. Reinvite the bot with sufficient permissions ${discord.getEmoji("kannaFacepalm")}`)
             await guild.leave()
             return
@@ -23,7 +23,7 @@ export default class GuildCreate {
 
         const mainChannels = guild.channels.cache.filter((c) => {
             if (c.name.toLowerCase().includes("main") || c.name.toLowerCase().includes("general") || c.name.toLowerCase().includes("chat")) {
-                if (c.type === "text") {
+                if (c.type === ChannelType.GuildText) {
                     return true
                 } else {
                     return false
@@ -55,28 +55,29 @@ export default class GuildCreate {
 
         try {
             let botRole = guild.roles.cache.find((r) => r.name.toLowerCase().includes("kisaragi"))
-            if (!botRole) botRole = await guild.roles.create({data: {name: "✨ Kisaragi ✨", color: "#ff58f4"}})
-            await guild.me?.roles.add(botRole)
+            if (!botRole) botRole = await guild.roles.create({name: "✨ Kisaragi ✨", color: "#ff58f4"})
+            await guild.members.me?.roles.add(botRole)
         } catch {
             // Do nothing
         }
 
         const logGuild = async (guild: Guild) => {
+            const guildOwner = await guild.fetchOwner()
             const guildChannel = discord.channels.cache.get(config.guildLog) as TextChannel
             const logEmbed = embeds.createEmbed()
             logEmbed
-            .setAuthor("guild join", "https://discordemoji.com/assets/emoji/8994_TohruThumbsUp.gif")
+            .setAuthor({name: "guild join", iconURL: "https://discordemoji.com/assets/emoji/8994_TohruThumbsUp.gif"})
             .setTitle(`**Joined a new guild!** ${discord.getEmoji("MeimeiYay")}`)
-            .setThumbnail(guild.iconURL() ? guild.iconURL({format: "png", dynamic: true})! : "")
-            .setImage(guild.bannerURL() ? guild.bannerURL({format: "png"})! : (guild.splashURL() ? guild.splashURL({format: "png"})! : ""))
+            .setThumbnail(guild.iconURL() ? guild.iconURL({extension: "png"})! : "")
+            .setImage(guild.bannerURL() ? guild.bannerURL({extension: "png"})! : (guild.splashURL() ? guild.splashURL({extension: "png"})! : ""))
             .setDescription(
                 `${discord.getEmoji("star")}_Guild Name:_ **${guild.name}**\n` +
-                `${discord.getEmoji("star")}_Guild Owner:_ **${guild.owner?.user.tag}**\n` +
+                `${discord.getEmoji("star")}_Guild Owner:_ **${guildOwner.user.username}**\n` +
                 `${discord.getEmoji("star")}_Guild ID:_ \`${guild.id}\`\n` +
                 `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(guild.createdAt)}**\n` +
                 `${discord.getEmoji("star")}_Members:_ **${guild.memberCount}**\n`
             )
-            guildChannel.send(logEmbed)
+            guildChannel.send({embeds: [logEmbed]})
             return
         }
         if (config.testing === "off") logGuild(guild)
@@ -98,7 +99,7 @@ export default class GuildCreate {
                 await guild.leave()
             } else {
                 const userLists = await SQLQuery.selectColumn("blacklist", "user id")
-                const found = userLists.find((u) => String(u) === guild.ownerID)
+                const found = userLists.find((u) => String(u) === guild.ownerId)
                 if (found) await guild.leave()
             }
         }

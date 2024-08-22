@@ -1,13 +1,13 @@
 import archiver from "archiver"
 import axios from "axios"
 import crypto from "crypto"
-import {Message, Util} from "discord.js"
+import {Message} from "discord.js"
 import emojiRegex from "emoji-regex"
 import fs from "fs"
 import path from "path"
-import * as stream from "stream"
+import stream from "stream"
 import TwitchClient from "twitch"
-import * as config from "../config.json"
+import config from "../config.json"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
@@ -148,7 +148,22 @@ export class Functions {
 
     // Check Message Characters
     public static checkChar = (message: string, num: number, char: string): string => {
-        const splitText = Util.splitMessage(message, {maxLength: num, char})
+        const splitMessage = (text: string, {maxLength = 2000, char = "\n", prepend = "", append = ""} = {}) => {
+            if (text.length <= maxLength) return [text]
+            const splitText = text.split(char)
+            if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError("SPLIT_MAX_LEN")
+            const messages = [] as string[]
+            let msg = ""
+            for (const chunk of splitText) {
+              if (msg && (msg + char + chunk + append).length > maxLength) {
+                messages.push(msg + append)
+                msg = prepend
+              }
+              msg += (msg && msg !== prepend ? char : "") + chunk
+            }
+            return messages.concat(msg).filter(m => m)
+        }
+        const splitText = splitMessage(message, {maxLength: num, char})
         if (splitText[0]) {
             return splitText[0]
         } else {

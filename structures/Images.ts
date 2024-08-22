@@ -2,7 +2,7 @@ import axios from "axios"
 import Canvas from "@napi-rs/canvas"
 import {v2 as cloudinary} from "cloudinary"
 import concat from "concat-stream"
-import {DMChannel, GuildMember, Message, MessageAttachment, NewsChannel, TextChannel} from "discord.js"
+import {DMChannel, GuildMember, Message, AttachmentBuilder, NewsChannel, TextChannel} from "discord.js"
 import FormData from "form-data"
 import fs from "fs"
 import gifFrames from "gif-frames"
@@ -15,7 +15,7 @@ import request from "request"
 import stream from "stream"
 import Twitter from "twitter"
 import unzip from "unzip"
-import * as config from "../config.json"
+import config from "../config.json"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 
@@ -149,7 +149,7 @@ export class Images {
     /** Fetch channel attachments */
     public fetchChannelAttachments = async (channel: TextChannel | DMChannel | NewsChannel, limit?: number, gif?: boolean, messageID?: string) => {
         if (!limit) limit = Infinity
-        let last = messageID || channel.lastMessageID
+        let last = messageID || channel.lastMessageId
         let attachments: string[] = []
         let counter = 0
         const amount = limit < 100 ? limit : 100
@@ -201,7 +201,7 @@ export class Images {
         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, String(member.guild.memberCount))
         if (Array.isArray(image)) image = image[Math.floor(Math.random() * image.length)]
         if (bgElements === "off") {
-            const attachment = new MessageAttachment(image)
+            const attachment = new AttachmentBuilder(image)
             return attachment
         }
 
@@ -274,7 +274,7 @@ export class Images {
             const file = fs.createWriteStream(path.join(dir, `./animated${random}.gif`))
             await this.encodeGif(attachmentArray, dir, file)
             msg2.delete()
-            const attachment = new MessageAttachment(path.join(dir, `./animated${random}.gif`), "animated.gif")
+            const attachment = new AttachmentBuilder(path.join(dir, `./animated${random}.gif`), {name: "animated.gif"})
             return attachment
 
         } else {
@@ -306,14 +306,14 @@ export class Images {
             ctx.closePath()
             ctx.clip()
 
-            const avatar = await Canvas.loadImage(member.user.displayAvatarURL({format: "png"}))
+            const avatar = await Canvas.loadImage(member.user.displayAvatarURL({extension: "png"}))
             ctx.drawImage(avatar, 25, 25, 200, 200)
 
             if (uri) {
                 return canvas.toDataURL("image/png")
             }
 
-            const attachment = new MessageAttachment(canvas.toBuffer("image/jpeg"), `welcome.jpg`)
+            const attachment = new AttachmentBuilder(canvas.toBuffer("image/jpeg"), {name: `welcome.jpg`})
             return attachment
         }
     }

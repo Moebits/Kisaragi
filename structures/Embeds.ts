@@ -1,4 +1,4 @@
-import {Collection, Emoji, GuildEmoji, Message, MessageAttachment, MessageCollector, MessageEmbed, MessageEmbedThumbnail, MessageReaction, ReactionEmoji, TextChannel, User} from "discord.js"
+import {Collection, Emoji, GuildEmoji, Message, AttachmentBuilder, MessageCollector, EmbedBuilder, APIEmbedThumbnail, MessageReaction, ReactionEmoji, TextChannel, User} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {CommandFunctions} from "./CommandFunctions"
@@ -37,31 +37,31 @@ export class Embeds {
         let color = colors.has(this.message?.guild?.id) ? colors.get(this.message?.guild?.id) : Functions.randomColor() as any
         if (Array.isArray(color)) color = color[Math.floor(Math.random()*color.length)]
         if (color === "default") color = Functions.randomColor()
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
         embed
         .setColor(color)
         .setTimestamp(Date.now())
-        .setFooter(`Responded in ${this.functions.responseTime()}`, this.message?.author?.displayAvatarURL({format: "png", dynamic: true}))
+        .setFooter({text: `Responded in ${this.functions.responseTime()}`, iconURL: this.message?.author?.displayAvatarURL({extension: "png"})})
         return embed
     }
 
     /** Updates an embed */
-    public updateEmbed = async (embeds: MessageEmbed[], page: number, user: User, msg?: Message, help?: boolean, helpIndex?: number, cmdCount?: number[]) => {
+    public updateEmbed = async (embeds: EmbedBuilder[], page: number, user: User, msg?: Message, help?: boolean, helpIndex?: number, cmdCount?: number[]) => {
         if (!embeds[page]) return null as any
         if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         if (help) {
             if (!helpIndex) helpIndex = 0
-            const name = embeds[page].title!.replace(/(<)(.*?)(>)/g, "").replace(/\*/g, "")
-            embeds[page].setFooter(`${name} (${cmdCount?.[page]}) • Page ${helpIndex + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+            const name = embeds[page].data.title!.replace(/(<)(.*?)(>)/g, "").replace(/\*/g, "")
+            embeds[page].setFooter({text: `${name} (${cmdCount?.[page]}) • Page ${helpIndex + 1}/${embeds.length}`, iconURL: user.displayAvatarURL({extension: "png"})})
             return embeds[page]
         } else {
-            embeds[page].setFooter(`Page ${page + 1}/${embeds.length}`, user.displayAvatarURL({format: "png", dynamic: true}))
+            embeds[page].setFooter({text: `Page ${page + 1}/${embeds.length}`, iconURL: user.displayAvatarURL({extension: "png"})})
             return embeds[page]
         }
     }
 
     /** Create Reaction Embed */
-    public createReactionEmbed = async (embeds: MessageEmbed[], collapseOn?: boolean, download?: boolean, startPage?: number, dm?: User) => {
+    public createReactionEmbed = async (embeds: EmbedBuilder[], collapseOn?: boolean, download?: boolean, startPage?: number, dm?: User) => {
         let page = 0
         if (startPage) page = startPage - 1
         const insertEmbeds = embeds
@@ -70,26 +70,26 @@ export class Embeds {
         let msg: Message
         if (dm) {
             try {
-                msg = await dm.send(embeds[page])
+                msg = await dm.send({embeds: [embeds[page]]})
             } catch {
                 return this.message
             }
         } else {
-            msg = await this.message.channel.send(embeds[page])
+            msg = await this.message.channel.send({embeds: [embeds[page]]})
         }
         for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
 
         if (collapseOn) {
             const description: string[] = []
-            const thumbnail: MessageEmbedThumbnail[] = []
+            const thumbnail: APIEmbedThumbnail[] = []
             let collapsed = false
             for (let i = 0; i < embeds.length; i++) {
-                description.push(embeds[i].description!)
-                thumbnail.push((embeds[i].thumbnail!))
+                description.push(embeds[i].data.description!)
+                thumbnail.push((embeds[i].data.thumbnail!))
             }
             await msg.react(this.discord.getEmoji("collapse"))
             const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
-            const collapse = msg.createReactionCollector(collapseCheck)
+            const collapse = msg.createReactionCollector({filter: collapseCheck})
 
             collapse.on("collect", async (reaction: MessageReaction, user: User) => {
                 if (!collapsed) {
@@ -113,7 +113,7 @@ export class Embeds {
 
         if (download) {
             const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("download") && user.bot === false
-            const download = msg.createReactionCollector(downloadCheck)
+            const download = msg.createReactionCollector({filter: downloadCheck})
             let downloaded = false
 
             download.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -122,8 +122,8 @@ export class Embeds {
                 downloaded = true
                 const images: string[] = []
                 for (let i = 0; i < embeds.length; i++) {
-                    if (embeds[i].image?.url) {
-                        images.push(embeds[i].image?.url!)
+                    if (embeds[i].data.image?.url) {
+                        images.push(embeds[i].data.image?.url!)
                     }
                 }
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
@@ -139,14 +139,14 @@ export class Embeds {
                     const link = await this.images.upload(dest)
                     const downloadEmbed = this.createEmbed()
                     downloadEmbed
-                    .setAuthor("download", this.discord.checkMuted(reaction.message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+                    .setAuthor({name: "download", iconURL: this.discord.checkMuted(reaction.message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
                     .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
                     .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
-                    await msg.channel.send(downloadEmbed)
+                    await msg.channel.send({embeds: [downloadEmbed]})
                 } else {
-                    const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
-                    const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
-                    await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
+                    const cleanTitle = embeds[0].data.title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
+                    const attachment = new AttachmentBuilder(dest, {name: `${cleanTitle}.zip`})
+                    await msg.channel.send({content: `<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, files: [attachment]})
                 }
                 if (rep) rep.delete()
                 Functions.removeDirectory(src)
@@ -162,12 +162,12 @@ export class Embeds {
         const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
         const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("copy") && user.bot === false
 
-        const forward = msg.createReactionCollector(forwardCheck)
-        const backward = msg.createReactionCollector(backwardCheck)
-        const tripleForward = msg.createReactionCollector(tripleForwardCheck)
-        const tripleBackward = msg.createReactionCollector(tripleBackwardCheck)
-        const numberSelect = msg.createReactionCollector(numberSelectCheck)
-        const copy = msg.createReactionCollector(copyCheck)
+        const forward = msg.createReactionCollector({filter: forwardCheck})
+        const backward = msg.createReactionCollector({filter: backwardCheck})
+        const tripleForward = msg.createReactionCollector({filter: tripleForwardCheck})
+        const tripleBackward = msg.createReactionCollector({filter: tripleBackwardCheck})
+        const numberSelect = msg.createReactionCollector({filter: numberSelectCheck})
+        const copy = msg.createReactionCollector({filter: copyCheck})
 
         await SQLQuery.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", insertEmbeds, "message", msg.id)
@@ -223,16 +223,23 @@ export class Embeds {
         })
 
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 3000})
+                setTimeout(() => rep.delete(), 3000)
                 return
             }
             const self = this
             async function getPageNumber(response: Message) {
                 if (Number.isNaN(Number(response.content)) || Number(response.content) > embeds.length) {
                     const rep = await response.reply("That page number is invalid.")
-                    await rep.delete({timeout: 2000}).catch(() => null)
+                    await new Promise<void>((resolve) => {
+                        setTimeout(() => {
+                            rep.delete()
+                            resolve()
+                        }, 2000)
+                    })
+                    await Functions.timeout(2000)
+                    await rep.delete().catch(() => null)
                 } else {
                     page = Number(response.content) - 1
                     const embed = await self.updateEmbed(embeds, page, user, msg)
@@ -251,9 +258,9 @@ export class Embeds {
             const id = msg.guild ? msg.guild.id : user.id
             await reaction.users.remove(user).catch(() => null)
             if (copyOn) return
-            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 3000})
+                setTimeout(() => rep.delete(), 3000)
                 return
             }
             const content = msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "")
@@ -271,15 +278,15 @@ export class Embeds {
     }
 
     // Re-trigger Existing Reaction Embed
-    public editReactionCollector = async (msg: Message, emoji: string, user: User, embeds: MessageEmbed[], collapseOn?: boolean, download?: boolean, startPage?: number) => {
+    public editReactionCollector = async (msg: Message, emoji: string, user: User, embeds: EmbedBuilder[], collapseOn?: boolean, download?: boolean, startPage?: number) => {
         let page = 0
         if (startPage) page = startPage
         await this.updateEmbed(embeds, page, this.message.author!, msg)
         const description: string[] = []
-        const thumbnail: MessageEmbedThumbnail[] = []
+        const thumbnail: APIEmbedThumbnail[] = []
         for (let i = 0; i < embeds.length; i++) {
-                description.push(embeds[i].description!)
-                thumbnail.push(embeds[i].thumbnail!)
+                description.push(embeds[i].data.description!)
+                thumbnail.push(embeds[i].data.thumbnail!)
             }
         await msg.reactions.cache.find((r) => r.emoji.name === emoji)?.users.remove(user).catch(() => null)
         switch (emoji) {
@@ -290,7 +297,7 @@ export class Embeds {
                         page++
                     }
                     await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit(embeds[page])
+                    msg.edit({embeds: [embeds[page]]})
                     break
             case "left":
                     if (page === 0) {
@@ -299,7 +306,7 @@ export class Embeds {
                         page--
                     }
                     await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit(embeds[page])
+                    msg.edit({embeds: [embeds[page]]})
                     break
             case "tripleRight":
                     if (page === embeds.length - 1) {
@@ -308,7 +315,7 @@ export class Embeds {
                         page++
                     }
                     await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit(embeds[page])
+                    msg.edit({embeds: [embeds[page]]})
                     break
             case "tripleLeft":
                     if (page === 0) {
@@ -318,17 +325,17 @@ export class Embeds {
                     }
                     if (page < 0) page *= -1
                     await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit(embeds[page])
+                    msg.edit({embeds: [embeds[page]]})
                     break
             case "numberSelect":
                     const rep3 = await msg.reply(`The page selection function is disabled on old embeds. However, you can repost it.`)
-                    rep3.delete({timeout: 3000})
+                    setTimeout(() => rep3.delete(), 3000)
                     break
             case "download":
                     const images: string[] = []
                     for (let i = 0; i < embeds.length; i++) {
-                        if (embeds[i].image?.url) {
-                            images.push(embeds[i].image?.url!)
+                        if (embeds[i].data.image?.url) {
+                            images.push(embeds[i].data.image?.url!)
                         }
                     }
                     const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
@@ -344,22 +351,22 @@ export class Embeds {
                         const link = await this.images.upload(dest)
                         const downloadEmbed = this.createEmbed()
                         downloadEmbed
-                        .setAuthor("download", this.discord.checkMuted(msg) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+                        .setAuthor({name: "download", iconURL: this.discord.checkMuted(msg) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
                         .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
                         .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
-                        await msg.channel.send(downloadEmbed)
+                        await msg.channel.send({embeds: [downloadEmbed]})
                     } else {
-                        const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
-                        const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
-                        await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
+                        const cleanTitle = embeds[0].data.title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
+                        const attachment = new AttachmentBuilder(dest, {name: `${cleanTitle}.zip`})
+                        await msg.channel.send({content: `<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, files: [attachment]})
                     }
                     if (rep) rep.delete()
                     Functions.removeDirectory(src)
                     break
             case "copy":
-                    if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+                    if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
                         const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
-                        rep.delete({timeout: 3000})
+                        setTimeout(() => rep.delete(), 3000)
                         return
                     }
                     const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "") ?? "")
@@ -373,7 +380,7 @@ export class Embeds {
                         embeds[i].setDescription(description[i])
                         embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
                     }
-                    msg.edit(embeds[page])
+                    msg.edit({embeds: [embeds[page]]})
                     break
             default:
         }
@@ -387,17 +394,17 @@ export class Embeds {
         const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("copy") && user.bot === false
         const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("repost") && user.bot === false
 
-        const forward = msg.createReactionCollector(forwardCheck)
-        const backward = msg.createReactionCollector(backwardCheck)
-        const tripleForward = msg.createReactionCollector(tripleForwardCheck)
-        const tripleBackward = msg.createReactionCollector(tripleBackwardCheck)
-        const numberSelect = msg.createReactionCollector(numberSelectCheck)
-        const repost = msg.createReactionCollector(repostCheck)
-        const copy = msg.createReactionCollector(copyCheck)
+        const forward = msg.createReactionCollector({filter: forwardCheck})
+        const backward = msg.createReactionCollector({filter: backwardCheck})
+        const tripleForward = msg.createReactionCollector({filter: tripleForwardCheck})
+        const tripleBackward = msg.createReactionCollector({filter: tripleBackwardCheck})
+        const numberSelect = msg.createReactionCollector({filter: numberSelectCheck})
+        const repost = msg.createReactionCollector({filter: repostCheck})
+        const copy = msg.createReactionCollector({filter: copyCheck})
 
         if (collapseOn) {
             const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
-            const collapse = msg.createReactionCollector(collapseCheck)
+            const collapse = msg.createReactionCollector({filter: collapseCheck})
             let collapsed = false
 
             collapse.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -422,7 +429,7 @@ export class Embeds {
 
         if (download) {
             const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("download") && user.bot === false
-            const download = msg.createReactionCollector(downloadCheck)
+            const download = msg.createReactionCollector({filter: downloadCheck})
             let downloaded = false
 
             download.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -431,8 +438,8 @@ export class Embeds {
                 downloaded = true
                 const images: string[] = []
                 for (let i = 0; i < embeds.length; i++) {
-                    if (embeds[i].image?.url) {
-                        images.push(embeds[i].image?.url!)
+                    if (embeds[i].data.image?.url) {
+                        images.push(embeds[i].data.image?.url!)
                     }
                 }
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
@@ -448,14 +455,14 @@ export class Embeds {
                     const link = await this.images.upload(dest)
                     const downloadEmbed = this.createEmbed()
                     downloadEmbed
-                    .setAuthor("download", this.discord.checkMuted(reaction.message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+                    .setAuthor({name: "download", iconURL: this.discord.checkMuted(reaction.message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
                     .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
                     .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
-                    await msg.channel.send(downloadEmbed)
+                    await msg.channel.send({embeds: [downloadEmbed]})
                 } else {
-                    const cleanTitle = embeds[0].title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
-                    const attachment = new MessageAttachment(dest, `${cleanTitle}.zip`)
-                    await msg.channel.send(`<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
+                    const cleanTitle = embeds[0].data.title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
+                    const attachment = new AttachmentBuilder(dest, {name: `${cleanTitle}.zip`})
+                    await msg.channel.send({content: `<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, files: [attachment]})
                 }
                 if (rep) rep.delete()
                 Functions.removeDirectory(src)
@@ -511,7 +518,7 @@ export class Embeds {
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
             await reaction.users.remove(user).catch(() => null)
             const rep3 = await msg.reply(`The page selection function is disabled on old embeds. However, you can repost it.`)
-            rep3.delete({timeout: 3000})
+            setTimeout(() => rep3.delete(), 3000)
         })
 
         let copyOn = false
@@ -519,9 +526,9 @@ export class Embeds {
             const id = msg.guild ? msg.guild.id : user.id
             await reaction.users.remove(user).catch(() => null)
             if (copyOn) return
-            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 3000})
+                setTimeout(() => rep.delete(), 3000)
                 return
             }
             const content = msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "")
@@ -543,15 +550,15 @@ export class Embeds {
     }
 
     /** Create Help Embed */
-    public createHelpEmbed = async (embeds: MessageEmbed[], reactionPage?: number) => {
+    public createHelpEmbed = async (embeds: EmbedBuilder[], reactionPage?: number) => {
         let page = 8
         if (reactionPage === 2) page = 17
-        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Misc 2", "Mod", "Reddit", "Twitter", "Video", "Waifu", "Website", "Website 2", "Website 3"]
+        const titles = ["Admin", "Anime", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Lewd", "Misc", "Misc 2", "Mod", "Music", "Music 2", "Music 3", "Reddit", "Twitter", "Video", "Waifu", "Website", "Website 2", "Website 3"]
         let compressed = false
         const longDescription: string[] = []
         const commandCount: number[] = []
         for (let i = 0; i < embeds.length; i++) {
-            longDescription.push(embeds[i].description!)
+            longDescription.push(embeds[i].data.description!)
         }
         const shortDescription: string[] = []
         for (let i = 0; i < longDescription.length; i++) {
@@ -565,7 +572,7 @@ export class Embeds {
             shortDescription.push(desc)
         }
         for (let i = 0; i < embeds.length; i++) {
-            embeds[i].setFooter(`${titles[i]} Commands (${commandCount[i]}) • Page ${i + 1}/${embeds.length}`, this.message.author.displayAvatarURL({format: "png", dynamic: true}))
+            embeds[i].setFooter({text: `${titles[i]} Commands (${commandCount[i]}) • Page ${i + 1}/${embeds.length}`, iconURL: this.message.author.displayAvatarURL({extension: "png"})})
         }
         const page1 = [
             this.discord.getEmoji("arrowRight"),
@@ -582,8 +589,8 @@ export class Embeds {
             this.discord.getEmoji("lewd"),
             this.discord.getEmoji("misc"),
             this.discord.getEmoji("mod"),
-            // this.discord.getEmoji("music"),
-            // this.discord.getEmoji("musicTwo"),
+            this.discord.getEmoji("music"),
+            this.discord.getEmoji("musicTwo"),
             this.discord.getEmoji("video"),
             this.discord.getEmoji("waifu"),
             this.discord.getEmoji("website"),
@@ -592,7 +599,7 @@ export class Embeds {
 
         const page2 = [
             this.discord.getEmoji("arrowLeft"),
-            // this.discord.getEmoji("musicThree"),
+            this.discord.getEmoji("musicThree"),
             this.discord.getEmoji("reddit"),
             this.discord.getEmoji("twitter"),
             this.discord.getEmoji("miscTwo"),
@@ -603,7 +610,7 @@ export class Embeds {
         const pages = [page1, page2]
         let pageIndex = 0
         if (reactionPage === 2) pageIndex = 1
-        const msg = await this.message.channel.send(embeds[page])
+        const msg = await this.message.channel.send({embeds: [embeds[page]]})
         await SQLQuery.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
         await this.sql.updateColumn("collectors", "collapse", true, "message", msg.id)
@@ -630,9 +637,9 @@ export class Embeds {
         const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("misc") && user.bot === false
         const miscTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("miscTwo") && user.bot === false
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
-        // const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
-        // const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
-        // const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
+        const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
+        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
+        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
         const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reddit") && user.bot === false
         const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitter") && user.bot === false
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
@@ -644,36 +651,36 @@ export class Embeds {
         const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowRight") && user.bot === false
         const dmCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("dm") && user.bot === false
 
-        const admin = msg.createReactionCollector(adminCheck)
-        const anime = msg.createReactionCollector(animeCheck)
-        const botDev = msg.createReactionCollector(botDevCheck)
-        const config = msg.createReactionCollector(configCheck)
-        const fun = msg.createReactionCollector(funCheck)
-        const game = msg.createReactionCollector(gameCheck)
-        const heart = msg.createReactionCollector(heartCheck)
-        const lewd = msg.createReactionCollector(lewdCheck)
-        const info = msg.createReactionCollector(infoCheck)
-        const japanese = msg.createReactionCollector(japaneseCheck)
-        const level = msg.createReactionCollector(levelCheck)
-        const image = msg.createReactionCollector(imageCheck)
-        const misc = msg.createReactionCollector(miscCheck)
-        const miscTwo = msg.createReactionCollector(miscTwoCheck)
-        const mod = msg.createReactionCollector(modCheck)
-        // const music = msg.createReactionCollector(musicCheck)
-        // const musicTwo = msg.createReactionCollector(musicTwoCheck)
-        // const musicThree = msg.createReactionCollector(musicThreeCheck)
-        const reddit = msg.createReactionCollector(redditCheck)
-        const twitter = msg.createReactionCollector(twitterCheck)
-        const video = msg.createReactionCollector(videoCheck)
-        const waifu = msg.createReactionCollector(waifuCheck)
-        const web = msg.createReactionCollector(webCheck)
-        const webTwo = msg.createReactionCollector(webTwoCheck)
-        const webThree = msg.createReactionCollector(webThreeCheck)
-        const left = msg.createReactionCollector(leftCheck)
-        const right = msg.createReactionCollector(rightCheck)
-        const dm = msg.createReactionCollector(dmCheck)
+        const admin = msg.createReactionCollector({filter: adminCheck})
+        const anime = msg.createReactionCollector({filter: animeCheck})
+        const botDev = msg.createReactionCollector({filter: botDevCheck})
+        const config = msg.createReactionCollector({filter: configCheck})
+        const fun = msg.createReactionCollector({filter: funCheck})
+        const game = msg.createReactionCollector({filter: gameCheck})
+        const heart = msg.createReactionCollector({filter: heartCheck})
+        const lewd = msg.createReactionCollector({filter: lewdCheck})
+        const info = msg.createReactionCollector({filter: infoCheck})
+        const japanese = msg.createReactionCollector({filter: japaneseCheck})
+        const level = msg.createReactionCollector({filter: levelCheck})
+        const image = msg.createReactionCollector({filter: imageCheck})
+        const misc = msg.createReactionCollector({filter: miscCheck})
+        const miscTwo = msg.createReactionCollector({filter: miscTwoCheck})
+        const mod = msg.createReactionCollector({filter: modCheck})
+        const music = msg.createReactionCollector({filter: musicCheck})
+        const musicTwo = msg.createReactionCollector({filter: musicTwoCheck})
+        const musicThree = msg.createReactionCollector({filter: musicThreeCheck})
+        const reddit = msg.createReactionCollector({filter: redditCheck})
+        const twitter = msg.createReactionCollector({filter: twitterCheck})
+        const video = msg.createReactionCollector({filter: videoCheck})
+        const waifu = msg.createReactionCollector({filter: waifuCheck})
+        const web = msg.createReactionCollector({filter: webCheck})
+        const webTwo = msg.createReactionCollector({filter: webTwoCheck})
+        const webThree = msg.createReactionCollector({filter: webThreeCheck})
+        const left = msg.createReactionCollector({filter: leftCheck})
+        const right = msg.createReactionCollector({filter: rightCheck})
+        const dm = msg.createReactionCollector({filter: dmCheck})
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, reddit, twitter, video, waifu, web, webTwo, webThree]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, twitter, video, waifu, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
@@ -707,9 +714,9 @@ export class Embeds {
         }
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 5000})
+                setTimeout(() => rep.delete(), 5000)
                 return
             }
             if (pageIndex === pages.length - 1) return reaction.users.remove(user)
@@ -720,9 +727,9 @@ export class Embeds {
         })
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help\` to send the first page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 5000})
+                setTimeout(() => rep.delete(), 5000)
                 return
             }
             if (pageIndex === 0) return reaction.users.remove(user)
@@ -744,18 +751,18 @@ export class Embeds {
     }
 
     /** Re-trigger Help Embed */
-    public editHelpEmbed = (msg: Message, emoji: string, user: User, embeds: MessageEmbed[]) => {
+    public editHelpEmbed = (msg: Message, emoji: string, user: User, embeds: EmbedBuilder[]) => {
         const emojiMap: string[] = [
             "admin", "anime", "config", "fun", "game",
             "heart", "image", "info", "japanese", "level", "lewd", "misc",
-            "mod", "video", "waifu", "website", "websiteTwo",
-            "reddit", "twitter", "miscTwo", "websiteThree", "botDeveloper"
+            "mod", "music", "musicTwo", "video", "waifu", "website", "websiteTwo",
+            "musicThree", "reddit", "twitter", "miscTwo", "websiteThree", "botDeveloper"
         ]
         let compressed = false
         const longDescription: string[] = []
         const commandCount: number[] = []
         for (let i = 0; i < embeds.length; i++) {
-            longDescription.push(embeds[i].description!)
+            longDescription.push(embeds[i].data.description!)
         }
         const shortDescription: string[] = []
         for (let i = 0; i < longDescription.length; i++) {
@@ -769,7 +776,7 @@ export class Embeds {
             shortDescription.push(desc)
         }
         let page = emojiMap.indexOf(emoji) || 0
-        msg.edit(embeds[page])
+        msg.edit({embeds: [embeds[page]]})
 
         const page1 = [
             this.discord.getEmoji("arrowRight"),
@@ -786,8 +793,8 @@ export class Embeds {
             this.discord.getEmoji("lewd"),
             this.discord.getEmoji("misc"),
             this.discord.getEmoji("mod"),
-            // this.discord.getEmoji("music"),
-            // this.discord.getEmoji("musicTwo"),
+            this.discord.getEmoji("music"),
+            this.discord.getEmoji("musicTwo"),
             this.discord.getEmoji("video"),
             this.discord.getEmoji("waifu"),
             this.discord.getEmoji("website"),
@@ -796,7 +803,7 @@ export class Embeds {
 
         const page2 = [
             this.discord.getEmoji("arrowLeft"),
-            // this.discord.getEmoji("musicThree"),
+            this.discord.getEmoji("musicThree"),
             this.discord.getEmoji("reddit"),
             this.discord.getEmoji("twitter"),
             this.discord.getEmoji("miscTwo"),
@@ -823,9 +830,9 @@ export class Embeds {
         const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("misc") && user.bot === false
         const miscTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("miscTwo") && user.bot === false
         const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
-        // const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
-        // const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
-        // const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
+        const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
+        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
+        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
         const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reddit") && user.bot === false
         const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitter") && user.bot === false
         const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
@@ -837,36 +844,36 @@ export class Embeds {
         const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowRight") && user.bot === false
         const dmCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("dm") && user.bot === false
 
-        const admin = msg.createReactionCollector(adminCheck)
-        const anime = msg.createReactionCollector(animeCheck)
-        const botDev = msg.createReactionCollector(botDevCheck)
-        const config = msg.createReactionCollector(configCheck)
-        const fun = msg.createReactionCollector(funCheck)
-        const game = msg.createReactionCollector(gameCheck)
-        const heart = msg.createReactionCollector(heartCheck)
-        const lewd = msg.createReactionCollector(lewdCheck)
-        const info = msg.createReactionCollector(infoCheck)
-        const japanese = msg.createReactionCollector(japaneseCheck)
-        const level = msg.createReactionCollector(levelCheck)
-        const image = msg.createReactionCollector(imageCheck)
-        const misc = msg.createReactionCollector(miscCheck)
-        const miscTwo = msg.createReactionCollector(miscTwoCheck)
-        const mod = msg.createReactionCollector(modCheck)
-        // const music = msg.createReactionCollector(musicCheck)
-        // const musicTwo = msg.createReactionCollector(musicTwoCheck)
-        // const musicThree = msg.createReactionCollector(musicThreeCheck)
-        const reddit = msg.createReactionCollector(redditCheck)
-        const twitter = msg.createReactionCollector(twitterCheck)
-        const video = msg.createReactionCollector(videoCheck)
-        const waifu = msg.createReactionCollector(waifuCheck)
-        const web = msg.createReactionCollector(webCheck)
-        const webTwo = msg.createReactionCollector(webTwoCheck)
-        const webThree = msg.createReactionCollector(webThreeCheck)
-        const left = msg.createReactionCollector(leftCheck)
-        const right = msg.createReactionCollector(rightCheck)
-        const dm = msg.createReactionCollector(dmCheck)
+        const admin = msg.createReactionCollector({filter: adminCheck})
+        const anime = msg.createReactionCollector({filter: animeCheck})
+        const botDev = msg.createReactionCollector({filter: botDevCheck})
+        const config = msg.createReactionCollector({filter: configCheck})
+        const fun = msg.createReactionCollector({filter: funCheck})
+        const game = msg.createReactionCollector({filter: gameCheck})
+        const heart = msg.createReactionCollector({filter: heartCheck})
+        const lewd = msg.createReactionCollector({filter: lewdCheck})
+        const info = msg.createReactionCollector({filter: infoCheck})
+        const japanese = msg.createReactionCollector({filter: japaneseCheck})
+        const level = msg.createReactionCollector({filter: levelCheck})
+        const image = msg.createReactionCollector({filter: imageCheck})
+        const misc = msg.createReactionCollector({filter: miscCheck})
+        const miscTwo = msg.createReactionCollector({filter: miscTwoCheck})
+        const mod = msg.createReactionCollector({filter: modCheck})
+        const music = msg.createReactionCollector({filter: musicCheck})
+        const musicTwo = msg.createReactionCollector({filter: musicTwoCheck})
+        const musicThree = msg.createReactionCollector({filter: musicThreeCheck})
+        const reddit = msg.createReactionCollector({filter: redditCheck})
+        const twitter = msg.createReactionCollector({filter: twitterCheck})
+        const video = msg.createReactionCollector({filter: videoCheck})
+        const waifu = msg.createReactionCollector({filter: waifuCheck})
+        const web = msg.createReactionCollector({filter: webCheck})
+        const webTwo = msg.createReactionCollector({filter: webTwoCheck})
+        const webThree = msg.createReactionCollector({filter: webThreeCheck})
+        const left = msg.createReactionCollector({filter: leftCheck})
+        const right = msg.createReactionCollector({filter: rightCheck})
+        const dm = msg.createReactionCollector({filter: dmCheck})
 
-        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, reddit, twitter, video, waifu, web, webTwo, webThree]
+        const collectors = [admin, anime, botDev, config, fun, game, heart, image, info, japanese, level, lewd, misc, miscTwo, mod, music, musicTwo, musicThree, reddit, twitter, video, waifu, web, webTwo, webThree]
 
         for (let i = 0; i < collectors.length; i++) {
             collectors[i].on("collect", async (reaction: MessageReaction, user: User) => {
@@ -900,9 +907,9 @@ export class Embeds {
         }
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 5000})
+                setTimeout(() => rep.delete(), 5000)
                 return
             }
             if (pageIndex === pages.length - 1) return reaction.users.remove(user)
@@ -913,9 +920,9 @@ export class Embeds {
         })
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
-            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.me!)?.has("MANAGE_MESSAGES")) {
+            if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
                 const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help\` to send the first page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
-                rep.delete({timeout: 5000})
+                setTimeout(() => rep.delete())
                 return
             }
             if (pageIndex === 0) return reaction.users.remove(user)
@@ -939,7 +946,7 @@ export class Embeds {
     // Create Prompt
     public createPrompt = (func: (message: Message, collector: MessageCollector) => void, infinite?: boolean): Promise<void> => {
         const filter = (m: Message) => m.author!.id === this.message.author!.id && m.channel === this.message.channel
-        const collector = this.message.channel.createMessageCollector(filter, {time: infinite ? undefined : 120000})
+        const collector = this.message.channel.createMessageCollector({filter, time: infinite ? undefined : 120000})
         return new Promise((resolve) => {
             collector.on("collect", (m: Message) => {
                 func(m, collector)
@@ -949,7 +956,7 @@ export class Embeds {
             collector.on("end", async (collector, reason) => {
                 if (reason === "time") {
                     const time = await this.message.reply(`Ended the prompt because you took too long to answer.`)
-                    time.delete({timeout: 600000})
+                    setTimeout(() => time.delete(), 600000)
                 }
                 resolve()
             })
