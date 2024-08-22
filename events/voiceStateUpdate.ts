@@ -27,8 +27,12 @@ export default class VoiceStateUpdate {
                 const audio = new Audio(this.discord, msg!)
                 audio.deleteQueue()
                 await sql.updateColumn("guilds", "voice", "off")
-                connection.disconnect()
-                connection.destroy()
+                try {
+                    connection.disconnect()
+                    connection.destroy()
+                } catch {
+                    // ignore
+                }
             }
         }
         leaveVoiceChannel()

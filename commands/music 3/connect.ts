@@ -51,7 +51,7 @@ export default class Connect extends Command {
 
         }
         try {
-            joinVoiceChannel({guildId: message.guild.id, channelId: voiceChannel.id, adapterCreator: message.guild.voiceAdapterCreator})
+            joinVoiceChannel({guildId: message.guild.id, channelId: voiceChannel.id, adapterCreator: message.guild.voiceAdapterCreator, selfDeaf: false})
         } catch {
             return message.reply(`This is not a voice channel, or I don't have the **Connect** permission. ${discord.getEmoji("kannaFacepalm")}`)
         }

@@ -67,7 +67,7 @@ export default class SoundCloud extends Command {
                 .setTitle(`**Soundcloud User** ${discord.getEmoji("karenSugoi")}`))
             }
             const soundcloudArray: EmbedBuilder[] = []
-            const users = await soundcloud.users.searchV2({q: query}).then((u) => u.collection)
+            const users = await soundcloud.users.search({q: query}).then((u) => u.collection)
             for (let i = 0; i < users.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
@@ -99,7 +99,7 @@ export default class SoundCloud extends Command {
                 .setTitle(`**Soundcloud Playlist** ${discord.getEmoji("karenSugoi")}`))
             }
             const soundcloudArray: EmbedBuilder[] = []
-            const playlists = await soundcloud.playlists.searchV2({q: query}).then((p) => p.collection)
+            const playlists = await soundcloud.playlists.search({q: query}).then((p) => p.collection)
             for (let i = 0; i < playlists.length; i++) {
                 const soundcloudEmbed = embeds.createEmbed()
                 soundcloudEmbed
@@ -137,7 +137,7 @@ export default class SoundCloud extends Command {
             if (/soundcloud.com/.test(query)) {
                 track = query
             } else {
-                track = await soundcloud.tracks.searchV2({q: query}).then((r) => r.collection[0].permalink_url)
+                track = await soundcloud.tracks.search({q: query}).then((r) => r.collection[0].permalink_url)
             }
             if (!track) {
                 return this.invalidQuery(embeds.createEmbed()
@@ -181,7 +181,7 @@ export default class SoundCloud extends Command {
             .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
         }
         const soundcloudArray: EmbedBuilder[] = []
-        const tracks = await soundcloud.tracks.searchV2({q: query}).then((t) => t.collection)
+        const tracks = await soundcloud.tracks.search({q: query}).then((t) => t.collection)
         for (let i = 0; i < tracks.length; i++) {
             const soundcloudEmbed = embeds.createEmbed()
             soundcloudEmbed

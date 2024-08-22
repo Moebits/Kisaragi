@@ -273,10 +273,18 @@ export class SQLQuery {
     await SQLQuery.run(query, true)
   }
 
-  /** Deletes all entries in a table. */
+  /** Drops a table. */
   public static dropTable = async (table: string): Promise<void> => {
     const query: QueryConfig = {
       text: `DROP TABLE "${table}"`
+    }
+    await SQLQuery.run(query, true)
+  }
+
+  /** Deletes all entries in a table. */
+  public static purgeTable = async (table: string): Promise<void> => {
+    const query: QueryConfig = {
+      text: `DELETE FROM "${table}"`
     }
     await SQLQuery.run(query, true)
   }

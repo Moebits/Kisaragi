@@ -50,7 +50,7 @@ export default class Play extends Command {
 
         if (!connection && voiceChannel) {
             try {
-                connection = joinVoiceChannel({channelId: voiceChannel.id, guildId: message.guild.id, adapterCreator: message.guild.voiceAdapterCreator})
+                connection = joinVoiceChannel({channelId: voiceChannel.id, guildId: message.guild.id, adapterCreator: message.guild.voiceAdapterCreator, selfDeaf: false})
             } catch {
                 return message.reply(`I need the **Connect** permission to connect to this channel. ${discord.getEmoji("kannaFacepalm")}`)
             }
@@ -60,7 +60,7 @@ export default class Play extends Command {
 
         const loading = message.channel.lastMessage
 
-        let queue = audio.getQueue() as any
+        let queue = audio.getQueue()
         let setYT = false
         let song = Functions.combineArgs(args, 1).trim()
         let file: string
@@ -106,7 +106,6 @@ export default class Play extends Command {
                 setFirst = true
             }
             if (setYT) {
-                if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
                 const link = await audio.songPickerYT(song, setFirst)
                 if (!link) return message.reply("No results were found for your query!")
                 song = link
@@ -121,14 +120,16 @@ export default class Play extends Command {
             }
         }
         await message.channel.send({embeds: [queueEmbed]})
-        queue = audio.getQueue() as any
-        if (setLoop) queue[0].looping = true
+        queue = audio.getQueue()
+        const settings = audio.getSettings() as any
+        if (setLoop) settings[0].looping = true
         if (loading) await loading?.delete()
         if (queue.length === 1 && !queue[0].playing) {
+            const next = audio.next()!
             if (setReverse) {
-                await audio.reverse(audio.next())
+                await audio.reverse(next)
             } else {
-                await audio.play(audio.next())
+                await audio.play(next)
             }
             const nowPlaying = await audio.nowPlaying()
             if (nowPlaying) await message.channel.send(nowPlaying)
