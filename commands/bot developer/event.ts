@@ -35,7 +35,7 @@ export default class Event extends Command {
         case "guildMemberRemove":
             discord.emit(event, message.member)
             break
-        case "message":
+        case "messageCreate":
             discord.emit(event, message)
             break
         case "messageDelete":
@@ -44,7 +44,7 @@ export default class Event extends Command {
         case "messageDeleteBulk":
             const col = new Collection() as any
             col.set(message.id, message)
-            discord.emit(event, col)
+            discord.emit(event as any, col)
             break
         case "messageReactionAdd":
             const reaction = await message.react(discord.getEmoji("aquaUp"))
@@ -55,16 +55,16 @@ export default class Event extends Command {
             discord.emit(event, reaction2, message.author)
             break
         case "guildBanAdd":
-            discord.emit(event, message.guild, message.author)
+            discord.emit(event as any, message.guild, message.author)
             break
         case "guildBanRemove":
-            discord.emit(event, message.guild, message.author)
+            discord.emit(event as any, message.guild, message.author)
             break
         case "channelCreate":
-            discord.emit(event, message.channel)
+            discord.emit(event as any, message.channel)
             break
         case "channelDelete":
-            discord.emit(event, message.channel)
+            discord.emit(event as any, message.channel)
             break
         case "emojiCreate":
             discord.emit(event, discord.getEmoji("chinoSmug"))

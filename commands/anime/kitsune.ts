@@ -40,6 +40,6 @@ export default class Kitsune extends Command {
         nekoEmbed
         .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)
         .setImage(image.url)
-        message.channel.send(nekoEmbed)
+        message.channel.send({embeds: [nekoEmbed]})
     }
 }

@@ -1,4 +1,4 @@
-import {Message, MessageEmbed, Role} from "discord.js"
+import {Message, EmbedBuilder, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Captcha} from "./../../structures/Captcha"
 import {Embeds} from "./../../structures/Embeds"
@@ -54,9 +54,9 @@ export default class Verify extends Command {
 
         let fail = false
 
-        function sendCaptcha(cap: MessageEmbed, txt: string) {
-            message.channel.send(cap).then(() => {
-                message.channel.awaitMessages(filter, {max: 1, time: 30000, errors: ["time"]})
+        function sendCaptcha(cap: EmbedBuilder, txt: string) {
+            message.channel.send({embeds: [cap]}).then(() => {
+                message.channel.awaitMessages({filter, max: 1, time: 30000, errors: ["time"]})
                     .then(async (collected) => {
                         const msg = collected.first() as Message
                         const responseEmbed = embeds.createEmbed()
@@ -65,7 +65,7 @@ export default class Verify extends Command {
                         if (msg.content.trim() === "cancel") {
                             responseEmbed
                             .setDescription("Quit the captcha.")
-                            return msg.channel.send(responseEmbed)
+                            return msg.channel.send({embeds: [responseEmbed]})
                         } else if (msg.content.trim() === "skip") {
                             message.reply("Skipped this captcha!")
                             const result = await captchaClass.createCaptcha(String(type), String(color), String(difficulty))
@@ -89,7 +89,7 @@ export default class Verify extends Command {
                             }
                             responseEmbed
                             .setDescription(`${discord.getEmoji("pinkCheck")} **${msg.member!.displayName}** was verified!`)
-                            return msg.channel.send(responseEmbed)
+                            return msg.channel.send({embeds: [responseEmbed]})
                         } else {
                             msg.reply("Wrong answer! Please try again.")
                             const result = await captchaClass.createCaptcha(String(type), String(color), String(difficulty))

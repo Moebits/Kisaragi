@@ -35,7 +35,7 @@ export default class Define extends Command {
         let word = Functions.combineArgs(args, 1)
         if (!word) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
+            .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
             .setTitle(`**Dictionary** ${discord.getEmoji("raphi")}`))
         }
 
@@ -48,10 +48,10 @@ export default class Define extends Command {
             result = await dictionary.lookup(word.trim())
         } catch (error: any) {
             defineEmbed
-            .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
+            .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
             .setTitle(`**Dictionary** ${discord.getEmoji("raphi")}`)
             .setDescription(`No definitions were found. Here are some word suggestions: \n${error.suggestions.join(", ")}`)
-            message.channel.send(defineEmbed)
+            message.channel.send({embeds: [defineEmbed]})
             return
         }
         const definArray: string[] = []
@@ -95,10 +95,10 @@ export default class Define extends Command {
             }
         }
         defineEmbed
-        .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
+        .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
         .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`)
         .setURL(`https://www.merriam-webster.com/dictionary/${result[0].word.replace(/ /g, "_")}`)
-        .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
+        .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
         .setDescription(
             `${discord.getEmoji("star")}_Word:_ **${result[0].word}**\n` +
             `${discord.getEmoji("star")}_Function:_ **${result[0].functional_label}**\n` +
@@ -106,6 +106,6 @@ export default class Define extends Command {
             `${discord.getEmoji("star")}_Etymology:_ ${result[0].etymology ? result[0].etymology : "None"}\n` +
             `${Functions.checkChar(definitions, 2000, ".")}\n`
         )
-        message.channel.send(defineEmbed)
+        message.channel.send({embeds: [defineEmbed]})
     }
 }

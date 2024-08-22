@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -39,7 +39,7 @@ export default class Lolibooru extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const lolibooru = Booru("lolibooru")
         const lolibooruEmbed = embeds.createEmbed()
-        .setAuthor("lolibooru", "https://i.imgur.com/vayyvC4.png")
+        .setAuthor({name: "lolibooru", iconURL: "https://i.imgur.com/vayyvC4.png"})
         .setTitle(`**Lolibooru Image** ${discord.getEmoji("gabLewd")}`)
 
         let tags: string[] = []
@@ -82,14 +82,14 @@ export default class Lolibooru extends Command {
             // @ts-ignore
             images = rawImages.map((i) => i.data)
         }
-        const lolibooruArray: MessageEmbed[] = []
+        const lolibooruArray: EmbedBuilder[] = []
         for (let i = 0; i < images.length; i++) {
             const img = images[i]
             if (img.rating !== "s") {
                 if (!perms.checkNSFW(true)) continue
             }
             const lolibooruEmbed = embeds.createEmbed()
-            .setAuthor("lolibooru", "https://i.imgur.com/vayyvC4.png")
+            .setAuthor({name: "lolibooru", iconURL: "https://i.imgur.com/vayyvC4.png"})
             .setTitle(`**Lolibooru Image** ${discord.getEmoji("gabLewd")}`)
             .setURL(`https://lolibooru.net/post/show/${img.id}`)
             .setDescription(
@@ -105,7 +105,7 @@ export default class Lolibooru extends Command {
             return this.invalidQuery(lolibooruEmbed)
         }
         if (lolibooruArray.length === 1) {
-            message.channel.send(lolibooruArray[0])
+            message.channel.send({embeds: [lolibooruArray[0]]})
         } else {
             embeds.createReactionEmbed(lolibooruArray, true, true)
         }

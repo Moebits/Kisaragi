@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import * as config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -44,8 +44,8 @@ export default class Sharpen extends Command {
         if (!url) url = await discord.fetchLastAttachment(message)
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const link = await axios.get(`${config.openCVAPI}/sharpen?link=${url}&amount=${amount}&sigma=${sigma}`).then((r) => r.data)
-        const attachment = new MessageAttachment(link)
-        await message.reply(`Sharpened the image with an amount of **${amount}** and sigma of **${sigma}**!`, attachment)
+        const attachment = new AttachmentBuilder(link)
+        await message.reply({content: `Sharpened the image with an amount of **${amount}** and sigma of **${sigma}**!`, files: [attachment]})
         return
     }
 }

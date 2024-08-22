@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, ActivityType} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -21,7 +21,7 @@ export default class GCount extends Command {
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         if (!perms.checkBotDev()) return
-        discord.user!.setPresence({activity: {type: "PLAYING", name: `=>help | ${this.discord.guilds.cache.size} guilds`, url: "https://www.twitch.tv/imtenpi"}, status: "dnd"})
+        this.discord.user!.setPresence({activities: [{type: ActivityType.Playing, name: `=>help | ${this.discord.guilds.cache.size} guilds`, state: "dnd"}]})
         discord.postGuildCount()
     }
 }

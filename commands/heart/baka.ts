@@ -53,6 +53,6 @@ export default class Baka extends Command {
         .setTitle(`**Baka** ${discord.getEmoji("chinoSmug")}`)
         .setDescription(`**${message.author.username}** called **${name}** a baka! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send(bakaEmbed)
+        message.channel.send({embeds: [bakaEmbed]})
     }
 }

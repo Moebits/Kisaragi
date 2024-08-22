@@ -35,7 +35,7 @@ export default class Anime extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         let query = Functions.combineArgs(args, 1)
         const animeEmbed = embeds.createEmbed()
-        .setAuthor("kitsu", "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4")
+        .setAuthor({name: "kitsu", iconURL: "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4"})
         .setTitle(`**Anime** ${discord.getEmoji("gabYes")}`)
 
         if (!query) {
@@ -54,7 +54,7 @@ export default class Anime extends Command {
             return this.invalidQuery(animeEmbed, "You can try searching on the [**Kitsu Website**](https://kitsu.io/anime)")
         }
         animeEmbed
-        .setAuthor("kitsu", "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4")
+        .setAuthor({name: "kitsu", iconURL: "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4"})
         .setURL(`https://kitsu.io/anime/${data.attributes.slug}`)
         .setTitle(`**${data.attributes.titles.en_jp}** ${discord.getEmoji("gabYes")}`)
         .setDescription(
@@ -70,6 +70,6 @@ export default class Anime extends Command {
         )
         .setImage(data.attributes.coverImage ? data.attributes.coverImage.original : data.attributes.posterImage.original)
         .setThumbnail(data.attributes.posterImage.original)
-        message.channel.send(animeEmbed)
+        message.channel.send({embeds: [animeEmbed]})
     }
 }

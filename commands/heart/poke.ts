@@ -53,6 +53,6 @@ export default class Poke extends Command {
         .setTitle(`**Poke** ${discord.getEmoji("chinoSmug")}`)
         .setDescription(`**${message.author.username}** pokes **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send(pokeEmbed)
+        message.channel.send({embeds: [pokeEmbed]})
     }
 }

@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -42,7 +42,7 @@ export default class Konachan extends Command {
         const konachan = Booru("konachan.com", process.env.KONACHAN_API_KEY as any)
         const konachanEmbed = embeds.createEmbed()
         .setTitle(`**Konachan Image** ${discord.getEmoji("gabLewd")}`)
-        .setAuthor("konachan", "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE")
+        .setAuthor({name: "konachan", iconURL: "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE"})
         if (!perms.checkNSFW()) return
 
         let tags: string[] = []
@@ -85,7 +85,7 @@ export default class Konachan extends Command {
             // @ts-ignore
             images = rawImages.map((i) => i.data)
         }
-        const konachanArray: MessageEmbed[] = []
+        const konachanArray: EmbedBuilder[] = []
         for (let i = 0; i < images.length; i++) {
             const img = images[i]
             if (img.rating !== "s") {
@@ -95,7 +95,7 @@ export default class Konachan extends Command {
             }
             const konachanEmbed = embeds.createEmbed()
             .setTitle(`**Konachan Image** ${discord.getEmoji("gabLewd")}`)
-            .setAuthor("konachan", "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE")
+            .setAuthor({name: "konachan", iconURL: "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE"})
             .setURL(`https://konachan.com/post/show/${img.id}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
@@ -110,7 +110,7 @@ export default class Konachan extends Command {
             return this.invalidQuery(konachanEmbed)
         }
         if (konachanArray.length === 1) {
-            message.channel.send(konachanArray[0])
+            message.channel.send({embeds: [konachanArray[0]]})
         } else {
             embeds.createReactionEmbed(konachanArray, true, true)
         }

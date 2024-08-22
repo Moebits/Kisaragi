@@ -1,4 +1,4 @@
-import type {GuildEmoji, Message, MessageEmbed} from "discord.js"
+import type {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -51,7 +51,7 @@ export default class Pinboard extends Command {
         const pinboardEmbed = embeds.createEmbed()
         pinboardEmbed
         .setTitle(`**Pinboard** ${discord.getEmoji("yes")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setDescription(Functions.multiTrim(`
             Edit pinboard settings.
             newline
@@ -69,7 +69,7 @@ export default class Pinboard extends Command {
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
 
-        message.channel.send(pinboardEmbed)
+        message.channel.send({embeds: [pinboardEmbed]})
 
         async function pinboardPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
@@ -78,14 +78,14 @@ export default class Pinboard extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "pinboard", null)
                 await sql.updateColumn("guilds", "nsfw pinboard", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Pinboard settings were wiped!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
 
             let [setPin, setNSFW] = [false, false]
@@ -114,7 +114,7 @@ export default class Pinboard extends Command {
             if (!description) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(pinboardPrompt)

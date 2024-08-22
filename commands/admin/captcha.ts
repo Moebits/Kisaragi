@@ -57,12 +57,11 @@ export default class CaptchaCmd extends Command {
         const color = await sql.fetchColumn("guilds", "captcha color")
         const difficulty = await sql.fetchColumn("guilds", "difficulty")
         const captchaEmbed = embeds.createEmbed()
-        const {captcha} = await captchaClass.createCaptcha(String(cType), String(color), String(difficulty))
+        const {captcha, text, files} = await captchaClass.createCaptcha(String(cType), String(color), String(difficulty))
         captchaEmbed
         .setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)
-        .attachFiles(captcha.files)
-        .setImage(captcha.image!.url)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+        .setImage(captcha.data.image!.url)
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setDescription(Functions.multiTrim(`
             Configure settings for captcha verification. In order for this to function, you should create a role for verified members
             and deny the @everyone role reading Permission in all your guild channels, with the exception of the rules channel and the verify channel. Use **verify** to send a captcha.
@@ -88,7 +87,7 @@ export default class CaptchaCmd extends Command {
             ${discord.getEmoji("star")}_Type **reset** to reset all settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send(captchaEmbed)
+        message.channel.send({embeds: [captchaEmbed], files})
 
         async function captchaPrompt(msg: Message) {
             const vRole = await sql.fetchColumn("guilds", "verify role")
@@ -98,7 +97,7 @@ export default class CaptchaCmd extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -109,7 +108,7 @@ export default class CaptchaCmd extends Command {
                 await sql.updateColumn("guilds", "difficulty", "medium")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
@@ -130,21 +129,21 @@ export default class CaptchaCmd extends Command {
             if (setOn && setOff) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
             if (setText && setMath) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}You cannot set both captcha types at the same time.`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
             if (setOn && !setRole && !vRole?.[0]) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}In order to enable verification, you must set the verify role.`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
@@ -186,7 +185,7 @@ export default class CaptchaCmd extends Command {
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
+            msg.channel.send({embeds: [responseEmbed]})
             return
         }
 

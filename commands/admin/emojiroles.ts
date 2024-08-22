@@ -1,4 +1,4 @@
-import {GuildChannel, Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -46,7 +46,7 @@ export default class EmojiRoles extends Command {
         const emojiRoles = await sql.fetchColumn("guilds", "emoji roles")
         const step = 3.0
         const increment = Math.ceil((emojiRoles ? emojiRoles.length : 1) / step)
-        const emojiArray: MessageEmbed[] = []
+        const emojiArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {
@@ -66,7 +66,7 @@ export default class EmojiRoles extends Command {
             const emojiEmbed = embeds.createEmbed()
             emojiEmbed
             .setTitle(`**Emoji Roles** ${discord.getEmoji("kannaBear")}`)
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+            .setThumbnail(message.guild!.iconURL({extension: "png"})!)
             .setDescription(Functions.multiTrim(`
             Restrict an emoji to certain roles. This feature is only available to bots.
             newline
@@ -86,7 +86,7 @@ export default class EmojiRoles extends Command {
         }
 
         if (emojiArray.length === 1) {
-            message.channel.send(emojiArray[0])
+            message.channel.send({embeds: [emojiArray[0]]})
         } else {
             embeds.createReactionEmbed(emojiArray)
         }
@@ -100,7 +100,7 @@ export default class EmojiRoles extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -112,7 +112,7 @@ export default class EmojiRoles extends Command {
                 await sql.updateColumn("guilds", "emoji roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase().includes("delete")) {
@@ -127,13 +127,13 @@ export default class EmojiRoles extends Command {
                         await sql.updateColumn("guilds", "emoji roles", emojiRoles)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                        msg.channel.send(responseEmbed)
+                        msg.channel.send({embeds: [responseEmbed]})
                         return
                     }
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send(responseEmbed)
+                    msg.channel.send({embeds: [responseEmbed]})
                     return
                 }
             }
@@ -150,7 +150,7 @@ export default class EmojiRoles extends Command {
                     let tempEmoji = msg.content.replace(/(<@&)(.*?)(>)/g, "").replace(/whitelist/g, "").replace(/blacklist/g, "").trim()
                     if (tempEmoji) {
                         if (!/\d+/.test(tempEmoji)) {
-                            const e = msg.guild?.emojis.cache.find((e) => e.name.toLowerCase().includes(tempEmoji.toLowerCase()))
+                            const e = msg.guild?.emojis.cache.find((e) => e.name?.toLowerCase().includes(tempEmoji.toLowerCase()))
                             if (!e) return message.reply(`Invalid emoji ${discord.getEmoji("kannaFacepalm")}`)
                             tempEmoji = e.animated ? `<${e.identifier}>` : `<:${e.identifier}>`
                         }
@@ -173,7 +173,7 @@ export default class EmojiRoles extends Command {
                     if (tempEmoji && tempRoles && tempType) {
                         const emojiID = tempEmoji.match(/\d+/)?.[0]
                         const emoji = msg.guild?.emojis.cache.find((e) => e.id === emojiID)
-                        const discordRole = message.guild?.me?.roles.cache.find((r) => r.managed)
+                        const discordRole = message.guild?.members.me?.roles.cache.find((r) => r.managed)
                         if (tempType.toLowerCase() === "whitelist") {
                             await emoji?.edit({roles: [discordRole!, ...tempRoles!.map((e) => e)]})
                         } else {
@@ -185,11 +185,11 @@ export default class EmojiRoles extends Command {
                         }
                         editDesc += `${discord.getEmoji("star")}These settings were **applied**!\n`
                     }
-                    if (!editDesc) return msg.channel.send(responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`))
+                    if (!editDesc) return msg.channel.send({embeds: [responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`)]})
                     await sql.updateColumn("guilds", "emoji roles", emojiRoles)
-                    return msg.channel.send(responseEmbed.setDescription(editDesc))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription(editDesc)]})
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`)]})
                 }
             }
 
@@ -201,7 +201,7 @@ export default class EmojiRoles extends Command {
             if (newEmoji) {
                 setEmoji = true
                 if (!/\d+/.test(newEmoji)) {
-                    const e = msg.guild?.emojis.cache.find((e) => e.name.toLowerCase().includes(newEmoji.toLowerCase()))
+                    const e = msg.guild?.emojis.cache.find((e) => e.name?.toLowerCase().includes(newEmoji.toLowerCase()))
                     if (!e) return message.reply(`Invalid emoji ${discord.getEmoji("kannaFacepalm")}`)
                     newEmoji = e.animated ? `<${e.identifier}>` : `<:${e.identifier}>`
                 }
@@ -233,7 +233,7 @@ export default class EmojiRoles extends Command {
             if (setEmoji && setRole && setType) {
                 const emojiID = newEmoji.match(/\d+/)?.[0]
                 const emoji = msg.guild?.emojis.cache.find((e) => e.id === emojiID)
-                const discordRole = message.guild?.me?.roles.cache.find((r) => r.managed)
+                const discordRole = message.guild?.members.me?.roles.cache.find((r) => r.managed)
                 if (newType.toLowerCase() === "whitelist") {
                     await emoji?.edit({roles: [discordRole!, ...newRoles!.map((e) => e)]})
                 } else {
@@ -251,7 +251,7 @@ export default class EmojiRoles extends Command {
             await sql.updateColumn("guilds", "emoji roles", emojiRoles)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(linkPrompt)

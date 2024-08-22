@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {API} from "nhentai"
 import * as blacklist from "../../assets/json/blacklist.json"
 import {Command} from "../../structures/Command"
@@ -50,11 +50,11 @@ export default class $nHentai extends Command {
         const checkGroups = groups ? Functions.checkChar(groups.join(" "), 50, " ") : "None"
         const checkLanguages = languages ? Functions.checkChar(languages.join(" "), 50, " ") : "None"
         const checkCategories = categories ? Functions.checkChar(categories.join(" "), 50, " ") : "None"
-        const doujinPages: MessageEmbed[] = []
+        const doujinPages: EmbedBuilder[] = []
         for (let i = 0; i < doujin.pages.length; i++) {
             const nhentaiEmbed = this.embeds.createEmbed()
             nhentaiEmbed
-            .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
+            .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
             .setTitle(`**${doujin.titles.english}** ${this.discord.getEmoji("chinoSmug")}`)
             .setURL(doujin.url)
             .setDescription(
@@ -116,7 +116,7 @@ export default class $nHentai extends Command {
                 const result = await nhentai.search(tag)
                 if (!result.doujins[0]) {
                     const nHentaiEmbed = this.embeds.createEmbed()
-                    .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
+                    .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
                     .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`)
                     return this.invalidQuery(nHentaiEmbed, "Try searching on the [**nhentai Website**](https://nhentai.net/).")
                 }
@@ -128,7 +128,7 @@ export default class $nHentai extends Command {
                     doujin = result.doujins[index]
                     if (counter >= result.doujins.length) {
                         return this.invalidQuery(this.embeds.createEmbed()
-                        .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
+                        .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
                         .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`))
                     }
                     counter++

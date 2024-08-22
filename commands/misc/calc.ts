@@ -37,7 +37,7 @@ export default class Calc extends Command {
         calcEmbed
         .setTitle(`**Math Calculation** ${discord.getEmoji("vigneDead")}`)
         .setDescription(result)
-        return message.channel.send(calcEmbed)
+        return message.channel.send({embeds: [calcEmbed]})
 
     }
 }

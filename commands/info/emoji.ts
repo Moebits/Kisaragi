@@ -1,4 +1,4 @@
-import {GuildEmoji, Message, MessageEmbed, Util} from "discord.js"
+import {GuildEmoji, Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -50,8 +50,8 @@ export default class Emoji extends Command {
                     return `<:${e.identifier}>`
                 }
             })!.join("")
-            const split = Util.splitMessage(emojis, {maxLength: 2000, char: "<"})
-            const emojiArray: MessageEmbed[] = []
+            const split = Functions.splitMessage(emojis, {maxLength: 2000, char: "<"})
+            const emojiArray: EmbedBuilder[] = []
             for (let i = 0; i < split.length; i++) {
                 if (split.length > 1) split[i] = `<${split[i]}`
                 const emojiEmbed = embeds.createEmbed()
@@ -60,7 +60,7 @@ export default class Emoji extends Command {
                 emojiArray.push(emojiEmbed)
             }
             if (emojiArray.length === 1) {
-                return message.channel.send(emojiArray[0])
+                return message.channel.send({embeds: [emojiArray[0]]})
             } else {
                 return embeds.createReactionEmbed(emojiArray)
             }
@@ -78,25 +78,25 @@ export default class Emoji extends Command {
             if (args[1] === "dev") {
                 emojiFound = discord.getEmoji(args[2])
             } else  {
-                emojiFound = discord.emojis.cache.find((emoji: GuildEmoji) => emoji.name.toLowerCase() === emojiName.toLowerCase())
+                emojiFound = discord.emojis.cache.find((emoji: GuildEmoji) => emoji.name?.toLowerCase() === emojiName.toLowerCase())
             }
             if (!emojiFound) {
-                message.channel.send(emojiEmbed
-                .setDescription("Could not find that emoji!"))
+                message.channel.send({embeds: [emojiEmbed
+                .setDescription("Could not find that emoji!")]})
                 return
             }
 
-            message.channel.send(emojiEmbed
+            message.channel.send({embeds: [emojiEmbed
             .setDescription(`**${emojiFound.name} Emoji**`)
-            .setImage(this.getImage(emojiFound)))
+            .setImage(this.getImage(emojiFound))]})
             return
 
             } else {
                 const emojiGet = discord.emojis.cache.get(emojiID)
                 if (!emojiGet) return message.reply("Looks like this id is invalid...")
-                message.channel.send(emojiEmbed
+                message.channel.send({embeds: [emojiEmbed
                 .setDescription(`**${emojiGet!.name} Emoji**`)
-                .setImage(this.getImage(emojiGet)))
+                .setImage(this.getImage(emojiGet))]})
                 return
             }
     }

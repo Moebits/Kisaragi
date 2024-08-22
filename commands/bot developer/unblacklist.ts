@@ -35,7 +35,7 @@ export default class Unblacklist extends Command {
         if (!perms.checkBotDev()) return
         const blacklistEmbed = embeds.createEmbed()
         blacklistEmbed
-        .setAuthor("unblacklist", "https://cdn.discordapp.com/emojis/685492185235325005.png")
+        .setAuthor({name: "unblacklist", iconURL: "https://cdn.discordapp.com/emojis/685492185235325005.png"})
         .setTitle(`**Unblacklist** ${discord.getEmoji("tohruSmug")}`)
         let setGuild = true
         if (args[1] === "user") {
@@ -51,7 +51,7 @@ export default class Unblacklist extends Command {
             const exists = await sql.fetchColumn("blacklist", "guild id", "guild id", id)
             if (exists) {
                 await SQLQuery.deleteRow("blacklist", "guild id", id)
-                return message.reply(blacklistEmbed.setDescription(`Unblacklisted the guild **${id}**!`))
+                return message.reply({embeds: [blacklistEmbed.setDescription(`Unblacklisted the guild **${id}**!`)]})
             } else {
                 return message.reply("This guild isn't blacklisted...")
             }
@@ -60,8 +60,8 @@ export default class Unblacklist extends Command {
             if (exists) {
                 const user = await discord.users.fetch(id)
                 await SQLQuery.deleteRow("blacklist", "user id", id)
-                await user?.send(blacklistEmbed.setDescription(`You were unblacklisted from Kisaragi Bot. Message from developer: **${reason ?? "None provided!"}**. Whatever you were blacklisted for, don't continue doing it.`))
-                return message.reply(blacklistEmbed.setDescription(`Unblacklisted the user **${user!.tag}**`))
+                await user?.send({embeds: [blacklistEmbed.setDescription(`You were unblacklisted from Kisaragi Bot. Message from developer: **${reason ?? "None provided!"}**. Whatever you were blacklisted for, don't continue doing it.`)]})
+                return message.reply({embeds: [blacklistEmbed.setDescription(`Unblacklisted the user **${user!.tag}**`)]})
             } else {
                 return message.reply("This user isn't blacklisted...")
             }

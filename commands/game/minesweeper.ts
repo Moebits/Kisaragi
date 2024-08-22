@@ -1,4 +1,4 @@
-import {Message, MessageEmbed, MessageReaction, TextChannel, User} from "discord.js"
+import {Message, EmbedBuilder, MessageReaction, TextChannel, User} from "discord.js"
 import minesweeper from "discord.js-minesweeper"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -59,7 +59,7 @@ export default class Minesweeper extends Command {
         const embeds = new Embeds(this.discord, this.message)
         const mineEmbed = embeds.createEmbed()
         mineEmbed
-        .setAuthor("minesweeper", "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg")
+        .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
         .setTitle(`**Minesweeper** ${discord.getEmoji("KannaXD")}`)
         .setDescription(this.replaceEmoji(this.stringifyBoard(board)))
         return mineEmbed
@@ -114,7 +114,7 @@ export default class Minesweeper extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
-        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has("MANAGE_MESSAGES")) {
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has("ManageMessages")) {
             await message.reply(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
             return
         }
@@ -129,7 +129,7 @@ export default class Minesweeper extends Command {
             }
             if (Number.isNaN(rows) || Number.isNaN(columns)) {
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor("minesweeper", "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg")
+                .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
                 .setTitle(`**Minesweeper** ${discord.getEmoji("KannaXD")}`), "The row or column count is invalid.")
             }
             const mine = new minesweeper({
@@ -141,10 +141,10 @@ export default class Minesweeper extends Command {
             const game = mine.start() as string
             const mineEmbed = embeds.createEmbed()
             mineEmbed
-            .setAuthor("minesweeper", "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg")
+            .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
             .setTitle(`**Minesweeper** ${discord.getEmoji("KannaXD")}`)
             .setDescription(this.replaceEmoji(this.replaceEmoji(game)))
-            message.channel.send(mineEmbed)
+            message.channel.send({embeds: [mineEmbed]})
             return
         }
 
@@ -157,7 +157,7 @@ export default class Minesweeper extends Command {
         }
         if (Number.isNaN(rows) || Number.isNaN(columns)) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("minesweeper", "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg")
+            .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
             .setTitle(`**Minesweeper** ${discord.getEmoji("KannaXD")}`), "The row or column count is invalid.")
         }
         const mine = new minesweeper({
@@ -175,16 +175,16 @@ export default class Minesweeper extends Command {
         }
 
         const mineEmbed = this.createMineEmbed(board)
-        const msg = await message.channel.send(mineEmbed)
+        const msg = await message.channel.send({embeds: [mineEmbed]})
         const reactions = ["arrayReact", "mineFlagReact", "mineReveal"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
         const arrayCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrayReact") && user.bot === false
         const flagCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mineFlagReact") && user.bot === false
         const revealCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mineReveal") && user.bot === false
-        const array = msg.createReactionCollector(arrayCheck)
-        const flag = msg.createReactionCollector(flagCheck)
-        const reveal = msg.createReactionCollector(revealCheck)
+        const array = msg.createReactionCollector({filter: arrayCheck})
+        const flag = msg.createReactionCollector({filter: flagCheck})
+        const reveal = msg.createReactionCollector({filter: revealCheck})
 
         array.on("collect", async (reaction: MessageReaction, user: User) => {
             await reaction.users.remove(user).catch(() => null)
@@ -196,14 +196,15 @@ export default class Minesweeper extends Command {
                 column = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)?.[1] : NaN)
                 if (Number.isNaN(row) || Number.isNaN(column) || row-1 > rows || column-1 > columns) {
                     const rep = await response.reply("The row or column is invalid.")
-                    await rep.delete({timeout: 2000})
+                    await Functions.timeout(2000)
+                    await rep.delete()
                 } else {
                     row = row - 1
                     column = column -1
                     board[row][column] = game[row][column].replace(/\|/g, "")
                     self.original = Functions.cloneArray(board)
                     const mineEmbed = self.createMineEmbed(board)
-                    msg.edit(mineEmbed)
+                    msg.edit({embeds: [mineEmbed]})
                 }
                 await response.delete()
             }
@@ -222,14 +223,15 @@ export default class Minesweeper extends Command {
                 let column = Number(response.content.match(/\d+/g) ? response.content.match(/\d+/g)?.[1] : NaN)
                 if (Number.isNaN(row) || Number.isNaN(column) || row-1 > rows || column-1 > columns) {
                     const rep = await response.reply("The row or column is invalid.")
-                    await rep.delete({timeout: 2000})
+                    await Functions.timeout(2000)
+                    await rep.delete()
                 } else {
                     row = row - 1
                     column = column - 1
                     board[row][column] = `${discord.getEmoji("mineFlag")}`
                     self.original = Functions.cloneArray(board)
                     const mineEmbed = self.createMineEmbed(board)
-                    msg.edit(mineEmbed)
+                    msg.edit({embeds: [mineEmbed]})
                 }
                 await response.delete()
             }
@@ -245,7 +247,7 @@ export default class Minesweeper extends Command {
                 this.done = true
             }
             if (this.original === null) this.original = Functions.cloneArray(board)
-            let mineEmbed: MessageEmbed
+            let mineEmbed: EmbedBuilder
             const newBoard = this.revealBoard(board, game)
             if (this.revealed) {
                 mineEmbed = this.createMineEmbed(this.original)
@@ -254,7 +256,7 @@ export default class Minesweeper extends Command {
                 mineEmbed = this.createMineEmbed(newBoard)
                 this.revealed = true
             }
-            await msg.edit(mineEmbed)
+            await msg.edit({embeds: [mineEmbed]})
         })
     }
 

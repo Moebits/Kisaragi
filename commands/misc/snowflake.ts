@@ -35,26 +35,25 @@ export default class Snowflake extends Command {
         if (input && (input.match(/\d+/g)?.join("") === input.trim())) {
             const snowflake = SnowflakeUtil.deconstruct(input.trim())
             snowflakeEmbed
-            .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
+            .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
             .setTitle(`**Snowflake** ${discord.getEmoji("gabTired")}`)
             .setDescription(
-                `${discord.getEmoji("star")}_Date:_ **${snowflake.date}**\n` +
-                `${discord.getEmoji("star")}_Worker ID:_ **${snowflake.workerID}**\n` +
-                `${discord.getEmoji("star")}_Process ID:_ **${snowflake.processID}**\n` +
-                `${discord.getEmoji("star")}_Increment:_ **${snowflake.increment}**\n` +
-                `${discord.getEmoji("star")}_Binary:_ **${snowflake.binary}**\n`
+                `${discord.getEmoji("star")}_Date:_ **${new Date(snowflake.timestamp.toString())}**\n` +
+                `${discord.getEmoji("star")}_Worker ID:_ **${snowflake.workerId}**\n` +
+                `${discord.getEmoji("star")}_Process ID:_ **${snowflake.processId}**\n` +
+                `${discord.getEmoji("star")}_Increment:_ **${snowflake.increment}**\n`
             )
-            message.channel.send(snowflakeEmbed)
+            message.channel.send({embeds: [snowflakeEmbed]})
 
         } else {
-            const snowflake = SnowflakeUtil.generate(input.trim() ? new Date(input) : Date.now())
+            const snowflake = SnowflakeUtil.generate({timestamp: input.trim() ? new Date(input) : Date.now()})
             snowflakeEmbed
-            .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
+            .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
             .setTitle(`**Snowflake** ${discord.getEmoji("gabTired")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Snowflake:_ **${snowflake}**\n`
             )
-            return message.channel.send(snowflakeEmbed)
+            return message.channel.send({embeds: [snowflakeEmbed]})
         }
     }
 }

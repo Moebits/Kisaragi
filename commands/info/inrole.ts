@@ -1,4 +1,4 @@
-import {Message, MessageEmbed, Role} from "discord.js"
+import {Message, EmbedBuilder, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -37,7 +37,7 @@ export default class InRole extends Command {
         const userArray = role.members.map((m) => m.user.tag)
         const step = 20.0
         const increment = Math.ceil(role.members.size! / step)
-        const inRoleArray: MessageEmbed[] = []
+        const inRoleArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let description = ""
             for (let j = 0; j < step; j++) {
@@ -47,8 +47,8 @@ export default class InRole extends Command {
             }
             const roleEmbed = embeds.createEmbed()
             roleEmbed
-            .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) ?? "")
+            .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
+            .setThumbnail(message.guild!.iconURL({extension: "png"}) ?? "")
             .setTitle(`**Role Info** ${discord.getEmoji("kannaPat")}`)
             .setDescription(
             `${discord.getEmoji("star")}_Role:_ **<@&${role.id}>**\n` +
@@ -60,7 +60,7 @@ export default class InRole extends Command {
         }
         if (!inRoleArray[0]) return message.reply(`No one is in this role ${discord.getEmoji("kannaFacepalm")}`)
         if (inRoleArray.length === 1) {
-            message.channel.send(inRoleArray[0])
+            message.channel.send({embeds: [inRoleArray[0]]})
         } else {
             embeds.createReactionEmbed(inRoleArray)
         }

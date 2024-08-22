@@ -1,4 +1,4 @@
-import {Message, MessageAttachment, MessageReaction, User} from "discord.js"
+import {Message, AttachmentBuilder, MessageReaction, User} from "discord.js"
 import path from "path"
 import Pixiv, {PixivIllust, UgoiraMetaData} from "pixiv.ts"
 import {Command} from "../../structures/Command"
@@ -83,7 +83,7 @@ export default class Ugoira extends Command {
             await pixiv.util.downloadUgoira(String(pixivID), `assets/images/gifs/`, {speed: 1.0})
         } catch {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
+            .setAuthor({name: "pixiv", iconURL: "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814"})
             .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("chinoSmug")}`), "The provided url is not a ugoira.")
         }
 
@@ -91,24 +91,24 @@ export default class Ugoira extends Command {
         try {
             details = await pixiv.illust.detail({illust_id: pixivID as number})
         } catch {
-            msg1.delete({timeout: 1000})
+            setTimeout(() => msg1.delete(), 1000)
             return
         }
 
-        msg1.delete({timeout: 1000})
+        setTimeout(() => msg1.delete(), 1000)
         const ugoiraEmbed = embeds.createEmbed()
-        const outGif = new MessageAttachment(path.join(__dirname, `../../../assets/images/gifs/${pixivID}.gif`))
+        const outGif = new AttachmentBuilder(path.join(__dirname, `../../../assets/images/gifs/${pixivID}.gif`))
         const comments = await pixiv.illust.comments({illust_id: pixivID as number})
         const cleanText = details.caption.replace(/<\/?[^>]+(>|$)/g, "")
         const authorUrl = await pixiv.util.downloadProfilePicture(details, `assets/images/pixiv/profiles`)
-        const authorAttachment = new MessageAttachment(authorUrl, "author.png")
+        const authorAttachment = new AttachmentBuilder(authorUrl, {name: "author.png"})
         const commentArray: string[] = []
         for (let i = 0; i <= 5; i++) {
                     if (!comments.comments[i]) break
                     commentArray.push(comments.comments[i].comment)
                 }
         ugoiraEmbed
-        .setAuthor("pixiv", "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814")
+        .setAuthor({name: "pixiv", iconURL: "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814"})
         .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("chinoSmug")}`)
         .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${pixivID}`)
         .setDescription(
@@ -120,14 +120,13 @@ export default class Ugoira extends Command {
             `${discord.getEmoji("star")}_Description:_ ${cleanText ? cleanText : "None"}\n` +
             `${discord.getEmoji("star")}_Comments:_ ${commentArray.join() ? commentArray.join() : "None"}\n`
             )
-        .attachFiles([outGif.attachment as string, authorAttachment])
         .setThumbnail(`attachment://author.png`)
         .setImage(`attachment://${pixivID}.gif`)
-        const msg = await message.channel.send(ugoiraEmbed)
+        const msg = await message.channel.send({embeds: [ugoiraEmbed], files: [outGif.attachment as string, authorAttachment]})
         const reactions = ["reverse"]
         await msg.react(discord.getEmoji(reactions[0]))
         const reverseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reverse") && user.bot === false
-        const reverse = msg.createReactionCollector(reverseCheck)
+        const reverse = msg.createReactionCollector({filter: reverseCheck})
         reverse.on("collect", async (reaction, user) => {
             let factor = 1.0
             let setReverse = false
@@ -141,7 +140,7 @@ export default class Ugoira extends Command {
                 }
                 if (response.content?.trim() && Number.isNaN(Number(response.content))) {
                     const rep = await response.reply("You must pass a valid speed factor, eg. \`1.5x\` or \`0.5x\`.")
-                    rep.delete({timeout: 3000})
+                    setTimeout(() => rep.delete(), 3000)
                     bad = true
                 } else if (response.content) {
                     factor = Number(response.content)
@@ -153,8 +152,8 @@ export default class Ugoira extends Command {
             rep.delete()
             if (bad) return
             await pixiv.util.downloadUgoira(String(pixivID), `assets/images/gifs/`, {speed: factor, reverse: setReverse})
-            const outGif = new MessageAttachment(path.join(__dirname, `../../../assets/images/gifs/${pixivID}.gif`))
-            await message.channel.send(outGif)
+            const outGif = new AttachmentBuilder(path.join(__dirname, `../../../assets/images/gifs/${pixivID}.gif`))
+            await message.channel.send({files: [outGif]})
         })
     }
 }

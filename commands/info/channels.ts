@@ -1,4 +1,4 @@
-import {GuildChannel, Message, MessageEmbed} from "discord.js"
+import {GuildChannel, Message, EmbedBuilder, GuildBasedChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -28,12 +28,12 @@ export default class Channels extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const channels = message.guild!.channels
-        const channelArray = channels.cache.map((t: GuildChannel) => t.name)
-        const idArray = channels.cache.map((t: GuildChannel) => t.id)
-        const createdArray = channels.cache.map((t: GuildChannel) => t.createdAt)
+        const channelArray = channels.cache.map((t: GuildBasedChannel) => t.name)
+        const idArray = channels.cache.map((t: GuildBasedChannel) => t.id)
+        const createdArray = channels.cache.map((t: GuildBasedChannel) => t.createdAt)
         const step = 7.0
         const increment = Math.ceil(channels.cache.size / step)
-        const userEmbedArray: MessageEmbed[] = []
+        const userEmbedArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             const userEmbed = embeds.createEmbed()
             let description = ""
@@ -42,12 +42,12 @@ export default class Channels extends Command {
                 if (!channelArray[value]) break
                 description += `${discord.getEmoji("star")}_Channel:_ **${channelArray[value]}**\n` +
                 `${discord.getEmoji("star")}_Channel ID:_ \`${idArray[value]}\`\n` +
-                `${discord.getEmoji("star")}_Creation Date:_ ${Functions.formatDate(createdArray[value])}\n`
+                `${discord.getEmoji("star")}_Creation Date:_ ${Functions.formatDate(createdArray[value]!)}\n`
             }
             userEmbed
-            .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
+            .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
             .setTitle(`**${message.guild!.name}'s Channels** ${discord.getEmoji("vigneDead")}`)
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
+            .setThumbnail(message.guild!.iconURL({extension: "png"}) as string)
             .setDescription(`${discord.getEmoji("star")}_Channel Count:_ **${channelArray.length}**\n` + description)
             userEmbedArray.push(userEmbed)
         }

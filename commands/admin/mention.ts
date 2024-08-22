@@ -39,13 +39,13 @@ export default class Mention extends Command {
         if (!input) return message.reply(`What role do you want me to mention ${discord.getEmoji("kannaCurious")}`)
         const role = message.guild!.roles.cache.find((r: Role) => r.name.toLowerCase().includes(input.toLowerCase().trim()))
         if (!role) {
-            message.channel.send(mentionEmbed
-            .setDescription("Could not find that role!"))
+            message.channel.send({embeds: [mentionEmbed
+            .setDescription("Could not find that role!")]})
             return
         }
         try {
             await role.setMentionable(true)
-            await message.channel.send(`<@&${role.id}>`, {allowedMentions: {parse: ["roles", "users"]}})
+            await message.channel.send({content: `<@&${role.id}>`, allowedMentions: {parse: ["roles", "users"]}})
             await role.setMentionable(false)
         } catch {
             return message.reply("Could not mention this role, I need the **Manage Roles** permission.")

@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -34,11 +34,11 @@ export default class YoMomma extends Command {
 
         const joke = await axios.get(`https://api.yomomma.info/`, {headers})
         const momEmbed = embeds.createEmbed()
-        .setAuthor("yo momma", "https://i.imgur.com/SBZsxeM.png")
+        .setAuthor({name: "yo momma", iconURL: "https://i.imgur.com/SBZsxeM.png"})
         .setTitle(`**Yo Momma Joke** ${discord.getEmoji("smugFace")}`)
         .setDescription(
         `${discord.getEmoji("star")}_Joke:_ ${joke.data.joke}\n`
         )
-        return message.channel.send(momEmbed)
+        return message.channel.send({embeds: [momEmbed]})
     }
 }

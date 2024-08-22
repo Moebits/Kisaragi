@@ -31,7 +31,7 @@ export default class Privacy extends Command {
 
         const privacyPolicy = embeds.createEmbed()
         privacyPolicy
-        .setAuthor("privacy policy", "https://digitalchamber.org/wp-content/uploads/2020/01/policy-initiatives-icon-blue-blockchain-alliance.png")
+        .setAuthor({name: "privacy policy", iconURL: "https://digitalchamber.org/wp-content/uploads/2020/01/policy-initiatives-icon-blue-blockchain-alliance.png"})
         .setURL("https://kisaragi-site.herokuapp.com/privacy")
         .setTitle(`**Privacy Policy** ${discord.getEmoji("kannaPat")}`)
         .setDescription(Functions.multiTrim(`
@@ -51,6 +51,6 @@ export default class Privacy extends Command {
             token you need to manually click on "revoke access" in your application settings. To delete all guild data, just remove the bot from your server.
             ${discord.getEmoji("star")}_Account Deletion:_ If you delete your discord account all user-specific settings and oauth2 data on your account is deleted.
         `))
-        return message.channel.send(privacyPolicy)
+        return message.channel.send({embeds: [privacyPolicy]})
     }
 }

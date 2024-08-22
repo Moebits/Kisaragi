@@ -1,10 +1,8 @@
 import {Message} from "discord.js"
-import fs from "fs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class TOS extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -31,7 +29,7 @@ export default class TOS extends Command {
 
         const termsOfService = embeds.createEmbed()
         termsOfService
-        .setAuthor("tos", "https://www.symphonyenvironmental.com/wp-content/uploads/2019/10/Terms-and-conditions-icon-V2.png")
+        .setAuthor({name: "tos", iconURL: "https://www.symphonyenvironmental.com/wp-content/uploads/2019/10/Terms-and-conditions-icon-V2.png"})
         .setURL("https://kisaragi-site.herokuapp.com/terms")
         .setTitle(`**Terms of Service** ${discord.getEmoji("kannaPat")}`)
         .setDescription(Functions.multiTrim(`
@@ -47,6 +45,6 @@ export default class TOS extends Command {
             **Appeal**
             There is no method of appealing yet, because I don't think it's necessary.
         `))
-        return message.channel.send(termsOfService)
+        return message.channel.send({embeds: [termsOfService]})
     }
 }

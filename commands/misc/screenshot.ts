@@ -1,6 +1,5 @@
 import axios from "axios"
-import {Message, MessageAttachment} from "discord.js"
-import path from "path"
+import {Message} from "discord.js"
 import * as config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -51,9 +50,9 @@ export default class Screenshot extends Command {
 
         const screenEmbed = embeds.createEmbed()
         screenEmbed
-        .setAuthor("google chrome", "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png")
+        .setAuthor({name: "google chrome", iconURL: "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png"})
         .setTitle(`**Website Screenshot** ${discord.getEmoji("KannaXD")}`)
         .setImage(link)
-        message.channel.send(screenEmbed)
+        message.channel.send({embeds: [screenEmbed]})
   }
 }

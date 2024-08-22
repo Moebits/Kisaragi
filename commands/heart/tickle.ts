@@ -53,6 +53,6 @@ export default class Tickle extends Command {
         .setTitle(`**Tickle** ${discord.getEmoji("kannaSip")}`)
         .setDescription(`**${message.author.username}** tickles **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send(tickleEmbed)
+        message.channel.send({embeds: [tickleEmbed]})
     }
 }

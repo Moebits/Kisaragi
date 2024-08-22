@@ -26,7 +26,7 @@ export default class Flush extends Command {
         flushEmbed
         .setTitle(`**Flush** ${discord.getEmoji("gabStare")}`)
         .setDescription("The database was **flushed**!")
-        message.channel.send(flushEmbed)
+        message.channel.send({embeds: [flushEmbed]})
 
     }
 }

@@ -37,7 +37,7 @@ export default class Reboot extends Command {
         .setTitle(`**Reboot** ${discord.getEmoji("gabStare")}`)
         .setDescription("Rebooting bot!")
 
-        await message.channel.send(rebootEmbed)
+        await message.channel.send({embeds: [rebootEmbed]})
         child_process.execSync("cd ../ && npm run build")
         process.exit(0)
       }

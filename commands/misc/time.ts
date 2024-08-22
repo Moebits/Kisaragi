@@ -63,7 +63,7 @@ export default class Time extends Command {
 
         const timeEmbed = embeds.createEmbed()
         timeEmbed
-        .setAuthor("time", "https://i.imgur.com/5RSmgv7.png")
+        .setAuthor({name: "time", iconURL: "https://i.imgur.com/5RSmgv7.png"})
         .setTitle(`**Time** ${discord.getEmoji("yaoi")}`)
         .setDescription(
             `${discord.getEmoji("star")}_City:_ **${cityName}**\n` +
@@ -71,6 +71,6 @@ export default class Time extends Command {
             `${discord.getEmoji("star")}_Date:_ \`${weekDays[weekDay-1]}, ${day}\`\n` +
             `${discord.getEmoji("star")}_Current Time:_ \`${format(date)}\``
         )
-        return message.channel.send(timeEmbed)
+        return message.channel.send({embeds: [timeEmbed]})
     }
 }

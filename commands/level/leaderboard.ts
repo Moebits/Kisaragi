@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -33,7 +33,7 @@ export default class Leaderboard extends Command {
       const iterations = Math.ceil(message.guild!.memberCount / 10)
       const step = 10
 
-      const embedArray: MessageEmbed[] = []
+      const embedArray: EmbedBuilder[] = []
 
       for (let i = 0; i < iterations; i++) {
         const topEmbed = embeds.createEmbed()
@@ -49,14 +49,14 @@ export default class Leaderboard extends Command {
         }
         topEmbed
         .setTitle(`**${message.guild!.name}'s Leaderboard** ${discord.getEmoji("hanaDesires")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
+        .setThumbnail(message.guild!.iconURL({extension: "png"}) as string)
         .setDescription(description)
         embedArray.push(topEmbed)
       }
 
       if (!embedArray[0]) return message.reply(`There are no scores ${discord.getEmoji("kannaFacepalm")}`)
       if (embedArray.length === 1) {
-        message.channel.send(embedArray[0])
+        message.channel.send({embeds: [embedArray[0]]})
       } else {
         embeds.createReactionEmbed(embedArray)
       }

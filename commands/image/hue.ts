@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -36,10 +36,10 @@ export default class Hue extends Command {
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
-        image.color([{apply: "hue", params: [shift]}])
+        image.color([{apply: "hue" as any, params: [shift]}])
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
-        const attachment = new MessageAttachment(buffer)
-        await message.reply(`Shifted the hue **${shift}** degrees!`, attachment)
+        const attachment = new AttachmentBuilder(buffer)
+        await message.reply({content: `Shifted the hue **${shift}** degrees!`, files: [attachment]})
         return
     }
 }

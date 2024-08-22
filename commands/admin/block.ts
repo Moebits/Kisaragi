@@ -75,7 +75,7 @@ export default class Block extends Command {
         const blockEmbed = embeds.createEmbed()
         blockEmbed
         .setTitle(`**Blocked Words** ${discord.getEmoji("gabuChrist")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) || message.author!.displayAvatarURL({format: "png", dynamic: true}))
+        .setThumbnail(message.guild!.iconURL({extension: "png"}) || message.author!.displayAvatarURL({extension: "png"}))
         .setDescription(Functions.multiTrim(`
         Add or remove blocked words.
         newline
@@ -107,7 +107,7 @@ export default class Block extends Command {
         ${discord.getEmoji("star")}_Type **reset** to delete all words._
         ${discord.getEmoji("star")}_Type **cancel** to exit_.
         `))
-        message.channel.send(blockEmbed)
+        message.channel.send({embeds: [blockEmbed]})
 
         async function blockPrompt(msg: Message) {
             let words = await sql.fetchColumn("guilds", "blocked words")
@@ -117,7 +117,7 @@ export default class Block extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -129,7 +129,7 @@ export default class Block extends Command {
                 await sql.updateColumn("guilds", "self promo", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All blocked words were deleted!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase().includes("delete")) {
@@ -141,13 +141,13 @@ export default class Block extends Command {
                         await sql.updateColumn("guilds", "blocked words", words)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                        msg.channel.send(responseEmbed)
+                        msg.channel.send({embeds: [responseEmbed]})
                         return
                     }
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send(responseEmbed)
+                    msg.channel.send({embeds: [responseEmbed]})
                     return
                 }
             }
@@ -169,14 +169,14 @@ export default class Block extends Command {
             if (setOn && setOff) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
             if (setExact && setPartial) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}You can only choose one matching algorithm.`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
@@ -240,7 +240,7 @@ export default class Block extends Command {
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
+            msg.channel.send({embeds: [responseEmbed]})
             return
         }
         await embeds.createPrompt(blockPrompt)

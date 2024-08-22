@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 // import osmosis from "osmosis"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -99,7 +99,7 @@ export default class Hentaigasm extends Command {
         if (!perms.checkNSFW()) return
         const query = Functions.combineArgs(args, 1).trim()
         const data = await this.getLinks(query)
-        const gasmArray: MessageEmbed[] = []
+        const gasmArray: EmbedBuilder[] = []
         const max = data.length > 10 ? 10 : data.length
         for (let i = 0; i < max; i++) {
             const html = await axios.get(data[i].url, {headers: this.headers}).then((r) => r.data)
@@ -117,7 +117,7 @@ export default class Hentaigasm extends Command {
                 commentDesc += `**${pageComments[i].author}** - ${pageComments[i].text}\n`
             }
             const gasmEmbed = embeds.createEmbed()
-            .setAuthor("hentaigasm", "https://i.imgur.com/oZaLumQ.png", "http://hentaigasm.com/")
+            .setAuthor({name: "hentaigasm", iconURL: "https://i.imgur.com/oZaLumQ.png", url: "http://hentaigasm.com/"})
             .setTitle(`**Hentaigasm Search** ${discord.getEmoji("tohruSmug")}`)
             .setURL(encodeURI(data[i].url))
             .setImage(encodeURI(data[i].thumb))
@@ -135,7 +135,7 @@ export default class Hentaigasm extends Command {
             gasmArray.push(gasmEmbed)
         }
         if (gasmArray.length === 1) {
-            await message.channel.send(gasmArray[0])
+            await message.channel.send({embeds: [gasmArray[0]]})
         } else {
             embeds.createReactionEmbed(gasmArray, true, true)
         }

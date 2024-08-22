@@ -29,6 +29,6 @@ export default class Order extends Command {
         purgeEmbed
         .setTitle(`**Purge** ${discord.getEmoji("gabStare")}`)
         .setDescription("**Purged the database**!")
-        message.channel.send(purgeEmbed)
+        message.channel.send({embeds: [purgeEmbed]})
     }
 }

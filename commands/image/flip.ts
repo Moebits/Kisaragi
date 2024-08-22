@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -65,7 +65,7 @@ export default class Brightness extends Command {
         if (setHorizontal) image.flip(true, false)
         if (setVertical) image.flip(false, true)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
-        const attachment = new MessageAttachment(buffer!)
+        const attachment = new AttachmentBuilder(buffer!)
         let text = "Flipped the image!"
         if (setHorizontal && setVertical) {
             text = "Flipped the image **horizontally** and **vertically**!"
@@ -74,7 +74,7 @@ export default class Brightness extends Command {
         } else if (setVertical) {
             text = "Flipped the image **vertically**!"
         }
-        await message.reply(text, attachment)
+        await message.reply({content: text, files: [attachment]})
         return
     }
 }

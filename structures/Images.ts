@@ -2,7 +2,7 @@ import axios from "axios"
 import Canvas from "@napi-rs/canvas"
 import {v2 as cloudinary} from "cloudinary"
 import concat from "concat-stream"
-import {DMChannel, GuildMember, Message, AttachmentBuilder, NewsChannel, TextChannel} from "discord.js"
+import {DMChannel, GuildMember, Message, AttachmentBuilder, GuildTextBasedChannel, PartialDMChannel} from "discord.js"
 import FormData from "form-data"
 import fs from "fs"
 import gifFrames from "gif-frames"
@@ -147,7 +147,7 @@ export class Images {
     }
 
     /** Fetch channel attachments */
-    public fetchChannelAttachments = async (channel: TextChannel | DMChannel | NewsChannel, limit?: number, gif?: boolean, messageID?: string) => {
+    public fetchChannelAttachments = async (channel: GuildTextBasedChannel | DMChannel | PartialDMChannel, limit?: number, gif?: boolean, messageID?: string) => {
         if (!limit) limit = Infinity
         let last = messageID || channel.lastMessageId
         let attachments: string[] = []

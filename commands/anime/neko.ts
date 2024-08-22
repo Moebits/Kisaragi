@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import nekoClient, {NekoRequestResults} from "nekos.life"
 import querystring from "querystring"
 import {Command} from "../../structures/Command"
@@ -47,7 +47,7 @@ export default class Neko extends Command {
             nekoEmbed
             .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)
             .setImage(image.url)
-            return message.channel.send(nekoEmbed)
+            return message.channel.send({embeds: [nekoEmbed]})
         }
 
         const headers = {
@@ -69,12 +69,12 @@ export default class Neko extends Command {
             result = await axios.post(`https://nekos.moe/api/v1/images/search`, {nsfw, tags: tags.split(","), limit: 50}, {headers}).then((r) => r.data.images)
         }
 
-        const nekoEmbeds: MessageEmbed[] = []
+        const nekoEmbeds: EmbedBuilder[] = []
         for (let i = 0; i < result.length; i++) {
             const image = result[i]
             const nekoEmbed = embeds.createEmbed()
             nekoEmbed
-            .setAuthor("nekos.moe", "https://nekos.moe/static/favicon/favicon-32x32.png", "https://nekos.moe/")
+            .setAuthor({name: "nekos.moe", iconURL: "https://nekos.moe/static/favicon/favicon-32x32.png", url: "https://nekos.moe/"})
             .setTitle(`Neko Image ${discord.getEmoji("tohruSmug")}`)
             .setURL(`https://nekos.moe/post/${image.id}`)
             .setImage(`https://nekos.moe/image/${image.id}`)
@@ -88,7 +88,7 @@ export default class Neko extends Command {
             nekoEmbeds.push(nekoEmbed)
         }
         if (nekoEmbeds.length === 1) {
-            message.channel.send(nekoEmbeds[0])
+            message.channel.send({embeds: [nekoEmbeds[0]]})
         } else {
             embeds.createReactionEmbed(nekoEmbeds, true, true)
         }

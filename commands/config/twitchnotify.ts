@@ -1,6 +1,4 @@
-import type {GuildChannel, GuildEmoji, Message, MessageEmbed, TextChannel, Webhook} from "discord.js"
-import WebhookListener from "twitch-webhooks"
-import * as config from "../../config.json"
+import {Message, EmbedBuilder, TextChannel, Webhook, ChannelType} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -78,7 +76,7 @@ export default class TwitchNotify extends Command {
         const twitch = await this.getTwitch(channels)
         const step = 3.0
         const increment = Math.ceil((twitch ? twitch.length : 1) / step)
-        const twitchArray: MessageEmbed[] = []
+        const twitchArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let twitchDesc = ""
             for (let j = 0; j < step; j++) {
@@ -98,7 +96,7 @@ export default class TwitchNotify extends Command {
             const twitchEmbed = embeds.createEmbed()
             twitchEmbed
             .setTitle(`**Twitch Notify** ${discord.getEmoji("chinoSmug")}`)
-            .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+            .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
             .setDescription(Functions.multiTrim(`
                 Configure twitch livestream notifications.
                 newline
@@ -123,7 +121,7 @@ export default class TwitchNotify extends Command {
         }
 
         if (twitchArray.length === 1) {
-            message.channel.send(twitchArray[0])
+            message.channel.send({embeds: [twitchArray[0]]})
         } else {
             embeds.createReactionEmbed(twitchArray)
         }
@@ -138,14 +136,14 @@ export default class TwitchNotify extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "twitch channels", null)
                 await self.getTwitch(channels, true)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Twitch notify settings were wiped!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
 
             if (msg.content.toLowerCase().includes("delete")) {
@@ -160,11 +158,11 @@ export default class TwitchNotify extends Command {
                     await self.getTwitch([channel], true)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 }
             }
             if (msg.content.toLowerCase().includes("toggle")) {
@@ -187,11 +185,11 @@ export default class TwitchNotify extends Command {
                     config[index] = current
                     await sql.updateColumn("twitch", "config", config, "channel", current.channel)
                     responseEmbed.setDescription(desc)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 }
             }
             if (msg.content.toLowerCase().includes("edit")) {
@@ -219,11 +217,11 @@ export default class TwitchNotify extends Command {
                     config[index] = current
                     await sql.updateColumn("twitch", "config", config, "channel", current.channel)
                     responseEmbed.setDescription(desc)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 }
             }
 
@@ -242,7 +240,7 @@ export default class TwitchNotify extends Command {
             request.guild = message.guild?.id
 
             if (channels.length >= 5) {
-                return msg.channel.send(responseEmbed.setDescription("You can set a maximum of 5 twitch channels!"))
+                return msg.channel.send({embeds: [responseEmbed.setDescription("You can set a maximum of 5 twitch channels!")]})
             }
 
             if (setChannel) {
@@ -270,14 +268,14 @@ export default class TwitchNotify extends Command {
 
             if (setChannel && setText) {
                 const text = message.guild?.channels.cache.get(newText) as TextChannel
-                if (!text || text.type !== "text") return message.reply(`Invalid text channel ${discord.getEmoji("kannaFacepalm")}`)
+                if (!text || text.type !== ChannelType.GuildText) return message.reply(`Invalid text channel ${discord.getEmoji("kannaFacepalm")}`)
                 try {
                     const webhooks = await text.fetchWebhooks()
                     let webhook: Webhook
                     if (webhooks.first()?.name === "Twitch") {
                         webhook = webhooks.first()!
                     } else {
-                        webhook = await text.createWebhook("Twitch", {avatar: discord.user!.displayAvatarURL({format: "png", dynamic: true})})
+                        webhook = await text.createWebhook({name: "Twitch", avatar: discord.user!.displayAvatarURL({extension: "png"})})
                     }
                     request.id = webhook.id
                     request.token = webhook.token
@@ -296,7 +294,7 @@ export default class TwitchNotify extends Command {
             if (!description) return message.reply(`No edits were made ${discord.getEmoji("kannaFacepalm")}`)
             await sql.updateColumn("guilds", "twitch channels", channels)
             responseEmbed.setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
         await embeds.createPrompt(twitchPrompt)
     }

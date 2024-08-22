@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Permission} from "../../structures/Permission"
@@ -39,7 +39,7 @@ export default class Photos extends Command {
 
         const step = 3.0
         const increment = Math.ceil((channels ? channels.length : 1) / step)
-        const photosArray: MessageEmbed[] = []
+        const photosArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let description = ""
             for (let j = 0; j < step; j++) {
@@ -57,7 +57,7 @@ export default class Photos extends Command {
             const photoEmbed = embeds.createEmbed()
             photoEmbed
             .setTitle(`**Photo Downloader/Uploader** ${discord.getEmoji("gabYes")}`)
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+            .setThumbnail(message.guild!.iconURL({extension: "png"})!)
             .setImage("https://i.imgur.com/AtAIFOb.png")
             .setDescription(
                 "Automatically download and upload photos from a channel to dropbox/google photos!\n" +
@@ -83,7 +83,7 @@ export default class Photos extends Command {
         if (photosArray.length > 1) {
             embeds.createReactionEmbed(photosArray)
         } else {
-            message.channel.send(photosArray[0])
+            message.channel.send({embeds: [photosArray[0]]})
         }
 
         async function photoPrompt(msg: Message) {
@@ -96,7 +96,7 @@ export default class Photos extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -106,7 +106,7 @@ export default class Photos extends Command {
                 await sql.updateColumn("guilds", "notify toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
@@ -122,9 +122,9 @@ export default class Photos extends Command {
                         await sql.updateColumn("guilds", "image channels", channels)
                         await sql.updateColumn("guilds", "google albums", albums)
                         await sql.updateColumn("guilds", "dropbox folders", folders)
-                        return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
+                        return msg.channel.send({embeds: [responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`)]})
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription("Setting not found!"))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription("Setting not found!")]})
                 }
             }
             if (msg.content.toLowerCase().startsWith("edit")) {
@@ -152,9 +152,9 @@ export default class Photos extends Command {
                         await sql.updateColumn("guilds", "google albums", albums)
                         editDesc += `${discord.getEmoji("star")}Google album set to **${tempAlbum}**!\n`
                     }
-                    return msg.channel.send(responseEmbed.setDescription(editDesc))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription(editDesc)]})
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription("No edits specified!"))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription("No edits specified!")]})
                 }
             }
             const newChan = msg.content.match(/\d+/g)?.[0] ?? ""
@@ -199,7 +199,7 @@ export default class Photos extends Command {
 
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(photoPrompt)

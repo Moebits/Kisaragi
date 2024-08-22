@@ -1,5 +1,5 @@
 import canvas from "@napi-rs/canvas"
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -62,13 +62,12 @@ export default class RGB extends Command {
         ctx.fillText(str, 0, 95)
         ctx.strokeText(str, 0, 95)
 
-        const attachment = new MessageAttachment(can.toBuffer("image/png"), "color.png")
+        const attachment = new AttachmentBuilder(can.toBuffer("image/png"), {name: "color.png"})
 
         const colorEmbed = embeds.createEmbed()
         .setTitle(`**RGB Color** ${discord.getEmoji("RaphiSmile")}`)
-        .attachFiles([attachment])
         .setImage(`attachment://color.png`)
 
-        return message.channel.send(colorEmbed)
+        return message.channel.send({embeds: [colorEmbed], files: [attachment]})
     }
 }

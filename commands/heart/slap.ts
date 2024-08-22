@@ -53,6 +53,6 @@ export default class Slap extends Command {
         .setTitle(`**Slap** ${discord.getEmoji("kaosWTF")}`)
         .setDescription(`**${message.author.username}** slaps **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send(slapEmbed)
+        message.channel.send({embeds: [slapEmbed]})
     }
 }

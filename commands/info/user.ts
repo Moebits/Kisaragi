@@ -1,4 +1,4 @@
-import {GuildMember, Message, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -34,9 +34,9 @@ export default class User extends Command {
 
         const userEmbed = embeds.createEmbed()
         userEmbed
-        .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
+        .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
         .setTitle(`**User Info** ${discord.getEmoji("CirNo")}`)
-        .setThumbnail(user?.user.displayAvatarURL({format: "png", dynamic: true}) ?? "")
+        .setThumbnail(user?.user.displayAvatarURL({extension: "png"}) ?? "")
         .setDescription(
             `${discord.getEmoji("star")}_User:_ **${user?.user.tag}**\n` +
             `${discord.getEmoji("star")}_User ID:_ ${user?.id}\n` +
@@ -44,7 +44,7 @@ export default class User extends Command {
             `${discord.getEmoji("star")}_Created Account At:_ **${Functions.formatDate(user?.user.createdAt!)}**\n` +
             `${discord.getEmoji("star")}_Roles:_ ${Functions.checkChar(user?.roles.cache.map((r) => `<@&${r.id}>`).join(" ")!, 1000, " ")}`
         )
-        message.channel.send(userEmbed)
+        message.channel.send({embeds: [userEmbed]})
         return
     }
 }

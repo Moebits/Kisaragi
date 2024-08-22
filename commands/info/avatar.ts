@@ -30,17 +30,17 @@ export default class Avatar extends Command {
         const avatarEmbed = embeds.createEmbed()
 
         if (!message.mentions.users.size) {
-          await message.channel.send(avatarEmbed
+          await message.channel.send({embeds: [avatarEmbed
             .setDescription(`**${message.author!.username}'s Profile Picture**`)
-            .setImage(message.author.displayAvatarURL({format: "png", dynamic: true, size: 512})))
+            .setImage(message.author.displayAvatarURL({extension: "png", size: 512}))]})
         }
 
         for (const [key, user] of message.mentions.users) {
-          const avatar = user.displayAvatarURL({format: "png", dynamic: true, size: 512})
-          await message.channel.send(avatarEmbed
+          const avatar = user.displayAvatarURL({extension: "png", size: 512})
+          await message.channel.send({embeds: [avatarEmbed
             .setDescription(`**${user.username}'s Profile Picture**`)
             .setURL(avatar)
-            .setImage(avatar))
+            .setImage(avatar)]})
     }
   }
 }

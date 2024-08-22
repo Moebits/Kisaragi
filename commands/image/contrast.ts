@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -42,8 +42,8 @@ export default class Contrast extends Command {
         const image = await jimp.read(url)
         image.contrast(factor)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
-        const attachment = new MessageAttachment(buffer)
-        await message.reply(`Shifted the contrast by a factor of **${factor*100}**!`, attachment)
+        const attachment = new AttachmentBuilder(buffer)
+        await message.reply({content:`Shifted the contrast by a factor of **${factor*100}**!`, files: [attachment]})
         return
     }
 }

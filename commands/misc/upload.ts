@@ -1,4 +1,4 @@
-import {GuildChannel, Message, MessageAttachment, TextChannel} from "discord.js"
+import {GuildBasedChannel, Message, Attachment, TextChannel} from "discord.js"
 import fs from "fs"
 import path from "path"
 // import {GPhotos} from "upload-gphotos"
@@ -38,7 +38,7 @@ export default class Upload extends Command {
         const notify = await sql.fetchColumn("images", "notify toggle")
         const gphotos = new GPhotos()
         await gphotos.signin({username: process.env.GOOGLE_EMAIL!, password: process.env.GOOGLE_PASSWORD!})
-        const channel = this.message.guild?.channels.cache.find((c: GuildChannel) => c.id === guildChannel) as TextChannel
+        const channel = this.message.guild?.channels.cache.find((c: GuildBasedChannel) => c.id === guildChannel) as TextChannel
         let album = await gphotos.searchAlbum({title: albumName})
         if (!album) album = await gphotos.createAlbum({title: albumName})
         let notMsg: Message | null = null
@@ -60,7 +60,7 @@ export default class Upload extends Command {
         .setDescription(
             `${discord.getEmoji("star")}Uploading finished! You can find the pictures at **https://photos.google.com/share/${album.id}**!`
         )
-        await channel.send(gPhotosEmbed)
+        await channel.send({embeds: [gPhotosEmbed]})
     }
 
     public gatherPhotos = async (guildChannel: string, max: number, before: string) => {
@@ -68,7 +68,7 @@ export default class Upload extends Command {
         const sql = new SQLQuery(message)
         const images = new Images(this.discord, message)
         const notify = await sql.fetchColumn("images", "notify toggle")
-        const channel = message.guild?.channels.cache.find((c: GuildChannel) => c.id === guildChannel) as TextChannel
+        const channel = message.guild?.channels.cache.find((c: GuildBasedChannel) => c.id === guildChannel) as TextChannel
         const dest = path.join(__dirname, `../../../assets/images/dump/${channel.name}/`)
         if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true})
         let done = false
@@ -86,7 +86,7 @@ export default class Upload extends Command {
                     done = true
                     break
                 }
-                const attachments = messages[i].attachments.map((a: MessageAttachment) => a.url)
+                const attachments = messages[i].attachments.map((a: Attachment) => a.url)
                 const photos = await images.downloadImages(attachments, dest)
                 photoArray.push(...photos)
                 counter += photos.length
@@ -101,7 +101,7 @@ export default class Upload extends Command {
             }
             await Functions.timeout(500)
         }
-        if (notMsg) notMsg.delete({timeout: 3000})
+        if (notMsg) setTimeout(() => notMsg?.delete(), 3000)
         return {photos: photoArray, last: lastID}
     }
 

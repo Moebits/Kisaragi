@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -50,7 +50,7 @@ export default class Safebooru extends Command {
         const perms = new Permission(discord, message)
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const safebooruEmbed = embeds.createEmbed()
-        .setAuthor("safebooru", "https://safebooru.org/images/safechibi.png")
+        .setAuthor({name: "safebooru", iconURL: "https://safebooru.org/images/safechibi.png"})
         .setTitle(`**Safebooru Search** ${discord.getEmoji("gabLewd")}`)
         if (!perms.checkNSFW()) return
 
@@ -92,13 +92,13 @@ export default class Safebooru extends Command {
             // @ts-ignore
             images = rawImages.map((i) => i.data)
         }
-        const safebooruArray: MessageEmbed[] = []
+        const safebooruArray: EmbedBuilder[] = []
         for (let i = 0; i < images.length; i++) {
             const img = images[i]
             const image = await this.getImage(img.directory, img.image)
             if (discord.checkMuted(message)) if (perms.loliFilter(img.tags)) continue
             const safebooruEmbed = embeds.createEmbed()
-            .setAuthor("safebooru", "https://safebooru.org/images/safechibi.png")
+            .setAuthor({name: "safebooru", iconURL: "https://safebooru.org/images/safechibi.png"})
             .setTitle(`**Safebooru Search** ${discord.getEmoji("gabLewd")}`)
             .setURL(`https://safebooru.org/index.php?page=post&s=view&id=${img.id}`)
             .setDescription(
@@ -113,7 +113,7 @@ export default class Safebooru extends Command {
             return this.invalidQuery(safebooruEmbed)
         }
         if (safebooruArray.length === 1) {
-            message.channel.send(safebooruArray[0])
+            message.channel.send({embeds: [safebooruArray[0]]})
         } else {
             embeds.createReactionEmbed(safebooruArray, true, true)
         }

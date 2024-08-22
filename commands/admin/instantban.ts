@@ -1,4 +1,4 @@
-import {GuildChannel, Message} from "discord.js"
+import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -50,7 +50,7 @@ export default class InstantBan extends Command {
         const instantBanEmbed = embeds.createEmbed()
         instantBanEmbed
         .setTitle(`**Instant Bans** ${discord.getEmoji("mexShrug")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setDescription(Functions.multiTrim(`
             Configure settings for instant bans.
             newline
@@ -74,7 +74,7 @@ export default class InstantBan extends Command {
             ${discord.getEmoji("star")}_Type **reset** to disable all settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send(instantBanEmbed)
+        message.channel.send({embeds: [instantBanEmbed]})
 
         async function instantBanPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
@@ -82,7 +82,7 @@ export default class InstantBan extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -91,13 +91,13 @@ export default class InstantBan extends Command {
                 await sql.updateColumn("guilds", "everyone ban toggle", "off")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were disabled!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.match(/pfp/g)) setPfp = true
             if (msg.content.match(/leave/g)) setLeave = true
             if (msg.content.match(/everyone/g)) setEveryone = true
-            if (msg.mentions.channels.array().join("")) setChannel = true
+            if ([...msg.mentions.channels.values()].join("")) setChannel = true
 
             let description = ""
 
@@ -140,7 +140,7 @@ export default class InstantBan extends Command {
             if (!description) return msg.reply(`Invalid arguments ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(instantBanPrompt)

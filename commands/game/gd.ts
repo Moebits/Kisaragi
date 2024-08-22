@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -56,13 +56,13 @@ export default class GeometryDash extends Command {
             const user = await api.users.getByNick(nick)
             const gdUser = await gd.search(nick)
             const image =  gdUser.video?.embed ? `https://img.youtube.com/vi/${gdUser.video?.embed?.replace(/www.youtube.com\/embed\//g, "")}/maxresdefault.jpg` : `http://card.gdprofiles.com/${user.nick}_hd.png`
-            const levelArray: MessageEmbed[] = []
+            const levelArray: EmbedBuilder[] = []
             for (const i in gdUser.lastLevels) {
                 levelArray.push(gdUser.lastLevels[i].name)
             }
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
+            .setAuthor({name: "geometry dash", iconURL: "https://gdicon.net/favicons/android-icon-192x192.png"})
             .setTitle(`**GD Profile** ${discord.getEmoji("raphi")}`)
             .setURL(`https://gdprofiles.com/${user.nick}`)
             .setDescription(
@@ -85,7 +85,7 @@ export default class GeometryDash extends Command {
             )
             .setImage(image)
             .setThumbnail(gdUser.img.player)
-            message.channel.send(gdEmbed)
+            message.channel.send({embeds: [gdEmbed]})
             return
         }
 
@@ -94,7 +94,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(level.creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
+            .setAuthor({name: "geometry dash", iconURL: "https://gdicon.net/favicons/android-icon-192x192.png"})
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
@@ -108,7 +108,7 @@ export default class GeometryDash extends Command {
                 `${discord.getEmoji("star")}_Password:_ **${level.password ? level.password : "None"}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${base64.decode(level.desc)}\n`
             )
-            message.channel.send(gdEmbed)
+            message.channel.send({embeds: [gdEmbed]})
             return
         }
 
@@ -117,7 +117,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(level.creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
+            .setAuthor({name: "geometry dash", iconURL: "https://gdicon.net/favicons/android-icon-192x192.png"})
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
@@ -131,12 +131,12 @@ export default class GeometryDash extends Command {
                 `${discord.getEmoji("star")}_Password:_ **${level.password ? level.password : "None"}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${base64.decode(level.desc)}\n`
             )
-            message.channel.send(gdEmbed)
+            message.channel.send({embeds: [gdEmbed]})
             return
         }
 
         if (args[1] === "top") {
-            const topArray: MessageEmbed[] = []
+            const topArray: EmbedBuilder[] = []
             let users
             if (args[2] === "100") {
                 users = await api.tops.get({type: "top", count: 100})
@@ -152,7 +152,7 @@ export default class GeometryDash extends Command {
             for (let i = 0; i < users.length; i++) {
                 const topEmbed = embeds.createEmbed()
                 topEmbed
-                .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
+                .setAuthor({name: "geometry dash", iconURL: "https://gdicon.net/favicons/android-icon-192x192.png"})
                 .setTitle(`**GD Leaderboard** ${discord.getEmoji("raphi")}`)
                 .setDescription(
                     `${discord.getEmoji("star")}_Rank:_ **${users[i].top}**\n` +
@@ -173,7 +173,7 @@ export default class GeometryDash extends Command {
             const user = await api.users.getById(level.creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
+            .setAuthor({name: "geometry dash", iconURL: "https://gdicon.net/favicons/android-icon-192x192.png"})
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +
@@ -188,17 +188,17 @@ export default class GeometryDash extends Command {
                 `${discord.getEmoji("star")}_Description:_ ${base64.decode(level.desc)}\n`
 
             )
-            return message.channel.send(gdEmbed)
+            return message.channel.send({embeds: [gdEmbed]})
         }
 
         const result = await api.levels.find({query: query.trim()})
-        const gdArray: MessageEmbed[] = []
+        const gdArray: EmbedBuilder[] = []
         for (let i = 0; i < result.levels.length; i++) {
             const level = await api.levels.getById({levelID: result.levels[i].levelID})
             const user = await api.users.getById(result.levels[i].creatorUserID)
             const gdEmbed = embeds.createEmbed()
             gdEmbed
-            .setAuthor("geometry dash", "https://gdicon.net/favicons/android-icon-192x192.png")
+            .setAuthor({name: "geometry dash", iconURL: "https://gdicon.net/favicons/android-icon-192x192.png"})
             .setTitle(`**GD Level** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Name:_ **${level.name}**\n` +

@@ -146,24 +146,26 @@ export class Functions {
         return array
     }
 
+    // Splits a message into chunks
+    public static splitMessage = (text: string, {maxLength = 2000, char = "\n", prepend = "", append = ""} = {}) => {
+        if (text.length <= maxLength) return [text]
+        const splitText = text.split(char)
+        if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError("SPLIT_MAX_LEN")
+        const messages = [] as string[]
+        let msg = ""
+        for (const chunk of splitText) {
+          if (msg && (msg + char + chunk + append).length > maxLength) {
+            messages.push(msg + append)
+            msg = prepend
+          }
+          msg += (msg && msg !== prepend ? char : "") + chunk
+        }
+        return messages.concat(msg).filter(m => m)
+    }
+
     // Check Message Characters
     public static checkChar = (message: string, num: number, char: string): string => {
-        const splitMessage = (text: string, {maxLength = 2000, char = "\n", prepend = "", append = ""} = {}) => {
-            if (text.length <= maxLength) return [text]
-            const splitText = text.split(char)
-            if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError("SPLIT_MAX_LEN")
-            const messages = [] as string[]
-            let msg = ""
-            for (const chunk of splitText) {
-              if (msg && (msg + char + chunk + append).length > maxLength) {
-                messages.push(msg + append)
-                msg = prepend
-              }
-              msg += (msg && msg !== prepend ? char : "") + chunk
-            }
-            return messages.concat(msg).filter(m => m)
-        }
-        const splitText = splitMessage(message, {maxLength: num, char})
+        const splitText = Functions.splitMessage(message, {maxLength: num, char})
         if (splitText[0]) {
             return splitText[0]
         } else {

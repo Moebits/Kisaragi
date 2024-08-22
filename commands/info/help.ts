@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import fs from "fs"
 import path from "path"
 import * as config from "../../config.json"
@@ -118,14 +118,14 @@ export default class Help extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const subDir = fs.readdirSync(path.join(__dirname, "../../commands"))
-        const helpEmbedArray: MessageEmbed[] = []
+        const helpEmbedArray: EmbedBuilder[] = []
         if (args[1] && !args[1].startsWith("!") && args[1]?.toLowerCase() !== "dm" && args[1] !== "2") {
             const helpDir = new (require(path.join(__dirname, "./helpInfo")).default)(this.discord, this.message)
             await helpDir.run(args)
             return
         }
         if (args[1]?.toLowerCase() === "dm") {
-            const dmEmbeds: MessageEmbed[] = []
+            const dmEmbeds: EmbedBuilder[] = []
             const step = 10.0
             const increment = Math.ceil(subDir.length / step)
             for (let i = 0; i < increment; i++) {
@@ -150,18 +150,18 @@ export default class Help extends Command {
                     }
                     if (subDir[k] === "japanese") subDir[k] = "weeb"
                     dmEmbed
-                    .addField(`${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${counter})`.trim(), help)
+                    .addFields([{name: `${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${counter})`.trim(), value: help}])
                 }
                 dmEmbed
-                .setAuthor("help", "https://i.imgur.com/qcSWLSf.png")
+                .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
                 .setDescription(`_Reactions cannot be removed in dm's, so remove them yourself._`)
-                if (!discord.checkMuted(message)) dmEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo}) | [Vote](${config.vote})`)
+                if (!discord.checkMuted(message)) dmEmbed.addFields([{name: `${discord.getEmoji("RaphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo})`}])
                 dmEmbeds.push(dmEmbed)
             }
             embeds.createReactionEmbed(dmEmbeds, false, false, 1, message.author)
             const rep = await message.reply(`Sent you the commands list! Make sure you have direct messages enabled, globally and server wide. ${discord.getEmoji("karenSugoi")}`)
-            if (args[2] === "delete") rep?.delete({timeout: 3000})
+            if (args[2] === "delete") setTimeout(() => rep.delete(), 3000)
             return
         }
         // const unlistedDirs = ["bot developer", "heart", "logging", "music"]
@@ -190,18 +190,18 @@ export default class Help extends Command {
             const helpEmbed = embeds.createEmbed()
             helpEmbed
             .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${this.emojiMap[subDir[i]]}`)
-            .setAuthor("help", "https://i.imgur.com/qcSWLSf.png")
+            .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
             .setImage(this.imageMap[subDir[i]])
             .setThumbnail(discord.muted ? "" : this.thumbMap[subDir[i]])
             .setDescription(
                 `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` +
                 `To display only one category, use \`help !(category)\` ${discord.getEmoji("gabYes")}\n` +
                 `_Click on a reaction twice to toggle compact mode._\n` + help)
-            if (!discord.checkMuted(message)) helpEmbed.addField(`${discord.getEmoji("RaphiSmile")} Additional Links`, `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo}) | [Vote](${config.vote})`)
+            if (!discord.checkMuted(message)) helpEmbed.addFields([{name: `${discord.getEmoji("RaphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo})`}])
             helpEmbedArray.push(helpEmbed)
         }
         if (setIndex > -1) {
-            return message.channel.send(helpEmbedArray[setIndex])
+            return message.channel.send({embeds: [helpEmbedArray[setIndex]]})
         } else {
             if (args[1] === "2") {
                 embeds.createHelpEmbed(helpEmbedArray, 2)

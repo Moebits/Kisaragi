@@ -35,7 +35,7 @@ export default class Manga extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         let query = Functions.combineArgs(args, 1)
         const mangaEmbed = embeds.createEmbed()
-        .setAuthor("kitsu", "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4")
+        .setAuthor({name: "kitsu", iconURL: "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4"})
         .setTitle(`**Manga** ${discord.getEmoji("gabYes")}`)
 
         if (!query) {
@@ -72,6 +72,6 @@ export default class Manga extends Command {
         )
         .setImage(data.attributes.coverImage ? data.attributes.coverImage.original : data.attributes.posterImage.original)
         .setThumbnail(data.attributes.posterImage.original)
-        message.channel.send(mangaEmbed)
+        message.channel.send({embeds: [mangaEmbed]})
     }
 }

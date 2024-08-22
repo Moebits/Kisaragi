@@ -1,4 +1,4 @@
-import {GuildMember, Message, MessageEmbed, TextChannel} from "discord.js"
+import {Message, TextChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -27,28 +27,27 @@ export default class Guild extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        if (!(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has(["MANAGE_GUILD", "BAN_MEMBERS"])) {
+        if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has(["ManageGuild", "BanMembers"])) {
             return message.reply(`The bot needs the permission **Manage Server** and **Ban Members** in order to use this command. This is for counting the amount of invites and bans. ${this.discord.getEmoji("kannaFacepalm")}`)
         }
-        const guildImg = message.guild?.bannerURL() ? message.guild.bannerURL({format: "png"}) : (message.guild?.splashURL() ? message.guild.splashURL({format: "png"}) : "")
+        const guildImg = message.guild?.bannerURL() ? message.guild.bannerURL({extension: "png"}) : (message.guild?.splashURL() ? message.guild.splashURL({extension: "png"}) : "")
         const inviteURL = await discord.getInvite(message.guild)
 
         const guildEmbed = embeds.createEmbed()
         guildEmbed
-        .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
+        .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
         .setTitle(`**Guild Info** ${discord.getEmoji("AquaWut")}`)
-        .setThumbnail(message.guild?.iconURL({format: "png", dynamic: true}) ?? "")
+        .setThumbnail(message.guild?.iconURL({extension: "png"}) ?? "")
         .setImage(guildImg ?? "")
         .setDescription(
             `${discord.getEmoji("star")}_Guild:_ **${message.guild?.name}**\n` +
             `${discord.getEmoji("star")}_Guild ID:_ \`${message.guild?.id}\`\n` +
-            `${discord.getEmoji("owner")}_Owner:_ **${message.guild?.owner?.user.tag}**\n` +
+            `${discord.getEmoji("owner")}_Owner:_ **${await message.guild?.fetchOwner().then((o) => o.user.username)}**\n` +
             `${discord.getEmoji("star")}_Shard:_ **${message.guild?.shard.id}**\n` +
-            `${discord.getEmoji("star")}_Region:_ **${message.guild?.region}**\n` +
             `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(message.guild?.createdAt!)}**\n` +
             `${discord.getEmoji("star")}_Boosters:_ **${message.guild?.premiumSubscriptionCount}**\n` +
-            `${discord.getEmoji("star")}_Bans:_ **${await message.guild?.fetchBans().then((b)=>b.size)}**\n` +
-            `${discord.getEmoji("star")}_Invites:_ **${await message.guild?.fetchInvites().then((i) => i.size)}**\n` +
+            `${discord.getEmoji("star")}_Bans:_ **${await message.guild?.bans.fetch().then((b)=>b.size)}**\n` +
+            `${discord.getEmoji("star")}_Invites:_ **${await message.guild?.invites.fetch().then((i) => i.size)}**\n` +
             `${discord.getEmoji("star")}_Member Count:_ **${message.guild?.memberCount}**\n` +
             `${discord.getEmoji("star")}_Channel Count:_ **${message.guild?.channels.cache.size}**\n` +
             `${discord.getEmoji("star")}_Role Count:_ **${message.guild?.roles.cache.size}**\n` +
@@ -62,7 +61,7 @@ export default class Guild extends Command {
             }).join(" ")!, 200, " ")}\n` +
             `${discord.getEmoji("star")}_Invite Link:_ ${inviteURL}\n`
         )
-        message.channel.send(guildEmbed)
+        message.channel.send({embeds: [guildEmbed]})
         return
     }
 }

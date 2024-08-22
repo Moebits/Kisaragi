@@ -53,6 +53,6 @@ export default class Smug extends Command {
         .setTitle(`**Smug** ${discord.getEmoji("chinoSmug")}`)
         .setDescription(`**${message.author.username}** is being smug to **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send(smugEmbed)
+        message.channel.send({embeds: [smugEmbed]})
     }
 }

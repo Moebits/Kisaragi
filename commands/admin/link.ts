@@ -1,4 +1,4 @@
-import {GuildChannel, Message, MessageEmbed} from "discord.js"
+import {GuildBasedChannel, ChannelType, Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -48,7 +48,7 @@ export default class ChannelLink extends Command {
         const linked = await sql.fetchColumn("guilds", "linked")
         const step = 3.0
         const increment = Math.ceil((linked ? linked.length : 1) / step)
-        const linkArray: MessageEmbed[] = []
+        const linkArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {
@@ -68,7 +68,7 @@ export default class ChannelLink extends Command {
             const linkEmbed = embeds.createEmbed()
             linkEmbed
             .setTitle(`**Linked Channels** ${discord.getEmoji("gabSip")}`)
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+            .setThumbnail(message.guild!.iconURL({extension: "png"})!)
             .setDescription(Functions.multiTrim(`
             Configure settings for linked channels. You can link a text channel to a voice channel so that only people in the voice channel can access it.
             In order for this to work, you should disable the **read messages** permission on the text channel for all member roles.
@@ -91,7 +91,7 @@ export default class ChannelLink extends Command {
         }
 
         if (linkArray.length === 1) {
-            message.channel.send(linkArray[0])
+            message.channel.send({embeds: [linkArray[0]]})
         } else {
             embeds.createReactionEmbed(linkArray)
         }
@@ -105,14 +105,14 @@ export default class ChannelLink extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "linked", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase().includes("delete")) {
@@ -124,13 +124,13 @@ export default class ChannelLink extends Command {
                         await sql.updateColumn("guilds", "linked", linked)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                        msg.channel.send(responseEmbed)
+                        msg.channel.send({embeds: [responseEmbed]})
                         return
                     }
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send(responseEmbed)
+                    msg.channel.send({embeds: [responseEmbed]})
                     return
                 }
             }
@@ -142,14 +142,14 @@ export default class ChannelLink extends Command {
                         if (testLink[num].state === "off") {
                             testLink[num].state = "on"
                             await sql.updateColumn("guilds", "linked", testLink)
-                            return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **on**!`))
+                            return msg.channel.send({embeds: [responseEmbed.setDescription(`State of setting **${newMsg}** is now **on**!`)]})
                         } else {
                             testLink[num].state = "off"
                             await sql.updateColumn("guilds", "linked", testLink)
-                            return msg.channel.send(responseEmbed.setDescription(`State of setting **${newMsg}** is now **off**!`))
+                            return msg.channel.send({embeds: [responseEmbed.setDescription(`State of setting **${newMsg}** is now **off**!`)]})
                         }
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription("You cannot use the toggle command on an unfinished setting!"))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription("You cannot use the toggle command on an unfinished setting!")]})
                 }
             }
 
@@ -167,11 +167,11 @@ export default class ChannelLink extends Command {
                         editDesc += `${discord.getEmoji("star")}Text channel set to <#${tempText!}>!\n`
                     }
                     if (tempVoice) {
-                        const channels = msg.guild!.channels.cache.filter((c: GuildChannel) => {
-                            const type = c.type === "voice" ? true : false
+                        const channels = msg.guild!.channels.cache.filter((c: GuildBasedChannel) => {
+                            const type = c.type === ChannelType.GuildVoice ? true : false
                             return type
                         })
-                        const channel = channels.find((c: GuildChannel) => {
+                        const channel = channels.find((c: GuildBasedChannel) => {
                             const name = (c.name.toLowerCase().includes(tempVoice.toLowerCase())) ? true : false
                             return name
                         })
@@ -179,7 +179,7 @@ export default class ChannelLink extends Command {
                             linked[num].voice = channel.id
                             editDesc += `${discord.getEmoji("star")}Voice channel set to **<#${channel.id}>**!\n`
                         } else {
-                            return msg.channel.send(responseEmbed.setDescription("Voice channel not found!"))
+                            return msg.channel.send({embeds: [responseEmbed.setDescription("Voice channel not found!")]})
                         }
                     }
                     if (setText && setVoice) {
@@ -190,9 +190,9 @@ export default class ChannelLink extends Command {
                         editDesc += `${discord.getEmoji("star")}Status set to **off**!\n`
                     }
                     await sql.updateColumn("guilds", "linked", linked)
-                    return msg.channel.send(responseEmbed.setDescription(editDesc))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription(editDesc)]})
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription("No edits specified!"))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription("No edits specified!")]})
                 }
             }
 
@@ -210,11 +210,11 @@ export default class ChannelLink extends Command {
             }
 
             if (setVoice) {
-                const channels = msg.guild!.channels.cache.filter((c: GuildChannel) => {
-                    const type = c.type === "voice" ? true : false
+                const channels = msg.guild!.channels.cache.filter((c: GuildBasedChannel) => {
+                    const type = c.type === ChannelType.GuildVoice ? true : false
                     return type
                 })
-                const channel = channels.find((c: GuildChannel) => {
+                const channel = channels.find((c: GuildBasedChannel) => {
                     const name = (c.name.toLowerCase().includes(newVoice.toLowerCase())) ? true : false
                     return name
                 })
@@ -222,7 +222,7 @@ export default class ChannelLink extends Command {
                     obj.voice = channel.id
                     description += `${discord.getEmoji("star")}Voice channel set to **<#${channel.id}>**!\n`
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription("Voice channel not found!"))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription("Voice channel not found!")]})
                 }
             }
 
@@ -239,7 +239,7 @@ export default class ChannelLink extends Command {
             await sql.updateColumn("guilds", "linked", linked)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(linkPrompt)

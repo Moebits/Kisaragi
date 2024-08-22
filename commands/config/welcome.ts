@@ -1,5 +1,5 @@
 import axios from "axios"
-import {GuildChannel, Message, MessageAttachment} from "discord.js"
+import {GuildBasedChannel, Message, AttachmentBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Images} from "../../structures/Images"
@@ -59,7 +59,7 @@ export default class Welcome extends Command {
         const welcomeText = await sql.fetchColumn("guilds", "welcome bg text")
         const welcomeColor = await sql.fetchColumn("guilds", "welcome bg color")
         const welcomeBGToggle = await sql.fetchColumn("guilds", "welcome bg toggle")
-        const attachment = await images.createCanvas(message.member!, welcomeImages, welcomeText, welcomeColor, false, false, welcomeBGToggle) as MessageAttachment
+        const attachment = await images.createCanvas(message.member!, welcomeImages, welcomeText, welcomeColor, false, false, welcomeBGToggle) as AttachmentBuilder
         const urls: string[] = []
         for (let i = 0; i < welcomeImages?.length ?? 0; i++) {
             const json = await axios.get(`https://is.gd/create.php?format=json&url=${welcomeImages[i]}`)
@@ -67,8 +67,7 @@ export default class Welcome extends Command {
         }
         welcomeEmbed
         .setTitle(`**Welcome Messages** ${discord.getEmoji("karenSugoi")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-        .attachFiles([attachment])
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setImage(`attachment://${attachment.name ? attachment.name : "animated.gif"}`)
         .setDescription(Functions.multiTrim(`
             View and edit the settings for welcome messages!
@@ -101,7 +100,7 @@ export default class Welcome extends Command {
             ${discord.getEmoji("star")}_Type **reset** to reset settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send(welcomeEmbed)
+        message.channel.send({embeds: [welcomeEmbed], files: [attachment]})
 
         async function welcomePrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
@@ -116,7 +115,7 @@ export default class Welcome extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -129,7 +128,7 @@ export default class Welcome extends Command {
                 await sql.updateColumn("guilds", "welcome bg toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Welcome settings were reset!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
@@ -137,7 +136,7 @@ export default class Welcome extends Command {
             if (newMsg.trim()) setMsg = true
             if (msg.content.toLowerCase().includes("enable")) setOn = true
             if (msg.content.toLowerCase() === "disable") setOff = true
-            if (msg.mentions.channels.array()?.[0]) setChannel = true
+            if ([...msg.mentions.channels.values()]?.[0]) setChannel = true
             if (newImg) setImage = true
             if (newBGText) setBGText = true
             if (newBGToggle) setBGToggle = true
@@ -145,14 +144,14 @@ export default class Welcome extends Command {
             if (setOn && setOff) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
             if (!setChannel && setOn) {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}In order to enable welcome messages, you must specify a welcome channel!`)
-                    msg.channel.send(responseEmbed)
+                    msg.channel.send({embeds: [responseEmbed]})
                     return
             }
             let description = ""
@@ -161,7 +160,7 @@ export default class Welcome extends Command {
                 description += `${discord.getEmoji("star")}Welcome message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
-                const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
+                const channel = msg.guild!.channels.cache.find((c: GuildBasedChannel) => c === msg.mentions.channels.first())
                 if (!channel) return message.reply(`Invalid channel name ${discord.getEmoji("kannaFacepalm")}`)
                 await sql.updateColumn("guilds", "welcome channel", channel.id)
                 setOn = true
@@ -204,7 +203,7 @@ export default class Welcome extends Command {
             if (!description) return message.reply(`No edits were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
         await embeds.createPrompt(welcomePrompt)
     }

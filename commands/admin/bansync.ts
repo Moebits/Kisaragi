@@ -53,8 +53,8 @@ export default class BanSync extends Command {
         if (!guild) return message.reply(`Guild not found ${discord.getEmoji("kannaFacepalm")}`)
 
         try {
-            const banList = await guild.fetchBans().then((e) => e.map((b) => b.user.id))
-            const currList = await message.guild!.fetchBans().then((e) => e.map((b) => b.user.id))
+            const banList = await guild.bans.fetch().then((e) => e.map((b) => b.user.id))
+            const currList = await message.guild!.bans.fetch().then((e) => e.map((b) => b.user.id))
             await Promise.all(banList.map(async (b) => {
                 if (!currList.includes(b)) {
                     await message.guild?.members.ban(b)

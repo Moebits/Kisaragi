@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -41,7 +41,7 @@ export default class Danbooru extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const danbooru = Booru("danbooru", process.env.DANBOORU_API_KEY as any)
         const danbooruEmbed = embeds.createEmbed()
-        .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")
+        .setAuthor({name: "danbooru", iconURL: "https://i.imgur.com/88HP9ik.png"})
         .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
         if (!perms.checkNSFW()) return
 
@@ -84,7 +84,7 @@ export default class Danbooru extends Command {
             // @ts-ignore
             images = rawImages.map((i) => i.data)
         }
-        const danbooruArray: MessageEmbed[] = []
+        const danbooruArray: EmbedBuilder[] = []
         for (let i = 0; i < images.length; i++) {
             const img = images[i]
             if (img.rating !== "s") {
@@ -93,7 +93,7 @@ export default class Danbooru extends Command {
                 if (perms.loliFilter(img.tags)) continue
             }
             const danbooruEmbed = embeds.createEmbed()
-            .setAuthor("danbooru", "https://i.imgur.com/88HP9ik.png")
+            .setAuthor({name: "danbooru", iconURL: "https://i.imgur.com/88HP9ik.png"})
             .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
             .setURL(`https://danbooru.donmai.us/posts/${img.id}`)
             .setDescription(
@@ -111,7 +111,7 @@ export default class Danbooru extends Command {
             return this.invalidQuery(danbooruEmbed)
         }
         if (danbooruArray.length === 1) {
-            message.channel.send(danbooruArray[0])
+            message.channel.send({embeds: [danbooruArray[0]]})
         } else {
             embeds.createReactionEmbed(danbooruArray, true, true)
         }

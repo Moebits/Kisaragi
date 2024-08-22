@@ -5,6 +5,7 @@ import {Detector} from "./../../structures/Detector"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
+import {Functions} from "./../../structures/Functions"
 
 export default class Swap extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -52,7 +53,8 @@ export default class Swap extends Command {
             }
         }
 
-        await wait.delete({timeout: 1000})
+        await Functions.timeout(1000)
+        await wait.delete()
         const swapEmbed = embeds.createEmbed()
         swapEmbed
         .setTitle(`**Role Swapping** ${discord.getEmoji("gabYes")}`)
@@ -60,6 +62,6 @@ export default class Swap extends Command {
             `${discord.getEmoji("star")}**${weebCounter}** members were swapped into the <@&${weeb}> role.\n` +
             `${discord.getEmoji("star")}**${normieCounter}** members were swapped into the <@&${normie}> role.\n`
         )
-        message.channel.send(swapEmbed)
+        message.channel.send({embeds: [swapEmbed]})
     }
 }

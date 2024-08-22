@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -43,8 +43,8 @@ export default class Rotate extends Command {
         image.rotate(degrees)
         image.autocrop()
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
-        const attachment = new MessageAttachment(buffer)
-        await message.reply(`Rotated the image **${Number(args[1])}** degrees!`, attachment)
+        const attachment = new AttachmentBuilder(buffer)
+        await message.reply({content: `Rotated the image **${Number(args[1])}** degrees!`, files: [attachment]})
         return
     }
 }

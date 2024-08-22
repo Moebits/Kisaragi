@@ -35,7 +35,7 @@ export default class Katakana extends Command {
         const input = Functions.combineArgs(args, 1)
         if (!input) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
+            .setAuthor({name: "kuroshiro", iconURL: "https://kuroshiro.org/kuroshiro.png"})
             .setTitle(`**Katakana Conversion** ${discord.getEmoji("kannaCurious")}`))
         }
         const result = await kuroshiro.convert(input, {mode: "spaced", to: "katakana"})

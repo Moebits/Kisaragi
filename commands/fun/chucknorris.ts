@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -37,24 +37,24 @@ export default class ChuckNorris extends Command {
             const joke = await axios.get(`http://api.icndb.com/jokes/${args[1]}`, {headers})
             if (!joke.data) {
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor("chuck norris", "https://assets.chucknorris.host/img/avatar/chuck-norris.png")
+                .setAuthor({name: "chuck norris", iconURL: "https://assets.chucknorris.host/img/avatar/chuck-norris.png"})
                 .setTitle(`**Chuck Norris Joke** ${discord.getEmoji("tohruSmug")}`))
             }
             const chuckEmbed = embeds.createEmbed()
-            .setAuthor("chuck norris", "https://assets.chucknorris.host/img/avatar/chuck-norris.png")
+            .setAuthor({name: "chuck norris", iconURL: "https://assets.chucknorris.host/img/avatar/chuck-norris.png"})
             .setTitle(`**Chuck Norris Joke** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(
             `${discord.getEmoji("star")}_ID:_ \`${joke.data.value.id}\`\n` +
             `${discord.getEmoji("star")}_Joke:_ ${joke.data.value.joke}\n`
             )
-            return message.channel.send(chuckEmbed)
+            return message.channel.send({embeds: [chuckEmbed]})
         }
 
         const jokes = await axios.get(`http://api.icndb.com/jokes/random/20`, {headers})
-        const chuckArray: MessageEmbed[] = []
+        const chuckArray: EmbedBuilder[] = []
         for (let i = 0; i < jokes.data.value.length; i++) {
             const chuckEmbed = embeds.createEmbed()
-            .setAuthor("chuck norris", "https://assets.chucknorris.host/img/avatar/chuck-norris.png")
+            .setAuthor({name: "chuck norris", iconURL: "https://assets.chucknorris.host/img/avatar/chuck-norris.png"})
             .setTitle(`**Chuck Norris Joke** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(
             `${discord.getEmoji("star")}_ID:_ \`${jokes.data.value[i].id}\`\n` +
@@ -64,7 +64,7 @@ export default class ChuckNorris extends Command {
         }
 
         if (chuckArray.length === 1) {
-            message.channel.send(chuckArray[0])
+            message.channel.send({embeds: [chuckArray[0]]})
         } else {
             embeds.createReactionEmbed(chuckArray)
         }

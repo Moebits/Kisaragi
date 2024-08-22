@@ -1,4 +1,4 @@
-import {Emoji, Message, MessageEmbed, Util} from "discord.js"
+import {Emoji, Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -38,7 +38,7 @@ export default class Emojis extends Command {
             const createdArray = emojis.cache.map((e: Emoji) => e.createdAt ?? new Date())
             const step = 5.0
             const increment = Math.ceil(emojis.cache.size / step)
-            const userEmbedArray: MessageEmbed[] = []
+            const userEmbedArray: EmbedBuilder[] = []
             for (let i = 0; i < increment; i++) {
                 const userEmbed = embeds.createEmbed()
                 let description = ""
@@ -51,9 +51,9 @@ export default class Emojis extends Command {
                     `${discord.getEmoji("star")}_Creation Date:_ ${Functions.formatDate(createdArray[value])}\n`
                 }
                 userEmbed
-                .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
+                .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
                 .setTitle(`**${message.guild?.name}'s Emojis** ${discord.getEmoji("vigneDead")}`)
-                .setThumbnail(message.guild?.iconURL({format: "png", dynamic: true}) as string)
+                .setThumbnail(message.guild?.iconURL({extension: "png"}) as string)
                 .setDescription(`${discord.getEmoji("star")}_Emoji Count:_ **${emojiArray.length}**\n` + description)
                 userEmbedArray.push(userEmbed)
             }
@@ -68,7 +68,7 @@ export default class Emojis extends Command {
             }
         })!.join("")
 
-        const split = Util.splitMessage(emojis, {maxLength: 2000, char: "<"})
+        const split = Functions.splitMessage(emojis!, {maxLength: 2000, char: "<"})
         for (let i = 0; i < split.length; i++) {
             if (split.length > 1) split[i] = `<${split[i]}`
             message.channel.send(split[i])

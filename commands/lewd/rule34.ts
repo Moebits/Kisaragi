@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -36,7 +36,7 @@ export default class Rule34 extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const rule34 = Booru("rule34")
         const rule34Embed = embeds.createEmbed()
-        .setAuthor("rule34", "https://cdn.imgbin.com/18/6/2/imgbin-rule-34-internet-mpeg-4-part-14-rule-34-Eg19BPJrNiThRQmqwVpTJsZAw.jpg")
+        .setAuthor({name: "rule34", iconURL: "https://cdn.imgbin.com/18/6/2/imgbin-rule-34-internet-mpeg-4-part-14-rule-34-Eg19BPJrNiThRQmqwVpTJsZAw.jpg"})
         .setTitle(`**Rule34 Search** ${discord.getEmoji("gabLewd")}`)
 
         let tags: string[] = []
@@ -78,14 +78,14 @@ export default class Rule34 extends Command {
             // @ts-ignore
             images = rawImages.map((i) => i.data)
         }
-        const rule34Array: MessageEmbed[] = []
+        const rule34Array: EmbedBuilder[] = []
         for (let i = 0; i < images.length; i++) {
             const img = images[i]
             if (img.rating !== "s") {
                 if (!perms.checkNSFW()) continue
             }
             const rule34Embed = embeds.createEmbed()
-            .setAuthor("rule34", "https://cdn.imgbin.com/18/6/2/imgbin-rule-34-internet-mpeg-4-part-14-rule-34-Eg19BPJrNiThRQmqwVpTJsZAw.jpg")
+            .setAuthor({name: "rule34", iconURL: "https://cdn.imgbin.com/18/6/2/imgbin-rule-34-internet-mpeg-4-part-14-rule-34-Eg19BPJrNiThRQmqwVpTJsZAw.jpg"})
             .setTitle(`**Rule34 Search** ${discord.getEmoji("gabLewd")}`)
             .setURL(`https://rule34.xxx/index.php?page=post&s=view&id=${img.id}`)
             .setDescription(
@@ -100,7 +100,7 @@ export default class Rule34 extends Command {
             return this.invalidQuery(rule34Embed)
         }
         if (rule34Array.length === 1) {
-            message.channel.send(rule34Array[0])
+            message.channel.send({embeds: [rule34Array[0]]})
         } else {
             embeds.createReactionEmbed(rule34Array, true, true)
         }

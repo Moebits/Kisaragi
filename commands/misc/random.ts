@@ -70,7 +70,7 @@ export default class Random extends Command {
             }
         }
         const random = Math.floor(Math.random()*pathArray.length)
-        const command = new (require(`../${pathArray[random]}`).default)(this.discord, this.message) as Command
+        const command = new (await import(`../${pathArray[random]}`))(this.discord, this.message) as Command
         const name = commandArray[random]
         switch (command.options.random) {
             case "none":

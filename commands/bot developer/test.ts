@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"

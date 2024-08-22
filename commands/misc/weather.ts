@@ -34,13 +34,13 @@ export default class Weather extends Command {
 
         if (!w || w.cod === "404") {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("weather",  "https://cdn1.iconfinder.com/data/icons/weather-429/64/weather_icons_color-06-512.png")
+            .setAuthor({name: "weather",  iconURL: "https://cdn1.iconfinder.com/data/icons/weather-429/64/weather_icons_color-06-512.png"})
             .setTitle(`**Weather** ${discord.getEmoji("AquaWut")}`))
         }
 
         const weatherEmbed = embeds.createEmbed()
         weatherEmbed
-        .setAuthor("weather",  "https://cdn1.iconfinder.com/data/icons/weather-429/64/weather_icons_color-06-512.png")
+        .setAuthor({name: "weather",  iconURL: "https://cdn1.iconfinder.com/data/icons/weather-429/64/weather_icons_color-06-512.png"})
         .setTitle(`**Weather** ${discord.getEmoji("AquaWut")}`)
         .setURL(`https://openweathermap.org/city/${w.id}`)
         .setThumbnail(`https://openweathermap.org/img/w/${w.weather?.[0].icon}.png`)
@@ -55,6 +55,6 @@ export default class Weather extends Command {
             `❄️_Humidity:_ \`${w.main.humidity}%\`\n` +
             `💨_Wind Speed/Direction:_ \`${w.wind.speed}m/s, ${w.wind.deg}°\`\n`
         )
-        return message.channel.send(weatherEmbed)
+        return message.channel.send({embeds: [weatherEmbed]})
     }
 }

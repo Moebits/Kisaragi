@@ -1,4 +1,4 @@
-import {GuildChannel, Message} from "discord.js"
+import {GuildChannel, Message, TextChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -13,15 +13,15 @@ export default class CreateGuild extends Command {
         })
     }
 
-    public createGuild = async (discord: Kisaragi, message: Message, guildName: string, guildRegion: string) => {
+    public createGuild = async (discord: Kisaragi, message: Message, guildName: string) => {
         const perms = new Permission(discord, message)
         if (!perms.checkBotDev()) return
 
         try {
-            const guild = await discord.guilds.create(guildName, {region: guildRegion, icon: null})
+            const guild = await discord.guilds.create({name: guildName, icon: null})
             const defaultChannel = guild.channels.cache.find((c)=>c.name === "general")
-            const invite = await defaultChannel!.createInvite()
-            const role = await guild.roles.create({data: {name: "Administrator", permissions: ["ADMINISTRATOR"]}})
+            const invite = await (defaultChannel as TextChannel)!.createInvite()
+            const role = await guild.roles.create({name: "Administrator", permissions: ["Administrator"]})
             await message.channel.send(`I made a guild! The invite is ${invite.url} The Administrator role ID is ${role.id}.`)
 
         } catch (error: any) {
@@ -34,8 +34,7 @@ export default class CreateGuild extends Command {
         const message = this.message
 
         const guildName: string = args[1]
-        const guildRegion: string = args[2]
 
-        await this.createGuild(discord, message, guildName, guildRegion)
+        await this.createGuild(discord, message, guildName)
     }
 }

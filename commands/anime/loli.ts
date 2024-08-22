@@ -44,6 +44,6 @@ export default class LoliCommand extends Command {
         loliEmbed
         .setTitle(`**Loli** ${discord.getEmoji("madokaLewd")}`)
         .setImage(result.url)
-        message.channel.send(loliEmbed)
+        message.channel.send({embeds: [loliEmbed]})
     }
 }

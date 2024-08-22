@@ -1,4 +1,4 @@
-import {Message, MessageEmbed, TextChannel, Util} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import * as config from "./../../config.json"
 import {Embeds} from "./../../structures/Embeds"
@@ -82,15 +82,15 @@ export default class Changelog extends Command {
             const log = changelog.find((c) => c.num === Number(args[1]))
             if (!log) {
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor("changelog", "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg")
+                .setAuthor({name: "changelog", iconURL: "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg"})
                 .setTitle(`**Changelog** ${discord.getEmoji("tohruThumbsUp2")}`))
             }
             const changeEmbed = embeds.createEmbed()
             changeEmbed
-            .setAuthor("changelog", "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg")
+            .setAuthor({name: "changelog", iconURL: "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg"})
             .setTitle(`**Changelog #${log.num}** ${discord.getEmoji("tohruThumbsUp2")}`)
             .setDescription(`${discord.getEmoji("star")}**${log.num}** \`(${log.date})\` -> ${log.changes}\n`)
-            return message.channel.send(changeEmbed)
+            return message.channel.send({embeds: [changeEmbed]})
         }
 
         let changeDesc = ""
@@ -98,20 +98,20 @@ export default class Changelog extends Command {
             changeDesc += `${discord.getEmoji("star")}**${changelog[i].num}** \`(${changelog[i].date})\` -> ${changelog[i].changes}\n`
         }
 
-        const splits = Util.splitMessage(changeDesc, {maxLength: 1800, char: "\n"})
+        const splits = Functions.splitMessage(changeDesc, {maxLength: 1800, char: "\n"})
 
-        const changeArray: MessageEmbed[] = []
+        const changeArray: EmbedBuilder[] = []
         for (let i = 0; i < splits.length; i++) {
             const changeEmbed = embeds.createEmbed()
             changeEmbed
-            .setAuthor("changelog", "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg")
+            .setAuthor({name: "changelog", iconURL: "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg"})
             .setTitle(`**Changelog** ${discord.getEmoji("tohruThumbsUp2")}`)
             .setDescription(splits[i])
             changeArray.push(changeEmbed)
         }
 
         if (changeArray.length === 1) {
-            message.channel.send(changeArray[0])
+            message.channel.send({embeds: [changeArray[0]]})
         } else {
             embeds.createReactionEmbed(changeArray)
         }

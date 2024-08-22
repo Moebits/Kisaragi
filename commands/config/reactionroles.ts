@@ -1,4 +1,4 @@
-import type {GuildEmoji, Message, MessageEmbed} from "discord.js"
+import type {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -50,7 +50,7 @@ export default class ReactionRoles extends Command {
         const reactions = await sql.fetchColumn("guilds", "reaction roles")
         const step = 3.0
         const increment = Math.ceil((reactions ? reactions.length : 1) / step)
-        const reactArray: MessageEmbed[] = []
+        const reactArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {
@@ -73,7 +73,7 @@ export default class ReactionRoles extends Command {
             const reactEmbed = embeds.createEmbed()
             reactEmbed
             .setTitle(`**Reaction Roles** ${discord.getEmoji("tohruThumbsUp2")}`)
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+            .setThumbnail(message.guild!.iconURL({extension: "png"})!)
             .setDescription(Functions.multiTrim(`
                 Configure reaction roles. [To get a message ID you need to enable developer mode.](https://is.gd/t2ClBu)
                 newline
@@ -96,7 +96,7 @@ export default class ReactionRoles extends Command {
         if (reactArray.length > 1) {
             embeds.createReactionEmbed(reactArray)
         } else {
-            message.channel.send(reactArray[0])
+            message.channel.send({embeds: [reactArray[0]]})
         }
 
         async function reactPrompt(msg: Message) {
@@ -109,13 +109,13 @@ export default class ReactionRoles extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "reaction roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Reaction role settings were wiped!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
@@ -126,11 +126,11 @@ export default class ReactionRoles extends Command {
                     await sql.updateColumn("guilds", "reaction roles", reactionroles)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 }
             }
 
@@ -155,11 +155,11 @@ export default class ReactionRoles extends Command {
                     await sql.updateColumn("guilds", "reaction roles", reactionroles)
                     responseEmbed
                     .setDescription(desc)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 }
             }
 
@@ -188,7 +188,7 @@ export default class ReactionRoles extends Command {
                                 if (nMessage?.trim()) {
                                     const foundMsg = await discord.fetchMessage(message, nMessage)
                                     if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
-                                    const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
+                                    const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name?.toLowerCase().includes(emojiName.toLowerCase()))
                                     if (foundReact) {
                                         nEmoji = discord.getEmojiGlobal(foundReact.emoji.id ?? "") ?? foundReact.emoji.id ?? ""
                                     } else {
@@ -246,14 +246,14 @@ export default class ReactionRoles extends Command {
                         await sql.updateColumn("guilds", "reaction roles", reactionroles)
                         responseEmbed
                         .setDescription(editDesc)
-                        return msg.channel.send(responseEmbed)
+                        return msg.channel.send({embeds: [responseEmbed]})
                     } else {
-                        return msg.channel.send(responseEmbed.setDescription("No edits specified!"))
+                        return msg.channel.send({embeds: [responseEmbed.setDescription("No edits specified!")]})
                     }
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send(responseEmbed)
+                    msg.channel.send({embeds: [responseEmbed]})
                     return
                 }
             }
@@ -276,7 +276,7 @@ export default class ReactionRoles extends Command {
                     if (newMessage?.trim()) {
                         const foundMsg = await discord.fetchMessage(message, newMessage)
                         if (!foundMsg) return message.reply(`Invalid message ${discord.getEmoji("kannaFacepalm")}`)
-                        const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name.toLowerCase().includes(emojiName.toLowerCase()))
+                        const foundReact = foundMsg.reactions.cache.find((r) => r.emoji.name?.toLowerCase().includes(emojiName.toLowerCase()))
                         if (foundReact) {
                             newEmoji = discord.getEmojiGlobal(foundReact.emoji.id ?? "") ?? foundReact.emoji.id ?? ""
                         } else {
@@ -352,7 +352,7 @@ export default class ReactionRoles extends Command {
 
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(reactPrompt)

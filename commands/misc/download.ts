@@ -1,4 +1,4 @@
-import {Message, MessageAttachment, TextChannel} from "discord.js"
+import {Message, AttachmentBuilder, TextChannel} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -41,10 +41,10 @@ export default class Download extends Command {
         if (!images[0]) {
             const downloadEmbed = embeds.createEmbed()
             downloadEmbed
-            .setAuthor("download", discord.checkMuted(message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+            .setAuthor({name: "download", iconURL: discord.checkMuted(message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
             .setTitle(`**Image Downloader** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(`${discord.getEmoji("star")}Could not find any images. By default I only search the last **300** messages from the current message, or from a message id if provided. ${last ? `To continue from where this search left off, run the command \`download ${last}\`.` : "There are no more messages left in this channel!"}`)
-            return message.channel.send(downloadEmbed)
+            return message.channel.send({embeds: [downloadEmbed]})
         }
         const rand = Math.floor(Math.random()*10000)
         const src = path.join(__dirname, `../../../assets/images/dump/${rand}/`)
@@ -58,26 +58,26 @@ export default class Download extends Command {
             const link = await i.upload([dest]).then((l) => l[0])
             const downloadEmbed = embeds.createEmbed()
             downloadEmbed
-            .setAuthor("download", discord.checkMuted(message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+            .setAuthor({name: "download", iconURL: discord.checkMuted(message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
             .setTitle(`**Image Downloader** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}Downloaded **${images.length}** images from this text channel!\n` +
                 `${discord.getEmoji("star")}This file is too large for attachments. Download it [**here**](${link}).\n`
             )
-            await message.channel.send(downloadEmbed)
+            await message.channel.send({embeds: [downloadEmbed]})
         } else {
-            const attachment = new MessageAttachment(dest, `${name}.zip`)
+            const attachment = new AttachmentBuilder(dest, {name: `${name}.zip`})
             const lastText = last ? `There are still more messages left in this text channel. To continue from where this search left off, run the command \`download ${last}\`.` : `There are no more images left after this. Congrats!`
             const downloadEmbed = embeds.createEmbed()
             downloadEmbed
-            .setAuthor("download", discord.checkMuted(message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif")
+            .setAuthor({name: "download", iconURL: discord.checkMuted(message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
             .setTitle(`**Image Downloader** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}Downloaded **${images.length}** images from this text channel!\n` +
                 lastText
             )
-            await message.channel.send(downloadEmbed)
-            await message.channel.send(attachment)
+            await message.channel.send({embeds: [downloadEmbed]})
+            await message.channel.send({files: [attachment]})
         }
         Functions.removeDirectory(src)
         return
@@ -101,25 +101,25 @@ export default class Download extends Command {
             if (Number(args[2]) && Number(args[2]) > 0 && Number(args[2]) <= 1000) amount = Number(args[2])
             const result = await images.fetchChannelAttachments(message.channel, amount+1, true)
             attachments = result.attachments
-            last = result.last
+            last = result.last!
         } else if (args[1]?.match(/\d{15,}/)) {
             const id = args[1]?.match(/\d{15,}/)?.[0]
             if (args[2] === "gif") {
                 if (Number(args[3]) && Number(args[3]) > 0 && Number(args[3]) <= 1000) amount = Number(args[3])
                 const result = await images.fetchChannelAttachments(message.channel, amount+1, true, id)
                 attachments = result.attachments
-                last = result.last
+                last = result.last!
             } else {
                 if (Number(args[2]) && Number(args[2]) > 0 && Number(args[2]) <= 1000) amount = Number(args[2])
                 const result = await images.fetchChannelAttachments(message.channel, amount+1, false, id)
                 attachments = result.attachments
-                last = result.last
+                last = result.last!
             }
         } else {
             if (Number(args[1]) && Number(args[1]) > 0 && Number(args[1]) <= 1000) amount = Number(args[1])
             const result = await images.fetchChannelAttachments(message.channel, amount+1)
             attachments = result.attachments
-            last = result.last
+            last = result.last!
         }
         if (rep) rep.delete()
         const rep2 = await message.channel.send(`**Downloading the images, please wait** ${discord.getEmoji("gabCircle")}`)

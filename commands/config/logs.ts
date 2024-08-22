@@ -1,4 +1,4 @@
-import type {GuildEmoji, Message, MessageEmbed} from "discord.js"
+import type {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -53,7 +53,7 @@ export default class Logs extends Command {
         const logEmbed = embeds.createEmbed()
         logEmbed
         .setTitle(`**Logs** ${discord.getEmoji("kannaSpook")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setDescription(Functions.multiTrim(`
             Edit Logging settings for the server.
             newline
@@ -78,7 +78,7 @@ export default class Logs extends Command {
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
 
-        message.channel.send(logEmbed)
+        message.channel.send({embeds: [logEmbed]})
 
         async function logPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
@@ -87,7 +87,7 @@ export default class Logs extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "message log", null)
@@ -96,7 +96,7 @@ export default class Logs extends Command {
                 await sql.updateColumn("guilds", "member log", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Logging settings were wiped!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
                 let desc = ""
@@ -119,7 +119,7 @@ export default class Logs extends Command {
                 if (!desc) desc = `No deletions were made ${discord.getEmoji("kannaFacepalm")}\n`
                 responseEmbed
                 .setDescription(desc)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
 
             let [setMsg, setMod, setUser, setMember] = [false, false, false, false]
@@ -166,7 +166,7 @@ export default class Logs extends Command {
             if (!description) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(logPrompt)

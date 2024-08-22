@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import Osu, {OsuBeatmap} from "osu.ts"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -68,7 +68,7 @@ export default class OsuCommand extends Command {
             const playerName = args[2]
             if (!playerName) {
                 return this.noQuery(osuEmbed
-                    .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                    .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                     .setTitle(`**Osu Profile** ${discord.getEmoji("kannaSip")}`))
             }
             try {
@@ -84,7 +84,7 @@ export default class OsuCommand extends Command {
             const playerName = this.user || args[2]
             if (!playerName) {
                 return this.noQuery(osuEmbed
-                    .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                    .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                     .setTitle(`**Osu Profile** ${discord.getEmoji("kannaSip")}`))
             }
             const player = await osu.users.get(playerName)
@@ -92,7 +92,7 @@ export default class OsuCommand extends Command {
             const minutes = Math.floor((Number(player.total_seconds_played) % (3600*hours)) / 60)
             const seconds = ((Number(player.total_seconds_played) % (3600*hours)) % (60*minutes))
             osuEmbed
-            .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+            .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
             .setTitle(`**Osu Profile** ${discord.getEmoji("kannaSip")}`)
             .setURL(`https://osu.ppy.sh/users/${player.user_id}`)
             .setDescription(
@@ -113,7 +113,7 @@ export default class OsuCommand extends Command {
             )
             .setImage(await osu.users.banner(playerName))
             .setThumbnail(`https://a.ppy.sh/${player.user_id}`)
-            return message.channel.send(osuEmbed)
+            return message.channel.send({embeds: [osuEmbed]})
         }
 
         if (args[1] === "recent" || args[1] === "rs") {
@@ -121,17 +121,17 @@ export default class OsuCommand extends Command {
             if (!playername && dbName) playername = String(dbName)
             if (!playername) {
                 return this.noQuery(osuEmbed
-                    .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                    .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                     .setTitle(`**Osu Recent** ${discord.getEmoji("kannaSip")}`), "You can also set your name with **osu set (name)**.")
             }
             const recent = await osu.scores.recent(playername)
-            const osuArray: MessageEmbed[] = []
+            const osuArray: EmbedBuilder[] = []
             for (let i = 0; i < recent.length; i++) {
                 const beatmap = await osu.beatmaps.get({b: recent[i].beatmap_id})
                 const osuEmbed = embeds.createEmbed()
                 const accuracy = this.getAccuracy(recent[i].countmiss, recent[i].count50, recent[i].count100, recent[i].count300)
                 osuEmbed
-                .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                 .setTitle(`**${playername}'s Recent Plays** ${discord.getEmoji("kannaSip")}`)
                 .setThumbnail(`https://b.ppy.sh/thumb/${beatmap[0].beatmapset_id}l.jpg`)
                 .setImage(`https://assets.ppy.sh/beatmaps/${beatmap[0].beatmapset_id}/covers/cover.jpg`)
@@ -152,13 +152,13 @@ export default class OsuCommand extends Command {
             if (!osuArray[0]) {
                 const osuEmbed = embeds.createEmbed()
                 osuEmbed
-                .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                 .setTitle(`**${playername}'s Recent Plays** ${discord.getEmoji("kannaSip")}`)
                 .setDescription(`There are no recent plays available!`)
-                return message.channel.send(osuEmbed)
+                return message.channel.send({embeds: [osuEmbed]})
             }
             if (osuArray.length === 1) {
-                return message.channel.send(osuArray[0])
+                return message.channel.send({embeds: [osuArray[0]]})
             } else {
                 return embeds.createReactionEmbed(osuArray, false, true)
             }
@@ -169,17 +169,17 @@ export default class OsuCommand extends Command {
             if (!playername && dbName) playername = String(dbName)
             if (!playername) {
                 return this.noQuery(osuEmbed
-                    .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                    .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                     .setTitle(`**Osu Best** ${discord.getEmoji("kannaSip")}`), "You can also set your name with **osu set (name)**.")
             }
             const best = await osu.scores.best(playername)
-            const osuArray: MessageEmbed[] = []
+            const osuArray: EmbedBuilder[] = []
             for (let i = 0; i < best.length; i++) {
                 const beatmap = await osu.beatmaps.get({b: best[i].beatmap_id})
                 const accuracy = this.getAccuracy(best[i].countmiss, best[i].count50, best[i].count100, best[i].count300)
                 const osuEmbed = embeds.createEmbed()
                 osuEmbed
-                .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                 .setTitle(`**${playername}'s Best Plays** ${discord.getEmoji("kannaSip")}`)
                 .setThumbnail(`https://b.ppy.sh/thumb/${beatmap[0].beatmapset_id}l.jpg`)
                 .setImage(`https://assets.ppy.sh/beatmaps/${beatmap[0].beatmapset_id}/covers/cover.jpg`)
@@ -200,13 +200,13 @@ export default class OsuCommand extends Command {
             if (!osuArray[0]) {
                 const osuEmbed = embeds.createEmbed()
                 osuEmbed
-                .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                 .setTitle(`**${playername}'s Best Plays** ${discord.getEmoji("kannaSip")}`)
                 .setDescription(`There are no best plays available!`)
-                return message.channel.send(osuEmbed)
+                return message.channel.send({embeds: [osuEmbed]})
             }
             if (osuArray.length === 1) {
-                return message.channel.send(osuArray[0])
+                return message.channel.send({embeds: [osuArray[0]]})
             } else {
                 return embeds.createReactionEmbed(osuArray, false, true)
             }
@@ -215,13 +215,13 @@ export default class OsuCommand extends Command {
         const query = this.beatmap || Functions.combineArgs(args, 1)
         if (this.beatmap) {
             const beatmaps = await osu.beatmaps.get(query)
-            const osuArray: MessageEmbed[] = []
+            const osuArray: EmbedBuilder[] = []
             for (let i = 0; i < beatmaps.length; i++) {
                 const minutes = Math.floor((Number(beatmaps[i].total_length) / 60))
                 const seconds = ((Number(beatmaps[i].total_length)) % (60*minutes))
                 const osuEmbed = embeds.createEmbed()
                 osuEmbed
-                .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                 .setTitle(`**Osu Beatmap** ${discord.getEmoji("kannaSip")}`)
                 .setURL(`https://osu.ppy.sh/beatmapsets/${beatmaps[i].beatmapset_id}#osu/${beatmaps[i].beatmap_id}`)
                 .setImage(`https://assets.ppy.sh/beatmaps/${beatmaps[i].beatmapset_id}/covers/cover.jpg`)
@@ -243,19 +243,19 @@ export default class OsuCommand extends Command {
                 osuArray.push(osuEmbed)
             }
             if (osuArray.length === 1) {
-                return message.channel.send(osuArray)
+                return message.channel.send({embeds: osuArray})
             } else {
                 return embeds.createReactionEmbed(osuArray, false, true)
             }
         } else {
             const beatmaps = await osu.beatmaps.search(query)
-            const osuArray: MessageEmbed[] = []
+            const osuArray: EmbedBuilder[] = []
             for (let i = 0; i < beatmaps.length; i++) {
                 const minutes = Math.floor((Number(beatmaps[i].beatmaps[0].total_length) / 60))
                 const seconds = ((Number(beatmaps[i].beatmaps[0].total_length)) % (60*minutes))
                 const osuEmbed = embeds.createEmbed()
                 osuEmbed
-                .setAuthor("osu", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png")
+                .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                 .setTitle(`**Osu Beatmap** ${discord.getEmoji("kannaSip")}`)
                 .setURL(`https://osu.ppy.sh/beatmapsets/${beatmaps[i].id}#osu/${beatmaps[i].beatmaps[0].id}`)
                 .setImage(`https://assets.ppy.sh/beatmaps/${beatmaps[i].id}/covers/cover.jpg`)
@@ -276,7 +276,7 @@ export default class OsuCommand extends Command {
                 osuArray.push(osuEmbed)
             }
             if (osuArray.length === 1) {
-                return message.channel.send(osuArray)
+                return message.channel.send({embeds: osuArray})
             } else {
                 return embeds.createReactionEmbed(osuArray, false, true)
             }

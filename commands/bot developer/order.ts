@@ -49,6 +49,6 @@ export default class Order extends Command {
         orderEmbed
         .setTitle(`**Order** ${discord.getEmoji("gabStare")}`)
         .setDescription("The tables were **ordered**!")
-        message.channel.send(orderEmbed)
+        message.channel.send({embeds: [orderEmbed]})
     }
 }

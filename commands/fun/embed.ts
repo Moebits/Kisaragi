@@ -1,4 +1,4 @@
-import {Collection, Message, MessageEmbed, MessageReaction, TextChannel, User} from "discord.js"
+import {Collection, Message, EmbedBuilder, MessageReaction, TextChannel, User, HexColorString} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -56,16 +56,16 @@ export default class Embed extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has("MANAGE_MESSAGES")) {
+        if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has("ManageMessages")) {
             return message.reply(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
         }
 
         const infoEmbed = embeds.createEmbed()
-        let embed = new MessageEmbed()
-        embed.setColor(infoEmbed.color ?? "")
+        let embed = new EmbedBuilder()
+        embed.setColor(infoEmbed.data.color!)
 
         infoEmbed
-        .setAuthor("embed creator", "https://www.churchtrac.com/articles/apple/uploads/2017/09/Antu_insert-image.svg_-846x846.png")
+        .setAuthor({name: "embed creator",iconURL: "https://www.churchtrac.com/articles/apple/uploads/2017/09/Antu_insert-image.svg_-846x846.png"})
         .setTitle(`**Custom Embed** ${discord.getEmoji("RaphiSmile")}`)
         .setDescription(
             `_Edit this embed by clicking on the reactions._\n` +
@@ -88,7 +88,7 @@ export default class Embed extends Command {
 
         const reactions = ["info", "title", "description", "image", "thumbnail", "author", "authorImage", "footer", "footerImage", "color", "timestamp", "url", "json", "done", "xcancel"]
 
-        const msg = await message.channel.send(infoEmbed)
+        const msg = await message.channel.send({embeds: [infoEmbed]})
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
         const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("info") && user.bot === false
@@ -106,30 +106,30 @@ export default class Embed extends Command {
         const jsonCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("json") && user.bot === false
         const doneCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("done") && user.bot === false
         const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("xcancel") && user.bot === false
-        const info = msg.createReactionCollector(infoCheck)
-        const title = msg.createReactionCollector(titleCheck)
-        const description = msg.createReactionCollector(descriptionCheck)
-        const image = msg.createReactionCollector(imageCheck)
-        const thumbnail = msg.createReactionCollector(thumbnailCheck)
-        const author = msg.createReactionCollector(authorCheck)
-        const authorImage = msg.createReactionCollector(authorImageCheck)
-        const footer = msg.createReactionCollector(footerCheck)
-        const footerImage = msg.createReactionCollector(footerImageCheck)
-        const color = msg.createReactionCollector(colorCheck)
-        const timestamp = msg.createReactionCollector(timestampCheck)
-        const json = msg.createReactionCollector(jsonCheck)
-        const url = msg.createReactionCollector(urlCheck)
-        const done = msg.createReactionCollector(doneCheck)
-        const cancel = msg.createReactionCollector(cancelCheck)
+        const info = msg.createReactionCollector({filter: infoCheck})
+        const title = msg.createReactionCollector({filter: titleCheck})
+        const description = msg.createReactionCollector({filter: descriptionCheck})
+        const image = msg.createReactionCollector({filter: imageCheck})
+        const thumbnail = msg.createReactionCollector({filter: thumbnailCheck})
+        const author = msg.createReactionCollector({filter: authorCheck})
+        const authorImage = msg.createReactionCollector({filter: authorImageCheck})
+        const footer = msg.createReactionCollector({filter: footerCheck})
+        const footerImage = msg.createReactionCollector({filter: footerImageCheck})
+        const color = msg.createReactionCollector({filter: colorCheck})
+        const timestamp = msg.createReactionCollector({filter: timestampCheck})
+        const json = msg.createReactionCollector({filter: jsonCheck})
+        const url = msg.createReactionCollector({filter: urlCheck})
+        const done = msg.createReactionCollector({filter: doneCheck})
+        const cancel = msg.createReactionCollector({filter: cancelCheck})
         let onInfo = true
 
         info.on("collect", async (reaction, user) => {
             await reaction.users.remove(user).catch(() => null)
             if (onInfo) {
-                msg.edit(embed)
+                msg.edit({embeds: [embed]})
                 onInfo = false
             } else {
-                msg.edit(infoEmbed)
+                msg.edit({embeds: [infoEmbed]})
                 onInfo = true
             }
         })
@@ -145,7 +145,7 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the title of this embed.`)
@@ -153,12 +153,12 @@ export default class Embed extends Command {
             rep.delete()
             if (content.length > 256) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The title cannot exceed 256 characters.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
             embed.setTitle(content)
-            msg.edit(embed)
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -167,7 +167,8 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the description of this embed.`)
@@ -175,12 +176,12 @@ export default class Embed extends Command {
             rep.delete()
             if (content.length > 2048) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The description cannot exceed 2048 characters.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
             embed.setDescription(content)
-            msg.edit(embed)
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -189,22 +190,23 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Post an image for this embed (png, jpg, gif). Type \`me\` for your profile pic, and \`guild\` for the guild icon.`)
             await embeds.createPrompt(getContent, true)
             rep.delete()
-            if (content === "me") content = user.displayAvatarURL({format: "png", dynamic: true})
-            if (content === "guild") content = this.message.guild?.iconURL({format: "png", dynamic: true}) ?? ""
+            if (content === "me") content = user.displayAvatarURL({extension: "png"})
+            if (content === "guild") content = this.message.guild?.iconURL({extension: "png"}) ?? ""
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
             embed.setImage(content)
-            msg.edit(embed)
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -213,22 +215,23 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Post a thumbnail for this embed (png, jpg, gif). Type \`me\` for your profile pic, and \`guild\` for the guild icon.`)
             await embeds.createPrompt(getContent, true)
             rep.delete()
-            if (content === "me") content = user.displayAvatarURL({format: "png", dynamic: true})
-            if (content === "guild") content = this.message.guild?.iconURL({format: "png", dynamic: true}) ?? ""
+            if (content === "me") content = user.displayAvatarURL({extension: "png"})
+            if (content === "guild") content = this.message.guild?.iconURL({extension: "png"}) ?? ""
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This thumbnail is invalid.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
             embed.setThumbnail(content)
-            msg.edit(embed)
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -237,7 +240,8 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the author of this embed.`)
@@ -245,12 +249,12 @@ export default class Embed extends Command {
             rep.delete()
             if (content.length > 256) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The author text cannot exceed 256 characters.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
-            embed.setAuthor(content)
-            msg.edit(embed)
+            embed.setAuthor({name: content})
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -259,22 +263,23 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Post an author image for this embed (png, jpg, gif). Type \`me\` for your profile pic, and \`guild\` for the guild icon.`)
             await embeds.createPrompt(getContent, true)
             rep.delete()
-            if (content === "me") content = user.displayAvatarURL({format: "png", dynamic: true})
-            if (content === "guild") content = this.message.guild?.iconURL({format: "png", dynamic: true}) ?? ""
+            if (content === "me") content = user.displayAvatarURL({extension: "png"})
+            if (content === "guild") content = this.message.guild?.iconURL({extension: "png"}) ?? ""
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
-            embed.setAuthor(embed.author?.name, content)
-            msg.edit(embed)
+            embed.setAuthor({name: embed.data.author!.name, iconURL: content})
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -283,7 +288,8 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the footer of this embed.`)
@@ -291,12 +297,12 @@ export default class Embed extends Command {
             rep.delete()
             if (content.length > 2048) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, The footer cannot exceed 2048 characters.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
-            embed.setFooter(content)
-            msg.edit(embed)
+            embed.setFooter({text: content})
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -305,22 +311,23 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Post a footer image for this embed (png, jpg, gif). Type \`me\` for your profile pic, and \`guild\` for the guild icon.`)
             await embeds.createPrompt(getContent, true)
             rep.delete()
-            if (content === "me") content = user.displayAvatarURL({format: "png", dynamic: true})
-            if (content === "guild") content = this.message.guild?.iconURL({format: "png", dynamic: true}) ?? ""
+            if (content === "me") content = user.displayAvatarURL({extension: "png"})
+            if (content === "guild") content = this.message.guild?.iconURL({extension: "png"}) ?? ""
             if (!/.(png|jpg|gif)/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This image is invalid.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
-            embed.setFooter(embed.footer?.text, content)
-            msg.edit(embed)
+            embed.setFooter({text: embed.data.footer!.text, iconURL: content})
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -329,14 +336,15 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Set the color of this embed (hex or named color).`)
             await embeds.createPrompt(getContent, true)
             rep.delete()
-            embed.setColor(content.toUpperCase())
-            msg.edit(embed)
+            embed.setColor(content.toUpperCase() as HexColorString)
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -345,7 +353,8 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Set the timestamp of this embed (type \`now\` for the time now).`)
@@ -353,7 +362,7 @@ export default class Embed extends Command {
             rep.delete()
             const date = content === "now" ? Date.now() : new Date(content)
             embed.setTimestamp(date)
-            msg.edit(embed)
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -362,7 +371,8 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the url of this embed.`)
@@ -370,12 +380,12 @@ export default class Embed extends Command {
             rep.delete()
             if (!/http/gi.test(content)) {
                 const rep2 = await this.message.channel.send(`<@${user.id}>, This is not a valid url.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
             embed.setURL(content)
-            msg.edit(embed)
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -384,21 +394,22 @@ export default class Embed extends Command {
             await reaction.users.remove(user).catch(() => null)
             if (this.getProcBlock()) {
                 const proc = await this.message.channel.send(`<@${user.id}>, Please finish editing the current field before editing another one.`)
-                return proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
+                return
             }
             this.setProcBlock()
             const rep = await this.message.channel.send(`<@${user.id}>, Enter the json data for this embed. The current embed will be replaced.`)
             await embeds.createPrompt(getContent, true)
             try {
-                embed = new MessageEmbed(JSON.parse(content))
+                embed = new EmbedBuilder(JSON.parse(content))
             } catch {
                 const rep2 = await message.channel.send(`<@${user.id}>, This json data is invalid.`)
-                rep2.delete({timeout: 3000})
+                setTimeout(() => rep2.delete(), 3000)
                 this.setProcBlock(true)
                 return
             }
             rep.delete()
-            msg.edit(embed)
+            msg.edit({embeds: [embed]})
             onInfo = false
             this.setProcBlock(true)
         })
@@ -406,7 +417,7 @@ export default class Embed extends Command {
         done.on("collect", async (reaction, user) => {
             await reaction.users.remove(user).catch(() => null)
             await msg.delete()
-            await message.channel.send(embed)
+            await message.channel.send({embeds: [embed]})
         })
 
         cancel.on("collect", async (reaction, user) => {

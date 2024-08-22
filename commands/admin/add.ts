@@ -54,28 +54,28 @@ export default class Add extends Command {
 
         for (let i = 0; i < tokenArray.length; i++) {
             try {
-                await message.guild?.addMember(idArray[i], {accessToken: tokenArray[i]})
+                await message.guild?.members.add(idArray[i], {accessToken: tokenArray[i]})
             } catch {
                 continue
             }
             const user = await discord.users.fetch(idArray[i])
             const dm = embeds.createEmbed()
             dm
-            .setAuthor("guild add", "https://cdn.discordapp.com/emojis/588199024906207271.gif")
+            .setAuthor({name: "guild add", iconURL: "https://cdn.discordapp.com/emojis/588199024906207271.gif"})
             .setTitle(`**Guild Addition** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}You were added to the guild **${message.guild?.name}** by **${message.author.tag}**. If you want to prevent admins from adding you to guilds, use \`oauth2 delete\`.`
             )
-            await user.send(dm).catch(() => null)
+            await user.send({embeds: [dm]}).catch(() => null)
         }
 
         const addEmbed = embeds.createEmbed()
         addEmbed
-        .setAuthor("guild add", "https://cdn.discordapp.com/emojis/588199024906207271.gif")
+        .setAuthor({name: "guild add", iconURL: "https://cdn.discordapp.com/emojis/588199024906207271.gif"})
         .setTitle(`**Guild Member Add** ${discord.getEmoji("tohruSmug")}`)
         .setDescription(
             `${discord.getEmoji("star")}Added ${idArray.map((id) => `<@!${id}>`).join(", ")} to this guild!`
         )
-        return message.channel.send(addEmbed)
+        return message.channel.send({embeds: [addEmbed]})
     }
 }

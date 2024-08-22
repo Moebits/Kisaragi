@@ -1,4 +1,4 @@
-import {Guild, GuildMember, Message} from "discord.js"
+import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Detector} from "./../../structures/Detector"
@@ -33,8 +33,8 @@ export default class UnbanAll extends Command {
         if (!await perms.checkAdmin()) return
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        if (!message.guild?.me?.hasPermission(["MANAGE_GUILD", "BAN_MEMBERS"])) return message.reply(`I need the **Manage Server** and **Ban Members** permissions ${discord.getEmoji("kannaFacepalm")}`)
-        const banList = await message.guild!.fetchBans().then((e) => e.map((b) => b.user.id))
+        if (!message.guild?.members.me?.permissions.has(["ManageGuild", "BanMembers"])) return message.reply(`I need the **Manage Server** and **Ban Members** permissions ${discord.getEmoji("kannaFacepalm")}`)
+        const banList = await message.guild!.bans.fetch().then((e) => e.map((b) => b.user.id))
 
         for (let i = 0; i < banList.length; i++) {
             try {

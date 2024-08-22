@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -38,10 +38,10 @@ export default class Tint extends Command {
         }
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
-        image.color([{apply: "mix", params: [color, opacity]}])
+        image.color([{apply: "mix" as any, params: [color, opacity]}])
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
-        const attachment = new MessageAttachment(buffer)
-        await message.reply(`Tinted the image with the color **${color}**!`, attachment)
+        const attachment = new AttachmentBuilder(buffer)
+        await message.reply({content: `Tinted the image with the color **${color}**!`, files: [attachment]})
         return
     }
 }

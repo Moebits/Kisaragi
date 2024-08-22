@@ -38,7 +38,7 @@ export default class Prefix extends Command {
         const prefixEmbed = embeds.createEmbed()
         prefixEmbed
         .setDescription(`The prefix has been changed to ${newPrefix}\n If you ever forget the prefix just tag me!`)
-        message.channel.send(prefixEmbed)
+        message.channel.send({embeds: [prefixEmbed]})
         return
     }
 }

@@ -28,6 +28,6 @@ export default class Cache extends Command {
         cleanEmbed
         .setTitle(`**Clean** ${discord.getEmoji("gabStare")}`)
         .setDescription("Tables were cleaned! Cached data was deleted.")
-        message.channel.send(cleanEmbed)
+        message.channel.send({embeds: [cleanEmbed]})
     }
 }

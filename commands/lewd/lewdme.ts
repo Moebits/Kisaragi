@@ -27,7 +27,7 @@ export default class LewdMe extends Command {
         .setTitle(`**Lewd Me** ${discord.getEmoji("kisaragibawls")}`)
         .setURL(lewdme.pics[random].source)
         .setImage(lewdme.pics[random].link)
-        message.channel.send(lewdmeEmbed)
+        message.channel.send({embeds: [lewdmeEmbed]})
         return
     }
 }

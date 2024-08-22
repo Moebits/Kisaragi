@@ -36,7 +36,7 @@ export default class Thesaurus extends Command {
         let word = Functions.combineArgs(args, 1)
         if (!word) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
+            .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
             .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`))
         }
 
@@ -49,10 +49,10 @@ export default class Thesaurus extends Command {
             result = await thesaurus.lookup(word.trim())
         } catch (error: any) {
             thesaurusEmbed
-            .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
+            .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
             .setTitle(`**Thesaurus** ${discord.getEmoji("raphi")}`)
             .setDescription(`No synonyms were found. Here are some word suggestions: \n${error.suggestions.join(", ")}`)
-            message.channel.send(thesaurusEmbed)
+            message.channel.send({embeds: [thesaurusEmbed]})
             return
         }
 
@@ -88,16 +88,16 @@ export default class Thesaurus extends Command {
         }
 
         thesaurusEmbed
-        .setAuthor("merriam webster", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png")
+        .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
         .setTitle(`**Thesaurus** ${discord.getEmoji("raphi")}`)
         .setURL(`https://www.merriam-webster.com/thesaurus/${result[0].word.replace(/ /g, "_")}`)
-        .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
+        .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
         .setDescription(
             `${discord.getEmoji("star")}_Word:_ **${result[0].word}**\n` +
             `${discord.getEmoji("star")}_Function:_ **${result[0].functional_label}**\n` +
             `${discord.getEmoji("star")}_Popularity:_ **${result[0].popularity}**\n` +
             `${Functions.checkChar(synonyms, 2000, ",")}\n`
         )
-        message.channel.send(thesaurusEmbed)
+        message.channel.send({embeds: [thesaurusEmbed]})
     }
 }
