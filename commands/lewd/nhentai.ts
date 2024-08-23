@@ -1,6 +1,6 @@
 import {Message, EmbedBuilder} from "discord.js"
 import {API, Doujin} from "nhentai"
-import * as blacklist from "../../assets/json/blacklist.json"
+import blacklist from "../../assets/json/blacklist.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -80,7 +80,7 @@ export default class $nHentai extends Command {
                 for (let i = 0; i < doujin!.tags.all.length; i++) {
                     if (perms.loliFilter(doujin!.tags.all[i].name)) await this.nhentaiRandom(true)
                     for (let j = 0; j < blacklist.nhentai.length; j++) {
-                        if (doujin!.tags.all[i].name === blacklist.nhentai[j]) {
+                        if (doujin!.tags.all[i].name === atob(blacklist.nhentai[j])) {
                             await this.nhentaiRandom(true)
                         }
                     }

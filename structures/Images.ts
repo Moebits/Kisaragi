@@ -233,7 +233,7 @@ export class Images {
             const context = cv.getContext("2d")
             let fontSize = 70
             do {
-                context.font = `${fontSize -= 1}px 07nikumarufont`
+                context.font = `${fontSize -= 1}px arial`
             } while (context.measureText(txt).width > (cv.width*2.2) - 300)
             return context.font
         }
