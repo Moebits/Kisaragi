@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -68,7 +68,7 @@ export default class $4chan extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const perms = new Permission(discord, message)
         const badChanEmbed = embeds.createEmbed()
-        .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", "https://www.4chan.org/")
+        .setAuthor({name: "4chan", iconURL: "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", url: "https://www.4chan.org/"})
         .setTitle(`**4chan Search** ${discord.getEmoji("vigneDead")}`)
         if (!perms.checkNSFW()) return
 
@@ -94,18 +94,18 @@ export default class $4chan extends Command {
             const results = await chan.threadMediaLinks(threads[random].url)
             const rawUrl = `https://boards.4channel.org/${board}/thread/${threads[random].url.match(/\d+/g)}`
             const url = rawUrl.replace(/4,/g, "")
-            const imageArray: MessageEmbed[] = []
+            const imageArray: EmbedBuilder[] = []
             for (const i in results) {
                 const chanEmbed = embeds.createEmbed()
                 chanEmbed
-                .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", "https://www.4chan.org/")
+                .setAuthor({name: "4chan", iconURL: "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", url: "https://www.4chan.org/"})
                 .setTitle(`**4chan Image Search** ${discord.getEmoji("vigneDead")}`)
                 .setURL(url)
                 .setImage(results[i])
                 imageArray.push(chanEmbed)
             }
             if (imageArray.length === 1) {
-                message.channel.send(imageArray[0])
+                message.channel.send({embeds: [imageArray[0]]})
             } else {
                 embeds.createReactionEmbed(imageArray, false, true)
             }
@@ -125,10 +125,10 @@ export default class $4chan extends Command {
             const json = await axios.get(apiURL, {headers})
             const posts = json.data.posts
             const url = `https://boards.4channel.org/${b}/thread/${id}`
-            const chanArray: MessageEmbed[] = []
+            const chanArray: EmbedBuilder[] = []
             for (const i in posts) {
                 const chanEmbed = embeds.createEmbed()
-                .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", "https://www.4chan.org/")
+                .setAuthor({name: "4chan", iconURL: "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", url: "https://www.4chan.org/"})
                 chanEmbed
                 .setTitle(`${posts[0].sub ? posts[0].sub : `**4chan Search**`} ${discord.getEmoji("vigneDead")}`)
                 .setURL(`${url}#p${posts[i].no}`)
@@ -141,7 +141,7 @@ export default class $4chan extends Command {
                 chanArray.push(chanEmbed)
             }
             if (chanArray.length === 1) {
-                message.channel.send(chanArray[0])
+                message.channel.send({embeds: [chanArray[0]]})
             } else {
                 embeds.createReactionEmbed(chanArray, false, true)
             }
@@ -164,10 +164,10 @@ export default class $4chan extends Command {
         const posts = json.data.posts
         const rawUrl = `https://boards.4channel.org/${board}/thread/${threads[random].url.match(/\d+/g)}`
         const url = rawUrl.replace(/4,/g, "")
-        const chanArray: MessageEmbed[] = []
+        const chanArray: EmbedBuilder[] = []
         for (const i in posts) {
             const chanEmbed = embeds.createEmbed()
-            .setAuthor("4chan", "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", "https://www.4chan.org/")
+            .setAuthor({name: "4chan", iconURL: "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", url: "https://www.4chan.org/"})
             chanEmbed
             .setTitle(`${posts[0].sub ? posts[0].sub : threads[random].semantic_url} ${discord.getEmoji("vigneDead")}`)
             .setURL(`${url}#p${posts[i].no}`)
@@ -180,7 +180,7 @@ export default class $4chan extends Command {
             chanArray.push(chanEmbed)
         }
         if (chanArray.length === 1) {
-            message.channel.send(chanArray[0])
+            message.channel.send({embeds: [chanArray[0]]})
         } else {
             embeds.createReactionEmbed(chanArray, false, true)
         }

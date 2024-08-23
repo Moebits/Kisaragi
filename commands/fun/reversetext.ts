@@ -2,7 +2,6 @@ import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class ReverseText extends Command {
     constructor(discord: Kisaragi, message: Message) {

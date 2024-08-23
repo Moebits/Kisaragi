@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -52,11 +52,11 @@ export default class TenorCommand extends Command {
         } else {
             result = await tenor.Trending.GIFs("10")
         }
-        const tenorArray: MessageEmbed[] = []
+        const tenorArray: EmbedBuilder[] = []
         for (let i = 0; i < result.length; i++) {
             const tenorEmbed = embeds.createEmbed()
             tenorEmbed
-            .setAuthor("tenor", "https://tenor.com/assets/img/tenor-app-icon.png", "https://tenor.com/")
+            .setAuthor({name: "tenor", iconURL: "https://tenor.com/assets/img/tenor-app-icon.png", url: "https://tenor.com/"})
             .setTitle(`**Tenor Gif** ${discord.getEmoji("raphi")}`)
             .setURL(result[i].itemurl)
             .setDescription(
@@ -68,7 +68,7 @@ export default class TenorCommand extends Command {
         }
 
         if (tenorArray.length === 1) {
-            message.channel.send(tenorArray[0])
+            message.channel.send({embeds: [tenorArray[0]]})
         } else {
             embeds.createReactionEmbed(Functions.shuffleArray(tenorArray), true, true)
         }

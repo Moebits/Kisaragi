@@ -1,11 +1,5 @@
-import axios from "axios"
-import {Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, StreamDispatcher, User, VoiceConnection} from "discord.js"
-import fs from "fs"
-import path from "path"
-import {Embeds} from "./Embeds"
-import {Functions} from "./Functions"
+import {Collection, Message} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
-import {Video} from "./Video"
 
 const procBlock = new Collection()
 const globalProcBlock = new Collection()

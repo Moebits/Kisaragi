@@ -1,14 +1,13 @@
 import archiver from "archiver"
 import axios from "axios"
-import child_process from "child_process"
 import crypto from "crypto"
-import {Message, Util} from "discord.js"
+import {Message} from "discord.js"
 import emojiRegex from "emoji-regex"
 import fs from "fs"
 import path from "path"
-import * as stream from "stream"
+import stream from "stream"
 import TwitchClient from "twitch"
-import * as config from "../config.json"
+import config from "../config.json"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
@@ -24,7 +23,6 @@ export class Functions {
 
     // Reject Promise after timeout
     public static promiseTimeout = (ms: number, promise: Promise<any>) => {
-
         const timeout = new Promise((resolve, reject) => {
           const id = setTimeout(() => {
             clearTimeout(id)
@@ -39,8 +37,8 @@ export class Functions {
     }
 
     // Await Stream
-    public static awaitStream = async (readStream: stream.Readable, writeStream: stream.Writable) => {
-        return new Promise((resolve) => {
+    public static awaitStream = async (readStream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream) => {
+        return new Promise<void>((resolve) => {
             readStream.pipe(writeStream)
             readStream.on("end", () => {
                 resolve()
@@ -147,9 +145,26 @@ export class Functions {
         return array
     }
 
+    // Splits a message into chunks
+    public static splitMessage = (text: string, {maxLength = 2000, char = "\n", prepend = "", append = ""} = {}) => {
+        if (text.length <= maxLength) return [text]
+        const splitText = text.split(char)
+        if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError("SPLIT_MAX_LEN")
+        const messages = [] as string[]
+        let msg = ""
+        for (const chunk of splitText) {
+          if (msg && (msg + char + chunk + append).length > maxLength) {
+            messages.push(msg + append)
+            msg = prepend
+          }
+          msg += (msg && msg !== prepend ? char : "") + chunk
+        }
+        return messages.concat(msg).filter(m => m)
+    }
+
     // Check Message Characters
     public static checkChar = (message: string, num: number, char: string): string => {
-        const splitText = Util.splitMessage(message, {maxLength: num, char})
+        const splitText = Functions.splitMessage(message, {maxLength: num, char})
         if (splitText[0]) {
             return splitText[0]
         } else {
@@ -294,8 +309,8 @@ export class Functions {
     // Create a zip file
     public static createZip = async (files: string[], dest: string) => {
         dest = dest.endsWith(".zip") ? dest : dest + ".zip"
-        await new Promise((resolve) => {
-            const stream = fs.createWriteStream(dest)
+        await new Promise<void>((resolve) => {
+            const stream = fs.createWriteStream(dest) as unknown as NodeJS.WritableStream
             const zip = archiver("zip")
 
             zip.pipe(stream)
@@ -314,8 +329,8 @@ export class Functions {
     // Zip a directory
     public static zipDir = async (dir: string, dest: string) => {
         dest = dest.endsWith(".zip") ? dest : dest + ".zip"
-        await new Promise((resolve) => {
-            const stream = fs.createWriteStream(dest)
+        await new Promise<void>((resolve) => {
+            const stream = fs.createWriteStream(dest) as unknown as NodeJS.WritableStream
             const zip = archiver("zip")
             zip.pipe(stream)
             zip.directory(dir, false)

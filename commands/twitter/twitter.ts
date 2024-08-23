@@ -1,4 +1,4 @@
-import type {Message, MessageEmbed} from "discord.js"
+import type {Message, EmbedBuilder} from "discord.js"
 import Twitter from "twitter"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -6,6 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Oauth2} from "./../../structures/Oauth2"
 import {Permission} from "./../../structures/Permission"
+
 export default class TwitterCommand extends Command {
     private user = null as any
     private search = null as any
@@ -58,14 +59,14 @@ export default class TwitterCommand extends Command {
             const name = this.user || Functions.combineArgs(args, 2)
             if (!name) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", "https://twitter.com/")
+                .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
                 .setTitle(`**Twitter User** ${discord.getEmoji("aquaUp")}`))
             }
             const users = await twitter.get("users/lookup", {screen_name: name})
             const user = users[0]
             const twitterEmbed = embeds.createEmbed()
             twitterEmbed
-            .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", "https://twitter.com/")
+            .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
             .setTitle(`**${user.name}** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://twitter.com/${user.screen_name}`)
             .setDescription(
@@ -81,17 +82,17 @@ export default class TwitterCommand extends Command {
                 )
             .setThumbnail(user.profile_image_url)
             .setImage(user.profile_banner_url)
-            return message.channel.send(twitterEmbed)
+            return message.channel.send({embeds: [twitterEmbed]})
         }
 
         const query = this.search || Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", "https://twitter.com/")
+            .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
             .setTitle(`**Twitter Search** ${discord.getEmoji("aquaUp")}`))
         }
         const tweets = await twitter.get("search/tweets", {q: query})
-        const twitterArray: MessageEmbed[] = []
+        const twitterArray: EmbedBuilder[] = []
         for (const i in tweets.statuses) {
             if (tweets.statuses[i]?.possibly_sensitive) {
                 if (discord.checkMuted(message)) return message.reply(`You can't search for nsfw tweets ${discord.getEmoji("sagiriBleh")}`)
@@ -99,7 +100,7 @@ export default class TwitterCommand extends Command {
             }
             const twitterEmbed = embeds.createEmbed()
             twitterEmbed
-            .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", "https://twitter.com/")
+            .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
             .setTitle(`**Twitter Search** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://twitter.com/${tweets.statuses[i].user.screen_name}/status/${tweets.statuses[i].id_str}`)
             .setDescription(
@@ -116,7 +117,7 @@ export default class TwitterCommand extends Command {
         }
         if (!twitterArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("twitter", "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", "https://twitter.com/")
+            .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
             .setTitle(`**Twitter Search** ${discord.getEmoji("aquaUp")}`))
         }
         const msg = await embeds.createReactionEmbed(twitterArray, true, true)

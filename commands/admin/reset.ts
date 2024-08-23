@@ -35,10 +35,10 @@ export default class Captcha extends Command {
 
         await SQLQuery.deleteGuild(message.guild!.id)
         await SQLQuery.initGuild(message, true)
-        message.channel.send(
-        initEmbed
+        message.channel.send({embeds:
+        [initEmbed
         .setTitle(`**Reset** ${discord.getEmoji("kaosWTF")}`)
-        .setDescription("All guild settings have been reset to the default!"))
+        .setDescription("All guild settings have been reset to the default!")]})
         return
     }
 }

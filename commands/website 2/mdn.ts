@@ -51,7 +51,7 @@ export default class MDN extends Command {
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setTitle(`**MDN Search** ${discord.getEmoji("gabStare")}`)
-            .setAuthor(`mdn`, "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png", "https://developer.mozilla.org/en-US/"))
+            .setAuthor({name:`mdn`, iconURL: "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png", url: "https://developer.mozilla.org/en-US/"}))
         }
 
         if (query.match(/developer.mozilla.org/)) {
@@ -66,8 +66,8 @@ export default class MDN extends Command {
         const mdnEmbed = embeds.createEmbed()
         mdnEmbed
         .setTitle(`**${result.Title}** ${discord.getEmoji("gabStare")}`)
-        .setAuthor(`mdn`, "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png", "https://developer.mozilla.org/en-US/")
-        .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
+        .setAuthor({name:`mdn`, iconURL: "https://developer.mozilla.org/static/img/opengraph-logo.72382e605ce3.png", url: "https://developer.mozilla.org/en-US/"})
+        .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
         .setURL(`https://developer.mozilla.org/${result.URL}`)
         .setDescription(
         `${discord.getEmoji("star")}_Modified:_ ${Functions.formatDate(result.Modified)}\n` +
@@ -76,6 +76,6 @@ export default class MDN extends Command {
         `${discord.getEmoji("star")}_Similar:_ \n${Functions.checkChar(similar, 1000, "\n")}`
         )
 
-        message.channel.send(mdnEmbed)
+        message.channel.send({embeds: [mdnEmbed]})
     }
 }

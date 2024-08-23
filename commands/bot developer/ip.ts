@@ -25,7 +25,7 @@ export default class IP extends Command {
         ipEmbed
             .setTitle(`**IP Address** ${discord.getEmoji("vigneDead")}`)
             .setDescription(`My IP Address is ${result}`)
-        message.channel.send(ipEmbed)
+        message.channel.send({embeds: [ipEmbed]})
 
     }
 }

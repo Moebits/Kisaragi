@@ -1,4 +1,4 @@
-import {MessageReaction, User} from "discord.js"
+import {MessageReaction, PartialMessageReaction, User, PartialUser} from "discord.js"
 import {Embeds} from "./../structures/Embeds"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
@@ -7,9 +7,9 @@ export default class MessageReactionRemove {
     constructor(private readonly discord: Kisaragi) {}
 
     public run = (reaction: MessageReaction, user: User) => {
-        const removeReactionRole = async (reaction: MessageReaction, user: User) => {
+        const removeReactionRole = async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
             if (user.id === this.discord.user!.id) return
-            if (reaction.partial) reaction = await reaction.fetch()
+            if (reaction.message.partial) reaction.message = await reaction.message.fetch()
             const sql = new SQLQuery(reaction.message)
             const embeds = new Embeds(this.discord, reaction.message)
             const reactionroles = await sql.fetchColumn("guilds", "reaction roles")
@@ -29,10 +29,10 @@ export default class MessageReactionRemove {
                         if (reactionrole.dm === "on") {
                             const dmEmbed = embeds.createEmbed()
                             dmEmbed
-                            .setAuthor("reaction role", "https://cdn.discordapp.com/emojis/585938418572328981.gif")
+                            .setAuthor({name: "reaction role", iconURL: "https://cdn.discordapp.com/emojis/585938418572328981.gif"})
                             .setTitle(`**Reaction Role Remove** ${this.discord.getEmoji("gabuTank")}`)
                             .setDescription(`${this.discord.getEmoji("star")}Removed the role **${roleName}** in the guild **${reaction.message.guild?.name}**`)
-                            await user.send(dmEmbed).catch(() => null)
+                            await user.send({embeds: [dmEmbed]}).catch(() => null)
                         }
                     } catch {
                         const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message)

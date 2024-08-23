@@ -1,4 +1,4 @@
-import type {GuildEmoji, Message, MessageEmbed} from "discord.js"
+import type {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -52,7 +52,7 @@ export default class Starboard extends Command {
         const pinboardEmbed = embeds.createEmbed()
         pinboardEmbed
         .setTitle(`**Starboard** ${discord.getEmoji("tohruSmug")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setDescription(Functions.multiTrim(`
             Edit starboard settings.
             newline
@@ -73,7 +73,7 @@ export default class Starboard extends Command {
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
 
-        message.channel.send(pinboardEmbed)
+        message.channel.send({embeds: [pinboardEmbed]})
 
         async function pinboardPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
@@ -82,7 +82,7 @@ export default class Starboard extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "starboard", null)
@@ -90,7 +90,7 @@ export default class Starboard extends Command {
                 await sql.updateColumn("guilds", "star emoji", "⭐")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Starboard settings were reset!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
 
             let [setStar, setThreshold, setEmoji] = [false, false, false]
@@ -102,7 +102,7 @@ export default class Starboard extends Command {
                 if (Functions.unicodeEmoji(newMsg)) {
                     newEmoji = newMsg
                 } else {
-                    const e = msg.guild?.emojis.cache.find((e) => e.name.toLowerCase() === newMsg.toLowerCase())
+                    const e = msg.guild?.emojis.cache.find((e) => e.name?.toLowerCase() === newMsg.toLowerCase())
                     if (e) newEmoji = e.animated ? `<${e.identifier}>` : `<:${e.identifier}>`
                 }
             }
@@ -134,7 +134,7 @@ export default class Starboard extends Command {
             if (!description) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(pinboardPrompt)

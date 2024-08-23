@@ -34,7 +34,6 @@ export default class Reverb extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         let input = Functions.combineArgs(args, 1)
@@ -79,7 +78,9 @@ export default class Reverb extends Command {
             const embed = await audio.updateNowPlaying()
             queue[0].message.edit(embed)
             const rep = await message.reply("Added a reverb effect to the file!")
-            rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+            await Functions.timeout(3000)
+        rep.delete().catch(() => null)
+        message.delete().catch(() => null)
         }
         return
     }

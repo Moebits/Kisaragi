@@ -1,8 +1,8 @@
 import axios from "axios"
-import * as Canvas from "canvas"
+import Canvas from "@napi-rs/canvas"
 import {v2 as cloudinary} from "cloudinary"
 import concat from "concat-stream"
-import {DMChannel, GuildMember, Message, MessageAttachment, NewsChannel, TextChannel} from "discord.js"
+import {DMChannel, GuildMember, Message, AttachmentBuilder, GuildTextBasedChannel, PartialDMChannel} from "discord.js"
 import FormData from "form-data"
 import fs from "fs"
 import gifFrames from "gif-frames"
@@ -15,7 +15,7 @@ import request from "request"
 import stream from "stream"
 import Twitter from "twitter"
 import unzip from "unzip"
-import * as config from "../config.json"
+import config from "../config.json"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 
@@ -32,7 +32,7 @@ export class Images {
     /** Compresses a gif. */
     public compressGif = async (input: string[]) => {
         const file = await imagemin(input,
-        {destination: path.join(__dirname, "../../assets/images/gifs"),
+        {destination: path.join(__dirname, "../assets/misc/images/gifs"),
          plugins: [imageminGifsicle({interlaced: false, optimizationLevel: 2, colors: 512})]
         })
         return file
@@ -40,7 +40,7 @@ export class Images {
 
     /** Encodes a new gif. */
     public encodeGif = async (images: string[], folder: string, file: string | stream.Writable) => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
         const dimensions = sizeOf(`${folder}${path.basename(images[0])}`)
         const gif = new GifEncoder(dimensions.width, dimensions.height)
         gif.pipe(file)
@@ -70,7 +70,7 @@ export class Images {
 
     /** Compresses images and gifs. */
     public compressImages = (src: string, dest: string) => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             const imgInput = src
             const imgOutput = dest
             compressImages(imgInput, imgOutput, {compress_force: true, statistic: false, autoupdate: true}, false,
@@ -87,7 +87,7 @@ export class Images {
 
     /** Downloads and extracts a zip file. */
     public downloadZip = async (url: string, path: string) => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             const writeStream = request({url, headers: this.headers}).pipe(unzip.Extract({path}))
             writeStream.on("finish", () => {
                 resolve()
@@ -147,9 +147,9 @@ export class Images {
     }
 
     /** Fetch channel attachments */
-    public fetchChannelAttachments = async (channel: TextChannel | DMChannel | NewsChannel, limit?: number, gif?: boolean, messageID?: string) => {
+    public fetchChannelAttachments = async (channel: GuildTextBasedChannel | DMChannel | PartialDMChannel, limit?: number, gif?: boolean, messageID?: string) => {
         if (!limit) limit = Infinity
-        let last = messageID || channel.lastMessageID
+        let last = messageID || channel.lastMessageId
         let attachments: string[] = []
         let counter = 0
         const amount = limit < 100 ? limit : 100
@@ -201,11 +201,11 @@ export class Images {
         .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, String(member.guild.memberCount))
         if (Array.isArray(image)) image = image[Math.floor(Math.random() * image.length)]
         if (bgElements === "off") {
-            const attachment = new MessageAttachment(image)
+            const attachment = new AttachmentBuilder(image)
             return attachment
         }
 
-        function wrapText(context: CanvasRenderingContext2D, txt: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+        function wrapText(context: any, txt: string, x: number, y: number, maxWidth: number, lineHeight: number) {
             const cars = txt.split("\n")
             for (let i = 0; i < cars.length; i++) {
                 let line = ""
@@ -244,7 +244,7 @@ export class Images {
         let background: Canvas.Image
         if (image.includes("gif")) {
             const random  = Math.floor(Math.random() * 1000000)
-            const dir = path.join(__dirname, `../../assets/images/dump/${random}/`)
+            const dir = path.join(__dirname, `../assets/misc/images/dump/${random}/`)
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, {recursive: true})
 
             const files: string[] = []
@@ -253,9 +253,9 @@ export class Images {
             frames = Functions.constrain(frames, 50)
 
             for (let i = 0; i < frames.length; i++) {
-                const readStream = frames[i].getImage()
-                const writeStream = fs.createWriteStream(path.join(dir, `./image${frames[i].frameIndex}.jpg`))
-                await new Promise((resolve) => {
+                const readStream = frames[i].getImage() as unknown as NodeJS.ReadableStream
+                const writeStream = fs.createWriteStream(path.join(dir, `./image${frames[i].frameIndex}.jpg`)) as unknown as NodeJS.WritableStream
+                await new Promise<void>((resolve) => {
                     readStream.pipe(writeStream).on("finish", () => resolve())
                 })
                 files.push(path.join(dir, `./image${frames[i].frameIndex}.jpg`))
@@ -274,7 +274,7 @@ export class Images {
             const file = fs.createWriteStream(path.join(dir, `./animated${random}.gif`))
             await this.encodeGif(attachmentArray, dir, file)
             msg2.delete()
-            const attachment = new MessageAttachment(path.join(dir, `./animated${random}.gif`), "animated.gif")
+            const attachment = new AttachmentBuilder(path.join(dir, `./animated${random}.gif`), {name: "animated.gif"})
             return attachment
 
         } else {
@@ -306,14 +306,14 @@ export class Images {
             ctx.closePath()
             ctx.clip()
 
-            const avatar = await Canvas.loadImage(member.user.displayAvatarURL({format: "png"}))
+            const avatar = await Canvas.loadImage(member.user.displayAvatarURL({extension: "png"}))
             ctx.drawImage(avatar, 25, 25, 200, 200)
 
             if (uri) {
                 return canvas.toDataURL("image/png")
             }
 
-            const attachment = new MessageAttachment(canvas.toBuffer(), `welcome.jpg`)
+            const attachment = new AttachmentBuilder(canvas.toBuffer("image/jpeg"), {name: `welcome.jpg`})
             return attachment
         }
     }
@@ -322,13 +322,13 @@ export class Images {
     public fileIOUpload = async (file: string) => {
         const fd = new FormData()
         let res: any
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             fd.append("file", fs.createReadStream(file))
             fd.pipe(concat({encoding: "buffer"}, async (data: any) => {
                 const result = await axios.post("https://file.io/?expires=1w", data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)
                 res = result.link
                 resolve()
-            }))
+            }) as unknown as NodeJS.WritableStream)
         })
         return res
     }
@@ -373,7 +373,7 @@ export class Images {
             } while (files.length > 10)
             const promiseArray: any[] = []
             for (let i = 0; i < deletionQueue.length; i++) {
-                const promise = new Promise((resolve)=> {
+                const promise = new Promise<void>((resolve)=> {
                     fs.unlink(deletionQueue[i], () => resolve())
                 })
                 promiseArray.push(promise)
@@ -399,13 +399,13 @@ export class Images {
                 links.push(result)
             } else {
                 const fd = new FormData()
-                await new Promise((resolve) => {
+                await new Promise<void>((resolve) => {
                     fd.append("images", fs.createReadStream(files[i]))
                     fd.pipe(concat({encoding: "buffer"}, async (data: any) => {
                         const result = await axios.post(url, data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)
                         links.push(result)
                         resolve()
-                    }))
+                    }) as unknown as NodeJS.WritableStream)
                 })
             }
         }
@@ -426,7 +426,7 @@ export class Images {
 
     /** Upload attachment to Twitter */
     public uploadTwitterMedia = async (twitter: Twitter, link: string) => {
-        const src = await this.downloadImage(link, path.join(__dirname, `../../assets/misc/dump/${link.slice(-10)}`))
+        const src = await this.downloadImage(link, path.join(__dirname, `../assets/misc/dump/${link.slice(-10)}`))
         let mime = "image/jpeg"
         if (/.png/.test(src)) {
             mime = "image/png"

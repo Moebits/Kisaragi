@@ -1,4 +1,4 @@
-import {Guild, GuildMember, Message, MessageAttachment, TextChannel, User} from "discord.js"
+import {GuildMember, Message, AttachmentBuilder, TextChannel} from "discord.js"
 import {Embeds} from "../structures/Embeds"
 import {Functions} from "./../structures/Functions"
 import {Images} from "./../structures/Images"
@@ -16,8 +16,8 @@ export default class GuildMemberAdd {
         const firstMsg = await this.discord.fetchFirstMessage(member.guild)
         if (!firstMsg) return
         const sql = new SQLQuery(firstMsg)
-        if (member.guild.me?.permissions.has("MANAGE_GUILD")) {
-            const bans = await member.guild.fetchBans()
+        if (member.guild.members.me?.permissions.has("ManageGuild")) {
+            const bans = await member.guild.bans.fetch()
             if (bans.has(member.id)) return
         }
 
@@ -45,12 +45,12 @@ export default class GuildMemberAdd {
             const welcomeBGToggle = await sql.fetchColumn("guilds", "welcome bg toggle")
             const channel = member.guild.channels.cache.find((c) => c.id.toString() === String(welcomeChannel)) as TextChannel
 
-            const attachment = await image.createCanvas(member, welcomeImages, welcomeText, welcomeColor, false, false, welcomeBGToggle) as MessageAttachment
+            const attachment = await image.createCanvas(member, welcomeImages, welcomeText, welcomeColor, false, false, welcomeBGToggle) as AttachmentBuilder
 
             const newMsg = String(welcomeMsg).replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
             .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())
 
-            channel.send(newMsg, attachment)
+            channel.send({content: newMsg, files: [attachment]})
         }
 
         welcomeMessages()
@@ -64,16 +64,16 @@ export default class GuildMemberAdd {
                 const channel = defaultChannel
                 const reason = "Has the default discord avatar."
                 banEmbed
-                .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+                .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
                 .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
                 .setDescription(`${discord.getEmoji("star")}_Successfully banned <@${member.user.id}> for reason:_ **${reason}**`)
-                if (channel) channel.send(banEmbed)
+                if (channel) channel.send({embeds: [banEmbed]})
                 banEmbed
                 .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
                 .setDescription(`${discord.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`)
                 const dm = await member.user.createDM()
                 try {
-                    await dm.send(banEmbed)
+                    await dm.send({embeds: [banEmbed]})
                 } catch (err) {
                     console.log(err)
                 }
@@ -88,9 +88,9 @@ export default class GuildMemberAdd {
                 const joinChannel = member.guild?.channels.cache.get(userLog)! as TextChannel
                 const joinEmbed = embeds.createEmbed()
                 joinEmbed
-                .setAuthor("join", "https://cdn.discordapp.com/emojis/588199024906207271.gif")
+                .setAuthor({name: "join", iconURL: "https://cdn.discordapp.com/emojis/588199024906207271.gif"})
                 .setTitle(`**Member Join** ${discord.getEmoji("aquaUp")}`)
-                .setThumbnail(member.user.displayAvatarURL({format: "png", dynamic: true}))
+                .setThumbnail(member.user.displayAvatarURL({extension: "png"}))
                 .setDescription(
                     `${discord.getEmoji("star")}_Member:_ **<@!${member.id}> (${member.user.tag})**\n` +
                     `${discord.getEmoji("star")}_Member ID:_ \`${member.id}\`\n` +
@@ -98,8 +98,8 @@ export default class GuildMemberAdd {
                     `${discord.getEmoji("star")}_Account Creation Date:_ **${Functions.formatDate(member.user.createdAt)}**\n` +
                     `${discord.getEmoji("star")}_Guild Members:_ **${member.guild.members.cache.size}**\n`
                 )
-                .setFooter(`${member.guild.name} • ${Functions.formatDate(member.joinedAt ?? new Date())}`, member.guild.iconURL({format: "png", dynamic: true}) ?? "")
-                await joinChannel.send(joinEmbed).catch(() => null)
+                .setFooter({text: `${member.guild.name} • ${Functions.formatDate(member.joinedAt ?? new Date())}`, iconURL: member.guild.iconURL({extension: "png"}) ?? ""})
+                await joinChannel.send({embeds: [joinEmbed]}).catch(() => null)
             }
         }
         logJoin(member)
@@ -110,12 +110,12 @@ export default class GuildMemberAdd {
                 const embed = embeds.createEmbed()
                 embed
                 .setTitle(`**Logs Enabled** ${discord.getEmoji("kannaHungry")}`)
-                .setThumbnail(member.user.displayAvatarURL({format: "png", dynamic: true}))
+                .setThumbnail(member.user.displayAvatarURL({extension: "png"}))
                 .setDescription(
                     `${discord.getEmoji("star")}_Privacy Notice:_ The guild **${member.guild.name}** has deleted message logging enabled. This means that if you post
                     a message and then delete it, it could still be present on a channel within that guild. If you don't agree with this, we suggest leaving that guild.`
                 )
-                await member.send(embed).catch(() => null)
+                await member.send({embeds: [embed]}).catch(() => null)
             }
         }
         logsEnabledDMs(member)

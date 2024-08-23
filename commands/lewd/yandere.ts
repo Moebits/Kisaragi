@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -39,9 +39,9 @@ export default class Yandere extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-        const yandere = Booru("yande.re", process.env.KONACHAN_API_KEY)
+        const yandere = Booru("yande.re", process.env.KONACHAN_API_KEY as any)
         const yandereEmbed = embeds.createEmbed()
-        .setAuthor("yandere", "https://i.imgur.com/5DiQTnW.png")
+        .setAuthor({name: "yandere", iconURL: "https://i.imgur.com/5DiQTnW.png"})
         .setTitle(`**Yandere Image** ${discord.getEmoji("gabLewd")}`)
         if (!perms.checkNSFW()) return
 
@@ -85,7 +85,7 @@ export default class Yandere extends Command {
             // @ts-ignore
             images = rawImages.map((i) => i.data)
         }
-        const yandereArray: MessageEmbed[] = []
+        const yandereArray: EmbedBuilder[] = []
         for (let i = 0; i < images.length; i++) {
             const img = images[i]
             if (img.rating !== "s") {
@@ -94,7 +94,7 @@ export default class Yandere extends Command {
                 if (perms.loliFilter(img.tags)) continue
             }
             const yandereEmbed = embeds.createEmbed()
-            .setAuthor("yandere", "https://i.imgur.com/5DiQTnW.png")
+            .setAuthor({name: "yandere", iconURL: "https://i.imgur.com/5DiQTnW.png"})
             .setTitle(`**Yandere Image** ${discord.getEmoji("gabLewd")}`)
             .setURL(`https://yande.re/post/show/${img.id}`)
             .setDescription(
@@ -110,7 +110,7 @@ export default class Yandere extends Command {
             return this.invalidQuery(yandereEmbed)
         }
         if (yandereArray.length === 1) {
-            message.channel.send(yandereArray[0])
+            message.channel.send({embeds: [yandereArray[0]]})
         } else {
             embeds.createReactionEmbed(yandereArray, true, true)
         }

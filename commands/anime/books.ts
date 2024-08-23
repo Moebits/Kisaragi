@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -12,7 +12,7 @@ export default class Books extends Command {
             description: "Anime girls holding programming books.",
             help:
             `
-            \`books language\` - Searches for an anime with the query.
+            \`books language\` - Searches for books in the language
             `,
             examples:
             `
@@ -42,7 +42,7 @@ export default class Books extends Command {
         let pictures = html.match(/(?<=src=")\/static\/(.*?)(?=")/gm)?.map((m) => `https://anime-girls-holding-programming-books.netlify.com${m}`)
         pictures = Functions.shuffleArray(pictures)
 
-        const bookArray: MessageEmbed[] = []
+        const bookArray: EmbedBuilder[] = []
         for (let i = 0; i < pictures.length; i++) {
             const bookEmbed = embeds.createEmbed()
             bookEmbed
@@ -53,7 +53,7 @@ export default class Books extends Command {
         }
 
         if (bookArray.length === 1) {
-            return message.channel.send(bookArray[0])
+            return message.channel.send({embeds: [bookArray[0]]})
         } else {
             embeds.createReactionEmbed(bookArray, false, true)
         }

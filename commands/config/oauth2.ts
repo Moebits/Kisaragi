@@ -2,7 +2,7 @@ import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Permission} from "../../structures/Permission"
-import * as config from "./../../config.json"
+import config from "./../../config.json"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
@@ -37,10 +37,10 @@ export default class Oauth2 extends Command {
             await SQLQuery.revokeOuath2(message.author.id)
             const oauth2Embed = embeds.createEmbed()
             oauth2Embed
-            .setAuthor("discord oauth", "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png")
+            .setAuthor({name: "discord oauth", iconURL: "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png"})
             .setTitle(`**Discord Oauth 2.0** ${discord.getEmoji("gabYes")}`)
             .setDescription(`${discord.getEmoji("star")}Revoked your oauth token! This also deletes your twitter oauth token, if it was set.`)
-            return message.channel.send(oauth2Embed)
+            return message.channel.send({embeds: [oauth2Embed]})
         }
 
         const state = Functions.randomString(16)
@@ -52,9 +52,9 @@ export default class Oauth2 extends Command {
         const url = `https://discord.com/api/oauth2/authorize?client_id=${discord.user!.id}&redirect_uri=${encodeURIComponent(redirect)}&state=${state}&response_type=code&scope=guilds.join%20email%20connections%20guilds%20identify%20gdm.join`
         const oauth2Embed = embeds.createEmbed()
         oauth2Embed
-        .setAuthor("discord oauth", "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png")
+        .setAuthor({name: "discord oauth", iconURL: "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png"})
         .setTitle(`**Discord Oauth 2.0** ${discord.getEmoji("gabYes")}`)
         .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) to authenticate additional permissions over your discord account for oauth2 commands (ex. Sending you email, adding you to a guild, creating a group dm).`)
-        return message.channel.send(oauth2Embed)
+        return message.channel.send({embeds: [oauth2Embed]})
     }
 }

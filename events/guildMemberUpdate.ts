@@ -1,13 +1,14 @@
-import {Guild, GuildAuditLogsEntry, GuildMember, Message, Role, TextChannel, User} from "discord.js"
+import {Guild, GuildAuditLogsEntry, GuildMember, PartialGuildMember, Message, Role, TextChannel, User} from "discord.js"
 import ascii from "fold-to-ascii"
 import {Embeds} from "./../structures/Embeds"
 import {Functions} from "./../structures/Functions"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
+
 export default class GuildMemberUpdate {
     constructor(private readonly discord: Kisaragi) {}
 
-    public run = async (oldMember: GuildMember, newMember: GuildMember) => {
+    public run = async (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => {
         const discord = this.discord
         const message = await discord.fetchFirstMessage(newMember.guild)
         if (!message) return
@@ -20,28 +21,28 @@ export default class GuildMemberUpdate {
         if (oldMember.roles.cache.size < newMember.roles.cache.size) setNewRole = true
         if (oldMember.roles.cache.size > newMember.roles.cache.size) setRemoveRole = true
 
-        const logNick = async (oldMember: GuildMember, newMember: GuildMember) => {
+        const logNick = async (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => {
             const memberLog = await sql.fetchColumn("guilds", "member log")
             if (memberLog) {
                 const memberChannel = newMember.guild?.channels.cache.get(memberLog)! as TextChannel
                 const logEmbed = embeds.createEmbed()
                 logEmbed
-                .setAuthor("nickname", "https://cdn.discordapp.com/emojis/589154620845195275.png")
+                .setAuthor({name: "nickname", iconURL: "https://cdn.discordapp.com/emojis/589154620845195275.png"})
                 .setTitle(`**Nickname Change** ${discord.getEmoji("chinoSmug")}`)
-                .setThumbnail(newMember.user.displayAvatarURL({format: "png", dynamic: true}) ?? "")
+                .setThumbnail(newMember.user.displayAvatarURL({extension: "png"}) ?? "")
                 .setDescription(
                     `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> (${newMember.user.tag})**\n` +
                     `${discord.getEmoji("star")}_User ID:_ \`${newMember.id}\`\n` +
                     `${discord.getEmoji("star")}_Old Nickname:_ **${oldMember.displayName}**\n` +
                     `${discord.getEmoji("star")}_New Nickname:_ **$newMember.displayName}**\n`
                 )
-                .setFooter(`${newMember.guild.name} • ${Functions.formatDate(new Date())}`, newMember.guild.iconURL({format: "png", dynamic: true}) ?? "")
-                await memberChannel.send(logEmbed).catch(() => null)
+                .setFooter({text: `${newMember.guild.name} • ${Functions.formatDate(new Date())}`, iconURL: newMember.guild.iconURL({extension: "png"}) ?? ""})
+                await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
             }
         }
         if (setNick) logNick(oldMember, newMember)
 
-        const logNewRole = async (oldMember: GuildMember, newMember: GuildMember) => {
+        const logNewRole = async (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => {
             const memberLog = await sql.fetchColumn("guilds", "member log")
             if (memberLog) {
                 const newRole = newMember.roles.cache.find((r) => {
@@ -54,22 +55,22 @@ export default class GuildMemberUpdate {
                 const memberChannel = newMember.guild?.channels.cache.get(memberLog)! as TextChannel
                 const logEmbed = embeds.createEmbed()
                 logEmbed
-                .setAuthor("new role", "https://cdn.discordapp.com/emojis/682967153200070690.png")
+                .setAuthor({name: "new role", iconURL: "https://cdn.discordapp.com/emojis/682967153200070690.png"})
                 .setTitle(`**Role Addition** ${discord.getEmoji("tohruThink")}`)
-                .setThumbnail(newMember.user.displayAvatarURL({format: "png", dynamic: true}))
+                .setThumbnail(newMember.user.displayAvatarURL({extension: "png"}))
                 .setDescription(
                     `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> (${newMember.user.tag})**\n` +
                     `${discord.getEmoji("star")}_User ID:_ \`${newMember.id}\`\n` +
                     `${discord.getEmoji("star")}_New Role:_ <@&${newRole.id}>\n` +
                     `${discord.getEmoji("star")}_Roles:_ **${newMember.roles.cache.size - 1}**`
                 )
-                .setFooter(`${newMember.guild.name} • ${Functions.formatDate(new Date())}`, newMember.guild.iconURL({format: "png", dynamic: true}) ?? "")
-                await memberChannel.send(logEmbed).catch(() => null)
+                .setFooter({text: `${newMember.guild.name} • ${Functions.formatDate(new Date())}`, iconURL: newMember.guild.iconURL({extension: "png"}) ?? ""})
+                await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
             }
         }
         if (setNewRole) logNewRole(oldMember, newMember)
 
-        const logRoleRemoval = async (oldMember: GuildMember, newMember: GuildMember) => {
+        const logRoleRemoval = async (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => {
             const memberLog = await sql.fetchColumn("guilds", "member log")
             if (memberLog) {
                 const oldRole = oldMember.roles.cache.find((r) => {
@@ -82,17 +83,17 @@ export default class GuildMemberUpdate {
                 const memberChannel = newMember.guild?.channels.cache.get(memberLog)! as TextChannel
                 const logEmbed = embeds.createEmbed()
                 logEmbed
-                .setAuthor("remove role", "https://cdn.discordapp.com/emojis/589239465348694017.png")
+                .setAuthor({name: "remove role", iconURL: "https://cdn.discordapp.com/emojis/589239465348694017.png"})
                 .setTitle(`**Role Removal** ${discord.getEmoji("raphi")}`)
-                .setThumbnail(newMember.user.displayAvatarURL({format: "png", dynamic: true}))
+                .setThumbnail(newMember.user.displayAvatarURL({extension: "png"}))
                 .setDescription(
                     `${discord.getEmoji("star")}_User:_ **<@!${newMember.id}> (${newMember.user.tag})**\n` +
                     `${discord.getEmoji("star")}_User ID:_ \`${newMember.id}\`\n` +
                     `${discord.getEmoji("star")}_Removed Role:_ <@&${oldRole.id}>\n` +
                     `${discord.getEmoji("star")}_Roles:_ **${newMember.roles.cache.size - 1}**`
                 )
-                .setFooter(`${newMember.guild.name} • ${Functions.formatDate(new Date())}`, newMember.guild.iconURL({format: "png", dynamic: true}) ?? "")
-                await memberChannel.send(logEmbed).catch(() => null)
+                .setFooter({text: `${newMember.guild.name} • ${Functions.formatDate(new Date())}`, iconURL: newMember.guild.iconURL({extension: "png"}) ?? ""})
+                await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
             }
         }
         if (setRemoveRole) logRoleRemoval(oldMember, newMember)

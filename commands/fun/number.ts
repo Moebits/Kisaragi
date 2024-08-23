@@ -32,7 +32,7 @@ export default class NumberCommand extends Command {
 
         const gameLoop = async () => {
             try {
-                const collected = await message.channel.awaitMessages(filter, {max: 1, time: 60000}).then((c) => c.first()?.content.trim().toLowerCase())
+                const collected = await message.channel.awaitMessages({filter, max: 1, time: 60000}).then((c) => c.first()?.content.trim().toLowerCase())
                 if (!collected) return message.reply(`Quit, no message was sent ${discord.getEmoji("kannaFacepalm")}`)
                 if (collected === "quit") {
                     return message.channel.send(`You lost the game! The correct number was **${num}** ${discord.getEmoji("smugFace")}`)

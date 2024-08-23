@@ -1,21 +1,20 @@
-import {Collection, Message, MessageAttachment, TextChannel} from "discord.js"
+import {Collection, Message, ChannelType, AttachmentBuilder, TextChannel} from "discord.js"
 import path from "path"
-import * as responses from "../assets/json/responses.json"
-import * as config from "../config.json"
+import responses from "../assets/json/responses.json"
 import {CommandFunctions} from "../structures/CommandFunctions"
 import {Cooldown} from "../structures/Cooldown.js"
 import {Kisaragi} from "../structures/Kisaragi.js"
-import {Block} from "./../structures/Block"
-import {Detector} from "./../structures/Detector"
-import {Embeds} from "./../structures/Embeds"
-import {Functions} from "./../structures/Functions"
-import {Generate} from "./../structures/Generate"
-import {Haiku} from "./../structures/Haiku"
-import {Letters} from "./../structures/Letters"
-import {Link} from "./../structures/Link"
-import {Permission} from "./../structures/Permission"
-import {Points} from "./../structures/Points"
-import {SQLQuery} from "./../structures/SQLQuery"
+import {Block} from "../structures/Block"
+import {Detector} from "../structures/Detector"
+import {Embeds} from "../structures/Embeds"
+import {Functions} from "../structures/Functions"
+import {Generate} from "../structures/Generate"
+import {Haiku} from "../structures/Haiku"
+import {Letters} from "../structures/Letters"
+import {Link} from "../structures/Link"
+import {Permission} from "../structures/Permission"
+import {Points} from "../structures/Points"
+import {SQLQuery} from "../structures/SQLQuery"
 
 const responseTextCool = new Set()
 const responseImageCool = new Set()
@@ -24,7 +23,7 @@ const firstMessage = new Set()
 const globalChatCool = new Set()
 const pointCool = new Collection() as Collection<string, Set<string>>
 
-export default class MessageEvent {
+export default class MessageCreate {
     private readonly cooldowns: Collection<string, Collection<string, number>> = new Collection()
     constructor(private readonly discord: Kisaragi) {}
 
@@ -44,7 +43,8 @@ export default class MessageEvent {
       if (message.partial) {
         try {
           message = await message.fetch()
-        } catch {
+        } catch (e) {
+          console.log(e)
           return
         }
       }
@@ -59,7 +59,6 @@ export default class MessageEvent {
 
       if (!this.discord.checkMuted(message)) {
         if (message.guild) {
-          /* Global chat is discontinued
           const globalChat = await sql.fetchColumn("guilds", "global chat")
           if (globalChat && !message.content.startsWith(prefix) && !message.author.bot) {
             const globalChannel = message.guild.channels.cache.find((c) => c.id === globalChat)
@@ -85,7 +84,7 @@ export default class MessageEvent {
                 }, 3000)
               }
             }
-          }*/
+          }
           block.blockWord()
           block.blockInvite()
           block.everyone()
@@ -97,13 +96,13 @@ export default class MessageEvent {
           if (haikuEmbed) {
             if (haikuCool.has(message.author.id) || haikuCool.has(message.guild?.id)) {
               const reply = await message.channel.send(`<@${message.author.id}>, You hit the rate limit for **haiku**! Please wait 3 seconds before trying again. ${this.discord.getEmoji("kannaHungry")}`)
-              reply.delete({timeout: 3000})
+              setTimeout(() => reply.delete(), 3000)
               return
             }
             const id = message.guild?.id ?? message.author.id
             haikuCool.add(id)
             setTimeout(() => haikuCool.delete(id), 3000)
-            return message.channel.send(haikuEmbed)
+            return message.channel.send({embeds: [haikuEmbed]})
           }
 
           if (!pointCool.get(message.guild.id)?.has(message.author.id)) {
@@ -131,7 +130,10 @@ export default class MessageEvent {
             if (!message.author!.bot) {
               if (responseTextCool.has(message.author.id) || responseTextCool.has(message.guild?.id)) {
                 const reply = await message.channel.send(`<@${message.author.id}>, You hit the rate limit for **${response}**! Wait 3 seconds before trying again. ${this.discord.getEmoji("kannaHungry")}`)
-                reply.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+                setTimeout(() => {
+                  reply.delete()
+                  message.delete().catch(() => null)
+                }, 3000)
                 return
               }
               const id = message.guild?.id ?? message.author.id
@@ -153,13 +155,16 @@ export default class MessageEvent {
             if (!message.author!.bot) {
               if (responseImageCool.has(message.author.id) || responseImageCool.has(message.guild?.id)) {
                 const reply = await message.channel.send(`<@${message.author.id}>, You hit the rate limit for **${response}**! Please wait 10 seconds before trying again.`)
-                reply.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+                setTimeout(() => {
+                  reply.delete()
+                  message.delete().catch(() => null)
+                }, 3000)
                 return
               }
               const id = message.guild?.id ?? message.author.id
               responseImageCool.add(id)
               setTimeout(() => responseImageCool.delete(id), 10000)
-              return message.channel.send(new MessageAttachment(responses.image[response]))
+              return message.channel.send({files: [new AttachmentBuilder(responses.image[response])]})
             }
          }
         }
@@ -189,12 +194,12 @@ export default class MessageEvent {
       if (cmdPath.options.nsfw && this.discord.checkMuted(message)) return
 
       if (cmdPath.options.guildOnly) {
-        if (message.channel.type === "dm") return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds. ${this.discord.getEmoji("smugFace")}`)
+        if (message.channel.type === ChannelType.DM) return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds. ${this.discord.getEmoji("smugFace")}`)
       }
 
-      if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild.me!)?.has(["SEND_MESSAGES", "READ_MESSAGE_HISTORY", "ADD_REACTIONS", "EMBED_LINKS", "ATTACH_FILES", "USE_EXTERNAL_EMOJIS", "CONNECT", "SPEAK"])) {
+      if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild.members.me!)?.has(["SendMessages", "ReadMessageHistory", "AddReactions", "EmbedLinks", "AttachFiles", "UseExternalEmojis", "Connect", "Speak"])) {
         let setEmbed = false
-        if ((message.channel as TextChannel).permissionsFor(message.guild.me!)?.has(["EMBED_LINKS"])) setEmbed = true
+        if ((message.channel as TextChannel).permissionsFor(message.guild.members.me!)?.has(["EmbedLinks"])) setEmbed = true
         const permMessage =
           `Sorry, but the bot is missing permissions that break or prevent the execution of most commands, if not all of them.${setEmbed ? "" : " " + this.discord.getEmoji("kannaFacepalm").toString()}\n` +
           `\`Send Messages\` - Um... everything? If you can see this message, the bot has this one at least.\n` +
@@ -207,7 +212,7 @@ export default class MessageEvent {
         permEmbed
         .setTitle(`**Missing Permissions** ${this.discord.getEmoji("kannaFacepalm")}`)
         .setDescription(permMessage)
-        return setEmbed ? message.channel.send(permEmbed) : message.channel.send(permMessage)
+        return setEmbed ? message.channel.send({embeds: [permEmbed]}) : message.channel.send(permMessage)
       }
 
       let category = path.dirname(pathFind.replace(/..\/commands\//, "../").slice(0, -3)).replace(/\.\.\//, "")
@@ -220,18 +225,18 @@ export default class MessageEvent {
       const cooldown = new Cooldown(this.discord, message)
       sql.usageStatistics(pathFind)
       const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown, this.cooldowns)
-      if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return message.reply({embed: onCooldown})
+      if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return message.reply({embeds: [onCooldown]})
       if (cmdPath.options.unlist && message.author.id !== process.env.OWNER_ID) return message.reply(`Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
 
       this.discord.muted = false
-      const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
+      const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("kisaragiCircle")}`) as Message
       this.discord.muted = this.discord.checkMuted(message)
 
       cmdPath.run(args).then(() => {
           const msgCheck = message.channel.messages
-          if (msgCheck.cache.has(msg.id)) msg.delete({timeout: 1000})
+          if (msgCheck.cache.has(msg.id)) setTimeout(() => msg.delete(), 1000)
         }).catch((err: Error) => {
-          message.channel.send(this.discord.cmdError(message, err))
+          message.channel.send({embeds: [this.discord.cmdError(message, err)]})
       })
     }
   }

@@ -30,7 +30,6 @@ export default class Autoplay extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         audio.autoplay()
@@ -40,7 +39,9 @@ export default class Autoplay extends Command {
         queue[0].message.edit(embed)
         const text = settings.autoplay === true ? "on" : "off"
         const rep = await message.reply(`Turned ${text} autoplay!`)
-        rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+        await Functions.timeout(3000)
+        rep.delete().catch(() => null)
+        message.delete().catch(() => null)
         return
     }
 }

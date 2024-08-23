@@ -1,4 +1,3 @@
-import axios from "axios"
 import {Message} from "discord.js"
 import {OAuth} from "oauth"
 import {Command} from "../../structures/Command"
@@ -38,10 +37,10 @@ export default class TwitterOauth extends Command {
             await SQLQuery.revokeTwitterOauth(message.author.id)
             const oauth2Embed = embeds.createEmbed()
             oauth2Embed
-            .setAuthor("twitter oauth", "https://www.aps.edu/sapr/images/pnglot.comtwitterbirdlogopng139932.png")
+            .setAuthor({name: "twitter oauth", iconURL: "https://www.aps.edu/sapr/images/pnglot.comtwitterbirdlogopng139932.png"})
             .setTitle(`**Twitter Oauth 1.0a** ${discord.getEmoji("gabYes")}`)
             .setDescription(`${discord.getEmoji("star")}Deleted the local copy of your twitter token. To invalidate this token, revoke access in your [**application settings**](https://twitter.com/settings/applications).`)
-            return message.channel.send(oauth2Embed)
+            return message.channel.send({embeds: [oauth2Embed]})
         }
 
         const callback = config.testing === "on" ? config.twitterRedirectTesting : config.twitterRedirect
@@ -57,7 +56,7 @@ export default class TwitterOauth extends Command {
 
         let oauthToken = ""
         let oauthSecret = ""
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             oauth.getOAuthRequestToken((e, token, secret) => {
                 oauthToken = token
                 oauthSecret = secret
@@ -68,9 +67,9 @@ export default class TwitterOauth extends Command {
         const url = `https://api.twitter.com/oauth/authorize?oauth_token=${oauthToken}`
         const twitterOauthEmbed = embeds.createEmbed()
         twitterOauthEmbed
-        .setAuthor("twitter oauth", "https://www.aps.edu/sapr/images/pnglot.comtwitterbirdlogopng139932.png")
+        .setAuthor({name: "twitter oauth", iconURL: "https://www.aps.edu/sapr/images/pnglot.comtwitterbirdlogopng139932.png"})
         .setTitle(`**Twitter Oauth 1.0a** ${discord.getEmoji("gabYes")}`)
         .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) to post, like, and retweet tweets on your behalf. This only gives reading and writing permissions of public data (not private, such as direct messages).`)
-        return message.channel.send(twitterOauthEmbed)
+        return message.channel.send({embeds: [twitterOauthEmbed]})
     }
 }

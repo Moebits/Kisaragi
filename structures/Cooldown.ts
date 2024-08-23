@@ -3,8 +3,10 @@ import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
 
 export class Cooldown {
-    private readonly embeds = new Embeds(this.discord, this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly embeds: Embeds
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.embeds = new Embeds(this.discord, this.message)
+    }
 
     /** Cooldown for guilds and dms. */
     public cmdCooldown = (cmd: string, cooldown: number, cooldowns: Collection<string, Collection<string, number>>) => {

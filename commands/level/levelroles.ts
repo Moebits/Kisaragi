@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -48,7 +48,7 @@ export default class LevelRoles extends Command {
         const levelRoles = await sql.fetchColumn("guilds", "level roles")
         const step = 3.0
         const increment = Math.ceil((levelRoles ? levelRoles.length : 1) / step)
-        const levelArray: MessageEmbed[] = []
+        const levelArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {
@@ -97,7 +97,7 @@ export default class LevelRoles extends Command {
         if (levelArray.length > 1) {
             embeds.createReactionEmbed(levelArray)
         } else {
-            message.channel.send(levelArray)
+            message.channel.send({embeds: levelArray})
         }
 
         async function levelPrompt(msg: Message) {
@@ -109,14 +109,14 @@ export default class LevelRoles extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "level roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Level role settings were reset!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
@@ -126,9 +126,9 @@ export default class LevelRoles extends Command {
                         roles[num] = ""
                         roles = roles.filter(Boolean)
                         await sql.updateColumn("guilds", "level roles", roles)
-                        return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
+                        return msg.channel.send({embeds: [responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`)]})
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription("Setting not found!"))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription("Setting not found!")]})
                 }
             }
             if (msg.content.toLowerCase().startsWith("edit")) {
@@ -160,9 +160,9 @@ export default class LevelRoles extends Command {
                     roles[num] = curr
                     await sql.updateColumn("guilds", "level roles", roles)
 
-                    return msg.channel.send(responseEmbed.setDescription(editDesc))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription(editDesc)]})
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription("No edits specified!"))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription("No edits specified!")]})
                 }
             }
 
@@ -199,7 +199,7 @@ export default class LevelRoles extends Command {
             await sql.updateColumn("guilds", "level roles", roles)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         embeds.createPrompt(levelPrompt)

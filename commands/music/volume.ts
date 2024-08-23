@@ -30,14 +30,15 @@ export default class Volume extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
 
         if (!Number(args[1])) return this.message.reply(`What do you want to set the volume to ${discord.getEmoji("kannaCurious")}`)
         audio.volume(Number(args[1]))
         const rep = await message.reply("Changed the volume!")
-        rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+        await Functions.timeout(3000)
+        rep.delete().catch(() => null)
+        message.delete().catch(() => null)
         return
     }
 }

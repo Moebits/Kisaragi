@@ -34,7 +34,7 @@ export default class Furigana extends Command {
         const input = Functions.combineArgs(args, 1)
         if (!input) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("kuroshiro", "https://kuroshiro.org/kuroshiro.png")
+            .setAuthor({name: "kuroshiro", iconURL: "https://kuroshiro.org/kuroshiro.png"})
             .setTitle(`**Furigana Conversion** ${discord.getEmoji("KannaXD")}`))
         }
         const result = await kuroshiro.convert(input, {mode: "furigana", to: "hiragana"})

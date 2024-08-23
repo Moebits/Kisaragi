@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -45,7 +45,7 @@ export default class Selfroles extends Command {
             const selfroles = await sql.fetchColumn("guilds", "self roles")
             const step = 7.0
             const increment = Math.ceil((selfroles ? selfroles.length : 1) / step)
-            const selfArray: MessageEmbed[] = []
+            const selfArray: EmbedBuilder[] = []
             for (let i = 0; i < increment; i++) {
                 let settings = ""
                 for (let j = 0; j < step; j++) {
@@ -61,7 +61,7 @@ export default class Selfroles extends Command {
                 const selfEmbed = embeds.createEmbed()
                 selfEmbed
                 .setTitle(`**Self Role List** ${discord.getEmoji("karenSugoi")}`)
-                .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+                .setThumbnail(message.guild!.iconURL({extension: "png"})!)
                 .setDescription(
                     settings + "\n"
                 )
@@ -71,7 +71,7 @@ export default class Selfroles extends Command {
             if (selfArray.length > 1) {
                 embeds.createReactionEmbed(selfArray)
             } else {
-                message.channel.send(selfArray[0])
+                message.channel.send({embeds: [selfArray[0]]})
             }
             return
         }
@@ -87,7 +87,7 @@ export default class Selfroles extends Command {
         const step = 7.0
         let increment = Math.ceil((selfroles ? selfroles.length : 1) / step)
         if (increment === 0) increment = 1
-        const selfArray: MessageEmbed[] = []
+        const selfArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let settings = ""
             for (let j = 0; j < step; j++) {
@@ -103,7 +103,7 @@ export default class Selfroles extends Command {
             const selfEmbed = embeds.createEmbed()
             selfEmbed
             .setTitle(`**Self Roles** ${discord.getEmoji("karenSugoi")}`)
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+            .setThumbnail(message.guild!.iconURL({extension: "png"})!)
             .setDescription(Functions.multiTrim(`
                 Add and remove self-assignable roles. Users can assign them with the command **selfrole**.
                 newline
@@ -122,7 +122,7 @@ export default class Selfroles extends Command {
         if (selfArray.length > 1) {
             embeds.createReactionEmbed(selfArray)
         } else {
-            message.channel.send(selfArray[0])
+            message.channel.send({embeds: [selfArray[0]]})
         }
 
         async function selfPrompt(msg: Message) {
@@ -133,14 +133,14 @@ export default class Selfroles extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "self roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Self role settings were wiped!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase().includes("delete")) {
@@ -152,17 +152,17 @@ export default class Selfroles extends Command {
                     await sql.updateColumn("guilds", "self roles", selfroles)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                    msg.channel.send(responseEmbed)
+                    msg.channel.send({embeds: [responseEmbed]})
                     return
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send(responseEmbed)
+                    msg.channel.send({embeds: [responseEmbed]})
                     return
                 }
             }
 
-            let roles = msg.content.replace(/<@&/g, "").replace(/>/g, "").match(/\s?\d+/g)
+            let roles = msg.content.replace(/<@&/g, "").replace(/>/g, "").match(/\s?\d+/g) as string[]
             if (!roles) return message.reply("These roles are invalid!")
             roles = roles.map((r: string) => r.trim())
 
@@ -178,7 +178,7 @@ export default class Selfroles extends Command {
 
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
+            msg.channel.send({embeds: [responseEmbed]})
             return
 
         }

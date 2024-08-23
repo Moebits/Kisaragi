@@ -1,5 +1,5 @@
-import {Message, MessageEmbed} from "discord.js"
-import {API} from "nhentai"
+import {Message, EmbedBuilder} from "discord.js"
+import {API, Doujin} from "nhentai"
 import * as blacklist from "../../assets/json/blacklist.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -34,15 +34,15 @@ export default class $nHentai extends Command {
     }
 
     // nhentai Doujin
-    public getNhentaiDoujin = (doujin: any, id: number) => {
+    public getNhentaiDoujin = (doujin: Doujin, id: number) => {
         const discord = this.discord
-        const artists = doujin.tags.filter((t) => t.type === "artist").map((t) => t.name)
-        const categories = doujin.tags.filter((t) => t.type === "category").map((t) => t.name)
-        const characters = doujin.tags.filter((t) => t.type === "character").map((t) => t.name)
-        const parodies = doujin.tags.filter((t) => t.type === "parody").map((t) => t.name)
-        const groups = doujin.tags.filter((t) => t.type === "group").map((t) => t.name)
-        const languages = doujin.tags.filter((t) => t.type === "language").map((t) => t.name)
-        const tags = doujin.tags.filter((t) => t.type === "tag").map((t) => t.name)
+        const artists = doujin.tags.artists.map((t) => t.name)
+        const categories = doujin.tags.categories.map((t) => t.name)
+        const characters = doujin.tags.characters.map((t) => t.name)
+        const parodies = doujin.tags.parodies.map((t) => t.name)
+        const groups = doujin.tags.groups.map((t) => t.name)
+        const languages = doujin.tags.languages.map((t) => t.name)
+        const tags = doujin.tags.tags.map((t) => t.name)
         const checkArtists = artists ? Functions.checkChar(artists.join(" "), 50, " ") : "None"
         const checkCharacters = characters ? Functions.checkChar(characters.join(" "), 50, " ") : "None"
         const checkTags = tags ? Functions.checkChar(tags.join(" "), 50, " ") : "None"
@@ -50,11 +50,11 @@ export default class $nHentai extends Command {
         const checkGroups = groups ? Functions.checkChar(groups.join(" "), 50, " ") : "None"
         const checkLanguages = languages ? Functions.checkChar(languages.join(" "), 50, " ") : "None"
         const checkCategories = categories ? Functions.checkChar(categories.join(" "), 50, " ") : "None"
-        const doujinPages: MessageEmbed[] = []
+        const doujinPages: EmbedBuilder[] = []
         for (let i = 0; i < doujin.pages.length; i++) {
             const nhentaiEmbed = this.embeds.createEmbed()
             nhentaiEmbed
-            .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
+            .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
             .setTitle(`**${doujin.titles.english}** ${this.discord.getEmoji("chinoSmug")}`)
             .setURL(doujin.url)
             .setDescription(
@@ -77,10 +77,10 @@ export default class $nHentai extends Command {
         try {
             const doujin = await nhentai.randomDoujin()
             if (filter) {
-                for (let i = 0; i < doujin!.tags.length; i++) {
-                    if (perms.loliFilter(doujin!.tags[i].name)) await this.nhentaiRandom(true)
+                for (let i = 0; i < doujin!.tags.all.length; i++) {
+                    if (perms.loliFilter(doujin!.tags.all[i].name)) await this.nhentaiRandom(true)
                     for (let j = 0; j < blacklist.nhentai.length; j++) {
-                        if (doujin!.tags[i].name === blacklist.nhentai[j]) {
+                        if (doujin!.tags.all[i].name === blacklist.nhentai[j]) {
                             await this.nhentaiRandom(true)
                         }
                     }
@@ -111,24 +111,24 @@ export default class $nHentai extends Command {
             const tag = Functions.combineArgs(args, 1)
             if (tag.match(/\d+/g) !== null) {
                 const doujin = await nhentai.fetchDoujin(tag.match(/\d+/g)!.toString())
-                this.getNhentaiDoujin(doujin, doujin!.mediaId)
+                this.getNhentaiDoujin(doujin!, doujin!.mediaId)
             } else {
                 const result = await nhentai.search(tag)
                 if (!result.doujins[0]) {
                     const nHentaiEmbed = this.embeds.createEmbed()
-                    .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
+                    .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
                     .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`)
                     return this.invalidQuery(nHentaiEmbed, "Try searching on the [**nhentai Website**](https://nhentai.net/).")
                 }
                 let counter = 0
                 let index = Math.floor(Math.random() * (result.doujins.length - result.doujins.length/2) + result.doujins.length/2)
                 let doujin = result.doujins[index]
-                while (perms.loliFilter(doujin.tags.map((t) => t.name).join(""))) {
+                while (perms.loliFilter(doujin.tags.all.map((t) => t.name).join(""))) {
                     index = Math.floor(Math.random() * (result.doujins.length - result.doujins.length/2) + result.doujins.length/2)
                     doujin = result.doujins[index]
                     if (counter >= result.doujins.length) {
                         return this.invalidQuery(this.embeds.createEmbed()
-                        .setAuthor("nhentai", "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg")
+                        .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
                         .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`))
                     }
                     counter++

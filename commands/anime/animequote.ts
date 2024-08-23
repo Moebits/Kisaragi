@@ -56,7 +56,7 @@ export default class AnimeQuote extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const animeQuoteEmbed = embeds.createEmbed()
-        .setAuthor("animequotes", "https://discordemoji.com/assets/emoji/KannaCurious.png")
+        .setAuthor({name: "animequotes", iconURL: "https://discordemoji.com/assets/emoji/KannaCurious.png"})
         .setTitle(`**Anime Quote** ${discord.getEmoji("raphi")}`)
 
         if (!args[1]) {
@@ -68,7 +68,7 @@ export default class AnimeQuote extends Command {
             `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
             `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
             )
-            return message.channel.send(animeQuoteEmbed)
+            return message.channel.send({embeds: [animeQuoteEmbed]})
         } else {
             let query = Functions.combineArgs(args, 1).trim()
             query = this.replaceQuery(query)
@@ -84,7 +84,7 @@ export default class AnimeQuote extends Command {
                 `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
                 `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
                 )
-                return message.channel.send(animeQuoteEmbed)
+                return message.channel.send({embeds: [animeQuoteEmbed]})
             }
 
             let quote = animeQuotes.getQuotesByAnime(query)
@@ -104,7 +104,7 @@ export default class AnimeQuote extends Command {
                     `${discord.getEmoji("star")}_Character:_ **${aniQuote.name}**\n` +
                     `${discord.getEmoji("star")}_Quote:_ ${aniQuote.quote}`
                     )
-                    return message.channel.send(animeQuoteEmbed)
+                    return message.channel.send({embeds: [animeQuoteEmbed]})
                 }
             animeQuoteEmbed
                 .setDescription(
@@ -113,7 +113,7 @@ export default class AnimeQuote extends Command {
                 `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
                 `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
                 )
-            return message.channel.send(animeQuoteEmbed)
+            return message.channel.send({embeds: [animeQuoteEmbed]})
             }
     }
 }

@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -57,7 +57,7 @@ export default class Instagram extends Command {
             const name = args[2]
             if (!name) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("instagram", "https://clipartart.com/images/new-instagram-clipart-15.jpg", "https://www.instagram.com/")
+                .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
                 .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`))
             }
             let html = ""
@@ -65,7 +65,7 @@ export default class Instagram extends Command {
                 html = await axios.get(`https://www.instagram.com/${name}`, {headers: this.headers}).then((r) => r.data)
             } catch {
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor("instagram", "https://clipartart.com/images/new-instagram-clipart-15.jpg", "https://www.instagram.com/")
+                .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
                 .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`))
             }
             const json = JSON.parse(html.match(/({"config":)((.|\n)*?)(?=;<\/script>)/g)?.[0]!)
@@ -73,7 +73,7 @@ export default class Instagram extends Command {
             const followers = user.edge_followed_by.count
             const following = user.edge_follow.count
             const posts = user.edge_owner_to_timeline_media.edges
-            const instagramArray: MessageEmbed[] = []
+            const instagramArray: EmbedBuilder[] = []
             for (let i = 0; i < posts.length; i++) {
                 const post = posts[i].node
                 const url = `https://www.instagram.com/p/${post.shortcode}/`
@@ -83,7 +83,7 @@ export default class Instagram extends Command {
                 const image = post.display_url
                 const instagramEmbed = embeds.createEmbed()
                 instagramEmbed
-                .setAuthor("instagram", "https://clipartart.com/images/new-instagram-clipart-15.jpg", "https://www.instagram.com/")
+                .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
                 .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`)
                 .setThumbnail(user.profile_pic_url_hd)
                 .setImage(image)
@@ -101,7 +101,7 @@ export default class Instagram extends Command {
                 instagramArray.push(instagramEmbed)
             }
             if (instagramArray.length === 1) {
-                await message.channel.send(instagramArray[0])
+                await message.channel.send({embeds: [instagramArray[0]]})
             } else {
                 embeds.createReactionEmbed(instagramArray, true, true)
             }
@@ -114,13 +114,13 @@ export default class Instagram extends Command {
             html = await axios.get(`https://www.instagram.com/explore/tags/${text}/`, {headers: this.headers}).then((r) => r.data)
         } catch {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("instagram", "https://clipartart.com/images/new-instagram-clipart-15.jpg", "https://www.instagram.com/")
+            .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
             .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`))
         }
         const json = JSON.parse(html.match(/({"config":)((.|\n)*?)(?=;<\/script>)/g)?.[0]!)
         const posts = json.entry_data.TagPage[0].graphql.hashtag.edge_hashtag_to_media.edges
         const max = posts.length > 20 ? 20 : posts.length
-        const instagramArray: MessageEmbed[] = []
+        const instagramArray: EmbedBuilder[] = []
         for (let i = 0; i < max; i++) {
             const post = posts[i].node
             const url = `https://www.instagram.com/p/${post.shortcode}/`
@@ -131,7 +131,7 @@ export default class Instagram extends Command {
             const image = post.display_url
             const instagramEmbed = embeds.createEmbed()
             instagramEmbed
-            .setAuthor("instagram", "https://clipartart.com/images/new-instagram-clipart-15.jpg", "https://www.instagram.com/")
+            .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
             .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`)
             .setURL(url)
             .setThumbnail(pfp)
@@ -145,7 +145,7 @@ export default class Instagram extends Command {
             instagramArray.push(instagramEmbed)
         }
         if (instagramArray.length === 1) {
-            await message.channel.send(instagramArray[0])
+            await message.channel.send({embeds: [instagramArray[0]]})
         } else {
             embeds.createReactionEmbed(instagramArray, true, true)
         }

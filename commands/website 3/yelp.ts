@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -42,7 +42,7 @@ export default class Yelp extends Command {
 
         const json = await axios.get(`https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=review_count`, {headers}).then((r) => r.data)
 
-        const yelpArray: MessageEmbed[] = []
+        const yelpArray: EmbedBuilder[] = []
         for (let i = 0; i < json.businesses.length; i++) {
             const business = json.businesses[i]
             const reviewJSON = await axios.get(`https://api.yelp.com/v3/businesses/${business.id}/reviews`, {headers}).then((r) => r.data.reviews)
@@ -52,7 +52,7 @@ export default class Yelp extends Command {
                 reviews += `**${review.user.name}** - ${review.text}\n`
             }
             const yelpEmbed = embeds.createEmbed()
-            .setAuthor("yelp", "https://www.freepnglogos.com/uploads/yelp-logo-17.png", "https://www.yelp.com/")
+            .setAuthor({name: "yelp", iconURL: "https://www.freepnglogos.com/uploads/yelp-logo-17.png", url: "https://www.yelp.com/"})
             .setTitle(`**Yelp Search** ${discord.getEmoji("aquaUp")}`)
             .setThumbnail(business.image_url)
             .setURL(business.url)
@@ -72,11 +72,11 @@ export default class Yelp extends Command {
 
         if (!yelpArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("yelp", "https://www.freepnglogos.com/uploads/yelp-logo-17.png", "https://www.yelp.com/")
+            .setAuthor({name: "yelp", iconURL: "https://www.freepnglogos.com/uploads/yelp-logo-17.png", url: "https://www.yelp.com/"})
             .setTitle(`**Yelp Search** ${discord.getEmoji("aquaUp")}`))
         }
         if (yelpArray.length === 1) {
-            message.channel.send(yelpArray[0])
+            message.channel.send({embeds: [yelpArray[0]]})
         } else {
             embeds.createReactionEmbed(yelpArray)
         }

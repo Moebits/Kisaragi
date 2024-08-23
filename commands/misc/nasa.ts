@@ -55,7 +55,7 @@ export default class Nasa extends Command {
         if (!data) return
         const checkedMessage = Functions.checkChar(data.explanation, 1900, ".")
         nasaEmbed
-        .setAuthor("nasa", "http://clipart-library.com/images/8cG66eARi.jpg")
+        .setAuthor({name: "nasa", iconURL: "http://clipart-library.com/images/8cG66eARi.jpg"})
         .setTitle(`**Nasa Picture** ${discord.getEmoji("cute")}`)
         .setURL(data.url)
         .setDescription(
@@ -66,6 +66,6 @@ export default class Nasa extends Command {
         .setImage(data.url)
         .setThumbnail(message.author!.displayAvatarURL())
 
-        message.channel.send(nasaEmbed)
+        message.channel.send({embeds: [nasaEmbed]})
     }
 }

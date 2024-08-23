@@ -1,12 +1,12 @@
 import {Message} from "discord.js"
 import fs from "fs"
 import {Command} from "../../structures/Command"
-import * as config from "./../../config.json"
-import * as pack from "./../../package.json"
+import config from "./../../config.json"
+import pack from "./../../package.json"
 import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
+
 export default class Info extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -48,15 +48,15 @@ export default class Info extends Command {
         const infoEmbed = embeds.createEmbed()
         .setTitle(`**Kisaragi Bot Info** ${discord.getEmoji("tohruSmug")}`)
         .setURL(config.repo)
-        .setThumbnail(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
+        .setThumbnail(discord.user!.displayAvatarURL({extension: "png"}))
         .setDescription(
             `${discord.getEmoji("star")}_Description:_ ${description}\n` +
             `${discord.getEmoji("star")}_Version:_ **${pack.version}**\n` +
-            `${discord.getEmoji("star")}_Creator_: **Tenpi#2238**\n` +
+            `${discord.getEmoji("star")}_Creator_: **Moebytes**\n` +
             `${discord.getEmoji("star")}_Library_: **Discord.js ${pack.dependencies["discord.js"].replace("^", "v")}**\n` +
             `${discord.getEmoji("star")}_Runtime:_ **Node.js ${pack.engines.node.replace("^", "v")}**\n` +
-            `${discord.getEmoji("star")}_Language:_ **Typescript ${pack.dependencies.typescript.replace("^", "v")}**\n` +
-            `${discord.getEmoji("star")}_Database:_ **PostgreSQL v11.7**\n` +
+            `${discord.getEmoji("star")}_Language:_ **Typescript ${pack.devDependencies.typescript.replace("^", "v")}**\n` +
+            `${discord.getEmoji("star")}_Database:_ **PostgreSQL v14.2**\n` +
             `${discord.getEmoji("star")}_Guilds:_ **${discord.guilds.cache.size}**\n` +
             `${discord.getEmoji("star")}_Channels:_ **${discord.channels.cache.size}**\n` +
             `${discord.getEmoji("star")}_Users:_ **${discord.users.cache.size}**\n` +
@@ -68,6 +68,6 @@ export default class Info extends Command {
             `[**Support Server**](${config.support})\n` +
             `[**Github Repository**](${config.repo})`
         )
-        return message.channel.send(infoEmbed)
+        return message.channel.send({embeds: [infoEmbed]})
     }
 }

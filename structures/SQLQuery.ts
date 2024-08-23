@@ -1,5 +1,4 @@
 import axios from "axios"
-import bluebird from "bluebird"
 import chalk from "chalk"
 import {Message} from "discord.js"
 import {Base64 as base64} from "js-base64"
@@ -7,58 +6,66 @@ import moment from "moment"
 import {Pool, QueryArrayConfig, QueryConfig, QueryResult} from "pg"
 import querystring from "querystring"
 import * as Redis from "redis"
-import * as config from "../config.json"
+import config from "../config.json"
 import {Command} from "./Command"
 import {Functions} from "./Functions"
 import {Settings} from "./Settings"
+import fs from "fs"
+import path from "path"
 
-const RedisAsync = bluebird.promisifyAll(Redis)
-const redis = RedisAsync.createClient({
+const redis = Redis.createClient({
   url: process.env.REDIS_URL
-}) as any
-const pgPool = new Pool({
-  connectionString: process.env.PG_URL,
-  ssl: {
-    rejectUnauthorized: false
-  },
-  max: 2
 })
+redis.connect()
 
-const tableList = [
-  "guilds"
-]
+const pgPool = new Pool({
+  host: process.env.PG_HOST,
+  user: process.env.PG_USER,
+  database: process.env.PG_DATABASE,
+  password: process.env.PG_PASSWORD,
+  port: Number(process.env.PG_PORT),
+  ssl: false,
+  max: 20
+})
 
 export class SQLQuery {
   constructor(private readonly message: Message) {}
 
-  // Run Query
-  public static runQuery = async (query: QueryConfig | QueryArrayConfig, newData?: boolean): Promise<string[][]> => {
+  /** Run query */
+  public static run = async (query: QueryConfig | QueryArrayConfig, newData?: boolean): Promise<string[][]> => {
       const start = Date.now()
       let redisResult = null
-      if (!newData) redisResult = await redis.getAsync(JSON.stringify(query)) as any
-      if (redisResult) {
-        // SQLQuery.logQuery(Object.values(query)[0], start, true)
-        return (JSON.parse(redisResult))?.[0]
-      } else {
-        const pgClient = await pgPool.connect()
+      if (!newData) {
         try {
-            const result: QueryResult<string[]> = await pgClient.query(query)
-            // SQLQuery.logQuery(Object.values(query)[0], start)
-            await redis.setAsync(JSON.stringify(query), JSON.stringify(result.rows))
-            return result.rows
-          } catch (error) {
-            // console.log(error.stack)
-            return [["Error"]]
-          } finally {
-            // @ts-ignore
-            pgClient.release(true)
-          }
+          redisResult = await redis.get(JSON.stringify(query)) as any
+          // SQLQuery.logQuery(Object.values(query)[0], start, true)
+          if (redisResult) return (JSON.parse(redisResult))?.[0]
+        } catch {
+          // ignore
+        }
       }
-    }
+      const pgClient = await pgPool.connect()
+      try {
+          const result: QueryResult<string[]> = await pgClient.query(query)
+          // SQLQuery.logQuery(Object.values(query)[0], start)
+          await redis.set(JSON.stringify(query), JSON.stringify(result.rows))
+          return result.rows
+        } catch (error) {
+          // console.log(error.stack)
+          return [["Error"]]
+        } finally {
+          pgClient.release(true)
+        }
+  }
 
-  // Log Query
+  /** Create the Database. */
+  public static createDB = async () => {
+    const sql = fs.readFileSync(path.join(__dirname, "CreateDB.sql")).toString()
+    return SQLQuery.run({text: sql})
+  }
+
+  /** Log query */
   public static logQuery = (text: any, start: number, blue?: boolean): void => {
-
       const duration = Date.now() - start
       const color = blue ? "cyanBright" : "magentaBright"
       const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`
@@ -67,60 +74,60 @@ export class SQLQuery {
       console.log(chalk`{${color} ${queryString}}`)
     }
 
-  // Flush Redis DB
+  /** Flush redis db */
   public static flushDB = async (): Promise<void> => {
-      await redis.flushdbAsync()
+      await redis.flushDb()
     }
 
-  /** Redis Set */
+  /** Redis set */
   public static redisSet = async (key: string, value: string | null, expiration?: number) => {
     if (value === null) value = "null"
     if (expiration) {
-      await redis.setAsync(key, value, "EX", expiration)
+      await redis.setEx(key, expiration, value)
     } else {
-      await redis.setAsync(key, value)
+      await redis.set(key, value)
     }
   }
 
-  /** Redis Get */
+  /** Redis get */
   public static redisGet = async (key: string) => {
-    const result = await redis.getAsync(key) as any
+    const result = await redis.get(key) as any
     return result
   }
 
-  // Fetch a row
+  /** Fetch a row */
   public fetchRow = async (table: string, update?: boolean): Promise<string[]> => {
     const query: QueryArrayConfig = {
       text: `SELECT * FROM "${table}" WHERE "guild id" = $1`,
       rowMode:"array",
       values: [this.message.guild?.id]
     }
-    const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
+    const result = update ? await SQLQuery.run(query, true) : await SQLQuery.run(query)
     return result[0]
 }
 
-  // Fetch commands
+  /** Fetch commands */
   public static fetchCommand = async (command: string, column: string): Promise<string[]> => {
     const query: QueryArrayConfig = {
       text: `SELECT "${column}" FROM commands WHERE command IN ($1)`,
       values: [command],
       rowMode: "array"
     }
-    const result = await SQLQuery.runQuery(query, true)
+    const result = await SQLQuery.run(query, true)
     return result[0]
   }
 
-  // Fetch aliases
+  /** Fetch aliases */
   public fetchAliases = async (update?: boolean): Promise<string[]> => {
       const query: QueryArrayConfig = {
         text: `SELECT aliases FROM commands`,
         rowMode: "array"
       }
-      const result = await SQLQuery.runQuery(query, true)
+      const result = await SQLQuery.run(query, true)
       return result[0]
   }
 
-  // Fetch Prefix
+  /** Fetch prefix */
   public static fetchPrefix = async (message: Message, update?: boolean): Promise<string> => {
     if (!message?.guild?.id) return "=>"
     const query: QueryArrayConfig = {
@@ -128,7 +135,7 @@ export class SQLQuery {
         rowMode: "array",
         values: [message.guild?.id]
     }
-    const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query)
+    const result = update ? await SQLQuery.run(query, true) : await SQLQuery.run(query)
     if (!result) {
         await SQLQuery.initGuild(message)
         return "=>"
@@ -137,7 +144,7 @@ export class SQLQuery {
       }
   }
 
-  // Fetch a column
+  /** Fetch column */
   public fetchColumn = async (table: string, column: string, key?: string | boolean, value?: string | boolean, update?: boolean): Promise<any> => {
     const query: QueryArrayConfig = key ? {
       text: `SELECT "${column}" FROM "${table}" WHERE "${key}" = $1`,
@@ -148,7 +155,7 @@ export class SQLQuery {
       rowMode: "array",
       values: [this.message.guild?.id]
     }
-    const result = await SQLQuery.runQuery(query, true)
+    const result = await SQLQuery.run(query, true)
     const data = result?.[0]?.[0]
     if (data) {
       if (data === "[]" || data === "{}") return null
@@ -164,7 +171,7 @@ export class SQLQuery {
       rowMode: "array",
       values: [value]
     }
-    const result = await SQLQuery.runQuery(query, true)
+    const result = await SQLQuery.run(query, true)
     const data = result?.[0]?.[0]
     if (data) {
       if (data === "[]" || data === "{}") return null
@@ -179,40 +186,40 @@ export class SQLQuery {
       text: `SELECT "${column}" FROM "${table}"`,
       rowMode: "array"
     }
-    const result = update ? await SQLQuery.runQuery(query, true) : await SQLQuery.runQuery(query, true)
+    const result = update ? await SQLQuery.run(query, true) : await SQLQuery.run(query, true)
     return result.flat()
   }
 
-  // Insert row into a table
+  /** Insert into table */
   public static insertInto = async (table: string, column: string, value: any): Promise<void> => {
       const query: QueryConfig = {
         text: `INSERT INTO "${table}" ("${column}") VALUES ($1)`,
         values: [value]
       }
-      await SQLQuery.runQuery(query, true)
+      await SQLQuery.run(query, true)
   }
 
-  // Insert command
+  /** Insert a command */
   public static insertCommand = async (name: string, path: string, command: Command): Promise<void> => {
   const cmd = command.options
   const query: QueryConfig = {
       text: `INSERT INTO commands (command, aliases, path, cooldown, help, examples, "guild only", random, permission, "bot permission") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       values: [name, cmd.aliases, path, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission]
     }
-  await SQLQuery.runQuery(query, true)
+  await SQLQuery.run(query, true)
   }
 
-  // Update Prefix
+  /** Update prefix */
   public static updatePrefix = async (message: Message, prefix: string): Promise<void> => {
   const query: QueryConfig = {
       text: `UPDATE "guilds" SET "prefix" = $1 WHERE "guild id" = $2`,
       values: [prefix, message.guild?.id]
     }
-  await SQLQuery.runQuery(query, true)
+  await SQLQuery.run(query, true)
   SQLQuery.fetchPrefix(message, true)
   }
 
-  // Update a row in a table
+  /** Update column in table */
   public updateColumn = async (table: string, column: string, value: any, key?: string, keyVal?: string): Promise<void> => {
       let query: QueryConfig
       if (key) {
@@ -226,84 +233,85 @@ export class SQLQuery {
           values: [value, this.message.guild?.id]
         }
       }
-      await SQLQuery.runQuery(query, true)
+      await SQLQuery.run(query, true)
   }
 
-  /** Update Column Static */
+  /** Update column static */
   public static updateColumn = async (table: string, column: string, value: any, key: string, keyVal: string): Promise<void> => {
     const query: QueryConfig = {
         text: `UPDATE "${table}" SET "${column}" = $1 WHERE "${key}" = $2`,
         values: [value, keyVal]
     }
-    await SQLQuery.runQuery(query, true)
+    await SQLQuery.run(query, true)
   }
 
-  // Update Command
+  /** Update command */
   public static updateCommand = async (name: string, path: string, command: Command): Promise<void> => {
   const cmd = command.options
   const query: QueryConfig = {
     text: `UPDATE commands SET aliases = $2, cooldown = $3, help = $4, examples = $5, "guild only" = $6, random = $7, permission = $8, "bot permission" = $9, path = $10 WHERE "command" = $1`,
     values: [name, cmd.aliases, cmd.cooldown, cmd.help, cmd.examples, cmd.guildOnly, cmd.random, cmd.permission, cmd.botPermission, path]
   }
-  await SQLQuery.runQuery(query, true)
+  await SQLQuery.run(query, true)
   }
 
-  // Remove a guild from all tables
+  /** Delete the guild from database. */
   public static deleteGuild = async (guildID: string): Promise<void> => {
-      for (let i = 0; i < tableList.length; i++) {
-        const query: QueryConfig = {
-          text: `DELETE FROM "${tableList[i]}" WHERE "guild id" = $1`,
-          values: [guildID]
-        }
-        await SQLQuery.runQuery(query, true)
+      const query: QueryConfig = {
+        text: `DELETE FROM "guilds" WHERE "guild id" = $1`,
+        values: [guildID]
       }
+      await SQLQuery.run(query, true)
   }
 
-  // Delete row
+  /** Delete a row */
   public static deleteRow = async (table: string, column: string, value: any): Promise<void> => {
     const query: QueryConfig = {
       text: `DELETE FROM "${table}" WHERE "${column}" = $1`,
       values: [value]
     }
-    await SQLQuery.runQuery(query, true)
+    await SQLQuery.run(query, true)
   }
 
-  /** Deletes a table. */
+  /** Drops a table. */
+  public static dropTable = async (table: string): Promise<void> => {
+    const query: QueryConfig = {
+      text: `DROP TABLE "${table}"`
+    }
+    await SQLQuery.run(query, true)
+  }
+
+  /** Deletes all entries in a table. */
   public static purgeTable = async (table: string): Promise<void> => {
-    if (table === "points") return
     const query: QueryConfig = {
       text: `DELETE FROM "${table}"`
     }
-    await SQLQuery.runQuery(query, true)
+    await SQLQuery.run(query, true)
   }
 
-  // Order tables by guild member count
+  /** Order guilds table by guild member count */
   public static orderTables = async (): Promise<void> => {
-      for (let i = 0; i < tableList.length; i++) {
-          const query: QueryConfig = {
-            text: `SELECT members FROM "${tableList[i]}" ORDER BY
-            CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members ASC`
-          }
-          await SQLQuery.runQuery(query, true)
-      }
+        const query: QueryConfig = {
+          text: `SELECT members FROM "guilds" ORDER BY
+          CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members ASC`
+        }
+        await SQLQuery.run(query, true)
   }
 
-  /** Init Guild */
+  /** Initialize guild settings */
   public static initGuild = async (message: Message, force?: boolean) => {
     const settings = new Settings(message)
     const query: QueryArrayConfig = {
           text: `SELECT "guild id" FROM guilds`,
           rowMode: "array"
     }
-    const result = await SQLQuery.runQuery(query, true)
+    const result = await SQLQuery.run(query, true)
     const found = result.find((id: string[]) => String(id) === message.guild?.id) as any
     if (!found || force) {
-          for (let i = 0; i < tableList.length; i++) {
-            try {
-              await SQLQuery.insertInto(tableList[i], "guild id", message.guild?.id)
-            } catch {
-              // Do nothing
-            }
+          try {
+            await SQLQuery.insertInto("guilds", "guild id", message.guild?.id)
+          } catch {
+            // Do nothing
           }
           await settings.initAll()
           await SQLQuery.orderTables()
@@ -316,32 +324,17 @@ export class SQLQuery {
     const query: QueryConfig = {
       text: `SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_name`
     }
-    const result = await SQLQuery.runQuery(query, true) as any
+    const result = await SQLQuery.run(query, true) as any
     return result.map((r: any) => r.table_name) as string[]
   }
 
   /** Deletes all rows from all tables. */
   public static purgeDB = async () => {
-    for (let i = 0; i < tableList.length; i++) {
-      await SQLQuery.purgeTable(tableList[i])
+    const tables = await SQLQuery.getTables()
+    for (let i = 0; i < tables.length; i++) {
+      await SQLQuery.dropTable(tables[i])
     }
     return
-  }
-
-  /** Sets foreign keys. */
-  public static foreignKeys = async (table: string) => {
-    const query: QueryConfig = {
-      text: `ALTER TABLE "${table}" ADD FOREIGN KEY ("guild id") REFERENCES guilds ("guild id")`
-    }
-    await SQLQuery.runQuery(query, true)
-  }
-
-  /** Removes foreign keys. */
-  public static dropForeignKeys = async (table: string) => {
-    const query: QueryConfig = {
-      text: `ALTER TABLE "${table}" DROP CONSTRAINT "${table}_guild id_fkey"`
-    }
-    await SQLQuery.runQuery(query, true)
   }
 
   /** Deletes duplicate records. */
@@ -350,7 +343,7 @@ export class SQLQuery {
       text: `DELETE FROM "${table}" T1 USING "${table}" T2
       WHERE T1.ctid < T2.ctid AND T1."${key}" = T2."${key}"`
     }
-    await SQLQuery.runQuery(query, true)
+    await SQLQuery.run(query, true)
   }
 
   /** Deletes user data on account deletion */
@@ -365,11 +358,11 @@ export class SQLQuery {
     if (!token) return
     const clientID = config.testing === "on" ? process.env.TEST_CLIENT_ID : process.env.CLIENT_ID
     const clientSecret = config.testing === "on" ? process.env.TEST_CLIENT_SECRET : process.env.CLIENT_SECRET
-    const data = await axios.post(`https:// discordapp.com/api/oauth2/token/revoke`, querystring.stringify({
+    await axios.post(`https://discordapp.com/api/oauth2/token/revoke`, querystring.stringify({
       client_id: clientID,
       client_secret: clientSecret,
       token
-    })).then((r) => r.data)
+    }))
     await SQLQuery.deleteRow("oauth2", "access token", token)
   }
 
@@ -594,6 +587,6 @@ export class SQLQuery {
     const query: QueryConfig = {
       text: `DELETE FROM collectors WHERE timestamp < current_timestamp - interval '7 days'`
     }
-    await SQLQuery.runQuery(query, true)
+    await SQLQuery.run(query, true)
   }
 }

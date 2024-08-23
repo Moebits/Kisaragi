@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -54,7 +54,7 @@ export default class Kancolle extends Command {
         const id = res.data?.items[0]?.id
         if (!id) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("kancolle", "https://upload.wikimedia.org/wikipedia/en/0/02/Kantai_Collection_logo.png")
+            .setAuthor({name: "kancolle", iconURL: "https://upload.wikimedia.org/wikipedia/en/0/02/Kantai_Collection_logo.png"})
             .setTitle(`**Kancolle Search** ${discord.getEmoji("PoiHug")}`))
         }
         const res2 = await axios.get(`https://kancolle.fandom.com/api/v1/Articles/AsSimpleJson?id=${id}`, {headers})
@@ -79,11 +79,11 @@ export default class Kancolle extends Command {
             description += `${discord.getEmoji("star")}_${res2.data.sections[index]?.title}_: ${res2.data.sections[index]?.content[0]?.elements?.map((c: any) => c.text).join("\n")}\n`
             index++
         }
-        const kancolleArray: MessageEmbed[] = []
+        const kancolleArray: EmbedBuilder[] = []
         for (let i = 0; i < filtered.length; i++) {
             const kancolleEmbed = embeds.createEmbed()
             kancolleEmbed
-            .setAuthor("kancolle", "https://upload.wikimedia.org/wikipedia/en/0/02/Kantai_Collection_logo.png")
+            .setAuthor({name: "kancolle", iconURL: "https://upload.wikimedia.org/wikipedia/en/0/02/Kantai_Collection_logo.png"})
             .setTitle(`**Kancolle Search** ${discord.getEmoji("PoiHug")}`)
             .setURL(`https://kancolle.fandom.com/wiki/${girl}`)
             .setThumbnail(thumb)
@@ -92,7 +92,7 @@ export default class Kancolle extends Command {
             kancolleArray.push(kancolleEmbed)
         }
         if (kancolleArray.length === 1) {
-            message.channel.send(kancolleArray[0])
+            message.channel.send({embeds: [kancolleArray[0]]})
         } else {
             embeds.createReactionEmbed(kancolleArray, true, true)
         }

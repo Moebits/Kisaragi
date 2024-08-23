@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -38,16 +38,17 @@ export default class HelpInfo extends Command {
             image = path.join(__dirname, `../../../assets/help/${category}/${name}.jpg`)
         }
         const helpInfoEmbed = embeds.createEmbed()
+        let attachments = [] as AttachmentBuilder[]
         if (image) {
-            const img = new MessageAttachment(image).attachment as string
+            const img = new AttachmentBuilder(image)
+            attachments.push(img)
             helpInfoEmbed
-            .attachFiles([img])
-            .setImage(`attachment://${path.basename(img)}`)
+            .setImage(`attachment://${path.basename(img.attachment as string)}`)
         }
         helpInfoEmbed
         .setTitle(`**Command Help** ${discord.getEmoji("gabYes")}`)
-        .setAuthor("help", "https://i.imgur.com/qcSWLSf.png")
-        .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
+        .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
+        .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
         .setDescription(Functions.multiTrim(`
             ${discord.getEmoji("star")}_Name:_ **${name}**
             ${discord.getEmoji("star")}_Category:_ **${category}**
@@ -57,6 +58,6 @@ export default class HelpInfo extends Command {
             ${discord.getEmoji("star")}_Help:_ \n${Functions.multiTrim(command.help)}
             ${discord.getEmoji("star")}_Examples:_ \n${Functions.multiTrim(command.examples)}
         `))
-        message.channel.send(helpInfoEmbed)
+        message.channel.send({embeds: [helpInfoEmbed], files: attachments})
     }
 }

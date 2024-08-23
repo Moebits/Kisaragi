@@ -52,27 +52,27 @@ export default class Softban extends Command {
                 continue
             }
             softBanEmbed
-            .setAuthor("softban", "https://cdn.discordapp.com/emojis/593867503055274006.png")
+            .setAuthor({name: "softban", iconURL: "https://cdn.discordapp.com/emojis/593867503055274006.png"})
             .setTitle(`**You Were Soft Banned** ${discord.getEmoji("sagiriBleh")}`)
             .setDescription(`${discord.getEmoji("star")}_You were soft banned from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await user.createDM()
             const id = user.id
             try {
-                await message.guild?.members.ban(user, {reason, days: 7})
+                await message.guild?.members.ban(user, {reason, deleteMessageSeconds: 7 * 24 * 60 * 60})
                 await message.guild?.members.unban(id, reason)
                 const data = {type: "softban", user: id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(softBanEmbed).catch(() => null)
+            await dm.send({embeds: [softBanEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         softBanEmbed
-        .setAuthor("softban", "https://cdn.discordapp.com/emojis/593867503055274006.png")
+        .setAuthor({name: "softban", iconURL: "https://cdn.discordapp.com/emojis/593867503055274006.png"})
         .setTitle(`**Member Soft Banned** ${discord.getEmoji("sagiriBleh")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully soft banned ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send(softBanEmbed)
+        message.channel.send({embeds: [softBanEmbed]})
         return
     }
 }

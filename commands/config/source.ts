@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -46,7 +46,7 @@ export default class Source extends Command {
         const source = await sql.fetchColumn("guilds", "source")
         const step = 5.0
         const increment = Math.ceil((source ? source.length : 1) / step)
-        const sourceArray: MessageEmbed[] = []
+        const sourceArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let description = ""
             for (let j = 0; j < step; j++) {
@@ -62,7 +62,7 @@ export default class Source extends Command {
             const sourceEmbed = embeds.createEmbed()
             sourceEmbed
             .setTitle(`**Source Channels** ${discord.getEmoji("tohruThumbsUp2")}`)
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+            .setThumbnail(message.guild!.iconURL({extension: "png"})!)
             .setDescription(Functions.multiTrim(`
                 Channels added to this list will have all images reverse-searched on saucenao. This is only effective on anime artwork.
                 newline
@@ -81,7 +81,7 @@ export default class Source extends Command {
         if (sourceArray.length > 1) {
             embeds.createReactionEmbed(sourceArray)
         } else {
-            message.channel.send(sourceArray[0])
+            message.channel.send({embeds: [sourceArray[0]]})
         }
 
         async function sourcePrompt(msg: Message) {
@@ -92,14 +92,14 @@ export default class Source extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "source", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
@@ -109,9 +109,9 @@ export default class Source extends Command {
                     source[num] = ""
                     source = source.filter(Boolean)
                     await sql.updateColumn("guilds", "source", source)
-                    return msg.channel.send(responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`)]})
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription("Setting not found!"))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription("Setting not found!")]})
                 }
             }
 
@@ -127,7 +127,7 @@ export default class Source extends Command {
             await sql.updateColumn("guilds", "source", source)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(sourcePrompt)

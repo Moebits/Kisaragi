@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import snoowrap from "snoowrap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -36,7 +36,7 @@ export default class Animesnowscapes extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const reddit = new snoowrap({
-            userAgent: "kisaragi bot v1.0 by /u/imtenpi",
+            userAgent: "kisaragi bot v1.0",
             clientId: process.env.REDDIT_APP_ID,
             clientSecret: process.env.REDDIT_APP_SECRET,
             refreshToken: process.env.REDDIT_REFRESH_TOKEN
@@ -54,7 +54,7 @@ export default class Animesnowscapes extends Command {
         if (!redditArray[0]) return redditCmd.noResults()
         let msg: Message
         if (redditArray.length === 1) {
-            msg = await message.channel.send(redditArray[0])
+            msg = await message.channel.send({embeds: [redditArray[0]]})
         } else {
             msg = await embeds.createReactionEmbed(redditArray, true, true)
         }

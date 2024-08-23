@@ -1,4 +1,5 @@
-import {Intents} from "discord.js"
+import "dotenv/config"
+import {DefaultWebSocketManagerOptions, GatewayIntentBits, Partials} from "discord.js"
 import fs from "fs"
 import path from "path"
 import * as config from "./config.json"
@@ -8,46 +9,55 @@ import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"
 import {SQLQuery} from "./structures/SQLQuery"
 
-const intents = new Intents(Intents.ALL)
-intents.remove(["GUILD_MESSAGE_TYPING", "DIRECT_MESSAGE_TYPING"])
-
 const discord = new Kisaragi({
     allowedMentions: {parse: ["users"]},
-    restTimeOffset: 0,
-    partials: ["MESSAGE", "CHANNEL", "REACTION"],
-    ws: {intents}
+    intents: [
+        GatewayIntentBits.Guilds, 
+        GatewayIntentBits.GuildMembers, 
+        GatewayIntentBits.GuildPresences,
+        GatewayIntentBits.GuildModeration,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.DirectMessageReactions,
+        GatewayIntentBits.MessageContent
+    ],
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+    rest: {
+        offset: 0
+    }
 })
 
 // @ts-ignore
-discord.options.ws.properties.$browser = "Discord iOS"
-// @ts-ignore
-discord.options.ws.properties.$device = "iPhone XR"
-// @ts-ignore
-discord.options.ws.properties.$os = "iOS 13.5"
+DefaultWebSocketManagerOptions.identifyProperties.browser = "Discord iOS"
 
 const dumps = [
-    `../assets/images/dump`,
-    `../assets/images/gifs`,
-    `../assets/images/misc`,
-    `../assets/images/pages`,
-    `../assets/images/pixiv/illusts`,
-    `../assets/images/pixiv/profiles`,
-    `../assets/images/pixiv/zip`,
-    `../assets/images/waifu2x`,
-    `../assets/misc/dump`,
-    `../assets/misc/tracks`,
-    `../assets/misc/videos`,
-    `./tracks/transform`,
-    `./images/transform`,
-    `./videos/transform`
+    `./assets/misc/images/dump`,
+    `./assets/misc/images/gifs`,
+    `./assets/misc/images/misc`,
+    `./assets/misc/images/pages`,
+    `./assets/misc/images/pixiv/illusts`,
+    `./assets/misc/images/pixiv/profiles`,
+    `./assets/misc/images/pixiv/zip`,
+    `./assets/misc/images/waifu2x`,
+    `./assets/misc/dump`,
+    `./assets/misc/tracks`,
+    `./assets/misc/videos`,
+    `./assets/misc/tracks/transform`,
+    `./assets/misc/images/transform`,
+    `./assets/misc/videos/transform`
 ]
 
 for (let i = 0; i < dumps.length; i++) {
-    if (!fs.existsSync(path.join(__dirname, dumps[i]))) fs.mkdirSync(path.join(__dirname, dumps[i]), {recursive: true})
+    Functions.removeDirectory(path.join(__dirname, "./assets/misc"))
+    fs.mkdirSync(path.join(__dirname, dumps[i]), {recursive: true})
 }
 
 const start = async (): Promise<void> => {
-    // await SQLQuery.purgeTable("commands")
+    await SQLQuery.createDB()
+    //await SQLQuery.purgeTable("commands")
+
     let commandCounter = 0
     const cmdFiles: string[][] = []
     const subDirectory = fs.readdirSync(path.join(__dirname, "./commands/"))
@@ -77,7 +87,7 @@ const start = async (): Promise<void> => {
 
     const evtFiles = fs.readdirSync("./events/")
 
-    evtFiles.forEach((file: string) => {
+    await Promise.all(evtFiles.map(async (file: string) => {
         if (!file.endsWith(".ts") && !file.endsWith(".js")) return
         const eventName = file.split(".")[0] as any
         Logger.log(`Loading Event: ${eventName}`)
@@ -85,31 +95,26 @@ const start = async (): Promise<void> => {
         if (eventName) {
         discord.on(eventName, (...args: any) => event.run(...args))
         }
-    })
+    }))
 
     Logger.log(`Loaded a total of ${commandCounter} commands.`)
     Logger.log(`Loaded a total of ${evtFiles.length} events.`)
 
-    const server = new Server()
-    server.run()
+    //const server = new Server()
+    //server.run()
 
     const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
     await discord.login(token)
-    discord.setPfp(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
+    discord.setPfp(discord.user!.displayAvatarURL({extension: "png"}))
     discord.setUsername(discord.user!.username)
 
-    Functions.pollTwitch(discord)
-    Functions.youtubeReSubscribe()
+    //Functions.pollTwitch(discord)
+    //Functions.youtubeReSubscribe()
     if (config.testing === "off") SQLQuery.redisSet("state", JSON.stringify([]))
 }
 
 start()
 
-// @ts-ignore
 process.on("unhandledRejection", (error) => console.error(error))
 process.on("uncaughtException", (error) => console.error(error))
-
-process.on("SIGTERM", () => {
-    discord.destroy()
-    process.exit(0)
-})
+process.on("SIGTERM", () => discord.destroy())

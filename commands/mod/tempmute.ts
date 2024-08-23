@@ -67,7 +67,7 @@ export default class TempMute extends Command {
                 continue
             }
             tempMuteEmbed
-            .setAuthor("tempmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
+            .setAuthor({name: "tempmute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
             .setTitle(`**You Were Temp Muted** ${discord.getEmoji("sagiriBleh")}`)
             .setDescription(`${discord.getEmoji("star")}_You were temp muted from **${message.guild!.name}** for **${rawTime}**, reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -94,6 +94,7 @@ export default class TempMute extends Command {
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
                         await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, newArr)
+                        // @ts-expect-error
                         clearInterval()
                         return
                     }
@@ -112,14 +113,14 @@ export default class TempMute extends Command {
                 console.log(e)
                 return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(tempMuteEmbed).catch(() => null)
+            await dm.send({embeds: [tempMuteEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         tempMuteEmbed
-        .setAuthor("tempmute", "https://images.emojiterra.com/mozilla/512px/1f507.png")
+        .setAuthor({name: "tempmute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
         .setTitle(`**Member Temp Muted** ${discord.getEmoji("sagiriBleh")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully temp muted ${members.join(", ")} for the duration **${rawTime}** for reason:_ **${reason}**`)
-        message.channel.send(tempMuteEmbed)
+        message.channel.send({embeds: [tempMuteEmbed]})
         return
     }
 }

@@ -1,4 +1,4 @@
-import {Message, MessageEmbed, MessageReaction, TextChannel, User} from "discord.js"
+import {Message, MessageReaction, TextChannel, User} from "discord.js"
 import {Command} from "../../structures/Command"
 import * as config from "./../../config.json"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
@@ -30,15 +30,17 @@ export default class GettingStarted extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
+        if (!message.guild) return
         let prefix = await SQLQuery.fetchPrefix(message)
         if (!prefix) prefix = "=>"
+        const guildOwner = await message.guild.fetchOwner()
         const joinEmbed = embeds.createEmbed()
         joinEmbed
-        .setAuthor("getting started", "https://i.kym-cdn.com/photos/images/facebook/001/415/932/f20.png")
+        .setAuthor({name: "getting started", iconURL: "https://i.kym-cdn.com/photos/images/facebook/001/415/932/f20.png"})
         .setTitle(`**Getting Started** ${discord.getEmoji("tohruThumbsUp")}`)
-        .setThumbnail(discord.user!.displayAvatarURL({format: "png", dynamic: true}))
+        .setThumbnail(discord.user!.displayAvatarURL({extension: "png"}))
         .setDescription(
-            `Thanks for adding me to your guild${message.guild?.owner?.user.username ? `, **${message.guild.owner.user.username}**` : ""}! ${discord.getEmoji("chinoSmug")}\n\n` +
+            `Thanks for adding me to your guild${guildOwner.user.username ? `, **${guildOwner.user.username}**` : ""}! ${discord.getEmoji("chinoSmug")}\n\n` +
             `${discord.getEmoji("star")}The current prefix is set to \`${prefix}\`. Use \`${prefix}help\` at anytime to display the list of commands.\n` +
             `${discord.getEmoji("star")}For detailed command help, use \`${prefix}help (command)\`.\n` +
             `${discord.getEmoji("star")}If you would like to change the bot prefix, use \`${prefix}prefix\`. If you forget your prefix you can always tag me.\n` +
@@ -60,18 +62,18 @@ export default class GettingStarted extends Command {
         try {
             if (args[1]) {
                 const chan = message.guild?.channels.cache.find((c) => c.id === args[1].match(/\d{15,}/)?.[0]) as TextChannel
-                if (chan) msg = await chan.send(joinEmbed)
+                if (chan) msg = await chan.send({embeds: [joinEmbed]})
             } else {
-                msg = await message.channel.send(joinEmbed)
+                msg = await message.channel.send({embeds: [joinEmbed]})
             }
         } catch {
             const m = await discord.fetchFirstMessage(message.guild!)
-            if (m) msg = await m?.channel.send(joinEmbed)
+            if (m) msg = await m?.channel.send({embeds: [joinEmbed]})
         }
 
         if (msg) await msg.react(discord.getEmoji("help"))
         const helpCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("help") && user.bot === false
-        const help = msg?.createReactionCollector(helpCheck)
+        const help = msg?.createReactionCollector({filter: helpCheck})
 
         help?.on("collect", async (reaction, user) => {
             await reaction.users.remove(user)

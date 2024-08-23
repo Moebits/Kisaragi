@@ -1,10 +1,8 @@
 import {Message} from "discord.js"
-import fs from "fs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class TOS extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -31,22 +29,22 @@ export default class TOS extends Command {
 
         const termsOfService = embeds.createEmbed()
         termsOfService
-        .setAuthor("tos", "https://www.symphonyenvironmental.com/wp-content/uploads/2019/10/Terms-and-conditions-icon-V2.png")
-        .setURL("https://kisaragi-site.herokuapp.com/terms")
+        .setAuthor({name: "tos", iconURL: "https://www.symphonyenvironmental.com/wp-content/uploads/2019/10/Terms-and-conditions-icon-V2.png"})
+        .setURL("https://kisaragi.moe/terms")
         .setTitle(`**Terms of Service** ${discord.getEmoji("kannaPat")}`)
         .setDescription(Functions.multiTrim(`
-            By using Kisaragi, you **agree** to abide by the terms of service. This bot has zero relation with Discord, it's only the service that it's used on.
+            By using Kisaragi, you agree to abide by the terms of service.
             **Bot Spam and Misuse**
-            ${discord.getEmoji("star")}_Content:_ Everything posted by the bot falls under your responsibility, not the bot or developer. If the bot posts something "questionable" it's because of the input you gave it. I do make an effort to filter such content, but it's impossible to filter everything on the internet.
-            ${discord.getEmoji("star")}_API Spam:_ Don't use this bot to spam Discord's API (or any API it uses).
-            ${discord.getEmoji("star")}_Global Chat:_ Don't post anything inappropriate, offensive, or spam. This is a public chat visible to everyone who enables it.
-            ${discord.getEmoji("star")}_Oauth2:_ Don't abuse oauth2 commands or share oauth2 links created by the bot.
-            ${discord.getEmoji("star")}_Abusing Bugs:_ This bot is a beta version, and there could be bugs that crash the bot. Please report these bugs with the \`feedback\` command.
+            ${discord.getEmoji("star")}_Content:_ Everything posted by the bot falls under your responsibility, not the bot or developer. I do make an effort to filter content but the nature of many commands is retrieving arbitrary data from the internet.
+            ${discord.getEmoji("star")}_API Spam:_ Don't use this bot to spam Discord's API (or any other API it uses).
+            ${discord.getEmoji("star")}_Global Chat:_ Don't post anything inappropriate, offensive, or spam. This is a public chat that is visible to everyone who enables it.
+            ${discord.getEmoji("star")}_Oauth2:_ Don't misuse oauth2 commands or share oauth2 links created by the bot.
+            ${discord.getEmoji("star")}_Abusing Bugs:_ There could be bugs that crash the bot. Please report these bugs with the \`feedback\` command.
             **Punishment**
-            Violating the TOS could result in you or your entire guild getting blacklisted (blocked from using any commands and blocked from adding the bot to a server).
+            Violating the TOS could result in you or your entire server getting blacklisted (blocked from using any commands and blocked from adding the bot to a server).
             **Appeal**
-            There is no method of appealing yet, because I don't think it's necessary.
+            You can contact me in the support server for an appeal after significant time has passed after your blacklist.
         `))
-        return message.channel.send(termsOfService)
+        return message.channel.send({embeds: [termsOfService]})
     }
 }

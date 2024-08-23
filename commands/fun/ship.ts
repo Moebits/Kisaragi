@@ -1,5 +1,5 @@
-import canvas, {Canvas} from "canvas"
-import {Message, MessageAttachment} from "discord.js"
+import canvas from "@napi-rs/canvas"
+import {Message, AttachmentBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -35,18 +35,18 @@ export default class $8ball extends Command {
         const can = new canvas.Canvas(128*3, 128)
         const ctx = can.getContext("2d")
 
-        const av1 = await canvas.loadImage(user1?.user.displayAvatarURL({format: "png"})!)
-        const av2 = await canvas.loadImage(user2?.user.displayAvatarURL({format: "png"})!)
+        const av1 = await canvas.loadImage(user1?.user.displayAvatarURL({extension: "png"})!)
+        const av2 = await canvas.loadImage(user2?.user.displayAvatarURL({extension: "png"})!)
         const heart = await canvas.loadImage("https://i.ya-webdesign.com/images/anime-heart-png-1.png")
         ctx.drawImage(av1, 0, 0, can.width/3, can.height)
         ctx.drawImage(heart, can.width/3, 0, can.width/3, can.height)
         ctx.drawImage(av2, (can.width/3)*2, 0, can.width/3, can.height)
 
-        const attachment = new MessageAttachment(can.toBuffer(), "ship.png")
+        const attachment = new AttachmentBuilder(can.toBuffer("image/png"), {name: "ship.png"})
 
-        message.channel.send(
+        message.channel.send({content:
             `Aww, what a cute shipping! ${discord.getEmoji("gabrielLick")}\n` +
-            `_Shipping Name:_ **${shipname}**`, attachment)
+            `_Shipping Name:_ **${shipname}**`, files: [attachment]})
         return
     }
 }

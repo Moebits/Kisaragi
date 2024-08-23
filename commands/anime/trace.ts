@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -48,7 +48,7 @@ export default class Trace extends Command {
         const json = await axios.get(`https://trace.moe/api/search?url=${url}`, {headers}).then((r) => r.data)
         if (!json?.docs) return message.reply(`No search results found ${discord.getEmoji("aquaCry")}`)
 
-        const traceArray: MessageEmbed[] = []
+        const traceArray: EmbedBuilder[] = []
         for (let i = 0; i < json.docs.length; i++) {
             const trace = json.docs[i]
             if (trace.is_adult) {
@@ -61,7 +61,7 @@ export default class Trace extends Command {
             const traceEmbed = embeds.createEmbed()
             traceEmbed
             .setURL(video)
-            .setAuthor("trace.moe", "https://trace.moe/favicon128.png", "https://trace.moe/")
+            .setAuthor({name: "trace.moe", iconURL: "https://trace.moe/favicon128.png", url: "https://trace.moe/"})
             .setTitle(`Anime Scene Search ${discord.getEmoji("vigneXD")}`)
             .setImage(image)
             .setDescription(
@@ -83,11 +83,11 @@ export default class Trace extends Command {
 
         if (!traceArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("trace.moe", "https://trace.moe/favicon128.png", "https://trace.moe/")
+            .setAuthor({name: "trace.moe", iconURL: "https://trace.moe/favicon128.png", url: "https://trace.moe/"})
             .setTitle(`Anime Scene Search ${discord.getEmoji("vigneXD")}`), "If this is a hentai, try searching in a NSFW channel.")
         }
         if (traceArray.length === 1) {
-            return message.channel.send(traceArray[0])
+            return message.channel.send({embeds: [traceArray[0]]})
         } else {
             embeds.createReactionEmbed(traceArray, true, true)
         }

@@ -1,12 +1,12 @@
 import DeviantArt, {DeviantArtSearchResults, DeviationRSS, DeviationRSSExtended} from "deviantart.ts"
-import type {Message, MessageEmbed} from "discord.js"
+import type {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
-let deviantArray: MessageEmbed[] = []
+let deviantArray: EmbedBuilder[] = []
 
 export default class Deviantart extends Command {
     private user = null as any
@@ -45,7 +45,7 @@ export default class Deviantart extends Command {
         const perms = new Permission(discord, this.message)
         if (!result.results[0]) {
             const badDeviantEmbed = embeds.createEmbed()
-            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", "https://www.deviantart.com/")
+            .setAuthor({name: "deviantart", iconURL: "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", url: "https://www.deviantart.com/"})
             .setTitle(`**DeviantArt Search** ${discord.getEmoji("aquaUp")}`)
             this.invalidQuery(badDeviantEmbed, "Try searching for another tag or looking at the [**DeviantArt Website**](https://www.deviantart.com/)")
             return true
@@ -59,7 +59,7 @@ export default class Deviantart extends Command {
             if (!deviation.content) continue
             const deviantEmbed = embeds.createEmbed()
             deviantEmbed
-            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", "https://www.deviantart.com/")
+            .setAuthor({name: "deviantart", iconURL: "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", url: "https://www.deviantart.com/"})
             .setTitle(`**DeviantArt Search** ${discord.getEmoji("aquaUp")}`)
             .setURL(deviation.url!)
             .setImage(deviation.content.src)
@@ -82,7 +82,7 @@ export default class Deviantart extends Command {
         const perms = new Permission(discord, this.message)
         if (!result[0]) {
             const badDeviantEmbed = embeds.createEmbed()
-            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", "https://www.deviantart.com/")
+            .setAuthor({name: "deviantart", iconURL: "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", url: "https://www.deviantart.com/"})
             .setTitle(`**DeviantArt Search** ${discord.getEmoji("aquaUp")}`)
             this.invalidQuery(badDeviantEmbed, "Try searching for another tag or looking at the [**DeviantArt Website**](https://www.deviantart.com/)")
             return true
@@ -95,7 +95,7 @@ export default class Deviantart extends Command {
             if (!deviation.content) continue
             const deviantEmbed = embeds.createEmbed()
             deviantEmbed
-            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", "https://www.deviantart.com/")
+            .setAuthor({name: "deviantart", iconURL: "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", url: "https://www.deviantart.com/"})
             .setTitle(`**DeviantArt Search** ${discord.getEmoji("aquaUp")}`)
             .setURL(deviation.url!)
             .setImage(deviation.content[0].url)
@@ -122,7 +122,7 @@ export default class Deviantart extends Command {
         }
         if (!rssDeviations[0]) {
             const deviantEmbed = embeds.createEmbed()
-            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", "https://www.deviantart.com/")
+            .setAuthor({name: "deviantart", iconURL: "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", url: "https://www.deviantart.com/"})
             .setTitle(`**DeviantArt Search** ${this.discord.getEmoji("aquaUp")}`)
             this.invalidQuery(deviantEmbed, "The url is invalid.")
             return false
@@ -135,7 +135,7 @@ export default class Deviantart extends Command {
                 if (!perms.checkNSFW()) continue
             }
             const deviantEmbed = embeds.createEmbed()
-                .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", "https://www.deviantart.com/")
+                .setAuthor({name: "deviantart", iconURL: "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", url: "https://www.deviantart.com/"})
                 .setTitle(`**DeviantArt Search** ${this.discord.getEmoji("aquaUp")}`)
                 .setURL(deviation.url)
                 .setImage(deviation.content[0].url)
@@ -149,7 +149,7 @@ export default class Deviantart extends Command {
             deviantArray.push(deviantEmbed)
         }
         if (deviantArray.length === 1) {
-            this.message.channel.send(deviantArray[0])
+            this.message.channel.send({embeds: [deviantArray[0]]})
         } else {
             embeds.createReactionEmbed(deviantArray, true, true)
         }
@@ -178,7 +178,7 @@ export default class Deviantart extends Command {
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send(deviantArray[0])
+                message.channel.send({embeds: [deviantArray[0]]})
             } else {
                 embeds.createReactionEmbed(deviantArray, true, true)
             }
@@ -192,7 +192,7 @@ export default class Deviantart extends Command {
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send(deviantArray[0])
+                message.channel.send({embeds: [deviantArray[0]]})
             } else {
                 embeds.createReactionEmbed(deviantArray, true, true)
             }
@@ -207,7 +207,7 @@ export default class Deviantart extends Command {
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send(deviantArray[0])
+                message.channel.send({embeds: [deviantArray[0]]})
             } else {
                 embeds.createReactionEmbed(deviantArray, true, true)
             }
@@ -222,7 +222,7 @@ export default class Deviantart extends Command {
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send(deviantArray[0])
+                message.channel.send({embeds: [deviantArray[0]]})
             } else {
                 embeds.createReactionEmbed(deviantArray, true, true)
             }
@@ -232,7 +232,7 @@ export default class Deviantart extends Command {
         if (this.user || args[1] === "user") {
             const deviantEmbed = embeds.createEmbed()
             deviantEmbed
-            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", "https://www.deviantart.com/")
+            .setAuthor({name: "deviantart", iconURL: "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", url: "https://www.deviantart.com/"})
             .setTitle(`**DeviantArt User** ${discord.getEmoji("aquaUp")}`)
             if (!this.user && !args[2]) return this.noQuery(deviantEmbed, "You must provide a username.")
             const result = await deviantArt.user.profile({username: this.user || args[2]})
@@ -253,21 +253,21 @@ export default class Deviantart extends Command {
                 `${discord.getEmoji("star")}_Tag Line:_ ${result.tagline ? result.tagline : "None"}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(result.bio, 1800, ".")}\n`
             )
-            message.channel.send(deviantEmbed)
+            message.channel.send({embeds: [deviantEmbed]})
             return
         }
 
         if (args[1] === "gallery") {
             const deviantEmbed = embeds.createEmbed()
             deviantEmbed
-            .setAuthor("deviantart", "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", "https://www.deviantart.com/")
+            .setAuthor({name: "deviantart", iconURL: "https://www.shareicon.net/data/512x512/2016/11/22/855126_circle_512x512.png", url: "https://www.deviantart.com/"})
             .setTitle(`**DeviantArt User** ${discord.getEmoji("aquaUp")}`)
             if (!args[2]) return this.noQuery(deviantEmbed, "You must provide a username.")
             const result = await deviantArt.gallery.all({username: args[2], limit: 24})
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send(deviantArray[0])
+                message.channel.send({embeds: [deviantArray[0]]})
             } else {
                 embeds.createReactionEmbed(deviantArray, true, true)
             }
@@ -282,7 +282,7 @@ export default class Deviantart extends Command {
         const invalid = this.createRSSDeviantEmbed(discord, embeds, extended)
         if (invalid) return
         if (deviantArray.length === 1) {
-                message.channel.send(deviantArray[0])
+                message.channel.send({embeds: [deviantArray[0]]})
             } else {
                 embeds.createReactionEmbed(deviantArray, true, true)
             }

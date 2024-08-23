@@ -5,16 +5,19 @@ import {Kisaragi} from "./Kisaragi.js"
 const linkCool = new Collection() as Collection<string, Collection<string, number>>
 
 export class Link {
-    private readonly cmd = new CommandFunctions(this.discord, this.message)
-    private readonly cool = new Cooldown(this.discord, this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly cmd: CommandFunctions
+    private readonly cool: Cooldown
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.cmd = new CommandFunctions(this.discord, this.message)
+        this.cool = new Cooldown(this.discord, this.message)
+    }
 
     public linkRun = async (msg: Message, args: string[]) => {
         const onCooldown = this.cool.cmdCooldown(args[0], 30, linkCool)
-        if (onCooldown && (msg.author!.id !== process.env.OWNER_ID)) return msg.reply({embed: onCooldown})
+        if (onCooldown && (msg.author!.id !== process.env.OWNER_ID)) return msg.reply({embeds: [onCooldown]})
         const loading = await msg.channel.send(`**Fetching Link** ${this.discord.getEmoji("gabCircle")}`) as Message
         await this.cmd.runCommand(msg, args)
-        loading.delete({timeout: 1000})
+        setTimeout(() => loading.delete(), 1000)
     }
 
     public postLink = async () => {

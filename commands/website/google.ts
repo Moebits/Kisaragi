@@ -1,4 +1,4 @@
-import {Message, MessageAttachment, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
@@ -37,7 +37,7 @@ export default class Google extends Command {
         let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("google", "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", "https://www.google.com/")
+            .setAuthor({name: "google", iconURL: "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", url: "https://www.google.com/"})
             .setTitle(`**Google Search** ${discord.getEmoji("raphi")}`))
         }
 
@@ -52,7 +52,7 @@ export default class Google extends Command {
             resultArray.push(`${discord.getEmoji("star")}_Title:_ **${result[i].title}**`)
             resultArray.push(`${discord.getEmoji("star")}_Link:_ ${result[i].link}`)
         }
-        const googleEmbedArray: MessageEmbed[] = []
+        const googleEmbedArray: EmbedBuilder[] = []
         let link: string
         try {
             link = await commands.runCommand(message, ["screenshot", "return", `https://www.google.com/search?q=${query.trim().replace(/ /g, "+")}`]) as any
@@ -62,9 +62,9 @@ export default class Google extends Command {
         for (let i = 0; i < resultArray.length; i+=10) {
             const googleEmbed = embeds.createEmbed()
             googleEmbed
-            .setAuthor("google", "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", "https://www.google.com/")
+            .setAuthor({name: "google", iconURL: "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", url: "https://www.google.com/"})
             .setTitle(`**Google Search** ${discord.getEmoji("raphi")}`)
-            .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
+            .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
             .setImage(link)
             .setDescription(resultArray.slice(i, i+10).join("\n"))
             googleEmbedArray.push(googleEmbed)

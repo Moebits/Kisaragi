@@ -67,7 +67,7 @@ export default class Selfrole extends Command {
                 selfEmbed
                 .setTitle(`**Self Role** ${discord.getEmoji("karenSugoi")}`)
                 .setDescription(description)
-                message.channel.send(selfEmbed)
+                message.channel.send({embeds: [selfEmbed]})
             }
         }
     }

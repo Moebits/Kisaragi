@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
@@ -77,7 +77,7 @@ export default class Video2GIF extends Command {
         await video.video2Gif(start, length, src, dest)
         const videoEmbed = embeds.createEmbed()
         videoEmbed
-        .setAuthor("ffmpeg", "https://cdn.iconscout.com/icon/free/png-512/ffmpeg-569477.png", "https://www.ffmpeg.org/")
+        .setAuthor({name: "ffmpeg", iconURL: "https://cdn.iconscout.com/icon/free/png-512/ffmpeg-569477.png", url: "https://www.ffmpeg.org/"})
         .setTitle(`**Video to GIF** ${discord.getEmoji("karenSugoi")}`)
         .setDescription(`${discord.getEmoji("star")}Converted the video to a gif! ${discord.getEmoji("chinoSmug")}`)
 
@@ -91,9 +91,9 @@ export default class Video2GIF extends Command {
                 `${discord.getEmoji("star")}Converted the video to a gif! ${discord.getEmoji("chinoSmug")}\n` +
                 `This file is too large for attachments. Download the file [**here**](${link}).`
             )
-            return message.channel.send(videoEmbed)
+            return message.channel.send({embeds: [videoEmbed]})
         }
-        const attachment = new MessageAttachment(dest)
-        await message.reply(`Converted the video to a gif! ${discord.getEmoji("chinoSmug")}`, attachment)
+        const attachment = new AttachmentBuilder(dest)
+        await message.reply({content: `Converted the video to a gif! ${discord.getEmoji("chinoSmug")}`, files: [attachment]})
     }
 }

@@ -44,7 +44,7 @@ export default class Urban extends Command {
             const cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "")
             const checkedExample = Functions.checkChar(cleanExample, 1700, ".")
             urbanEmbed
-            .setAuthor("Urban Dictionary", "https://i.imgur.com/iXnNjPc.png", "https://www.urbandictionary.com/")
+            .setAuthor({name: "Urban Dictionary", iconURL: "https://i.imgur.com/iXnNjPc.png", url: "https://www.urbandictionary.com/"})
             .setURL(result.URL)
             .setTitle(`**Urban Dictionary** ${discord.getEmoji("smugFace")}`)
             .setDescription(
@@ -54,8 +54,8 @@ export default class Urban extends Command {
             `${discord.getEmoji("star")}**Definition**: ${cleanDef ? cleanDef : "None"}\n` +
             `${discord.getEmoji("star")}**Example**: ${checkedExample ? checkedExample : "None"}`
             )
-            .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
-            message.channel.send(urbanEmbed)
+            .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
+            message.channel.send({embeds: [urbanEmbed]})
             return
         }
 
@@ -64,7 +64,7 @@ export default class Urban extends Command {
         const cleanExample = result.example.replace(/(\[|\])/g, "").replace(/(\r\n|\n|\r)/gm, "")
         const checkedExample = Functions.checkChar(cleanExample, 1700, ".")
         urbanEmbed
-            .setAuthor("Urban Dictionary", "https://i.imgur.com/iXnNjPc.png", "https://www.urbandictionary.com/")
+            .setAuthor({name: "Urban Dictionary", iconURL: "https://i.imgur.com/iXnNjPc.png", url: "https://www.urbandictionary.com/"})
             .setURL(result.URL)
             .setTitle(`**Urban Dictionary** ${discord.getEmoji("smugFace")}`)
             .setDescription(
@@ -74,7 +74,7 @@ export default class Urban extends Command {
             `${discord.getEmoji("star")}**Definition**: ${cleanDef ? cleanDef : "None"}\n` +
             `${discord.getEmoji("star")}**Example**: ${checkedExample ? checkedExample : "None"}`
             )
-            .setThumbnail(message.author!.displayAvatarURL({format: "png", dynamic: true}))
-        message.channel.send(urbanEmbed)
+            .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
+        message.channel.send({embeds: [urbanEmbed]})
     }
 }

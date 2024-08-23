@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import snoowrap from "snoowrap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -37,10 +37,10 @@ export default class Reddit extends Command {
         })
     }
 
-    public getSubmissions = async <T extends boolean | undefined = false>(reddit: snoowrap, postIDS: string[], imagesOnly?: boolean, descOnly?: T): Promise<T extends true ? string : MessageEmbed[]> => {
+    public getSubmissions = async <T extends boolean | undefined = false>(reddit: snoowrap, postIDS: string[], imagesOnly?: boolean, descOnly?: T): Promise<T extends true ? string : EmbedBuilder[]> => {
         const discord = this.discord
         const embeds = new Embeds(this.discord, this.message)
-        const redditArray: MessageEmbed[] = []
+        const redditArray: EmbedBuilder[] = []
         for (let i = 0; i < postIDS.length; i++) {
             if (!postIDS[i]) break
             // @ts-ignore
@@ -58,7 +58,7 @@ export default class Reddit extends Command {
             const selfText = post.selftext ? `${discord.getEmoji("star")}_Selftext:_ ${(Functions.checkChar(post.selftext, 800, "") as string).replace(/(\r\n|\n|\r)/gm, " ")}\n` : ""
             const redditEmbed = embeds.createEmbed()
             redditEmbed
-            .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
+            .setAuthor({name: "reddit", iconURL: "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", url: "https://www.reddit.com/"})
             .setTitle(`**${Functions.checkChar(post.title, 200, " ")}** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://www.reddit.com/${post.permalink}`)
             .setDescription(
@@ -71,7 +71,7 @@ export default class Reddit extends Command {
             )
             .setImage(post.url)
             .setThumbnail(post.thumbnail.startsWith("https") ? post.thumbnail : `https://www.redditstatic.com/icon.png`)
-            if (descOnly) return redditEmbed.description as any
+            if (descOnly) return redditEmbed.data.description as any
             redditArray.push(redditEmbed)
         }
         return redditArray as any
@@ -81,11 +81,11 @@ export default class Reddit extends Command {
         const embeds = new Embeds(this.discord, this.message)
         const redditEmbed = embeds.createEmbed()
         redditEmbed
-        .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
+        .setAuthor({name: "reddit", iconURL: "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", url: "https://www.reddit.com/"})
         .setTitle(`**Reddit Search** ${this.discord.getEmoji("aquaUp")}`)
         .setDescription("No results were found. Try searching on the reddit website: " +
         "[Reddit Website](https://www.reddit.com)")
-        return this.message.channel.send(redditEmbed)
+        return this.message.channel.send({embeds: [redditEmbed]})
     }
 
     public run = async (args: string[]) => {
@@ -96,7 +96,7 @@ export default class Reddit extends Command {
         const oauth2 = new Oauth2(discord, message)
 
         const reddit = new snoowrap({
-            userAgent: "kisaragi bot v1.0 by /u/imtenpi",
+            userAgent: "kisaragi bot v1.0",
             clientId: process.env.REDDIT_APP_ID,
             clientSecret: process.env.REDDIT_APP_SECRET,
             refreshToken: process.env.REDDIT_REFRESH_TOKEN
@@ -109,7 +109,7 @@ export default class Reddit extends Command {
             if (this.postID) {
                 const redditArray = await this.getSubmissions(reddit, [this.postID])
                 if (!redditArray[0]) return message.reply(`No search results found.`)
-                return message.channel.send(redditArray[0])
+                return message.channel.send({embeds: [redditArray[0]]})
             }
         }
 
@@ -117,7 +117,7 @@ export default class Reddit extends Command {
             const query = this.user || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
+                .setAuthor({name: "reddit", iconURL: "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", url: "https://www.reddit.com/"})
                 .setTitle(`**Reddit User** ${discord.getEmoji("aquaUp")}`)
                 )
             }
@@ -125,7 +125,7 @@ export default class Reddit extends Command {
             const user = await reddit.getUser(query.trim()).fetch()
             const redditEmbed = embeds.createEmbed()
             redditEmbed
-            .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
+            .setAuthor({name: "reddit", iconURL: "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", url: "https://www.reddit.com/"})
             .setTitle(`**${user.name}** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://www.reddit.com${user.subreddit.display_name.url}`)
             .setImage(user.subreddit.display_name.banner_img)
@@ -136,7 +136,7 @@ export default class Reddit extends Command {
                 `${discord.getEmoji("star")}_Friends:_ **${user.num_friends ?? "None"}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${user.subreddit.display_name.public_description}\n`
             )
-            const msg = await message.channel.send(redditEmbed)
+            const msg = await message.channel.send({embeds: [redditEmbed]})
             await oauth2.redditOptions(msg)
             return
         }
@@ -171,7 +171,7 @@ export default class Reddit extends Command {
                     posts = await reddit.getSubreddit(subreddit).getRandomSubmission()
                 } catch {
                     return this.invalidQuery(embeds.createEmbed()
-                    .setAuthor("reddit", "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", "https://www.reddit.com/")
+                    .setAuthor({name: "reddit", iconURL: "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png", url: "https://www.reddit.com/"})
                     .setTitle(`**Reddit Search** ${discord.getEmoji("aquaUp")}`)
                     .setDescription("No results were found. Try searching on the reddit website: " +
                     "[Reddit Website](https://www.reddit.com)"))
@@ -189,7 +189,7 @@ export default class Reddit extends Command {
         if (!redditArray[0]) return this.noResults()
         let msg: Message
         if (redditArray.length === 1) {
-            msg = await message.channel.send(redditArray[0])
+            msg = await message.channel.send({embeds: [redditArray[0]]})
         } else {
             msg = await embeds.createReactionEmbed(redditArray, true, true)
         }

@@ -1,5 +1,5 @@
 import axios from "axios"
-import type {GuildEmoji, Message, MessageEmbed, TextChannel, Webhook} from "discord.js"
+import {Message, EmbedBuilder, TextChannel, Webhook, ChannelType} from "discord.js"
 import Youtube from "youtube.ts"
 import * as config from "../../config.json"
 import {Command} from "../../structures/Command"
@@ -78,7 +78,7 @@ export default class YTNotify extends Command {
         const yt = await this.getYT(channels)
         const step = 3.0
         const increment = Math.ceil((yt ? yt.length : 1) / step)
-        const ytArray: MessageEmbed[] = []
+        const ytArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let ytDesc = ""
             for (let j = 0; j < step; j++) {
@@ -98,7 +98,7 @@ export default class YTNotify extends Command {
             const ytEmbed = embeds.createEmbed()
             ytEmbed
             .setTitle(`**YT Notify** ${discord.getEmoji("tohruSmug")}`)
-            .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+            .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
             .setDescription(Functions.multiTrim(`
                 Configure youtube upload notifications. To avoid triggering a link command, use the channel id instead (it's after youtube.com/channel/)
                 newline
@@ -123,7 +123,7 @@ export default class YTNotify extends Command {
         }
 
         if (ytArray.length === 1) {
-            message.channel.send(ytArray[0])
+            message.channel.send({embeds: [ytArray[0]]})
         } else {
             embeds.createReactionEmbed(ytArray)
         }
@@ -138,14 +138,14 @@ export default class YTNotify extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "yt channels", null)
                 await axios.delete(`${config.kisaragiAPI}/youtube`, {data: {channels, guild: message.guild?.id}})
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}YT Notify settings were wiped!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
@@ -159,11 +159,11 @@ export default class YTNotify extends Command {
                     await axios.delete(`${config.kisaragiAPI}/youtube`, {data: {channels: [channel], guild: message.guild?.id}})
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 }
             }
             if (msg.content.toLowerCase().includes("toggle")) {
@@ -182,11 +182,11 @@ export default class YTNotify extends Command {
                     await axios.post(`${config.kisaragiAPI}/youtube`, current)
                     responseEmbed
                     .setDescription(desc)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 }
             }
             if (msg.content.toLowerCase().includes("edit")) {
@@ -210,11 +210,11 @@ export default class YTNotify extends Command {
                     await axios.post(`${config.kisaragiAPI}/youtube`, current)
                     responseEmbed
                     .setDescription(desc)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 }
             }
 
@@ -241,7 +241,7 @@ export default class YTNotify extends Command {
             request.guild = message.guild?.id
 
             if (channels.length >= 5) {
-                return msg.channel.send(responseEmbed.setDescription("You can set a maximum of 5 youtube channels!"))
+                return msg.channel.send({embeds: [responseEmbed.setDescription("You can set a maximum of 5 youtube channels!")]})
             }
 
             if (setChannel) {
@@ -265,14 +265,14 @@ export default class YTNotify extends Command {
 
             if (setChannel && setText) {
                 const text = message.guild?.channels.cache.get(newText) as TextChannel
-                if (!text || text.type !== "text") return message.reply(`Invalid text channel ${discord.getEmoji("kannaFacepalm")}`)
+                if (!text || text.type !== ChannelType.GuildText) return message.reply(`Invalid text channel ${discord.getEmoji("kannaFacepalm")}`)
                 try {
                     const webhooks = await text.fetchWebhooks()
                     let webhook: Webhook
                     if (webhooks.first()?.name === "Youtube") {
                         webhook = webhooks.first()!
                     } else {
-                        webhook = await text.createWebhook("Youtube", {avatar: discord.user!.displayAvatarURL({format: "png", dynamic: true})})
+                        webhook = await text.createWebhook({name: "Youtube", avatar: discord.user!.displayAvatarURL({extension: "png"})})
                     }
                     request.id = webhook.id
                     request.token = webhook.token
@@ -289,7 +289,7 @@ export default class YTNotify extends Command {
             await sql.updateColumn("guilds", "yt channels", channels)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
 
         }
 

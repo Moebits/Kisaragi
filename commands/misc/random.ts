@@ -1,7 +1,6 @@
 import {Message} from "discord.js"
 import fs from "fs"
 import {Command} from "../../structures/Command"
-import {cmd} from "../../test/login"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -25,7 +24,7 @@ export default class Random extends Command {
         })
     }
 
-    public specificCommand = async (name: string) => {
+    public specificCommand = async (cmd: CommandFunctions, name: string) => {
         const args: string[] = [name]
         await cmd.runCommand(this.message, args)
     }
@@ -71,7 +70,7 @@ export default class Random extends Command {
             }
         }
         const random = Math.floor(Math.random()*pathArray.length)
-        const command = new (require(`../${pathArray[random]}`).default)(this.discord, this.message) as Command
+        const command = new (await import(`../${pathArray[random]}`))(this.discord, this.message) as Command
         const name = commandArray[random]
         switch (command.options.random) {
             case "none":
@@ -81,7 +80,7 @@ export default class Random extends Command {
                 await cmd.runCommand(message, [name, this.randString()])
                 break
             case "specific":
-                await this.specificCommand(name)
+                await this.specificCommand(cmd, name)
                 break
             default:
         }

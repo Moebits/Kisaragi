@@ -34,6 +34,6 @@ export default class Invite extends Command {
             `[**Invite Link**](${config.invite.replace("CLIENTID", discord.user!.id)})\n` +
             `[**Support Server**](${config.support})`
         )
-        return message.channel.send(inviteEmbed)
+        return message.channel.send({embeds: [inviteEmbed]})
     }
 }

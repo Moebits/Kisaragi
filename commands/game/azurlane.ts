@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -96,11 +96,11 @@ export default class AzurLane extends Command {
             chibis = Functions.fillArray(chibis, chibis[length-1], pics.length)
         }
 
-        const azurArray: MessageEmbed[] = []
+        const azurArray: EmbedBuilder[] = []
         for (let i = 0; i < pics.length; i++) {
             const azurEmbed = embeds.createEmbed()
             azurEmbed
-            .setAuthor("azur lane", "https://azurlane.koumakan.jp/akashi-apple-touch-icon.png")
+            .setAuthor({name: "azur lane", iconURL: "https://azurlane.koumakan.jp/akashi-apple-touch-icon.png"})
             .setTitle(`**Azur Lane Search** ${discord.getEmoji("kisaragiBawls")}`)
             .setURL(`https://azurlane.koumakan.jp/${query}`)
             .setThumbnail(chibis[i])
@@ -117,7 +117,7 @@ export default class AzurLane extends Command {
         }
 
         if (azurArray.length === 1) {
-            message.channel.send(azurArray[0])
+            message.channel.send({embeds: [azurArray[0]]})
         } else {
             embeds.createReactionEmbed(azurArray, true, true)
         }

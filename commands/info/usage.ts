@@ -1,4 +1,4 @@
-import {Guild, Message, MessageEmbed, User, Util} from "discord.js"
+import {Guild, Message, EmbedBuilder, User} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -56,19 +56,19 @@ export default class Usage extends Command {
             for (let i = 0; i < Object.keys(usage).length; i++) {
                 description += `${discord.getEmoji("star")}_${Object.keys(usage)[i]}:_ **${Object.values(usage)[i] ?? 0}** uses\n`
             }
-            const splits = Util.splitMessage(description, {maxLength: 1800, char: "\n"})
-            const usageArray: MessageEmbed[] = []
+            const splits = Functions.splitMessage(description, {maxLength: 1800, char: "\n"})
+            const usageArray: EmbedBuilder[] = []
             for (let i = 0; i < splits.length; i++) {
                 const usageEmbed = embeds.createEmbed()
-                .setAuthor("usage", "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png")
+                .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
                 .setTitle(`**Command Usage Statistics** ${discord.getEmoji("raphi")}`)
-                .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+                .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
                 .setDescription(splits[i])
                 usageArray.push(usageEmbed)
             }
 
             if (usageArray.length === 1) {
-                message.channel.send(usageArray[0])
+                message.channel.send({embeds: [usageArray[0]]})
             } else {
                 embeds.createReactionEmbed(usageArray)
             }
@@ -112,19 +112,19 @@ export default class Usage extends Command {
                     description += `${name} \`(${Object.keys(usage)[i]})\`: **${Object.values(usage)[i] ?? 0}** uses\n`
                 }
             }
-            const splits = Util.splitMessage(description, {maxLength: 1800, char: "\n"})
-            const usageArray: MessageEmbed[] = []
+            const splits = Functions.splitMessage(description, {maxLength: 1800, char: "\n"})
+            const usageArray: EmbedBuilder[] = []
             for (let i = 0; i < splits.length; i++) {
                 const usageEmbed = embeds.createEmbed()
-                .setAuthor("usage", "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png")
+                .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
                 .setTitle(titleText)
-                .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+                .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
                 .setDescription(splits[i])
                 usageArray.push(usageEmbed)
             }
 
             if (usageArray.length === 1) {
-                message.channel.send(usageArray[0])
+                message.channel.send({embeds: [usageArray[0]]})
             } else {
                 embeds.createReactionEmbed(usageArray)
             }
@@ -160,32 +160,32 @@ export default class Usage extends Command {
             if (args[2]) {
                 if (!usage[args[2]]) return message.reply(`No usage data for this command ${discord.getEmoji("kannaFacepalm")}`)
                 const usageEmbed = embeds.createEmbed()
-                .setAuthor("usage", "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png")
+                .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
                 .setTitle(titleText)
-                .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+                .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
                 .setDescription(
                     `${discord.getEmoji("star")}The command **${args[2]}** has been used **${usage[args[2]]}** times!\n`
                 )
-                return message.channel.send(usageEmbed)
+                return message.channel.send({embeds: [usageEmbed]})
             }
             let description = ""
             for (let i = 0; i < Object.keys(usage).length; i++) {
                 if (Object.keys(usage)[i] === "total") Object.keys(usage)[i] = "Total"
                 description += `${discord.getEmoji("star")}_${Object.keys(usage)[i]}:_ **${Object.values(usage)[i] ?? 0}** uses\n`
             }
-            const splits = Util.splitMessage(description, {maxLength: 1800, char: "\n"})
-            const usageArray: MessageEmbed[] = []
+            const splits = Functions.splitMessage(description, {maxLength: 1800, char: "\n"})
+            const usageArray: EmbedBuilder[] = []
             for (let i = 0; i < splits.length; i++) {
                 const usageEmbed = embeds.createEmbed()
-                .setAuthor("usage", "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png")
+                .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
                 .setTitle(titleText)
-                .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+                .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
                 .setDescription(splits[i])
                 usageArray.push(usageEmbed)
             }
 
             if (usageArray.length === 1) {
-                message.channel.send(usageArray[0])
+                message.channel.send({embeds: [usageArray[0]]})
             } else {
                 embeds.createReactionEmbed(usageArray)
             }
@@ -199,12 +199,12 @@ export default class Usage extends Command {
         if (!usage) usage = 0
 
         const usageEmbed = embeds.createEmbed()
-        .setAuthor("usage", "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png")
+        .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
         .setTitle(`**Command Usage Statistics** ${discord.getEmoji("raphi")}`)
-        .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+        .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
         .setDescription(
             `${discord.getEmoji("star")}The command **${command}** has been used **${usage}** times!\n`
         )
-        return message.channel.send(usageEmbed)
+        return message.channel.send({embeds: [usageEmbed]})
     }
 }

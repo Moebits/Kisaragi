@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -54,8 +54,8 @@ export default class Resize extends Command {
         if (!height) height = jimp.AUTO
         image.resize(width, height)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
-        const attachment = new MessageAttachment(buffer)
-        await message.reply(`Resized the image to **${width}x${height}**!`, attachment)
+        const attachment = new AttachmentBuilder(buffer)
+        await message.reply({content: `Resized the image to **${width}x${height}**!`, files: [attachment]})
         return
     }
 }

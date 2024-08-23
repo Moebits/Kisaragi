@@ -1,4 +1,4 @@
-import {Collection, Message, TextChannel} from "discord.js"
+import {Collection, Message, TextChannel, ChannelType} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Functions} from "./Functions"
@@ -17,16 +17,16 @@ export class CommandFunctions {
         if (!cmdPath) return this.noCommand(args?.[0], noMsg)
         const cp = new (require(path.join(__dirname, `${cmdPath.slice(0, -3)}`)).default)(this.discord, msg)
         if (cp.options.guildOnly) {
-            if (msg.channel.type === "dm") return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
+            if (msg.channel.type === ChannelType.DM) return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
         }
         let data: any
-        await new Promise(async (resolve, reject) => {
+        await new Promise<void>(async (resolve, reject) => {
             await cp.run(args).then((d: any) => {
                 data = d
                 resolve()
             })
             .catch((err: Error) => {
-                if (msg) msg.channel.send(this.discord.cmdError(msg, err))
+                if (msg) msg.channel.send({embeds: [this.discord.cmdError(msg, err)]})
                 reject()
             })
         })

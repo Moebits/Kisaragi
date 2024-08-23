@@ -1,4 +1,4 @@
-import {Message, MessageAttachment, MessageEmbed} from "discord.js"
+import {Message, AttachmentBuilder, EmbedBuilder} from "discord.js"
 import fs from "fs"
 import yt from "youtube.ts"
 import {Command} from "../../structures/Command"
@@ -8,8 +8,9 @@ import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {ProcBlock} from "./../../structures/ProcBlock"
+import path from "path"
 
-let ytEmbeds: MessageEmbed[] = []
+let ytEmbeds: EmbedBuilder[] = []
 export default class YoutubeCommand extends Command {
     private video = null as any
     private channel = null as any
@@ -43,11 +44,11 @@ export default class YoutubeCommand extends Command {
 
     public ytChannelEmbed = async (discord: Kisaragi, embeds: Embeds, youtube: yt, channelLink: string) => {
         const channel = await youtube.channels.get(channelLink)
-        const channelBanner = channel.brandingSettings.image.bannerImageUrl
+        const channelBanner = channel.brandingSettings.image.bannerExternalUrl
         const keywords = channel.brandingSettings.channel.keywords
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed
-        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+        .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
         .setTitle(`**${channel.snippet.title}** ${discord.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/channel/${channel.id}`)
         .setDescription(
@@ -76,7 +77,7 @@ export default class YoutubeCommand extends Command {
         }
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed
-        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+        .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
         .setTitle(`**${playlist.snippet.title}** ${discord.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/playlist?list=${playlist.id}`)
         .setDescription(
@@ -103,7 +104,7 @@ export default class YoutubeCommand extends Command {
         const ytChannel = await youtube.channels.get(video.snippet.channelId)
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed
-        .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+        .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
         .setTitle(`**${video.snippet.title}** ${discord.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/watch?=${video.id}`)
         .setDescription(
@@ -129,7 +130,7 @@ export default class YoutubeCommand extends Command {
         const youtube = new yt(process.env.GOOGLE_API_KEY!)
         if (!args[1]) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+            .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
             .setTitle(`**Youtube Search** ${discord.getEmoji("kannaWave")}`))
         }
 
@@ -162,12 +163,12 @@ export default class YoutubeCommand extends Command {
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
                 embeds.createReactionEmbed(ytEmbeds, true, true)
-                msg.delete({timeout: 1000})
+                setTimeout(() => msg.delete(), 1000)
                 return
             }
             await this.ytChannelEmbed(discord, embeds, youtube, channelLink)
-            message.channel.send(ytEmbeds[0])
-            msg.delete({timeout: 1000})
+            message.channel.send({embeds: [ytEmbeds[0]]})
+            setTimeout(() => msg.delete(), 1000)
             return
         }
 
@@ -189,17 +190,17 @@ export default class YoutubeCommand extends Command {
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
                 embeds.createReactionEmbed(ytEmbeds, true, true)
-                msg.delete({timeout: 1000})
+                setTimeout(() => msg.delete(), 1000)
                 return
             }
             await this.ytPlaylistEmbed(discord, embeds, youtube, playLink)
-            message.channel.send(ytEmbeds[0])
-            msg.delete({timeout: 1000})
+            message.channel.send({embeds: [ytEmbeds[0]]})
+            setTimeout(() => msg.delete(), 1000)
             return
         }
 
         if (args[1] === "download" || args[1] === "dl") {
-            msg.delete({timeout: 1000})
+            setTimeout(() => msg.delete(), 1000)
             if (discord.checkMuted(message)) return message.reply(`Sorry, this command was disabled, downloading YouTube videos is against their TOS.`)
             if (this.procBlock.getProcBlock()) return message.reply(`Please wait until the current download finishes ${discord.getEmoji("sagiriBleh")}`)
             this.procBlock.setProcBlock()
@@ -214,17 +215,17 @@ export default class YoutubeCommand extends Command {
                 }
                 if (!video) {
                     return this.invalidQuery(embeds.createEmbed()
-                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+                    .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
                     .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`))
                 }
-                const src = `../assets/misc/videos/${rand}/`
+                const src = path.join(__dirname, `../../assets/misc/tracks/${rand}/`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 const msg2 = await message.channel.send(`**Downloading MP3, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
                 let file: string
                 try {
                     file = await youtube.util.downloadMP3(video, src)
                 } catch {
-                    msg2.delete({timeout: 1000})
+                    setTimeout(() => msg2.delete(), 1000)
                     return message.reply(`This request was rate limited. Try again later.`)
                 }
                 const stats = fs.statSync(file)
@@ -233,23 +234,23 @@ export default class YoutubeCommand extends Command {
                     link = encodeURI(link).replace("http", "https")
                     const youtubeEmbed = embeds.createEmbed()
                     youtubeEmbed
-                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+                    .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
                     .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
                     .setURL(link)
                     .setDescription(`${discord.getEmoji("star")}Converted the video to an mp3 file! This file is too large for attachments. Download the file [**here**](${link}).\n`)
-                    await message.channel.send(youtubeEmbed)
+                    await message.channel.send({embeds: [youtubeEmbed]})
                 } else {
-                    const attachment = new MessageAttachment(file)
+                    const attachment = new AttachmentBuilder(file)
                     const youtubeEmbed = embeds.createEmbed()
                     youtubeEmbed
-                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+                    .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
                     .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
                     .setDescription(`${discord.getEmoji("star")}Converted the video to an mp3 file!`)
-                    await message.channel.send(youtubeEmbed)
-                    await message.channel.send(attachment)
+                    await message.channel.send({embeds: [youtubeEmbed]})
+                    await message.channel.send({files: [attachment]})
                 }
                 Functions.removeDirectory(src)
-                msg2.delete({timeout: 1000})
+                setTimeout(() => msg2.delete(), 1000)
                 this.procBlock.setProcBlock(true)
                 return
             } else {
@@ -263,32 +264,32 @@ export default class YoutubeCommand extends Command {
                 }
                 if (!video) {
                     return this.invalidQuery(embeds.createEmbed()
-                    .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+                    .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
                     .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`))
                 }
-                const src = `../assets/misc/videos/${rand}/`
+                const src = path.join(__dirname, `../../assets/misc/videos/${rand}/`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 const msg2 = await message.channel.send(`**Downloading video, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
                 let file: string
                 try {
                     file = await youtube.util.downloadVideo(video, src)
                 } catch {
-                    msg2.delete({timeout: 1000})
+                    setTimeout(() => msg2.delete(), 1000)
                     return message.reply(`This request was rate limited. Try again later.`)
                 }
                 let link = await images.upload(file)
                 link = encodeURI(link).replace("http", "https")
                 const youtubeEmbed = embeds.createEmbed()
                 youtubeEmbed
-                .setAuthor("youtube", "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", "https://www.youtube.com/")
+                .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
                 .setURL(link)
                 .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`)
                 .setDescription(
                     `${discord.getEmoji("star")}Downloaded the video! This file is too large for attachments. Download the file [**here**](${link}).\n`
                 )
-                await message.channel.send(youtubeEmbed)
+                await message.channel.send({embeds: [youtubeEmbed]})
                 Functions.removeDirectory(src)
-                msg2.delete({timeout: 1000})
+                setTimeout(() => msg2.delete(), 1000)
                 this.procBlock.setProcBlock(true)
                 return
             }
@@ -311,12 +312,12 @@ export default class YoutubeCommand extends Command {
                 }
                 if (ytEmbeds.length === 0) return this.invalidQuery(embeds.createEmbed())
                 embeds.createReactionEmbed(ytEmbeds, true, true)
-                msg.delete({timeout: 1000})
+                setTimeout(() => msg.delete(), 1000)
                 return
             }
         await this.ytVideoEmbed(discord, embeds, youtube, videoLink)
-        message.channel.send(ytEmbeds[0])
-        msg.delete({timeout: 1000})
+        message.channel.send({embeds: [ytEmbeds[0]]})
+        setTimeout(() => msg.delete(), 1000)
         return
     }
 }

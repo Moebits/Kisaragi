@@ -1,6 +1,5 @@
 import bandcamp from "bandcamp-scraper"
-import type {Message, MessageEmbed} from "discord.js"
-import Giphy, {MultiResponse} from "giphy-api"
+import type {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Permission} from "../../structures/Permission"
@@ -32,7 +31,7 @@ export default class Bandcamp extends Command {
         const embeds = new Embeds(discord, message)
         const bandcampEmbed = embeds.createEmbed()
         bandcampEmbed
-        .setAuthor("bandcamp", "https://s4.bcbits.com/img/favicon/favicon-32x32.png", "https://bandcamp.com/")
+        .setAuthor({name: "bandcamp", iconURL: "https://s4.bcbits.com/img/favicon/favicon-32x32.png", url: "https://bandcamp.com/"})
         .setTitle(`**Bandcamp Search** ${discord.getEmoji("raphi")}`)
         .setImage(album.imageUrl ?? "")
         .setURL(album.url)
@@ -54,7 +53,7 @@ export default class Bandcamp extends Command {
         const embeds = new Embeds(discord, message)
         const bandcampEmbed = embeds.createEmbed()
         bandcampEmbed
-        .setAuthor("bandcamp", "https://s4.bcbits.com/img/favicon/favicon-32x32.png", "https://bandcamp.com/")
+        .setAuthor({name: "bandcamp", iconURL: "https://s4.bcbits.com/img/favicon/favicon-32x32.png", url: "https://bandcamp.com/"})
         .setTitle(`**Bandcamp Search** ${discord.getEmoji("raphi")}`)
         .setImage(track.imageUrl ?? "")
         .setURL(track.url)
@@ -75,7 +74,7 @@ export default class Bandcamp extends Command {
         const embeds = new Embeds(discord, message)
         const bandcampEmbed = embeds.createEmbed()
         bandcampEmbed
-        .setAuthor("bandcamp", "https://s4.bcbits.com/img/favicon/favicon-32x32.png", "https://bandcamp.com/")
+        .setAuthor({name: "bandcamp", iconURL: "https://s4.bcbits.com/img/favicon/favicon-32x32.png", url: "https://bandcamp.com/"})
         .setTitle(`**Bandcamp Search** ${discord.getEmoji("raphi")}`)
         .setImage(artist.imageUrl ?? "")
         .setURL(artist.url)
@@ -102,14 +101,14 @@ export default class Bandcamp extends Command {
         }
 
         let data: any = []
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             bandcamp.search({query}, (err, res) => {
                 data = res
                 resolve()
             })
         })
 
-        const bandcampArray: MessageEmbed[] = []
+        const bandcampArray: EmbedBuilder[] = []
         for (let i = 0; i < data.length; i++) {
             switch (data[i].type) {
                 case "artist":
@@ -133,7 +132,7 @@ export default class Bandcamp extends Command {
         }
 
         if (bandcampArray.length === 1) {
-            message.channel.send(bandcampArray[0])
+            message.channel.send({embeds: [bandcampArray[0]]})
         } else {
             embeds.createReactionEmbed(bandcampArray, false, true)
         }

@@ -34,7 +34,6 @@ export default class Reverse extends Command {
         const audio = new Audio(discord, message)
         const cmd = new CommandFunctions(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         const queue = audio.getQueue() as any
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {
@@ -64,7 +63,9 @@ export default class Reverse extends Command {
             const embed = await audio.updateNowPlaying()
             queue[0].message.edit(embed)
             const rep = await message.reply("Reversed the file!")
-            rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+            await Functions.timeout(3000)
+        rep.delete().catch(() => null)
+        message.delete().catch(() => null)
         }
         return
     }

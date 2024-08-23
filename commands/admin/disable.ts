@@ -1,4 +1,4 @@
-import {GuildChannel, Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -47,7 +47,7 @@ export default class Disable extends Command {
         const disableEmbed = embeds.createEmbed()
         disableEmbed
         .setTitle(`**Disable Categories** ${discord.getEmoji("AquaWut")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setDescription(Functions.multiTrim(`
             Disable command categories. Do not include "commands" in the name, eg. "music 2"
             newline
@@ -61,7 +61,7 @@ export default class Disable extends Command {
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
 
-        message.channel.send(disableEmbed)
+        message.channel.send({embeds: [disableEmbed]})
 
         async function disablePrompt(msg: Message) {
             let categories = await sql.fetchColumn("guilds", "disabled categories")
@@ -71,13 +71,13 @@ export default class Disable extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "disabled categories", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
 
             const newCategories: string[] = []
@@ -134,7 +134,7 @@ export default class Disable extends Command {
             await sql.updateColumn("guilds", "disabled categories", categories)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
         await embeds.createPrompt(disablePrompt)
     }

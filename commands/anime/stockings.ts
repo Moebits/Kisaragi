@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"

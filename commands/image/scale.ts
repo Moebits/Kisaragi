@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -39,8 +39,8 @@ export default class Scale extends Command {
         const factor = Number(args[1]) ? Number(args[1]) : 1
         image.scale(factor)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
-        const attachment = new MessageAttachment(buffer)
-        await message.reply(`Scaled the image by a factor of **${factor}x**!`, attachment)
+        const attachment = new AttachmentBuilder(buffer)
+        await message.reply({content: `Scaled the image by a factor of **${factor}x**!`, files: [attachment]})
         return
     }
 }

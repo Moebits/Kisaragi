@@ -96,7 +96,7 @@ export default class Photoshop extends Command {
         // console.log(this.historyValues)
         const hsvEmbed = embeds.createEmbed()
         hsvEmbed
-        .setAuthor("photoshop", "https://pbs.twimg.com/media/EIjD9I6UcAArKf4.jpg")
+        .setAuthor({name: "photoshop", iconURL: "https://pbs.twimg.com/media/EIjD9I6UcAArKf4.jpg"})
         .setTitle(`**Photoshop** ${this.discord.getEmoji("chinoSmug")}`)
         .setImage(url)
         .setURL(url)
@@ -168,7 +168,7 @@ export default class Photoshop extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
-        if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild?.me!)?.has("MANAGE_MESSAGES")) {
+        if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has("ManageMessages")) {
             message.reply(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
             return
         }
@@ -188,12 +188,12 @@ export default class Photoshop extends Command {
         this.original = link
         this.originalEmbed = description
         hsvEmbed
-        .setAuthor("photoshop", "https://pbs.twimg.com/media/EIjD9I6UcAArKf4.jpg")
+        .setAuthor({name: "photoshop", iconURL: "https://pbs.twimg.com/media/EIjD9I6UcAArKf4.jpg"})
         .setTitle(`**Photoshop** ${discord.getEmoji("chinoSmug")}`)
         .setImage(link)
         .setURL(link)
         .setDescription(description)
-        const msg = await message.channel.send(hsvEmbed)
+        const msg = await message.channel.send({embeds: [hsvEmbed]})
         const reactions = ["brightness", "contrast", "hue", "saturation", "value", "flip", "tint", "invert", "posterize", "crop", "scale", "rotate", "blur", "sharpen", "undo", "redo", "reset"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
@@ -214,23 +214,23 @@ export default class Photoshop extends Command {
         const undoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("undo") && user.bot === false
         const redoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("redo") && user.bot === false
         const resetCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reset") && user.bot === false
-        const brightness = msg.createReactionCollector(brightnessCheck)
-        const contrast = msg.createReactionCollector(contrastCheck)
-        const hue = msg.createReactionCollector(hueCheck)
-        const saturation = msg.createReactionCollector(saturationCheck)
-        const value = msg.createReactionCollector(valueCheck)
-        const flip = msg.createReactionCollector(flipCheck)
-        const tint = msg.createReactionCollector(tintCheck)
-        const invert = msg.createReactionCollector(invertCheck)
-        const posterize = msg.createReactionCollector(posterizeCheck)
-        const crop = msg.createReactionCollector(cropCheck)
-        const scale = msg.createReactionCollector(scaleCheck)
-        const rotate = msg.createReactionCollector(rotateCheck)
-        const blur = msg.createReactionCollector(blurCheck)
-        const sharpen = msg.createReactionCollector(sharpenCheck)
-        const undo = msg.createReactionCollector(undoCheck)
-        const redo = msg.createReactionCollector(redoCheck)
-        const reset = msg.createReactionCollector(resetCheck)
+        const brightness = msg.createReactionCollector({filter: brightnessCheck})
+        const contrast = msg.createReactionCollector({filter: contrastCheck})
+        const hue = msg.createReactionCollector({filter: hueCheck})
+        const saturation = msg.createReactionCollector({filter: saturationCheck})
+        const value = msg.createReactionCollector({filter: valueCheck})
+        const flip = msg.createReactionCollector({filter: flipCheck})
+        const tint = msg.createReactionCollector({filter: tintCheck})
+        const invert = msg.createReactionCollector({filter: invertCheck})
+        const posterize = msg.createReactionCollector({filter: posterizeCheck})
+        const crop = msg.createReactionCollector({filter: cropCheck})
+        const scale = msg.createReactionCollector({filter: scaleCheck})
+        const rotate = msg.createReactionCollector({filter: rotateCheck})
+        const blur = msg.createReactionCollector({filter: blurCheck})
+        const sharpen = msg.createReactionCollector({filter: sharpenCheck})
+        const undo = msg.createReactionCollector({filter: undoCheck})
+        const redo = msg.createReactionCollector({filter: redoCheck})
+        const reset = msg.createReactionCollector({filter: resetCheck})
         let argArray: string[] = []
         async function getArgs(response: Message) {
             argArray = response.content.split(" ")
@@ -241,7 +241,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -271,7 +271,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -279,7 +279,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -309,7 +309,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -317,7 +317,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -335,7 +335,7 @@ export default class Photoshop extends Command {
                 current = this.historyStates[this.historyIndex]
             }
             const image = await jimp.read(current)
-            image.color([{apply: "hue", params: [factor]}])
+            image.color([{apply: "hue" as any, params: [factor]}])
             let newDest = path.join(__dirname, `../../images/${seed}_hue`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
@@ -344,7 +344,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -352,7 +352,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -390,7 +390,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -398,7 +398,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -436,7 +436,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -444,7 +444,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -501,7 +501,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -509,7 +509,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -528,7 +528,7 @@ export default class Photoshop extends Command {
                 current = this.historyStates[this.historyIndex]
             }
             const image = await jimp.read(current)
-            image.color([{apply: "mix", params: [color, opacity]}])
+            image.color([{apply: "mix" as any, params: [color, opacity]}])
             let newDest = path.join(__dirname, `../../images/${seed}_tint`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
@@ -537,7 +537,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -545,7 +545,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -572,7 +572,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -580,7 +580,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -611,7 +611,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -619,7 +619,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -649,7 +649,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock()
         })
 
@@ -657,7 +657,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -692,7 +692,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -700,7 +700,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -733,7 +733,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -741,7 +741,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -777,7 +777,7 @@ export default class Photoshop extends Command {
             }
             await image.writeAsync(`${newDest}.jpg`)
             const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -785,7 +785,7 @@ export default class Photoshop extends Command {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
-                proc.delete({timeout: 3000})
+                setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
@@ -805,7 +805,7 @@ export default class Photoshop extends Command {
             newObj.sharpen += amount
             const link = await axios.get(`${config.openCVAPI}/sharpen?link=${url}&amount=${amount}&sigma=${sigma}`).then((r) => r.data)
             const newEmbed = await this.hsvEmbed(link, newObj)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })
 
@@ -818,7 +818,7 @@ export default class Photoshop extends Command {
                 this.historyIndex = -1
             }
             const newEmbed = await this.hsvEmbed(current)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
         })
 
         redo.on("collect", async (reaction, user) => {
@@ -834,14 +834,14 @@ export default class Photoshop extends Command {
                 }
             }
             const newEmbed = await this.hsvEmbed(current)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
         })
 
         reset.on("collect", async (reaction, user) => {
             await reaction.users.remove(user).catch(() => null)
             this.historyIndex = -1
             const newEmbed = await this.hsvEmbed(this.original)
-            msg.edit(newEmbed)
+            msg.edit({embeds: [newEmbed]})
         })
     }
 }

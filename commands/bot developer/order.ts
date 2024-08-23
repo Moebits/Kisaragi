@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Order extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Orders the rows in the database.",
+            description: "Orders the rows in the guilds table.",
             aliases: [],
             cooldown: 3
         })
@@ -23,32 +23,10 @@ export default class Order extends Command {
         if (!perms.checkBotDev()) return
         const orderEmbed = embeds.createEmbed()
 
-        /*const tables = [
-            "auto", "birthdays", "blocks",
-            "captcha", "channels", "config",
-            "detection", "emojis", "guild info",
-            "images", "links", "logs", "misc",
-            "points", "prefixes", "roles",
-            "special channels", "special roles", "timezones",
-            "users", "warns", "welcome leaves"
-        ]
-
-        for (let i = 0; i < tables.length; i++) {
-            await SQLQuery.foreignKeys(tables[i])
-        }*/
-
-        /*let ids = await SQLQuery.selectColumn("guilds", "guild id")
-        ids = Functions.removeDuplicates(ids)
-
-        for (let i = 0; i < ids.length; i++) {
-            const g = discord.guilds.cache.get(ids[i])
-            const msg = await discord.fetchFirstMessage(g || message.guild!)
-            await SQLQuery.initGuild(msg || message, true)
-        }*/
         await SQLQuery.orderTables()
         orderEmbed
         .setTitle(`**Order** ${discord.getEmoji("gabStare")}`)
-        .setDescription("The tables were **ordered**!")
-        message.channel.send(orderEmbed)
+        .setDescription("The table was ordered!")
+        message.channel.send({embeds: [orderEmbed]})
     }
 }

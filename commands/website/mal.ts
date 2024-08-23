@@ -1,4 +1,4 @@
-import type {Message, MessageEmbed} from "discord.js"
+import type {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -51,19 +51,19 @@ export default class Mal extends Command {
             const query = this.character || Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png", "https://myanimelist.net/")
+                .setAuthor({name: "my anime list", iconURL: "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png", url: "https://myanimelist.net/"})
                 .setTitle(`**My Anime List Character** ${discord.getEmoji("raphi")}`)
                 )
             }
             const result = await mal.search("character", query.trim())
-            const malArray: MessageEmbed[] = []
+            const malArray: EmbedBuilder[] = []
             for (let i = 0; i < result.results.length; i++) {
                 const char = result.results[i]
                 const detailed = await mal.findCharacter(char.mal_id)
                 const info = char.anime.join("") ? char.anime.map((n: any) => n.name) : char.manga.map((n: any) => n.name)
                 const malEmbed = embeds.createEmbed()
                 malEmbed
-                .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png", "https://myanimelist.net/")
+                .setAuthor({name: "my anime list", iconURL: "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png", url: "https://myanimelist.net/"})
                 .setTitle(`**My Anime List Character** ${discord.getEmoji("raphi")}`)
                 .setURL(char.url)
                 .setImage(char.image_url)
@@ -85,7 +85,7 @@ export default class Mal extends Command {
         if (this.user || args[1] === "user") {
             const user = this.user || args[2]
             const malEmbed = embeds.createEmbed()
-            .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png", "https://myanimelist.net/")
+            .setAuthor({name: "my anime list", iconURL: "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png", url: "https://myanimelist.net/"})
             .setTitle(`**My Anime List User** ${discord.getEmoji("raphi")}`)
             if (!user) return this.noQuery(malEmbed)
             const result = await mal.findUser(user)
@@ -109,7 +109,7 @@ export default class Mal extends Command {
                 `${discord.getEmoji("star")}_Favorite Characters:_ ${Functions.checkChar(characters.join(", "), 100, " ")}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(cleanText, 1500, " ")}\n`
             )
-            message.channel.send(malEmbed)
+            message.channel.send({embeds: [malEmbed]})
             return
 
         }
@@ -135,7 +135,7 @@ export default class Mal extends Command {
             const anime = result[i]
             const detailed = await mal.findAnime(anime.mal_id)
             malEmbed
-            .setAuthor("my anime list", "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png", "https://myanimelist.net/")
+            .setAuthor({name: "my anime list", iconURL: "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png", url: "https://myanimelist.net/"})
             .setTitle(`**My Anime List Search** ${discord.getEmoji("raphi")}`)
             .setURL(anime.url)
             .setImage(anime.image_url)

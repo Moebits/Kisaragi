@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -50,8 +50,8 @@ export default class Value extends Command {
             image.color([{apply: "lighten", params: [value]}])
         }
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
-        const attachment = new MessageAttachment(buffer)
-        await message.reply(`Changed the value of the image!`, attachment)
+        const attachment = new AttachmentBuilder(buffer)
+        await message.reply({content: `Changed the value of the image!`, files: [attachment]})
         return
     }
 }

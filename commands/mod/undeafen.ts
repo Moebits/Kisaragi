@@ -52,7 +52,7 @@ export default class Undeafen extends Command {
                 continue
             }
             undeafenEmbed
-            .setAuthor("undeafen", "https://d29fhpw069ctt2.cloudfront.net/icon/image/39276/preview.png")
+            .setAuthor({name: "undeafen", iconURL: "https://d29fhpw069ctt2.cloudfront.net/icon/image/39276/preview.png"})
             .setTitle(`**You Were Undeafened** ${discord.getEmoji("mexShrug")}`)
             .setDescription(`${discord.getEmoji("star")}_You were undeafened from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -63,14 +63,14 @@ export default class Undeafen extends Command {
             } catch {
                 return message.reply(`I need the **undeafen Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(undeafenEmbed).catch(() => null)
+            await dm.send({embeds: [undeafenEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         undeafenEmbed
-        .setAuthor("undeafen", "https://d29fhpw069ctt2.cloudfront.net/icon/image/39276/preview.png")
+        .setAuthor({name: "undeafen", iconURL: "https://d29fhpw069ctt2.cloudfront.net/icon/image/39276/preview.png"})
         .setTitle(`**Member Undeafened** ${discord.getEmoji("mexShrug")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully undeafened ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send(undeafenEmbed)
+        message.channel.send({embeds: [undeafenEmbed]})
         return
     }
 }

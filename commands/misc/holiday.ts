@@ -47,7 +47,7 @@ export default class Holiday extends Command {
                 const image = holidayData.data.match(imageRegex)?.[0].replace(/"/g, "")
                 const holidayEmbed = embeds.createEmbed()
                 holidayEmbed
-                .setAuthor("days of the year", "https://media.daysoftheyear.com/20181228141243/logo.jpg")
+                .setAuthor({name: "days of the year", iconURL: "https://media.daysoftheyear.com/20181228141243/logo.jpg"})
                 .setTitle(`**Daily Holiday** ${discord.getEmoji("padoruPadoru")}`)
                 .setURL(args[1])
                 .setThumbnail(image.trim())
@@ -55,7 +55,7 @@ export default class Holiday extends Command {
                     `${discord.getEmoji("star")}_Holiday:_ **${holidayName}**\n` +
                     `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(description, 2000, ".")}`
                     )
-                return message.channel.send(holidayEmbed)
+                return message.channel.send({embeds: [holidayEmbed]})
             }
 
             for (let i = 0; i < monthNames.length; i++) {
@@ -91,7 +91,7 @@ export default class Holiday extends Command {
 
         const holidayEmbed = embeds.createEmbed()
         holidayEmbed
-        .setAuthor("days of the year", "https://media.daysoftheyear.com/20181228141243/logo.jpg")
+        .setAuthor({name: "days of the year", iconURL: "https://media.daysoftheyear.com/20181228141243/logo.jpg"})
         .setTitle(`**Daily Holiday** ${discord.getEmoji("padoruPadoru")}`)
         .setURL(url)
         .setThumbnail(image.trim())
@@ -99,6 +99,6 @@ export default class Holiday extends Command {
             `${discord.getEmoji("star")}_Holiday:_ **${date} - ${holidayName}**\n` +
             `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(description, 2000, ".")}`
             )
-        message.channel.send(holidayEmbed)
+        message.channel.send({embeds: [holidayEmbed]})
     }
 }

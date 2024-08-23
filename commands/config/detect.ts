@@ -57,7 +57,7 @@ export default class Detect extends Command {
         const detectEmbed = embeds.createEmbed()
         detectEmbed
         .setTitle(`**Detection Settings** ${discord.getEmoji("sagiriBleh")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setDescription(Functions.multiTrim(`
             Configure settings for automatic detection.
             newline
@@ -85,7 +85,7 @@ export default class Detect extends Command {
             ${discord.getEmoji("star")}Type **reset** to reset settings.
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
-        message.channel.send(detectEmbed)
+        message.channel.send({embeds: [detectEmbed]})
 
         async function detectPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
@@ -95,7 +95,7 @@ export default class Detect extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -107,7 +107,7 @@ export default class Detect extends Command {
                 await sql.updateColumn("guilds", "normie", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
@@ -164,7 +164,7 @@ export default class Detect extends Command {
                         if (!(testWeeb && testNormie)) {
                             responseEmbed
                             .setDescription("In order to turn on pfp detection, you must set both the weeb and normie role.")
-                            message.channel.send(responseEmbed)
+                            message.channel.send({embeds: [responseEmbed]})
                             return
                         }
                     }
@@ -188,7 +188,7 @@ export default class Detect extends Command {
 
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(detectPrompt)

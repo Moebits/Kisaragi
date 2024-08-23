@@ -53,7 +53,7 @@ export default class Points extends Command {
         const levelEmbed = embeds.createEmbed()
         levelEmbed
         .setTitle(`**Point Settings** ${discord.getEmoji("mexShrug")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
+        .setThumbnail(message.guild!.iconURL({extension: "png"}) as string)
         .setDescription(Functions.multiTrim(`
             Configure general point settings. To set level up roles, use **levelroles** instead. To disable points on
             individual channels, use **levelchannels** instead.
@@ -88,7 +88,7 @@ export default class Points extends Command {
             ${discord.getEmoji("star")}_Type **reset** to reset all settings, excluding member points._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send(levelEmbed)
+        message.channel.send({embeds: [levelEmbed]})
 
         async function levelPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
@@ -97,7 +97,7 @@ export default class Points extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -108,14 +108,14 @@ export default class Points extends Command {
                 await sql.updateColumn("guilds", "level message", "Congrats user, you are now level newlevel!")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Level settings were reset!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "destroy") {
                 await sql.updateColumn("guilds", "scores", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Points were destroyed for every member in the guild!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             const newMsg = msg.content.replace(/enable/g, "").replace(/disable/g, "").replace(/\[(.*)\]/g, "")
@@ -136,7 +136,7 @@ export default class Points extends Command {
             if (setOn && setOff) {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
 
             if (setMsg) {
@@ -168,7 +168,7 @@ export default class Points extends Command {
 
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         embeds.createPrompt(levelPrompt)

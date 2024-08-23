@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
@@ -55,14 +55,14 @@ export default class ConstrainGIF extends Command {
         if (constrain >= frames.length) return message.reply(`Adding frames to or slowing down a gif is not supported, because it requires more information than what is available in the original. ${discord.getEmoji("kannaFacepalm")}`)
         const newFrames = Functions.constrain(frames, constrain) as any[]
         const random = Math.floor(Math.random() * 10000)
-        const dir = path.join(__dirname, `../../../assets/images/dump/${random}/`)
+        const dir = path.join(__dirname, `../../assets/misc/images/dump/${random}/`)
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, {recursive: true})
         const files: string[] = []
         const promises: any[] = []
         for (let i = 0; i < newFrames.length; i++) {
             const readStream = newFrames[i].getImage()
             const writeStream = fs.createWriteStream(path.join(dir, `./image${newFrames[i].frameIndex}.jpg`))
-            const prom = new Promise((resolve) => {
+            const prom = new Promise<void>((resolve) => {
                 readStream.pipe(writeStream).on("finish", () => resolve())
             })
             files.push(path.join(dir, `./image${newFrames[i].frameIndex}.jpg`))
@@ -73,7 +73,7 @@ export default class ConstrainGIF extends Command {
         const file = fs.createWriteStream(path.join(dir, `./animated.gif`))
         await images.encodeGif(files, dir, file)
         msg.delete()
-        const attachment = new MessageAttachment(path.join(dir, `./animated.gif`), "animated.gif")
-        return message.reply(`Constrained a **${frames.length}** frame gif down to **${files.length}** frames!`, attachment)
+        const attachment = new AttachmentBuilder(path.join(dir, `./animated.gif`), {name: "animated.gif"})
+        return message.reply({content: `Constrained a **${frames.length}** frame gif down to **${files.length}** frames!`, files: [attachment]})
     }
 }

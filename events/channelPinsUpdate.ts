@@ -1,6 +1,5 @@
-import {DMChannel, Message, TextChannel, Webhook} from "discord.js"
+import {MessageType, Message, TextChannel, TextBasedChannel, Webhook} from "discord.js"
 import {Embeds} from "./../structures/Embeds"
-import {Functions} from "./../structures/Functions"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
 
@@ -16,7 +15,7 @@ export default class ChannelPinsUpdate {
             webhook = webhooks.first()!
         } else {
             try {
-                webhook = await pinChannel.createWebhook("Pinboard", {avatar: this.discord.user!.displayAvatarURL({format: "png", dynamic: true})})
+                webhook = await pinChannel.createWebhook({name: "Pinboard", avatar: this.discord.user!.displayAvatarURL({extension: "png"})})
             } catch {
                 return channel.send(`I need the **Manage Webhooks** permission to forward pinned messages ${discord.getEmoji("kannaFacepalm")}`)
             }
@@ -30,20 +29,20 @@ export default class ChannelPinsUpdate {
         if (!pin?.pinned) return
         const pinEmbed = embeds.createEmbed()
         pinEmbed
-        .setAuthor("pin", "https://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/pin-icon.png")
+        .setAuthor({name: "pin", iconURL: "https://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/pin-icon.png"})
         .setTitle(`**Message Pinned!**`)
         .setURL(pin.url)
         .setDescription(`[**Message Link**](${pin.url})\n` + pin.content)
         .setImage(pin.attachments.first() ? pin.attachments.first()!.url : "")
-        .setFooter(`${pin.author.tag} • #${(message.channel as TextChannel).name}`, pin.author.displayAvatarURL({format: "png", dynamic: true}))
-        await webhook.send({embeds: [pinEmbed], avatarURL: pin.author.displayAvatarURL({format: "png", dynamic: true}), username: pin.member?.displayName})
+        .setFooter({text: `${pin.author.tag} • #${(message.channel as TextChannel).name}`, iconURL: pin.author.displayAvatarURL({extension: "png"})})
+        await webhook.send({embeds: [pinEmbed], avatarURL: pin.author.displayAvatarURL({extension: "png"}), username: pin.member?.displayName})
         await pin.unpin()
-        const pinMsg = await channel.messages.fetch({limit: 10}).then((m) => m.find((m) => m.type === "PINS_ADD"))
+        const pinMsg = await channel.messages.fetch({limit: 10}).then((m) => m.find((m) => m.type === MessageType.ChannelPinnedMessage))
         if (pinMsg) await pinMsg.delete()
     }
 
-    public run = async (channel: DMChannel | TextChannel, time: Date) => {
-        if (channel instanceof DMChannel) return
+    public run = async (channel: TextBasedChannel, time: Date) => {
+        if (!(channel instanceof TextChannel)) return
         const message = channel.lastMessage!
         const sql = new SQLQuery(message)
 

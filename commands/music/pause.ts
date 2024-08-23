@@ -30,12 +30,13 @@ export default class Pause extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         audio.pause()
         const rep = await message.reply("Paused the song!")
-        rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+        await Functions.timeout(3000)
+        rep.delete().catch(() => null)
+        message.delete().catch(() => null)
         return
     }
 }

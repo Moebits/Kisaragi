@@ -52,7 +52,7 @@ export default class VCMute extends Command {
                 continue
             }
             vcmuteEmbed
-            .setAuthor("voice mute", "https://www.kindpng.com/picc/m/499-4998592_mute-microphone-comments-mute-mic-icon-png-transparent.png")
+            .setAuthor({name: "voice mute", iconURL: "https://www.kindpng.com/picc/m/499-4998592_mute-microphone-comments-mute-mic-icon-png-transparent.png"})
             .setTitle(`**You Were Voice Muted** ${discord.getEmoji("vigneDead")}`)
             .setDescription(`${discord.getEmoji("star")}_You were voice muted from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -63,14 +63,14 @@ export default class VCMute extends Command {
             } catch {
                 return message.reply(`I need the **Mute Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(vcmuteEmbed).catch(() => null)
+            await dm.send({embeds: [vcmuteEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         vcmuteEmbed
-        .setAuthor("voice mute", "https://www.kindpng.com/picc/m/499-4998592_mute-microphone-comments-mute-mic-icon-png-transparent.png")
+        .setAuthor({name: "voice mute", iconURL: "https://www.kindpng.com/picc/m/499-4998592_mute-microphone-comments-mute-mic-icon-png-transparent.png"})
         .setTitle(`**Member Voice Muted** ${discord.getEmoji("vigneDead")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully voice muted ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send(vcmuteEmbed)
+        message.channel.send({embeds: [vcmuteEmbed]})
         return
     }
 }

@@ -92,14 +92,14 @@ export default class Delete extends Command {
         if (!num) {
             delEmbed
             .setDescription("Correct usage is =>del (number).")
-            message.channel.send(delEmbed)
+            message.channel.send({embeds: [delEmbed]})
             return
         }
 
         if (num < 2 || num > 1002) {
             delEmbed
             .setDescription("You must type a number between 0 and 1000!")
-            message.channel.send(delEmbed)
+            message.channel.send({embeds: [delEmbed]})
             return
         }
 
@@ -134,8 +134,8 @@ export default class Delete extends Command {
             delEmbed
             .setDescription(`Deleted **${args[1]}** messages in this channel!`)
         }
-        const msg = await message.channel.send(delEmbed) as Message
-        msg.delete({timeout: 5000})
+        const msg = await message.channel.send({embeds: [delEmbed]}) as Message
+        setTimeout(() => msg.delete(), 5000)
         return
     }
 }

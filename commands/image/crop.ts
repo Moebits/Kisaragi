@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -46,8 +46,8 @@ export default class Crop extends Command {
         if (height > image.bitmap.height) height = image.bitmap.height
         image.crop(x, y, width, height)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
-        const attachment = new MessageAttachment(buffer)
-        await message.reply(`Cropped the image to an offset of **${x}, ${y}** pixels, to a width of **${width}** pixels, and to a height of **${height}** pixels!`, attachment)
+        const attachment = new AttachmentBuilder(buffer)
+        await message.reply({content: `Cropped the image to an offset of **${x}, ${y}** pixels, to a width of **${width}** pixels, and to a height of **${height}** pixels!`, files: [attachment]})
         return
     }
 }

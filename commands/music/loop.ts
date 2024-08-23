@@ -33,7 +33,6 @@ export default class Loop extends Command {
         const cmd = new CommandFunctions(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         if (Functions.combineArgs(args, 1).trim()) {
             args.shift()
             return cmd.runCommand(message, ["play", "loop", ...args])
@@ -45,7 +44,9 @@ export default class Loop extends Command {
         const embed = await audio.updateNowPlaying()
         queue[0].message.edit(embed)
         const rep = await message.reply("Enabled looping!")
-        rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+        await Functions.timeout(3000)
+        rep.delete().catch(() => null)
+        message.delete().catch(() => null)
         return
     }
 }

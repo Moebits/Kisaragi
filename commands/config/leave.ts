@@ -1,4 +1,4 @@
-import {GuildChannel, Message, MessageAttachment} from "discord.js"
+import {GuildBasedChannel, Message, AttachmentBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -60,7 +60,7 @@ export default class Leave extends Command {
         const leaveText = await sql.fetchColumn("guilds", "leave bg text")
         const leaveColor = await sql.fetchColumn("guilds", "leave bg color")
         const leaveBGToggle = await sql.fetchColumn("guilds", "leave bg toggle")
-        const attachment = await images.createCanvas(message.member!, leaveImages, leaveText, leaveColor, false, false, leaveBGToggle) as MessageAttachment
+        const attachment = await images.createCanvas(message.member!, leaveImages, leaveText, leaveColor, false, false, leaveBGToggle) as AttachmentBuilder
         const urls: string[] = []
         for (let i = 0; i < leaveImages?.length ?? 0; i++) {
             const json = await axios.get(`https://is.gd/create.php?format=json&url=${leaveImages[i]}`)
@@ -68,8 +68,7 @@ export default class Leave extends Command {
         }
         leaveEmbed
         .setTitle(`**Leave Messages** ${discord.getEmoji("sagiriBleh")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
-        .attachFiles([attachment])
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setImage(`attachment://${attachment.name ? attachment.name : "animated.gif"}`)
         .setDescription(Functions.multiTrim(`
             View and edit the settings for leave messages!
@@ -101,7 +100,7 @@ export default class Leave extends Command {
             ${discord.getEmoji("star")}_Type **reset** to reset settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send(leaveEmbed)
+        message.channel.send({embeds: [leaveEmbed], files: [attachment]})
 
         async function leavePrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
@@ -116,7 +115,7 @@ export default class Leave extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -129,7 +128,7 @@ export default class Leave extends Command {
                 await sql.updateColumn("guilds", "leave bg toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Leave settings were reset!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
@@ -137,21 +136,21 @@ export default class Leave extends Command {
             if (newMsg.trim()) setMsg = true
             if (msg.content.toLowerCase().includes("enable")) setOn = true
             if (msg.content.toLowerCase() === "disable") setOff = true
-            if (msg.mentions.channels.array()?.[0]) setChannel = true
+            if ([...msg.mentions.channels.values()]?.[0]) setChannel = true
             if (newImage) setImage = true
             if (newBGText) setBGText = true
 
             if (setOn && setOff) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
             if (!setChannel && setOn) {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}In order to enable leave messages, you must specify a leave channel!`)
-                    msg.channel.send(responseEmbed)
+                    msg.channel.send({embeds: [responseEmbed]})
                     return
             }
             let description = ""
@@ -160,7 +159,7 @@ export default class Leave extends Command {
                 description += `${discord.getEmoji("star")}Leave Message set to **${newMsg.trim()}**\n`
             }
             if (setChannel) {
-                const channel = msg.guild!.channels.cache.find((c: GuildChannel) => c === msg.mentions.channels.first())
+                const channel = msg.guild!.channels.cache.find((c: GuildBasedChannel) => c === msg.mentions.channels.first())
                 if (!channel) return message.reply(`Invalid channel name ${discord.getEmoji("kannaFacepalm")}`)
                 await sql.updateColumn("guilds", "leave channel", channel.id)
                 setOn = true
@@ -203,7 +202,7 @@ export default class Leave extends Command {
             if (!description) return message.reply(`No edits were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send(responseEmbed)
+            return msg.channel.send({embeds: [responseEmbed]})
         }
 
         await embeds.createPrompt(leavePrompt)

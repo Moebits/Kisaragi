@@ -29,7 +29,7 @@ export default class Emojify extends Command {
         const text = Functions.combineArgs(args, 1)
         if (!text) return message.reply("You did not provide any text.")
         const emojiFied = letters.letters(text)
-        message.channel.send(`>${emojiFied}`)
+        message.channel.send(`${emojiFied}`)
         return
 
     }

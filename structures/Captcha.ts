@@ -1,4 +1,4 @@
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import * as fs from "fs"
 import path from "path"
 import svgCaptcha from "svg-captcha"
@@ -6,8 +6,10 @@ import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
 
 export class Captcha {
-    private readonly embeds = new Embeds(this.discord, this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly embeds: Embeds
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.embeds = new Embeds(this.discord, this.message)
+    }
 
     public createCaptcha = async (type: string, color: string, difficulty: string) => {
 
@@ -54,22 +56,22 @@ export class Captcha {
             })
 
         await svg2img(captcha.data, function(error: Error, buffer: Buffer) {
-            fs.writeFileSync(path.join(__dirname, "../../assets/images/captcha.png"), buffer)
+            fs.writeFileSync(path.join(__dirname, "../assets/misc/images/captcha.png"), buffer)
         })
 
-        const attachment = new MessageAttachment(path.join(__dirname, "../../assets/images/captcha.png"), "captcha.png")
+        const attachment = new AttachmentBuilder(path.join(__dirname, "../assets/misc/images/captcha.png"), {name: "captcha.png"})
 
         const captchaEmbed = this.embeds.createEmbed()
         captchaEmbed
         .setTitle(`Captcha ${this.discord.getEmoji("kannaAngry")}`)
-        .attachFiles([attachment])
         .setImage(`attachment://captcha.png`)
         .setDescription(
             `${this.discord.getEmoji("star")}_Solve the captcha below. Type **cancel** to quit, or **skip** to get another captcha._`
         )
         return {
             captcha: captchaEmbed,
-            text: captcha.text
+            text: captcha.text,
+            files: [attachment]
         }
     }
 }

@@ -37,7 +37,7 @@ export default class Xkcd extends Command {
 
     public getComic = async (id?: number) => {
         let comic = "" as any
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             if (id) {
                 xkcd(id, (c: any) => {
                     comic = c
@@ -61,7 +61,7 @@ export default class Xkcd extends Command {
         const cleanText = comic.transcript.replace(/\[\[/g, "**").replace(/\]\]/g, "**").replace(/{{/g, "_").replace(/}}/g, "_")
         const checkedText = Functions.checkChar(cleanText, 2000, ",")
         xkcdEmbed
-        .setAuthor("xkcd", "https://images-na.ssl-images-amazon.com/images/I/51qKVpRPnDL._SY355_.png", "https://xkcd.com/")
+        .setAuthor({name: "xkcd", iconURL: "https://images-na.ssl-images-amazon.com/images/I/51qKVpRPnDL._SY355_.png", url: "https://xkcd.com/"})
         .setURL(`https://xkcd.com/${comic.num}/`)
         .setTitle(`**xkcd Comic** ${discord.getEmoji("kannaSpook")}`)
         .setDescription(
@@ -84,7 +84,7 @@ export default class Xkcd extends Command {
         if (args[1] === "today") {
             const comic = await this.getComic()
             const xkcdEmbed = this.getEmbed(comic)
-            return message.channel.send(xkcdEmbed)
+            return message.channel.send({embeds: [xkcdEmbed]})
         } else if (args[1]) {
             let id = args[1]
             if (args[1].match(/xkcd.com/)) {
@@ -93,13 +93,13 @@ export default class Xkcd extends Command {
             if (Number.isNaN(Number(id))) return message.reply(`Looks like the id is invalid...`)
             const comic = await this.getComic(Number(id))
             const xkcdEmbed = this.getEmbed(comic)
-            return message.channel.send(xkcdEmbed)
+            return message.channel.send({embeds: [xkcdEmbed]})
         } else {
             const c = await this.getComic()
             const random = Math.floor(Math.random() * c.num)
             const comic = await this.getComic(random)
             const xkcdEmbed = this.getEmbed(comic)
-            return message.channel.send(xkcdEmbed)
+            return message.channel.send({embeds: [xkcdEmbed]})
         }
     }
 }

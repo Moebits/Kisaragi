@@ -45,7 +45,7 @@ export default class Hug extends Command {
         if (name === "someone") flavorText = `A bit sad ${discord.getEmoji("akariLurk")}`
         if (name === "me") flavorText = `Thank you ${discord.getEmoji("yes")}`
 
-        const image = await neko.sfw.hug()
+        const image = await neko.hug()
 
         const hugEmbed = embeds.createEmbed()
         hugEmbed
@@ -53,6 +53,6 @@ export default class Hug extends Command {
         .setTitle(`**Hug** ${discord.getEmoji("yes")}`)
         .setDescription(`**${message.author.username}** hugged **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send(hugEmbed)
+        message.channel.send({embeds: [hugEmbed]})
     }
 }

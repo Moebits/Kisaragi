@@ -52,7 +52,7 @@ export default class VCUnmute extends Command {
                 continue
             }
             vcunmuteEmbed
-            .setAuthor("voice unmute", "https://images.assetsdelivery.com/compings_v2/vectorgalaxy/vectorgalaxy1808/vectorgalaxy180807510.jpg")
+            .setAuthor({name: "voice unmute", iconURL: "https://images.assetsdelivery.com/compings_v2/vectorgalaxy/vectorgalaxy1808/vectorgalaxy180807510.jpg"})
             .setTitle(`**You Were Voice Unmuted** ${discord.getEmoji("aquaUp")}`)
             .setDescription(`${discord.getEmoji("star")}_You were voice unmuted from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -63,14 +63,14 @@ export default class VCUnmute extends Command {
             } catch {
                 return message.reply(`I need the **Mute Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(vcunmuteEmbed).catch(() => null)
+            await dm.send({embeds: [vcunmuteEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         vcunmuteEmbed
-        .setAuthor("voice unmute", "https://images.assetsdelivery.com/compings_v2/vectorgalaxy/vectorgalaxy1808/vectorgalaxy180807510.jpg")
+        .setAuthor({name: "voice unmute", iconURL: "https://images.assetsdelivery.com/compings_v2/vectorgalaxy/vectorgalaxy1808/vectorgalaxy180807510.jpg"})
         .setTitle(`**Member Voice Unmuted** ${discord.getEmoji("aquaUp")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully voice unmuted ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send(vcunmuteEmbed)
+        message.channel.send({embeds: [vcunmuteEmbed]})
         return
     }
 }

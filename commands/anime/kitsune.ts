@@ -11,9 +11,7 @@ export default class Kitsune extends Command {
             description: "Post a picture of a fox girl.",
             help:
             `
-            \`kitsune\` - Gets a random sfw image.
-            \`kitsune ecchi\` - Gets a random ecchi image.
-            \`kitsune lewd\` - Gets a random nsfw image.
+            \`kitsune\` - Gets a random image.
             `,
             examples:
             `
@@ -35,23 +33,13 @@ export default class Kitsune extends Command {
 
         let image: NekoRequestResults
         let title: string
-        if (args[1] === "lewd") {
-            if (!perms.checkNSFW()) return
-            image = await neko.nsfw.kitsune()
-            title = "Lewd Kitsune"
-        } else if (args[1] === "ecchi") {
-            if (!perms.checkNSFW()) return
-            image = await neko.nsfw.eroKitsune()
-            title = "Ecchi Kitsune"
-        } else {
-            image = await neko.sfw.foxGirl()
-            title = "Kitsune"
-        }
+        image = await neko.foxGirl()
+        title = "Kitsune"
 
         const nekoEmbed = embeds.createEmbed()
         nekoEmbed
         .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)
         .setImage(image.url)
-        message.channel.send(nekoEmbed)
+        message.channel.send({embeds: [nekoEmbed]})
     }
 }

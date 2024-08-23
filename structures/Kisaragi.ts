@@ -1,5 +1,5 @@
 import axios from "axios"
-import {APIMessage, Client, ClientOptions, Guild, GuildChannel, GuildEmoji, Message, MessageTarget, Role, TextChannel, User} from "discord.js"
+import {MessagePayload, ChannelType, Client, ClientOptions, Guild, GuildChannel, GuildBasedChannel, GuildEmoji, Message, MessageTarget, Role, TextChannel, User, PartialMessage} from "discord.js"
 import fs from "fs"
 import path from "path"
 import querystring from "querystring"
@@ -10,6 +10,7 @@ import {CommandFunctions} from "./CommandFunctions"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {SQLQuery} from "./SQLQuery"
+
 export class Kisaragi extends Client {
     public static username = "Kisaragi"
     public static pfp = "https://cdn.discordapp.com/avatars/593838271650332672/78ec2f4a3d4ab82a40791cb522cf36f5.png?size=2048"
@@ -39,7 +40,7 @@ export class Kisaragi extends Client {
                 this.starIndex = 0
             }
         }
-        const emoji = this.emojis.cache.find((e) => (this.muted ? e.name === `${name}png` : e.name === name) && (e.guild.ownerID === process.env.OWNER_ID))
+        const emoji = this.emojis.cache.find((e) => (this.muted ? e.name === `${name}png` : e.name === name) && (e.guild.ownerId === process.env.OWNER_ID))
         if (emoji) {
             return emoji as unknown as GuildEmoji
         } else {
@@ -94,7 +95,7 @@ export class Kisaragi extends Client {
     /** Find a channel in the guild */
     public getChannel = (guild: Guild, resolvable: string) => {
         if (!resolvable) return null
-        let channel: GuildChannel | undefined
+        let channel: GuildBasedChannel | undefined
         if (Number(resolvable)) {
             channel = guild.channels.cache.find((c) => c.id === resolvable)
         } else {
@@ -107,7 +108,7 @@ export class Kisaragi extends Client {
     // Fetch Message
     public fetchMessage = async (msg: Message, messageID: string) => {
         if (!messageID?.trim()) return undefined
-        const channels = msg.guild!.channels.cache.map((c: GuildChannel) => {if (c.type === "text" && c.permissionsFor(this.user!)?.has("VIEW_CHANNEL")) return c as TextChannel})
+        const channels = msg.guild!.channels.cache.map((c: GuildBasedChannel) => {if (c.type === ChannelType.GuildText && c.permissionsFor(this.user!)?.has("ViewChannel")) return c as TextChannel})
         const msgArray: Message[] = []
         for (let i = 0; i < channels.length; i++) {
             const found = await channels[i]?.messages.fetch({limit: 1, around: messageID})?.then((m) => m.map((m) => m))
@@ -131,8 +132,8 @@ export class Kisaragi extends Client {
 
     // Get an Invite
     public getInvite = async (guild: Guild | null) => {
-        if (!guild || !guild.me?.permissions.has("MANAGE_GUILD")) return "None"
-        const invites = await guild.fetchInvites()
+        if (!guild || !guild.members.me?.permissions.has("ManageGuild")) return "None"
+        const invites = await guild.invites.fetch()
         let invite: string | undefined
         if (invites) {
             invite = invites.find((i)=>i.temporary === false)?.url
@@ -155,10 +156,10 @@ export class Kisaragi extends Client {
     /* Fetch a message from a Guild */
     public fetchFirstMessage = async (guild: Guild | undefined) => {
         if (!guild) return null
-        const channels = guild.channels.cache.filter((c: GuildChannel) => {
-            if (c.type === "text") {
+        const channels = guild.channels.cache.filter((c: GuildBasedChannel) => {
+            if (c.type === ChannelType.GuildText) {
                 const perms = c.permissionsFor(this.user?.id!)
-                if (perms?.has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                if (perms?.has(["ViewChannel", "ReadMessageHistory"])) {
                     return true
                 }
             }
@@ -210,7 +211,8 @@ export class Kisaragi extends Client {
     }
 
     /** Mute auto responses/whitelist bot farm protection on bot list servers */
-    public checkMuted = (message: Message) => {
+    public checkMuted = (message: Message | PartialMessage) => {
+        if (message.partial) return true
         if (!message.guild) {
             if (muted.users.includes(message.author.id)) return true
             return false
@@ -300,8 +302,8 @@ export class Kisaragi extends Client {
 
     /** Create APIMessage */
     public createAPIMessage = async (interaction: any, content: any) => {
-        const {data, files} = await APIMessage.create(this.channels.resolve(interaction.channel_id) as MessageTarget, content).resolveData().resolveFiles()
-        return {...data, files}
+        const {body, files} = await MessagePayload.create(this.channels.resolve(interaction.channel_id) as MessageTarget, content).resolveBody().resolveFiles()
+        return {...body, files}
     }
 
     /** Adds slash commands */

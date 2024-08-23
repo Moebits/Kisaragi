@@ -52,7 +52,7 @@ export default class Kick extends Command {
                 continue
             }
             kickEmbed
-            .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
+            .setAuthor({name: "kick", iconURL: "https://discordemoji.com/assets/emoji/4331_UmaruWave.png"})
             .setTitle(`**You Were Kicked** ${discord.getEmoji("kannaFU")}`)
             .setDescription(`${discord.getEmoji("star")}_You were kicked from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -63,14 +63,14 @@ export default class Kick extends Command {
             } catch {
                 return message.reply(`I need the **Kick Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(kickEmbed).catch(() => null)
+            await dm.send({embeds: [kickEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         kickEmbed
-        .setAuthor("kick", "https://discordemoji.com/assets/emoji/4331_UmaruWave.png")
+        .setAuthor({name: "kick", iconURL: "https://discordemoji.com/assets/emoji/4331_UmaruWave.png"})
         .setTitle(`**Member Kicked** ${discord.getEmoji("kannaFU")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully kicked ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send(kickEmbed)
+        message.channel.send({embeds: [kickEmbed]})
         return
     }
 }

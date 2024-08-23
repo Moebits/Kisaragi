@@ -1,4 +1,4 @@
-import {Guild, Message, MessageEmbed, TextChannel, Util} from "discord.js"
+import {EmbedBuilder, Message} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -56,9 +56,9 @@ export default class NoIMG extends Command {
         for (let i = 0; i < names.length; i++) {
             desc += `\`${names[i]}\`\n`
         }
-        const splits = Util.splitMessage(desc, {maxLength: 1800, char: "\n"})
+        const splits = Functions.splitMessage(desc, {maxLength: 1800, char: "\n"})
 
-        const embedArray: MessageEmbed[] = []
+        const embedArray: EmbedBuilder[] = []
         for (let i = 0; i < splits.length; i++) {
             const embed = embeds.createEmbed()
             embed
@@ -68,7 +68,7 @@ export default class NoIMG extends Command {
         }
 
         if (embedArray.length === 1) {
-            message.channel.send(embedArray[0])
+            message.channel.send({embeds: [embedArray[0]]})
         } else {
             embeds.createReactionEmbed(embedArray)
         }

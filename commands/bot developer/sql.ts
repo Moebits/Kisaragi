@@ -25,7 +25,7 @@ export default class SQL extends Command {
         const sqlEmbed = embeds.createEmbed()
         let result
         try {
-            result = await SQLQuery.runQuery(query, true)
+            result = await SQLQuery.run(query, true)
         } catch (err) {
             message.channel.send(`\`ERROR\` \`\`\`xl\n${err}\n\`\`\``)
         }
@@ -36,7 +36,7 @@ export default class SQL extends Command {
         `**${result ? (result[0][0] ? result[0].length : result.length) : 0}** rows were selected!\n` +
         "\n" +
         `\`\`\`${Functions.checkChar(JSON.stringify(result), 1500, ",")}\`\`\``)
-        message.channel.send(sqlEmbed)
+        message.channel.send({embeds: [sqlEmbed]})
 
     }
 }

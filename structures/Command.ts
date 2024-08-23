@@ -1,5 +1,6 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
+
 interface CommandOptions {
   params: string
   description: string
@@ -17,7 +18,6 @@ interface CommandOptions {
 }
 
 export class Command {
-
   public readonly options: CommandOptions
 
   constructor(public readonly discord: Kisaragi, public readonly message: Message, {
@@ -29,8 +29,8 @@ export class Command {
       guildOnly = false,
       aliases = [""],
       cooldown = 3,
-      permission = "SEND_MESSAGES",
-      botPermission = "SEND_MESSAGES",
+      permission = "SendMessages",
+      botPermission = "SendMessages",
       random = "ignore" as "none" | "string" | "specific" | "ignore",
       unlist = false,
       nsfw = false
@@ -42,18 +42,18 @@ export class Command {
       return this.options
   }
 
-  public noQuery = (embed: MessageEmbed, text?: string) => {
+  public noQuery = (embed: EmbedBuilder, text?: string) => {
     const discord = this.discord
     const desc = text ? `${discord.getEmoji("star")}You must provide a search query. ${text}` : `${discord.getEmoji("star")}You must provide a search query.`
     embed.setDescription(desc)
-    this.message.reply({embed})
+    this.message.reply({embeds: [embed]})
   }
 
-  public invalidQuery = (embed: MessageEmbed, text?: string) => {
+  public invalidQuery = (embed: EmbedBuilder, text?: string) => {
     const discord = this.discord
     const desc = text ? `${discord.getEmoji("star")}No results were found. ${text}` : `${discord.getEmoji("star")}No results were found.`
     embed.setDescription(desc)
-    this.message.reply({embed})
+    this.message.reply({embeds: [embed]})
   }
 
 }

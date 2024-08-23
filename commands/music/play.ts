@@ -1,7 +1,5 @@
-import axios from "axios"
-import {Collection, Message, MessageEmbed, MessageReaction, StreamDispatcher, User} from "discord.js"
-import fs from "fs"
-import path from "path"
+import {Message, EmbedBuilder} from "discord.js"
+import {getVoiceConnection, joinVoiceChannel} from "@discordjs/voice"
 import {Command} from "../../structures/Command"
 import * as defaults from "./../../assets/json/defaultSongs.json"
 import {Audio} from "./../../structures/Audio"
@@ -43,17 +41,16 @@ export default class Play extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
+        if (!message.guild) return
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         if (!audio.checkMusicPermissions()) return
 
-        let voiceChannel = message.guild?.voice?.channel!
-        let connection = message.guild?.voice?.connection!
+        let voiceChannel = message.member?.voice.channel
+        let connection = getVoiceConnection(message.guild!.id)
 
-        if (!connection && message.member?.voice.channel) {
-            voiceChannel = message.member.voice.channel
+        if (!connection && voiceChannel) {
             try {
-                connection = await message.member.voice.channel.join()
+                connection = joinVoiceChannel({channelId: voiceChannel.id, guildId: message.guild.id, adapterCreator: message.guild.voiceAdapterCreator, selfDeaf: false})
             } catch {
                 return message.reply(`I need the **Connect** permission to connect to this channel. ${discord.getEmoji("kannaFacepalm")}`)
             }
@@ -63,11 +60,11 @@ export default class Play extends Command {
 
         const loading = message.channel.lastMessage
 
-        let queue = audio.getQueue() as any
+        let queue = audio.getQueue()
         let setYT = false
         let song = Functions.combineArgs(args, 1).trim()
         let file: string
-        let queueEmbed: MessageEmbed
+        let queueEmbed: EmbedBuilder
         let setReverse = false
         let setLoop = false
         if (song.match(/yt/)) {
@@ -109,7 +106,6 @@ export default class Play extends Command {
                 setFirst = true
             }
             if (setYT) {
-                if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
                 const link = await audio.songPickerYT(song, setFirst)
                 if (!link) return message.reply("No results were found for your query!")
                 song = link
@@ -123,15 +119,17 @@ export default class Play extends Command {
                 queueEmbed = await audio.queueAdd(link, file)
             }
         }
-        await message.channel.send(queueEmbed)
-        queue = audio.getQueue() as any
-        if (setLoop) queue[0].looping = true
+        await message.channel.send({embeds: [queueEmbed]})
+        queue = audio.getQueue()
+        const settings = audio.getSettings() as any
+        if (setLoop) settings[0].looping = true
         if (loading) await loading?.delete()
         if (queue.length === 1 && !queue[0].playing) {
+            const next = audio.next()!
             if (setReverse) {
-                await audio.reverse(audio.next())
+                await audio.reverse(next)
             } else {
-                await audio.play(audio.next())
+                await audio.play(next)
             }
             const nowPlaying = await audio.nowPlaying()
             if (nowPlaying) await message.channel.send(nowPlaying)

@@ -1,6 +1,6 @@
+import {Message, EmbedBuilder} from "discord.js"
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
-import osmosis from "osmosis"
+import * as cheerio from "cheerio"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Permission} from "../../structures/Permission"
@@ -9,8 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class ReverseImage extends Command {
     private readonly headers = {
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
-        "cookie": "CGIC=Inx0ZXh0L2h0bWwsYXBwbGljYXRpb24veGh0bWwreG1sLGFwcGxpY2F0aW9uL3htbDtxPTAuOSxpbWFnZS93ZWJwLGltYWdlL2FwbmcsKi8qO3E9MC44LGFwcGxpY2F0aW9uL3NpZ25lZC1leGNoYW5nZTt2PWIzO3E9MC45; NID=204=ufJdduiEohFFqDqwIJntAQAXrgxSNpFZvH4fsIAHlKIE8rJmi3_Dt13L032L9cKycAJ9WQd4QjkR7MrewWuqTh9HcMY_P1wwOMbG1KOIPux4h5yIbk3O0mWDskLaa0f66YLZZcxUc36PGkM2ruB4Ca-fJ8Cxg4l1_E4JNCgSRh8; 1P_JAR=2020-05-06-23"
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
     }
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -38,18 +37,15 @@ export default class ReverseImage extends Command {
 
     public revSearch = async (image: string) => {
         const data: any[] = []
-        await new Promise((resolve) => {
-            osmosis.get(`https://www.google.com/searchbyimage?image_url=${image}`).headers(this.headers)
-            .find("div.g > div.rc")
-            .set({url: "div.r > a > @href", title: "div.r > a > h3", image: "div.s > div > div > a > @href", desc: "div.s > div > span"})
-            .data(function(d) {
-                d.image = d.image.match(/(?<=imgurl=)(.*?)(jpg)/) ? d.image.match(/(?<=imgurl=)(.*?)(jpg)/)[0] : ""
-                data.push(d)
-                resolve()
-            })
+        const response = await axios.get(`https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url=${image}`, {headers: this.headers}).then((r) => r.data)
+        const $ = cheerio.load(response)
+        $("#search > div > div > div > div > div").each((index, element) => {
+            const url = $(element).find("a").attr("href")
+            const desc = $(element).text()
+            data.push({url, desc})
         })
         const newArray: any[] = []
-        for (let i = 0; i < data.length; i++) {
+        for (let i = 3; i < data.length; i++) {
             const obj = {} as any
             obj.url = data[i]?.url ?? "None"
             obj.title = data[i]?.title ?? "None"
@@ -65,19 +61,17 @@ export default class ReverseImage extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
-
         let image: string | undefined | null
         if (!args[1]) {
             image = await discord.fetchLastAttachment(message)
         } else if (args[1] === "guild") {
-            image = message.guild?.iconURL({format: "png", dynamic: true})
+            image = message.guild?.iconURL({extension: "png"})
         } else if (args[1] === "me") {
-            image = message.author.displayAvatarURL({format: "png", dynamic: true})
+            image = message.author.displayAvatarURL({extension: "png"})
         } else if (args[1].match(/\d{17,}/)) {
             const user = message.guild?.members.cache.find((m) => m.id === args[1].match(/\d{17,}/)![0])
             if (user) {
-                image = user?.user.displayAvatarURL({format: "png", dynamic: true})
+                image = user?.user.displayAvatarURL({extension: "png"})
             } else {
                 image = args[1]
             }
@@ -85,31 +79,33 @@ export default class ReverseImage extends Command {
             image = args[1]
         }
 
-        if (!image) image = message.author.displayAvatarURL({format: "png", dynamic: true})
-        const result = await Functions.promiseTimeout(10000, this.revSearch(image))
-        .catch(() => {
+        if (!image) image = message.author.displayAvatarURL({extension: "png"})
+        let result = [] as any[]
+        try {
+            result = await Functions.promiseTimeout(10000, this.revSearch(image))
+        } catch {
             const revEmbed = embeds.createEmbed()
-            .setAuthor("reverse image search", "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", "https://images.google.com/")
+            .setAuthor({name: "reverse image search", iconURL: "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", url: "https://images.google.com/"})
             .setTitle(`**Google Reverse Image Search** ${discord.getEmoji("gabSip")}`)
             .setURL(`https://www.google.com/searchbyimage?image_url=${image}`)
             .setThumbnail(image!)
             .setDescription(
-                `${discord.getEmoji("star")}Sorry, but no results were found. [**Here**](https://www.google.com/searchbyimage?image_url=${image}) is a direct link to the search.`
+                `${discord.getEmoji("star")}Sorry, but no results were found. [**Here**](https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url=${image}) is a direct link to the search.`
             )
-            return message.channel.send(revEmbed)
-        }) as any
+            return message.channel.send({embeds: [revEmbed]})
+        }
 
-        const revArray: MessageEmbed[] = []
+        const revArray: EmbedBuilder[] = []
         for (let i = 0; i < result.length; i++) {
             const revEmbed = embeds.createEmbed()
             revEmbed
-            .setAuthor("reverse image search", "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", "https://images.google.com/")
+            .setAuthor({name: "reverse image search", iconURL: "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", url: "https://images.google.com/"})
             .setTitle(`**Google Reverse Image Search** ${discord.getEmoji("gabSip")}`)
-            .setURL(`https://www.google.com/searchbyimage?image_url=${image}`)
+            .setURL(`https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url=${image}`)
             .setThumbnail(image!)
-            .setImage(result[i].image)
+            //.setImage(result[i].image)
             .setDescription(
-                `${discord.getEmoji("star")}_Title:_ **${result[i].title}**\n` +
+                //`${discord.getEmoji("star")}_Title:_ **${result[i].title}**\n` +
                 `${discord.getEmoji("star")}_Link:_ ${result[i].url}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${result[i].desc}\n`
             )
@@ -118,7 +114,7 @@ export default class ReverseImage extends Command {
 
         if (!revArray[0]) return
         if (revArray.length === 1) {
-            message.channel.send(revArray[0])
+            message.channel.send({embeds: [revArray[0]]})
         } else {
             embeds.createReactionEmbed(revArray, true, true)
         }

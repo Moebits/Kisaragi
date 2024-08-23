@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -40,7 +40,7 @@ export default class Imgur extends Command {
         const query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg")
+            .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/kpLlF3Y.jpg"})
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             )
         }
@@ -58,7 +58,7 @@ export default class Imgur extends Command {
             }
             const cover = `https://imgur.com/${image.id}.${extension}`
             imgurEmbed
-            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg", "https://imgur.com/")
+            .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/kpLlF3Y.jpg", url: "https://imgur.com/"})
             .setURL(image.link)
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription(
@@ -70,7 +70,7 @@ export default class Imgur extends Command {
                 `${discord.getEmoji("star")}_Description:_ ${image.description ? image.description : "None"}\n`
             )
             .setImage(cover)
-            message.channel.send(imgurEmbed)
+            message.channel.send({embeds: [imgurEmbed]})
             return
         } else {
             const json = await imgur.search(query)
@@ -80,11 +80,11 @@ export default class Imgur extends Command {
         if (!image) {
             const imgurEmbed = embeds.createEmbed()
             imgurEmbed
-            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg", "https://imgur.com/")
+            .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/kpLlF3Y.jpg", url: "https://imgur.com/"})
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription("No results were found! Try searching for a tag on the imgur website.\n" +
             "[Imgur Website](https://imgur.com/)")
-            message.channel.send(imgurEmbed)
+            message.channel.send({embeds: [imgurEmbed]})
             return
         } else if (image.images.length === 1) {
             const imgurEmbed = embeds.createEmbed()
@@ -96,7 +96,7 @@ export default class Imgur extends Command {
             }
             const cover = `https://imgur.com/${image.images[0].id}.${extension}`
             imgurEmbed
-            .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg", "https://imgur.com/")
+            .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/kpLlF3Y.jpg", url: "https://imgur.com/"})
             .setURL(image.link)
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription(
@@ -108,10 +108,10 @@ export default class Imgur extends Command {
                 `${discord.getEmoji("star")}_Description:_ ${image.description ? image.description : "None"}\n`
             )
             .setImage(cover)
-            message.channel.send(imgurEmbed)
+            message.channel.send({embeds: [imgurEmbed]})
             return
         } else {
-            const imageArray: MessageEmbed[] = []
+            const imageArray: EmbedBuilder[] = []
             for (let i = 0; i < image.images.length - 1; i++) {
                 const imgurEmbed = embeds.createEmbed()
                 let extension
@@ -122,7 +122,7 @@ export default class Imgur extends Command {
                 }
                 const cover = `https://imgur.com/${image.images[i].id}.${extension}`
                 imgurEmbed
-                .setAuthor("imgur", "https://i.imgur.com/kpLlF3Y.jpg", "https://imgur.com/")
+                .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/kpLlF3Y.jpg", url: "https://imgur.com/"})
                 .setURL(image.link)
                 .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
                 .setDescription(

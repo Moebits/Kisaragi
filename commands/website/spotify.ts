@@ -1,4 +1,4 @@
-import {Message, MessageEmbed, MessageReaction, User} from "discord.js"
+import {Message, EmbedBuilder, MessageReaction, User} from "discord.js"
 import ms from "pretty-ms"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
@@ -44,17 +44,17 @@ export default class SpotifyCommand extends Command {
             const query = Functions.combineArgs(args, 2)
             if (!query) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", "https://www.spotify.com/")
+                .setAuthor({name: "spotify", iconURL: "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", url: "https://www.spotify.com/"})
                 .setTitle(`**Spotify Artist** ${discord.getEmoji("aquaUp")}`))
             }
-            const spotifyArray: MessageEmbed[] = []
+            const spotifyArray: EmbedBuilder[] = []
             const response = await spotify.search({type: "artist", query: query.trim()})
             const artists = response.artists.items
             for (let i = 0; i < artists.length; i++) {
                 const artist = artists[i]
                 const spotifyEmbed = embeds.createEmbed()
                 spotifyEmbed
-                .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", "https://www.spotify.com/")
+                .setAuthor({name: "spotify", iconURL: "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", url: "https://www.spotify.com/"})
                 .setTitle(`**Spotify Artist** ${discord.getEmoji("aquaUp")}`)
                 .setURL(artist.external_urls.spotify)
                 .setImage(artist.images[0]?.url)
@@ -67,7 +67,7 @@ export default class SpotifyCommand extends Command {
                 spotifyArray.push(spotifyEmbed)
             }
             if (spotifyArray.length === 1) {
-                return message.channel.send(spotifyArray[0])
+                return message.channel.send({embeds: [spotifyArray[0]]})
             }
             return embeds.createReactionEmbed(spotifyArray, true, true)
         }
@@ -75,11 +75,11 @@ export default class SpotifyCommand extends Command {
         const query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", "https://www.spotify.com/")
+            .setAuthor({name: "spotify", iconURL: "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", url: "https://www.spotify.com/"})
             .setTitle(`**Spotify Search** ${discord.getEmoji("aquaUp")}`))
         }
         const response = await spotify.search({type: "track", query: query.trim()})
-        const spotifyArray: MessageEmbed[] = []
+        const spotifyArray: EmbedBuilder[] = []
         for (let i = 0; i < response.tracks.items.length; i++) {
             const track = response.tracks.items[i]
             const artists = track.artists.map((a: any) => a.name)
@@ -87,7 +87,7 @@ export default class SpotifyCommand extends Command {
             const image = artistResponse.artists.items[0].images[0]?.url
             const spotifyEmbed = embeds.createEmbed()
             spotifyEmbed
-            .setAuthor("spotify", "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", "https://www.spotify.com/")
+            .setAuthor({name: "spotify", iconURL: "https://www.freepnglogos.com/uploads/spotify-logo-png/image-gallery-spotify-logo-21.png", url: "https://www.spotify.com/"})
             .setTitle(`**Spotify Search** ${discord.getEmoji("aquaUp")}`)
             .setImage(track.album.images[0]?.url)
             .setThumbnail(image)
@@ -107,7 +107,7 @@ export default class SpotifyCommand extends Command {
         await msg.react(discord.getEmoji("spotify"))
 
         const spotifyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("spotify") && user.bot === false
-        const spotifyCollector = msg.createReactionCollector(spotifyCheck)
+        const spotifyCollector = msg.createReactionCollector({filter: spotifyCheck})
 
         const urls = new Set()
         spotifyCollector.on("collect", async (reaction, user) => {

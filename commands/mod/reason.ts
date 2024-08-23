@@ -1,4 +1,4 @@
-import {GuildChannel, Message, MessageFlags, TextChannel} from "discord.js"
+import {Message, EmbedBuilder, TextChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -57,17 +57,17 @@ export default class Reason extends Command {
                 channelName = "#" + (discord.channels.cache.get(channelID) as TextChannel)?.name ?? ""
                 context = `[**Context**](${cases[index].context})`
             }
-            embed
+            EmbedBuilder.from(embed)
             .setDescription(
                 `${discord.getEmoji("star")}_User:_ **${user.tag}** \`(${user.id})\`\n` +
                 `${discord.getEmoji("star")}_Moderator:_ **${executor.tag}** \`(${executor.id})\`\n` +
                 `${discord.getEmoji("star")}_Reason:_ ${cases[index].reason}\n` +
                 context
             )
-            await msg.edit(embed)
+            await msg.edit({embeds: [embed]})
         }
         const rep = await message.reply(`Successfully edited this case! ${discord.getEmoji("aquaUp")}`)
-        rep.delete({timeout: 3000}).catch(() => null)
+        setTimeout(() => rep.delete().catch(() => null), 3000)
         message.delete().catch(() => null)
     }
 }

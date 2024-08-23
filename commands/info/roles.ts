@@ -1,4 +1,4 @@
-import {Message, MessageEmbed, Role} from "discord.js"
+import {Message, EmbedBuilder, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -33,7 +33,7 @@ export default class Roles extends Command {
         const createdArray = roles.cache.map((r: Role) => r.createdAt)
         const step = 7.0
         const increment = Math.ceil(roles.cache.size / step)
-        const userEmbedArray: MessageEmbed[] = []
+        const userEmbedArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             const userEmbed = embeds.createEmbed()
             let description = ""
@@ -45,9 +45,9 @@ export default class Roles extends Command {
                 `${discord.getEmoji("star")}_Creation Date:_ ${Functions.formatDate(createdArray[value])}\n`
             }
             userEmbed
-            .setAuthor("discord.js", "https://discord.js.org/static/logo-square.png")
+            .setAuthor({name: "discord.js", iconURL: "https://avatars.githubusercontent.com/u/26492485?s=200&v=4"})
             .setTitle(`**${message.guild!.name}'s Roles** ${discord.getEmoji("vigneDead")}`)
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
+            .setThumbnail(message.guild!.iconURL({extension: "png"}) as string)
             .setDescription(`${discord.getEmoji("star")}_Role Count:_ **${roleArray.length}**\n` + description)
             userEmbedArray.push(userEmbed)
         }

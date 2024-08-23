@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageAttachment, MessageEmbed} from "discord.js"
+import {Message} from "discord.js"
 import * as fs from "fs"
 import md5 from "md5"
 import * as path from "path"
@@ -9,6 +9,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
+
 export default class Waifu2x extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
@@ -93,12 +94,12 @@ export default class Waifu2x extends Command {
         */
         const waifuEmbed = embeds.createEmbed()
         waifuEmbed
-        .setAuthor("waifu2x", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9hWZ1ptE9IrNWOUqHzcf9OFD7RMMQEXeUwqpE3zCMB8PWD8Caeg")
+        .setAuthor({name: "waifu2x", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9hWZ1ptE9IrNWOUqHzcf9OFD7RMMQEXeUwqpE3zCMB8PWD8Caeg"})
         .setTitle(`**Waifu 2x Upscaling** ${discord.getEmoji("gabYes")}`)
         // .attachFiles([msgAttachment])
         // .setImage(`attachment://upscaled.png`)
         .setImage(imageURL)
         .setURL(imageURL)
-        return message.channel.send(waifuEmbed)
+        return message.channel.send({embeds: [waifuEmbed]})
     }
 }

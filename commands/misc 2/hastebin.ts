@@ -34,10 +34,10 @@ export default class Hastebin extends Command {
             const textFile = await discord.fetchLastAttachment(message, false, /.(txt|ts|js|json|py|html|css|less|scss|tsx|jsx|c|cs|cpp|java|xml)/)
             if (textFile) {
                 const ext = path.extname(textFile).replace(".", "")
-                let dest = path.resolve(__dirname, `../../../assets/misc/dump/hastebin.${ext}`)
+                let dest = path.resolve(__dirname, `../../assets/misc/dump/hastebin.${ext}`)
                 let i = 1
                 while (fs.existsSync(dest)) {
-                    dest =  path.resolve(__dirname, `../../../assets/misc/dump/hastebin${i}.${ext}`)
+                    dest =  path.resolve(__dirname, `../../assets/misc/dump/hastebin${i}.${ext}`)
                     i++
                 }
                 await images.download(textFile, dest)
@@ -50,10 +50,10 @@ export default class Hastebin extends Command {
         }) as string
         const hastebinEmbed = embeds.createEmbed()
         hastebinEmbed
-        .setAuthor("hastebin", "https://d2.alternativeto.net/dist/icons/hastebin_91073.png?width=200&height=200&mode=crop&upscale=false", "https://hastebin.com/")
+        .setAuthor({name: "hastebin", iconURL: "https://d2.alternativeto.net/dist/icons/hastebin_91073.png?width=200&height=200&mode=crop&upscale=false", url: "https://hastebin.com/"})
         .setTitle(`**Hastebin Upload** ${discord.getEmoji("mexShrug")}`)
         .setURL(link)
         .setDescription(`${discord.getEmoji("star")}Successfully uploaded to hastebin, the link is [**here**](${link})`)
-        return message.channel.send(hastebinEmbed)
+        return message.channel.send({embeds: [hastebinEmbed]})
     }
 }

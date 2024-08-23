@@ -45,7 +45,7 @@ export default class Smug extends Command {
         if (name === "someone") flavorText = `Cool ${discord.getEmoji("raphi")}`
         if (name === "me") flavorText = `Hmm alright ${discord.getEmoji("tohruThink")}`
 
-        const image = await neko.sfw.smug()
+        const image = await neko.smug()
 
         const smugEmbed = embeds.createEmbed()
         smugEmbed
@@ -53,6 +53,6 @@ export default class Smug extends Command {
         .setTitle(`**Smug** ${discord.getEmoji("chinoSmug")}`)
         .setDescription(`**${message.author.username}** is being smug to **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send(smugEmbed)
+        message.channel.send({embeds: [smugEmbed]})
     }
 }

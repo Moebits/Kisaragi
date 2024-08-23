@@ -45,7 +45,7 @@ export default class Poke extends Command {
         if (name === "someone") flavorText = `Cute? ${discord.getEmoji("vigneDead")}`
         if (name === "me") flavorText = `Uhh... thanks ${discord.getEmoji("raphi")}`
 
-        const image = await neko.sfw.poke()
+        const image = await neko.poke()
 
         const pokeEmbed = embeds.createEmbed()
         pokeEmbed
@@ -53,6 +53,6 @@ export default class Poke extends Command {
         .setTitle(`**Poke** ${discord.getEmoji("chinoSmug")}`)
         .setDescription(`**${message.author.username}** pokes **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send(pokeEmbed)
+        message.channel.send({embeds: [pokeEmbed]})
     }
 }

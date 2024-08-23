@@ -10,7 +10,7 @@ export default class Chain extends Command {
             description: "Runs multiple commands in succession.",
             help:
             `
-            _Note: The limit is 10 commands (to prevent abuse). This can be used to quickly set options such as reaction roles._
+            _Note: The limit is 5 commands (to prevent abuse). This can be used to quickly set options such as reaction roles._
             \`chain cmd1 & cmd2\` - Run multiple commands separated by "&"
             `,
             examples:
@@ -33,11 +33,11 @@ export default class Chain extends Command {
         if (!args[1]) return this.noQuery(embeds.createEmbed())
 
         const cmdArgs = args.join(" ").split("& ")
-        if (cmdArgs.length > 10 && (message.author.id !== process.env.OWNER_ID)) return message.reply(`Chaining 10+ commands is restricted to the bot developer. ${discord.getEmoji("sagiriBleh")}`)
+        if (cmdArgs.length > 5 && (message.author.id !== process.env.OWNER_ID)) return message.reply(`Chaining 5+ commands is restricted to the bot developer. ${discord.getEmoji("sagiriBleh")}`)
         for (let i = 0; i < cmdArgs.length; i++) {
             const loading = await message.channel.send(`**Running Chain ${i + 1}** ${discord.getEmoji("gabCircle")}`)
             await commands.runCommand(message, cmdArgs[i].replace(/chain/g, "").split(" "))
-            loading.delete({timeout: 1000})
+            setTimeout(() => loading.delete(), 1000)
         }
     }
 }

@@ -50,7 +50,7 @@ export default class Config extends Command {
         const configEmbed = embeds.createEmbed()
         configEmbed
         .setTitle(`**Bot Config Settings** ${discord.getEmoji("gabStare")}`)
-        .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true})!)
+        .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setDescription(Functions.multiTrim(`
         Configure bot settings. (Sorry, permission checks are not implemented yet)
         newline
@@ -67,7 +67,7 @@ export default class Config extends Command {
         `
         ))
 
-        message.channel.send(configEmbed)
+        message.channel.send({embeds: [configEmbed]})
 
         async function configPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
@@ -77,7 +77,7 @@ export default class Config extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -85,12 +85,12 @@ export default class Config extends Command {
                 await sql.updateColumn("guilds", "permissions", "role")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send(responseEmbed)
+                msg.channel.send({embeds: [responseEmbed]})
                 return
             }
 
             let newColor = (msg.content.match(/default/gi) || msg.content.match(/random/gi) ||
-            msg.content.match(/(\s|^)#[0-9a-f]{3,6}/gi))
+            msg.content.match(/(\s|^)#[0-9a-f]{3,6}/gi)) as string[]
             const newPerm = (msg.content.match(/role/gi) || msg.content.match(/perm/gi))
 
             if (newColor) {
@@ -116,7 +116,7 @@ export default class Config extends Command {
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt ${discord.getEmoji("kannaFacepalm")}`
             responseEmbed
             .setDescription(description)
-            msg.channel.send(responseEmbed)
+            msg.channel.send({embeds: [responseEmbed]})
             return
         }
         await embeds.createPrompt(configPrompt)

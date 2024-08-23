@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -43,7 +43,7 @@ export default class DiscordBotList extends Command {
             response =  await axios.get(`${baseURL}/bots?q=${query}`, {headers}).then((r) => r.data)
         }
 
-        const botArray: MessageEmbed[] = []
+        const botArray: EmbedBuilder[] = []
         for (let i = 0; i < response.bots.length; i++) {
             const bot = response.bots[i]
             const botEmbed = embeds.createEmbed()
@@ -52,7 +52,7 @@ export default class DiscordBotList extends Command {
             const repo = bot.openSource ? `[**Github Repository**](${bot.openSource})\n` : ""
             const invite = bot.botInvite ? `[**Bot Invite**](${bot.botInvite})\n` : ""
             botEmbed
-            .setAuthor("discord bots", "https://discord.bots.gg/img/logo_transparent.png", "https://discord.bots.gg/")
+            .setAuthor({name: "discord bots", iconURL: "https://discord.bots.gg/img/logo_transparent.png", url: "https://discord.bots.gg/"})
             .setTitle(`**Discord Bot Search** ${discord.getEmoji("raphi")}`)
             .setURL(`https://discord.bots.gg/bots/${bot.clientId}`)
             .setThumbnail(bot.avatarURL)
@@ -72,7 +72,7 @@ export default class DiscordBotList extends Command {
         }
 
         if (botArray.length === 1) {
-            message.channel.send(botArray[0])
+            message.channel.send({embeds: [botArray[0]]})
         } else {
             embeds.createReactionEmbed(botArray)
         }

@@ -1,5 +1,5 @@
-import {createCanvas} from "canvas"
-import {Message, MessageAttachment} from "discord.js"
+import {createCanvas} from "@napi-rs/canvas"
+import {Message, AttachmentBuilder} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -49,14 +49,14 @@ export default class Rank extends Command {
         ctx.fillStyle = "#ff3d9b"
         ctx.fillRect(0, 0, width, 5)
         const dataUrl = canvas.toDataURL()
-        let image = path.join(__dirname, `../../../assets/images/dump/rankBar.jpg`)
+        let image = path.join(__dirname, `../../assets/misc/images/dump/rankBar.jpg`)
         let i = 1
         while (fs.existsSync(image)) {
-            image = path.join(__dirname, `../../../assets/images/dump/rankBar${i}.jpg`)
+            image = path.join(__dirname, `../../assets/misc/images/dump/rankBar${i}.jpg`)
             i++
         }
         await imageDataURI.outputFile(dataUrl, image)
-        const attachment = new MessageAttachment(image)
+        const attachment = new AttachmentBuilder(image)
         rankEmbed
         .setTitle(`**${message.author!.username}'s Rank ${discord.getEmoji("cute")}**`)
         .setDescription(
@@ -64,10 +64,9 @@ export default class Rank extends Command {
         `${discord.getEmoji("star")}_Points_: **${score}**\n` +
         `${discord.getEmoji("star")}_Progress_: ${score}/${(pointThreshold * level!) + pointThreshold}\n` +
         `${discord.getEmoji("star")}**${percent.toFixed(1)}%** of the way there!`)
-        .attachFiles([attachment])
         .setImage(`attachment://rankBar.jpg`)
-        .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
-        await message.channel.send(rankEmbed)
+        .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
+        await message.channel.send({embeds: [rankEmbed], files: [attachment]})
         fs.unlink(image, () => null)
     }
 }

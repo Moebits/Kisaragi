@@ -65,13 +65,13 @@ export default class TempBan extends Command {
                 continue
             }
             tempBanEmbed
-            .setAuthor("tempban", "https://cdn.discordapp.com/emojis/579870079735562261.png")
+            .setAuthor({name: "tempban", iconURL: "https://cdn.discordapp.com/emojis/579870079735562261.png"})
             .setTitle(`**You Were Temp Banned** ${discord.getEmoji("kannaFU")}`)
             .setDescription(`${discord.getEmoji("star")}_You were temp banned from **${message.guild!.name}** for **${rawTime}**, reason:_ **${reason}**`)
             const dm = await user.createDM()
             const id = user.id
             try {
-                await message.guild?.members.ban(user, {reason, days: 7})
+                await message.guild?.members.ban(user, {reason, deleteMessageSeconds: 7 * 24 * 60 * 60})
                 const data = {type: "tempban", user: user.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, time: rawTime, context: message.url}
                 discord.emit("caseUpdate", data)
                 let tempArr = await SQLQuery.redisGet(`${message.guild?.id}_tempban`)
@@ -92,6 +92,7 @@ export default class TempBan extends Command {
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
                         await SQLQuery.redisSet(`${this.message.guild?.id}_tempban`, newArr)
+                        // @ts-expect-error
                         clearInterval()
                         return
                     }
@@ -110,14 +111,14 @@ export default class TempBan extends Command {
                 console.log(e)
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(tempBanEmbed).catch(() => null)
+            await dm.send({embeds: [tempBanEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         tempBanEmbed
-        .setAuthor("tempban", "https://cdn.discordapp.com/emojis/579870079735562261.png")
+        .setAuthor({name: "tempban", iconURL: "https://cdn.discordapp.com/emojis/579870079735562261.png"})
         .setTitle(`**Member Temp Banned** ${discord.getEmoji("kannaFU")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully temp banned ${members.join(", ")} for the duration **${rawTime}** for reason:_ **${reason}**`)
-        message.channel.send(tempBanEmbed)
+        message.channel.send({embeds: [tempBanEmbed]})
         return
     }
 }

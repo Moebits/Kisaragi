@@ -57,10 +57,10 @@ export class Points {
             roleMessage = roleMessage.replace("rolementions", batchRoles.map((r) => `<@&${r}>`).join(", "))
             const levelRoleEmbed = embeds.createEmbed()
             levelRoleEmbed
-            .setAuthor(authorText, authorImage)
+            .setAuthor({name: authorText, iconURL: authorImage})
             .setTitle(title)
             .setDescription(roleMessage)
-            await this.message.channel.send(levelRoleEmbed)
+            await this.message.channel.send({embeds: [levelRoleEmbed]})
         }
     }
 
@@ -114,7 +114,7 @@ export class Points {
                         levelEmbed
                         .setTitle(`**Level Up!** ${this.discord.getEmoji("karenXmas")}`)
                         .setDescription(levelUpMessage)
-                        await this.message.channel.send(levelEmbed)
+                        await this.message.channel.send({embeds: [levelEmbed]})
                         await this.levelRoles(user, true)
                     }
 
@@ -126,7 +126,7 @@ export class Points {
                         levelEmbed
                         .setTitle(`**Level Down!** ${this.discord.getEmoji("kaosWTF")}`)
                         .setDescription(`You were leveled down to level **${newLevel}**!`)
-                        await this.message.channel.send(levelEmbed)
+                        await this.message.channel.send({embeds: [levelEmbed]})
                         await this.levelRoles(user, true)
                     }
                 }
@@ -205,7 +205,7 @@ export class Points {
                     levelEmbed
                     .setTitle(`**Level Up!** ${this.discord.getEmoji("karenXmas")}`)
                     .setDescription(levelUpMessage)
-                    await this.message.channel.send(levelEmbed)
+                    await this.message.channel.send({embeds: [levelEmbed]})
                     await this.levelRoles(user)
                 }
                 user.score = newPoints

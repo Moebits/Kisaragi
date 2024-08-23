@@ -1,11 +1,13 @@
-import {Message, Permissions, PermissionString, Role, TextChannel} from "discord.js"
+import {Message, PermissionsBitField, PermissionsString, Role, TextChannel} from "discord.js"
 import * as config from "../assets/json/blacklist.json"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
 export class Permission {
-    private readonly sql = new SQLQuery(this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly sql: SQLQuery
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.sql = new SQLQuery(this.message)
+    }
 
     /** Check Mod */
     public checkMod = async (ignore?: boolean) => {
@@ -66,9 +68,9 @@ export class Permission {
     /** Check Permission */
     public checkPerm = (perm: string) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
-        perm = perm.toUpperCase().replace(/\s+/g, "_")
-        const permission =  new Permissions(perm as PermissionString)
-        if (this.message.member!.hasPermission(permission)) {
+        perm = perm.replace(/\s+/g, "")
+        const permission =  new PermissionsBitField(perm as PermissionsString)
+        if (this.message.member!.permissions.has(permission)) {
             return true
         } else {
             this.message.reply(`You must have the ${perm} permission in order to use this command.`)
@@ -127,6 +129,7 @@ export class Permission {
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
                         await SQLQuery.redisSet(`${this.message.guild?.id}_tempban`, newArr)
+                        // @ts-expect-error
                         clearInterval()
                         return
                     }
@@ -166,6 +169,7 @@ export class Permission {
                         newArr[index] = null
                         newArr = newArr.filter(Boolean)?.[0] ?? null
                         await SQLQuery.redisSet(`${this.message.guild?.id}_tempmute`, newArr)
+                        // @ts-expect-error
                         clearInterval()
                         return
                     }

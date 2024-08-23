@@ -1,24 +1,24 @@
 import axios from "axios"
-import {reject} from "bluebird"
 import child_process from "child_process"
-import {Message, MessageAttachment} from "discord.js"
+import {Message, AttachmentBuilder} from "discord.js"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
 import path from "path"
-import sox from "sox-stream"
-import stream from "stream"
-import util from "util"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {Images} from "./Images"
 import {Kisaragi} from "./Kisaragi"
 
-const pipeline = util.promisify(stream.pipeline)
+const soxPath = process.platform === "win32" ? path.join(__dirname, "../../sox/sox.exe") : path.join(__dirname, "../../sox/sox")
+
 export class AudioEffects {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-    private readonly images = new Images(this.discord, this.message)
-    private readonly embeds = new Embeds(this.discord, this.message)
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    private readonly images: Images
+    private readonly embeds: Embeds
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+        this.embeds = new Embeds(this.discord, this.message)
+        this.images = new Images(this.discord, this.message)
+    }
 
     public getDir = () => {
         const dir = child_process.execSync("cd")
@@ -26,7 +26,7 @@ export class AudioEffects {
     }
 
     public init = (remove?: boolean) => {
-        const dir = path.join(__dirname, `../tracks/transform`)
+        const dir = path.join(__dirname, `../assets/misc/tracks/transform`)
         if (remove) Functions.removeDirectory(dir)
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, {recursive: true})
     }
@@ -36,41 +36,26 @@ export class AudioEffects {
         if (filepath.includes("https://") || filepath.includes("http://")) {
             const data = await axios.get(filepath, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
             const filename = path.basename(filepath.replace(`_${effect}`, "")).slice(0, -4)
-            const dest = path.join(__dirname, `../tracks/${filename}_${effect}.${filepath.slice(-3)}`)
+            const dest = path.join(__dirname, `../assets/misc/tracks/${filename}_${effect}.${filepath.slice(-3)}`)
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
         const inDest = await this.convertToFormat(filepath, "aiff")
-        // const ext = path.extname(filepath).replace(".", "")
         fileDest = fileDest.replace(/(_)(.*?)(?=_)/g, "")
         let outDest = fileDest.slice(0, -4) + `.aiff`
         let index = 0
-        while (fs.existsSync(outDest)) {
+        /*while (fs.existsSync(outDest)) {
             outDest = index <= 1 ? `${fileDest}.aiff` : `${fileDest}${index}.aiff`
             index++
-        }
-        // console.log([...effect.split(" ")])
-        const input = fs.createReadStream(inDest)
-        const output = fs.createWriteStream(outDest)
-        const transform = sox({
-            global: {
-                "temp": "./tracks/transform",
-                "replay-gain": "off"
-            },
-            input: {type: "aiff"},
-            output: {type: "aiff"},
-            effects: ["gain", "-50", ...effect.split(" "), "gain", "-n", "-1"]
-        })
-        await new Promise((resolve) => {
-            input
-            .on("error", (err) => console.log(err))
-            .pipe(transform)
-            .on("error", (err) => console.log(err))
-            .pipe(output)
-            .on("error", (err) => console.log(err))
-            .on("finish", () => resolve())
+        }*/
+        const command = `"${soxPath}" "${inDest}" "${outDest}" gain -50 ${effect} gain -n -1`
+        const child = child_process.exec(command)
+        await new Promise<void>((resolve) => {
+            child.on("error", (err) => console.log(err))
+            child.on("close", () => resolve())
         })
         const mp3Dest = await this.convertToFormat(outDest, "mp3")
+        if (filepath.includes("tracks/transform")) fs.unlink(filepath, () => null)
         fs.unlink(inDest, () => null)
         fs.unlink(outDest, () => null)
         return mp3Dest
@@ -80,30 +65,30 @@ export class AudioEffects {
         this.init()
         const ext = path.extname(filepath)
         const filename = path.basename(filepath.replace(`_${effect}`, "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../tracks/transform/${filename}_${effect}${ext}`)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_${effect}${ext}`)
         const stats = fs.statSync(fileDest)
         if (stats.size > 8000000) {
             const link = await this.images.upload(fileDest)
             const effectEmbed = this.embeds.createEmbed()
             effectEmbed
-            .setAuthor("audio effect", "https://clipartmag.com/images/musical-notes-png-11.png")
+            .setAuthor({name: "audio effect", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
             .setTitle(`**Audio Effect Download** ${this.discord.getEmoji("kannaWave")}`)
             .setDescription(
                 `${this.discord.getEmoji("star")}This audio file is too large for attachments. Download it [**here**](${link}).\n`
             )
-            return this.message.channel.send(effectEmbed)
+            return this.message.channel.send({embeds: [effectEmbed]})
         } else {
             const attachName = path.basename(fileDest)
-            const attachment = new MessageAttachment(path.join(__dirname, fileDest), `${attachName}`)
+            const attachment = new AttachmentBuilder(path.join(__dirname, fileDest), {name: `${attachName}`})
             const effectEmbed = this.embeds.createEmbed()
             effectEmbed
-            .setAuthor("audio effect", "https://clipartmag.com/images/musical-notes-png-11.png")
+            .setAuthor({name: "audio effect", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
             .setTitle(`**Audio Effect Download** ${this.discord.getEmoji("kannaWave")}`)
             .setDescription(
                 `${this.discord.getEmoji("star")}Applied the **${effect}** effect to this mp3 file!\n`
             )
-            await this.message.channel.send(effectEmbed)
-            return this.message.channel.send(attachment)
+            await this.message.channel.send({embeds: [effectEmbed]})
+            return this.message.channel.send({files: [attachment]})
         }
     }
 
@@ -222,7 +207,6 @@ export class AudioEffects {
         }*/
         if (!wavDest) return combSamples
         const combArray = [...header, ...combSamples]
-        console.log(combArray)
         fs.writeFileSync(wavDest, Buffer.from(new Uint8Array(combArray)))
         // const mp3File = await this.WavToMp3(wavDest)
         fs.unlink(wavFile, (err) => console.log(err))
@@ -235,8 +219,8 @@ export class AudioEffects {
         const ext = path.extname(filepath).replace(".", "")
         if (ext === "ogg") return fs.createReadStream(filepath)
         const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
-        const newDest = `./tracks/transform/${filename}.ogg`
-        await new Promise((resolve) => {
+        const newDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}.ogg`)
+        await new Promise<void>((resolve) => {
             ffmpeg(filepath).toFormat("ogg").outputOptions(["-c:a", "libopus", "-b:a", "96k"]).save(newDest)
             .on("end", () => resolve())
         })
@@ -248,8 +232,8 @@ export class AudioEffects {
         const channels = mono ? "1" : "2"
         const ext = path.extname(filepath).replace(".", "")
         const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
-        const newDest = `./tracks/transform/${filename}.wav`
-        await new Promise((resolve, reject) => {
+        const newDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}.wav`)
+        await new Promise<void>((resolve, reject) => {
             ffmpeg(filepath).inputOptions(["-f", "s16le", "-ar", "44.1k", "-ac", channels]).save(newDest)
             .on("end", () => resolve())
             .on("error", () => reject())
@@ -265,9 +249,22 @@ export class AudioEffects {
         }
         const ext = path.extname(filepath).replace(".", "")
         const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
-        const newDest = `./tracks/transform/${filename}.${format}`
-        await new Promise((resolve, reject) => {
+        const newDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}.${format}`)
+        await new Promise<void>((resolve, reject) => {
             ffmpeg(filepath).toFormat(format).outputOptions("-bitexact").save(newDest)
+            .on("end", () => resolve())
+            .on("error", () => reject())
+        })
+        return newDest
+    }
+
+    public seekFile = async (filepath: string, seek: number) => {
+        this.init()
+        const ext = path.extname(filepath).replace(".", "")
+        const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
+        const newDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-seek.${ext}`)
+        await new Promise<void>((resolve, reject) => {
+            ffmpeg(filepath).toFormat(ext).setStartTime(seek).save(newDest)
             .on("end", () => resolve())
             .on("error", () => reject())
         })

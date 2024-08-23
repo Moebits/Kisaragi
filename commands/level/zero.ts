@@ -43,11 +43,11 @@ export default class Zero extends Command {
 
         const zeroEmbed = embeds.createEmbed()
         zeroEmbed
-        .setAuthor("zero", "https://image.flaticon.com/icons/png/512/594/594712.png")
+        .setAuthor({name: "zero", iconURL: "https://image.flaticon.com/icons/png/512/594/594712.png"})
         .setTitle(`**Point Reset** ${discord.getEmoji("kaosWTF")}`)
         .setDescription(
             `${discord.getEmoji("star")}Reset <@${user}>'s points back to **0**!`
         )
-        return message.channel.send(zeroEmbed)
+        return message.channel.send({embeds: [zeroEmbed]})
     }
 }

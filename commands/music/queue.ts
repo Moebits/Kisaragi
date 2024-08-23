@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -30,15 +30,14 @@ export default class Queue extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         const queue = audio.getQueue() as any
-        const queueArray: MessageEmbed[] = []
+        const queueArray: EmbedBuilder[] = []
         for (let i = 0; i < queue.length; i++) {
             const embed = await audio.updateNowPlaying(i)
             embed
-            .setAuthor("queue", "https://clipartmag.com/images/musical-notes-png-11.png")
+            .setAuthor({name: "queue", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
             .setTitle(`**Position #${i+1}** ${discord.getEmoji("gabYes")}`)
             queueArray.push(embed)
         }

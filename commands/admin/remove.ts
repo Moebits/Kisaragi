@@ -1,4 +1,4 @@
-import {GuildChannel, GuildEmoji, Message, Role} from "discord.js"
+import {GuildBasedChannel, GuildEmoji, Message, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -38,7 +38,7 @@ export default class Remove extends Command {
         if (args[1] === "channel") {
             if (!args[2]) return message.reply(`You must specify a channel name or id.`)
             const reason = Functions.combineArgs(args, 3) ? Functions.combineArgs(args, 3).trim() : "None provided!"
-            let channel: GuildChannel | undefined
+            let channel: GuildBasedChannel | undefined
             if (args[2].match(/\d{17,}/)) {
                 channel = message.guild?.channels.cache.find((c) => c.id === args[2].match(/\d{17,}/)![0])
             } else {
@@ -50,10 +50,10 @@ export default class Remove extends Command {
                 await channel.delete(reason)
                 const removeEmbed = embeds.createEmbed()
                 removeEmbed
-                .setAuthor("remove", "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png")
+                .setAuthor({name: "remove", iconURL: "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png"})
                 .setTitle(`**Channel Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
                 .setDescription(`The channel **#${channelName}** was deleted for reason: **${reason}**`)
-                return message.reply(removeEmbed)
+                return message.reply({embeds: [removeEmbed]})
             } catch {
                 return message.reply("Could not delete this channel, I need the **Manage Channels** permission.")
             }
@@ -75,10 +75,10 @@ export default class Remove extends Command {
                 await role.delete(reason)
                 const removeEmbed = embeds.createEmbed()
                 removeEmbed
-                .setAuthor("remove", "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png")
+                .setAuthor({name: "remove", iconURL: "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png"})
                 .setTitle(`**Role Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
                 .setDescription(`The role **${roleName}** was deleted for reason: **${reason}**`)
-                return message.reply(removeEmbed)
+                return message.reply({embeds: [removeEmbed]})
             } catch {
                 return message.reply("Could not delete this role, I need the **Manage Roles** permission.")
             }
@@ -91,7 +91,7 @@ export default class Remove extends Command {
             if (args[2].match(/\d{17,}/)) {
                 emoji = message.guild?.emojis.cache.find((e) => e.id === args[2].match(/\d{17,}/)![0])
             } else {
-                emoji = message.guild?.emojis.cache.find((e) => e.name.toLowerCase().includes(args[2].toLowerCase()))
+                emoji = message.guild?.emojis.cache.find((e) => e.name?.toLowerCase().includes(args[2].toLowerCase()))
             }
             if (!emoji) return message.reply(`Could not find this emoji!`)
             const emojiName = emoji.name
@@ -99,10 +99,10 @@ export default class Remove extends Command {
                 await emoji.delete(reason)
                 const removeEmbed = embeds.createEmbed()
                 removeEmbed
-                .setAuthor("remove", "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png")
+                .setAuthor({name: "remove", iconURL: "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png"})
                 .setTitle(`**Emoji Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
                 .setDescription(`The emoji **${emojiName}** was deleted for reason: **${reason}**`)
-                return message.reply(removeEmbed)
+                return message.reply({embeds: [removeEmbed]})
             } catch {
                 return message.reply("Could not delete this emoji, I need the **Manage Emojis** permission.")
             }

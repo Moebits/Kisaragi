@@ -45,7 +45,7 @@ export default class Slap extends Command {
         if (name === "someone") flavorText = `Well ok ${discord.getEmoji("vigneDead")}`
         if (name === "me") flavorText = `No thanks ${discord.getEmoji("ceaseBullying")}`
 
-        const image = await neko.sfw.slap()
+        const image = await neko.slap()
 
         const slapEmbed = embeds.createEmbed()
         slapEmbed
@@ -53,6 +53,6 @@ export default class Slap extends Command {
         .setTitle(`**Slap** ${discord.getEmoji("kaosWTF")}`)
         .setDescription(`**${message.author.username}** slaps **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send(slapEmbed)
+        message.channel.send({embeds: [slapEmbed]})
     }
 }

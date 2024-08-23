@@ -30,7 +30,6 @@ export default class Rewind extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
 
@@ -41,7 +40,9 @@ export default class Rewind extends Command {
         const embed = await audio.updateNowPlaying()
         queue[0].message.edit(embed)
         const rep = await message.reply(`Rewinded the song!`)
-        rep.delete({timeout: 3000}).then(() => message.delete().catch(() => null))
+        await Functions.timeout(3000)
+        rep.delete().catch(() => null)
+        message.delete().catch(() => null)
         return
     }
 }

@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -37,10 +37,10 @@ export default class Musescore extends Command {
         const scores = json.store.page.data.scores
         if (!scores[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor("musescore", "https://s3.amazonaws.com/s.musescore.org/about/images/design_MU3/musescore_sticker+11%403x.png", "https://musescore.com/")
+            .setAuthor({name: "musescore", iconURL: "https://s3.amazonaws.com/s.musescore.org/about/images/design_MU3/musescore_sticker+11%403x.png", url: "https://musescore.com/"})
             .setTitle(`**Musescore Search** ${discord.getEmoji("raphi")}`))
         }
-        const museArray: MessageEmbed[] = []
+        const museArray: EmbedBuilder[] = []
         for (let i = 0; i < scores.length; i++) {
             const score = scores[i]
             const url = score.share.publicUrl
@@ -55,7 +55,7 @@ export default class Musescore extends Command {
             const mp3 = `[**MP3**](http://musescore.com/static/musescore/scoredata/gen/${secret}/score.mp3)\n`
             const museEmbed = embeds.createEmbed()
             museEmbed
-            .setAuthor("musescore", "https://s3.amazonaws.com/s.musescore.org/about/images/design_MU3/musescore_sticker+11%403x.png", "https://musescore.com/")
+            .setAuthor({name: "musescore", iconURL: "https://s3.amazonaws.com/s.musescore.org/about/images/design_MU3/musescore_sticker+11%403x.png", url: "https://musescore.com/"})
             .setTitle(`**Musescore Search** ${discord.getEmoji("raphi")}`)
             .setURL(url)
             .setThumbnail(avatar)
@@ -67,13 +67,13 @@ export default class Musescore extends Command {
                 `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(1000*score.date_created))}**\n` +
                 `${discord.getEmoji("star")}_Views:_ **${score.hits}**\n` +
                 `${discord.getEmoji("star")}_Comments:_ **${score.comments_count}**\n` +
-                `${discord.getEmoji("star")}_Description:_ ${score.truncated_description.replace(/(\[url)(.*?)(\url])/g, "")}\n` +
+                `${discord.getEmoji("star")}_Description:_ ${score.truncated_description.replace(/(\[url)(.*?)(url])/g, "")}\n` +
                 midi + pdf + mp3 + mxml + mscz
             )
             museArray.push(museEmbed)
         }
         if (museArray.length === 1) {
-            await message.channel.send(museArray[0])
+            await message.channel.send({embeds: [museArray[0]]})
         } else {
             embeds.createReactionEmbed(museArray)
         }

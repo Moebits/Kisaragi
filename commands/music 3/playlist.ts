@@ -1,4 +1,4 @@
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder, Embed} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -35,7 +35,6 @@ export default class Playlists extends Command {
         const audio = new Audio(discord, message)
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
-        if (!perms.checkBotDev()) return
         let playlists = [{name: null, songs: [], length: 0}]
         const exists = await sql.fetchColumn("misc", "playlists", "user id", message.author.id)
         if (!exists) {
@@ -49,7 +48,7 @@ export default class Playlists extends Command {
         }
         const step = 3.0
         const increment = Math.ceil((playlists ? playlists.length : 1) / step)
-        const playlistArray: MessageEmbed[] = []
+        const playlistArray: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let playDesc = ""
             for (let j = 0; j < step; j++) {
@@ -62,16 +61,16 @@ export default class Playlists extends Command {
             }
             const playlistEmbed = embeds.createEmbed()
             playlistEmbed
-            .setAuthor("playlist", "https://cdn3.iconfinder.com/data/icons/music-set-8/64/iconspace_Playlist-512.png")
+            .setAuthor({name: "playlist", iconURL: "https://cdn3.iconfinder.com/data/icons/music-set-8/64/iconspace_Playlist-512.png"})
             .setTitle(`**Playlists** ${discord.getEmoji("karenSugoi")}`)
-            .setThumbnail(message.author.displayAvatarURL({format: "png", dynamic: true}))
+            .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
             .setDescription(Functions.multiTrim(`
                 __Playlists__
                 ${playDesc}
             `))
             playlistArray.push(playlistEmbed)
         }
-        const msg = await message.channel.send(playlistArray[0])
+        const msg = await message.channel.send({embeds: [playlistArray[0]]})
         const reactions = ["right", "left", "1n", "2n", "3n", "random", "edit", "add"]
         return
     }

@@ -1,4 +1,4 @@
-import {GuildMember, Message, MessageEmbed, Role} from "discord.js"
+import {GuildMember, Message, EmbedBuilder, Role} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -64,13 +64,13 @@ export default class Warns extends Command {
             return
         }
 
-        const warnArray: MessageEmbed[] = []
+        const warnArray: EmbedBuilder[] = []
         let warnings = ""
         let warnLog = await sql.fetchColumn("guilds", "warn log")
         if (!warnLog) warnLog = []
         for (let i = 0; i < warnLog.length; i++) {
             warnLog[i] = JSON.parse(warnLog[i])
-            if (warnLog === []) {
+            if (warnLog.length === 0) {
                 warnings = "None"
             } else {
                 for (let j = 0; j < warnLog[i].warns.length; j++) {
@@ -84,7 +84,7 @@ export default class Warns extends Command {
             const member = message.guild?.members.cache.find((m: GuildMember) => m.id === warnLog[i].user)
             warnEmbed
             .setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
-            .setThumbnail(message.guild!.iconURL({format: "png", dynamic: true}) as string)
+            .setThumbnail(message.guild!.iconURL({extension: "png"}) as string)
             .setDescription(
                 `**${member ? `${member.displayName}'s` : "No"} Warns**\n` +
                 "__Warns__\n" +
@@ -103,7 +103,7 @@ export default class Warns extends Command {
         if (warnArray.length > 1) {
             embeds.createReactionEmbed(warnArray)
         } else {
-            message.channel.send(warnArray[0])
+            message.channel.send({embeds: [warnArray[0]]})
         }
 
         async function warnPrompt(msg: Message) {
@@ -122,13 +122,13 @@ export default class Warns extends Command {
                 await sql.updateColumn("guilds", "warn log", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All warns were destroyed!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
 
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
 
             const userID = msg.content.match(/\d{15,}/g)?.[0] ?? ""
@@ -150,9 +150,9 @@ export default class Warns extends Command {
                     }
                     if (!found) return msg.reply("That user does not have any warns!")
                     responseEmbed.setDescription(`Edited warn **#${num+1}** for <@${member.id}>!`)
-                    return msg.channel.send(responseEmbed)
+                    return msg.channel.send({embeds: [responseEmbed]})
                 } else {
-                    return msg.channel.send(responseEmbed.setDescription("No warning found!"))
+                    return msg.channel.send({embeds: [responseEmbed.setDescription("No warning found!")]})
                 }
             }
 
@@ -194,7 +194,7 @@ export default class Warns extends Command {
                 }
                 if (!found) return msg.reply("That user does not have any warns!")
                 responseEmbed.setDescription(`Purged all warns from <@${member.id}>!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (setUser) {
                 let warns = ""
@@ -216,7 +216,7 @@ export default class Warns extends Command {
                     `**${member.displayName}'s Warns**\n` +
                     warns + "\n"
                 )
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
             if (setDelete) {
                 let num: number = Number(msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)![0])
@@ -250,7 +250,7 @@ export default class Warns extends Command {
                 }
                 if (!found) return msg.reply("That user does not have any warns!")
                 responseEmbed.setDescription(`Deleted warn **${num + 1}** from <@${member.id}>!`)
-                return msg.channel.send(responseEmbed)
+                return msg.channel.send({embeds: [responseEmbed]})
             }
         }
         await embeds.createPrompt(warnPrompt)

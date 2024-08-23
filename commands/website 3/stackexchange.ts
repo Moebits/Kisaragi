@@ -1,5 +1,4 @@
-import axios from "axios"
-import {Message, MessageEmbed} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -53,14 +52,14 @@ export default class StackExchange extends Command {
         }
         let result = "" as any
         let answerResult = "" as any
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             stack.search.search({...filter, sort: "relevance"}, (err: any, res: any) => {
                 result = res
                 resolve()
             })
         })
         const ids = result.items.map((q) => q.question_id)
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
             stack.questions.answers({...filter, sort: "votes"}, (err: any, res: any) => {
                 answerResult = res
                 resolve()
@@ -68,7 +67,7 @@ export default class StackExchange extends Command {
         })
         let questions = result.items
         questions = Functions.sortObjectArray(questions, "view_count", "desc")
-        const stackArray: MessageEmbed[] = []
+        const stackArray: EmbedBuilder[] = []
         for (let i = 0; i < questions.length; i++) {
             const question = questions[i]
             let answer = answerResult.items.find((a: any) => a.question_id === question.question_id) ?? "None"
@@ -78,11 +77,11 @@ export default class StackExchange extends Command {
             const stackEmbed = embeds.createEmbed()
             if (site === "stackoverflow") {
                 stackEmbed
-                .setAuthor("stackoverflow", "https://upload.wikimedia.org/wikipedia/commons/8/81/Stackoverflow_icon.png", "https://stackoverflow.com/")
+                .setAuthor({name: "stackoverflow", iconURL: "https://upload.wikimedia.org/wikipedia/commons/8/81/Stackoverflow_icon.png", url: "https://stackoverflow.com/"})
                 .setTitle(`**Stack Overflow Search** ${discord.getEmoji("tohruThink")}`)
             } else {
                 stackEmbed
-                .setAuthor("stackexchange", "https://cdn.sstatic.net/Sites/stackexchange/img/apple-touch-icon@2.png", "https://stackexchange.com/")
+                .setAuthor({name: "stackexchange", iconURL: "https://cdn.sstatic.net/Sites/stackexchange/img/apple-touch-icon@2.png", url: "https://stackexchange.com/"})
                 .setTitle(`**Stack Exchange Search** ${discord.getEmoji("tohruThink")}`)
             }
             stackEmbed
@@ -98,7 +97,7 @@ export default class StackExchange extends Command {
             stackArray.push(stackEmbed)
         }
         if (stackArray.length === 1) {
-            message.channel.send(stackArray[0])
+            message.channel.send({embeds: [stackArray[0]]})
         } else {
             embeds.createReactionEmbed(stackArray)
         }

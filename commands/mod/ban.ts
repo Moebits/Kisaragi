@@ -52,25 +52,25 @@ export default class Ban extends Command {
                 continue
             }
             banEmbed
-            .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+            .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
             .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
             .setDescription(`${discord.getEmoji("star")}_You were banned from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await user.createDM()
             try {
-                await message.guild?.members.ban(user, {reason, days: 7})
+                await message.guild?.members.ban(user, {reason, deleteMessageSeconds: 7 * 24 * 60 * 60})
                 const data = {type: "ban", user: user.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send(banEmbed).catch(() => null)
+            await dm.send({embeds: [banEmbed]}).catch(() => null)
         }
         if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         banEmbed
-        .setAuthor("ban", "https://discordemoji.com/assets/emoji/bancat.png")
+        .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
         .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully banned ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send(banEmbed)
+        message.channel.send({embeds: [banEmbed]})
         return
     }
 }
