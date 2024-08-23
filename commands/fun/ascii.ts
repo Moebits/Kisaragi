@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -18,8 +18,18 @@ export default class Ascii extends Command {
             \`=>ascii hi\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        const textOption = new SlashCommandStringOption()
+        .setName("text")
+        .setDescription("text content")
+        .setRequired(true)
+        this.slash = new SlashCommandBuilder()
+        .setName(this.constructor.name.toLowerCase())
+        .setDescription(this.options.description)
+        .addStringOption(textOption)
+        .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -35,6 +45,6 @@ export default class Ascii extends Command {
         asciiEmbed
         .setTitle(`**Ascii Art** ${discord.getEmoji("kannaSip")}`)
         .setDescription("```" + Functions.checkChar(asciiText, 2000, "|") + "```")
-        message.channel.send({embeds: [asciiEmbed]})
+        message.reply({embeds: [asciiEmbed]})
     }
 }

@@ -1,9 +1,9 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class $8ball extends Command {
+export default class Eightball extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Responds to your question.",
@@ -16,8 +16,18 @@ export default class $8ball extends Command {
             \`=>8ball do you love me?\`
             `,
             aliases: ["eightball"],
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        const questionOption = new SlashCommandStringOption()
+        .setName("question")
+        .setDescription("question")
+        .setRequired(true)
+        this.slash = new SlashCommandBuilder()
+        .setName("8ball")
+        .setDescription(this.options.description)
+        .addStringOption(questionOption)
+        .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -44,7 +54,7 @@ export default class $8ball extends Command {
         ]
 
         const msg = Functions.combineArgs(args, 1).trim()
-        if (!msg) return message.channel.send(`Umm... what are you asking ${discord.getEmoji("kannaFacepalm")}`)
-        return message.channel.send(responses[Math.floor(Math.random()*responses.length)])
+        if (!msg) return message.reply(`Umm... what are you asking ${discord.getEmoji("kannaFacepalm")}`)
+        return message.reply(responses[Math.floor(Math.random()*responses.length)])
     }
 }

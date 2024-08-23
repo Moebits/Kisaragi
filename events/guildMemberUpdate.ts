@@ -1,9 +1,9 @@
 import {Guild, GuildAuditLogsEntry, GuildMember, PartialGuildMember, Message, Role, TextChannel, User} from "discord.js"
 import ascii from "fold-to-ascii"
-import {Embeds} from "./../structures/Embeds"
-import {Functions} from "./../structures/Functions"
-import {Kisaragi} from "./../structures/Kisaragi"
-import {SQLQuery} from "./../structures/SQLQuery"
+import {Embeds} from "../structures/Embeds"
+import {Functions} from "../structures/Functions"
+import {Kisaragi} from "../structures/Kisaragi"
+import {SQLQuery} from "../structures/SQLQuery"
 
 export default class GuildMemberUpdate {
     constructor(private readonly discord: Kisaragi) {}

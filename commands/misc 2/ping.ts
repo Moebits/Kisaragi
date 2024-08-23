@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -6,7 +6,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Ping extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-          description: "Ping.",
+          description: "Posts the response time.",
           help:
           `
           \`ping\` - Posts the response time
@@ -17,8 +17,13 @@ export default class Ping extends Command {
           `,
           aliases: [],
           random: "none",
-          cooldown: 3
+          cooldown: 3,
+          slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+        .setName(this.constructor.name.toLowerCase())
+        .setDescription(this.options.description)
+        .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -28,7 +33,8 @@ export default class Ping extends Command {
 
         const pingEmbed = embeds.createEmbed()
 
-        const msg = await message.channel.send({embeds: [pingEmbed
+        // @ts-ignore
+        const msg = await message.reply({fetchReply: true, embeds: [pingEmbed
         .setDescription("Ping?")]}) as Message
         msg.edit({embeds: [pingEmbed
         .setTitle(`**Ping** ${discord.getEmoji("kannaHungry")}`)

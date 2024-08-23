@@ -15,17 +15,12 @@
     "twitterRedirectTesting": "http://localhost:5000/twitter",
     "redditRedirect": "https://kisaragi-discord-bot.herokuapp.com/reddit",
     "repo": "https://github.com/Moebits/Kisaragi",
+    "animePictures": "https://kisaragi.moe/assets/waifu",
     "imagesAPI": "https://moebits-images.herokuapp.com",
     "openCVAPI": "https://moebits-opencv.herokuapp.com",
-    "animeAPI": "https://anime-pictures.herokuapp.com",
     "kisaragiAPI": "https://kisaragi-discord-bot.herokuapp.com",
     "guildLog": "683760526840692761",
     "feedback": "683756932317577232",
-    "review": "",
-    "vote": "",
     "trello": "https://trello.com/b/ToodAuzu",
-    "paypal": "",
-    "patreon": "",
-    "kofi": "",
     "testing": "off"
 }

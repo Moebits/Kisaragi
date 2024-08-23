@@ -1,6 +1,6 @@
 import "dotenv/config"
 import {ShardingManager} from "discord.js"
-import * as config from "./config.json"
+import config from "./config.json"
 import path from "path"
 
 const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN

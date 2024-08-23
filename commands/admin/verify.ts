@@ -42,7 +42,7 @@ export default class Verify extends Command {
         if (!role) {
             const vErrorEmbed = embeds.createEmbed()
             vErrorEmbed.setDescription("Could not find the verify role!")
-            return vErrorEmbed
+            return message.channel.send({embeds: [vErrorEmbed]})
         }
         const type = cType
 

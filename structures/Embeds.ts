@@ -94,14 +94,14 @@ export class Embeds {
             collapse.on("collect", async (reaction: MessageReaction, user: User) => {
                 if (!collapsed) {
                     for (let i = 0; i < embeds.length; i++) {
-                        embeds[i].setDescription("")
-                        embeds[i].setThumbnail("")
+                        embeds[i].setDescription(null)
+                        embeds[i].setThumbnail(null)
                     }
                     collapsed = true
                 } else {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription(description[i])
-                        embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
+                        embeds[i].setThumbnail(thumbnail[i]?.url ?? null)
                     }
                     collapsed = false
                 }
@@ -378,7 +378,7 @@ export class Embeds {
             case "collapse":
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription(description[i])
-                        embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
+                        embeds[i].setThumbnail(thumbnail[i]?.url ?? null)
                     }
                     msg.edit({embeds: [embeds[page]]})
                     break
@@ -410,14 +410,14 @@ export class Embeds {
             collapse.on("collect", async (reaction: MessageReaction, user: User) => {
                 if (!collapsed) {
                     for (let i = 0; i < embeds.length; i++) {
-                        embeds[i].setDescription("")
-                        embeds[i].setThumbnail("")
+                        embeds[i].setDescription(null)
+                        embeds[i].setThumbnail(null)
                     }
                     collapsed = true
                 } else {
                     for (let i = 0; i < embeds.length; i++) {
                         embeds[i].setDescription(description[i])
-                        embeds[i].setThumbnail(thumbnail[i]?.url ?? "")
+                        embeds[i].setThumbnail(thumbnail[i]?.url ?? null)
                     }
                     collapsed = false
                 }

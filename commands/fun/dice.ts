@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -18,8 +18,13 @@ export default class Dice extends Command {
             `,
             aliases: ["roll"],
             random: "none",
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+        .setName(this.constructor.name.toLowerCase())
+        .setDescription(this.options.description)
+        .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -33,11 +38,11 @@ export default class Dice extends Command {
 
         const loading = message.channel.lastMessage
 
-        const msg = await message.channel.send(
+        const msg = await message.reply(
             // `**Dice Roll** ${discord.getEmoji("smugFace")}\n` +
             `**Rolling the dice...** ${discord.getEmoji("diceRoll")}`)
 
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         await Functions.timeout(700)
         msg.edit(
             // `**Dice Roll** ${discord.getEmoji("chinoSmug")}\n` +

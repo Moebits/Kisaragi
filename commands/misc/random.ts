@@ -3,7 +3,7 @@ import fs from "fs"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
+import {Permission} from "./../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Random extends Command {
@@ -52,6 +52,7 @@ export default class Random extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
+        const perms = new Permission(discord, message)
 
         const commandArray: string[] = []
         const pathArray: string[] = []
@@ -64,13 +65,13 @@ export default class Random extends Command {
                 const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message) as Command
                 if (!cmdClass.options.random || cmdClass.options.random === "ignore") continue
                 if (cmdClass.options.unlist) continue
-                if (discord.checkMuted(message)) if (cmdClass.options.nsfw) continue
+                if (cmdClass.options.nsfw) if (!perms.checkNSFW(true)) continue
                 pathArray.push(`${subDir[i]}/${commands[j]}`)
                 commandArray.push(commands[j])
             }
         }
         const random = Math.floor(Math.random()*pathArray.length)
-        const command = new (await import(`../${pathArray[random]}`))(this.discord, this.message) as Command
+        const command = new (require(`../${pathArray[random]}`).default)(this.discord, this.message) as Command
         const name = commandArray[random]
         switch (command.options.random) {
             case "none":

@@ -1,10 +1,10 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class $8ball extends Command {
+export default class Coin extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Flips a coin.",
@@ -17,8 +17,13 @@ export default class $8ball extends Command {
             \`=>coin\`
             `,
             aliases: ["coinflip", "flipcoin"],
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+        .setName(this.constructor.name.toLowerCase())
+        .setDescription(this.options.description)
+        .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -27,6 +32,6 @@ export default class $8ball extends Command {
 
         const options = ["heads", "tails"]
         const choice = options[Math.floor(Math.random() * 2)]
-        return message.channel.send(`Flipped **${choice}**! ${discord.getEmoji(choice)}`)
+        return message.reply(`Flipped **${choice}**! ${discord.getEmoji(choice)}`)
     }
 }

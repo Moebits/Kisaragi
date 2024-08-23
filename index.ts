@@ -3,7 +3,7 @@ import {DefaultWebSocketManagerOptions, GatewayIntentBits, Partials} from "disco
 import fs from "fs"
 import path from "path"
 import * as config from "./config.json"
-import Server from "./server"
+// import Server from "./server"
 import {Functions} from "./structures/Functions"
 import {Kisaragi} from "./structures/Kisaragi"
 import {Logger} from "./structures/Logger"

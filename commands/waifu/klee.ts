@@ -5,17 +5,17 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 
-export default class Chino extends Command {
+export default class Klee extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Posts pictures of chino.",
+            description: "Posts pictures of klee.",
             help:
             `
-            \`chino\` - Posts chino pictures.
+            \`klee\` - Posts klee pictures.
             `,
             examples:
             `
-            \`=>chino\`
+            \`=>klee\`
             `,
             aliases: [],
             random: "none",
@@ -29,7 +29,7 @@ export default class Chino extends Command {
         const embeds = new Embeds(discord, message)
         const pixiv = new PixivApi(discord, message)
         const perms = new Permission(discord, message)
-        const pixivArray = await pixiv.animeEndpoint("chino", 10)
+        const pixivArray = await pixiv.animeEndpoint("klee", 10)
         embeds.createReactionEmbed(pixivArray, true, true)
     }
 }

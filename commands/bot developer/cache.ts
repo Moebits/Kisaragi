@@ -9,6 +9,14 @@ export default class Cache extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Deletes cached embeds from the database.",
+            help:
+            `
+            \`cache pixiv?\` - Deletes embeds and optionally pixiv embeds.
+            `,
+            examples:
+            `
+            \`=>cache\`
+            `,
             aliases: [],
             cooldown: 3
         })
@@ -24,6 +32,7 @@ export default class Cache extends Command {
         const cleanEmbed = embeds.createEmbed()
 
         await SQLQuery.purgeTable("collectors")
+        if (args[1] === "pixiv") await SQLQuery.purgeTable("pixiv")
         await SQLQuery.flushDB()
         cleanEmbed
         .setTitle(`**Clean** ${discord.getEmoji("gabStare")}`)

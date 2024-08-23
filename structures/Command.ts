@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, RESTPostAPIChatInputApplicationCommandsJSONBody} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
 
 interface CommandOptions {
@@ -15,10 +15,12 @@ interface CommandOptions {
   random: "none" | "string" | "specific" | "ignore"
   unlist: boolean
   nsfw: boolean
+  slashEnabled: boolean
 }
 
 export class Command {
   public readonly options: CommandOptions
+  public slash: RESTPostAPIChatInputApplicationCommandsJSONBody
 
   constructor(public readonly discord: Kisaragi, public readonly message: Message, {
       params = "",
@@ -33,14 +35,18 @@ export class Command {
       botPermission = "SendMessages",
       random = "ignore" as "none" | "string" | "specific" | "ignore",
       unlist = false,
-      nsfw = false
+      nsfw = false,
+      slashEnabled = false
     }) {
-      this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, random, unlist, nsfw}
+      this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, random, unlist, nsfw, slashEnabled}
+      this.slash = null as unknown as RESTPostAPIChatInputApplicationCommandsJSONBody
     }
 
   get help() {
       return this.options
   }
+
+  public run = async (args: string[]): Promise<void | Message> => {}
 
   public noQuery = (embed: EmbedBuilder, text?: string) => {
     const discord = this.discord

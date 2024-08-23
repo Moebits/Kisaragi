@@ -4,6 +4,7 @@ import path from "path"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
+import {Command} from "./Command"
 
 const noCmdCool = new Set()
 
@@ -22,6 +23,25 @@ export class CommandFunctions {
         let data: any
         await new Promise<void>(async (resolve, reject) => {
             await cp.run(args).then((d: any) => {
+                data = d
+                resolve()
+            })
+            .catch((err: Error) => {
+                if (msg) msg.channel.send({embeds: [this.discord.cmdError(msg, err)]})
+                reject()
+            })
+        })
+        return data
+    }
+
+    // Run Command (from Class)
+    public runCommandClass = async (cmd: Command, msg: Message, args: string[]) => {
+        if (cmd.options.guildOnly) {
+            if (msg.channel.type === ChannelType.DM) return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
+        }
+        let data: any
+        await new Promise<void>(async (resolve, reject) => {
+            await cmd.run(args).then((d: any) => {
                 data = d
                 resolve()
             })

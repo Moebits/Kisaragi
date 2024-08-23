@@ -33,6 +33,7 @@ export default class Info extends Command {
         let cmdCount = 0
         const subDir = fs.readdirSync("./commands")
         for (let i = 0; i < subDir.length; i++) {
+            if (subDir[i] === ".DS_Store") continue
             const commands = fs.readdirSync(`./commands/${subDir[i]}`)
             for (let j = 0; j < commands.length; j++) {
                 cmdCount++
@@ -53,10 +54,10 @@ export default class Info extends Command {
             `${discord.getEmoji("star")}_Description:_ ${description}\n` +
             `${discord.getEmoji("star")}_Version:_ **${pack.version}**\n` +
             `${discord.getEmoji("star")}_Creator_: **Moebytes**\n` +
-            `${discord.getEmoji("star")}_Library_: **Discord.js ${pack.dependencies["discord.js"].replace("^", "v")}**\n` +
-            `${discord.getEmoji("star")}_Runtime:_ **Node.js ${pack.engines.node.replace("^", "v")}**\n` +
-            `${discord.getEmoji("star")}_Language:_ **Typescript ${pack.devDependencies.typescript.replace("^", "v")}**\n` +
-            `${discord.getEmoji("star")}_Database:_ **PostgreSQL v14.2**\n` +
+            `${discord.getEmoji("star")}_Library_: **Discord.js**\n` +
+            `${discord.getEmoji("star")}_Runtime:_ **Node.js**\n` +
+            `${discord.getEmoji("star")}_Language:_ **Typescript**\n` +
+            `${discord.getEmoji("star")}_Database:_ **PostgreSQL**\n` +
             `${discord.getEmoji("star")}_Guilds:_ **${discord.guilds.cache.size}**\n` +
             `${discord.getEmoji("star")}_Channels:_ **${discord.channels.cache.size}**\n` +
             `${discord.getEmoji("star")}_Users:_ **${discord.users.cache.size}**\n` +

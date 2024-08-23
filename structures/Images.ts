@@ -419,7 +419,7 @@ export class Images {
 
     /** Fetch images from my api */
     public fetch = async (endpoint: string, limit?: number) => {
-        const pictures = await axios.get(`${config.animeAPI}/${endpoint}`).then((r) => r.data)
+        const pictures = await axios.get(`${config.animePictures}/${endpoint}/files.json`).then((r) => r.data)
         if (!limit) limit = pictures.length
         return Functions.shuffleArray(pictures).slice(0, limit) as string[]
     }

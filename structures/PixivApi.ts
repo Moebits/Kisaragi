@@ -375,11 +375,11 @@ export class PixivApi {
                     } catch {
                         continue
                     }
-                    const comments = await this.pixiv.illust.comments({illust_id: illust?.id})
+                    const comments = await this.pixiv.illust.comments({illust_id: illust?.id}).catch(() => null)
                     await Functions.timeout(500)
                     const commentArray: string[] = []
                     for (let i = 0; i <= 5; i++) {
-                            if (!comments.comments[i]) break
+                            if (!comments?.comments[i]) break
                             commentArray.push(comments.comments[i].comment)
                     }
                     const cleanText = illust.caption.replace(/<\/?[^>]+(>|$)/g, "")

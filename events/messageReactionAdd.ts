@@ -50,10 +50,8 @@ export default class MessageReactionAdd {
                 }
             }
         }
-        if (reaction.partial) {
-            reaction = await reaction.fetch()
-            retriggerEmbed(reaction)
-        }
+        if (reaction.partial) reaction = await reaction.fetch()
+        retriggerEmbed(reaction)
 
         const addReactionRole = async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
             if (reaction.message.partial) reaction.message = await reaction.message.fetch()
