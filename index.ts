@@ -33,24 +33,25 @@ const discord = new Kisaragi({
 DefaultWebSocketManagerOptions.identifyProperties.browser = "Discord iOS"
 
 const dumps = [
-    `../assets/images/dump`,
-    `../assets/images/gifs`,
-    `../assets/images/misc`,
-    `../assets/images/pages`,
-    `../assets/images/pixiv/illusts`,
-    `../assets/images/pixiv/profiles`,
-    `../assets/images/pixiv/zip`,
-    `../assets/images/waifu2x`,
-    `../assets/misc/dump`,
-    `../assets/misc/tracks`,
-    `../assets/misc/videos`,
-    `./tracks/transform`,
-    `./images/transform`,
-    `./videos/transform`
+    `./assets/misc/images/dump`,
+    `./assets/misc/images/gifs`,
+    `./assets/misc/images/misc`,
+    `./assets/misc/images/pages`,
+    `./assets/misc/images/pixiv/illusts`,
+    `./assets/misc/images/pixiv/profiles`,
+    `./assets/misc/images/pixiv/zip`,
+    `./assets/misc/images/waifu2x`,
+    `./assets/misc/dump`,
+    `./assets/misc/tracks`,
+    `./assets/misc/videos`,
+    `./assets/misc/tracks/transform`,
+    `./assets/misc/images/transform`,
+    `./assets/misc/videos/transform`
 ]
 
 for (let i = 0; i < dumps.length; i++) {
-    if (!fs.existsSync(path.join(__dirname, dumps[i]))) fs.mkdirSync(path.join(__dirname, dumps[i]), {recursive: true})
+    Functions.removeDirectory(path.join(__dirname, "./assets/misc"))
+    fs.mkdirSync(path.join(__dirname, dumps[i]), {recursive: true})
 }
 
 const start = async (): Promise<void> => {

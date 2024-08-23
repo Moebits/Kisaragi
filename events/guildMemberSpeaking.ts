@@ -38,13 +38,13 @@ export default class GuildMemberSpeaking {
                 return message.reply(`Voice recognition has a **10** second cooldown ${discord.getEmoji("no")}`)
             }
             const recording = connection.receiver.createStream(member.id, {mode: "pcm", end: "silence"})
-            const pcm = path.join(__dirname, `../../assets/misc/tracks/${member.user.tag}_voice.pcm`)
+            const pcm = path.join(__dirname, `../assets/misc/tracks/${member.user.tag}_voice.pcm`)
             await new Promise<void>((resolve) => {
                 recording.pipe(fs.createWriteStream(pcm)).on("finish", () => resolve())
             })
             let wavDest = await fx.pcmToWav(pcm, true)
             wavDest = path.join(__dirname, `.${wavDest}`)
-            // const wavDest = path.join(__dirname, "../../assets/misc/tracks/hello.wav")
+            // const wavDest = path.join(__dirname, "../assets/misc/tracks/hello.wav")
             const buffer = fs.readFileSync(wavDest, null)
             const headers = {"authorization": `Bearer ${process.env.WITAI_API_KEY}`, "content-type": "audio/wav"}
             const speech = await axios.post(`https://api.wit.ai/speech`, buffer, {headers}).then((r) => r.data._text)

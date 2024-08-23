@@ -153,7 +153,7 @@ export default class CrunchyDL extends Command {
         } catch {
             return message.reply(`Sorry, there was an error with processing this request. Try again later.`)
         }
-        const folder = path.join(__dirname, `../../../assets/misc/videos/${vilos.series}`)
+        const folder = path.join(__dirname, `../../assets/misc/videos/${vilos.series}`)
         if (!fs.existsSync(folder)) fs.mkdirSync(folder, {recursive: true})
         const dest = path.join(folder, `./${vilos.title}.mp4`)
         const episodeNum = Number(url.match(/(?<=episode-)(.*?)(?=-)/)?.[0])
@@ -227,7 +227,7 @@ export default class CrunchyDL extends Command {
             )
         } else {
             const data = await axios.get(vilos.subtitles[0].url, {headers: this.headers}).then((r) => r.data)
-            const subDest = path.join(__dirname, `../../../assets/misc/dump/${vilos.title}.txt`)
+            const subDest = path.join(__dirname, `../../assets/misc/dump/${vilos.title}.txt`)
             fs.writeFileSync(subDest, data)
             attachment = new AttachmentBuilder(subDest)
             crunchyEmbed

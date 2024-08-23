@@ -49,10 +49,10 @@ export default class Rank extends Command {
         ctx.fillStyle = "#ff3d9b"
         ctx.fillRect(0, 0, width, 5)
         const dataUrl = canvas.toDataURL()
-        let image = path.join(__dirname, `../../../assets/images/dump/rankBar.jpg`)
+        let image = path.join(__dirname, `../../assets/misc/images/dump/rankBar.jpg`)
         let i = 1
         while (fs.existsSync(image)) {
-            image = path.join(__dirname, `../../../assets/images/dump/rankBar${i}.jpg`)
+            image = path.join(__dirname, `../../assets/misc/images/dump/rankBar${i}.jpg`)
             i++
         }
         await imageDataURI.outputFile(dataUrl, image)

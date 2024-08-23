@@ -128,8 +128,8 @@ export class Embeds {
                 }
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
-                const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
-                const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
+                const src = path.join(__dirname, `../assets/misc/images/dump/${rand}/`)
+                const dest = path.join(__dirname, `../assets/misc/images/dump/${rand}.zip`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 await this.images.downloadImages(images, src)
                 const downloads = fs.readdirSync(src).map((m) => src + m)
@@ -340,8 +340,8 @@ export class Embeds {
                     }
                     const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                     const rand = Math.floor(Math.random()*10000)
-                    const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
-                    const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
+                    const src = path.join(__dirname, `../assets/misc/images/dump/${rand}/`)
+                    const dest = path.join(__dirname, `../assets/misc/images/dump/${rand}.zip`)
                     if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                     await this.images.downloadImages(images, src)
                     const downloads = fs.readdirSync(src).map((m) => src + m)
@@ -444,8 +444,8 @@ export class Embeds {
                 }
                 const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
-                const src = path.join(__dirname, `../../assets/images/dump/${rand}/`)
-                const dest = path.join(__dirname, `../../assets/images/dump/${rand}.zip`)
+                const src = path.join(__dirname, `../assets/misc/images/dump/${rand}/`)
+                const dest = path.join(__dirname, `../assets/misc/images/dump/${rand}.zip`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 await this.images.downloadImages(images, src)
                 const downloads = fs.readdirSync(src).map((m) => src + m)

@@ -61,12 +61,12 @@ export default class Wikipedia extends Command {
 
         if (mainImg.slice(-3) === "svg") {
             await svg2img(mainImg, function(error: Error, buffer: Buffer) {
-                    fs.writeFileSync(path.join(__dirname, "../../../assets/images/dump/wiki.png"), buffer)
+                    fs.writeFileSync(path.join(__dirname, "../../assets/misc/images/dump/wiki.png"), buffer)
             })
 
             await Functions.timeout(500)
 
-            const attachment = new AttachmentBuilder(path.join(__dirname, "../../../assets/images/dump/wiki.png"))
+            const attachment = new AttachmentBuilder(path.join(__dirname, "../../assets/misc/images/dump/wiki.png"))
 
             const wikiEmbed = embeds.createEmbed()
             wikiEmbed

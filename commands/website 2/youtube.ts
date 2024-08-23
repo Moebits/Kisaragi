@@ -8,6 +8,7 @@ import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {ProcBlock} from "./../../structures/ProcBlock"
+import path from "path"
 
 let ytEmbeds: EmbedBuilder[] = []
 export default class YoutubeCommand extends Command {
@@ -217,7 +218,7 @@ export default class YoutubeCommand extends Command {
                     .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
                     .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`))
                 }
-                const src = `../assets/misc/videos/${rand}/`
+                const src = path.join(__dirname, `../../assets/misc/tracks/${rand}/`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 const msg2 = await message.channel.send(`**Downloading MP3, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
                 let file: string
@@ -266,7 +267,7 @@ export default class YoutubeCommand extends Command {
                     .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
                     .setTitle(`**Youtube Download** ${discord.getEmoji("kannaWave")}`))
                 }
-                const src = `../assets/misc/videos/${rand}/`
+                const src = path.join(__dirname, `../../assets/misc/videos/${rand}/`)
                 if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
                 const msg2 = await message.channel.send(`**Downloading video, this will take awhile, please be patient** ${discord.getEmoji("gabCircle")}`) as Message
                 let file: string

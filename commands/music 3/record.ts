@@ -56,7 +56,7 @@ export default class Record extends Command {
         const loading = message.channel.lastMessage
         loading?.delete()
         const recording = connection.receiver.subscribe(message.author.id, {end: {behavior: EndBehaviorType.AfterSilence, duration: 1000}})
-        const pcm = path.join(__dirname, `../../../assets/misc/tracks/${name}.pcm`)
+        const pcm = path.join(__dirname, `../../assets/misc/tracks/${name}.pcm`)
         await message.channel.send(`Recording started! Please use **push to talk**, the recording will stop once the push button is released.`)
         await new Promise<void>((resolve) => {
             recording.pipe(fs.createWriteStream(pcm) as unknown as NodeJS.WritableStream).on("finish", () => resolve())

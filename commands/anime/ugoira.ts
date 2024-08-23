@@ -97,7 +97,7 @@ export default class Ugoira extends Command {
 
         setTimeout(() => msg1.delete(), 1000)
         const ugoiraEmbed = embeds.createEmbed()
-        const outGif = new AttachmentBuilder(path.join(__dirname, `../../../assets/images/gifs/${pixivID}.gif`))
+        const outGif = new AttachmentBuilder(path.join(__dirname, `../../assets/misc/images/gifs/${pixivID}.gif`))
         const comments = await pixiv.illust.comments({illust_id: pixivID as number})
         const cleanText = details.caption.replace(/<\/?[^>]+(>|$)/g, "")
         const authorUrl = await pixiv.util.downloadProfilePicture(details, `assets/images/pixiv/profiles`)
@@ -152,7 +152,7 @@ export default class Ugoira extends Command {
             rep.delete()
             if (bad) return
             await pixiv.util.downloadUgoira(String(pixivID), `assets/images/gifs/`, {speed: factor, reverse: setReverse})
-            const outGif = new AttachmentBuilder(path.join(__dirname, `../../../assets/images/gifs/${pixivID}.gif`))
+            const outGif = new AttachmentBuilder(path.join(__dirname, `../../assets/misc/images/gifs/${pixivID}.gif`))
             await message.channel.send({files: [outGif]})
         })
     }

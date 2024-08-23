@@ -34,10 +34,10 @@ export default class Hastebin extends Command {
             const textFile = await discord.fetchLastAttachment(message, false, /.(txt|ts|js|json|py|html|css|less|scss|tsx|jsx|c|cs|cpp|java|xml)/)
             if (textFile) {
                 const ext = path.extname(textFile).replace(".", "")
-                let dest = path.resolve(__dirname, `../../../assets/misc/dump/hastebin.${ext}`)
+                let dest = path.resolve(__dirname, `../../assets/misc/dump/hastebin.${ext}`)
                 let i = 1
                 while (fs.existsSync(dest)) {
-                    dest =  path.resolve(__dirname, `../../../assets/misc/dump/hastebin${i}.${ext}`)
+                    dest =  path.resolve(__dirname, `../../assets/misc/dump/hastebin${i}.${ext}`)
                     i++
                 }
                 await images.download(textFile, dest)

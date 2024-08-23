@@ -55,7 +55,7 @@ export default class ConstrainGIF extends Command {
         if (constrain >= frames.length) return message.reply(`Adding frames to or slowing down a gif is not supported, because it requires more information than what is available in the original. ${discord.getEmoji("kannaFacepalm")}`)
         const newFrames = Functions.constrain(frames, constrain) as any[]
         const random = Math.floor(Math.random() * 10000)
-        const dir = path.join(__dirname, `../../../assets/images/dump/${random}/`)
+        const dir = path.join(__dirname, `../../assets/misc/images/dump/${random}/`)
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, {recursive: true})
         const files: string[] = []
         const promises: any[] = []

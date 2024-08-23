@@ -8,6 +8,7 @@ import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import path from "path"
 
 export default class SoundCloud extends Command {
     private user = null as any
@@ -131,7 +132,7 @@ export default class SoundCloud extends Command {
                 .setTitle(`**Soundcloud Search** ${discord.getEmoji("karenSugoi")}`))
             }
             const rand = Math.floor(Math.random()*10000)
-            const src = `../assets/misc/tracks/${rand}/`
+            const src = path.join(__dirname, `../../assets/misc/tracks/${rand}/`)
             if (!fs.existsSync(src)) fs.mkdirSync(src, {recursive: true})
             let track: string
             if (/soundcloud.com/.test(query)) {

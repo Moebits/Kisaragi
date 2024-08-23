@@ -43,10 +43,10 @@ export default class Pastebin extends Command {
             const {image, author} = await discord.fetchLastAttachment(message, true, /.(txt|ts|js|json|py|html|css|less|scss|tsx|jsx|c|cs|cpp|java|xml)/)
             if (image) {
                 const ext = path.extname(image).replace(".", "")
-                let dest = path.resolve(__dirname, `../../../assets/misc/dump/pastebin.${ext}`)
+                let dest = path.resolve(__dirname, `../../assets/misc/dump/pastebin.${ext}`)
                 let i = 1
                 while (fs.existsSync(dest)) {
-                    dest =  path.resolve(__dirname, `../../../assets/misc/dump/pastebin${i}.${ext}`)
+                    dest =  path.resolve(__dirname, `../../assets/misc/dump/pastebin${i}.${ext}`)
                     i++
                 }
                 await images.download(image, dest)

@@ -39,8 +39,8 @@ export class PixivApi {
                 commentArray.push(comments.comments[i].comment)
         }
         // const viewLink = await this.pixiv.util.viewLink(String(image.id))
-        const url = await this.pixiv.util.downloadIllust(image, `assets/images/pixiv/illusts`)
-        const authorUrl = await this.pixiv.util.downloadProfilePicture(image, `assets/images/pixiv/profiles`)
+        const url = await this.pixiv.util.downloadIllust(image, path.join(__dirname, `../assets/misc/images/pixiv/illusts`))
+        const authorUrl = await this.pixiv.util.downloadProfilePicture(image, path.join(__dirname, `../assets/misc/images/pixiv/profiles`))
         // const viewLinkAppend = viewLink ? `_Image not showing? Click_ [**here**](${viewLink}).` : ""
         let files = [] as AttachmentBuilder[]
         if (noUpload) {
@@ -276,7 +276,7 @@ export class PixivApi {
         const msg1 = await this.message.channel.send(`**Downloading the pictures, please wait...** ${this.discord.getEmoji("gabCircle")}`)
         tag = tag.trim()
         const rand = Math.floor(Math.random()*10000)
-        const src = `assets/images/pixiv/zip/${rand}/`
+        const src = path.join(__dirname, `../assets/misc/images/pixiv/zip/${rand}/`)
         if (this.discord.checkMuted(this.message)) r18 = false
         let files: string[] = []
         try {
@@ -288,8 +288,8 @@ export class PixivApi {
         if (!files?.[0]) return this.pixivErrorEmbed()
         const msg2 = await this.message.channel.send(`**Creating a zip file...** ${this.discord.getEmoji("gabCircle")}`)
         const name = tag.trim() ? tag.replace(/ +/g, "-") : "pixiv_dl_default"
-        const dir = path.join(__dirname, `../../assets/images/pixiv/zip/${rand}/`)
-        const dest = path.join(__dirname, `../../assets/images/pixiv/zip/${name}.zip`)
+        const dir = path.join(__dirname, `../assets/misc/images/pixiv/zip/${rand}/`)
+        const dest = path.join(__dirname, `../assets/misc/images/pixiv/zip/${name}.zip`)
         await Functions.zipDir(dir, dest)
         const attachment = new AttachmentBuilder(dest, {name: `${name}.zip`})
         const images = await Promise.all(files.map((f) => this.pixiv!.util.viewLink(path.basename(f).match(/\d{4,}/)?.[0] ?? ""))).then((r) => r.filter(Boolean))

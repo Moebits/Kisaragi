@@ -69,7 +69,7 @@ export default class Upload extends Command {
         const images = new Images(this.discord, message)
         const notify = await sql.fetchColumn("images", "notify toggle")
         const channel = message.guild?.channels.cache.find((c: GuildBasedChannel) => c.id === guildChannel) as TextChannel
-        const dest = path.join(__dirname, `../../../assets/images/dump/${channel.name}/`)
+        const dest = path.join(__dirname, `../../assets/misc/images/dump/${channel.name}/`)
         if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true})
         let done = false
         let counter = 0

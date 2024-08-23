@@ -41,14 +41,13 @@ export class AudioEffects {
             filepath = dest
         }
         const inDest = await this.convertToFormat(filepath, "aiff")
-        // const ext = path.extname(filepath).replace(".", "")
         fileDest = fileDest.replace(/(_)(.*?)(?=_)/g, "")
         let outDest = fileDest.slice(0, -4) + `.aiff`
         let index = 0
-        while (fs.existsSync(outDest)) {
+        /*while (fs.existsSync(outDest)) {
             outDest = index <= 1 ? `${fileDest}.aiff` : `${fileDest}${index}.aiff`
             index++
-        }
+        }*/
         const command = `"${soxPath}" "${inDest}" "${outDest}" gain -50 ${effect} gain -n -1`
         const child = child_process.exec(command)
         await new Promise<void>((resolve) => {
@@ -56,6 +55,7 @@ export class AudioEffects {
             child.on("close", () => resolve())
         })
         const mp3Dest = await this.convertToFormat(outDest, "mp3")
+        if (filepath.includes("tracks/transform")) fs.unlink(filepath, () => null)
         fs.unlink(inDest, () => null)
         fs.unlink(outDest, () => null)
         return mp3Dest

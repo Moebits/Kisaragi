@@ -32,7 +32,7 @@ export class Images {
     /** Compresses a gif. */
     public compressGif = async (input: string[]) => {
         const file = await imagemin(input,
-        {destination: path.join(__dirname, "../../assets/images/gifs"),
+        {destination: path.join(__dirname, "../assets/misc/images/gifs"),
          plugins: [imageminGifsicle({interlaced: false, optimizationLevel: 2, colors: 512})]
         })
         return file
@@ -244,7 +244,7 @@ export class Images {
         let background: Canvas.Image
         if (image.includes("gif")) {
             const random  = Math.floor(Math.random() * 1000000)
-            const dir = path.join(__dirname, `../../assets/images/dump/${random}/`)
+            const dir = path.join(__dirname, `../assets/misc/images/dump/${random}/`)
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, {recursive: true})
 
             const files: string[] = []
@@ -426,7 +426,7 @@ export class Images {
 
     /** Upload attachment to Twitter */
     public uploadTwitterMedia = async (twitter: Twitter, link: string) => {
-        const src = await this.downloadImage(link, path.join(__dirname, `../../assets/misc/dump/${link.slice(-10)}`))
+        const src = await this.downloadImage(link, path.join(__dirname, `../assets/misc/dump/${link.slice(-10)}`))
         let mime = "image/jpeg"
         if (/.png/.test(src)) {
             mime = "image/png"

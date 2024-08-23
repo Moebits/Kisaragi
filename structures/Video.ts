@@ -32,8 +32,8 @@ export class Video {
         let name = path.basename(audioFile).slice(0, -4)
         if (imgFile) name = path.basename(imgFile).slice(0, -4)
         if (!imgFile) imgFile = "../assets/images/default.jpg"
-        const vidDest = path.join(__dirname, `../videos/transform/`)
-        const newDest = path.join(__dirname, `../videos/${name}.mp4`)
+        const vidDest = path.join(__dirname, `../assets/misc/videos/transform/`)
+        const newDest = path.join(__dirname, `../assets/misc/videos/${name}.mp4`)
         if (!fs.existsSync(vidDest)) fs.mkdirSync(vidDest, {recursive: true})
         await new Promise<void>((resolve) => {
             ffmpeg().input(audioFile).input(imgFile!)
