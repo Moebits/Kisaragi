@@ -34,7 +34,7 @@ export default class User extends Command {
 
         const userEmbed = embeds.createEmbed()
         userEmbed
-        .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
+        .setAuthor({name: "discord.js", iconURL: "https://avatars.githubusercontent.com/u/26492485?s=200&v=4"})
         .setTitle(`**User Info** ${discord.getEmoji("CirNo")}`)
         .setThumbnail(user?.user.displayAvatarURL({extension: "png"}) ?? "")
         .setDescription(

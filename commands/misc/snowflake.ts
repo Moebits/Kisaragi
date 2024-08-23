@@ -35,7 +35,7 @@ export default class Snowflake extends Command {
         if (input && (input.match(/\d+/g)?.join("") === input.trim())) {
             const snowflake = SnowflakeUtil.deconstruct(input.trim())
             snowflakeEmbed
-            .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
+            .setAuthor({name: "discord.js", iconURL: "https://avatars.githubusercontent.com/u/26492485?s=200&v=4"})
             .setTitle(`**Snowflake** ${discord.getEmoji("gabTired")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Date:_ **${new Date(snowflake.timestamp.toString())}**\n` +
@@ -48,7 +48,7 @@ export default class Snowflake extends Command {
         } else {
             const snowflake = SnowflakeUtil.generate({timestamp: input.trim() ? new Date(input) : Date.now()})
             snowflakeEmbed
-            .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
+            .setAuthor({name: "discord.js", iconURL: "https://avatars.githubusercontent.com/u/26492485?s=200&v=4"})
             .setTitle(`**Snowflake** ${discord.getEmoji("gabTired")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Snowflake:_ **${snowflake}**\n`

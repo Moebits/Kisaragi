@@ -35,7 +35,7 @@ export default class Guild extends Command {
 
         const guildEmbed = embeds.createEmbed()
         guildEmbed
-        .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
+        .setAuthor({name: "discord.js", iconURL: "https://avatars.githubusercontent.com/u/26492485?s=200&v=4"})
         .setTitle(`**Guild Info** ${discord.getEmoji("AquaWut")}`)
         .setThumbnail(message.guild?.iconURL({extension: "png"}) ?? "")
         .setImage(guildImg ?? "")

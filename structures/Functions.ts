@@ -23,7 +23,6 @@ export class Functions {
 
     // Reject Promise after timeout
     public static promiseTimeout = (ms: number, promise: Promise<any>) => {
-
         const timeout = new Promise((resolve, reject) => {
           const id = setTimeout(() => {
             clearTimeout(id)

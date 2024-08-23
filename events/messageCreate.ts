@@ -229,7 +229,7 @@ export default class MessageCreate {
       if (cmdPath.options.unlist && message.author.id !== process.env.OWNER_ID) return message.reply(`Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
 
       this.discord.muted = false
-      const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("gabCircle")}`) as Message
+      const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("kisaragiCircle")}`) as Message
       this.discord.muted = this.discord.checkMuted(message)
 
       cmdPath.run(args).then(() => {

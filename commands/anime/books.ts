@@ -12,7 +12,7 @@ export default class Books extends Command {
             description: "Anime girls holding programming books.",
             help:
             `
-            \`books language\` - Searches for an anime with the query.
+            \`books language\` - Searches for books in the language
             `,
             examples:
             `

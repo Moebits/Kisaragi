@@ -29,7 +29,7 @@ export default class ResetDB extends Command {
 
         const purgeEmbed = embeds.createEmbed()
         purgeEmbed
-        .setTitle(`**Reset** ${discord.getEmoji("gabStare")}`)
+        .setTitle(`**ResetDB** ${discord.getEmoji("gabStare")}`)
         .setDescription("**Reconstructed the database**!")
         message.channel.send({embeds: [purgeEmbed]})
     }

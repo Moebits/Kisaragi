@@ -47,7 +47,7 @@ export default class InRole extends Command {
             }
             const roleEmbed = embeds.createEmbed()
             roleEmbed
-            .setAuthor({name: "discord.js", iconURL: "https://discord.js.org/static/logo-square.png"})
+            .setAuthor({name: "discord.js", iconURL: "https://avatars.githubusercontent.com/u/26492485?s=200&v=4"})
             .setThumbnail(message.guild!.iconURL({extension: "png"}) ?? "")
             .setTitle(`**Role Info** ${discord.getEmoji("kannaPat")}`)
             .setDescription(

@@ -22,6 +22,5 @@ export default class GCount extends Command {
         const embeds = new Embeds(discord, message)
         if (!perms.checkBotDev()) return
         this.discord.user!.setPresence({activities: [{type: ActivityType.Playing, name: `=>help | ${this.discord.guilds.cache.size} guilds`, state: "dnd"}]})
-        discord.postGuildCount()
     }
 }

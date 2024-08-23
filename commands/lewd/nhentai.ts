@@ -1,5 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
-import {API} from "nhentai"
+import {API, Doujin} from "nhentai"
 import * as blacklist from "../../assets/json/blacklist.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -34,15 +34,15 @@ export default class $nHentai extends Command {
     }
 
     // nhentai Doujin
-    public getNhentaiDoujin = (doujin: any, id: number) => {
+    public getNhentaiDoujin = (doujin: Doujin, id: number) => {
         const discord = this.discord
-        const artists = doujin.tags.filter((t) => t.type === "artist").map((t) => t.name)
-        const categories = doujin.tags.filter((t) => t.type === "category").map((t) => t.name)
-        const characters = doujin.tags.filter((t) => t.type === "character").map((t) => t.name)
-        const parodies = doujin.tags.filter((t) => t.type === "parody").map((t) => t.name)
-        const groups = doujin.tags.filter((t) => t.type === "group").map((t) => t.name)
-        const languages = doujin.tags.filter((t) => t.type === "language").map((t) => t.name)
-        const tags = doujin.tags.filter((t) => t.type === "tag").map((t) => t.name)
+        const artists = doujin.tags.artists.map((t) => t.name)
+        const categories = doujin.tags.categories.map((t) => t.name)
+        const characters = doujin.tags.characters.map((t) => t.name)
+        const parodies = doujin.tags.parodies.map((t) => t.name)
+        const groups = doujin.tags.groups.map((t) => t.name)
+        const languages = doujin.tags.languages.map((t) => t.name)
+        const tags = doujin.tags.tags.map((t) => t.name)
         const checkArtists = artists ? Functions.checkChar(artists.join(" "), 50, " ") : "None"
         const checkCharacters = characters ? Functions.checkChar(characters.join(" "), 50, " ") : "None"
         const checkTags = tags ? Functions.checkChar(tags.join(" "), 50, " ") : "None"
@@ -111,7 +111,7 @@ export default class $nHentai extends Command {
             const tag = Functions.combineArgs(args, 1)
             if (tag.match(/\d+/g) !== null) {
                 const doujin = await nhentai.fetchDoujin(tag.match(/\d+/g)!.toString())
-                this.getNhentaiDoujin(doujin, doujin!.mediaId)
+                this.getNhentaiDoujin(doujin!, doujin!.mediaId)
             } else {
                 const result = await nhentai.search(tag)
                 if (!result.doujins[0]) {

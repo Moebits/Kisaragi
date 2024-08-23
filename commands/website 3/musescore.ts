@@ -67,7 +67,7 @@ export default class Musescore extends Command {
                 `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(new Date(1000*score.date_created))}**\n` +
                 `${discord.getEmoji("star")}_Views:_ **${score.hits}**\n` +
                 `${discord.getEmoji("star")}_Comments:_ **${score.comments_count}**\n` +
-                `${discord.getEmoji("star")}_Description:_ ${score.truncated_description.replace(/(\[url)(.*?)(\url])/g, "")}\n` +
+                `${discord.getEmoji("star")}_Description:_ ${score.truncated_description.replace(/(\[url)(.*?)(url])/g, "")}\n` +
                 midi + pdf + mp3 + mxml + mscz
             )
             museArray.push(museEmbed)

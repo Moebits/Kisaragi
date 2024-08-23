@@ -29,7 +29,7 @@ export default class FlickrCommand extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const flickr = Flickr.createFlickr(process.env.FLICKR_API_KEY!)
+        const flickr = new Flickr(process.env.FLICKR_API_KEY!)
 
         if (args[1] === "user") {
             const username = Functions.combineArgs(args, 2)?.trim()
