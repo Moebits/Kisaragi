@@ -138,8 +138,8 @@ export class Audio {
     }
 
     public lowpass = async (filepath: string, freq?: number, width?: number, dl?: boolean) => {
-        if (!freq) freq = 1500
-        if (!width) width = 100
+        if (!freq) freq = 1000
+        if (!width) width = 200
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.lowpass = [freq, width]
@@ -161,7 +161,7 @@ export class Audio {
 
     public highpass = async (filepath: string, freq?: number, width?: number, dl?: boolean) => {
         if (!freq) freq = 600
-        if (!width) width = 100
+        if (!width) width = 200
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.highpass = [freq, width]
@@ -207,7 +207,7 @@ export class Audio {
     public lowshelf = async (filepath: string, gain?: number, freq?: number, width?: number, dl?: boolean) => {
         if (!gain) gain = 3
         if (!freq) freq = 1000
-        if (!width) width = 100
+        if (!width) width = 200
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.lowshelf = [gain, freq, width]
@@ -230,7 +230,7 @@ export class Audio {
     public highshelf = async (filepath: string, gain?: number, freq?: number, width?: number, dl?: boolean) => {
         if (!gain) gain = 3
         if (!freq) freq = 1000
-        if (!width) width = 100
+        if (!width) width = 200
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.highshelf = [gain, freq, width]
@@ -252,7 +252,7 @@ export class Audio {
 
     public bandpass = async (filepath: string, freq?: number, width?: number, dl?: boolean) => {
         if (!freq) freq = 700
-        if (!width) width = 100
+        if (!width) width = 200
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.bandpass = [freq, width]
@@ -274,7 +274,7 @@ export class Audio {
 
     public bandreject = async (filepath: string, freq?: number, width?: number, dl?: boolean) => {
         if (!freq) freq = 500
-        if (!width) width = 100
+        if (!width) width = 200
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.bandreject = [freq, width]
@@ -1034,12 +1034,14 @@ export class Audio {
                     const m = await this.equalizerMenu(true)
                     await msg.edit({embeds: [await this.updateNowPlaying()]})
                     m.delete()
+                    this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "fx") {
                     await reaction.users.remove(user)
                     const m = await this.fxMenu(true)
                     await msg.edit({embeds: [await this.updateNowPlaying()]})
                     m.delete()
+                    this.setProcBlock(true)
                     return
                 }
                 await reaction.users.remove(user)
@@ -1603,10 +1605,10 @@ export class Audio {
                 settings.filters.push(pass[i])
                 const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a ${pass[i]} filter, please wait...`)
                 await this[pass[i]](queue[0].file, freq, width, false)
+                this.setProcBlock(true)
                 rep3.delete()
                 const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${pass[i]} filter!`)
                 setTimeout(() => rep2.delete(), 3000)
-                this.setProcBlock(true)
                 resolve()
             })
         }
@@ -1639,10 +1641,10 @@ export class Audio {
                 settings.filters.push(shelf[i])
                 const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a ${shelf[i]} filter, please wait...`)
                 await this[pass[i]](queue[0].file, gain, freq, width, false)
+                this.setProcBlock(true)
                 rep3.delete()
                 const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${shelf[i]} filter!`)
                 setTimeout(() => rep2.delete(), 3000)
-                this.setProcBlock(true)
                 resolve()
             })
         }
@@ -1674,10 +1676,10 @@ export class Audio {
             settings.filters.push("peak")
             const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a peak filter, please wait...`)
             await this.peak(queue[0].file, freq, resonance, gain)
+            this.setProcBlock(true)
             rep3.delete()
             const rep2 = await this.message.channel.send(`<@${user.id}>, Added a peak filter!`)
             setTimeout(() => rep2.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
         cancel.on("collect", (reaction, user) => {
@@ -1689,7 +1691,7 @@ export class Audio {
     }
 
     public fxMenu = async (clearProc?: boolean) => {
-        if (clearProc) this.setProcBlock()
+        if (clearProc) this.setProcBlock(true)
         const discord = this.discord
         const fxEmbed = this.embeds.createEmbed()
         .setAuthor({name: "effects", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
@@ -1769,10 +1771,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding reverb, please wait...`)
             await this.reverb(file, amount, damping, room, stereo, preDelay, wetGain, reverse, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added reverb!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -1796,10 +1798,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding delay, please wait...`)
             await this.delay(file, delaysDecays, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added delay!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -1825,10 +1827,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding chorus, please wait...`)
             await this.chorus(file, delay, decay, speed, depth, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added chorus!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -1853,10 +1855,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding phaser, please wait...`)
             await this.phaser(file, delay, decay, speed, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added phaser!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -1886,10 +1888,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding flanger, please wait...`)
             await this.flanger(file, delay, depth, regen, width, speed, shape, phase, interp, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added flanger!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -1912,10 +1914,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding bitcrushing, please wait...`)
             await this.bitcrush(file, factor, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added bitcrushing!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -1938,10 +1940,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding upsampling, please wait...`)
             await this.upsample(file, factor, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added upsampling!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -1965,10 +1967,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding distortion, please wait...`)
             await this.distortion(file, gain, color, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added distortion!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -1991,10 +1993,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding compression, please wait...`)
             await this.compression(file, amount, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added compression!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -2018,10 +2020,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding an allpass filter, please wait...`)
             await this.allPass(file, freq, width, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added an allpass filter!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
 
@@ -2045,10 +2047,10 @@ export class Audio {
             const file = queue[0].file
             const rep2 = await this.message.channel.send(`<@${user.id}>, Adding tremolo, please wait...`)
             await this.tremolo(file, speed, depth, false)
+            this.setProcBlock(true)
             rep2.delete()
             const rep3 = await this.message.channel.send(`<@${user.id}>, Added tremolo!`)
             setTimeout(() => rep3.delete(), 3000)
-            this.setProcBlock(true)
             resolve()
         })
         cancel.on("collect", (reaction, user) => {
