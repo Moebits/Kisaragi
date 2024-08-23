@@ -1323,7 +1323,7 @@ export class Audio {
 
     public mp3Download = async (userID: string) => {
         const queue = this.getQueue()
-        const file = path.join(__dirname, "..", queue[0].file)
+        const file = queue[0].file
         const attachment = new AttachmentBuilder(file, {name: `${path.basename(file)}`})
         await this.message.channel.send(`<@${userID}>, Here is the download for this file!`)
         await this.message.channel.send({files: [attachment]})

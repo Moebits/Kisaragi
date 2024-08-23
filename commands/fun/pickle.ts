@@ -29,7 +29,6 @@ export default class Pickle extends Command {
         const discord = this.discord
         const message = this.message
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         let seed = message.author.id
         let name = message.author.username
@@ -47,11 +46,11 @@ export default class Pickle extends Command {
         const pickleSize = random * 10
         let flavorText = ""
         if (pickleSize < 4) {
-                flavorText = `It's alright, size isn't everything... ${discord.getEmoji("chinoSmug")}`
+                flavorText = `How unfortunate... ${discord.getEmoji("chinoSmug")}`
         } else if ((pickleSize > 4) && pickleSize < 7) {
                 flavorText = `That's pretty average. ${discord.getEmoji("mexShrug")}`
         } else {
-                flavorText = `Wow... You are so big <3 ${discord.getEmoji("gabrielLick")}`
+                flavorText = `Wow... ${discord.getEmoji("raphi")}`
         }
         message.channel.send(`**${name}**, your ${args[0]} size is **${pickleSize.toFixed(2)}inches** (${(pickleSize*2.54).toFixed(2)}cm). ${flavorText}`)
         return
