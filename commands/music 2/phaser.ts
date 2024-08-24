@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,8 +22,33 @@ export default class Phaser extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        const speed2Option = new SlashCommandStringOption()
+            .setName("speed2")
+            .setDescription("Speed of the effect in the dl subcommand.")
+
+        const speedOption = new SlashCommandStringOption()
+            .setName("speed")
+            .setDescription("Speed of the effect or decay in dl subcommand.")
+
+        const decayOption = new SlashCommandStringOption()
+            .setName("decay")
+            .setDescription("Decay of the effect or delay in dl subcommand.")
+
+        const delayOption = new SlashCommandStringOption()
+            .setName("delay")
+            .setDescription("Delay of the effect or dl to apply to an attachment.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(delayOption)
+            .addStringOption(decayOption)
+            .addStringOption(speedOption)
+            .addStringOption(speed2Option)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

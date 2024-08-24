@@ -1,4 +1,4 @@
-import {Message, PermissionsBitField, PermissionsString, Role, TextChannel} from "discord.js"
+import {Message, PermissionsBitField, PermissionsString, Role, TextChannel, User} from "discord.js"
 import * as config from "../assets/json/blacklist.json"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
@@ -22,6 +22,9 @@ export class Permission {
         } else {
             const modRole = this.message.member!.roles.cache.find((r: Role) => r.id === String(mod))
             if (!modRole) {
+                const admin = await this.sql.fetchColumn("guilds", "admin role")
+                const adminRole = this.message.member!.roles.cache.find((r: Role) => r.id === String(admin))
+                if (adminRole) return true
                 if (ignore) return false
                 this.message.reply("In order to use moderator commands, you must have " +
                 `the mod role which is currently set to <@&${mod}>!`)
@@ -78,6 +81,26 @@ export class Permission {
         }
     }
 
+    public checkAudioPermission = async (user: User, requesterID: string) => {
+        if (user.id === process.env.OWNER_ID) return true
+        if (user.id === requesterID) return true
+        const mod = await this.sql.fetchColumn("guilds", "mod role")
+        if (!mod) {
+            return false
+        } else {
+            const member = await this.message.guild?.members.fetch(requesterID)
+            const modRole = member?.roles.cache.find((r: Role) => r.id === String(mod))
+            if (!modRole) {
+                const admin = await this.sql.fetchColumn("guilds", "admin role")
+                const adminRole = member?.roles.cache.find((r: Role) => r.id === String(admin))
+                if (adminRole) return true
+                return false
+            } else {
+                return true
+            }
+        }
+    }
+
     /** Check NSFW */
     public checkNSFW = (noMsg?: boolean) => {
         if (!this.message.guild) return true
@@ -97,16 +120,6 @@ export class Permission {
             if (tags.includes(config.booru[i])) return true
         }
         return false
-    }
-
-    /** Filter loli content */
-    public loliFilter = (tags: string) => {
-        return false
-        if (/loli/gi.test(tags) || /shota/gi.test(tags) || /lolicon/gi.test(tags) || /shotacon/gi.test(tags)) {
-            return true
-        } else {
-            return false
-        }
     }
 
     /** Continue temporary bans */

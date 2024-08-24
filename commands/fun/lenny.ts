@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
@@ -22,23 +22,33 @@ export default class Lenny extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        const queryOption = new SlashCommandStringOption()
+            .setName("query")
+            .setDescription("Set to face/shrug/tableflip/unflip for the popular faces or search for something else.")
+            
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(queryOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
         const message = this.message
 
         if (args[1] === "face") {
-            message.channel.send("( ͡° ͜ʖ ͡°)")
+            message.reply("( ͡° ͜ʖ ͡°)")
         } else if (args[1] === "shrug") {
-            message.channel.send("¯\\_(ツ)_/¯")
+            message.reply("¯\\_(ツ)_/¯")
         } else if (args[1] === "tableflip") {
-            message.channel.send("(╯°□°）╯︵ ┻━┻")
+            message.reply("(╯°□°）╯︵ ┻━┻")
         } else if (args[1] === "unflip") {
-            message.channel.send("┬─┬ ノ( ゜-゜ノ)")
+            message.reply("┬─┬ ノ( ゜-゜ノ)")
         } else {
-            message.channel.send(lenny())
+            message.reply(lenny())
         }
         return
     }

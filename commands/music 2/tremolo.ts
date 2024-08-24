@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,8 +22,28 @@ export default class Tremolo extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        const depth2Option = new SlashCommandStringOption()
+            .setName("depth2")
+            .setDescription("Depth of the effect in the dl subcommand.")
+
+        const depthOption = new SlashCommandStringOption()
+            .setName("depth")
+            .setDescription("Depth of the effect or speed in dl subcommand.")
+
+        const speedOption = new SlashCommandStringOption()
+            .setName("speed")
+            .setDescription("Speed of the effect or dl to apply to an attachment.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(speedOption)
+            .addStringOption(depthOption)
+            .addStringOption(depth2Option)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

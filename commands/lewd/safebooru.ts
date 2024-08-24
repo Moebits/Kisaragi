@@ -96,7 +96,6 @@ export default class Safebooru extends Command {
         for (let i = 0; i < images.length; i++) {
             const img = images[i]
             const image = await this.getImage(img.directory, img.image)
-            if (discord.checkMuted(message)) if (perms.loliFilter(img.tags)) continue
             const safebooruEmbed = embeds.createEmbed()
             .setAuthor({name: "safebooru", iconURL: "https://safebooru.org/images/safechibi.png"})
             .setTitle(`**Safebooru Search** ${discord.getEmoji("gabLewd")}`)

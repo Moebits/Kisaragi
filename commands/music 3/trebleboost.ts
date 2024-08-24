@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -20,8 +20,13 @@ export default class Trebleboost extends Command {
             `,
             aliases: ["treble"],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

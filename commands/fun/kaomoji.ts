@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -21,8 +21,18 @@ export default class Kaomoji extends Command {
             `,
             aliases: ["kmoji"],
             random: "none",
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        const queryOption = new SlashCommandStringOption()
+            .setName("query")
+            .setDescription("The query to search for a kaomoji.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(queryOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -35,18 +45,18 @@ export default class Kaomoji extends Command {
         }
         if (!args[1]) {
             const random = Math.floor(Math.random() * lib.length)
-            message.channel.send(lib[random].icon)
+            message.reply(lib[random].icon)
             return
         }
         const query = Functions.combineArgs(args, 1)
         for (let i = 0; i < lib.length; i++) {
             for (let j = 0;  j < lib[i].keywords.length; j++) {
                 if (query.toLowerCase().trim() === lib[i].keywords[j].toLowerCase()) {
-                    message.channel.send(lib[i].icon)
+                    message.reply(lib[i].icon)
                     return
                 }
             }
         }
-        message.channel.send("No kaomoji were found.")
+        message.reply("No kaomoji were found.")
     }
 }

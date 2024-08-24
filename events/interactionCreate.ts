@@ -1,4 +1,4 @@
-import {BaseInteraction, ChatInputCommandInteraction} from "discord.js"
+import {BaseInteraction, InteractionReplyOptions} from "discord.js"
 import {Kisaragi} from "../structures/Kisaragi"
 import {Command} from "../structures/Command"
 import {CommandFunctions} from "../structures/CommandFunctions"
@@ -10,6 +10,7 @@ export default class InteractionCreate {
 
     public run = async (interaction: BaseInteraction) => {
         if (!interaction.isChatInputCommand()) return
+        if (!interaction.channel) return
         const cmd = new CommandFunctions(this.discord, interaction as any)
 
         const subDir = fs.readdirSync(path.join(__dirname, "../commands"))
@@ -26,6 +27,15 @@ export default class InteractionCreate {
                     // Run the message based code with minimal changes
                     // @ts-ignore
                     interaction.author = interaction.user
+
+                    // @ts-ignore
+                    interaction.reply = ((originalReply) => {
+                        return function (options: InteractionReplyOptions) {
+                            if (typeof options === "string") options = {content: options}
+                            // @ts-ignore
+                            return originalReply.call(this, {fetchReply: true, ...options})
+                        }
+                    })(interaction.reply)
 
                     await cmd.runCommandClass(command, interaction as any, args)
                 }

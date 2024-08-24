@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -25,8 +25,29 @@ export default class Speed extends Command {
             `,
             aliases: ["timestretch", "tempo"],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        const opt3 = new SlashCommandStringOption()
+            .setName("pitch2")
+            .setDescription("Optional pitch argument if using the dl subcommand.")
+
+        const pitchOption = new SlashCommandStringOption()
+            .setName("pitch")
+            .setDescription("Set to pitch to affect the pitch or the factor with the dl subcommand.")
+
+        const factorOption = new SlashCommandStringOption()
+            .setName("factor")
+            .setDescription("The speed factor or dl to apply on an attachment.")
+            .setRequired(true)
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(factorOption)
+            .addStringOption(pitchOption)
+            .addStringOption(opt3)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

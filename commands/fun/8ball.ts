@@ -20,14 +20,15 @@ export default class Eightball extends Command {
             slashEnabled: true
         })
         const questionOption = new SlashCommandStringOption()
-        .setName("question")
-        .setDescription("question")
-        .setRequired(true)
+            .setName("question")
+            .setDescription("question")
+            .setRequired(true)
+            
         this.slash = new SlashCommandBuilder()
-        .setName("8ball")
-        .setDescription(this.options.description)
-        .addStringOption(questionOption)
-        .toJSON()
+            .setName("8ball")
+            .setDescription(this.options.description)
+            .addStringOption(questionOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

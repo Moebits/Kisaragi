@@ -89,7 +89,6 @@ export default class Gelbooru extends Command {
             if (img.rating !== "s") {
                 if (!perms.checkNSFW(true)) continue
                 if (discord.checkMuted(message)) continue
-                if (perms.loliFilter(img.tags)) continue
             }
             const gelbooruEmbed = embeds.createEmbed()
             .setAuthor({name: "gelbooru", iconURL: "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png"})

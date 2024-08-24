@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import {getVoiceConnection} from "@discordjs/voice"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
@@ -20,8 +20,13 @@ export default class Stop extends Command {
             `,
             aliases: ["disconnect"],
             guildOnly: true,
-            cooldown: 5
+            cooldown: 5,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

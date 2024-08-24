@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -23,8 +23,58 @@ export default class Flanger extends Command {
             `,
             aliases: ["flg"],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        const interp2Option = new SlashCommandStringOption()
+            .setName("interp2")
+            .setDescription("Interp of the effect in the dl subcommand.")
+
+        const interpOption = new SlashCommandStringOption()
+            .setName("interp")
+            .setDescription("Interp of the effect or phase in the dl subcommand.")
+
+        const phaseOption = new SlashCommandStringOption()
+            .setName("phase")
+            .setDescription("Phase of the effect or shape in the dl subcommand.")
+
+        const shapeOption = new SlashCommandStringOption()
+            .setName("shape")
+            .setDescription("Shape of the effect or speed in the dl subcommand.")
+
+        const speedOption = new SlashCommandStringOption()
+            .setName("speed")
+            .setDescription("Speed of the effect or width in the dl subcommand.")
+
+        const widthOption = new SlashCommandStringOption()
+            .setName("width")
+            .setDescription("Width of the effect or regen in the dl subcommand.")
+
+        const regenOption = new SlashCommandStringOption()
+            .setName("regen")
+            .setDescription("Regen of the effect or depth in the dl subcommand.")
+
+        const depthOption = new SlashCommandStringOption()
+            .setName("depth")
+            .setDescription("Depth of the effect or delay in the dl subcommand.")
+
+        const delayOption = new SlashCommandStringOption()
+            .setName("delay")
+            .setDescription("Delay of the effect or dl to apply to an attachment.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(delayOption)
+            .addStringOption(depthOption)
+            .addStringOption(regenOption)
+            .addStringOption(widthOption)
+            .addStringOption(speedOption)
+            .addStringOption(shapeOption)
+            .addStringOption(phaseOption)
+            .addStringOption(interpOption)
+            .addStringOption(interp2Option)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

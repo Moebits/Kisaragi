@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -21,8 +21,18 @@ export default class Scrub extends Command {
             `,
             aliases: ["seek"],
             guildOnly: true,
-            cooldown: 5
+            cooldown: 5,
+            slashEnabled: true
         })
+        const timeOption = new SlashCommandStringOption()
+            .setName("time")
+            .setDescription("Time to scrub or 0 by default.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(timeOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

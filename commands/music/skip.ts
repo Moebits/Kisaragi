@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,8 +22,18 @@ export default class Skip extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 5
+            cooldown: 5,
+            slashEnabled: true
         })
+        const numOption = new SlashCommandStringOption()
+            .setName("num")
+            .setDescription("Skips to a position or to a matched title.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(numOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

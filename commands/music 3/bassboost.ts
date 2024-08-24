@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -12,7 +12,7 @@ export default class Bassboost extends Command {
             description: "Preset for lowshelf (500Hz, +5db).",
             help:
             `
-            \`bassboost\` - Applies bass boosting (lowshelf 5 500 100)
+            \`bassboost\` - Applies bass boosting (lowshelf 10 500 100)
             `,
             examples:
             `
@@ -20,8 +20,13 @@ export default class Bassboost extends Command {
             `,
             aliases: ["bass"],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -35,7 +40,7 @@ export default class Bassboost extends Command {
         const queue = audio.getQueue() as any
         const rep = await message.reply("_Applying a bass boost, please wait..._")
         const file = queue?.[0].file
-        await audio.lowshelf(file, 5, 500, 100)
+        await audio.lowshelf(file, 10, 500, 100)
         if (rep) rep.delete()
         const settings = audio.getSettings() as any
         settings.filters.push("lowshelf")

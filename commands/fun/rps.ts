@@ -1,10 +1,9 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Pickle extends Command {
+export default class RPS extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Game of rock, paper, and scissors.",
@@ -19,8 +18,20 @@ export default class Pickle extends Command {
             \`=>rps rock\`
             `,
             aliases: [""],
-            cooldown: 5
+            cooldown: 5,
+            slashEnabled: true
         })
+        const pickOption = new SlashCommandStringOption()
+            .setName("pick")
+            .setDescription("Pick rock, paper, or scissors.")
+            .addChoices([{name: "rock", value: "rock"}, {name: "paper", value: "paper"}, {name: "scissors", value: "scissors"}])
+            .setRequired(true)
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(pickOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -84,8 +95,7 @@ export default class Pickle extends Command {
             str = `It's a draw... I chose **${botPick}** too. ${discord.getEmoji("raphi")}`
         }
 
-        message.channel.send(// `**Rock, Paper, Scissors** ${discord.getEmoji("miyanoTrippin")}\n` +
-        str)
+        message.reply(str)
         return
     }
 }

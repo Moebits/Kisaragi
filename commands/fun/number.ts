@@ -1,7 +1,5 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class NumberCommand extends Command {
@@ -17,8 +15,13 @@ export default class NumberCommand extends Command {
             \`=>number\`
             `,
             aliases: ["number"],
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+            .setName("number")
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -27,7 +30,7 @@ export default class NumberCommand extends Command {
 
         const num = Math.floor(Math.random() * 1000000)
 
-        await message.channel.send(`I picked a number! Try to guess what it is ${discord.getEmoji("raphiOMG")}`)
+        await message.reply(`I picked a number! Try to guess what it is ${discord.getEmoji("raphiOMG")}`)
         const filter = (m: Message) => m.author.id === message.author.id && m.channel.id === message.channel.id
 
         const gameLoop = async () => {

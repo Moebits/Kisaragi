@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import {Audio} from "../../structures/Audio"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -20,8 +20,13 @@ export default class Nightcore extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

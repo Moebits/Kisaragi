@@ -1,11 +1,11 @@
 import canvas from "@napi-rs/canvas"
-import {Message, AttachmentBuilder} from "discord.js"
+import {Message, AttachmentBuilder, SlashCommandBuilder, SlashCommandUserOption} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import fs from "fs"
+import path from "path"
 
-export default class $8ball extends Command {
+export default class Ship extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Ships two users.",
@@ -18,33 +18,52 @@ export default class $8ball extends Command {
             \`=>ship @user1 @user2\`
             `,
             aliases: ["shipping"],
-            cooldown: 5
+            cooldown: 5,
+            slashEnabled: true
         })
+        const user1Option = new SlashCommandUserOption()
+            .setName("user1")
+            .setDescription("The first user to ship.")
+            .setRequired(true)
+
+        const user2Option = new SlashCommandUserOption()
+            .setName("user2")
+            .setDescription("The second user to ship.")
+            .setRequired(true)
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addUserOption(user1Option)
+            .addUserOption(user2Option)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        if (message.mentions.members?.size !== 2) {
+        if (!args[2]) {
             return message.reply(`You need to mention two users! ${discord.getEmoji("kannaWave")}`)
         }
-        const user1 = message.mentions.members.first()
-        const user2 = message.mentions.members.last()
-        const shipname = String(user1?.displayName.substring(0, user1.displayName.length/2)) + String(user2?.displayName.substring(user2.displayName.length/2))
+        const user1ID = args[1].match(/\d+/)?.[0]
+        const user1 = await message.guild?.members.fetch(user1ID!)
+        const user2ID = args[2].match(/\d+/)?.[0]
+        const user2 = await message.guild?.members.fetch(user2ID!)
+        const shipname = String(user1?.user.displayName.substring(0, user1.displayName.length/2)) + String(user2?.displayName.substring(user2.displayName.length/2))
 
         const can = new canvas.Canvas(128*3, 128)
         const ctx = can.getContext("2d")
 
         const av1 = await canvas.loadImage(user1?.user.displayAvatarURL({extension: "png"})!)
         const av2 = await canvas.loadImage(user2?.user.displayAvatarURL({extension: "png"})!)
-        const heart = await canvas.loadImage("https://i.ya-webdesign.com/images/anime-heart-png-1.png")
+        const heart = await canvas.loadImage(fs.readFileSync(path.join(__dirname, "../../assets/images/heart.png")))
         ctx.drawImage(av1, 0, 0, can.width/3, can.height)
         ctx.drawImage(heart, can.width/3, 0, can.width/3, can.height)
         ctx.drawImage(av2, (can.width/3)*2, 0, can.width/3, can.height)
 
         const attachment = new AttachmentBuilder(can.toBuffer("image/png"), {name: "ship.png"})
 
-        message.channel.send({content:
+        message.reply({content:
             `Aww, what a cute shipping! ${discord.getEmoji("gabrielLick")}\n` +
             `_Shipping Name:_ **${shipname}**`, files: [attachment]})
         return

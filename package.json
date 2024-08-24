@@ -4,13 +4,13 @@
   "description": "Kisaragi is the best girl!",
   "main": "dist/shard.js",
   "scripts": {
-    "start": "npm run build && npm run copy && npm run bot",
+    "start": "npm run build && npm run post && npm run bot",
     "server-start": "npm run build && npm run server",
     "build": "tsc -p tsconfig.json",
     "bot": "node --max-old-space-size=8192 --optimize-for-size dist/index.js",
     "server": "node --max-old-space-size=8192 --optimize-for-size dist/server.js",
     "pm2": "pm2-runtime start ecosystem.config.js --env production",
-    "copy": "cp structures/CreateDB.sql dist/structures/CreateDB.sql",
+    "post": "node dist/post.js",
     "register": "npm run build && node dist/register.js",
     "clean": "del-cli dist"
   },

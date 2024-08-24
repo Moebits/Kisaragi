@@ -35,8 +35,8 @@ export class AudioEffects {
         this.init()
         if (filepath.includes("https://") || filepath.includes("http://")) {
             const data = await axios.get(filepath, {responseType: "arraybuffer", headers: this.headers}).then((r) => r.data)
-            const filename = path.basename(filepath.replace(`_${effect}`, "")).slice(0, -4)
-            const dest = path.join(__dirname, `../assets/misc/tracks/${filename}_${effect}.${filepath.slice(-3)}`)
+            const filename = path.basename(filepath.replace(`-${effect}`, "")).slice(0, -4)
+            const dest = path.join(__dirname, `../assets/misc/tracks/${filename}-${effect}.${filepath.slice(-3)}`)
             fs.writeFileSync(dest, data, "binary")
             filepath = dest
         }
@@ -64,8 +64,8 @@ export class AudioEffects {
     public downloadEffect = async (effect: string, filepath: string) => {
         this.init()
         const ext = path.extname(filepath)
-        const filename = path.basename(filepath.replace(`_${effect}`, "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_${effect}${ext}`)
+        const filename = path.basename(filepath.replace(`-${effect}`, "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-${effect}${ext}`)
         const stats = fs.statSync(fileDest)
         if (stats.size > 8000000) {
             const link = await this.images.upload(fileDest)
@@ -258,13 +258,26 @@ export class AudioEffects {
         return newDest
     }
 
-    public seekFile = async (filepath: string, seek: number) => {
+    public seek = async (filepath: string, seek: number) => {
         this.init()
         const ext = path.extname(filepath).replace(".", "")
         const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
         const newDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-seek.${ext}`)
         await new Promise<void>((resolve, reject) => {
             ffmpeg(filepath).toFormat(ext).setStartTime(seek).save(newDest)
+            .on("end", () => resolve())
+            .on("error", () => reject())
+        })
+        return newDest
+    }
+
+    public volume = async (filepath: string, volume: number) => {
+        this.init()
+        const ext = path.extname(filepath).replace(".", "")
+        const filename = ext.length === 4 ? path.basename(filepath).slice(0, -5) : path.basename(filepath).slice(0, -4)
+        const newDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-vol.${ext}`)
+        await new Promise<void>((resolve, reject) => {
+            ffmpeg(filepath).toFormat(ext).outputOptions(["-filter:a", `volume=${volume}`]).save(newDest)
             .on("end", () => resolve())
             .on("error", () => reject())
         })

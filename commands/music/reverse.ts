@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
@@ -23,8 +23,18 @@ export default class Reverse extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 15,
+            slashEnabled: true
         })
+        const linkOption = new SlashCommandStringOption()
+            .setName("query")
+            .setDescription("Optional query to search for or dl to apply to an attachment.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(linkOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

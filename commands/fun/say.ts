@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -17,8 +17,19 @@ export default class Say extends Command {
             \`=>say I love you\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        const textOption = new SlashCommandStringOption()
+            .setName("text")
+            .setDescription("The text to post.")
+            .setRequired(true)
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(textOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -30,7 +41,11 @@ export default class Say extends Command {
         const rawText = Functions.combineArgs(args, 1)
         if (!rawText) return message.reply("You did not provide any text.")
 
-        await message.channel.send({content: Functions.checkChar(rawText, 2000, "."), allowedMentions: {parse: []}})
+        if (message instanceof Message) {
+            await message.channel.send({content: Functions.checkChar(rawText, 2000, "."), allowedMentions: {parse: []}})
+        } else {
+            await (message as any).reply({content: Functions.checkChar(rawText, 2000, "."), allowedMentions: {parse: []}})
+        }
         if (message.content.startsWith(prefix)) await message.delete().catch(() => null)
     }
 }

@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -21,8 +21,25 @@ export default class ABLoop extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        const endOption = new SlashCommandStringOption()
+            .setName("end")
+            .setDescription("End of the a-b loop.")
+            .setRequired(true)
+
+        const startOption = new SlashCommandStringOption()
+            .setName("start")
+            .setDescription("Start of the a-b loop.")
+            .setRequired(true)
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(startOption)
+            .addStringOption(endOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

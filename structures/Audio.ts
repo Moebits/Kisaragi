@@ -27,6 +27,7 @@ type QueueItem = {
     image: string
     duration: string
     requester: string
+    requesterID: string
     details: string
     file: string
     originalFile: string
@@ -43,6 +44,7 @@ type SettingsItem = {
     autoplay: boolean
     speed: number
     pitch: number
+    volume: number
     filters: string[]
     effects: string[]
     filterParams: {[key: string]: (string | number | number[])[]},
@@ -61,8 +63,10 @@ export class Audio {
     private readonly youtube: Youtube
     private readonly soundcloud: Soundcloud
     private readonly embeds: Embeds
+    private readonly perms: Permission
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {
         this.embeds = new Embeds(this.discord, this.message)
+        this.perms = new Permission(this.discord, this.message)
         this.soundcloud = new Soundcloud()
         this.youtube = new Youtube(process.env.GOOGLE_API_KEY!)
         this.video = new Video(this.discord, this.message)
@@ -73,6 +77,18 @@ export class Audio {
         const message = this.message
         if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has(["Connect", "Speak"])) {
             message.reply(`The bot needs the permissions **Connect** and **Speak** for all music commands. ${this.discord.getEmoji("kannaFacepalm")}`)
+            return false
+        } else {
+            return true
+        }
+    }
+
+    public checkEffectPermissions = async (user: User) => {
+        const queue = this.getQueue()
+        const requesterID = queue[0].requesterID
+        const hasPermission = await this.perms.checkAudioPermission(user, requesterID)
+        if (!hasPermission) {
+            this.message.reply(`Only the requester and moderators can edit effects. Wait until it's your turn! ${this.discord.getEmoji("kannaSad")}`)
             return false
         } else {
             return true
@@ -97,8 +113,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.compression = [amount]
-        const filename = path.basename(filepath.replace("_compress", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_compress`)
+        const filename = path.basename(filepath.replace("-compress", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-compress`)
         let mp3File: string
         try {
             mp3File = await this.fx.compress(amount, filepath, fileDest)
@@ -121,8 +137,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.tremolo = [speed, depth]
-        const filename = path.basename(filepath.replace("_tremolo", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_tremolo`)
+        const filename = path.basename(filepath.replace("-tremolo", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-tremolo`)
         let mp3File: string
         try {
             mp3File = await this.fx.tremolo(speed, depth, filepath, fileDest)
@@ -143,8 +159,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.lowpass = [freq, width]
-        const filename = path.basename(filepath.replace("_lowpass", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_lowpass`)
+        const filename = path.basename(filepath.replace("-lowpass", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-lowpass`)
         let mp3File: string
         try {
             mp3File = await this.fx.lowpass(freq, width, filepath, fileDest)
@@ -165,8 +181,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.highpass = [freq, width]
-        const filename = path.basename(filepath.replace("_highpass", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_highpass`)
+        const filename = path.basename(filepath.replace("-highpass", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-highpass`)
         let mp3File: string
         try {
             mp3File = await this.fx.highpass(freq, width, filepath, fileDest)
@@ -188,8 +204,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.peak = [freq, resonance, gain]
-        const filename = path.basename(filepath.replace("_peak", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_peak`)
+        const filename = path.basename(filepath.replace("-peak", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-peak`)
         let mp3File: string
         try {
             mp3File = await this.fx.peak(freq, resonance, gain, filepath, fileDest)
@@ -211,8 +227,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.lowshelf = [gain, freq, width]
-        const filename = path.basename(filepath.replace("_lowshelf", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_lowshelf`)
+        const filename = path.basename(filepath.replace("-lowshelf", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-lowshelf`)
         let mp3File: string
         try {
             mp3File = await this.fx.lowshelf(gain, freq, width, filepath, fileDest)
@@ -234,8 +250,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.highshelf = [gain, freq, width]
-        const filename = path.basename(filepath.replace("_highshelf", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_highshelf`)
+        const filename = path.basename(filepath.replace("-highshelf", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-highshelf`)
         let mp3File: string
         try {
             mp3File = await this.fx.highshelf(gain, freq, width, filepath, fileDest)
@@ -256,8 +272,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.bandpass = [freq, width]
-        const filename = path.basename(filepath.replace("_bandpass", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_bandpass`)
+        const filename = path.basename(filepath.replace("-bandpass", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-bandpass`)
         let mp3File: string
         try {
             mp3File = await this.fx.bandpass(freq, width, filepath, fileDest)
@@ -278,8 +294,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.filterParams.bandreject = [freq, width]
-        const filename = path.basename(filepath.replace("_bandreject", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_bandreject`)
+        const filename = path.basename(filepath.replace("-bandreject", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-bandreject`)
         let mp3File: string
         try {
             mp3File = await this.fx.bandreject(freq, width, filepath, fileDest)
@@ -300,8 +316,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.upsample = [factor]
-        const filename = path.basename(filepath.replace("_upsample", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_upsample`)
+        const filename = path.basename(filepath.replace("-upsample", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-upsample`)
         let mp3File: string
         try {
             mp3File = await this.fx.upsample(factor, filepath, fileDest)
@@ -322,8 +338,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.bitcrush = [factor]
-        const filename = path.basename(filepath.replace("_bitcrush", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_bitcrush`)
+        const filename = path.basename(filepath.replace("-bitcrush", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-bitcrush`)
         let mp3File: string
         try {
             mp3File = await this.fx.bitcrush(factor, filepath, fileDest)
@@ -344,8 +360,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.distortion = [gain, color]
-        const filename = path.basename(filepath.replace("_distortion", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_distortion`)
+        const filename = path.basename(filepath.replace("-distortion", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-distortion`)
         let mp3File: string
         try {
             mp3File = await this.fx.distortion(gain, color, filepath, fileDest)
@@ -369,8 +385,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.chorus = [delay, decay, speed, depth]
-        const filename = path.basename(filepath.replace("_chorus", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_chorus`)
+        const filename = path.basename(filepath.replace("-chorus", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-chorus`)
         let mp3File: string
         try {
             mp3File = await this.fx.chorus(delay, decay, speed, depth, filepath, fileDest)
@@ -393,8 +409,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.phaser = [delay, decay, speed]
-        const filename = path.basename(filepath.replace("_phaser", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_phaser`)
+        const filename = path.basename(filepath.replace("-phaser", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-phaser`)
         let mp3File: string
         try {
             mp3File = await this.fx.phaser(delay, decay, speed, filepath, fileDest)
@@ -433,8 +449,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.flanger = [delay, depth, regen, width, speed, shape, phase, interp]
-        const filename = path.basename(filepath.replace("_flanger", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_flanger`)
+        const filename = path.basename(filepath.replace("-flanger", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-flanger`)
         let mp3File: string
         try {
             mp3File = await this.fx.flanger(delay, depth, regen, width, speed, shape, phase, interp, filepath, fileDest)
@@ -454,8 +470,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.delay = [delaysDecays]
-        const filename = path.basename(filepath.replace("_delay", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_delay`)
+        const filename = path.basename(filepath.replace("-delay", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-delay`)
         let mp3File: string
         try {
             mp3File = await this.fx.delay(delaysDecays, filepath, fileDest)
@@ -477,8 +493,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         if (!pitch) pitch = false
-        const filename = path.basename(filepath.replace("_speed", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_speed`)
+        const filename = path.basename(filepath.replace("-speed", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-speed`)
         let mp3File: string
         try {
             mp3File = await this.fx.speed(factor, pitch, filepath, fileDest)
@@ -505,8 +521,8 @@ export class Audio {
         if (!semitones) semitones = 0
         const queue = this.getQueue()
         const settings = this.getSettings()
-        const filename = path.basename(filepath.replace("_pitch", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_pitch`)
+        const filename = path.basename(filepath.replace("-pitch", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-pitch`)
         let mp3File: string
         try {
             mp3File = await this.fx.pitch(semitones, filepath, fileDest)
@@ -525,8 +541,8 @@ export class Audio {
     public reverse = async (filepath: string, dl?: boolean, skipAdd?: boolean) => {
         const queue = this.getQueue()
         const settings = this.getSettings()
-        const filename = path.basename(filepath.replace("_reverse", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_reverse`)
+        const filename = path.basename(filepath.replace("-reverse", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-reverse`)
         let mp3File: string
         try {
             mp3File = await this.fx.reverse(filepath, fileDest)
@@ -555,8 +571,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.reverb = [reverb, damping, room, stereo, preDelay, wetGain]
-        const filename = path.basename(filepath.replace("_reverb", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_reverb`)
+        const filename = path.basename(filepath.replace("-reverb", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-reverb`)
         let mp3File: string
         try {
             mp3File = await this.fx.reverb(reverb, damping, room, stereo, preDelay, wetGain, reverse, filepath, fileDest)
@@ -577,8 +593,8 @@ export class Audio {
         const queue = this.getQueue()
         const settings = this.getSettings()
         settings.effectParams.allpass = [freq, width]
-        const filename = path.basename(filepath.replace("_allpass", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_allpass`)
+        const filename = path.basename(filepath.replace("-allpass", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-allpass`)
         let mp3File: string
         try {
             mp3File = await this.fx.allPass(freq, width, filepath, fileDest)
@@ -596,8 +612,8 @@ export class Audio {
     public combFilter = async (filepath: string, delay?: number, decay?: number) => {
         if (!delay) delay = 80
         if (!decay) decay = 0.5
-        const filename = path.basename(filepath.replace("_comb", "")).slice(0, -4)
-        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}_comb.wav`)
+        const filename = path.basename(filepath.replace("-comb", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-comb.wav`)
         const mp3File = await this.fx.combFilter(delay, decay, filepath, fileDest) as string
         return this.play(mp3File, this.time())
     }
@@ -651,6 +667,7 @@ export class Audio {
                 autoplay: false,
                 speed: 1.0,
                 pitch: 0,
+                volume: 1.0,
                 filters: [],
                 effects: [],
                 filterParams: {},
@@ -706,6 +723,7 @@ export class Audio {
             image: "",
             duration: "None",
             requester: "None",
+            requesterID: "",
             details: "None",
             file: "None",
             originalFile: "None",
@@ -746,18 +764,19 @@ export class Audio {
         }
         queueObj.file = file
         queueObj.originalFile = file
-        queueObj.requester = this.message.author.tag
+        queueObj.requester = this.message.author.username
+        queueObj.requesterID = this.message.author.id
         queueObj.kind = kind
         if (kind === "link") {
             queueObj.details =
             `${discord.getEmoji("star")}_Link:_ ${link}\n` +
-            `_Added by ${this.message.author.tag}_`
+            `_Added by ${this.message.author.username}_`
         } else {
             queueObj.details =
             `${discord.getEmoji("star")}_Title:_ [**${queueObj.title}**](${queueObj.url})\n` +
             `${discord.getEmoji("star")}_Artist:_ **${queueObj.artist}**\n` +
             `${discord.getEmoji("star")}_Duration:_ \`${queueObj.duration}\`\n` +
-            `_Added by ${this.message.author.tag}_`
+            `_Added by ${this.message.author.username}_`
         }
         const queue = this.getQueue()
         const pos = queue.push(queueObj)
@@ -816,15 +835,27 @@ export class Audio {
         return true
     }
 
-    public volume = (num: number) => {
-        if (num < 0 || num > 200) return this.message.reply("The volume must be between 0 and 200.")
-        const connection = getVoiceConnection(this.message.guild!.id)
+    public volume = async (num: number) => {
+        if (num < 0 || num > 2) return this.message.reply("The volume must be between 0 and 2.")
+        /*const connection = getVoiceConnection(this.message.guild!.id)
         if (connection?.state.status !== VoiceConnectionStatus.Ready) return
         const player = connection.state.subscription?.player
         if (player?.state.status !== AudioPlayerStatus.Playing) return 
         const resource = player.state.resource
-        resource.volume!.setVolumeLogarithmic(num / 100.0)
-        return true
+        resource.volume!.setVolumeLogarithmic(num)*/
+        const queue = this.getQueue()
+        const filepath = queue[0].file
+        const filename = path.basename(filepath.replace("-vol", "")).slice(0, -4)
+        const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-vol`)
+        let mp3File: string
+        try {
+            mp3File = await this.fx.volume(queue[0].file, num)
+        } catch {
+            mp3File = `${fileDest}.mp3`
+        }
+        const settings = this.getSettings()
+        if (num) settings.volume = num
+        return this.play(mp3File, this.time())
     }
 
     public nowPlaying = async () => {
@@ -836,7 +867,8 @@ export class Audio {
         const nowEmbed = await this.updateNowPlaying()
         const msg = await this.message.channel.send({embeds: [nowEmbed]})
         now.message = msg
-        const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear", "mp3"]
+        const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear"]
+        if (now.requesterID === process.env.OWNER_ID) reactions.push("mp3")
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
         const resumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("resume") && user.bot === false
         const pauseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("pause") && user.bot === false
@@ -870,7 +902,8 @@ export class Audio {
         const reactors = [resume, pause, scrub, reverse, speed, pitch, loop, abloop, skip, volume, eq, fx, clear, mp3]
         for (let i = 0; i < reactors.length; i++) {
             reactors[i].on("collect", async (reaction, user) => {
-                if (discord.checkMuted(reaction.message)) reaction.emoji.name = reaction.emoji.name?.replace("png", "")!
+                if (reaction.emoji.name !== "loop") if (!(await this.checkEffectPermissions(user))) return
+                let canceled = false
                 let test = true
                 if (reaction.emoji.name === "reverse") test = false
                 if (reaction.emoji.name === "speed") test = false
@@ -894,27 +927,37 @@ export class Audio {
                     this.setProcBlock(true)
                     return
                 } else if (reaction.emoji.name === "volume") {
-                    let vol = 100
+                    let vol = 1
                     await reaction.users.remove(user)
                     async function getVolumeChange(response: Message) {
-                        if (Number.isNaN(parseInt(response.content, 10)) || parseInt(response.content, 10) < 0 || parseInt(response.content, 10) > 200) {
-                            const rep = await response.reply("You must pass a number between 0 and 200.")
+                        if (response.content.trim().toLowerCase() === "cancel") {
+                            canceled = true
+                            return response.delete()
+                        }
+                        if (Number.isNaN(Number(response.content)) || Number(response.content) < 0 || Number(response.content) > 2) {
+                            const rep = await response.reply("You must pass a number between 0 and 2.")
                             setTimeout(() => rep.delete(), 3000)
                         } else {
-                            vol = parseInt(response.content, 10)
+                            vol = Number(response.content)
                         }
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter a volume scaling factor \`0-200%\`.`)
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter a volume scaling factor \`0-2\`. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getVolumeChange)
                     rep.delete()
+                    if (canceled) return this.setProcBlock(true)
                     await this.volume(vol)
+                    await msg.edit({embeds: [await this.updateNowPlaying()]})
                     this.setProcBlock(true)
                 } else if (reaction.emoji.name === "speed") {
                     let factor = 1.0
                     let setPitch = false
                     await reaction.users.remove(user)
                     async function getSpeedChange(response: Message) {
+                        if (response.content.trim().toLowerCase() === "cancel") {
+                            canceled = true
+                            return response.delete()
+                        }
                         response.content = response.content.replace("x", "")
                         if (response.content.includes("pitch")) {
                             setPitch = true
@@ -928,9 +971,10 @@ export class Audio {
                         }
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new speed, eg \`1.5x\`. Add \`pitch\` to also change the pitch along with the speed.`)
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new speed, eg \`1.5x\`. Add \`pitch\` to also change the pitch along with the speed. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getSpeedChange)
                     rep.delete()
+                    if (canceled) return this.setProcBlock(true)
                     const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the speed of the file..._`)
                     await this.speed(now.file, factor, setPitch)
                     rep2.delete()
@@ -949,7 +993,7 @@ export class Audio {
                 } else if (reaction.emoji.name === "skip") {
                     await reaction.users.remove(user)
                     const rep = await this.message.channel.send(`<@${user.id}>, Skipping this track! **If you added effects, be patient because they need to be re-applied.**`)
-                    setTimeout(() => rep.delete(), 3000)
+                    setTimeout(() => rep.delete(), 5000)
                     await this.skip()
                     this.setProcBlock(true)
                     return
@@ -957,6 +1001,10 @@ export class Audio {
                     let semitones = 0
                     await reaction.users.remove(user)
                     async function getPitchChange(response: Message) {
+                        if (response.content.trim().toLowerCase() === "cancel") {
+                            canceled = true
+                            return response.delete()
+                        }
                         if (response.content?.trim() && Number.isNaN(Number(response.content))) {
                             const rep = await response.reply("You must pass in the amount of semitones, eg. \`12\` or \`-12\`.")
                             setTimeout(() => rep.delete(), 3000)
@@ -965,9 +1013,10 @@ export class Audio {
                         }
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new pitch in semitones. 12 semitones = 1 octave.`)
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new pitch in semitones. 12 semitones = 1 octave. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getPitchChange)
                     rep.delete()
+                    if (canceled) return this.setProcBlock(true)
                     const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the pitch of the file..._`)
                     await this.pitch(now.file, semitones)
                     rep2.delete()
@@ -978,12 +1027,17 @@ export class Audio {
                     let position = "0"
                     await reaction.users.remove(user)
                     async function getPositionChange(response: Message) {
+                        if (response.content.trim().toLowerCase() === "cancel") {
+                            canceled = true
+                            return response.delete()
+                        }
                         position = response.content
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new song position, eg. \`1:00\`. You can also fastforward or rewind, eg. \`+10\` and \`-10\`.`)
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new song position, eg. \`1:00\`. You can also fastforward or rewind, eg. \`+10\` and \`-10\`. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getPositionChange)
                     rep.delete()
+                    if (canceled) return this.setProcBlock(true)
                     await this.scrub(position)
                     await msg.edit({embeds: [await this.updateNowPlaying()]})
                     this.setProcBlock(true)
@@ -1001,14 +1055,19 @@ export class Audio {
                     let start = "0"
                     let end = now.duration
                     async function getABLoop(response: Message) {
+                        if (response.content.trim().toLowerCase() === "cancel") {
+                            canceled = true
+                            return response.delete()
+                        }
                         const repArgs = response.content.split(" ")
                         start = repArgs[0]
                         end = repArgs[1]
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the starting time and the ending time for the A-B loop. eg \`1:00 1:30\`.`)
+                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the starting time and the ending time for the A-B loop. eg \`1:00 1:30\`. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getABLoop)
                     rep.delete()
+                    if (canceled) return this.setProcBlock(true)
                     const rep2 = await this.message.channel.send(`<@${user.id}>, Enabled A-B Looping!`)
                     setTimeout(() => rep2.delete(), 3000)
                     settings.ablooping = true
@@ -1068,7 +1127,7 @@ export class Audio {
             `${discord.getEmoji("star")}_Duration:_ \`${durationStr}\`\n` +
             `${discord.getEmoji("star")}_Link:_ ${now.url.length < 1000 ? now.url : "Link is too long"}\n` +
             `${discord.getEmoji("speed")}_Speed:_ **${settings.speed}x**  ` +
-            `${discord.getEmoji("pitch")}_Freq:_ **${Number(settings.pitch) > -1 ? `+${settings.pitch}` : settings.pitch}**\n` +
+            `${discord.getEmoji("pitch")}_Freq:_ **${Number(settings.pitch) > -1 ? `+${settings.pitch}` : settings.pitch}** ${discord.getEmoji("volume")}_Volume:_ **${settings.volume}**\n` +
             `${discord.getEmoji("highpass")}_Filters:_ _${settings.filters[0] ? settings.filters.map((f: string) => Functions.toProperCase(f)).join(", ") : "None"}_  ` +
             `${discord.getEmoji("delay")}_Effects:_ _${settings.effects[0] ? settings.effects.map((e: string) => Functions.toProperCase(e)).join(", ") : "None"}_\n` +
             `${discord.getEmoji("position")}_Song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
@@ -1082,7 +1141,7 @@ export class Audio {
             `${discord.getEmoji("star")}_Artist:_ **${now.artist}**\n` +
             `${discord.getEmoji("star")}_Duration:_ \`${durationStr}\`\n` +
             `${discord.getEmoji("speed")}_Speed:_ **${settings.speed}x**  ` +
-            `${discord.getEmoji("pitch")}_Freq:_ **${Number(settings.pitch) > -1 ? `+${settings.pitch}` : settings.pitch}**\n` +
+            `${discord.getEmoji("pitch")}_Freq:_ **${Number(settings.pitch) > -1 ? `+${settings.pitch}` : settings.pitch}** ${discord.getEmoji("volume")}_Volume:_ **${settings.volume}**\n` +
             `${discord.getEmoji("highpass")}_Filters:_ _${settings.filters[0] ? settings.filters.map((f: string) => Functions.toProperCase(f)).join(", ") : "None"}_  ` +
             `${discord.getEmoji("delay")}_Effects:_ _${settings.effects[0] ? settings.effects.map((e: string) => Functions.toProperCase(e)).join(", ") : "None"}_\n` +
             `${discord.getEmoji("position")}_Song position:_ \`${this.parseSCDuration(Number(this.time()*1000))}\`\n` +
@@ -1140,18 +1199,22 @@ export class Audio {
         if (settings.reverse) {
             await this.reverse(newFile, false, true)
         }
+        newFile = this.getQueue()[0].file
         if (Number(settings.pitch) !== 0) {
             await this.pitch(newFile, Number(settings.pitch), false, true)
         }
+        newFile = this.getQueue()[0].file
         if (Number(settings.speed) !== 1) {
             await this.speed(newFile, Number(settings.speed), Boolean(settings.speedParam), false, true)
         }
+        newFile = this.getQueue()[0].file
         if (settings.filters[0]) {
             for (let i = 0; i < settings.filters.length; i++) {
                 const params = Functions.removeDuplicates(settings.filterParams[settings.filters[i]])
                 await this[settings.filters[i]](newFile, ...params)
             }
         }
+        newFile = this.getQueue()[0].file
         if (settings.effects[0]) {
             for (let i = 0; i < settings.effects.length; i++) {
                 const params = Functions.removeDuplicates(settings.effectParams[settings.effects[i]])
@@ -1220,10 +1283,10 @@ export class Audio {
 
         let stream: AudioResource
         if (Number(start) === 0) {
-            stream = createAudioResource(file, {inlineVolume: true})
+            stream = createAudioResource(file)
         } else {
-            const seeked = await this.fx.seekFile(file, start)
-            stream = createAudioResource(seeked, {inlineVolume: true})
+            const seeked = await this.fx.seek(file, start)
+            stream = createAudioResource(seeked)
             const settings = this.getSettings()
             settings.seekOffset = start
         }
@@ -1543,13 +1606,13 @@ export class Audio {
         .setTitle(`**Audio Equalizer** ${discord.getEmoji("RaphiSmile")}`)
         .setDescription(
             `_Here are the different filter types that you can choose from:_\n` +
-            `${discord.getEmoji("highpass")}_Highpass Filter_ -> _Removes low frequencies._\n` +
-            `${discord.getEmoji("highshelf")}_Highshelf Filter_ -> _Boosts/attenuates all frequencies above the cutoff frequency._\n` +
-            `${discord.getEmoji("bandpass")}_Bandpass Filter_ -> _Removes both low frequencies and high frequencies._\n` +
-            `${discord.getEmoji("peak")}_Peak Filter_ -> _Carves boosts/cuts in a certain frequency range._\n` +
-            `${discord.getEmoji("bandreject")}_Bandreject Filter_ -> _An inverted bandpass filter, use a high Q factor to get a notch filter._\n` +
-            `${discord.getEmoji("lowshelf")}_Lowshelf Filter_ -> _Boosts/attenuates all frequencies below the cutoff frequency._\n` +
-            `${discord.getEmoji("lowpass")}_Lowpass Filter_ -> _Removes high frequencies._\n` +
+            `${discord.getEmoji("highpass")}-highpass Filter_ -> _Removes low frequencies._\n` +
+            `${discord.getEmoji("highshelf")}-highshelf Filter_ -> _Boosts/attenuates all frequencies above the cutoff frequency._\n` +
+            `${discord.getEmoji("bandpass")}-bandpass Filter_ -> _Removes both low frequencies and high frequencies._\n` +
+            `${discord.getEmoji("peak")}-peak Filter_ -> _Carves boosts/cuts in a certain frequency range._\n` +
+            `${discord.getEmoji("bandreject")}-bandreject Filter_ -> _An inverted bandpass filter, use a high Q factor to get a notch filter._\n` +
+            `${discord.getEmoji("lowshelf")}-lowshelf Filter_ -> _Boosts/attenuates all frequencies below the cutoff frequency._\n` +
+            `${discord.getEmoji("lowpass")}-lowpass Filter_ -> _Removes high frequencies._\n` +
             `_Frequency and width are in Hz. If applicable, resonance is a Q factor and gain is in decibels._`
         )
         const msg = await this.message.channel.send({embeds: [eqEmbed]})
@@ -1579,8 +1642,10 @@ export class Audio {
         const shelfCol = [highshelf, lowshelf]
 
         await new Promise<void>((resolve) => {
+        let canceled = false
         for (let i = 0; i < pass.length; i++) {
             passCol[i].on("collect", async (reaction, user) => {
+                if (!(await this.checkEffectPermissions(user))) return
                 if (this.getProcBlock()) {
                     await reaction.users.remove(user)
                     const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1592,14 +1657,19 @@ export class Audio {
                 let freq = 600
                 let width = 100
                 async function getParams(response: Message) {
+                    if (response.content.trim().toLowerCase() === "cancel") {
+                        canceled = true
+                        return response.delete()
+                    }
                     const rArgs = response.content.split(" ")
                     freq = Number(rArgs[0])
                     width = Number(rArgs[1])
                     await response.delete()
                 }
-                const rep = await this.message.channel.send(`<@${user.id}>, Enter the cutoff frequency and filter width (in Hz).`)
+                const rep = await this.message.channel.send(`<@${user.id}>, Enter the cutoff frequency and filter width (in Hz). _(Or cancel to quit)._`)
                 await this.embeds.createPrompt(getParams)
                 rep.delete()
+                if (canceled) return this.setProcBlock(true)
                 const settings = this.getSettings()
                 const queue = this.getQueue()
                 settings.filters.push(pass[i])
@@ -1615,6 +1685,7 @@ export class Audio {
 
         for (let i = 0; i < shelf.length; i++) {
             shelfCol[i].on("collect", async (reaction, user) => {
+                if (!(await this.checkEffectPermissions(user))) return
                 if (this.getProcBlock()) {
                     await reaction.users.remove(user)
                     const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1627,15 +1698,20 @@ export class Audio {
                 let freq = 600
                 let width = 100
                 async function getParams(response: Message) {
+                    if (response.content.trim().toLowerCase() === "cancel") {
+                        canceled = true
+                        return response.delete()
+                    }
                     const rArgs = response.content.split(" ")
                     gain = Number(rArgs[0])
                     freq = Number(rArgs[1])
                     width = Number(rArgs[2])
                     await response.delete()
                 }
-                const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency, and the filter width (in Hz).`)
+                const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency, and the filter width (in Hz). _(Or cancel to quit)._`)
                 await this.embeds.createPrompt(getParams)
                 rep.delete()
+                if (canceled) return this.setProcBlock(true)
                 const settings = this.getSettings()
                 const queue = this.getQueue()
                 settings.filters.push(shelf[i])
@@ -1650,6 +1726,7 @@ export class Audio {
         }
 
         peak.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1662,15 +1739,20 @@ export class Audio {
             let resonance = 2
             let gain = 3
             async function getParams(response: Message) {
+                if (response.content.trim().toLowerCase() === "cancel") {
+                    canceled = true
+                    return response.delete()
+                }
                 const rArgs = response.content.split(" ")
                 gain= Number(rArgs[0])
                 freq = Number(rArgs[1])
                 resonance = Number(rArgs[2])
                 await response.delete()
             }
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency (in Hz), and the resonance (Q Factor).`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency (in Hz), and the resonance (Q Factor). _(Or cancel to quit)._`)
             await this.embeds.createPrompt(getParams)
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.filters.push("peak")
@@ -1682,7 +1764,8 @@ export class Audio {
             setTimeout(() => rep2.delete(), 3000)
             resolve()
         })
-        cancel.on("collect", (reaction, user) => {
+        cancel.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             this.setProcBlock(true)
             resolve()
         })
@@ -1698,17 +1781,17 @@ export class Audio {
         .setTitle(`**Special Effects** ${discord.getEmoji("RaphiSmile")}`)
         .setDescription(
             `_Here are the different audio effects that you can add:_\n` +
-            `${discord.getEmoji("reverb")}_Reverb_ -> _Emulates room reflections._\n` +
-            `${discord.getEmoji("delay")}_Delay_ -> _Repeatedly replays the signal after a certain delay._\n` +
-            `${discord.getEmoji("chorus")}_Chorus_ -> _Mixes the signal with delayed, pitch modulated copies._\n` +
-            `${discord.getEmoji("phaser")}_Phaser_ -> _Modulates allpass filters for a phase cancellation effect._\n` +
-            `${discord.getEmoji("flanger")}_Flanger_ -> _Modulates comb filters with a very short delay time._\n` +
-            `${discord.getEmoji("bitcrush")}_Bitcrush_ -> _Decreases the sample rate._\n` +
-            `${discord.getEmoji("upsample")}_Upsample_ -> _Increases the sample rate._\n` +
-            `${discord.getEmoji("distortion")}_Distortion_ -> _Soft clips the audio._\n` +
-            `${discord.getEmoji("compression")}_Compression_ -> _Reduces the dynamic range._\n` +
-            `${discord.getEmoji("allpass")}_Allpass Filter_ -> _Changes the phase relationship of frequencies._\n` +
-            `${discord.getEmoji("tremolo")}_Tremelo_ -> _Amplitude modulation with an LFO._`
+            `${discord.getEmoji("reverb")}-reverb_ -> _Emulates room reflections._\n` +
+            `${discord.getEmoji("delay")}-delay_ -> _Repeatedly replays the signal after a certain delay._\n` +
+            `${discord.getEmoji("chorus")}-chorus_ -> _Mixes the signal with delayed, pitch modulated copies._\n` +
+            `${discord.getEmoji("phaser")}-phaser_ -> _Modulates allpass filters for a phase cancellation effect._\n` +
+            `${discord.getEmoji("flanger")}-flanger_ -> _Modulates comb filters with a very short delay time._\n` +
+            `${discord.getEmoji("bitcrush")}-bitcrush_ -> _Decreases the sample rate._\n` +
+            `${discord.getEmoji("upsample")}-upsample_ -> _Increases the sample rate._\n` +
+            `${discord.getEmoji("distortion")}-distortion_ -> _Soft clips the audio._\n` +
+            `${discord.getEmoji("compression")}-compression_ -> _Reduces the dynamic range._\n` +
+            `${discord.getEmoji("allpass")}-allpass Filter_ -> _Changes the phase relationship of frequencies._\n` +
+            `${discord.getEmoji("tremolo")}-tremelo_ -> _Amplitude modulation with an LFO._`
         )
         const reactions = ["reverb", "delay", "chorus", "phaser", "flanger", "bitcrush", "upsample", "distortion", "compression", "allpass", "tremolo", "cancel"]
         const msg = await this.message.channel.send({embeds: [fxEmbed]})
@@ -1739,7 +1822,12 @@ export class Audio {
         const tremolo = msg.createReactionCollector({filter: tremoloCheck})
         const cancel = msg.createReactionCollector({filter: cancelCheck})
         let argArray: any[] = []
+        let canceled = false
         async function parseArgs(response: Message) {
+            if (response.content.trim().toLowerCase() === "cancel") {
+                canceled = true
+                return response.delete()
+            }
             const rArgs = response.content.split(" ")
             argArray = rArgs
             await response.delete()
@@ -1747,6 +1835,7 @@ export class Audio {
         }
         await new Promise<void>((resolve) => {
         reverb.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1755,7 +1844,7 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the amount, damping, room, stereo, pre-delay, and wet-gain.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the amount, damping, room, stereo, pre-delay, and wet-gain. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const amount = Number(argArray[0])
             const damping = Number(argArray[1])
@@ -1765,6 +1854,7 @@ export class Audio {
             const wetGain = Number(argArray[5])
             const reverse = Boolean(argArray[6])
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("reverb")
@@ -1779,6 +1869,7 @@ export class Audio {
         })
 
         delay.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1787,11 +1878,12 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter pairs of delay and decay times.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter pairs of delay and decay times. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const delaysDecays = argArray.map((a) => Number(a) ? Number(a) : 0)
             if (delaysDecays.length % 2 === 1) delaysDecays.push(0)
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("delay")
@@ -1806,6 +1898,7 @@ export class Audio {
         })
 
         chorus.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1814,13 +1907,14 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, speed, and depth.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, speed, and depth. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const delay = Number(argArray[0])
             const decay = Number(argArray[1])
             const speed = Number(argArray[2])
             const depth = Number(argArray[3])
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("chorus")
@@ -1835,6 +1929,7 @@ export class Audio {
         })
 
         phaser.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1843,12 +1938,13 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, and speed.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, and speed. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const delay = Number(argArray[0])
             const decay = Number(argArray[1])
             const speed = Number(argArray[2])
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("phaser")
@@ -1863,6 +1959,7 @@ export class Audio {
         })
 
         flanger.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1871,7 +1968,7 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, depth, regen, width, speed, shape, phase, and interp.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, depth, regen, width, speed, shape, phase, and interp. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const delay = Number(argArray[0])
             const depth = Number(argArray[1])
@@ -1882,6 +1979,7 @@ export class Audio {
             const phase = Number(argArray[6])
             const interp = argArray[7]
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("flanger")
@@ -1896,6 +1994,7 @@ export class Audio {
         })
 
         bitcrush.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1904,10 +2003,11 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the bitcrush factor.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the bitcrush factor. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const factor = Number(argArray[0])
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("bitcrush")
@@ -1922,6 +2022,7 @@ export class Audio {
         })
 
         upsample.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1930,10 +2031,11 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the upsample factor.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the upsample factor. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const factor = Number(argArray[0])
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("upsample")
@@ -1948,6 +2050,7 @@ export class Audio {
         })
 
         distortion.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1956,11 +2059,12 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain and color.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain and color. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const gain = Number(argArray[0])
             const color = Number(argArray[1])
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("distortion")
@@ -1975,6 +2079,7 @@ export class Audio {
         })
 
         compression.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -1983,10 +2088,11 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the compression amount (0-100).`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the compression amount (0-100). _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const amount = Number(argArray[0])
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("compression")
@@ -2001,6 +2107,7 @@ export class Audio {
         })
 
         allpass.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -2009,11 +2116,12 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the frequency and width.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the frequency and width. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const freq = Number(argArray[0])
             const width = Number(argArray[1])
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("allpass")
@@ -2028,6 +2136,7 @@ export class Audio {
         })
 
         tremolo.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
                 const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
@@ -2036,11 +2145,12 @@ export class Audio {
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the speed and depth.`)
+            const rep = await this.message.channel.send(`<@${user.id}>, Enter the speed and depth. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const speed = Number(argArray[0])
             const depth = Number(argArray[1])
             rep.delete()
+            if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.effects.push("tremolo")
@@ -2053,7 +2163,8 @@ export class Audio {
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
-        cancel.on("collect", (reaction, user) => {
+        cancel.on("collect", async (reaction, user) => {
+            if (!(await this.checkEffectPermissions(user))) return
             this.setProcBlock(true)
             resolve()
         })

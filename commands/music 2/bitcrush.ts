@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,8 +22,23 @@ export default class Bitcrush extends Command {
             `,
             aliases: ["downsample"],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        const factor2Option = new SlashCommandStringOption()
+            .setName("factor2")
+            .setDescription("Factor of the bitcrush in the dl subcommand.")
+
+        const factorOption = new SlashCommandStringOption()
+            .setName("factor")
+            .setDescription("Factor of the bitcrush or dl to apply to an attachment.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(factorOption)
+            .addStringOption(factor2Option)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

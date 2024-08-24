@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,8 +22,28 @@ export default class AllPass extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        const width2Option = new SlashCommandStringOption()
+            .setName("width")
+            .setDescription("Width of the filter in the dl subcommand.")
+
+        const widthOption = new SlashCommandStringOption()
+            .setName("width")
+            .setDescription("Width of the filter or freq in the dl subcommand.")
+
+        const freqOption = new SlashCommandStringOption()
+            .setName("freq")
+            .setDescription("Frequency of the filter or dl to apply to an attachment.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(freqOption)
+            .addStringOption(widthOption)
+            .addStringOption(width2Option)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

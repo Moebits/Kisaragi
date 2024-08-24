@@ -21,7 +21,7 @@ export default class Playlists extends Command {
             \`=>playlist\`
             \`=>playlist kawaii future bass\`
             `,
-            aliases: ["pl", "playlists"],
+            aliases: ["playlists"],
             guildOnly: true,
             cooldown: 10,
             unlist: true

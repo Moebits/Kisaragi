@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
@@ -22,8 +22,18 @@ export default class Loop extends Command {
             `,
             aliases: ["repeat"],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        const linkOption = new SlashCommandStringOption()
+            .setName("query")
+            .setDescription("Optional song link/query to play.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(linkOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

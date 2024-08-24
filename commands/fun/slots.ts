@@ -1,8 +1,6 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Slots extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -18,8 +16,13 @@ export default class Slots extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -86,7 +89,7 @@ export default class Slots extends Command {
         }
 
         const left = discord.getEmoji("left")
-        await message.channel.send(`**Slot Machine** ${discord.getEmoji("KannaXD")}\n`)
+        await message.reply(`**Slot Machine** ${discord.getEmoji("KannaXD")}\n`)
         await message.channel.send(
             `${discord.getEmoji(slotArray[0])} ${discord.getEmoji(slotArray[1])} ${discord.getEmoji(slotArray[2])} ${row === 1 ? left : ""}\n` +
             `${discord.getEmoji(slotArray[3])} ${discord.getEmoji(slotArray[4])} ${discord.getEmoji(slotArray[5])} ${row === 2 ? left : ""}\n` +

@@ -22,14 +22,15 @@ export default class Ascii extends Command {
             slashEnabled: true
         })
         const textOption = new SlashCommandStringOption()
-        .setName("text")
-        .setDescription("text content")
-        .setRequired(true)
+            .setName("text")
+            .setDescription("text content")
+            .setRequired(true)
+            
         this.slash = new SlashCommandBuilder()
-        .setName(this.constructor.name.toLowerCase())
-        .setDescription(this.options.description)
-        .addStringOption(textOption)
-        .toJSON()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(textOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -17,8 +17,19 @@ export default class Emojify extends Command {
             \`=>emojify kawaii\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        const textOption = new SlashCommandStringOption()
+            .setName("text")
+            .setDescription("Text to convert to emoji letters.")
+            .setRequired(true)
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(textOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -28,8 +39,9 @@ export default class Emojify extends Command {
 
         const text = Functions.combineArgs(args, 1)
         if (!text) return message.reply("You did not provide any text.")
+        console.log(text)
         const emojiFied = letters.letters(text)
-        message.channel.send(`${emojiFied}`)
+        message.reply(`${emojiFied}`)
         return
 
     }

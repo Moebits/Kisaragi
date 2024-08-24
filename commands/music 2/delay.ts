@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -23,8 +23,23 @@ export default class Delay extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        const delay2Option = new SlashCommandStringOption()
+            .setName("delay pairs 2")
+            .setDescription("Add delay and decay pairs in the dl subcommand.")
+
+        const delayOption = new SlashCommandStringOption()
+            .setName("delay pairs")
+            .setDescription("Add an even amount of delay and decay pairs separated by space, or dl to apply to an attachment.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(delayOption)
+            .addStringOption(delay2Option)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -35,7 +50,7 @@ export default class Delay extends Command {
         const perms = new Permission(discord, message)
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
-        const queue = audio.getQueue() as any
+        args = args.flat(Infinity).join(" ").split(/\s+/)
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {
             setDownload = true

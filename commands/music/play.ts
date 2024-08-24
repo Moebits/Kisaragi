@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption, ChatInputCommandInteraction, APIInteractionGuildMember} from "discord.js"
 import {getVoiceConnection, joinVoiceChannel} from "@discordjs/voice"
 import {Command} from "../../structures/Command"
 import * as defaults from "./../../assets/json/defaultSongs.json"
@@ -30,9 +30,29 @@ export default class Play extends Command {
             \`=>play yt tenpi moonlight\`
             `,
             guildOnly: true,
-            aliases: ["stream"],
-            cooldown: 30
+            aliases: ["pl", "stream"],
+            cooldown: 15,
+            slashEnabled: true
         })
+        const thirdOption = new SlashCommandStringOption()
+            .setName("song3")
+            .setDescription("This is the final option for song input if you have yet to specify it.")
+
+        const secondOption = new SlashCommandStringOption()
+            .setName("song2")
+            .setDescription("This can be the song to search for or yt.")
+
+        const firstOption = new SlashCommandStringOption()
+            .setName("song")
+            .setDescription("This can be the song to search for or any of the yt/first/reverse/loop options.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(firstOption)
+            .addStringOption(secondOption)
+            .addStringOption(thirdOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -42,8 +62,9 @@ export default class Play extends Command {
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
         if (!message.guild) return
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         if (!audio.checkMusicPermissions()) return
+        // @ts-ignore
+        if (message instanceof ChatInputCommandInteraction) await message.deferReply()
 
         let voiceChannel = message.member?.voice.channel
         let connection = getVoiceConnection(message.guild!.id)
@@ -119,7 +140,12 @@ export default class Play extends Command {
                 queueEmbed = await audio.queueAdd(link, file)
             }
         }
-        await message.channel.send({embeds: [queueEmbed]})
+        if (message instanceof ChatInputCommandInteraction) {
+            // @ts-ignore
+            await message.editReply({embeds: [queueEmbed]})
+        } else {
+            await message.channel.send({embeds: [queueEmbed]})
+        }
         queue = audio.getQueue()
         const settings = audio.getSettings() as any
         if (setLoop) settings[0].looping = true

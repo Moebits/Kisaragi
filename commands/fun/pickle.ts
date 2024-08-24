@@ -1,7 +1,5 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandUserOption} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
@@ -21,8 +19,18 @@ export default class Pickle extends Command {
             `,
             aliases: ["pp", "peepee", "hotdog", "dong", "cock", "dick", "penis", "sausage", "fun stick", "schlong", "willy", "ding dong", "peen", "meat stick"],
             random: "none",
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        const userOption = new SlashCommandUserOption()
+            .setName("user")
+            .setDescription("Which user's pickle to get.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription("Posts your pickle size.")
+            .addUserOption(userOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -32,9 +40,10 @@ export default class Pickle extends Command {
 
         let seed = message.author.id
         let name = message.author.username
-        if (message.mentions.users.size > 0) {
-            seed = message.mentions.users.first()!.id
-            name = message.mentions.users.first()!.username
+        if (args[1]) {
+            seed = args[1].match(/\d+/)?.[0] || "0"
+            const user = await message.guild?.members.fetch(seed)
+            if (user) name = user.user.username
         }
 
         function seededRandom(seed: number) {
@@ -52,7 +61,7 @@ export default class Pickle extends Command {
         } else {
                 flavorText = `Wow... ${discord.getEmoji("raphi")}`
         }
-        message.channel.send(`**${name}**, your ${args[0]} size is **${pickleSize.toFixed(2)}inches** (${(pickleSize*2.54).toFixed(2)}cm). ${flavorText}`)
+        message.reply(`**${name}**, your ${args[0]} size is **${pickleSize.toFixed(2)}inches** (${(pickleSize*2.54).toFixed(2)}cm). ${flavorText}`)
         return
     }
 }

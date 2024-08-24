@@ -91,7 +91,6 @@ export default class Yandere extends Command {
             if (img.rating !== "s") {
                 if (!perms.checkNSFW(true)) continue
                 if (discord.checkMuted(message)) continue
-                if (perms.loliFilter(img.tags)) continue
             }
             const yandereEmbed = embeds.createEmbed()
             .setAuthor({name: "yandere", iconURL: "https://i.imgur.com/5DiQTnW.png"})

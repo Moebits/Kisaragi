@@ -1,4 +1,4 @@
-import {Collection, Message, EmbedBuilder, MessageReaction, TextChannel, User, HexColorString} from "discord.js"
+import {Collection, Message, SlashCommandBuilder, EmbedBuilder, MessageReaction, TextChannel, User, HexColorString} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -20,8 +20,13 @@ export default class Embed extends Command {
             `,
             aliases: ["embeds", "customembed", "richembed", "messageembed"],
             random: "none",
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+        .setName(this.constructor.name.toLowerCase())
+        .setDescription(this.options.description)
+        .toJSON()
     }
 
     public getProcBlock = () => {
@@ -65,7 +70,7 @@ export default class Embed extends Command {
         embed.setColor(infoEmbed.data.color!)
 
         infoEmbed
-        .setAuthor({name: "embed creator",iconURL: "https://www.churchtrac.com/articles/apple/uploads/2017/09/Antu_insert-image.svg_-846x846.png"})
+        .setAuthor({name: "embed creator", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTStAdBUTGTX5KUVbubQNuOaG70mwxTKrEKk4oR0T1zVmcjfXhLYiHCkbvhXZtyi1Cs9EI&usqp=CAU"})
         .setTitle(`**Custom Embed** ${discord.getEmoji("RaphiSmile")}`)
         .setDescription(
             `_Edit this embed by clicking on the reactions._\n` +
@@ -88,7 +93,7 @@ export default class Embed extends Command {
 
         const reactions = ["info", "title", "description", "image", "thumbnail", "author", "authorImage", "footer", "footerImage", "color", "timestamp", "url", "json", "done", "xcancel"]
 
-        const msg = await message.channel.send({embeds: [infoEmbed]})
+        const msg = await message.reply({embeds: [infoEmbed]})
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
         const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("info") && user.bot === false

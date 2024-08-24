@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,8 +22,28 @@ export default class Distortion extends Command {
             `,
             aliases: ["overdrive"],
             guildOnly: true,
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        const color2Option = new SlashCommandStringOption()
+            .setName("color2")
+            .setDescription("Color of the effect in the dl subcommand.")
+
+        const colorOption = new SlashCommandStringOption()
+            .setName("color")
+            .setDescription("Color of the effect or gain in the dl subcommand.")
+
+        const gainOption = new SlashCommandStringOption()
+            .setName("gain")
+            .setDescription("Gain of the effect or dl to apply to an attachment.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(gainOption)
+            .addStringOption(colorOption)
+            .addStringOption(color2Option)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

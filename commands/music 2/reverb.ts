@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -24,8 +24,48 @@ export default class Reverb extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 5
+            cooldown: 5,
+            slashEnabled: true
         })
+        const wet2GainOption = new SlashCommandStringOption()
+            .setName("wet-gain2")
+            .setDescription("Wet gain of the effect in the dl subcommand.")
+
+        const wetGainOption = new SlashCommandStringOption()
+            .setName("wet-gain")
+            .setDescription("Wet gain of the effect or pre-delay in the dl subcommand.")
+
+        const predelayOption = new SlashCommandStringOption()
+            .setName("pre-delay")
+            .setDescription("Predelay of the effect or stereo in the dl subcommand.")
+
+        const stereoOption = new SlashCommandStringOption()
+            .setName("stereo")
+            .setDescription("Stereo of the effect or room in the dl subcommand.")
+
+        const roomOption = new SlashCommandStringOption()
+            .setName("room")
+            .setDescription("Room of the effect or damping in the dl subcommand.")
+
+        const dampingOption = new SlashCommandStringOption()
+            .setName("damping")
+            .setDescription("Damping of the effect or amount in the dl subcommand.")
+
+        const amountOption = new SlashCommandStringOption()
+            .setName("amount")
+            .setDescription("Amount of the effect or dl to apply to an attachment.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(amountOption)
+            .addStringOption(dampingOption)
+            .addStringOption(roomOption)
+            .addStringOption(stereoOption)
+            .addStringOption(predelayOption)
+            .addStringOption(wetGainOption)
+            .addStringOption(wet2GainOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

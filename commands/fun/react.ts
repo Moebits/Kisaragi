@@ -1,7 +1,5 @@
-import {GuildEmoji, Message} from "discord.js"
+import {GuildEmoji, Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class React extends Command {
@@ -20,8 +18,34 @@ export default class React extends Command {
             \`=>react raphiOMG\`
             `,
             aliases: ["reaction"],
-            cooldown: 5
+            cooldown: 5,
+            slashEnabled: true
         })
+        const fourthOption = new SlashCommandStringOption()
+            .setName("emoji4")
+            .setDescription("This is the emoji for the dev/global msg subcommand.")
+
+        const thirdOption = new SlashCommandStringOption()
+            .setName("emoji3")
+            .setDescription("This can be an emoji or dev/global for the msg subcommand.")
+
+        const secondOption = new SlashCommandStringOption()
+            .setName("emoji2")
+            .setDescription("This can be an emoji or message id for the msg subcommand.")
+
+        const firstOption = new SlashCommandStringOption()
+            .setName("emoji")
+            .setDescription("This can be an emoji or dev/global/msg for additional subcommands.")
+            .setRequired(true)
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(firstOption)
+            .addStringOption(secondOption)
+            .addStringOption(thirdOption)
+            .addStringOption(fourthOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

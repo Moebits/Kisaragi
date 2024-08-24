@@ -33,8 +33,7 @@ export default class Ping extends Command {
 
         const pingEmbed = embeds.createEmbed()
 
-        // @ts-ignore
-        const msg = await message.reply({fetchReply: true, embeds: [pingEmbed
+        const msg = await message.reply({embeds: [pingEmbed
         .setDescription("Ping?")]}) as Message
         msg.edit({embeds: [pingEmbed
         .setTitle(`**Ping** ${discord.getEmoji("kannaHungry")}`)
