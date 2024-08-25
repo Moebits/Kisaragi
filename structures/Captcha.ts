@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import * as fs from "fs"
+import fs from "fs"
 import path from "path"
 import svgCaptcha from "svg-captcha"
 import {Embeds} from "./Embeds"

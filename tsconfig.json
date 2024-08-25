@@ -13,6 +13,7 @@
 		"emitDecoratorMetadata": true,
 		"noUnusedLocals": false,
 		"noImplicitAny": false,
+		"noImplicitThis": false,
 		"strictNullChecks": true,
 		"skipLibCheck": true,
 		"strict": true

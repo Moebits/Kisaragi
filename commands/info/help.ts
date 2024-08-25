@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import fs from "fs"
 import path from "path"
 import * as config from "../../config.json"
@@ -26,8 +26,18 @@ export default class Help extends Command {
             \`=>help !website 2\`
             `,
             aliases: ["h"],
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        const commandOption = new SlashCommandStringOption()
+            .setName("command")
+            .setDescription("This can be dm, a specific command, or !category to retrieve a category.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(commandOption)
+            .toJSON()
     }
 
     public emojiMap: any = {

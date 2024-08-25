@@ -1,5 +1,4 @@
 import {Message} from "discord.js"
-import path from "path"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Captcha} from "./../../structures/Captcha"

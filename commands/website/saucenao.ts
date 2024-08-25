@@ -66,7 +66,6 @@ export default class Saucenao extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const sagiri = Sagiri(process.env.SAUCENAO_API_KEY!)
         let image: string | undefined | null
         let author: User | undefined | null

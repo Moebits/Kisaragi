@@ -47,7 +47,6 @@ export default class Reddit extends Command {
             const post = await reddit.getSubmission(postIDS[i]).fetch() as snoowrap.Submission
             if (imagesOnly && post.selftext) continue
             if (post.over_18) {
-                if (discord.checkMuted(this.message)) return [] as any
                 if (!this.perms.checkNSFW(true)) continue
             }
             const commentArray: string[] = []

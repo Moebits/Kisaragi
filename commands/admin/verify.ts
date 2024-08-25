@@ -103,7 +103,6 @@ export default class Verify extends Command {
             })
 
         }
-
         sendCaptcha(captcha, text)
     }
 }

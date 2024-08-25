@@ -30,7 +30,6 @@ export default class Status extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const token = await sql.fetchColumn("oauth2", "twitter token", "user id", message.author.id)
         if (!token) return message.reply(`You need to give me read and writing permissions over your twitter account. See the **twitteroauth** command.`)
         const secret = await sql.fetchColumn("oauth2", "twitter secret", "user id", message.author.id)

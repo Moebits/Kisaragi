@@ -38,7 +38,6 @@ export default class Mal extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const mal = new Jikan()
 
         if (args[1]?.match(/myanimelist.net/)) {

@@ -1,11 +1,11 @@
 import {Collection, Emoji, GuildEmoji, Message, AttachmentBuilder, MessageCollector, EmbedBuilder, APIEmbedThumbnail, MessageReaction, ReactionEmoji, TextChannel, User} from "discord.js"
-import fs from "fs"
-import path from "path"
 import {CommandFunctions} from "./CommandFunctions"
 import {Functions} from "./Functions"
 import {Images} from "./Images"
 import {Kisaragi} from "./Kisaragi.js"
 import {SQLQuery} from "./SQLQuery"
+import fs from "fs"
+import path from "path"
 
 const colors = new Collection()
 

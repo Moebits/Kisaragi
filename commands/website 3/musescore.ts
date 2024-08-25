@@ -30,7 +30,6 @@ export default class Musescore extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const text = Functions.combineArgs(args, 1)
         const html = await axios.get(`https://musescore.com/sheetmusic?text=${text}`, {headers: this.headers}).then((r) => r.data)
         const json = JSON.parse(Functions.decodeEntities(html.match(/(?<=<div class="js-store" data-content=")(.*?)(?=")/gm)?.[0]))

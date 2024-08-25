@@ -33,7 +33,6 @@ export default class SpotifyCommand extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const spotify = new Spotify({
             id: process.env.SPOTIFY_CLIENT_ID,

@@ -52,11 +52,7 @@ export default class Konachan extends Command {
             if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags) tags = ["pantyhose"]
-            if (discord.checkMuted(message)) {
-                tags.push("rating:safe")
-            } else {
-                tags.push("-rating:safe")
-            }
+            tags.push("-rating:safe")
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
             if (!tags) tags = ["pantyhose"]
@@ -90,7 +86,6 @@ export default class Konachan extends Command {
             const img = images[i]
             if (img.rating !== "s") {
                 if (!perms.checkNSFW(true)) continue
-                if (discord.checkMuted(message)) continue
             }
             const konachanEmbed = embeds.createEmbed()
             .setTitle(`**Konachan Image** ${discord.getEmoji("gabLewd")}`)

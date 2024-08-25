@@ -8,7 +8,17 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Flush extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Flushes all redis keys.",
+            description: "Flushes cached data.",
+            help:
+            `
+            \`flush\` - Flushes the redis keys.
+            \`flush embed\` - Flushes the cached embeds.
+            \`flush pixiv\` - Flushes the pixiv embeds.
+            `,
+            examples:
+            `
+            \`=>flush\`
+            `,
             aliases: [],
             cooldown: 3
         })
@@ -21,12 +31,20 @@ export default class Flush extends Command {
         const embeds = new Embeds(discord, message)
         if (!perms.checkBotDev()) return
         const flushEmbed = embeds.createEmbed()
-
-        await SQLQuery.flushDB()
+        let desc = ""
+        if (args[1] === "embed") {
+            await SQLQuery.purgeTable("collectors")
+            desc = "Cached embeds were deleted!"
+        } else if (args[1] === "pixiv") {
+            await SQLQuery.purgeTable("pixiv")
+            desc = "Pixiv embeds were deleted!"
+        } else {
+            await SQLQuery.flushDB()
+            desc = "All redis keys were flushed!"
+        }
         flushEmbed
         .setTitle(`**Flush** ${discord.getEmoji("gabStare")}`)
-        .setDescription("The database was **flushed**!")
+        .setDescription(desc)
         message.channel.send({embeds: [flushEmbed]})
-
     }
 }

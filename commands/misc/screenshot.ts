@@ -1,11 +1,12 @@
-import axios from "axios"
-import {Message} from "discord.js"
-import * as config from "../../config.json"
+import {Message, AttachmentBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
+import captureWebsite from "capture-website"
+import path from "path"
+import fs from "fs"
 
 export default class Screenshot extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -23,8 +24,22 @@ export default class Screenshot extends Command {
             `,
           aliases: ["screencap"],
           cooldown: 15,
-          nsfw: true
+          slashEnabled: true
         })
+        const url2Option = new SlashCommandStringOption()
+          .setName("url2")
+          .setDescription("The url to screencap if you specified mobile.")
+
+        const urlOption = new SlashCommandStringOption()
+          .setName("url")
+          .setDescription("The url to screencap or mobile for a mobile screenshot.")
+
+        this.slash = new SlashCommandBuilder()
+          .setName(this.constructor.name.toLowerCase())
+          .setDescription(this.options.description)
+          .addStringOption(urlOption)
+          .addStringOption(url2Option)
+          .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -41,18 +56,34 @@ export default class Screenshot extends Command {
           input = input.replace("mobile", "").trim()
         }
         const website = (input.startsWith("http")) ? input.trim() : `https://${input.trim()}`
-        let url = `${config.imagesAPI}/screenshot?links=${website}`
-        if (setMobile) url += `&mobile=1`
 
-        const link = await axios.get(url).then((r) => r.data?.[0])
-        if (!link) return message.reply("Could not find this webpage!")
-        if (args[1] === "return") return link
+        const options = {
+          darkMode: true, delay: 1, launchOptions: {args: ['--no-sandbox', '--disable-setuid-sandbox']}, overwrite: true,
+          width: 1280, height: 720, userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
+        } as any
+        if (setMobile) options.emulateDevice = "iPhone XR"
+        //if (setFullPage) options.fullPage = true
 
+        let dest = path.join(__dirname, `../../misc/images/dump/screenshot.png`)
+        let i = 0
+        while (fs.existsSync(dest)) {
+            dest = path.join(__dirname, `../../misc/images/dump/screenshot${i}.png`)
+            i++
+        }
+
+        try {
+          await captureWebsite.file(website, dest, options)
+        } catch (err) {
+          console.log(err)
+          return message.reply("Could not find this webpage!")
+        }
+        const attachment = new AttachmentBuilder(fs.readFileSync(dest)) as any
+
+        if (args[1] === "return") return attachment
         const screenEmbed = embeds.createEmbed()
         screenEmbed
         .setAuthor({name: "google chrome", iconURL: "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png"})
         .setTitle(`**Website Screenshot** ${discord.getEmoji("KannaXD")}`)
-        .setImage(link)
-        message.channel.send({embeds: [screenEmbed]})
+        message.channel.send({embeds: [screenEmbed], files: [attachment]})
   }
 }

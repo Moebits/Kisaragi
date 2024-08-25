@@ -1,9 +1,11 @@
 import axios from "axios"
 import {Message, AttachmentBuilder} from "discord.js"
-import * as config from "../../config.json"
+import config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import jimp from "jimp"
+import {sharpen} from "animedetect"
 
 export default class Sharpen extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -43,8 +45,9 @@ export default class Sharpen extends Command {
         }
         if (!url) url = await discord.fetchLastAttachment(message)
         if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
-        const link = await axios.get(`${config.openCVAPI}/sharpen?link=${url}&amount=${amount}&sigma=${sigma}`).then((r) => r.data)
-        const attachment = new AttachmentBuilder(link)
+        const sharpened = await sharpen(url, {amount, sigma})
+        const buffer = await sharpened.getBufferAsync(jimp.MIME_PNG)
+        const attachment = new AttachmentBuilder(buffer)
         await message.reply({content: `Sharpened the image with an amount of **${amount}** and sigma of **${sigma}**!`, files: [attachment]})
         return
     }

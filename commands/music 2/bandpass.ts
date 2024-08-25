@@ -26,7 +26,7 @@ export default class Bandpass extends Command {
             slashEnabled: true
         })
         const width2Option = new SlashCommandStringOption()
-            .setName("width")
+            .setName("width2")
             .setDescription("Width of the filter in the dl subcommand.")
 
         const widthOption = new SlashCommandStringOption()

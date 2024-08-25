@@ -9,7 +9,8 @@ export class Cooldown {
     }
 
     /** Cooldown for guilds and dms. */
-    public cmdCooldown = (cmd: string, cooldown: number, cooldowns: Collection<string, Collection<string, number>>) => {
+    public cmdCooldown = (cmd: string, cooldown: number, overwriteCooldowns?: Collection<string, Collection<string, number>>) => {
+        let cooldowns = overwriteCooldowns ? overwriteCooldowns : this.discord.cooldowns
         if (!cooldowns.has(cmd)) {
             cooldowns.set(cmd, new Collection())
         }

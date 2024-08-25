@@ -21,9 +21,9 @@ export default class Ping extends Command {
           slashEnabled: true
         })
         this.slash = new SlashCommandBuilder()
-        .setName(this.constructor.name.toLowerCase())
-        .setDescription(this.options.description)
-        .toJSON()
+          .setName(this.constructor.name.toLowerCase())
+          .setDescription(this.options.description)
+          .toJSON()
     }
 
     public run = async (args: string[]) => {

@@ -34,7 +34,6 @@ export default class YtMp3 extends Command {
         const video = new Video(discord, message)
         const cmd = new CommandFunctions(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         if (!args[1]) return message.reply(`What video do you want to download ${discord.getEmoji("kannaCurious")}`)
         if (args[1].toLowerCase() === "mp3") {
             return cmd.runCommand(message, ["youtube", "download", "mp3", Functions.combineArgs(args, 2)])

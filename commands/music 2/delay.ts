@@ -27,11 +27,11 @@ export default class Delay extends Command {
             slashEnabled: true
         })
         const delay2Option = new SlashCommandStringOption()
-            .setName("delay pairs 2")
+            .setName("delaypairs2")
             .setDescription("Add delay and decay pairs in the dl subcommand.")
 
         const delayOption = new SlashCommandStringOption()
-            .setName("delay pairs")
+            .setName("delaypairs")
             .setDescription("Add an even amount of delay and decay pairs separated by space, or dl to apply to an attachment.")
 
         this.slash = new SlashCommandBuilder()

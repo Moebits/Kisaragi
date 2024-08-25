@@ -1,6 +1,5 @@
 import axios from "axios"
 import Canvas from "@napi-rs/canvas"
-import {v2 as cloudinary} from "cloudinary"
 import concat from "concat-stream"
 import {DMChannel, GuildMember, Message, AttachmentBuilder, GuildTextBasedChannel, PartialDMChannel} from "discord.js"
 import FormData from "form-data"
@@ -14,8 +13,9 @@ import querystring from "querystring"
 import request from "request"
 import stream from "stream"
 import Twitter from "twitter"
-import unzip from "unzip"
+import unzip from "unzipper"
 import config from "../config.json"
+import {Catbox, Litterbox} from "node-catbox"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi.js"
 
@@ -88,7 +88,7 @@ export class Images {
     /** Downloads and extracts a zip file. */
     public downloadZip = async (url: string, path: string) => {
         return new Promise<void>((resolve) => {
-            const writeStream = request({url, headers: this.headers}).pipe(unzip.Extract({path}))
+            const writeStream = request({url, headers: this.headers}).pipe(unzip.Extract({path}) as any)
             writeStream.on("finish", () => {
                 resolve()
             })
@@ -318,50 +318,6 @@ export class Images {
         }
     }
 
-    /** Uploads to file.io */
-    public fileIOUpload = async (file: string) => {
-        const fd = new FormData()
-        let res: any
-        await new Promise<void>((resolve) => {
-            fd.append("file", fs.createReadStream(file))
-            fd.pipe(concat({encoding: "buffer"}, async (data: any) => {
-                const result = await axios.post("https://file.io/?expires=1w", data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)
-                res = result.link
-                resolve()
-            }) as unknown as NodeJS.WritableStream)
-        })
-        return res
-    }
-
-    /** Uploads to cloudinary */
-    public cloudUpload = async (file: string, folder: string) => {
-        cloudinary.config({
-            cloud_name: "kisaragi" ,
-            api_key: process.env.CLOUDINARY_API_KEY,
-            api_secret: process.env.CLOUDINARY_API_SECRET
-        })
-        const link = await cloudinary.uploader.upload(file, {folder})
-        return {link: link.url, publicID: link.public_id}
-    }
-
-    /** Deletes files from cloudinary in a queue */
-    public cloudDelete = async (publicIDs: string[]) => {
-        cloudinary.config({
-            cloud_name: "kisaragi" ,
-            api_key: process.env.CLOUDINARY_API_KEY,
-            api_secret: process.env.CLOUDINARY_API_SECRET
-        })
-        if (publicIDs.length > 20) {
-            const deletionQueue: string[] = []
-            do {
-                const popped = publicIDs.shift()
-                if (!popped) break
-                deletionQueue.push(popped)
-            } while (publicIDs.length > 10)
-            await cloudinary.api.delete_resources(deletionQueue)
-        }
-    }
-
     /** Deletes local files in a queue */
     public queuedDelete = async (files: string[]) => {
         if (files.length > 20) {
@@ -384,29 +340,33 @@ export class Images {
         return 0
     }
 
-    /** Uploads files to my api */
-    public upload = async <T extends string | string[]>(files: T): Promise<T extends string ? string : string[]> => {
+    /** Uploads files to catbox.moe and returns the link. */
+    public upload = async <T extends string | string[]>(files: T, persist?: boolean): Promise<T extends string ? string : string[]> => {
+        const catbox = new Catbox(process.env.CATBOX_HASH)
+        const litterbox = new Litterbox()
         let isString = false
         if (!Array.isArray(files)) {
             files = [files] as any
             isString = true
         }
         let links: string[] = []
-        const url = `${config.imagesAPI}/upload`
         for (let i = 0; i < files.length; i++) {
             if (files[i].includes("http")) {
-                const result = await axios.post(url, {images: files[i]}).then((r: any) => r.data)
+                let result = ""
+                if (persist) {
+                    result = await catbox.uploadURL({url: files[i]})
+                } else {
+                    result = await litterbox.upload({path: files[i], duration: "72h"})
+                }
                 links.push(result)
             } else {
-                const fd = new FormData()
-                await new Promise<void>((resolve) => {
-                    fd.append("images", fs.createReadStream(files[i]))
-                    fd.pipe(concat({encoding: "buffer"}, async (data: any) => {
-                        const result = await axios.post(url, data, {headers: fd.getHeaders(), maxContentLength: Infinity}).then((r: any) => r.data)
-                        links.push(result)
-                        resolve()
-                    }) as unknown as NodeJS.WritableStream)
-                })
+                let result = ""
+                if (persist) {
+                    result = await catbox.uploadFile({path: files[i]})
+                } else {
+                    result = await litterbox.upload({path: files[i], duration: "72h"})
+                }
+                links.push(result)
             }
         }
         links = links.flat(Infinity)

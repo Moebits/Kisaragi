@@ -31,7 +31,6 @@ export default class Twitch extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const trello = new Trello({key: process.env.TRELLO_API_KEY!, token: process.env.TRELLO_TOKEN!})
         const query = Functions.combineArgs(args, 1)

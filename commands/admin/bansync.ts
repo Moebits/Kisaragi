@@ -59,7 +59,6 @@ export default class BanSync extends Command {
                 if (!currList.includes(b)) {
                     await message.guild?.members.ban(b)
                     await Functions.timeout(100)
-                    if (discord.checkMuted(message)) await Functions.timeout(1000)
                 }
             }))
             if (perfect) {
@@ -67,7 +66,6 @@ export default class BanSync extends Command {
                     if (!banList.includes(c)) {
                         await message.guild?.members.unban(c)
                         await Functions.timeout(100)
-                        if (discord.checkMuted(message)) await Functions.timeout(1000)
                     }
                 }))
             }

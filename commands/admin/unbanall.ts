@@ -40,7 +40,6 @@ export default class UnbanAll extends Command {
             try {
                 await message.guild?.members.unban(banList[i], "Unbanning all members")
                 await Functions.timeout(100)
-                if (discord.checkMuted(message)) await Functions.timeout(1000)
             } catch {
                 continue
             }

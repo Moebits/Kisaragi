@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
-export default class Tremolo extends Command {
+export default class Compress extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Applies compression to an audio file (reduces dynamic range).",

@@ -1,10 +1,11 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import fs from "fs"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Permission} from "./../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import path from "path"
 
 export default class Random extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -20,13 +21,17 @@ export default class Random extends Command {
             `,
             aliases: ["r", "rc", "rand", "randomcommand"],
             cooldown: 10,
-            nsfw: true
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
-    public specificCommand = async (cmd: CommandFunctions, name: string) => {
+    public specificCommand = async (cmd: CommandFunctions, command: Command, name: string) => {
         const args: string[] = [name]
-        await cmd.runCommand(this.message, args)
+        await cmd.runCommandClass(command, this.message, args)
     }
 
     public randString = () => {
@@ -55,10 +60,10 @@ export default class Random extends Command {
         const perms = new Permission(discord, message)
 
         const commandArray: string[] = []
-        const pathArray: string[] = []
-        const subDir = fs.readdirSync("./commands")
+        const classArray: Command[] = []
+        const subDir = fs.readdirSync(path.join(__dirname, "../../commands"))
         for (let i = 0; i < subDir.length; i++) {
-            const commands = fs.readdirSync(`./commands/${subDir[i]}`)
+            const commands = fs.readdirSync(path.join(__dirname, `../../commands/${subDir[i]}`))
             for (let j = 0; j < commands.length; j++) {
                 commands[j] = commands[j].slice(0, -3)
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
@@ -66,22 +71,22 @@ export default class Random extends Command {
                 if (!cmdClass.options.random || cmdClass.options.random === "ignore") continue
                 if (cmdClass.options.unlist) continue
                 if (cmdClass.options.nsfw) if (!perms.checkNSFW(true)) continue
-                pathArray.push(`${subDir[i]}/${commands[j]}`)
+                classArray.push(cmdClass)
                 commandArray.push(commands[j])
             }
         }
-        const random = Math.floor(Math.random()*pathArray.length)
-        const command = new (require(`../${pathArray[random]}`).default)(this.discord, this.message) as Command
+        const random = Math.floor(Math.random()*classArray.length)
         const name = commandArray[random]
+        const command = classArray[random]
         switch (command.options.random) {
             case "none":
-                await cmd.runCommand(message, [name])
+                await cmd.runCommandClass(command, message, [name])
                 break
             case "string":
-                await cmd.runCommand(message, [name, this.randString()])
+                await cmd.runCommandClass(command, message, [name, this.randString()])
                 break
             case "specific":
-                await this.specificCommand(cmd, name)
+                await this.specificCommand(cmd, command, name)
                 break
             default:
         }

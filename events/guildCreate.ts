@@ -80,7 +80,7 @@ export default class GuildCreate {
             guildChannel.send({embeds: [logEmbed]})
             return
         }
-        if (config.testing === "off") logGuild(guild)
+        logGuild(guild)
 
         const joinMessage = async () => {
             const msg = mainChannel.lastMessage

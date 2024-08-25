@@ -16,11 +16,10 @@
     "redditRedirect": "https://kisaragi-discord-bot.herokuapp.com/reddit",
     "repo": "https://github.com/Moebits/Kisaragi",
     "animePictures": "https://kisaragi.moe/assets/waifu",
-    "imagesAPI": "https://moebits-images.herokuapp.com",
-    "openCVAPI": "https://moebits-opencv.herokuapp.com",
     "kisaragiAPI": "https://kisaragi-discord-bot.herokuapp.com",
     "guildLog": "683760526840692761",
     "feedback": "683756932317577232",
     "trello": "https://trello.com/b/ToodAuzu",
-    "testing": "off"
+    "redis": false,
+    "testing": false
 }

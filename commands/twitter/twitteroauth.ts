@@ -43,7 +43,7 @@ export default class TwitterOauth extends Command {
             return message.channel.send({embeds: [oauth2Embed]})
         }
 
-        const callback = config.testing === "on" ? config.twitterRedirectTesting : config.twitterRedirect
+        const callback = config.testing ? config.twitterRedirectTesting : config.twitterRedirect
         const oauth = new OAuth(
             "https://api.twitter.com/oauth/request_token",
             "https://api.twitter.com/oauth/access_token",

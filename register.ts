@@ -1,5 +1,6 @@
 import "dotenv/config"
 import {REST, Routes} from "discord.js"
+
 import {Logger} from "./structures/Logger"
 import fs from "fs"
 import path from "path"
@@ -13,6 +14,7 @@ let slashCommands = [] as any
 
 const register = async () => {
     const subDirectory = fs.readdirSync(path.join(__dirname, "./commands/"))
+
     for (let i = 0; i < subDirectory.length; i++) {
         const currDir = subDirectory[i]
         const addFiles = fs.readdirSync(path.join(__dirname, `./commands/${currDir}`))
@@ -22,6 +24,7 @@ const register = async () => {
             const p = `../commands/${currDir}/${file}`
             const commandName = file.split(".")[0]
             if (commandName === "empty" || commandName === "tempCodeRunnerFile") return
+            
             const command = new (require(path.join(__dirname, `./commands/${currDir}/${file}`)).default)(new Dummy(), null)
 
             if (command.options.slashEnabled) {

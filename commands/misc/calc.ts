@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import * as math from "mathjs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -18,8 +18,18 @@ export default class Calc extends Command {
             \`=>calc sin(1)\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: true
         })
+        const expressionOption = new SlashCommandStringOption()
+            .setName("expression")
+            .setDescription("Math expression to evaluate.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(expressionOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -37,7 +47,7 @@ export default class Calc extends Command {
         calcEmbed
         .setTitle(`**Math Calculation** ${discord.getEmoji("vigneDead")}`)
         .setDescription(result)
-        return message.channel.send({embeds: [calcEmbed]})
+        return message.reply({embeds: [calcEmbed]})
 
     }
 }

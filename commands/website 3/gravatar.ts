@@ -31,7 +31,6 @@ export default class FlickrCommand extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const email = args[1]
         if (!email) return message.reply(`You must provide an email address ${discord.getEmoji("kannaCurious")}`)
         if (message.channel instanceof TextChannel) await message.channel.bulkDelete(2)

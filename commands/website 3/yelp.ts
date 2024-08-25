@@ -30,7 +30,6 @@ export default class Yelp extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const text = Functions.combineArgs(args, 1)
         const location = text?.match(/(?<=\[)(.*?)(?=\])/)?.[0] ?? "New York City"
         const term = text?.replace(/(\[)(.*?)(\])/, "").trim() ?? ""

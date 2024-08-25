@@ -28,7 +28,6 @@ export default class GooglePlay extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const term = Functions.combineArgs(args, 1).trim()
 
         if (!term) {

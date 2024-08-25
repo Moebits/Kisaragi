@@ -43,9 +43,9 @@ export default class Say extends Command {
 
         if (message instanceof Message) {
             await message.channel.send({content: Functions.checkChar(rawText, 2000, "."), allowedMentions: {parse: []}})
+            if (message.content?.startsWith(prefix)) await message.delete().catch(() => null)
         } else {
             await (message as any).reply({content: Functions.checkChar(rawText, 2000, "."), allowedMentions: {parse: []}})
         }
-        if (message.content.startsWith(prefix)) await message.delete().catch(() => null)
     }
 }

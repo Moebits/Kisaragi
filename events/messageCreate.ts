@@ -24,7 +24,6 @@ const globalChatCool = new Set()
 const pointCool = new Collection() as Collection<string, Set<string>>
 
 export default class MessageCreate {
-    private readonly cooldowns: Collection<string, Collection<string, number>> = new Collection()
     constructor(private readonly discord: Kisaragi) {}
 
     public run = async (message: Message) => {
@@ -201,13 +200,13 @@ export default class MessageCreate {
         let setEmbed = false
         if ((message.channel as TextChannel).permissionsFor(message.guild.members.me!)?.has(["EmbedLinks"])) setEmbed = true
         const permMessage =
-          `Sorry, but the bot is missing permissions that break or prevent the execution of most commands, if not all of them.${setEmbed ? "" : " " + this.discord.getEmoji("kannaFacepalm").toString()}\n` +
-          `\`Send Messages\` - Um... everything? If you can see this message, the bot has this one at least.\n` +
+          `Sorry, but the bot is missing permissions that break or prevent the execution of most commands.${setEmbed ? "" : " " + this.discord.getEmoji("kannaFacepalm").toString()}\n` +
+          `\`Send Messages\` - Needed for... everything? If you can see this message, the bot has this one at least.\n` +
           `\`Use External Emojis\` - Needed to post and react with custom emojis.\n` +
           `\`Embed Links\` - Needed to post message embeds.\n` +
-          `\`Add Reactions + Read Message History\` - Needed to add reactions to the bots own messages.\n` +
-          `\`Attach Files\` - Needed to upload local files, specifically images.\n` +
-          `**Please give the bot sufficient permissions.**`
+          `\`Add Reactions + Read Message History\` - Needed to add reactions messages.\n` +
+          `\`Attach Files\` - Needed to upload attachments.\n` +
+          `Please give the bot sufficient permissions.`
         const permEmbed = embeds.createEmbed()
         permEmbed
         .setTitle(`**Missing Permissions** ${this.discord.getEmoji("kannaFacepalm")}`)
@@ -222,9 +221,9 @@ export default class MessageCreate {
         return message.reply(`Sorry, commands in the category **${category}** were disabled on this server. ${this.discord.getEmoji("mexShrug")}`)
       }
 
-      const cooldown = new Cooldown(this.discord, message)
       sql.usageStatistics(pathFind)
-      const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown, this.cooldowns)
+      const cooldown = new Cooldown(this.discord, message)
+      const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown)
       if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return message.reply({embeds: [onCooldown]})
       if (cmdPath.options.unlist && message.author.id !== process.env.OWNER_ID) return message.reply(`Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
 

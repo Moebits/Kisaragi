@@ -1,10 +1,10 @@
 import {Collection, Message, TextChannel, ChannelType} from "discord.js"
-import fs from "fs"
-import path from "path"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 import {Command} from "./Command"
+import fs from "fs"
+import path from "path"
 
 const noCmdCool = new Set()
 

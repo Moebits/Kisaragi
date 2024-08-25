@@ -1,21 +1,23 @@
 import axios from "axios"
-import {MessagePayload, ChannelType, Client, ClientOptions, Guild, GuildChannel, GuildBasedChannel, GuildEmoji, Message, MessageTarget, Role, TextChannel, User, PartialMessage} from "discord.js"
+import {MessagePayload, ChannelType, Client, ClientOptions, Guild, Collection, GuildBasedChannel, GuildEmoji, Message, MessageTarget, Role, TextChannel, User, PartialMessage} from "discord.js"
 import fs from "fs"
 import path from "path"
 import querystring from "querystring"
-import * as muted from "../assets/json/muted.json"
+import muted from "../assets/json/muted.json"
 import {Command} from "../structures/Command"
-import * as config from "./../config.json"
+import config from "./../config.json"
 import {CommandFunctions} from "./CommandFunctions"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {SQLQuery} from "./SQLQuery"
 
 export class Kisaragi extends Client {
+    public readonly cooldowns: Collection<string, Collection<string, number>> = new Collection()
     public static username = "Kisaragi"
     public static pfp = "https://cdn.discordapp.com/avatars/593838271650332672/78ec2f4a3d4ab82a40791cb522cf36f5.png?size=2048"
     private starIndex = 0
     public muted = false
+    
     constructor(options: ClientOptions) {
         super(options)
     }
@@ -228,7 +230,7 @@ export class Kisaragi extends Client {
 
     /** Post guild count on bot lists */
     public postGuildCount = async () => {
-        if (config.testing === "on") return
+        if (config.testing) return
         const urls = [
             `https://discord.bots.gg/api/v1/bots/${this.user!.id}/stats`,
             `https://discordbotlist.com/api/v1/bots/${this.user!.id}/stats`,

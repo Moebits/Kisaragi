@@ -482,7 +482,7 @@ export class Functions {
 
     /** Re-subscribes to youtube notifications on bot restart */
     public static youtubeReSubscribe = async () => {
-        if (config.testing === "on") return
+        if (config.testing) return
         const yt: any[] = []
         const configs = await SQLQuery.selectColumn("yt", "config")
         if (!configs) return

@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
@@ -21,8 +21,17 @@ export default class Chain extends Command {
             `,
             aliases: [],
             cooldown: 200,
-            nsfw: true
+            slashEnabled: true
         })
+        const chainOption = new SlashCommandStringOption()
+            .setName("chain")
+            .setDescription("The commands to chain separated by \"&\".")
+            
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(chainOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

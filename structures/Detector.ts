@@ -5,9 +5,9 @@ import config from "../config.json"
 import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
+import {animedetect} from "animedetect"
 
 export class Detector {
-    private readonly openCVURL = `${config.openCVAPI}/animedetect?link=`
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
     public detectIgnore = async () => {
         const sql = new SQLQuery(this.message)
@@ -30,8 +30,8 @@ export class Detector {
         if (this.message.attachments.size) {
             const urls = this.message.attachments.map((a) => a.url)
             for (let i = 0; i < urls.length; i++) {
-                const data = await axios.get(`${this.openCVURL}${urls[i]}`).then((r) => r.data)
-                if (!data.numDetections.join("")) {
+                const result = await animedetect(urls[i])
+                if (!result) {
                     const reply = await this.message.reply("You can only post anime pictures!")
                     await this.message.delete()
                     setTimeout(() => reply.delete(), 10000)
@@ -51,8 +51,8 @@ export class Detector {
         const normie = await sql.fetchColumn("guilds", "normie") as unknown as string
         const weebRole = this.message.guild!.roles.cache.find((r: Role) => r.id === weeb)
         const normieRole = this.message.guild!.roles.cache.find((r: Role) => r.id === normie)
-        const data = await axios.get(`${this.openCVURL}${member.user.displayAvatarURL({extension: "png"})}`).then((r) => r.data)
-        if (!data.numDetections.join("")) {
+        const result = await animedetect(member.user.displayAvatarURL({extension: "png"}))
+        if (!result) {
             const found = member!.roles.cache.find((r: Role) => r === normieRole)
             if (found) {
                 return

@@ -2,6 +2,7 @@ import {BaseInteraction, InteractionReplyOptions} from "discord.js"
 import {Kisaragi} from "../structures/Kisaragi"
 import {Command} from "../structures/Command"
 import {CommandFunctions} from "../structures/CommandFunctions"
+import {Cooldown} from "../structures/Cooldown"
 import fs from "fs"
 import path from "path"
 
@@ -22,21 +23,24 @@ export default class InteractionCreate {
                 if (commandName === interaction.commandName) {
                     const command = new (require(path.join(__dirname, `../commands/${subDir[i]}/${commands[j]}`)).default)(this.discord, interaction) as Command
                     if (!command.slash) return
-                    const args = [commandName, ...interaction.options.data.map((o) => o.value)] as string[]
 
-                    // Run the message based code with minimal changes
-                    // @ts-ignore
+                    const cooldown = new Cooldown(this.discord, interaction as any)
+                    const onCooldown = cooldown.cmdCooldown(commandName, command.options.cooldown)
+                    if (onCooldown && (interaction.user.id !== process.env.OWNER_ID)) return interaction.reply({embeds: [onCooldown]})
+
+                    // We override some properties to run message command based code with minimal changes
+                    // @ts-expect-error
                     interaction.author = interaction.user
 
-                    // @ts-ignore
+                    // @ts-expect-error
                     interaction.reply = ((originalReply) => {
                         return function (options: InteractionReplyOptions) {
                             if (typeof options === "string") options = {content: options}
-                            // @ts-ignore
                             return originalReply.call(this, {fetchReply: true, ...options})
                         }
                     })(interaction.reply)
 
+                    const args = [commandName, ...interaction.options.data.map((o) => o.value)] as string[]
                     await cmd.runCommandClass(command, interaction as any, args)
                 }
             }

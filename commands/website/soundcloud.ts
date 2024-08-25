@@ -46,7 +46,6 @@ export default class SoundCloud extends Command {
         const audio = new Audio(discord, message)
         const images = new Images(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         if (args[1]?.match(/soundcloud.com/)) {
             const matches = args[1].replace("www.", "").replace("https://soundcloud.com", "").match(/(?<=\/)(.*?)(?=$|\/)/g)

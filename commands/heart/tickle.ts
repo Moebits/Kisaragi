@@ -28,7 +28,6 @@ export default class Tickle extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const neko = new nekoClient()
 
         let user = message.author

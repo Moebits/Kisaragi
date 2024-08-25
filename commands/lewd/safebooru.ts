@@ -60,11 +60,7 @@ export default class Safebooru extends Command {
         } else if (args[1].toLowerCase() === "r18") {
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["pantyhose"]
-            if (discord.checkMuted(message)) {
-                tags.push("rating:safe")
-            } else {
-                tags.push("-rating:safe")
-            }
+            tags.push("-rating:safe")
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
             tags.push("rating:safe")

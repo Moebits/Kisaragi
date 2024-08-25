@@ -6,9 +6,9 @@ import path from "path"
 import * as config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
-import {Functions} from "../../structures/Functions"
 import {Images} from "../../structures/Images"
 import {Kisaragi} from "../../structures/Kisaragi"
+import animedetect from "animedetect"
 
 const procBlock = new Collection()
 
@@ -263,7 +263,7 @@ export default class Photoshop extends Command {
             }
             const image = await jimp.read(current)
             image.brightness(factor)
-            let newDest = path.join(__dirname, `../../images/${seed}_brightness`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_brightness`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -301,7 +301,7 @@ export default class Photoshop extends Command {
             }
             const image = await jimp.read(current)
             image.contrast(factor)
-            let newDest = path.join(__dirname, `../../images/${seed}_contrast`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_contrast`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -336,7 +336,7 @@ export default class Photoshop extends Command {
             }
             const image = await jimp.read(current)
             image.color([{apply: "hue" as any, params: [factor]}])
-            let newDest = path.join(__dirname, `../../images/${seed}_hue`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_hue`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -382,7 +382,7 @@ export default class Photoshop extends Command {
                 // @ts-ignore
                 image.color([{apply: "saturate", params: [factor]}])
             }
-            let newDest = path.join(__dirname, `../../images/${seed}_saturation`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_saturation`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -428,7 +428,7 @@ export default class Photoshop extends Command {
                 // @ts-ignore
                 image.color([{apply: "lighten", params: [factor]}])
             }
-            let newDest = path.join(__dirname, `../../images/${seed}_lightness`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_lightness`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -493,7 +493,7 @@ export default class Photoshop extends Command {
                     newObj.flip = "Horizontal and Vertical"
                 }
             }
-            let newDest = path.join(__dirname, `../../images/${seed}_flip`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_flip`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -529,7 +529,7 @@ export default class Photoshop extends Command {
             }
             const image = await jimp.read(current)
             image.color([{apply: "mix" as any, params: [color, opacity]}])
-            let newDest = path.join(__dirname, `../../images/${seed}_tint`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_tint`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -564,7 +564,7 @@ export default class Photoshop extends Command {
             }
             const image = await jimp.read(current)
             image.invert()
-            let newDest = path.join(__dirname, `../../images/${seed}_invert`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_invert`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -603,7 +603,7 @@ export default class Photoshop extends Command {
             const image = await jimp.read(current)
             const levels = Number(argArray[0]) ? Number(argArray[0]) : 2
             image.posterize(levels)
-            let newDest = path.join(__dirname, `../../images/${seed}_posterize`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_posterize`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -641,7 +641,7 @@ export default class Photoshop extends Command {
             const newObj = this.getObj()
             newObj.crop = `${x}x ${y}y ${width}w ${height}h`
             image.crop(x, y, width, height)
-            let newDest = path.join(__dirname, `../../images/${seed}_crop`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_crop`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -684,7 +684,7 @@ export default class Photoshop extends Command {
                 image.resize(width, height)
                 newObj.scale = `${width}w ${height}h`
             }
-            let newDest = path.join(__dirname, `../../images/${seed}_scale`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_scale`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -725,7 +725,7 @@ export default class Photoshop extends Command {
             }
             image.rotate(degrees)
             image.autocrop()
-            let newDest = path.join(__dirname, `../../images/${seed}_rotate`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_rotate`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -769,7 +769,7 @@ export default class Photoshop extends Command {
             }
             const newObj = this.getObj()
             newObj.blur += radius
-            let newDest = path.join(__dirname, `../../images/${seed}_blur`)
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_blur`)
             let i = 0
             while (fs.existsSync(`${newDest}.jpg`)) {
                 newDest = `${newDest}${i}`
@@ -803,8 +803,17 @@ export default class Photoshop extends Command {
             const sigma = Number(argArray[1]) ? Number(argArray[1]) : 1
             const newObj = this.getObj()
             newObj.sharpen += amount
-            const link = await axios.get(`${config.openCVAPI}/sharpen?link=${url}&amount=${amount}&sigma=${sigma}`).then((r) => r.data)
-            const newEmbed = await this.hsvEmbed(link, newObj)
+
+
+            let newDest = path.join(__dirname, `../../misc/images/dump/${seed}_sharp`)
+            let i = 0
+            while (fs.existsSync(`${newDest}.jpg`)) {
+                newDest = `${newDest}${i}`
+                i++
+            }
+            const sharp = await animedetect.sharpen(url!, {sigma, amount})
+            await sharp.writeAsync(`${newDest}.jpg`)
+            const newEmbed = await this.hsvEmbed(`${newDest}.jpg`, newObj)
             msg.edit({embeds: [newEmbed]})
             this.setProcBlock(true)
         })

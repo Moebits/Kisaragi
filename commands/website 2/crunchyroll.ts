@@ -92,7 +92,6 @@ export default class Crunchyroll extends Command {
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const query = Functions.combineArgs(args, 1).trim()
 
         if (!query) {

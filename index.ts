@@ -103,14 +103,14 @@ const start = async (): Promise<void> => {
     //const server = new Server()
     //server.run()
 
-    const token = config.testing === "off" ? process.env.TOKEN : process.env.TEST_TOKEN
+    const token = config.testing ? process.env.TEST_TOKEN : process.env.TOKEN
     await discord.login(token)
     discord.setPfp(discord.user!.displayAvatarURL({extension: "png"}))
     discord.setUsername(discord.user!.username)
 
     //Functions.pollTwitch(discord)
     //Functions.youtubeReSubscribe()
-    if (config.testing === "off") SQLQuery.redisSet("state", JSON.stringify([]))
+    SQLQuery.redisSet("state", JSON.stringify([]))
 }
 
 start()

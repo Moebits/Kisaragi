@@ -30,7 +30,6 @@ export default class Steam extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         let term = Functions.combineArgs(args, 1)
         if (!term) term = "anime"
         const data = await axios.get(`https://store.steampowered.com/api/storesearch/?term=${term}&l=english&cc=US`, {headers: this.headers}).then((r) => r.data)
