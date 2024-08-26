@@ -1,4 +1,4 @@
-import {Message, AttachmentBuilder} from "discord.js"
+import {Message, AttachmentBuilder, ChatInputCommandInteraction} from "discord.js"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -58,6 +58,11 @@ export default class HelpInfo extends Command {
             ${discord.getEmoji("star")}_Help:_ \n${Functions.multiTrim(command.help)}
             ${discord.getEmoji("star")}_Examples:_ \n${Functions.multiTrim(command.examples)}
         `))
-        message.channel.send({embeds: [helpInfoEmbed], files: attachments})
+        if (this.message instanceof ChatInputCommandInteraction) {
+            // @ts-ignore
+            await this.message.editReply({embeds: [helpInfoEmbed], files: attachments})
+        } else {
+            await this.message.channel.send({embeds: [helpInfoEmbed], files: attachments})
+        }
     }
 }

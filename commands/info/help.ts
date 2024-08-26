@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption, ChatInputCommandInteraction} from "discord.js"
 import fs from "fs"
 import path from "path"
 import * as config from "../../config.json"
@@ -127,6 +127,9 @@ export default class Help extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
+        // @ts-ignore
+        if (message instanceof ChatInputCommandInteraction) await message.deferReply()
+        
         const subDir = fs.readdirSync(path.join(__dirname, "../../commands"))
         const helpEmbedArray: EmbedBuilder[] = []
         if (args[1] && !args[1].startsWith("!") && args[1]?.toLowerCase() !== "dm" && args[1] !== "2") {
@@ -163,11 +166,17 @@ export default class Help extends Command {
                 .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
                 .setDescription(`_Reactions cannot be removed in dm's, so remove them yourself._`)
-                if (!discord.checkMuted(message)) dmEmbed.addFields([{name: `${discord.getEmoji("RaphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo})`}])
+                if (!discord.checkMuted(message)) dmEmbed.addFields([{name: `${discord.getEmoji("RaphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Source](${config.repo})`}])
                 dmEmbeds.push(dmEmbed)
             }
             embeds.createReactionEmbed(dmEmbeds, false, false, 1, message.author)
-            const rep = await message.reply(`Sent you the commands list! Make sure you have direct messages enabled, globally and server wide. ${discord.getEmoji("karenSugoi")}`)
+            let rep: Message
+            if (message instanceof ChatInputCommandInteraction) {
+                // @ts-ignore
+                rep = await message.editReply(`Sent you the commands list! Make sure you have direct messages enabled, globally and server wide. ${discord.getEmoji("karenSugoi")}`)
+            } else {
+                rep = await message.reply(`Sent you the commands list! Make sure you have direct messages enabled, globally and server wide. ${discord.getEmoji("karenSugoi")}`)
+            }
             if (args[2] === "delete") setTimeout(() => rep.delete(), 3000)
             return
         }
@@ -201,11 +210,16 @@ export default class Help extends Command {
                 `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` +
                 `To display only one category, use \`help !(category)\` ${discord.getEmoji("gabYes")}\n` +
                 `_Click on a reaction twice to toggle compact mode._\n` + help)
-            if (!discord.checkMuted(message)) helpEmbed.addFields([{name: `${discord.getEmoji("RaphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Github](${config.repo})`}])
+            if (!discord.checkMuted(message)) helpEmbed.addFields([{name: `${discord.getEmoji("RaphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Source](${config.repo})`}])
             helpEmbedArray.push(helpEmbed)
         }
         if (setIndex > -1) {
-            return message.channel.send({embeds: [helpEmbedArray[setIndex]]})
+            if (message instanceof ChatInputCommandInteraction) {
+                // @ts-ignore
+                return message.editReply({embeds: [helpEmbedArray[setIndex]]})
+            } else {
+                return message.channel.send({embeds: [helpEmbedArray[setIndex]]})
+            }
         } else {
             if (args[1] === "2") {
                 embeds.createHelpEmbed(helpEmbedArray, 2)

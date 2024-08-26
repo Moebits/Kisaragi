@@ -33,7 +33,7 @@ export class Kisaragi extends Client {
     }
 
     /** Get emojis (my servers) */
-    public getEmoji = (name: string): GuildEmoji => {
+    public getEmoji = (name: string, png?: boolean): GuildEmoji => {
         if (name === "star") {
             if (this.starIndex === 0) {
                 this.starIndex = 1
@@ -42,12 +42,12 @@ export class Kisaragi extends Client {
                 this.starIndex = 0
             }
         }
-        const emoji = this.emojis.cache.find((e) => (this.muted ? e.name === `${name}png` : e.name === name) && (e.guild.ownerId === process.env.OWNER_ID))
+        const emoji = this.emojis.cache.find((e) => (png ? e.name === `${name}png` : e.name === name) && (e.guild.ownerId === process.env.OWNER_ID))
         if (emoji) {
             return emoji as unknown as GuildEmoji
         } else {
             // Confused Anime
-            return this.muted ? "" as unknown as GuildEmoji : this.emojis.cache.get("579870079311937557") as unknown as GuildEmoji
+            return this.emojis.cache.get("579870079311937557") as unknown as GuildEmoji
         }
     }
 

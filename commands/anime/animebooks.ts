@@ -1,29 +1,40 @@
 import axios from "axios"
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
-export default class Books extends Command {
+export default class AnimeBooks extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Anime girls holding programming books.",
             help:
             `
-            \`books language\` - Searches for books in the language
+            \`animebooks\` - Get any books
+            \`animebooks language\` - Searches for books in the language
             `,
             examples:
             `
-            \`=>books\`
-            \`=>books javascript\`
-            \`=>books c\`
+            \`=>animebooks\`
+            \`=>animebooks javascript\`
+            \`=>animebooks c\`
             `,
-            aliases: ["book", "programmingbooks", "animegirlbooks", "animegirlsholdingbooks", "animegirlsholdingprogrammingbooks"],
+            aliases: ["books", "animegirlbooks", "animegirlsholdingprogrammingbooks"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        const languageOption = new SlashCommandStringOption()
+            .setName("language")
+            .setDescription("Specify a programming language.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(languageOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

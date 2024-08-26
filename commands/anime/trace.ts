@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -20,8 +20,18 @@ export default class Trace extends Command {
             `,
             aliases: ["animescene"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        const urlOption = new SlashCommandStringOption()
+            .setName("url")
+            .setDescription("Optional url to search for, or will use last posted image.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(urlOption)
+            .toJSON()
     }
 
     public getSeason = (season: string) => {

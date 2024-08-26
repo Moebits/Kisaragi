@@ -12,6 +12,7 @@
     "pm2": "pm2-runtime start ecosystem.config.js --env production",
     "post": "node dist/post.js",
     "register": "npm run build && cross-env REDIS=off node dist/register.js",
+    "generate": "npm run build && node dist/generate.js",
     "clean": "del-cli dist"
   },
   "engines": {

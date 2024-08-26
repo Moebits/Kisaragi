@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -29,8 +29,19 @@ export default class AnimeQuote extends Command {
             `,
             aliases: ["aq"],
             random: "none",
-            cooldown: 5
+            cooldown: 5,
+            slashEnabled: true
         })
+        const idOption = new SlashCommandStringOption()
+            .setName("id")
+            .setDescription("Can be a quote id, anime, or character.")
+            .setRequired(true)
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(idOption)
+            .toJSON()
     }
 
     public replaceQuery = (query: string) => {

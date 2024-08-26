@@ -21,8 +21,7 @@ export default class Add extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 10,
-            nsfw: true
+            cooldown: 10
         })
     }
 

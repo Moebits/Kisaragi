@@ -1,26 +1,22 @@
 import {Message} from "discord.js"
 import {Command} from "../../structures/Command"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
+import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Hi extends Command {
     constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
-            description: "Hi!",
+            description: "Hello world!",
             help:
             `
-            \`hi\` - Responds with hi.
-            \`hello\` - Responds with hello.
             \`helloworld\` - Responds with hello world.
             `,
             examples:
             `
-            \`=>hi\`
-            \`=>hello\`
             \`=>helloworld\`
             `,
-            aliases: ["hello", "helloworld"],
+            aliases: ["hello"],
             cooldown: 3
         })
     }

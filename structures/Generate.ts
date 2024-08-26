@@ -4,11 +4,16 @@ import path from "path"
 import {Functions} from "./Functions"
 import {Kisaragi} from "./Kisaragi"
 
+class Dummy {
+    constructor() {}
+    public getEmoji = () => null
+}
+
 export class Generate {
     constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     /*Generate Command JSON file*/
-    public generateJSON = () => {
+    public static generateJSON = () => {
         const commandArray: any = []
         const commandDir = path.join(__dirname, `../commands`)
         const subDir = fs.readdirSync(commandDir)
@@ -17,7 +22,7 @@ export class Generate {
             for (let j = 0; j < commands.length; j++) {
                 commands[j] = commands[j].slice(0, -3)
                 if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
-                const cmdClass = new (require(`../commands/${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
+                const cmdClass = new (require(`../commands/${subDir[i]}/${commands[j]}`).default)(new Dummy(), null)
                 if (cmdClass.options.unlist === true) continue
                 const commandObj: any = {}
                 commandObj.command = commands[j]
@@ -32,7 +37,7 @@ export class Generate {
             }
         }
         const json = JSON.stringify(commandArray, null, 4)
-        fs.writeFileSync(path.join(__dirname, `../assets/commands.json`), json)
+        fs.writeFileSync(path.join(__dirname, `../../assets/json/commands.json`), json)
         console.log("done")
     }
 

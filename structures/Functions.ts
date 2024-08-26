@@ -80,7 +80,7 @@ export class Functions {
     }
 
     // Format Date
-    public static formatDate = (inputDate: Date) => {
+    public static formatDate = (inputDate: Date | string) => {
         const monthNames = [
           "January", "February", "March",
           "April", "May", "June", "July",

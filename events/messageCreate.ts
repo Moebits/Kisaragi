@@ -54,8 +54,6 @@ export default class MessageCreate {
       if (message.author.bot) return
       if (await this.discord.blacklistStop(message)) return
 
-      // generate.generateJSON()
-
       if (!this.discord.checkMuted(message)) {
         if (message.guild) {
           const globalChat = await sql.fetchColumn("guilds", "global chat")

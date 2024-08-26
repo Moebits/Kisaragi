@@ -1,7 +1,6 @@
 import axios from "axios"
-import {Message, EmbedBuilder} from "discord.js"
-import nekoClient, {NekoRequestResults} from "nekos.life"
-import querystring from "querystring"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import nekoClient from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
 import {Embeds} from "./../../structures/Embeds"
@@ -29,8 +28,17 @@ export default class Neko extends Command {
             aliases: ["nekos", "catgirl", "catgirls"],
             random: "none",
             cooldown: 10,
-            nsfw: true
+            slashEnabled: true
         })
+        const tagOption = new SlashCommandStringOption()
+            .setName("tags")
+            .setDescription("Searches for images with the tags.")
+
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(tagOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -88,7 +96,7 @@ export default class Neko extends Command {
             nekoEmbeds.push(nekoEmbed)
         }
         if (nekoEmbeds.length === 1) {
-            message.channel.send({embeds: [nekoEmbeds[0]]})
+            message.reply({embeds: [nekoEmbeds[0]]})
         } else {
             embeds.createReactionEmbed(nekoEmbeds, true, true)
         }

@@ -1,4 +1,5 @@
-import {Collection, Emoji, GuildEmoji, Message, AttachmentBuilder, MessageCollector, EmbedBuilder, APIEmbedThumbnail, MessageReaction, ReactionEmoji, TextChannel, User} from "discord.js"
+import {Collection, Emoji, GuildEmoji, Message, AttachmentBuilder, MessageCollector, EmbedBuilder, 
+APIEmbedThumbnail, MessageReaction, ReactionEmoji, TextChannel, User, ChatInputCommandInteraction} from "discord.js"
 import {CommandFunctions} from "./CommandFunctions"
 import {Functions} from "./Functions"
 import {Images} from "./Images"
@@ -75,7 +76,7 @@ export class Embeds {
                 return this.message
             }
         } else {
-            msg = await this.message.channel.send({embeds: [embeds[page]]})
+            msg = await this.message.reply({embeds: [embeds[page]]})
         }
         for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
 
@@ -610,7 +611,13 @@ export class Embeds {
         const pages = [page1, page2]
         let pageIndex = 0
         if (reactionPage === 2) pageIndex = 1
-        const msg = await this.message.channel.send({embeds: [embeds[page]]})
+        let msg: Message
+        if (this.message instanceof ChatInputCommandInteraction) {
+            // @ts-ignore
+            msg = await this.message.editReply({embeds: [embeds[page]]})
+        } else {
+            msg = await this.message.channel.send({embeds: [embeds[page]]})
+        }
         await SQLQuery.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
         await this.sql.updateColumn("collectors", "collapse", true, "message", msg.id)

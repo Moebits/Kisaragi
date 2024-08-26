@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder} from "discord.js"
 import nekoClient, {NekoRequestResults} from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -20,8 +20,12 @@ export default class Kitsune extends Command {
             aliases: ["k", "foxgirl"],
             random: "none",
             cooldown: 10,
-            nsfw: true
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

@@ -1,4 +1,4 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandStringOption, ChatInputCommandInteraction} from "discord.js"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
@@ -41,12 +41,20 @@ export default class Chain extends Command {
         const embeds = new Embeds(discord, message)
         if (!args[1]) return this.noQuery(embeds.createEmbed())
 
+        const loading = message.channel.lastMessage
+        if (message instanceof Message) loading?.delete()
+
         const cmdArgs = args.join(" ").split("& ")
         if (cmdArgs.length > 5 && (message.author.id !== process.env.OWNER_ID)) return message.reply(`Chaining 5+ commands is restricted to the bot developer. ${discord.getEmoji("sagiriBleh")}`)
         for (let i = 0; i < cmdArgs.length; i++) {
-            const loading = await message.channel.send(`**Running Chain ${i + 1}** ${discord.getEmoji("gabCircle")}`)
+            if (message instanceof ChatInputCommandInteraction && i == 1) {
+                // @ts-ignore
+                return message.channel.send("Sorry, running more than one chain isn't supported in slash commands.")
+            }
+            const running = await message.channel.send(`**Running Chain ${i + 1}** ${discord.getEmoji("kisaragiCircle")}`)
             await commands.runCommand(message, cmdArgs[i].replace(/chain/g, "").split(" "))
-            setTimeout(() => loading.delete(), 1000)
+            setTimeout(() => running.delete(), 1000)
         }
+        await message.channel.send(" ").catch(() => null)
     }
 }
