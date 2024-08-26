@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -32,8 +32,18 @@ export default class AzurLane extends Command {
             `,
             aliases: ["al"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        const shipOption = new SlashCommandStringOption()
+            .setName("shipgirl")
+            .setDescription("Shipgirl to search for.")
+            
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(shipOption)
+            .toJSON()
     }
 
     public findNationality = (str: string) => {
@@ -71,26 +81,23 @@ export default class AzurLane extends Command {
         query = query.split("_").map((q) => Functions.toProperCase(q)).join("_")
 
         if (query.match(/azurlane.koumakan.jp/)) {
-            query = query.replace("https://azurlane.koumakan.jp/", "")
+            query = query.replace("https://azurlane.koumakan.jp/wiki/", "")
         }
         const headers = {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
         }
-        const res = await axios.get(`https://azurlane.koumakan.jp/${query}`, {headers})
-        const matches = res.data.match(/(https:\/\/azurlane.koumakan.jp\/w\/images\/)(.*?)(.png)/g)
+        const res = await axios.get(`https://azurlane.koumakan.jp/wiki/${query}`, {headers})
+        const galleryRes = await axios.get(`https://azurlane.koumakan.jp/wiki/${query}/Gallery`, {headers})
+        const matches = res.data.match(/https:\/\/azurlane\.netojuu\.com\/images\/.*?\.png/g)
+        const galleryMatches = galleryRes.data.match(/https:\/\/azurlane\.netojuu\.com\/images\/.*?\.png/g)
         const artist = res.data.match(/(?<=title="Artists">)(.*?)(?=<\/a>)/g)
         const pixivID = res.data.match(/(?<=https:\/\/www.pixiv.net\/member.php\?id=)(.*?)(?=")/g)
         const twitter = res.data.match(/(?<=https:\/\/twitter.com\/)(.*?)(?=")/g)
         const nationality = this.findNationality(res.data)
-        let chibis = matches.filter((m: any) => m.toLowerCase().includes("chibi"))
-        const pics = matches.filter((m: any) => m.toLowerCase().includes(query.toLowerCase()) && !m.toLowerCase().includes("banner") && !m.toLowerCase().includes("chibi"))
-        let history = null as any
-        try {
-            history = await axios.get(`https://azurlane.koumakan.jp/${query}/History`, {headers}).then((r) => r.data)
-        } catch {
-            // Do nothing
-        }
-        const matches2 = history ? history.match(/(?<=Historical References)((.|\n)*?)(?=<!--)/gm) : "None available!"
+        let chibis = galleryMatches?.filter((m: any) => m.toLowerCase().includes("chibi"))
+        const pics = matches?.filter((m: any) => m.toLowerCase().includes(query.toLowerCase()) && !m.toLowerCase().includes("banner") && !m.toLowerCase().includes("chibi"))
+
+        const matches2 = res.data.match(/(?<=Trivia)((.|\n)*?)(?=<!--)/gm)?.[0] || "None available!"
         const description = Functions.cleanHTML(String(matches2))
         if (chibis.length < pics.length) {
             chibis = Functions.fillArray(chibis, chibis[length-1], pics.length)
@@ -111,13 +118,13 @@ export default class AzurLane extends Command {
                 `${discord.getEmoji("star")}_Artist:_ **${artist ? artist[0] : "Not found"}**\n` +
                 `${discord.getEmoji("star")}_Pixiv:_ ${pixivID ? `https://www.pixiv.net/member.php?id=${pixivID[0]}` : "None"}\n` +
                 `${discord.getEmoji("star")}_Twitter_: ${twitter ? `https://www.twitter.com/${twitter[0]}` : "None"}\n` +
-                `${discord.getEmoji("star")}_Historical References:_ ${Functions.checkChar(description, 1500, " ")}`
+                `${discord.getEmoji("star")}_Trivia:_ ${Functions.checkChar(description, 1500, " ")}`
             )
             azurArray.push(azurEmbed)
         }
 
         if (azurArray.length === 1) {
-            message.channel.send({embeds: [azurArray[0]]})
+            message.reply({embeds: [azurArray[0]]})
         } else {
             embeds.createReactionEmbed(azurArray, true, true)
         }
