@@ -60,7 +60,7 @@ export default class Minesweeper extends Command {
         const mineEmbed = embeds.createEmbed()
         mineEmbed
         .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
-        .setTitle(`**Minesweeper** ${discord.getEmoji("KannaXD")}`)
+        .setTitle(`**Minesweeper** ${discord.getEmoji("kannaXD")}`)
         .setDescription(this.replaceEmoji(this.stringifyBoard(board)))
         return mineEmbed
     }
@@ -130,7 +130,7 @@ export default class Minesweeper extends Command {
             if (Number.isNaN(rows) || Number.isNaN(columns)) {
                 return this.invalidQuery(embeds.createEmbed()
                 .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
-                .setTitle(`**Minesweeper** ${discord.getEmoji("KannaXD")}`), "The row or column count is invalid.")
+                .setTitle(`**Minesweeper** ${discord.getEmoji("kannaXD")}`), "The row or column count is invalid.")
             }
             const mine = new minesweeper({
                 rows,
@@ -142,7 +142,7 @@ export default class Minesweeper extends Command {
             const mineEmbed = embeds.createEmbed()
             mineEmbed
             .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
-            .setTitle(`**Minesweeper** ${discord.getEmoji("KannaXD")}`)
+            .setTitle(`**Minesweeper** ${discord.getEmoji("kannaXD")}`)
             .setDescription(this.replaceEmoji(this.replaceEmoji(game)))
             message.channel.send({embeds: [mineEmbed]})
             return
@@ -158,7 +158,7 @@ export default class Minesweeper extends Command {
         if (Number.isNaN(rows) || Number.isNaN(columns)) {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
-            .setTitle(`**Minesweeper** ${discord.getEmoji("KannaXD")}`), "The row or column count is invalid.")
+            .setTitle(`**Minesweeper** ${discord.getEmoji("kannaXD")}`), "The row or column count is invalid.")
         }
         const mine = new minesweeper({
             rows,
@@ -179,9 +179,9 @@ export default class Minesweeper extends Command {
         const reactions = ["arrayReact", "mineFlagReact", "mineReveal"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
-        const arrayCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrayReact") && user.bot === false
-        const flagCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mineFlagReact") && user.bot === false
-        const revealCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mineReveal") && user.bot === false
+        const arrayCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("arrayReact").id && user.bot === false
+        const flagCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("mineFlagReact").id && user.bot === false
+        const revealCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("mineReveal").id && user.bot === false
         const array = msg.createReactionCollector({filter: arrayCheck})
         const flag = msg.createReactionCollector({filter: flagCheck})
         const reveal = msg.createReactionCollector({filter: revealCheck})

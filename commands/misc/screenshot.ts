@@ -83,7 +83,7 @@ export default class Screenshot extends Command {
         const screenEmbed = embeds.createEmbed()
         screenEmbed
         .setAuthor({name: "google chrome", iconURL: "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png"})
-        .setTitle(`**Website Screenshot** ${discord.getEmoji("KannaXD")}`)
+        .setTitle(`**Website Screenshot** ${discord.getEmoji("kannaXD")}`)
         message.channel.send({embeds: [screenEmbed], files: [attachment]})
   }
 }

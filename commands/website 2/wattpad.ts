@@ -45,7 +45,7 @@ export default class Wattpad extends Command {
         const wattpadEmbed = embeds.createEmbed()
         wattpadEmbed
         .setAuthor({name: "wattpad", iconURL: "https://www.syfy.com/sites/syfy/files/styles/amp_metadata_content_image_min_696px_wide/public/2017/10/wattpad.jpg", url: "https://www.wattpad.com/"})
-        .setTitle(`**Wattpad Story** ${discord.getEmoji("RaphiSmile")}`)
+        .setTitle(`**Wattpad Story** ${discord.getEmoji("raphiSmile")}`)
         .setURL(story.url)
         .setImage(story.cover)
         .setThumbnail(story.user.avatar)
@@ -92,7 +92,7 @@ export default class Wattpad extends Command {
                 const wattpadEmbed = embeds.createEmbed()
                 wattpadEmbed
                 .setAuthor({name: "wattpad", iconURL: "https://www.syfy.com/sites/syfy/files/styles/amp_metadata_content_image_min_696px_wide/public/2017/10/wattpad.jpg", url: "https://www.wattpad.com/"})
-                .setTitle(`**Wattpad Story** ${discord.getEmoji("RaphiSmile")}`)
+                .setTitle(`**Wattpad Story** ${discord.getEmoji("raphiSmile")}`)
                 .setURL(partURLS[i])
                 .setImage(partPhotos[i])
                 .setThumbnail(story.user.avatar)

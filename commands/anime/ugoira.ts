@@ -139,7 +139,7 @@ export default class Ugoira extends Command {
         const msg = await message.channel.send({embeds: [ugoiraEmbed], files: [outGif.attachment as string, authorAttachment]})
         const reactions = ["reverse"]
         await msg.react(discord.getEmoji(reactions[0]))
-        const reverseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reverse") && user.bot === false
+        const reverseCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("reverse").id && user.bot === false
         const reverse = msg.createReactionCollector({filter: reverseCheck})
         reverse.on("collect", async (reaction, user) => {
             let factor = 1.0

@@ -28,7 +28,7 @@ export default class Slots extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const emojiList = ["tohruSmug", "vigneXD", "kaosWTF", "gabYes", "RaphiSmile", "PoiHug", "kannaAngry"]
+        const emojiList = ["tohruSmug", "vigneXD", "kaosWTF", "gabYes", "raphiSmile", "poiHug", "kannaAngry"]
         const randList: any[] = []
         for (let i = 0; i < 5; i++) {
             randList.push(emojiList[Math.floor(Math.random() * emojiList.length)])
@@ -89,7 +89,7 @@ export default class Slots extends Command {
         }
 
         const left = discord.getEmoji("left")
-        await message.reply(`**Slot Machine** ${discord.getEmoji("KannaXD")}\n`)
+        await message.reply(`**Slot Machine** ${discord.getEmoji("kannaXD")}\n`)
         await message.channel.send(
             `${discord.getEmoji(slotArray[0])} ${discord.getEmoji(slotArray[1])} ${discord.getEmoji(slotArray[2])} ${row === 1 ? left : ""}\n` +
             `${discord.getEmoji(slotArray[3])} ${discord.getEmoji(slotArray[4])} ${discord.getEmoji(slotArray[5])} ${row === 2 ? left : ""}\n` +

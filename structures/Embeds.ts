@@ -89,7 +89,7 @@ export class Embeds {
                 thumbnail.push((embeds[i].data.thumbnail!))
             }
             await msg.react(this.discord.getEmoji("collapse"))
-            const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
+            const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("collapse").id && user.bot === false
             const collapse = msg.createReactionCollector({filter: collapseCheck})
 
             collapse.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -113,7 +113,7 @@ export class Embeds {
         }
 
         if (download) {
-            const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("download") && user.bot === false
+            const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("download").id && user.bot === false
             const download = msg.createReactionCollector({filter: downloadCheck})
             let downloaded = false
 
@@ -156,12 +156,12 @@ export class Embeds {
         if (!dm) await msg.react(this.discord.getEmoji("numberSelect"))
         if (download) await msg.react(this.discord.getEmoji("download"))
         await msg.react(this.discord.getEmoji("copy"))
-        const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
-        const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
-        const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
-        const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleLeft") && user.bot === false
-        const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
-        const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("copy") && user.bot === false
+        const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("right").id && user.bot === false
+        const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("left").id && user.bot === false
+        const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("tripleRight").id && user.bot === false
+        const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("tripleLeft").id && user.bot === false
+        const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("numberSelect").id && user.bot === false
+        const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("copy").id && user.bot === false
 
         const forward = msg.createReactionCollector({filter: forwardCheck})
         const backward = msg.createReactionCollector({filter: backwardCheck})
@@ -387,13 +387,13 @@ export class Embeds {
         }
 
         await msg.react(this.discord.getEmoji("repost"))
-        const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
-        const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
-        const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleRight") && user.bot === false
-        const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tripleLeft") && user.bot === false
-        const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("numberSelect") && user.bot === false
-        const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("copy") && user.bot === false
-        const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("repost") && user.bot === false
+        const forwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("right").id && user.bot === false
+        const backwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("left").id && user.bot === false
+        const tripleForwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("tripleRight").id && user.bot === false
+        const tripleBackwardCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("tripleLeft").id && user.bot === false
+        const numberSelectCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("numberSelect").id && user.bot === false
+        const copyCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("copy").id && user.bot === false
+        const repostCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("repost").id && user.bot === false
 
         const forward = msg.createReactionCollector({filter: forwardCheck})
         const backward = msg.createReactionCollector({filter: backwardCheck})
@@ -404,7 +404,7 @@ export class Embeds {
         const copy = msg.createReactionCollector({filter: copyCheck})
 
         if (collapseOn) {
-            const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("collapse") && user.bot === false
+            const collapseCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("collapse").id && user.bot === false
             const collapse = msg.createReactionCollector({filter: collapseCheck})
             let collapsed = false
 
@@ -429,7 +429,7 @@ export class Embeds {
         }
 
         if (download) {
-            const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("download") && user.bot === false
+            const downloadCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("download").id && user.bot === false
             const download = msg.createReactionCollector({filter: downloadCheck})
             let downloaded = false
 
@@ -629,34 +629,34 @@ export class Embeds {
             for (let i = 0; i < page1.length; i++) await msg.react(page1[i])
         }
 
-        const adminCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("admin") && user.bot === false
-        const animeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("anime") && user.bot === false
-        const botDevCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("botDeveloper") && user.bot === false
-        const configCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("config") && user.bot === false
-        const funCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fun") && user.bot === false
-        const gameCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("game") && user.bot === false
-        const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("heart") && user.bot === false
-        const lewdCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lewd") && user.bot === false
-        const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("info") && user.bot === false
-        const japaneseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("japanese") && user.bot === false
-        const levelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("level") && user.bot === false
-        const imageCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("image") && user.bot === false
-        const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("misc") && user.bot === false
-        const miscTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("miscTwo") && user.bot === false
-        const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
-        const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
-        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
-        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
-        const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reddit") && user.bot === false
-        const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitter") && user.bot === false
-        const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
-        const waifuCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("waifu") && user.bot === false
-        const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
-        const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
-        const webThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteThree") && user.bot === false
-        const leftCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowLeft") && user.bot === false
-        const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowRight") && user.bot === false
-        const dmCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("dm") && user.bot === false
+        const adminCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("admin").id && user.bot === false
+        const animeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("anime").id && user.bot === false
+        const botDevCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("botDeveloper").id && user.bot === false
+        const configCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("config").id && user.bot === false
+        const funCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("fun").id && user.bot === false
+        const gameCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("game").id && user.bot === false
+        const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("heart").id && user.bot === false
+        const lewdCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("lewd").id && user.bot === false
+        const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("info").id && user.bot === false
+        const japaneseCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("japanese").id && user.bot === false
+        const levelCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("level").id && user.bot === false
+        const imageCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("image").id && user.bot === false
+        const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("misc").id && user.bot === false
+        const miscTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("miscTwo").id && user.bot === false
+        const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("mod").id && user.bot === false
+        const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("music").id && user.bot === false
+        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("musicTwo").id && user.bot === false
+        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("musicThree").id && user.bot === false
+        const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("reddit").id && user.bot === false
+        const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("twitter").id && user.bot === false
+        const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("video").id && user.bot === false
+        const waifuCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("waifu").id && user.bot === false
+        const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("website").id && user.bot === false
+        const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("websiteTwo").id && user.bot === false
+        const webThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("websiteThree").id && user.bot === false
+        const leftCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("arrowLeft").id && user.bot === false
+        const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("arrowRight").id && user.bot === false
+        const dmCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("dm").id && user.bot === false
 
         const admin = msg.createReactionCollector({filter: adminCheck})
         const anime = msg.createReactionCollector({filter: animeCheck})
@@ -822,34 +822,34 @@ export class Embeds {
         let pageIndex = 0
         if (msg.reactions.cache.find((r) => r.emoji.name === "botDeveloper")) pageIndex = 1
 
-        const adminCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("admin") && user.bot === false
-        const animeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("anime") && user.bot === false
-        const botDevCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("botDeveloper") && user.bot === false
-        const configCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("config") && user.bot === false
-        const funCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fun") && user.bot === false
-        const gameCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("game") && user.bot === false
-        const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("heart") && user.bot === false
-        const lewdCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lewd") && user.bot === false
-        const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("info") && user.bot === false
-        const japaneseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("japanese") && user.bot === false
-        const levelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("level") && user.bot === false
-        const imageCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("image") && user.bot === false
-        const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("misc") && user.bot === false
-        const miscTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("miscTwo") && user.bot === false
-        const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mod") && user.bot === false
-        const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("music") && user.bot === false
-        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicTwo") && user.bot === false
-        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("musicThree") && user.bot === false
-        const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reddit") && user.bot === false
-        const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitter") && user.bot === false
-        const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("video") && user.bot === false
-        const waifuCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("waifu") && user.bot === false
-        const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("website") && user.bot === false
-        const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteTwo") && user.bot === false
-        const webThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("websiteThree") && user.bot === false
-        const leftCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowLeft") && user.bot === false
-        const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("arrowRight") && user.bot === false
-        const dmCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("dm") && user.bot === false
+        const adminCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("admin").id && user.bot === false
+        const animeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("anime").id && user.bot === false
+        const botDevCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("botDeveloper").id && user.bot === false
+        const configCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("config").id && user.bot === false
+        const funCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("fun").id && user.bot === false
+        const gameCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("game").id && user.bot === false
+        const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("heart").id && user.bot === false
+        const lewdCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("lewd").id && user.bot === false
+        const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("info").id && user.bot === false
+        const japaneseCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("japanese").id && user.bot === false
+        const levelCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("level").id && user.bot === false
+        const imageCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("image").id && user.bot === false
+        const miscCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("misc").id && user.bot === false
+        const miscTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("miscTwo").id && user.bot === false
+        const modCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("mod").id && user.bot === false
+        const musicCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("music").id && user.bot === false
+        const musicTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("musicTwo").id && user.bot === false
+        const musicThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("musicThree").id && user.bot === false
+        const redditCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("reddit").id && user.bot === false
+        const twitterCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("twitter").id && user.bot === false
+        const videoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("video").id && user.bot === false
+        const waifuCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("waifu").id && user.bot === false
+        const webCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("website").id && user.bot === false
+        const webTwoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("websiteTwo").id && user.bot === false
+        const webThreeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("websiteThree").id && user.bot === false
+        const leftCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("arrowLeft").id && user.bot === false
+        const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("arrowRight").id && user.bot === false
+        const dmCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("dm").id && user.bot === false
 
         const admin = msg.createReactionCollector({filter: adminCheck})
         const anime = msg.createReactionCollector({filter: animeCheck})

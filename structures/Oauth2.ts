@@ -23,11 +23,11 @@ export class Oauth2 {
         const reactions = ["upvote", "downvote", "comment", "redditsave", "subscribe"]
         for (let i = 0; i < reactions.length; i++) await msg.react(this.discord.getEmoji(reactions[i]))
 
-        const upvoteCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("upvote") && user.bot === false
-        const downvoteCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("downvote") && user.bot === false
-        const commentCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("comment") && user.bot === false
-        const saveCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("redditsave") && user.bot === false
-        const subscribeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("subscribe") && user.bot === false
+        const upvoteCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("upvote").id && user.bot === false
+        const downvoteCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("downvote").id && user.bot === false
+        const commentCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("comment").id && user.bot === false
+        const saveCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("redditsave").id && user.bot === false
+        const subscribeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("subscribe").id && user.bot === false
 
         const upvote = msg.createReactionCollector({filter: upvoteCheck})
         const downvote = msg.createReactionCollector({filter: downvoteCheck})
@@ -186,9 +186,9 @@ export class Oauth2 {
         const reactions = ["reply", "retweet", "twitterheart"]
         for (let i = 0; i < reactions.length; i++) await msg.react(this.discord.getEmoji(reactions[i]))
 
-        const replyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reply") && user.bot === false
-        const retweetCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("retweet") && user.bot === false
-        const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("twitterheart") && user.bot === false
+        const replyCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("reply").id && user.bot === false
+        const retweetCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("retweet").id && user.bot === false
+        const heartCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("twitterheart").id && user.bot === false
 
         const reply = msg.createReactionCollector({filter: replyCheck})
         const retweet = msg.createReactionCollector({filter: retweetCheck})

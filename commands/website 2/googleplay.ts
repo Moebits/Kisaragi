@@ -33,7 +33,7 @@ export default class GooglePlay extends Command {
         if (!term) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor({name: "google play", iconURL: "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_play.png", url: "https://play.google.com/store?hl=en_US"})
-            .setTitle(`**Google Play Search** ${discord.getEmoji("PoiHug")}`))
+            .setTitle(`**Google Play Search** ${discord.getEmoji("poiHug")}`))
         }
 
         const playstore = require("google-play-scraper")
@@ -45,7 +45,7 @@ export default class GooglePlay extends Command {
             const playEmbed = embeds.createEmbed()
             playEmbed
             .setAuthor({name: "google play", iconURL: "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_play.png", url: "https://play.google.com/store?hl=en_US"})
-            .setTitle(`**Google Play Search** ${discord.getEmoji("PoiHug")}`)
+            .setTitle(`**Google Play Search** ${discord.getEmoji("poiHug")}`)
             .setURL(app.url)
             .setThumbnail(app.icon)
             .setImage(app.headerImage)
@@ -69,7 +69,7 @@ export default class GooglePlay extends Command {
         if (!playArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor({name: "google play", iconURL: "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/google_play.png", url: "https://play.google.com/store?hl=en_US"})
-            .setTitle(`**Google Play Search** ${discord.getEmoji("PoiHug")}`))
+            .setTitle(`**Google Play Search** ${discord.getEmoji("poiHug")}`))
         }
 
         if (playArray.length === 1) {

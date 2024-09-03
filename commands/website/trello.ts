@@ -59,7 +59,7 @@ export default class Twitch extends Command {
             const memberList = members.map((m) => m.fullName)
             const trelloEmbed = embeds.createEmbed()
             .setAuthor({name: "trello", iconURL: "https://icons.iconarchive.com/icons/papirus-team/papirus-apps/512/trello-icon.png", url: "https://www.spotify.com/"})
-            .setTitle(`**Trello Board** ${discord.getEmoji("AquaWut")}`)
+            .setTitle(`**Trello Board** ${discord.getEmoji("aquaWut")}`)
             .setImage(boardImage)
             .setThumbnail(avatar.avatarUrl ? `${avatar.avatarUrl}/original.png`: "")
             .setURL(boardUrl)
@@ -76,7 +76,7 @@ export default class Twitch extends Command {
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor({name: "trello", iconURL: "https://icons.iconarchive.com/icons/papirus-team/papirus-apps/512/trello-icon.png", url: "https://www.spotify.com/"})
-            .setTitle(`**Trello User** ${discord.getEmoji("AquaWut")}`))
+            .setTitle(`**Trello User** ${discord.getEmoji("aquaWut")}`))
         }
 
         const trelloArray: EmbedBuilder[] = []
@@ -97,7 +97,7 @@ export default class Twitch extends Command {
             }
             const trelloEmbed = embeds.createEmbed()
             .setAuthor({name: "trello", iconURL: "https://icons.iconarchive.com/icons/papirus-team/papirus-apps/512/trello-icon.png", url: "https://www.spotify.com/"})
-            .setTitle(`**Trello User** ${discord.getEmoji("AquaWut")}`)
+            .setTitle(`**Trello User** ${discord.getEmoji("aquaWut")}`)
             .setThumbnail(avatar)
             .setURL(`https://trello.com/${userName}`)
             .setDescription(

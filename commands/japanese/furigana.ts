@@ -35,12 +35,12 @@ export default class Furigana extends Command {
         if (!input) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor({name: "kuroshiro", iconURL: "https://kuroshiro.org/kuroshiro.png"})
-            .setTitle(`**Furigana Conversion** ${discord.getEmoji("KannaXD")}`))
+            .setTitle(`**Furigana Conversion** ${discord.getEmoji("kannaXD")}`))
         }
         const result = await kuroshiro.convert(input, {mode: "furigana", to: "hiragana"})
         const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
 
-        await message.channel.send(`**Furigana Conversion** ${discord.getEmoji("KannaXD")}`)
+        await message.channel.send(`**Furigana Conversion** ${discord.getEmoji("kannaXD")}`)
         message.channel.send(cleanResult)
     }
 }

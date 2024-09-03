@@ -36,7 +36,7 @@ export default class FlickrCommand extends Command {
             if (!username) {
                 return this.noQuery(embeds.createEmbed()
                 .setAuthor({name: "flickr", iconURL: "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", url: "https://www.flickr.com/"})
-                .setTitle(`**Flickr Search** ${discord.getEmoji("RaphiSmile")}`))
+                .setTitle(`**Flickr Search** ${discord.getEmoji("raphiSmile")}`))
             }
             const id = await flickr.people.findByUsername({username}).then((r: any) => JSON.parse(r.text))
             const info = await flickr.people.getInfo({user_id: id.user.nsid}).then((r: any) => JSON.parse(r.text))
@@ -45,7 +45,7 @@ export default class FlickrCommand extends Command {
             const flickrEmbed = embeds.createEmbed()
             flickrEmbed
             .setAuthor({name: "flickr", iconURL: "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", url: "https://www.flickr.com/"})
-            .setTitle(`**Flickr Search** ${discord.getEmoji("RaphiSmile")}`)
+            .setTitle(`**Flickr Search** ${discord.getEmoji("raphiSmile")}`)
             .setURL(info.person.profileurl._content)
             .setThumbnail(avatar)
             .setDescription(
@@ -81,7 +81,7 @@ export default class FlickrCommand extends Command {
             const flickrEmbed = embeds.createEmbed()
             flickrEmbed
             .setAuthor({name: "flickr", iconURL: "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", url: "https://www.flickr.com/"})
-            .setTitle(`**Flickr Search** ${discord.getEmoji("RaphiSmile")}`)
+            .setTitle(`**Flickr Search** ${discord.getEmoji("raphiSmile")}`)
             .setURL(url)
             .setDescription(
                 `${discord.getEmoji("star")}_Title:_ **${photo.title}**\n` +

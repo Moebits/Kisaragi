@@ -40,7 +40,7 @@ export default class RGB extends Command {
 
         if (!args[1]) {
             return this.noQuery(embeds.createEmbed()
-            .setTitle(`**RGB Color** ${discord.getEmoji("RaphiSmile")}`), "You need to specify the color.")
+            .setTitle(`**RGB Color** ${discord.getEmoji("raphiSmile")}`), "You need to specify the color.")
         }
 
         let str = ""
@@ -65,7 +65,7 @@ export default class RGB extends Command {
         const attachment = new AttachmentBuilder(can.toBuffer("image/png"), {name: "color.png"})
 
         const colorEmbed = embeds.createEmbed()
-        .setTitle(`**RGB Color** ${discord.getEmoji("RaphiSmile")}`)
+        .setTitle(`**RGB Color** ${discord.getEmoji("raphiSmile")}`)
         .setImage(`attachment://color.png`)
 
         return message.channel.send({embeds: [colorEmbed], files: [attachment]})

@@ -105,7 +105,7 @@ export default class SpotifyCommand extends Command {
         const msg = await embeds.createReactionEmbed(spotifyArray, true, true)
         await msg.react(discord.getEmoji("spotify"))
 
-        const spotifyCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("spotify") && user.bot === false
+        const spotifyCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("spotify").id && user.bot === false
         const spotifyCollector = msg.createReactionCollector({filter: spotifyCheck})
 
         const urls = new Set()

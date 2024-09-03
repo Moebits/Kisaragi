@@ -33,7 +33,7 @@ export default class Remdash extends Command {
             }
         }
         remEmbed
-        .setTitle(`**Remdash** ${discord.getEmoji("KannaXD")}`)
+        .setTitle(`**Remdash** ${discord.getEmoji("kannaXD")}`)
         .setDescription("Removed dashes from all channel names!")
         message.channel.send({embeds: [remEmbed]})
         return

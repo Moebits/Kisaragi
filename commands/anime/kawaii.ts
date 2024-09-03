@@ -43,7 +43,7 @@ export default class Kawaii extends Command {
             await Functions.timeout(100)
             const imageEmbed = embeds.createEmbed()
             imageEmbed
-            .setTitle(`**Kawaii** ${discord.getEmoji("kannaPatting")}`)
+            .setTitle(`**Kawaii** ${discord.getEmoji("kannaPat")}`)
             .setURL(links[i])
             .setImage(links[i])
             imageArray.push(imageEmbed)

@@ -35,7 +35,7 @@ export default class AppStore extends Command {
         if (!term) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor({name: "app store", iconURL: "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", url: "https://fnd.io/"})
-            .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`))
+            .setTitle(`**App Store Search** ${discord.getEmoji("poiHug")}`))
         }
         if (term.match(/apps.apple.com/)) {
             term = term.match(/(?<=app\/)(.*?)(?=\/)/)?.[0].replace(/-/g, " ")!
@@ -47,7 +47,7 @@ export default class AppStore extends Command {
             const appEmbed = embeds.createEmbed()
             appEmbed
             .setAuthor({name: "app store", iconURL: "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", url: "https://fnd.io/"})
-            .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`)
+            .setTitle(`**App Store Search** ${discord.getEmoji("poiHug")}`)
             .setURL(app.url)
             .setThumbnail(app.icon)
             .setImage(app.screenshots[0])
@@ -69,7 +69,7 @@ export default class AppStore extends Command {
         if (!appArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor({name: "app store", iconURL: "https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg", url: "https://fnd.io/"})
-            .setTitle(`**App Store Search** ${discord.getEmoji("PoiHug")}`))
+            .setTitle(`**App Store Search** ${discord.getEmoji("poiHug")}`))
         }
         if (appArray.length === 1) {
             message.channel.send({embeds: [appArray[0]]})

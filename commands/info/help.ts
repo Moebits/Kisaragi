@@ -47,19 +47,19 @@ export default class Help extends Command {
         "config": this.discord.getEmoji("akariLurk"),
         "fun": this.discord.getEmoji("chinoSmug"),
         "game": this.discord.getEmoji("yaoi"),
-        "heart": this.discord.getEmoji("kannaPatting"),
+        "heart": this.discord.getEmoji("kannaPat"),
         "lewd": this.discord.getEmoji("madokaLewd"),
         "info": this.discord.getEmoji("kannaCurious"),
         "weeb": this.discord.getEmoji("kannaHungry"),
-        "level": this.discord.getEmoji("KannaXD"),
+        "level": this.discord.getEmoji("kannaXD"),
         "image": this.discord.getEmoji("tohruSmug"),
         "misc": this.discord.getEmoji("karenXmas"),
         "misc 2": this.discord.getEmoji("sataniaDead"),
         "mod": this.discord.getEmoji("kannaFreeze"),
-        "music": this.discord.getEmoji("PoiHug"),
+        "music": this.discord.getEmoji("poiHug"),
         "music 2": this.discord.getEmoji("yes"),
         "music 3": this.discord.getEmoji("vigneDead"),
-        "reddit": this.discord.getEmoji("AquaWut"),
+        "reddit": this.discord.getEmoji("aquaWut"),
         "twitter": this.discord.getEmoji("gabSip"),
         "video": this.discord.getEmoji("vigneXD"),
         "waifu": this.discord.getEmoji("karenSugoi"),
@@ -166,7 +166,7 @@ export default class Help extends Command {
                 .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
                 .setDescription(`_Reactions cannot be removed in dm's, so remove them yourself._`)
-                if (!discord.checkMuted(message)) dmEmbed.addFields([{name: `${discord.getEmoji("RaphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Source](${config.repo})`}])
+                if (!discord.checkMuted(message)) dmEmbed.addFields([{name: `${discord.getEmoji("raphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Source](${config.repo})`}])
                 dmEmbeds.push(dmEmbed)
             }
             embeds.createReactionEmbed(dmEmbeds, false, false, 1, message.author)
@@ -210,7 +210,7 @@ export default class Help extends Command {
                 `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` +
                 `To display only one category, use \`help !(category)\` ${discord.getEmoji("gabYes")}\n` +
                 `_Click on a reaction twice to toggle compact mode._\n` + help)
-            if (!discord.checkMuted(message)) helpEmbed.addFields([{name: `${discord.getEmoji("RaphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Source](${config.repo})`}])
+            if (!discord.checkMuted(message)) helpEmbed.addFields([{name: `${discord.getEmoji("raphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Source](${config.repo})`}])
             helpEmbedArray.push(helpEmbed)
         }
         if (setIndex > -1) {

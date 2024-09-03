@@ -870,20 +870,20 @@ export class Audio {
         const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear"]
         if (now.requesterID === process.env.OWNER_ID) reactions.push("mp3")
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
-        const resumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("resume") && user.bot === false
-        const pauseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("pause") && user.bot === false
-        const scrubCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("scrub") && user.bot === false
-        const skipCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("skip") && user.bot === false
-        const loopCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("loop") && user.bot === false
-        const abLoopCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("abloop") && user.bot === false
-        const reverseCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reverse") && user.bot === false
-        const speedCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("speed") && user.bot === false
-        const pitchCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("pitch") && user.bot === false
-        const volumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("volume") && user.bot === false
-        const eqCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("eq") && user.bot === false
-        const fxCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("fx") && user.bot === false
-        const clearCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("clear") && user.bot === false
-        const mp3Check = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("mp3") && user.bot === false
+        const resumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("resume").id && user.bot === false
+        const pauseCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("pause").id && user.bot === false
+        const scrubCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("scrub").id && user.bot === false
+        const skipCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("skip").id && user.bot === false
+        const loopCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("loop").id && user.bot === false
+        const abLoopCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("abloop").id && user.bot === false
+        const reverseCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("reverse").id && user.bot === false
+        const speedCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("speed").id && user.bot === false
+        const pitchCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("pitch").id && user.bot === false
+        const volumeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("volume").id && user.bot === false
+        const eqCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("eq").id && user.bot === false
+        const fxCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("fx").id && user.bot === false
+        const clearCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("clear").id && user.bot === false
+        const mp3Check = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("mp3").id && user.bot === false
 
         const resume = msg.createReactionCollector({filter: resumeCheck})
         const pause = msg.createReactionCollector({filter: pauseCheck})
@@ -1481,14 +1481,14 @@ export class Audio {
         await msg.react(discord.getEmoji(reactions[5]))
         if (kind === "soundcloud") await msg.react(discord.getEmoji("youtube"))
         if (kind === "youtube") await msg.react(discord.getEmoji("soundcloud"))
-        const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("right") && user.bot === false
-        const leftCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("left") && user.bot === false
-        const oneCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("1n") && user.bot === false
-        const twoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("2n") && user.bot === false
-        const threeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("3n") && user.bot === false
-        const randomCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("random") && user.bot === false
-        const soundcloudCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("soundcloud") && user.bot === false
-        const youtubeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("youtube") && user.bot === false
+        const rightCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("right").id && user.bot === false
+        const leftCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("left").id && user.bot === false
+        const oneCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("1n").id && user.bot === false
+        const twoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("2n").id && user.bot === false
+        const threeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("3n").id && user.bot === false
+        const randomCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("random").id && user.bot === false
+        const soundcloudCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("soundcloud").id && user.bot === false
+        const youtubeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("youtube").id && user.bot === false
         const right = msg.createReactionCollector({filter: rightCheck})
         const left = msg.createReactionCollector({filter: leftCheck})
         const one = msg.createReactionCollector({filter: oneCheck})
@@ -1603,7 +1603,7 @@ export class Audio {
         const eqEmbed = this.embeds.createEmbed()
         eqEmbed
         .setAuthor({name: "equalizer", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
-        .setTitle(`**Audio Equalizer** ${discord.getEmoji("RaphiSmile")}`)
+        .setTitle(`**Audio Equalizer** ${discord.getEmoji("raphiSmile")}`)
         .setDescription(
             `_Here are the different filter types that you can choose from:_\n` +
             `${discord.getEmoji("highpass")}-highpass Filter_ -> _Removes low frequencies._\n` +
@@ -1619,14 +1619,14 @@ export class Audio {
         const reactions = ["highpass", "highshelf", "bandpass", "peak", "bandreject", "lowshelf", "lowpass", "cancel"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
-        const highpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("highpass") && user.bot === false
-        const highshelfCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("highshelf") && user.bot === false
-        const bandpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("bandpass") && user.bot === false
-        const peakCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("peak") && user.bot === false
-        const bandrejectCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("bandreject") && user.bot === false
-        const lowshelfCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lowshelf") && user.bot === false
-        const lowpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("lowpass") && user.bot === false
-        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("cancel") && user.bot === false
+        const highpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("highpass").id && user.bot === false
+        const highshelfCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("highshelf").id && user.bot === false
+        const bandpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("bandpass").id && user.bot === false
+        const peakCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("peak").id && user.bot === false
+        const bandrejectCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("bandreject").id && user.bot === false
+        const lowshelfCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("lowshelf").id && user.bot === false
+        const lowpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("lowpass").id && user.bot === false
+        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("cancel").id && user.bot === false
         const highpass = msg.createReactionCollector({filter: highpassCheck})
         const highshelf = msg.createReactionCollector({filter: highshelfCheck})
         const bandpass = msg.createReactionCollector({filter: bandpassCheck})
@@ -1778,7 +1778,7 @@ export class Audio {
         const discord = this.discord
         const fxEmbed = this.embeds.createEmbed()
         .setAuthor({name: "effects", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
-        .setTitle(`**Special Effects** ${discord.getEmoji("RaphiSmile")}`)
+        .setTitle(`**Special Effects** ${discord.getEmoji("raphiSmile")}`)
         .setDescription(
             `_Here are the different audio effects that you can add:_\n` +
             `${discord.getEmoji("reverb")}-reverb_ -> _Emulates room reflections._\n` +
@@ -1797,18 +1797,18 @@ export class Audio {
         const msg = await this.message.channel.send({embeds: [fxEmbed]})
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
-        const reverbCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reverb") && user.bot === false
-        const delayCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("delay") && user.bot === false
-        const chorusCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("chorus") && user.bot === false
-        const phaserCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("phaser") && user.bot === false
-        const flangerCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("flanger") && user.bot === false
-        const bitcrushCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("bitcrush") && user.bot === false
-        const upsampleCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("upsample") && user.bot === false
-        const distortionCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("distortion") && user.bot === false
-        const compressionCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("compression") && user.bot === false
-        const allpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("allpass") && user.bot === false
-        const tremoloCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tremolo") && user.bot === false
-        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("cancel") && user.bot === false
+        const reverbCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("reverb").id && user.bot === false
+        const delayCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("delay").id && user.bot === false
+        const chorusCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("chorus").id && user.bot === false
+        const phaserCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("phaser").id && user.bot === false
+        const flangerCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("flanger").id && user.bot === false
+        const bitcrushCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("bitcrush").id && user.bot === false
+        const upsampleCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("upsample").id && user.bot === false
+        const distortionCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("distortion").id && user.bot === false
+        const compressionCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("compression").id && user.bot === false
+        const allpassCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("allpass").id && user.bot === false
+        const tremoloCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("tremolo").id && user.bot === false
+        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("cancel").id && user.bot === false
         const reverb = msg.createReactionCollector({filter: reverbCheck})
         const delay = msg.createReactionCollector({filter: delayCheck})
         const chorus = msg.createReactionCollector({filter: chorusCheck})

@@ -46,7 +46,7 @@ export default class Disable extends Command {
 
         const disableEmbed = embeds.createEmbed()
         disableEmbed
-        .setTitle(`**Disable Categories** ${discord.getEmoji("AquaWut")}`)
+        .setTitle(`**Disable Categories** ${discord.getEmoji("aquaWut")}`)
         .setThumbnail(message.guild!.iconURL({extension: "png"})!)
         .setDescription(Functions.multiTrim(`
             Disable command categories. Do not include "commands" in the name, eg. "music 2"
@@ -67,7 +67,7 @@ export default class Disable extends Command {
             let categories = await sql.fetchColumn("guilds", "disabled categories")
             if (!categories) categories = []
             const responseEmbed = embeds.createEmbed()
-            responseEmbed.setTitle(`**Disabled Categories** ${discord.getEmoji("AquaWut")}`)
+            responseEmbed.setTitle(`**Disabled Categories** ${discord.getEmoji("aquaWut")}`)
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)

@@ -35,7 +35,7 @@ export default class Itunes extends Command {
         if (!query) {
             return this.noQuery(embeds.createEmbed()
             .setAuthor({name: "itunes", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", url: "https://fnd.io/"})
-            .setTitle(`**Itunes Search** ${discord.getEmoji("RaphiSmile")}`))
+            .setTitle(`**Itunes Search** ${discord.getEmoji("raphiSmile")}`))
         }
 
         const url = `https://itunes.apple.com/search?country=US&entity=song&explicit=no&lang=en&media=music&term=${query}`
@@ -48,7 +48,7 @@ export default class Itunes extends Command {
             const itunesEmbed = embeds.createEmbed()
             itunesEmbed
             .setAuthor({name: "itunes", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", url: "https://fnd.io/"})
-            .setTitle(`**Itunes Search** ${discord.getEmoji("RaphiSmile")}`)
+            .setTitle(`**Itunes Search** ${discord.getEmoji("raphiSmile")}`)
             .setImage(track.artworkUrl100)
             .setURL(track.trackViewUrl)
             .setDescription(
@@ -67,7 +67,7 @@ export default class Itunes extends Command {
         if (!itunesArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor({name: "itunes", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", url: "https://fnd.io/"})
-            .setTitle(`**Itunes Search** ${discord.getEmoji("RaphiSmile")}`))
+            .setTitle(`**Itunes Search** ${discord.getEmoji("raphiSmile")}`))
         }
 
         if (itunesArray.length === 1) {

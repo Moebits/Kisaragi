@@ -197,23 +197,23 @@ export default class Photoshop extends Command {
         const reactions = ["brightness", "contrast", "hue", "saturation", "value", "flip", "tint", "invert", "posterize", "crop", "scale", "rotate", "blur", "sharpen", "undo", "redo", "reset"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
-        const brightnessCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("brightness") && user.bot === false
-        const contrastCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("contrast") && user.bot === false
-        const hueCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("hue") && user.bot === false
-        const saturationCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("saturation") && user.bot === false
-        const valueCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("value") && user.bot === false
-        const flipCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("flip") && user.bot === false
-        const tintCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("tint") && user.bot === false
-        const invertCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("invert") && user.bot === false
-        const posterizeCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("posterize") && user.bot === false
-        const cropCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("crop") && user.bot === false
-        const scaleCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("scale") && user.bot === false
-        const rotateCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("rotate") && user.bot === false
-        const blurCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("blur") && user.bot === false
-        const sharpenCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("sharpen") && user.bot === false
-        const undoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("undo") && user.bot === false
-        const redoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("redo") && user.bot === false
-        const resetCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("reset") && user.bot === false
+        const brightnessCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("brightness").id && user.bot === false
+        const contrastCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("contrast").id && user.bot === false
+        const hueCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("hue").id && user.bot === false
+        const saturationCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("saturation").id && user.bot === false
+        const valueCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("value").id && user.bot === false
+        const flipCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("flip").id && user.bot === false
+        const tintCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("tint").id && user.bot === false
+        const invertCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("invert").id && user.bot === false
+        const posterizeCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("posterize").id && user.bot === false
+        const cropCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("crop").id && user.bot === false
+        const scaleCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("scale").id && user.bot === false
+        const rotateCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("rotate").id && user.bot === false
+        const blurCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("blur").id && user.bot === false
+        const sharpenCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("sharpen").id && user.bot === false
+        const undoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("undo").id && user.bot === false
+        const redoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("redo").id && user.bot === false
+        const resetCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("reset").id && user.bot === false
         const brightness = msg.createReactionCollector({filter: brightnessCheck})
         const contrast = msg.createReactionCollector({filter: contrastCheck})
         const hue = msg.createReactionCollector({filter: hueCheck})

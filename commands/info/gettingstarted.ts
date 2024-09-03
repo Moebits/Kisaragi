@@ -72,7 +72,7 @@ export default class GettingStarted extends Command {
         }
 
         if (msg) await msg.react(discord.getEmoji("help"))
-        const helpCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("help") && user.bot === false
+        const helpCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("help").id && user.bot === false
         const help = msg?.createReactionCollector({filter: helpCheck})
 
         help?.on("collect", async (reaction, user) => {

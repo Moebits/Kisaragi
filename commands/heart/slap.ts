@@ -41,7 +41,7 @@ export default class Slap extends Command {
         }
 
         let flavorText = `${discord.getEmoji("chinoSmug")}`
-        if (name === "themselves") flavorText = `Nice... ${discord.getEmoji("AquaWut")}`
+        if (name === "themselves") flavorText = `Nice... ${discord.getEmoji("aquaWut")}`
         if (name === "someone") flavorText = `Well ok ${discord.getEmoji("vigneDead")}`
         if (name === "me") flavorText = `No thanks ${discord.getEmoji("ceaseBullying")}`
 

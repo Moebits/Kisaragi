@@ -109,7 +109,7 @@ export default class MessageReactionAdd {
                 const starEmbed = embeds.createEmbed()
                 starEmbed
                 .setAuthor({name: "star", iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/microsoft/74/white-medium-star_2b50.png"})
-                .setTitle(`**New Starboard Message!** ${discord.getEmoji("RaphiSmile")}`)
+                .setTitle(`**New Starboard Message!** ${discord.getEmoji("raphiSmile")}`)
                 .setThumbnail(reaction.message.author.displayAvatarURL({extension: "png"}))
                 .setURL(reaction.message.url)
                 .setDescription(`[**Message Link**](${reaction.message.url})\n` + content)

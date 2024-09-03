@@ -53,7 +53,7 @@ export default class UserUpdate {
                     const logEmbed = embeds.createEmbed()
                     logEmbed
                     .setAuthor({name: "profile picture", iconURL: "https://cdn.discordapp.com/emojis/607052423172718607.png"})
-                    .setTitle(`**Profile Picture Change** ${discord.getEmoji("KannaXD")}`)
+                    .setTitle(`**Profile Picture Change** ${discord.getEmoji("kannaXD")}`)
                     .setThumbnail(newUser.displayAvatarURL({extension: "png"}))
                     .setDescription(
                         `${discord.getEmoji("star")}_User:_ **<@!${newUser.id}> (${newUser.username})**\n` +

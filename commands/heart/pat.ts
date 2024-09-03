@@ -42,7 +42,7 @@ export default class Pat extends Command {
 
         let flavorText = `${discord.getEmoji("kannaPat")}`
         if (name === "themselves") flavorText = `It's ok... ${discord.getEmoji("kannaPat")}`
-        if (name === "someone") flavorText = `Free pats ${discord.getEmoji("AquaWut")}`
+        if (name === "someone") flavorText = `Free pats ${discord.getEmoji("aquaWut")}`
         if (name === "me") flavorText = `Thanks ${discord.getEmoji("yes")}`
 
         const image = await neko.pat()
@@ -50,7 +50,7 @@ export default class Pat extends Command {
         const patEmbed = embeds.createEmbed()
         patEmbed
         .setURL(image.url)
-        .setTitle(`**Pat** ${discord.getEmoji("kannaPatting")}`)
+        .setTitle(`**Pat** ${discord.getEmoji("kannaPat")}`)
         .setDescription(`**${message.author.username}** pats **${name}**! ${flavorText}`)
         .setImage(image.url)
         message.channel.send({embeds: [patEmbed]})

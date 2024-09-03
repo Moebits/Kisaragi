@@ -35,13 +35,13 @@ export default class Weather extends Command {
         if (!w || w.cod === "404") {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor({name: "weather",  iconURL: "https://cdn1.iconfinder.com/data/icons/weather-429/64/weather_icons_color-06-512.png"})
-            .setTitle(`**Weather** ${discord.getEmoji("AquaWut")}`))
+            .setTitle(`**Weather** ${discord.getEmoji("aquaWut")}`))
         }
 
         const weatherEmbed = embeds.createEmbed()
         weatherEmbed
         .setAuthor({name: "weather",  iconURL: "https://cdn1.iconfinder.com/data/icons/weather-429/64/weather_icons_color-06-512.png"})
-        .setTitle(`**Weather** ${discord.getEmoji("AquaWut")}`)
+        .setTitle(`**Weather** ${discord.getEmoji("aquaWut")}`)
         .setURL(`https://openweathermap.org/city/${w.id}`)
         .setThumbnail(`https://openweathermap.org/img/w/${w.weather?.[0].icon}.png`)
         .setDescription(

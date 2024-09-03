@@ -71,7 +71,7 @@ export default class Embed extends Command {
 
         infoEmbed
         .setAuthor({name: "embed creator", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTStAdBUTGTX5KUVbubQNuOaG70mwxTKrEKk4oR0T1zVmcjfXhLYiHCkbvhXZtyi1Cs9EI&usqp=CAU"})
-        .setTitle(`**Custom Embed** ${discord.getEmoji("RaphiSmile")}`)
+        .setTitle(`**Custom Embed** ${discord.getEmoji("raphiSmile")}`)
         .setDescription(
             `_Edit this embed by clicking on the reactions._\n` +
             `${discord.getEmoji("info")} - Displays this menu\n` +
@@ -96,21 +96,21 @@ export default class Embed extends Command {
         const msg = await message.reply({embeds: [infoEmbed]})
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
-        const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("info") && user.bot === false
-        const titleCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("title") && user.bot === false
-        const descriptionCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("description") && user.bot === false
-        const imageCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("image") && user.bot === false
-        const thumbnailCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("thumbnail") && user.bot === false
-        const authorCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("author") && user.bot === false
-        const authorImageCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("authorImage") && user.bot === false
-        const footerCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("footer") && user.bot === false
-        const footerImageCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("footerImage") && user.bot === false
-        const colorCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("color") && user.bot === false
-        const timestampCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("timestamp") && user.bot === false
-        const urlCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("url") && user.bot === false
-        const jsonCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("json") && user.bot === false
-        const doneCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("done") && user.bot === false
-        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji === this.discord.getEmoji("xcancel") && user.bot === false
+        const infoCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("info").id && user.bot === false
+        const titleCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("title").id && user.bot === false
+        const descriptionCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("description").id && user.bot === false
+        const imageCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("image").id && user.bot === false
+        const thumbnailCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("thumbnail").id && user.bot === false
+        const authorCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("author").id && user.bot === false
+        const authorImageCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("authorImage").id && user.bot === false
+        const footerCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("footer").id && user.bot === false
+        const footerImageCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("footerImage").id && user.bot === false
+        const colorCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("color").id && user.bot === false
+        const timestampCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("timestamp").id && user.bot === false
+        const urlCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("url").id && user.bot === false
+        const jsonCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("json").id && user.bot === false
+        const doneCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("done").id && user.bot === false
+        const cancelCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("xcancel").id && user.bot === false
         const info = msg.createReactionCollector({filter: infoCheck})
         const title = msg.createReactionCollector({filter: titleCheck})
         const description = msg.createReactionCollector({filter: descriptionCheck})
