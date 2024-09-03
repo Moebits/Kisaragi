@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class AnilistCommand extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for anime and manga on anilist.",
             help:

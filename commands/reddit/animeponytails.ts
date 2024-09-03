@@ -9,7 +9,7 @@ import {Permission} from "./../../structures/Permission"
 import Reddit from "./reddit"
 
 export default class Animeponytails extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "For people with a ponytail fetish...",
             help:
@@ -52,7 +52,7 @@ export default class Animeponytails extends Command {
         let redditArray = await redditCmd.getSubmissions(reddit, postIDS, true)
         redditArray = Functions.shuffleArray(redditArray)
         if (!redditArray[0]) return redditCmd.noResults()
-        let msg: Message
+        let msg: Message<true>
         if (redditArray.length === 1) {
             msg = await message.channel.send({embeds: [redditArray[0]]})
         } else {

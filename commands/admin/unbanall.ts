@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class UnbanAll extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Unbans everyone (no undo).",
             help:

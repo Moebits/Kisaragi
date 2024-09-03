@@ -3,7 +3,7 @@ import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class NumberCommand extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Guess the number!",
             help:

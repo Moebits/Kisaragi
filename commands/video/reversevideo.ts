@@ -14,7 +14,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
 export default class Reversevideo extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Reverses a video.",
             help:

@@ -1,5 +1,5 @@
 import axios from "axios"
-import {MessagePayload, ChannelType, Client, ClientOptions, Guild, Collection, GuildBasedChannel, GuildEmoji, Message, MessageTarget, Role, TextChannel, User, PartialMessage} from "discord.js"
+import {MessagePayload, ChannelType, Client, ClientOptions, Guild, Collection, GuildBasedChannel, ApplicationEmoji, GuildEmoji, Message, MessageTarget, Role, TextChannel, User, PartialMessage} from "discord.js"
 import fs from "fs"
 import path from "path"
 import querystring from "querystring"
@@ -33,21 +33,13 @@ export class Kisaragi extends Client {
     }
 
     /** Get emojis (my servers) */
-    public getEmoji = (name: string, png?: boolean): GuildEmoji => {
-        if (name === "star") {
-            if (this.starIndex === 0) {
-                this.starIndex = 1
-            } else if (this.starIndex === 1) {
-                name += "2"
-                this.starIndex = 0
-            }
-        }
-        const emoji = this.emojis.cache.find((e) => (png ? e.name === `${name}png` : e.name === name) && (e.guild.ownerId === process.env.OWNER_ID))
+    public getEmoji = (name: string, png?: boolean) => {
+        const emoji = this.application?.emojis.cache.find((e) => (png ? e.name === `${name}png` : e.name === name))
         if (emoji) {
-            return emoji as unknown as GuildEmoji
+            return emoji as ApplicationEmoji
         } else {
             // Confused Anime
-            return this.emojis.cache.get("579870079311937557") as unknown as GuildEmoji
+            return this.application?.emojis.cache.get("1276355176852099225") as ApplicationEmoji
         }
     }
 
@@ -174,12 +166,12 @@ export class Kisaragi extends Client {
         } catch {
             const lastMsg = channel?.messages.cache.first()
             if (lastMsg) return lastMsg
-            return channel?.lastMessage
+            return channel?.lastMessage as Message<true>
         }
     }
 
     // Check for Bot Mention
-    public checkBotMention = (message: Message) => {
+    public checkBotMention = (message: Message<true>) => {
         if (message.author.bot) return false
         if (!message.content.startsWith("<@")) return false
         const regex = new RegExp(`${this.user?.id}`)
@@ -187,7 +179,7 @@ export class Kisaragi extends Client {
     }
 
     // Errors
-    public cmdError = (msg: Message, error: Error) => {
+    public cmdError = (msg: Message<true>, error: Error) => {
         const embeds = new Embeds(this, msg)
         console.log(error)
         const messageErrorEmbed = embeds.createEmbed()
@@ -201,7 +193,7 @@ export class Kisaragi extends Client {
     }
 
     /** Stops responding if the user is blacklisted. */
-    public blacklistStop = async (msg: Message) => {
+    public blacklistStop = async (msg: Message<true>) => {
         const sql = new SQLQuery(msg)
         const blacklists = await SQLQuery.selectColumn("blacklist", "user id")
         const found = blacklists.find((u) => String(u) === msg.author.id)
@@ -265,7 +257,7 @@ export class Kisaragi extends Client {
     }
 
     /** Gets the last message on the channel */
-    public getLastMessage = async (message: Message) => {
+    public getLastMessage = async (message: Message<true>) => {
         let prefix = await SQLQuery.fetchPrefix(message)
         if (!prefix) prefix = "=>"
         const messages = await message.channel.messages.fetch({limit: 100})
@@ -306,72 +298,5 @@ export class Kisaragi extends Client {
     public createAPIMessage = async (interaction: any, content: any) => {
         const {body, files} = await MessagePayload.create(this.channels.resolve(interaction.channel_id) as MessageTarget, content).resolveBody().resolveFiles()
         return {...body, files}
-    }
-
-    /** Adds slash commands */
-    public slashCommands = async () => {
-        // @ts-ignore
-        // const commandIDs = await this.api.applications(this.user.id).guilds("582230160737042480").commands.get().then((c: any) => c.map((c: any) => c.id))
-        // @ts-ignore
-        // await Promise.all(commandIDs.map((id: string) => this.api.applications(this.user.id).guilds("582230160737042480").commands(id).delete()))
-
-        // @ts-ignore
-        this.ws.on("INTERACTION_CREATE", async (interaction: any) => {
-            console.log(interaction)
-            const {name, options} = interaction.data
-            const message = await this.channels.fetch(interaction.channel_id).then((c) => (c as TextChannel).lastMessage)
-            // @ts-ignore
-            message.member = interaction.member
-            const cmdFunc = new CommandFunctions(this, message!)
-            const args = options ? options.map((o: any) => o.value) : []
-            console.log(name)
-            console.log(args)
-            const response = await cmdFunc.runCommand(name, args)
-            console.log(response)
-
-            let data: any = {
-                content: response
-            }
-
-            if (typeof response !== "string") {
-                data = await this.createAPIMessage(interaction, response)
-            }
-
-            // @ts-ignore
-            await this.api.interactions(interaction.id, interaction.token).callback.post({
-                data: {
-                    type: 4,
-                    data
-                }
-            })
-        })
-
-        const cmdFiles: string[][] = []
-        const subDirectory = fs.readdirSync(path.join(__dirname, "../commands/"))
-        for (let i = 0; i < subDirectory.length; i++) {
-            const currDir = subDirectory[i]
-            const addFiles = fs.readdirSync(path.join(__dirname, `../commands/${currDir}`))
-            if (addFiles !== null) cmdFiles.push(addFiles)
-            await Promise.all(addFiles.map(async (file: string) => {
-                if (!file.endsWith(".ts") && !file.endsWith(".js")) return
-                const commandName = file.split(".")[0]
-                if (commandName === "empty" || commandName === "tempCodeRunnerFile") return
-                const command = new (require(path.join(__dirname, `../commands/${currDir}/${file}`)).default)(this, null) as Command
-                if (command.options.unlist === true) return
-                const data = {
-                    name: commandName,
-                    description: command.options.description,
-                    options: this.parseCommandArgs(command.options.help)
-                }
-                console.log(data)
-                try {
-                    // @ts-ignore
-                    await this.api.applications(this.user.id).guilds("582230160737042480").commands.post({data})
-                } catch (err) {
-                    console.log(commandName)
-                    console.log(err)
-                }
-            }))
-        }
     }
 }

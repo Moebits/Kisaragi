@@ -7,7 +7,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Source extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configure auto image reverse search channels.",
             help:
@@ -84,7 +84,7 @@ export default class Source extends Command {
             message.channel.send({embeds: [sourceArray[0]]})
         }
 
-        async function sourcePrompt(msg: Message) {
+        async function sourcePrompt(msg: Message<true>) {
             let source = await sql.fetchColumn("guilds", "source")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Source Channels** ${discord.getEmoji("tohruThumbsUp2")}`)

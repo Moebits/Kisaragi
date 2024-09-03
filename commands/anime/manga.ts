@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const weeb = require("node-weeb")
 
 export default class Manga extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for a manga series.",
             help:

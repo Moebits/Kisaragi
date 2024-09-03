@@ -1,4 +1,4 @@
-import {Collection, Message, ChannelType, AttachmentBuilder, TextChannel} from "discord.js"
+import {Collection, Message, ChannelType, AttachmentBuilder, TextChannel, MessageType} from "discord.js"
 import path from "path"
 import responses from "../assets/json/responses.json"
 import {CommandFunctions} from "../structures/CommandFunctions"
@@ -26,7 +26,16 @@ const pointCool = new Collection() as Collection<string, Set<string>>
 export default class MessageCreate {
     constructor(private readonly discord: Kisaragi) {}
 
-    public run = async (message: Message) => {
+    public run = async (message: Message<true>) => {
+      if (message.partial) {
+        try {
+          message = await message.fetch()
+        } catch (e) {
+          console.log(e)
+          return
+        }
+      }
+
       const letters = new Letters(this.discord)
       const points = new Points(this.discord, message)
       const haiku = new Haiku(this.discord, message)
@@ -38,15 +47,6 @@ export default class MessageCreate {
       const embeds = new Embeds(this.discord, message)
       const perms = new Permission(this.discord, message)
       const sql = new SQLQuery(message)
-
-      if (message.partial) {
-        try {
-          message = await message.fetch()
-        } catch (e) {
-          console.log(e)
-          return
-        }
-      }
 
       let prefix = await SQLQuery.fetchPrefix(message)
       if (!prefix) prefix = "=>"
@@ -191,6 +191,7 @@ export default class MessageCreate {
       if (cmdPath.options.nsfw && this.discord.checkMuted(message)) return
 
       if (cmdPath.options.guildOnly) {
+        // @ts-ignore
         if (message.channel.type === ChannelType.DM) return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds. ${this.discord.getEmoji("smugFace")}`)
       }
 

@@ -5,7 +5,7 @@ const procBlock = new Collection()
 const globalProcBlock = new Collection()
 
 export class ProcBlock {
-    public constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    public constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
     public getID = () => {
         if (this.message.guild) {
             return this.message.guild.id

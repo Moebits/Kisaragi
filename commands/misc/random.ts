@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import path from "path"
 
 export default class Random extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Executes a random command, excluding permission related commands.",
             help:

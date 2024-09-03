@@ -8,7 +8,7 @@ import {Functions} from "./../../structures/Functions"
 import {Permission} from "./../../structures/Permission"
 
 export default class Usage extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Get the usage statistics of a command, guild, or user.",
             help:

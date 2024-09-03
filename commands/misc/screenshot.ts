@@ -9,7 +9,7 @@ import path from "path"
 import fs from "fs"
 
 export default class Screenshot extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
           description: "Posts a website screenshot.",
           help:

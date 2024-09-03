@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Warns extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Lists all warns.",
             help:
@@ -106,7 +106,7 @@ export default class Warns extends Command {
             message.channel.send({embeds: [warnArray[0]]})
         }
 
-        async function warnPrompt(msg: Message) {
+        async function warnPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
             const warnOne = await sql.fetchColumn("guilds", "warn one")

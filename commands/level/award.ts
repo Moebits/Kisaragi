@@ -6,7 +6,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Points} from "../../structures/Points"
 
 export default class Award extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Award users level xp.",
             help:

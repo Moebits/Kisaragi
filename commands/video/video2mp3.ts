@@ -12,7 +12,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
 export default class ConstrainGIF extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Converts a video file or link to mp3.",
             help:

@@ -32,7 +32,7 @@ type QueueItem = {
     file: string
     originalFile: string
     playing: boolean
-    message: Message | null
+    message: Message<true> | null
     kind: string
 }
 
@@ -64,7 +64,7 @@ export class Audio {
     private readonly soundcloud: Soundcloud
     private readonly embeds: Embeds
     private readonly perms: Permission
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
         this.embeds = new Embeds(this.discord, this.message)
         this.perms = new Permission(this.discord, this.message)
         this.soundcloud = new Soundcloud()

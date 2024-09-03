@@ -9,7 +9,7 @@ import {Permission} from "./../../structures/Permission"
 const Spotify = require("node-spotify-api")
 
 export default class SpotifyCommand extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for spotify tracks and artists.",
             help:

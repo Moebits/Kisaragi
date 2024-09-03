@@ -12,7 +12,7 @@ export default class YoutubeCommand extends Command {
     private video = null as any
     private channel = null as any
     private playlist = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for youtube videos, channels, and playlists.",
             help:

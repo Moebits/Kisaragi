@@ -5,7 +5,7 @@ import {Permission} from "./Permission"
 import {SQLQuery} from "./SQLQuery"
 
 export class Block {
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
     public blockWord = async () => {
         const message = this.message
         const sql = new SQLQuery(message)

@@ -13,7 +13,7 @@ export default class Kancolle extends Command {
         "Uzuki", "Urakaze", "Amatsukaze", "Kawakaze", "Tokitsukaze", "Harusame",
         "Etorofu", "Matsuwa", "Tsushima"
     ]
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Gets information on a kancolle ship girl.",
             help:
@@ -50,7 +50,8 @@ export default class Kancolle extends Command {
         if (query.match(/kancolle.fandom.com/)) {
             query = query.replace("https://kancolle.fandom.com/wiki/", "")
         }
-        const res = await axios.get(`https://kancolle.fandom.com/api/v1/Search/List?query=${query}&limit=25&minArticleQuality=10`, {headers})
+        const res = await axios.get(`https://kancolle.fandom.com/wiki/${query}`, {headers})
+        console.log(res)
         const id = res.data?.items[0]?.id
         if (!id) {
             return this.invalidQuery(embeds.createEmbed()

@@ -7,7 +7,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class LevelRoles extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures settings for level up roles.",
             help:
@@ -100,7 +100,7 @@ export default class LevelRoles extends Command {
             message.channel.send({embeds: levelArray})
         }
 
-        async function levelPrompt(msg: Message) {
+        async function levelPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             let roles = await sql.fetchColumn("guilds", "level roles")
             if (!roles) roles = []

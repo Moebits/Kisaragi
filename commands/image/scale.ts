@@ -5,7 +5,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Scale extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
           description: "Scales an image by a certain factor.",
           help:

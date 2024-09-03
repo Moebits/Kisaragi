@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class ReactionRoles extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures settings for reaction roles.",
             help:
@@ -99,7 +99,7 @@ export default class ReactionRoles extends Command {
             message.channel.send({embeds: [reactArray[0]]})
         }
 
-        async function reactPrompt(msg: Message) {
+        async function reactPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             .setTitle(`**Reaction Roles** ${discord.getEmoji("tohruThumbsUp2")}`)
             let reactionroles = await sql.fetchColumn("guilds", "reaction roles")

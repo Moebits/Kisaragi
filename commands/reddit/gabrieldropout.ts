@@ -9,7 +9,7 @@ import {Permission} from "./../../structures/Permission"
 import Reddit from "./reddit"
 
 export default class Gabrieldropout extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "The gabriel dropout subreddit.",
             help:
@@ -51,7 +51,7 @@ export default class Gabrieldropout extends Command {
         }
         let redditArray = await redditCmd.getSubmissions(reddit, postIDS, true)
         redditArray = Functions.shuffleArray(redditArray)
-        let msg: Message
+        let msg: Message<true>
         if (!redditArray[0]) return redditCmd.noResults()
         if (redditArray.length === 1) {
             msg = await message.channel.send({embeds: [redditArray[0]]})

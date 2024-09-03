@@ -7,7 +7,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Gallery extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures gallery (image only) channels.",
             help:
@@ -84,7 +84,7 @@ export default class Gallery extends Command {
             message.channel.send({embeds: [galleryArray[0]]})
         }
 
-        async function galleryPrompt(msg: Message) {
+        async function galleryPrompt(msg: Message<true>) {
             let gallery = await sql.fetchColumn("guilds", "gallery")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Gallery Channels** ${discord.getEmoji("raphiOMG")}`)

@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const google = require("google-it")
 
 export default class Google extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches a search term on google.",
             help:

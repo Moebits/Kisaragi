@@ -5,7 +5,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Resize extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
           description: "Resizes an image to a new width/height (or resizes proportionally).",
           help:

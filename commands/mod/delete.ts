@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 
 export default class Delete extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Deletes the specified number of messages.",
             help:
@@ -28,7 +28,7 @@ export default class Delete extends Command {
         })
     }
 
-    public bulkDelete = async (num: number, message: Message, userID: boolean, search: boolean, args: string[], query: string, text: boolean, image: boolean) => {
+    public bulkDelete = async (num: number, message: Message<true>, userID: boolean, search: boolean, args: string[], query: string, text: boolean, image: boolean) => {
         const msgArray: string[] = []
         if (userID) {
             const messages = await message.channel.messages.fetch({limit: num}).then((c) => c.map((m: Message) => m))

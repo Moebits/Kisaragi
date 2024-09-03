@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Welcome extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures settings for welcome messages.",
             help:
@@ -102,7 +102,7 @@ export default class Welcome extends Command {
         `))
         message.channel.send({embeds: [welcomeEmbed], files: [attachment]})
 
-        async function welcomePrompt(msg: Message) {
+        async function welcomePrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             let [setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor, setBGToggle] = [] as boolean[]
             responseEmbed.setTitle(`**Welcome Messages** ${discord.getEmoji("karenSugoi")}`)

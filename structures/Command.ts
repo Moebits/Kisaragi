@@ -22,7 +22,7 @@ export class Command {
   public readonly options: CommandOptions
   public slash: RESTPostAPIChatInputApplicationCommandsJSONBody
 
-  constructor(public readonly discord: Kisaragi, public readonly message: Message, {
+  constructor(public readonly discord: Kisaragi, public readonly message: Message<true>, {
       params = "",
       description = "No description provided.",
       help = "This command is not documented.",

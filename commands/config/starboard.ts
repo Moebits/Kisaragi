@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Starboard extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Forwards messages that exceed a threshold of star reactions to a starboard channel.",
             help:
@@ -75,7 +75,7 @@ export default class Starboard extends Command {
 
         message.channel.send({embeds: [pinboardEmbed]})
 
-        async function pinboardPrompt(msg: Message) {
+        async function pinboardPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             .setTitle(`**Starboard** ${discord.getEmoji("tohruSmug")}`)
 

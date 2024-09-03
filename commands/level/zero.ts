@@ -7,7 +7,7 @@ import {Permission} from "../../structures/Permission"
 import {Points} from "../../structures/Points"
 
 export default class Zero extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Resets your points back to zero (no undo).",
             help:

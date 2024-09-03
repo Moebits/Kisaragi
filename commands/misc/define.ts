@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const {CollegiateDictionary} = require("mw-dict")
 
 export default class Define extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Retrieves the definition of a word from merriam webster.",
             help:

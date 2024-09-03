@@ -5,7 +5,7 @@ import {SQLQuery} from "../../structures/SQLQuery"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class DeleteGuild extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Deletes a guild (created by the bot).",
             aliases: ["dg"],

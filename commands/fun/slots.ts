@@ -3,7 +3,7 @@ import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Slots extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Rolls the slot machine.",
             help:

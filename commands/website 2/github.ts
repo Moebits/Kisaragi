@@ -11,7 +11,7 @@ const GitHub = require("github-api")
 export default class Github extends Command {
     private user = null as any
     private repo = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for github repositories and users.",
             help:

@@ -1,9 +1,9 @@
-import {GuildEmoji, Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {GuildEmoji, ApplicationEmoji, Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class React extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: `Adds a reaction to a message.`,
             help:
@@ -56,7 +56,7 @@ export default class React extends Command {
         let lastMessage = await discord.getLastMessage(message)
 
         if (args[1] === "msg" || args[1] === "message") {
-            const msg = await discord.fetchMessage(message, args[2]) ?? message
+            const msg = await discord.fetchMessage(message, args[2]) as Message<true> ?? message
             if (msg) {
                 lastMessage = msg
             } else {
@@ -65,7 +65,7 @@ export default class React extends Command {
             args.shift()
             args.shift()
         }
-        let emoji: GuildEmoji | null
+        let emoji: GuildEmoji | ApplicationEmoji | null
         switch (args[1]) {
             case "dev":
                 if (!args[2]) return message.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)

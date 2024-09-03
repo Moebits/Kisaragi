@@ -7,7 +7,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Points extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures settings for xp gaining.",
             help:
@@ -90,7 +90,7 @@ export default class Points extends Command {
         `))
         message.channel.send({embeds: [levelEmbed]})
 
-        async function levelPrompt(msg: Message) {
+        async function levelPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Point Settings** ${discord.getEmoji("mexShrug")}`)
             let [setOn, setOff, setRange, setThreshold, setTimeout, setMsg] = [false, false, false, false, false, false]

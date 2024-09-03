@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Disable extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Disables certain command categories.",
             help:
@@ -63,7 +63,7 @@ export default class Disable extends Command {
 
         message.channel.send({embeds: [disableEmbed]})
 
-        async function disablePrompt(msg: Message) {
+        async function disablePrompt(msg: Message<true>) {
             let categories = await sql.fetchColumn("guilds", "disabled categories")
             if (!categories) categories = []
             const responseEmbed = embeds.createEmbed()

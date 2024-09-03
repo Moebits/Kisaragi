@@ -13,7 +13,7 @@ export default class Genshin extends Command {
         "Nahida", "Navia", "Nilou", "Noelle", "Qiqi", "Sayu", "Shenhe", "Sigewinne", "Xiangling", "Yae-Miko",
         "Raiden", "Yanfei", "Yaoyao", "Yelan", "Yoimiya", "Yun-Jin", "Lumine"
     ]
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Gets information on a genshin impact character.",
             help:
@@ -75,12 +75,12 @@ export default class Genshin extends Command {
         if (!name) {
             return this.invalidQuery(embeds.createEmbed()
             .setAuthor({name: "genshin impact", iconURL: "https://static.wikia.nocookie.net/gensin-impact/images/8/80/Genshin_Impact.png"})
-            .setTitle(`**Genshin Impact Search** ${discord.getEmoji("kleeHappy")}`))
+            .setTitle(`**Genshin Impact Search** ${discord.getEmoji("kleePout")}`))
         }
         const genshinEmbed = embeds.createEmbed()
         genshinEmbed
         .setAuthor({name: "genshin impact", iconURL: "https://static.wikia.nocookie.net/gensin-impact/images/8/80/Genshin_Impact.png"})
-        .setTitle(`**Genshin Impact Search** ${discord.getEmoji("kleeHappy")}`)
+        .setTitle(`**Genshin Impact Search** ${discord.getEmoji("kleePout")}`)
         .setURL(`https://genshin-impact.fandom.com/wiki/${name}`)
         .setThumbnail(`https://genshin.jmp.blue/characters/${json.id}/${thumb}`)
         .setImage(`https://genshin.jmp.blue/characters/${json.id}/${image}`)

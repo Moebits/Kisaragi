@@ -11,7 +11,7 @@ import {Permission} from "./../../structures/Permission"
 const svg2img = require("svg2img")
 
 export default class Wikipedia extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for wikipedia articles.",
             help:

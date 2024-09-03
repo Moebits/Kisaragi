@@ -17,7 +17,7 @@ export default class AzurLane extends Command {
         "Nicholas", "Radford", "Little Bel", "Agano", "Z18", "22", "Noire", "33",
         "HDN Neptune", "Ayanami", "Murasaki Shion"
     ]
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Gets information on an azur lane ship girl.",
             help:

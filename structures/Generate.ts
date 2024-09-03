@@ -10,7 +10,7 @@ class Dummy {
 }
 
 export class Generate {
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
 
     /*Generate Command JSON file*/
     public static generateJSON = () => {

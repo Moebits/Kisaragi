@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class ChannelLink extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configure settings for linked channels.",
             help:
@@ -96,7 +96,7 @@ export default class ChannelLink extends Command {
             embeds.createReactionEmbed(linkArray)
         }
 
-        async function linkPrompt(msg: Message) {
+        async function linkPrompt(msg: Message<true>) {
             let linked = await sql.fetchColumn("guilds", "linked")
             let [setText, setVoice] = [] as boolean[]
             if (!linked) linked = []

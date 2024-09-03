@@ -10,7 +10,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class OsuCommand extends Command {
     private user = null as any
     private beatmap = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for osu beatmaps, players, and scores.",
             help:

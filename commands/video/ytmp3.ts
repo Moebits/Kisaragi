@@ -9,7 +9,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Video} from "../../structures/Video"
 
 export default class YtMp3 extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Short alias for youtube download mp3.",
             help:

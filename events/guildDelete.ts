@@ -11,7 +11,7 @@ export default class GuildDelete {
     public run = async (guild: Guild) => {
         if (!guild.available) return
         const discord = this.discord
-        const message = await this.discord.fetchFirstMessage(guild) as Message
+        const message = await this.discord.fetchFirstMessage(guild) as Message<true>
         const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
@@ -23,7 +23,7 @@ export default class GuildDelete {
             const logEmbed = embeds.createEmbed()
             logEmbed
             .setAuthor({name: "guild leave", iconURL: "https://steamuserimages-a.akamaihd.net/ugc/956342034402318288/74A95F211FAF8ABF470C3F5716A1D6C1A90B0C9F/"})
-            .setTitle(`**Left guild!** ${discord.getEmoji("CirNo")}`)
+            .setTitle(`**Left guild!** ${discord.getEmoji("cirNo")}`)
             .setThumbnail(guild.iconURL() ? guild.iconURL({extension: "png"})! : "")
             .setImage(guild.bannerURL() ? guild.bannerURL({extension: "png"})! : (guild.splashURL() ? guild.splashURL({extension: "png"})! : ""))
             .setDescription(

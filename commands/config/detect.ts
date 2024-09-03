@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Detect extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures detection settings.",
             help:
@@ -87,7 +87,7 @@ export default class Detect extends Command {
         `))
         message.channel.send({embeds: [detectEmbed]})
 
-        async function detectPrompt(msg: Message) {
+        async function detectPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Detection Settings** ${discord.getEmoji("sagiriBleh")}`)
             let [setLink, setAnime, setPfp, setResponse, setWeeb, setNormie] = [] as boolean[]

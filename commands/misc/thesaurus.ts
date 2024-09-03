@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const {CollegiateThesaurus} = require("mw-dict")
 
 export default class Thesaurus extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Gets synonyms for a word from merriam webster.",
             help:

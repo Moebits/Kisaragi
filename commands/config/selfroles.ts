@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Selfroles extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures settings for self-assignable roles, or lists all of them.",
             help:
@@ -125,7 +125,7 @@ export default class Selfroles extends Command {
             message.channel.send({embeds: [selfArray[0]]})
         }
 
-        async function selfPrompt(msg: Message) {
+        async function selfPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Self Roles** ${discord.getEmoji("karenSugoi")}`)
             let selfroles = await sql.fetchColumn("guilds", "self roles")

@@ -12,14 +12,14 @@ export class Oauth2 {
     private readonly sql: SQLQuery
     private readonly embeds: Embeds
     private readonly redditCmd: RedditCmd
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
         this.sql = new SQLQuery(this.message)
         this.embeds = new Embeds(this.discord, this.message)
         this.redditCmd = new RedditCmd(this.discord, this.message)
     }
 
     /** Add Reddit options to a reddit embed */
-    public redditOptions = async (msg: Message) => {
+    public redditOptions = async (msg: Message<true>) => {
         const reactions = ["upvote", "downvote", "comment", "redditsave", "subscribe"]
         for (let i = 0; i < reactions.length; i++) await msg.react(this.discord.getEmoji(reactions[i]))
 
@@ -182,7 +182,7 @@ export class Oauth2 {
     }
 
     /** Add twitter options to a twitter embed */
-    public twitterOptions = async (msg: Message) => {
+    public twitterOptions = async (msg: Message<true>) => {
         const reactions = ["reply", "retweet", "twitterheart"]
         for (let i = 0; i < reactions.length; i++) await msg.react(this.discord.getEmoji(reactions[i]))
 

@@ -12,7 +12,7 @@ const nsfwBoards = ["b", "r9k", "pol", "bant", "soc", "s4s", "s", "hc", "hm", "h
                     "e", "u", "d", "y", "t", "hr", "gif", "aco", "r"]
 
 export default class $4chan extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for posts and images on 4chan.",
             help:

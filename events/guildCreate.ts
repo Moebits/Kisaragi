@@ -11,7 +11,7 @@ export default class GuildCreate {
 
     public run = async (guild: Guild) => {
         const discord = this.discord
-        const message = await this.discord.fetchFirstMessage(guild) as Message
+        const message = await this.discord.fetchFirstMessage(guild) as Message<true>
         if (!message && guild.id !== "264445053596991498") {
             const chan = guild.channels.cache.find(((c) => c.permissionsFor(guild.members.me!)?.has("SendMessages") ?? false))
             if (chan) await (chan as TextChannel).send(`The permissions **View Channel** and **Read Message History** are required. Reinvite the bot with sufficient permissions ${discord.getEmoji("kannaFacepalm")}`)
@@ -83,7 +83,7 @@ export default class GuildCreate {
         logGuild(guild)
 
         const joinMessage = async () => {
-            const msg = mainChannel.lastMessage
+            const msg = mainChannel.lastMessage as Message<true>
             if (msg) {
                 await cmd.runCommand(msg, ["gettingstarted"])
             } else {

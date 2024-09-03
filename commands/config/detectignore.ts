@@ -7,7 +7,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class DetectChannels extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures channels ignored by anime detection.",
             help:
@@ -84,7 +84,7 @@ export default class DetectChannels extends Command {
             message.channel.send({embeds: [detectArray[0]]})
         }
 
-        async function detectPrompt(msg: Message) {
+        async function detectPrompt(msg: Message<true>) {
             let ignored = await sql.fetchColumn("guilds", "ignored")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Ignored Anime Detection Channels** ${discord.getEmoji("kisaragiBawls")}`)

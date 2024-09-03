@@ -12,7 +12,7 @@ export default class Reddit extends Command {
     private sub = null as any
     private postID = null as any
     private user = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches posts on a reddit subreddit.",
             help:
@@ -186,7 +186,7 @@ export default class Reddit extends Command {
         if (!postIDS.join("")) return this.noResults()
         const redditArray = await this.getSubmissions(reddit, postIDS)
         if (!redditArray[0]) return this.noResults()
-        let msg: Message
+        let msg: Message<true>
         if (redditArray.length === 1) {
             msg = await message.channel.send({embeds: [redditArray[0]]})
         } else {

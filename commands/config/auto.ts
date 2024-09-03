@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Auto extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures settings for auto commands.",
             help:
@@ -106,7 +106,7 @@ export default class Auto extends Command {
             message.channel.send({embeds: autoArray})
         }
 
-        async function autoPrompt(msg: Message) {
+        async function autoPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Auto Commands** ${discord.getEmoji("think")}`)
             let [setCmd, setChannel, setFreq, setInit] = [] as boolean[]

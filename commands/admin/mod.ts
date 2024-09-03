@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Mod extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures moderation settings for the server.",
             help:
@@ -100,7 +100,7 @@ export default class Mod extends Command {
 
         message.channel.send({embeds: [modEmbed]})
 
-        async function modPrompt(msg: Message) {
+        async function modPrompt(msg: Message<true>) {
             const ascii = await sql.fetchColumn("guilds", "ascii name toggle")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)

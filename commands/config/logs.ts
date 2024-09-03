@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Logs extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures logging settings (message log, mod log, etc).",
             help:
@@ -80,7 +80,7 @@ export default class Logs extends Command {
 
         message.channel.send({embeds: [logEmbed]})
 
-        async function logPrompt(msg: Message) {
+        async function logPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             .setTitle(`**Logs** ${discord.getEmoji("kannaSpook")}`)
 

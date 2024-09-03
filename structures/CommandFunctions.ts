@@ -9,15 +9,16 @@ import path from "path"
 const noCmdCool = new Set()
 
 export class CommandFunctions {
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
 
     // Run Command
-    public runCommand = async (msg: Message, args: string[], noMsg?: boolean) => {
+    public runCommand = async (msg: Message<true>, args: string[], noMsg?: boolean) => {
         args = args.filter(Boolean)
         const cmdPath = await this.findCommand(args?.[0]) as string
         if (!cmdPath) return this.noCommand(args?.[0], noMsg)
         const cp = new (require(path.join(__dirname, `${cmdPath.slice(0, -3)}`)).default)(this.discord, msg)
         if (cp.options.guildOnly) {
+            // @ts-ignore
             if (msg.channel.type === ChannelType.DM) return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
         }
         let data: any
@@ -35,8 +36,9 @@ export class CommandFunctions {
     }
 
     // Run Command (from Class)
-    public runCommandClass = async (cmd: Command, msg: Message, args: string[]) => {
+    public runCommandClass = async (cmd: Command, msg: Message<true>, args: string[]) => {
         if (cmd.options.guildOnly) {
+            // @ts-ignore
             if (msg.channel.type === ChannelType.DM) return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
         }
         let data: any

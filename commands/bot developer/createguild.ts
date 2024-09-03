@@ -4,7 +4,7 @@ import {Permission} from "../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class CreateGuild extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Creates a new guild.",
             aliases: ["cg"],
@@ -13,7 +13,7 @@ export default class CreateGuild extends Command {
         })
     }
 
-    public createGuild = async (discord: Kisaragi, message: Message, guildName: string) => {
+    public createGuild = async (discord: Kisaragi, message: Message<true>, guildName: string) => {
         const perms = new Permission(discord, message)
         if (!perms.checkBotDev()) return
 

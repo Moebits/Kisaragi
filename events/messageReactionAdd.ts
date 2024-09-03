@@ -1,4 +1,4 @@
-import {EmbedBuilder, MessageReaction, PartialMessageReaction, TextChannel, User, PartialUser} from "discord.js"
+import {EmbedBuilder, Message, MessageReaction, PartialMessageReaction, TextChannel, User, PartialUser} from "discord.js"
 import {Embeds} from "./../structures/Embeds"
 import {Kisaragi} from "./../structures/Kisaragi"
 import {SQLQuery} from "./../structures/SQLQuery"
@@ -11,8 +11,8 @@ export default class MessageReactionAdd {
         const discord = this.discord
         if (user.id === discord.user!.id) return
         if (reaction.message.partial) reaction.message = await reaction.message.fetch()
-        const sql = new SQLQuery(reaction.message)
-        const embeds = new Embeds(this.discord, reaction.message)
+        const sql = new SQLQuery(reaction.message as Message<true>)
+        const embeds = new Embeds(this.discord, reaction.message as Message<true>)
 
         const retriggerEmbed = async (reaction: MessageReaction) => {
             if (reaction.message.partial) reaction.message = await reaction.message.fetch()
@@ -40,9 +40,9 @@ export default class MessageReactionAdd {
                         }
                         active.add(reaction.message.id)
                         if (help && !download) {
-                            embeds.editHelpEmbed(reaction.message, reaction.emoji.name!, user, newEmbeds)
+                            embeds.editHelpEmbed(reaction.message as Message<true>, reaction.emoji.name!, user, newEmbeds)
                         } else {
-                            embeds.editReactionCollector(reaction.message, reaction.emoji.name!, user, newEmbeds, Boolean(collapse), Boolean(download), Number(page))
+                            embeds.editReactionCollector(reaction.message as Message<true>, reaction.emoji.name!, user, newEmbeds, Boolean(collapse), Boolean(download), Number(page))
                         }
                     }
                 } else {
@@ -78,7 +78,7 @@ export default class MessageReactionAdd {
                             await user.send({embeds: [dmEmbed]}).catch(() => null)
                         }
                     } catch {
-                        const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message)
+                        const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message) as Message<true>
                         try {
                             await foundMsg?.channel.send(`I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
                         } catch {

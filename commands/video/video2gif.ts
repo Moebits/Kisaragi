@@ -14,7 +14,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
 export default class Video2GIF extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Converts a portion of a video to a gif.",
             help:

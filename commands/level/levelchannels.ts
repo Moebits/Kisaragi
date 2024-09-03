@@ -7,7 +7,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class LevelChannels extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Sets the channels where no xp will be awarded.",
             help:
@@ -84,7 +84,7 @@ export default class LevelChannels extends Command {
             message.channel.send({embeds: [detectArray[0]]})
         }
 
-        async function detectPrompt(msg: Message) {
+        async function detectPrompt(msg: Message<true>) {
             let channels = await sql.fetchColumn("guilds", "level channels")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Level Channels** ${discord.getEmoji("think")}`)

@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Leave extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures settings for leave messages.",
             help:
@@ -102,7 +102,7 @@ export default class Leave extends Command {
         `))
         message.channel.send({embeds: [leaveEmbed], files: [attachment]})
 
-        async function leavePrompt(msg: Message) {
+        async function leavePrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             let [setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor, setBGToggle] = [false, false, false, false, false, false, false, false]
             responseEmbed.setTitle(`**Leave Messages** ${discord.getEmoji("sagiriBleh")}`)

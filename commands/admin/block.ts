@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Block extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configure settings for word and invite filtering.",
             help:
@@ -109,7 +109,7 @@ export default class Block extends Command {
         `))
         message.channel.send({embeds: [blockEmbed]})
 
-        async function blockPrompt(msg: Message) {
+        async function blockPrompt(msg: Message<true>) {
             let words = await sql.fetchColumn("guilds", "blocked words")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Blocked Words** ${discord.getEmoji("gabuChrist")}`)

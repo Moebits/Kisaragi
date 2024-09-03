@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class GettingStarted extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Posts getting started info.",
             help:
@@ -58,7 +58,7 @@ export default class GettingStarted extends Command {
             `I hope that you enjoy using this bot! ${discord.getEmoji("aquaUp")}\n` +
             `The command documentation is also on my [**website**](${config.website}).`
         )
-        let msg = null as unknown as Message
+        let msg = null as unknown as Message<true>
         try {
             if (args[1]) {
                 const chan = message.guild?.channels.cache.find((c) => c.id === args[1].match(/\d{15,}/)?.[0]) as TextChannel

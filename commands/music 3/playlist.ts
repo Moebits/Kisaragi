@@ -8,7 +8,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 import {Permission} from "../../structures/Permission"
 
 export default class Playlists extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Plays or manages your playlists.",
             help:

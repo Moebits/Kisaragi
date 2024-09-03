@@ -9,7 +9,7 @@ import {Permission} from "../../structures/Permission"
 export default class Discordjs extends Command {
     private src = null as any
     private search = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches the discord.js docs.",
             help:

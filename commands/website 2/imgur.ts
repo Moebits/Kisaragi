@@ -8,7 +8,7 @@ import {Permission} from "./../../structures/Permission"
 const imgur = require("imgur")
 
 export default class Imgur extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for images on imgur.",
             help:

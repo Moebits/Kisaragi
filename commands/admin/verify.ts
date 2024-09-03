@@ -6,7 +6,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Verify extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Posts a captcha that must be solved to be verified.",
             help:
@@ -58,7 +58,7 @@ export default class Verify extends Command {
             message.channel.send({embeds: [cap]}).then(() => {
                 message.channel.awaitMessages({filter, max: 1, time: 30000, errors: ["time"]})
                     .then(async (collected) => {
-                        const msg = collected.first() as Message
+                        const msg = collected.first() as Message<true>
                         const responseEmbed = embeds.createEmbed()
                         responseEmbed
                         .setTitle(`Captcha ${discord.getEmoji("kannaAngry")}`)

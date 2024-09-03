@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Pinboard extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Forwards pins to a pinboard channel.",
             help:
@@ -71,7 +71,7 @@ export default class Pinboard extends Command {
 
         message.channel.send({embeds: [pinboardEmbed]})
 
-        async function pinboardPrompt(msg: Message) {
+        async function pinboardPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             .setTitle(`**Pinboard** ${discord.getEmoji("yes")}`)
 

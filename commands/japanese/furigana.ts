@@ -8,7 +8,7 @@ const Kuroshiro = require("kuroshiro")
 const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
 
 export default class Furigana extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Adds furigana to japanese text.",
             help:

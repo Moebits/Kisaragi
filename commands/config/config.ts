@@ -7,7 +7,7 @@ import {Permission} from "./../../structures/Permission"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Config extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configures bot settings like embed colors.",
             help:
@@ -69,7 +69,7 @@ export default class Config extends Command {
 
         message.channel.send({embeds: [configEmbed]})
 
-        async function configPrompt(msg: Message) {
+        async function configPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Bot Config Settings** ${discord.getEmoji("gabStare")}`)
             let [setColor, setPerm] = [] as boolean[]

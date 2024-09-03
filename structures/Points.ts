@@ -5,7 +5,7 @@ import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 
 export class Points {
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
 
     /** Adds level up roles */
     public levelRoles = async (user: any, batch?: boolean) => {

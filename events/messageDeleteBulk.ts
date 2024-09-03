@@ -7,9 +7,9 @@ import {SQLQuery} from "./../structures/SQLQuery"
 export default class MessageDeleteBulk {
     constructor(private readonly discord: Kisaragi) {}
 
-    public run = async (messages:  ReadonlyCollection<Snowflake, Message | PartialMessage>, channel: GuildTextBasedChannel) => {
+    public run = async (messages:  ReadonlyCollection<Snowflake, Message| PartialMessage>, channel: GuildTextBasedChannel) => {
         const discord = this.discord
-        const message = channel.lastMessage
+        const message = channel.lastMessage as Message<true>
         if (!message) return
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)

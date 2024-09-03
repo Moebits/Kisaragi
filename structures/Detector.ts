@@ -8,7 +8,7 @@ import {SQLQuery} from "./SQLQuery"
 import {animedetect} from "animedetect"
 
 export class Detector {
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
     public detectIgnore = async () => {
         const sql = new SQLQuery(this.message)
         const ignored = await sql.fetchColumn("guilds", "ignored")

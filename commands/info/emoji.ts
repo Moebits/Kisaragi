@@ -1,11 +1,11 @@
-import {GuildEmoji, Message, EmbedBuilder} from "discord.js"
+import {GuildEmoji, ApplicationEmoji, Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Emoji extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Posts the image of an emoji.",
             help:
@@ -26,7 +26,7 @@ export default class Emoji extends Command {
         })
     }
 
-    public getImage = (emoji: GuildEmoji) => {
+    public getImage = (emoji: GuildEmoji | ApplicationEmoji) => {
         let image = ""
         if (emoji.animated) {
             image = `https://cdn.discordapp.com/emojis/${emoji.id}.gif`
@@ -74,7 +74,7 @@ export default class Emoji extends Command {
         const emojiID = String(emojiName.replace(/(?<=:)(.*?)(?=:)/g, "").match(/\d+/))
 
         if (emojiID === "null") {
-            let emojiFound: GuildEmoji | undefined
+            let emojiFound: GuildEmoji | ApplicationEmoji | undefined
             if (args[1] === "dev") {
                 emojiFound = discord.getEmoji(args[2])
             } else  {

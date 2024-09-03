@@ -12,7 +12,7 @@ import {SQLQuery} from "../../structures/SQLQuery"
 export default class YTNotify extends Command {
     private readonly youtube = new Youtube(process.env.GOOGLE_API_KEY!)
     private readonly sql = new SQLQuery(this.message)
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configure youtube video upload notifications.",
             help:
@@ -128,7 +128,7 @@ export default class YTNotify extends Command {
             embeds.createReactionEmbed(ytArray)
         }
 
-        async function ytPrompt(msg: Message) {
+        async function ytPrompt(msg: Message<true>) {
             let channels = await sql.fetchColumn("guilds", "yt channels")
             if (!channels) channels = []
             const yt = channels[0] ? await self.getYT(channels) : []

@@ -11,7 +11,7 @@ let deviantArray: EmbedBuilder[] = []
 export default class Deviantart extends Command {
     private user = null as any
     private deviation = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for deviantart deviations and users.",
             help:

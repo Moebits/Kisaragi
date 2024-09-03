@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 export default class TwitterCommand extends Command {
     private user = null as any
     private search = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for twitter tweets and users.",
             help:

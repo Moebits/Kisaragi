@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import * as nasa from "nasa-sdk"
 
 export default class Nasa extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Posts a random picture of space.",
             help:

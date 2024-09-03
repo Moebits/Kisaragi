@@ -8,7 +8,7 @@ const Kuroshiro = require("kuroshiro")
 const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
 
 export default class Romaji extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Converts japanese text to romaji.",
             help:

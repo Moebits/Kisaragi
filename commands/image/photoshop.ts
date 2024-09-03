@@ -21,7 +21,7 @@ export default class Photoshop extends Command {
     private historyIndex = -1
     private original = ""
     private originalEmbed = ""
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
           description: "Opens the image editor to apply multiple edits to an image.",
           help:

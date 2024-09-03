@@ -4,7 +4,7 @@ import {Kisaragi} from "./Kisaragi"
 
 export class Cooldown {
     private readonly embeds: Embeds
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
         this.embeds = new Embeds(this.discord, this.message)
     }
 

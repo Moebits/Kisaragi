@@ -27,8 +27,8 @@ export default class GuildMemberAdd {
             defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === String(defChannel)) as TextChannel
         }
 
-        const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message :
-        await this.discord.fetchFirstMessage(member.guild) as Message
+        const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message<true> :
+        await this.discord.fetchFirstMessage(member.guild) as Message<true>
 
         const image = new Images(this.discord, defMsg)
         const embeds = new Embeds(this.discord, defMsg)

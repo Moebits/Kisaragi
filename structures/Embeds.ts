@@ -15,7 +15,7 @@ export class Embeds {
     private readonly sql: SQLQuery
     private readonly images: Images
     
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
         this.functions = new Functions(this.message)
         this.sql = new SQLQuery(this.message)
         this.images = new Images(this.discord, this.message)
@@ -47,7 +47,7 @@ export class Embeds {
     }
 
     /** Updates an embed */
-    public updateEmbed = async (embeds: EmbedBuilder[], page: number, user: User, msg?: Message, help?: boolean, helpIndex?: number, cmdCount?: number[]) => {
+    public updateEmbed = async (embeds: EmbedBuilder[], page: number, user: User, msg?: Message<true>, help?: boolean, helpIndex?: number, cmdCount?: number[]) => {
         if (!embeds[page]) return null
         if (msg) await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
         if (help) {
@@ -68,10 +68,10 @@ export class Embeds {
         const insertEmbeds = embeds
         await this.updateEmbed(embeds, page, this.message.author!)
         const reactions: Emoji[] = [this.discord.getEmoji("right"), this.discord.getEmoji("left"), this.discord.getEmoji("tripleRight"), this.discord.getEmoji("tripleLeft")]
-        let msg: Message
+        let msg: Message<true>
         if (dm) {
             try {
-                msg = await dm.send({embeds: [embeds[page]]})
+                msg = await dm.send({embeds: [embeds[page]]}) as any
             } catch {
                 return this.message
             }
@@ -230,7 +230,7 @@ export class Embeds {
                 return
             }
             const self = this
-            async function getPageNumber(response: Message) {
+            async function getPageNumber(response: Message<true>) {
                 if (Number.isNaN(Number(response.content)) || Number(response.content) > embeds.length) {
                     const rep = await response.reply("That page number is invalid.")
                     await new Promise<void>((resolve) => {
@@ -279,7 +279,7 @@ export class Embeds {
     }
 
     // Re-trigger Existing Reaction Embed
-    public editReactionCollector = async (msg: Message, emoji: string, user: User, embeds: EmbedBuilder[], collapseOn?: boolean, download?: boolean, startPage?: number) => {
+    public editReactionCollector = async (msg: Message<true>, emoji: string, user: User, embeds: EmbedBuilder[], collapseOn?: boolean, download?: boolean, startPage?: number) => {
         let page = 0
         if (startPage) page = startPage
         await this.updateEmbed(embeds, page, this.message.author!, msg)
@@ -611,7 +611,7 @@ export class Embeds {
         const pages = [page1, page2]
         let pageIndex = 0
         if (reactionPage === 2) pageIndex = 1
-        let msg: Message
+        let msg: Message<true>
         if (this.message instanceof ChatInputCommandInteraction) {
             // @ts-ignore
             msg = await this.message.editReply({embeds: [embeds[page]]})
@@ -758,7 +758,7 @@ export class Embeds {
     }
 
     /** Re-trigger Help Embed */
-    public editHelpEmbed = (msg: Message, emoji: string, user: User, embeds: EmbedBuilder[]) => {
+    public editHelpEmbed = (msg: Message<true>, emoji: string, user: User, embeds: EmbedBuilder[]) => {
         const emojiMap: string[] = [
             "admin", "anime", "config", "fun", "game",
             "heart", "image", "info", "japanese", "level", "lewd", "misc",
@@ -951,12 +951,12 @@ export class Embeds {
     }
 
     // Create Prompt
-    public createPrompt = (func: (message: Message, collector: MessageCollector) => void, infinite?: boolean): Promise<void> => {
+    public createPrompt = (func: (message: Message<true>, collector: MessageCollector) => void, infinite?: boolean): Promise<void> => {
         const filter = (m: Message) => m.author!.id === this.message.author!.id && m.channel === this.message.channel
         const collector = this.message.channel.createMessageCollector({filter, time: infinite ? undefined : 120000})
         return new Promise((resolve) => {
-            collector.on("collect", (m: Message) => {
-                func(m, collector)
+            collector.on("collect", (m) => {
+                func(m as Message<true>, collector)
                 collector.stop()
             })
 

@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const Tenor = require("tenorjs")
 
 export default class TenorCommand extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for gifs on tenor.",
             help:

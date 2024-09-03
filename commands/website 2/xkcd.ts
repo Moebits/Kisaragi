@@ -15,7 +15,7 @@ const monthNames = [
 ]
 
 export default class Xkcd extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for an xkcd comic.",
             help:

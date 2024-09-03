@@ -5,7 +5,7 @@ import {SQLQuery} from "./SQLQuery"
 
 export class Permission {
     private readonly sql: SQLQuery
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
         this.sql = new SQLQuery(this.message)
     }
 

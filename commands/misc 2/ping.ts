@@ -4,7 +4,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Ping extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
           description: "Posts the response time.",
           help:

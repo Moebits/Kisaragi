@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class CaptchaCmd extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configure settings for captcha verification.",
             help:
@@ -88,7 +88,7 @@ export default class CaptchaCmd extends Command {
         `))
         message.channel.send({embeds: [captchaEmbed], files})
 
-        async function captchaPrompt(msg: Message) {
+        async function captchaPrompt(msg: Message<true>) {
             const vRole = await sql.fetchColumn("guilds", "verify role")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)

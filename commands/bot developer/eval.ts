@@ -23,7 +23,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Eval extends Command {
-  constructor(discord: Kisaragi, message: Message) {
+  constructor(discord: Kisaragi, message: Message<true>) {
       super(discord, message, {
           description: "Evaluates Javascript code.",
           aliases: [],

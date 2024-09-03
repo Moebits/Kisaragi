@@ -14,7 +14,7 @@ export default class SoundCloud extends Command {
     private user = null as any
     private playlist = null as any
     private track = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for soundcloud tracks, users, and playlists or downloads them.",
             help:

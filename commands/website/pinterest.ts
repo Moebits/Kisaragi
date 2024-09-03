@@ -12,7 +12,7 @@ let pinArray: EmbedBuilder[] = []
 export default class Pinterest extends Command {
     private user = null as any
     private board = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for images on pinterest.",
             help:
@@ -34,7 +34,7 @@ export default class Pinterest extends Command {
         })
     }
 
-    public pinterestError = (discord: Kisaragi, message: Message, embeds: Embeds, msg?: string) => {
+    public pinterestError = (discord: Kisaragi, message: Message<true>, embeds: Embeds, msg?: string) => {
         if (!msg) msg = ""
         const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
@@ -45,7 +45,7 @@ export default class Pinterest extends Command {
         message.channel.send({embeds: [pinterestEmbed]})
     }
 
-    public pinterestPin = (discord: Kisaragi, message: Message, response: any) => {
+    public pinterestPin = (discord: Kisaragi, message: Message<true>, response: any) => {
         const embeds = new Embeds(discord, message)
         const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed

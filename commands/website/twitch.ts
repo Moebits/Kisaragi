@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Twitch extends Command {
     private channel = null as any
     private search = null as any
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for twitch streams and channels.",
             help:

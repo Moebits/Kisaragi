@@ -15,7 +15,7 @@ export class PixivApi {
     private readonly cmd: CommandFunctions
     private readonly perms: Permission
     private pixiv: Pixiv | null = null
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
         this.images = new Images(this.discord, this.message)
         this.embeds = new Embeds(this.discord, this.message)
         this.cmd = new CommandFunctions(this.discord, this.message)

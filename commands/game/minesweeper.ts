@@ -10,7 +10,7 @@ export default class Minesweeper extends Command {
     private done = false
     private original = null as any
     private revealed = false
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: `Starts a new game of minesweeper.`,
             help:
@@ -34,7 +34,7 @@ export default class Minesweeper extends Command {
         const current = this.replaceEmoji(board[row][column]).toLowerCase()
         if (current.includes("bomb")) {
             this.done = true
-            return `<@${user.id}>, Sorry but you lost this game! ${this.discord.getEmoji("CirNo")}`
+            return `<@${user.id}>, Sorry but you lost this game! ${this.discord.getEmoji("cirNo")}`
         }
         let lost = false
         let counter = 0

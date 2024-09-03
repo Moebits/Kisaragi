@@ -7,14 +7,14 @@ import {SQLQuery} from "./../structures/SQLQuery"
 export default class MessageDelete {
     constructor(private readonly discord: Kisaragi) {}
 
-    public run = async (message: Message | PartialMessage) => {
+    public run = async (message: Message<true> | PartialMessage) => {
         const discord = this.discord
         const sql = new SQLQuery(message as any)
         const embeds = new Embeds(discord, message as any)
         if (message.author?.bot) return
         if (message.author?.id === discord.user!.id) return
 
-        const logDeleted = async (message: Message | PartialMessage) => {
+        const logDeleted = async (message: Message<true> | PartialMessage) => {
             const messageLog = await sql.fetchColumn("guilds", "message log")
             const prefix = await SQLQuery.fetchPrefix(message as any)
             if (messageLog) {

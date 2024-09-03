@@ -14,7 +14,7 @@ import {SQLQuery} from "./SQLQuery"
 const activeStreams = new Set()
 
 export class Functions {
-    constructor(private readonly message: Message) {}
+    constructor(private readonly message: Message<true>) {}
 
     // Timeout
     public static timeout = (ms: number) => {

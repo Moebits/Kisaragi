@@ -7,12 +7,12 @@ const linkCool = new Collection() as Collection<string, Collection<string, numbe
 export class Link {
     private readonly cmd: CommandFunctions
     private readonly cool: Cooldown
-    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
         this.cmd = new CommandFunctions(this.discord, this.message)
         this.cool = new Cooldown(this.discord, this.message)
     }
 
-    public linkRun = async (msg: Message, args: string[]) => {
+    public linkRun = async (msg: Message<true>, args: string[]) => {
         const onCooldown = this.cool.cmdCooldown(args[0], 30, linkCool)
         if (onCooldown && (msg.author!.id !== process.env.OWNER_ID)) return msg.reply({embeds: [onCooldown]})
         const loading = await msg.channel.send(`**Fetching Link** ${this.discord.getEmoji("gabCircle")}`) as Message

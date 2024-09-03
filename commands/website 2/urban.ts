@@ -7,7 +7,7 @@ import {Permission} from "./../../structures/Permission"
 
 const urban = require("urban.js")
 export default class Urban extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for words on urban dictionary.",
             help:

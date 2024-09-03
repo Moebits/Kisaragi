@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const npm = require("libnpmsearch")
 
 export default class NPM extends Command {
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for packages on the npm registry.",
             help:

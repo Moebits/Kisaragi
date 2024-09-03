@@ -10,7 +10,7 @@ export default class GuildMemberRemove {
 
     public run = async (member: GuildMember | PartialGuildMember) => {
         const discord = this.discord
-        const firstMsg = await this.discord.fetchFirstMessage(member.guild) as Message
+        const firstMsg = await this.discord.fetchFirstMessage(member.guild) as Message<true>
         if (!firstMsg) return
         const sql = new SQLQuery(firstMsg)
         if (member.guild.members.me?.permissions.has("ManageGuild")) {
@@ -24,7 +24,7 @@ export default class GuildMemberRemove {
             defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === String(defChannel)) as TextChannel
         }
 
-        const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message : firstMsg
+        const defMsg = defaultChannel ? await defaultChannel.messages.fetch({limit: 1}).then((m) => m.first()) as Message<true> : firstMsg
 
         const image = new Images(this.discord, defMsg)
         const embeds = new Embeds(this.discord, defMsg)

@@ -8,7 +8,7 @@ import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class TwitchNotify extends Command {
     private readonly sql = new SQLQuery(this.message)
-    constructor(discord: Kisaragi, message: Message) {
+    constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configure twitch livestream notifications.",
             help:
@@ -126,7 +126,7 @@ export default class TwitchNotify extends Command {
             embeds.createReactionEmbed(twitchArray)
         }
 
-        async function twitchPrompt(msg: Message) {
+        async function twitchPrompt(msg: Message<true>) {
             let channels = await sql.fetchColumn("guilds", "twitch channels")
             if (!channels) channels = []
             const twitch = channels[0] ? await self.getTwitch(channels) : []

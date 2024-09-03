@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Event extends Command {
-  constructor(discord: Kisaragi, message: Message) {
+  constructor(discord: Kisaragi, message: Message<true>) {
       super(discord, message, {
           description: "Triggers an event.",
           aliases: [],
@@ -48,11 +48,11 @@ export default class Event extends Command {
             break
         case "messageReactionAdd":
             const reaction = await message.react(discord.getEmoji("aquaUp"))
-            discord.emit(event, reaction, message.author)
+            discord.emit(event as any, reaction, message.author)
             break
         case "messageReactionRemove":
             const reaction2 = await message.react(discord.getEmoji("aquaUp"))
-            discord.emit(event, reaction2, message.author)
+            discord.emit(event as any, reaction2, message.author)
             break
         case "guildBanAdd":
             discord.emit(event as any, message.guild, message.author)
@@ -67,10 +67,10 @@ export default class Event extends Command {
             discord.emit(event as any, message.channel)
             break
         case "emojiCreate":
-            discord.emit(event, discord.getEmoji("chinoSmug"))
+            discord.emit(event as any, discord.getEmoji("chinoSmug"))
             break
         case "emojiDelete":
-            discord.emit(event, discord.getEmoji("chinoSmug"))
+            discord.emit(event as any, discord.getEmoji("chinoSmug"))
             break
         default:
             discord.emit(event as any)
