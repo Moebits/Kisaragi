@@ -196,20 +196,14 @@ export class Images {
         "#FF8ABB", "#FF8ABB",
         "#F9FF8A", "#F9FF8A",
         "#8AFFB3", "#8AFFB3",
-        "#8AE4FF", "#8AE4FF",
-
-        "#FF8AD8", "#FF8AD8",
-        "#FF8ABB", "#FF8ABB",
-        "#F9FF8A", "#F9FF8A",
-        "#8AFFB3", "#8AFFB3",
         "#8AE4FF", "#8AE4FF"
     ]
 
     /** Creates a welcome/leave canvas */
     public createCanvas = async (member: GuildMember, image: string, text: string, color: string, uri?: boolean | false, iterator?: number | false, bgElements?: "on" | "off") => {
         const colorStops = this.colorStops
-        const newText = text.replace(/username/g, member.user.username).replace(/user/g, `@${member.user.username}`)
-        .replace(/guild/g, member.guild.name).replace(/name/g, member.displayName).replace(/count/g, String(member.guild.memberCount))
+        const newText = text.replace(/username/g, Functions.toProperCase(member.user.username)).replace(/user/g, `@${member.user.username}`)
+        .replace(/guild/g, Functions.toProperCase(member.guild.name)).replace(/name/g, Functions.toProperCase(member.displayName)).replace(/count/g, String(member.guild.memberCount))
         if (Array.isArray(image)) image = image[Math.floor(Math.random() * image.length)]
         if (bgElements === "off") {
             const attachment = new AttachmentBuilder(image)

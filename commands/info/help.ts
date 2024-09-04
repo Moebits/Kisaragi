@@ -75,7 +75,7 @@ export default class Help extends Command {
         "fun": "https://i.imgur.com/lTRD9J0.png",
         "game": "https://i.imgur.com/WCbOnxm.png",
         "heart": "https://i.imgur.com/UC8XPVE.png",
-        "booru": "https://i.imgur.com/NmVMub7.png",
+        "booru": "https://i.imgur.com/YWD2zg1.png",
         "info": "https://i.imgur.com/BR5OtIE.png",
         "weeb": "https://i.imgur.com/7DpFyuL.png",
         "level": "https://i.imgur.com/fxLI1df.png",

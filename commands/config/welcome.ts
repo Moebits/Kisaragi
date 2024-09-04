@@ -100,7 +100,11 @@ export default class Welcome extends Command {
             ${discord.getEmoji("star")}_Type **reset** to reset settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send({embeds: [welcomeEmbed], files: [attachment]})
+        if (welcomeBGToggle === "on") {
+            message.channel.send({embeds: [welcomeEmbed], files: [attachment]})
+        } else {
+            message.channel.send({embeds: [welcomeEmbed]})
+        }
 
         async function welcomePrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()

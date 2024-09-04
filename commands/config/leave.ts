@@ -100,7 +100,11 @@ export default class Leave extends Command {
             ${discord.getEmoji("star")}_Type **reset** to reset settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send({embeds: [leaveEmbed], files: [attachment]})
+        if (leaveBGToggle === "on") {
+            message.channel.send({embeds: [leaveEmbed], files: [attachment]})
+        } else {
+            message.channel.send({embeds: [leaveEmbed]})
+        }
 
         async function leavePrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
