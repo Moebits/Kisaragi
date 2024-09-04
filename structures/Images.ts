@@ -1,8 +1,6 @@
 import axios from "axios"
-import Canvas from "@napi-rs/canvas"
-import concat from "concat-stream"
+import Canvas, {GlobalFonts} from "@napi-rs/canvas"
 import {DMChannel, GuildMember, Message, AttachmentBuilder, GuildTextBasedChannel, PartialDMChannel} from "discord.js"
-import FormData from "form-data"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import sizeOf from "image-size"
@@ -23,6 +21,8 @@ const compressImages = require("compress-images")
 const getPixels = require("get-pixels")
 const GifEncoder = require("gif-encoder")
 const imageDataURI = require("image-data-uri")
+
+GlobalFonts.registerFromPath(path.join(__dirname, "../../assets/fonts/07nikumarufont.otf"), "07nikumarufont")
 
 export class Images {
     // let blacklist = require("../blacklist.json");
@@ -186,19 +186,30 @@ export class Images {
     }
 
     public colorStops = [
-        "#FF8AD8",
-        "#FF8ABB",
-        "#F9FF8A",
-        "#8AFFB3",
-        "#8AE4FF",
-        "#FF8AD8"
+        "#FF8AD8", "#FF8AD8",
+        "#FF8ABB", "#FF8ABB",
+        "#F9FF8A", "#F9FF8A",
+        "#8AFFB3", "#8AFFB3",
+        "#8AE4FF", "#8AE4FF",
+
+        "#FF8AD8", "#FF8AD8",
+        "#FF8ABB", "#FF8ABB",
+        "#F9FF8A", "#F9FF8A",
+        "#8AFFB3", "#8AFFB3",
+        "#8AE4FF", "#8AE4FF",
+
+        "#FF8AD8", "#FF8AD8",
+        "#FF8ABB", "#FF8ABB",
+        "#F9FF8A", "#F9FF8A",
+        "#8AFFB3", "#8AFFB3",
+        "#8AE4FF", "#8AE4FF"
     ]
 
     /** Creates a welcome/leave canvas */
     public createCanvas = async (member: GuildMember, image: string, text: string, color: string, uri?: boolean | false, iterator?: number | false, bgElements?: "on" | "off") => {
         const colorStops = this.colorStops
-        const newText = text.replace(/user/g, `@${member.user.tag}`).replace(/guild/g, member.guild.name)
-        .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, String(member.guild.memberCount))
+        const newText = text.replace(/username/g, member.user.username).replace(/user/g, `@${member.user.username}`)
+        .replace(/guild/g, member.guild.name).replace(/name/g, member.displayName).replace(/count/g, String(member.guild.memberCount))
         if (Array.isArray(image)) image = image[Math.floor(Math.random() * image.length)]
         if (bgElements === "off") {
             const attachment = new AttachmentBuilder(image)
@@ -233,7 +244,7 @@ export class Images {
             const context = cv.getContext("2d")
             let fontSize = 70
             do {
-                context.font = `${fontSize -= 1}px arial`
+                context.font = `${fontSize -= 1}px 07nikumarufont`
             } while (context.measureText(txt).width > (cv.width*2.2) - 300)
             return context.font
         }
@@ -260,16 +271,14 @@ export class Images {
                 })
                 files.push(path.join(dir, `./image${frames[i].frameIndex}.jpg`))
             }
-            let rIterator = 0
-            const msg2 = await this.message.channel.send(`**Encoding Gif. This might take awhile** ${this.discord.getEmoji("gabCircle")}`) as Message
-            for (let i = 0; i < 6; i++) {
-                if (rIterator === this.colorStops.length - 1) {
-                    rIterator = 0
-                }
-                const dataURI = await this.createCanvas(member, files[i], text, color, true, rIterator)
-                await imageDataURI.outputFile(dataURI, path.join(dir, `./image${i}`))
-                attachmentArray.push(`image${i}.png`)
-                rIterator++
+            const msg2 = await this.message.channel.send(`**Encoding Gif. This might take awhile** ${this.discord.getEmoji("kisaragiCircle")}`) as Message
+            const iterations = colorStops.length
+            for (let i = 0; i < iterations; i++) {
+                const rIterator = i % colorStops.length
+                const fIterator = i % files.length
+                const dataURI = await this.createCanvas(member, files[fIterator], text, color, true, rIterator)
+                await imageDataURI.outputFile(dataURI, path.join(dir, `./image${fIterator}`))
+                attachmentArray.push(`image${fIterator}.png`)
             }
             const file = fs.createWriteStream(path.join(dir, `./animated${random}.gif`))
             await this.encodeGif(attachmentArray, dir, file)
@@ -286,15 +295,15 @@ export class Images {
             if (color === "rainbow") {
                 let rainbowIterator = iterator ? iterator : 0
                 const gradient = ctx.createLinearGradient(0, 0, canvas.width + 200, 0)
+
+                const rainbowStep = 1 / (colorStops.length - 1)
+                const rainbowOffset = rainbowIterator ? rainbowIterator % colorStops.length : 0
                 for (let i = 0; i < colorStops.length; i++) {
-                    let currColor = colorStops[rainbowIterator + i]
-                    const position = (1/colorStops.length)*i
-                    if (currColor === colorStops[colorStops.length]) {
-                        currColor = colorStops[0]
-                        rainbowIterator = 0
-                    }
+                    const position = (colorStops.length - 1 - ((i + rainbowOffset) % colorStops.length)) * rainbowStep
+                    const currColor = colorStops[i]
                     gradient.addColorStop(position, currColor)
                 }
+
                 ctx.fillStyle = gradient
             } else {
                 ctx.fillStyle = color

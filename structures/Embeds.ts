@@ -552,7 +552,7 @@ export class Embeds {
 
     /** Create Help Embed */
     public createHelpEmbed = async (embeds: EmbedBuilder[], reactionPage?: number) => {
-        let page = 8
+        let page = 9
         if (reactionPage === 2) page = 17
         const titles = ["Admin", "Anime", "Booru", "Bot Developer", "Config", "Fun", "Game", "Heart", "Image", "Info", "Weeb", "Level", "Misc", "Misc 2", "Mod", "Music", "Music 2", "Music 3", "Reddit", "Twitter", "Video", "Waifu", "Website", "Website 2", "Website 3"]
         let compressed = false
@@ -625,6 +625,7 @@ export class Embeds {
         await this.sql.updateColumn("collectors", "help", true, "message", msg.id)
         if (reactionPage === 2) {
             for (let i = 0; i < page2.length; i++) await msg.react(page2[i])
+            await msg.react(this.discord.getEmoji("dm"))
         } else {
             for (let i = 0; i < page1.length; i++) await msg.react(page1[i])
         }

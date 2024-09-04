@@ -25,7 +25,7 @@ export default class Leave extends Command {
             `,
             examples:
             `
-            \`=>leave user left guild! #channel [tag left!] rainbow\`
+            \`=>leave user left guild! #channel [username left!] rainbow\`
             \`=>leave reset\`
             `,
             guildOnly: true,
@@ -75,7 +75,7 @@ export default class Leave extends Command {
             newline
             __Text Replacements:__
             **user** - mention
-            **tag** - member tag
+            **username** - member username
             **name** - member name
             **guild** - guild name
             **count** - guild member count
@@ -122,8 +122,8 @@ export default class Leave extends Command {
                 await sql.updateColumn("guilds", "leave message", "user has left guild!")
                 await sql.updateColumn("guilds", "leave channel", null)
                 await sql.updateColumn("guilds", "leave toggle", "off")
-                await sql.updateColumn("guilds", "leave bg images", ["https://data.whicdn.com/images/210153523/original.gif"])
-                await sql.updateColumn("guilds", "leave bg text", "tag left! There are now count members.")
+                await sql.updateColumn("guilds", "leave bg images", ["https://i.imgur.com/3KoLVtn.gif"])
+                await sql.updateColumn("guilds", "leave bg text", "username left! There are now count members.")
                 await sql.updateColumn("guilds", "leave bg color", "rainbow")
                 await sql.updateColumn("guilds", "leave bg toggle", "on")
                 responseEmbed

@@ -25,7 +25,7 @@ export default class Welcome extends Command {
             `,
             examples:
             `
-            \`=>welcome welcome user to guild! [welcome tag! There are now count members.]\`
+            \`=>welcome welcome user to guild! [welcome username! There are now count members.]\`
             \`=>welcome enable rainbow\`
             `,
             guildOnly: true,
@@ -74,7 +74,7 @@ export default class Welcome extends Command {
             newline
             __Text Replacements:__
             **user** - member mention
-            **tag** - member tag
+            **username** - member username
             **name** - member name
             **guild** - guild name
             **count** - guild member count
@@ -122,8 +122,8 @@ export default class Welcome extends Command {
                 await sql.updateColumn("guilds", "welcome message", "Welcome to guild, user!")
                 await sql.updateColumn("guilds", "welcome channel", null)
                 await sql.updateColumn("guilds", "welcome toggle", "off")
-                await sql.updateColumn("guilds", "welcome bg images", ["https://66.media.tumblr.com/692aa1fd2a5ad428d92b27ccf65d4a94/tumblr_inline_n0oiz974M41s829k0.gif"])
-                await sql.updateColumn("guilds", "welcome bg text", "Welcome tag! There are now count members.")
+                await sql.updateColumn("guilds", "welcome bg images", ["https://i.imgur.com/WOYlL17.gif"])
+                await sql.updateColumn("guilds", "welcome bg text", "Welcome username! There are now count members.")
                 await sql.updateColumn("guilds", "welcome bg color", "rainbow")
                 await sql.updateColumn("guilds", "welcome bg toggle", "on")
                 responseEmbed

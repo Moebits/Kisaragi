@@ -1,11 +1,10 @@
 {
     "text": {
-        "kisaragi": "Kisaragi is the best girl!",
+        "kisaragi": "Kisaragi is the best!",
         "f": "F",
         "b": "🅱️",
         "owo": "owo",
         "uwu": "uwu",
-        "rip": "rip",
         "ayaya":  [  
                     "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣬⡛⣿⣿⣿⣯⢻\n",
                     "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⢻⣿⣿⢟⣻⣿⣿⣿⣿⣿⣿⣮⡻⣿⣿⣧\n",
@@ -26,16 +25,6 @@
     "image": {
         "bleh": "https://i.ytimg.com/vi/Gn4ah6kAmZo/maxresdefault.jpg",
         "smug": "https://pbs.twimg.com/media/CpfL-c3WEAE1Na_.jpg",
-        "stare": "https://thumbs.gfycat.com/OpenScaryJunebug-small.gif",
-        "sleepy": "https://thumbs.gfycat.com/VastBlackJackal-small.gif",
-        "school shooter": "https://thumbs.gfycat.com/SmoggyDependentGrayfox-size_restricted.gif",
-        "cry": "https://thumbs.gfycat.com/CompletePotableDove-small.gif",
-        "pat": "https://thumbs.gfycat.com/WarmheartedAridCygnet-small.gif",
-        "welcome": "https://thumbs.gfycat.com/PowerlessSparklingIcelandgull-small.gif",
-        "gab s": "https://thumbs.gfycat.com/PettyWeightyArrowana-small.gif",
-        "piggy back": "https://thumbs.gfycat.com/IlliterateJointAssassinbug-size_restricted.gif",
-        "kick": "https://thumbs.gfycat.com/SentimentalFocusedAmericansaddlebred-small.gif",
-        "punch": "https://thumbs.gfycat.com/ClearcutInexperiencedAnemone-small.gif",
         "bye": "https://i.imgur.com/2CrEDAD.gif"
     }
 }

@@ -32,7 +32,7 @@ export class Kisaragi extends Client {
         Kisaragi.username = username
     }
 
-    /** Get emojis (my servers) */
+    /** Get emojis (application emojis) */
     public getEmoji = (name: string, png?: boolean) => {
         const emoji = this.application?.emojis.cache.find((e) => (png ? e.name === `${name}png` : e.name === name))
         if (emoji) {

@@ -543,4 +543,14 @@ export class Functions {
         if (checkOnly) return filter.isProfane(text)
         return filter.clean(text)
     }
+
+    /** Calculate gcd */
+    public static gcd(a: number, b: number): number {
+        return b === 0 ? a : Functions.gcd(b, a % b)
+    }
+
+    /** Calculate lcm */
+    public static lcm = (a: number, b: number) => {
+        return (a * b) / Functions.gcd(a, b)
+    }
 }
