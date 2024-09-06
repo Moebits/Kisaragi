@@ -1,5 +1,5 @@
 import axios from "axios"
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -28,8 +28,18 @@ export default class Kancolle extends Command {
             `,
             aliases: ["kc", "kantai", "kantaicollection"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        const girlOption = new SlashCommandStringOption()
+            .setName("shipgirl")
+            .setDescription("Shipgirl to search for.")
+            
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(girlOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

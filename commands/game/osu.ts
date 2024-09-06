@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import Osu, {OsuBeatmap} from "osu.ts"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -30,8 +30,23 @@ export default class OsuCommand extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        const nameOption = new SlashCommandStringOption()
+            .setName("name")
+            .setDescription("Your osu name in user, set, recent, and best subcommands.")
+
+        const queryOption = new SlashCommandStringOption()
+            .setName("query")
+            .setDescription("Can be a query, user, set, recent, or best.")
+            
+        this.slash = new SlashCommandBuilder()
+            .setName("osu")
+            .setDescription(this.options.description)
+            .addStringOption(queryOption)
+            .addStringOption(nameOption)
+            .toJSON()
     }
 
     public getAccuracy = (miss: string | number, $50: string | number, $100: string | number, $300: string | number) => {

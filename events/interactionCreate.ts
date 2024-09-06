@@ -40,7 +40,13 @@ export default class InteractionCreate {
                         }
                     })(interaction.reply)
 
-                    const args = [commandName, ...interaction.options.data.map((o) => o.value)] as string[]
+                    let args = [] as string[]
+                    const subcommand = interaction.options.getSubcommand()
+                    if (subcommand) {
+                        args = [commandName, subcommand, ...interaction.options.data[0].options!.map((o) => o.value)] as string[]
+                    } else {
+                        args = [commandName, ...interaction.options.data.map((o) => o.value)] as string[]
+                    }
                     await cmd.runCommandClass(command, interaction as any, args)
                 }
             }

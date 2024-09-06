@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder, MessageReaction, TextChannel, User} from "discord.js"
+import {Message, EmbedBuilder, MessageReaction, TextChannel, User, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import minesweeper from "discord.js-minesweeper"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -25,8 +25,28 @@ export default class Minesweeper extends Command {
             `,
             aliases: ["mine"],
             random: "none",
-            cooldown: 5
+            cooldown: 5,
+            slashEnabled: true
         })
+        const column2Option = new SlashCommandStringOption()
+            .setName("columns2")
+            .setDescription("Set columns in the subcommand")
+
+        const columnOption = new SlashCommandStringOption()
+            .setName("columns")
+            .setDescription("Can be columns or rows in subcommand")
+
+        const rowOption = new SlashCommandStringOption()
+            .setName("rows")
+            .setDescription("Can be rows or spoiler for spoiler subcommand")
+            
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(rowOption)
+            .addStringOption(columnOption)
+            .addStringOption(column2Option)
+            .toJSON()
     }
 
     public checkWinLose = (board: string[][], user: User, row: number, column: number, mineCount: number) => {

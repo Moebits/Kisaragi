@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandIntegerOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import * as config from "./../../config.json"
 import {Embeds} from "./../../structures/Embeds"
@@ -20,8 +20,18 @@ export default class Changelog extends Command {
             `,
             aliases: ["updates"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: false
         })
+        const numOption = new SlashCommandIntegerOption()
+            .setName("num")
+            .setDescription("Num of changelog.")
+            
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addIntegerOption(numOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

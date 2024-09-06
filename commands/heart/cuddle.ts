@@ -1,4 +1,5 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import nekoClient from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -19,8 +20,17 @@ export default class Cuddle extends Command {
             \`=>cuddle @user\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const userOption = SlashCommandOption.createOption("mentionable")
+            .setName("user")
+            .setDescription("User to cuddle.")
+            
+        this.subcommand = new SlashCommandSubcommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addMentionableOption(userOption)
     }
 
     public run = async (args: string[]) => {
@@ -31,13 +41,15 @@ export default class Cuddle extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const neko = new nekoClient()
 
-        let user = message.author
         let name = "someone"
-        if (message.mentions.users.size) {
-            user = message.mentions.users.first()!
-            name = message.mentions.users.first()!.username
-            if (user.id === message.author.id) name = "themselves"
-            if (user.id === discord.user!.id) name = "me"
+        if (args[1]) {
+            const userID = args[1].match(/\d+/)?.[0] || ""
+            const user = await message.guild.members.fetch(userID)
+            if (user) {
+                name = user.user.username
+                if (user.id === message.author.id) name = "themselves"
+                if (user.id === discord.user!.id) name = "me"
+            }
         }
 
         let flavorText = `${discord.getEmoji("kannaBear")}`
@@ -53,6 +65,6 @@ export default class Cuddle extends Command {
         .setTitle(`**Cuddle** ${discord.getEmoji("kannaBear")}`)
         .setDescription(`**${message.author.username}** cuddled **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send({embeds: [cuddleEmbed]})
+        message.reply({embeds: [cuddleEmbed]})
     }
 }

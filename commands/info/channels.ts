@@ -1,4 +1,4 @@
-import {GuildChannel, Message, EmbedBuilder, GuildBasedChannel} from "discord.js"
+import {SlashCommandBuilder, Message, EmbedBuilder, GuildBasedChannel} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -19,8 +19,13 @@ export default class Channels extends Command {
             guildOnly: true,
             aliases: [],
             random: "none",
-            cooldown: 3
+            cooldown: 3,
+            slashEnabled: false
         })
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

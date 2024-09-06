@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -28,8 +28,18 @@ export default class Safebooru extends Command {
             `,
             aliases: ["safe"],
             random: "none",
-            cooldown: 20
+            cooldown: 20,
+            slashEnabled: true
         })
+        const tagOption = new SlashCommandStringOption()
+            .setName("tag")
+            .setDescription("tags or link to search")
+        
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(tagOption)
+            .toJSON()
     }
 
     public getImage = async (dir: string, image: string) => {

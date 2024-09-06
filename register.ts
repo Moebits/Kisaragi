@@ -36,7 +36,6 @@ const register = async () => {
     const rest = new REST().setToken(process.env.TOKEN!)
 
     try {
-        //await rest.put(Routes.applicationCommands(process.env.CLIENT_ID!), {body: []})
         await rest.put(Routes.applicationCommands(process.env.CLIENT_ID!), {body: slashCommands})
         Logger.log(`Refreshed ${slashCommands.length} application (/) commands.`)
     } catch (error) {

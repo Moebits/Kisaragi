@@ -1,6 +1,6 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -29,8 +29,17 @@ export default class Danbooru extends Command {
             aliases: ["d", "dan"],
             random: "none",
             cooldown: 20,
-            nsfw: true
+            slashEnabled: true
         })
+        const tagOption = new SlashCommandStringOption()
+            .setName("tag")
+            .setDescription("tags or link to search")
+        
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addStringOption(tagOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandBuilder, SlashCommandMentionableOption} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -18,8 +18,18 @@ export default class Avatar extends Command {
           `,
           aliases: ["av"],
           random: "none",
-          cooldown: 5
+          cooldown: 5,
+          slashEnabled: false
         })
+        const userOption = new SlashCommandMentionableOption()
+            .setName("user")
+            .setDescription("Posts avatar of this user.")
+            
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addMentionableOption(userOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

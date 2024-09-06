@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder, SlashCommandMentionableOption} from "discord.js"
 import nekoClient from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -19,8 +19,17 @@ export default class Tickle extends Command {
             \`=>tickle @user\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const userOption = new SlashCommandMentionableOption()
+            .setName("user")
+            .setDescription("User to tickle.")
+            
+        this.subcommand = new SlashCommandSubcommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addMentionableOption(userOption)
     }
 
     public run = async (args: string[]) => {
@@ -30,13 +39,15 @@ export default class Tickle extends Command {
         const perms = new Permission(discord, message)
         const neko = new nekoClient()
 
-        let user = message.author
         let name = "someone"
-        if (message.mentions.users.size) {
-            user = message.mentions.users.first()!
-            name = message.mentions.users.first()!.username
-            if (user.id === message.author.id) name = "themselves"
-            if (user.id === discord.user!.id) name = "me"
+        if (args[1]) {
+            const userID = args[1].match(/\d+/)?.[0] || ""
+            const user = await message.guild.members.fetch(userID)
+            if (user) {
+                name = user.user.username
+                if (user.id === message.author.id) name = "themselves"
+                if (user.id === discord.user!.id) name = "me"
+            }
         }
 
         let flavorText = `${discord.getEmoji("cute")}`
@@ -52,6 +63,6 @@ export default class Tickle extends Command {
         .setTitle(`**Tickle** ${discord.getEmoji("kannaSip")}`)
         .setDescription(`**${message.author.username}** tickles **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.channel.send({embeds: [tickleEmbed]})
+        message.reply({embeds: [tickleEmbed]})
     }
 }
