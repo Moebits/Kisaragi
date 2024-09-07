@@ -1,4 +1,5 @@
-import {Message, SlashCommandSubcommandBuilder, SlashCommandMentionableOption} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import nekoClient from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -22,7 +23,7 @@ export default class Smug extends Command {
             cooldown: 3,
             subcommandEnabled: true
         })
-        const userOption = new SlashCommandMentionableOption()
+        const userOption = SlashCommandOption.createOption("mentionable")
             .setName("user")
             .setDescription("User to send a smug face.")
             
