@@ -1,5 +1,6 @@
 import axios from "axios"
 import {AttachmentBuilder, Message} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import * as fs from "fs"
 import * as path from "path"
 import waifu2x from "waifu2x"

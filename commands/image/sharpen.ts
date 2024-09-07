@@ -1,5 +1,6 @@
 import axios from "axios"
 import {Message, AttachmentBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"

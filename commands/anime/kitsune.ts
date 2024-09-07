@@ -1,4 +1,5 @@
 import {Message, SlashCommandBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import nekoClient, {NekoRequestResults} from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"

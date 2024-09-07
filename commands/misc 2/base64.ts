@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Base64 as base64} from "js-base64"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"

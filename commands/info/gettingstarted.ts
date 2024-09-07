@@ -1,4 +1,5 @@
 import {Message, MessageReaction, TextChannel, User} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import * as config from "./../../config.json"
 import {CommandFunctions} from "./../../structures/CommandFunctions"

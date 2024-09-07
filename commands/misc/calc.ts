@@ -1,4 +1,5 @@
 import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import * as math from "mathjs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"

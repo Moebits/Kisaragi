@@ -1,4 +1,5 @@
 import {Message, TextChannel} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import * as config from "../../config.json"
 import {Command} from "../../structures/Command"

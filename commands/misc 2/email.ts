@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import nodemailer from "nodemailer"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"

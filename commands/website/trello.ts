@@ -1,4 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Trello} from "trello-for-wolves"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"

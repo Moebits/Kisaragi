@@ -1,4 +1,5 @@
 import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import Osu, {OsuBeatmap} from "osu.ts"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"

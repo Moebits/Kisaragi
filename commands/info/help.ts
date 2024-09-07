@@ -1,4 +1,5 @@
 import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption, ChatInputCommandInteraction} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import * as config from "../../config.json"

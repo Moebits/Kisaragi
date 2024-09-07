@@ -1,4 +1,5 @@
 import {Message, EmbedBuilder, MessageReaction, TextChannel, User, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import minesweeper from "discord.js-minesweeper"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"

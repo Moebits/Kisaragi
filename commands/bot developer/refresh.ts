@@ -1,5 +1,6 @@
 import child_process from "child_process"
 import {Message} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"

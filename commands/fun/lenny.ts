@@ -1,5 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {createSlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import lenny from "lenny"
@@ -25,7 +25,8 @@ export default class Lenny extends Command {
             cooldown: 3,
             subcommandEnabled: true
         })
-        const queryOption = createSlashCommandOption()
+        const queryOption = new SlashCommandOption()
+            .setType("string")
             .setName("query")
             .setDescription("Set to face/shrug/tableflip/unflip for the popular faces or search for something else.")
             

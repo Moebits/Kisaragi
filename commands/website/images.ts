@@ -1,4 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import GoogleImages from "google-images"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"

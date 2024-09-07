@@ -1,5 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {createSlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -22,7 +22,8 @@ export default class RPS extends Command {
             cooldown: 5,
             subcommandEnabled: true
         })
-        const pickOption = createSlashCommandOption()
+        const pickOption = new SlashCommandOption()
+            .setType("string")
             .setName("pick")
             .setDescription("Pick rock, paper, or scissors.")
             .addChoices([{name: "rock", value: "rock"}, {name: "paper", value: "paper"}, {name: "scissors", value: "scissors"}])

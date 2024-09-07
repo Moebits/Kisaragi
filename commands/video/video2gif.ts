@@ -1,4 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"

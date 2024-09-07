@@ -1,4 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {API, Doujin} from "nhentai"
 import blacklist from "../../assets/json/blacklist.json"
 import {Command} from "../../structures/Command"

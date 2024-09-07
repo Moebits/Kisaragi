@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import * as langs from "../../assets/json/langs.json"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"

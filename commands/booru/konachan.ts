@@ -1,6 +1,7 @@
 import axios from "axios"
 import Booru from "booru"
 import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"

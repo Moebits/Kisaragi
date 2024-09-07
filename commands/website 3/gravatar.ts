@@ -1,5 +1,6 @@
 import axios from "axios"
 import {DMChannel, Message, TextChannel} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import md5 from "md5"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"

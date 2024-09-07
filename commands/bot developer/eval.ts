@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import util from "util"
 import {Audio} from "../../structures/Audio"
 import {AudioEffects} from "../../structures/AudioEffects"

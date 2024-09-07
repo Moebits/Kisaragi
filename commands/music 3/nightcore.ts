@@ -1,4 +1,5 @@
 import {Message, SlashCommandBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Audio} from "../../structures/Audio"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"

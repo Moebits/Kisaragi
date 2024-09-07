@@ -1,5 +1,6 @@
 import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption, ChatInputCommandInteraction, APIInteractionGuildMember} from "discord.js"
 import {getVoiceConnection, joinVoiceChannel} from "@discordjs/voice"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import * as defaults from "./../../assets/json/defaultSongs.json"
 import {Audio} from "./../../structures/Audio"

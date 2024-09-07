@@ -1,5 +1,6 @@
 import axios from "axios"
 import {Message, EmbedBuilder, TextChannel, Webhook, ChannelType} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import Youtube from "youtube.ts"
 import * as config from "../../config.json"
 import {Command} from "../../structures/Command"

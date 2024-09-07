@@ -1,4 +1,5 @@
 import type {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import Twitter from "twitter"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"

@@ -1,5 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {createSlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -22,7 +22,8 @@ export default class Ascii extends Command {
             cooldown: 3,
             subcommandEnabled: true
         })
-        const textOption = createSlashCommandOption()
+        const textOption = new SlashCommandOption()
+            .setType("string")
             .setName("text")
             .setDescription("text content")
             .setRequired(true)

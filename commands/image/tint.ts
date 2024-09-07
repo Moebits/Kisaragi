@@ -1,4 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"

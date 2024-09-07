@@ -1,5 +1,6 @@
 import {Message, AttachmentBuilder, TextChannel, SlashCommandStringOption, SlashCommandBuilder} from "discord.js"
 import {getVoiceConnection, joinVoiceChannel, EndBehaviorType} from "@discordjs/voice"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"

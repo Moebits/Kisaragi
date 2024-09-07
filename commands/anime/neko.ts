@@ -1,5 +1,6 @@
 import axios from "axios"
 import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import nekoClient from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"

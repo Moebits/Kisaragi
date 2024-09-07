@@ -1,4 +1,5 @@
 import {Message, EmbedBuilder, MessageReaction, User} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import ms from "pretty-ms"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"

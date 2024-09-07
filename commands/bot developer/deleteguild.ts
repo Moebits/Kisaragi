@@ -1,4 +1,5 @@
 import {Guild, Message} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"

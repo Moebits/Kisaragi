@@ -1,4 +1,5 @@
 import canvas from "@napi-rs/canvas"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Message, AttachmentBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"

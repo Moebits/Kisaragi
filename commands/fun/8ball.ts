@@ -1,5 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {createSlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -20,7 +20,8 @@ export default class Eightball extends Command {
             cooldown: 3,
             subcommandEnabled: true
         })
-        const questionOption = createSlashCommandOption()
+        const questionOption = new SlashCommandOption()
+            .setType("string")
             .setName("question")
             .setDescription("question")
             .setRequired(true)

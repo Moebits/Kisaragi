@@ -1,5 +1,6 @@
 import axios from "axios"
 import {Collection, Message, MessageReaction, TextChannel, User} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import jimp from "jimp"
 import path from "path"

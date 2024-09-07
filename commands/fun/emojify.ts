@@ -1,5 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {createSlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -21,7 +21,8 @@ export default class Emojify extends Command {
             cooldown: 3,
             subcommandEnabled: true
         })
-        const textOption = createSlashCommandOption()
+        const textOption = new SlashCommandOption()
+            .setType("string")
             .setName("text")
             .setDescription("Text to convert to emoji letters.")
             .setRequired(true)

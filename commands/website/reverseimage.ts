@@ -1,4 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import axios from "axios"
 import * as cheerio from "cheerio"
 import {Command} from "../../structures/Command"

@@ -1,5 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {createSlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
@@ -23,7 +23,8 @@ export default class Pickle extends Command {
             cooldown: 3,
             subcommandEnabled: true
         })
-        const userOption = createSlashCommandOption("user")
+        const userOption = new SlashCommandOption()
+            .setType("user")
             .setName("user")
             .setDescription("Which user's pickle to get.")
 

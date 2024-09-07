@@ -1,4 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import wiki from "wikijs"

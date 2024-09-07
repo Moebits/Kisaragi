@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import Ascii from "fold-to-ascii"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"

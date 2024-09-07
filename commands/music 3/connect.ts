@@ -1,5 +1,6 @@
 import {Message, VoiceChannel, ChannelType, SlashCommandChannelOption, SlashCommandBuilder} from "discord.js"
 import {joinVoiceChannel} from "@discordjs/voice"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Audio} from "../../structures/Audio"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"

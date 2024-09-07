@@ -1,6 +1,7 @@
 import {Message, AttachmentBuilder, MessageReaction, User, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
 import path from "path"
 import Pixiv, {PixivIllust, UgoiraMetaData} from "pixiv.ts"
+import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
