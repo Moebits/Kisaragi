@@ -1,4 +1,4 @@
-import {Message, SlashCommandBuilder} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
@@ -17,12 +17,11 @@ export default class Slots extends Command {
             aliases: [],
             random: "none",
             cooldown: 3,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {

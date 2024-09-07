@@ -1,4 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {createSlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -17,18 +18,17 @@ export default class Eightball extends Command {
             `,
             aliases: ["eightball"],
             cooldown: 3,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const questionOption = new SlashCommandStringOption()
+        const questionOption = createSlashCommandOption()
             .setName("question")
             .setDescription("question")
             .setRequired(true)
             
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
             .setName("8ball")
             .setDescription(this.options.description)
             .addStringOption(questionOption)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {

@@ -1,9 +1,9 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {createSlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-
-const kaomoji = require("kaomojilib")
+import kaomoji from "kaomojilib"
 
 export default class Kaomoji extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -22,17 +22,16 @@ export default class Kaomoji extends Command {
             aliases: ["kmoji"],
             random: "none",
             cooldown: 3,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const queryOption = new SlashCommandStringOption()
+        const queryOption = createSlashCommandOption()
             .setName("query")
             .setDescription("The query to search for a kaomoji.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
             .addStringOption(queryOption)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {

@@ -1,4 +1,4 @@
-import {Message, SlashCommandBuilder} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -20,13 +20,11 @@ export default class Chat extends Command {
             aliases: ["globalchat", "gchat"],
             cooldown: 3,
             guildOnly: true,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
         .setName(this.constructor.name.toLowerCase())
         .setDescription(this.options.description)
-        .setDMPermission(false)
-        .toJSON()
     }
 
     public run = async (args: string[]) => {

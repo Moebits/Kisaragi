@@ -1,4 +1,5 @@
-import {GuildEmoji, ApplicationEmoji, Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {GuildEmoji, ApplicationEmoji, Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {createSlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
@@ -19,33 +20,32 @@ export default class React extends Command {
             `,
             aliases: ["reaction"],
             cooldown: 5,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const fourthOption = new SlashCommandStringOption()
+        const fourthOption = createSlashCommandOption()
             .setName("emoji4")
             .setDescription("This is the emoji for the dev/global msg subcommand.")
 
-        const thirdOption = new SlashCommandStringOption()
+        const thirdOption = createSlashCommandOption()
             .setName("emoji3")
             .setDescription("This can be an emoji or dev/global for the msg subcommand.")
 
-        const secondOption = new SlashCommandStringOption()
+        const secondOption = createSlashCommandOption()
             .setName("emoji2")
             .setDescription("This can be an emoji or message id for the msg subcommand.")
 
-        const firstOption = new SlashCommandStringOption()
+        const firstOption = createSlashCommandOption()
             .setName("emoji")
             .setDescription("This can be an emoji or dev/global/msg for additional subcommands.")
             .setRequired(true)
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
             .addStringOption(firstOption)
             .addStringOption(secondOption)
             .addStringOption(thirdOption)
             .addStringOption(fourthOption)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {

@@ -1,5 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {createSlashCommandOption} from "../../structures/SlashCommandOption"
 import nekoClient from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -23,7 +23,7 @@ export default class Slap extends Command {
             cooldown: 3,
             subcommandEnabled: true
         })
-        const userOption = SlashCommandOption.createOption("mentionable")
+        const userOption = createSlashCommandOption("mentionable")
             .setName("user")
             .setDescription("User to slap.")
             

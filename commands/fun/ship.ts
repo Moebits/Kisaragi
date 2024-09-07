@@ -1,5 +1,6 @@
 import canvas from "@napi-rs/canvas"
-import {Message, AttachmentBuilder, SlashCommandBuilder, SlashCommandUserOption} from "discord.js"
+import {Message, AttachmentBuilder, SlashCommandSubcommandBuilder} from "discord.js"
+import {createSlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import fs from "fs"
@@ -19,24 +20,23 @@ export default class Ship extends Command {
             `,
             aliases: ["shipping"],
             cooldown: 5,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const user1Option = new SlashCommandUserOption()
+        const user1Option = createSlashCommandOption("user")
             .setName("user1")
             .setDescription("The first user to ship.")
             .setRequired(true)
 
-        const user2Option = new SlashCommandUserOption()
+        const user2Option = createSlashCommandOption("user")
             .setName("user2")
             .setDescription("The second user to ship.")
             .setRequired(true)
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
             .addUserOption(user1Option)
             .addUserOption(user2Option)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {

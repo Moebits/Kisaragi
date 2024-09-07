@@ -1,4 +1,4 @@
-import {Message, SlashCommandBuilder} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -18,12 +18,11 @@ export default class Coin extends Command {
             `,
             aliases: ["coinflip", "flipcoin"],
             cooldown: 3,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
         .setName(this.constructor.name.toLowerCase())
         .setDescription(this.options.description)
-        .toJSON()
     }
 
     public run = async (args: string[]) => {

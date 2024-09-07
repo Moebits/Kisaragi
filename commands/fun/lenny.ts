@@ -1,8 +1,8 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {createSlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
-
-const lenny = require("lenny")
+import lenny from "lenny"
 
 export default class Lenny extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -23,17 +23,16 @@ export default class Lenny extends Command {
             aliases: [],
             random: "none",
             cooldown: 3,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const queryOption = new SlashCommandStringOption()
+        const queryOption = createSlashCommandOption()
             .setName("query")
             .setDescription("Set to face/shrug/tableflip/unflip for the popular faces or search for something else.")
             
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
             .addStringOption(queryOption)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {

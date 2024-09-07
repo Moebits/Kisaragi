@@ -1,7 +1,6 @@
-import {Collection, Message, SlashCommandBuilder, EmbedBuilder, MessageReaction, TextChannel, User, HexColorString} from "discord.js"
+import {Collection, Message, SlashCommandSubcommandBuilder, EmbedBuilder, MessageReaction, TextChannel, User, HexColorString} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 const procBlock = new Collection()
@@ -21,12 +20,11 @@ export default class Embed extends Command {
             aliases: ["embeds", "customembed", "richembed", "messageembed"],
             random: "none",
             cooldown: 3,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
         .setName(this.constructor.name.toLowerCase())
         .setDescription(this.options.description)
-        .toJSON()
     }
 
     public getProcBlock = () => {

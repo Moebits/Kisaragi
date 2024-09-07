@@ -1,4 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandUserOption} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {createSlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
@@ -20,17 +21,16 @@ export default class Pickle extends Command {
             aliases: ["pp", "peepee", "hotdog", "dong", "cock", "dick", "penis", "sausage", "fun stick", "schlong", "willy", "ding dong", "peen", "meat stick"],
             random: "none",
             cooldown: 3,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const userOption = new SlashCommandUserOption()
+        const userOption = createSlashCommandOption("user")
             .setName("user")
             .setDescription("Which user's pickle to get.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
             .setName(this.constructor.name.toLowerCase())
             .setDescription("Posts your pickle size.")
             .addUserOption(userOption)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {

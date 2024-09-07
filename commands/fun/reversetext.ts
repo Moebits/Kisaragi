@@ -1,4 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {createSlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -17,18 +18,17 @@ export default class ReverseText extends Command {
             `,
             aliases: ["rtext", "rsay", "sayreverse"],
             cooldown: 3,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const textOption = new SlashCommandStringOption()
+        const textOption = createSlashCommandOption()
             .setName("text")
             .setDescription("The text to reverse.")
             .setRequired(true)
             
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommandBuilder()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
             .addStringOption(textOption)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {
