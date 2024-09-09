@@ -1,14 +1,14 @@
 import {Message, SlashCommandBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "../../structures/CommandFunctions"
-import {Kisaragi} from "./../../structures/Kisaragi"
+import {Kisaragi} from "../../structures/Kisaragi"
 import fs from "fs"
 import path from "path"
 
-export default class Fun extends Command {
+export default class WaifuSlash extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
-            description: "Fun commands",
+            description: "Waifu commands",
             unlist: true,
             slashEnabled: true
         })
@@ -30,7 +30,7 @@ export default class Fun extends Command {
         }
 
         const slashCommand = new SlashCommandBuilder()
-            .setName(this.constructor.name.toLowerCase())
+            .setName(this.constructor.name.toLowerCase().replace("slash", ""))
             .setDescription(this.options.description)
 
         for (const subcommand of subcommands) {

@@ -1,12 +1,11 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
-
-const Kuroshiro = require("kuroshiro")
-const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
+import Kuroshiro from "kuroshiro"
+import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji"
 
 export default class Furigana extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -21,8 +20,18 @@ export default class Furigana extends Command {
             \`=>furigana 艦隊これくしょん\`
             `,
             aliases: [],
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const textOption = new SlashCommandOption()
+            .setType("string")
+            .setName("text")
+            .setDescription("Text to add furigana.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(textOption)
     }
 
     public run = async (args: string[]) => {
@@ -41,7 +50,7 @@ export default class Furigana extends Command {
         const result = await kuroshiro.convert(input, {mode: "furigana", to: "hiragana"})
         const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
 
-        await message.channel.send(`**Furigana Conversion** ${discord.getEmoji("kannaXD")}`)
+        await message.reply(`**Furigana Conversion** ${discord.getEmoji("kannaXD")}`)
         message.channel.send(cleanResult)
     }
 }

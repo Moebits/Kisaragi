@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import snoowrap from "snoowrap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -22,8 +23,12 @@ export default class $2DGirlsEatingCutely extends Command {
             `,
             aliases: ["eat", "eating", "animeeating"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName("2dgirlseatingcutely")
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

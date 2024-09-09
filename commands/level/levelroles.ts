@@ -1,5 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -26,8 +26,36 @@ export default class LevelRoles extends Command {
             \`=>levelroles @cute 5000 You are cute!\`
             `,
             aliases: ["lr"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const msg2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("msg2")
+            .setDescription("The message in the edit subcommand.")
+
+        const msgOption = new SlashCommandOption()
+            .setType("string")
+            .setName("msg")
+            .setDescription("Can be a message or amount of points.")
+
+        const pointsOption = new SlashCommandOption()
+            .setType("string")
+            .setName("points")
+            .setDescription("Can be a setting number or amount of points.")
+
+        const roleOption = new SlashCommandOption()
+            .setType("string")
+            .setName("role")
+            .setDescription("Can be edit/delete/reset or a role.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(roleOption)
+            .addOption(pointsOption)
+            .addOption(msgOption)
+            .addOption(msg2Option)
     }
 
     public run = async (args: string[]) => {

@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -26,15 +26,15 @@ export default class Skip extends Command {
             cooldown: 5,
             slashEnabled: true
         })
-        const numOption = new SlashCommandStringOption()
+        const numOption = new SlashCommandOption()
+            .setType("string")
             .setName("num")
             .setDescription("Skips to a position or to a matched title.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(numOption)
-            .toJSON()
+            .addOption(numOption)
     }
 
     public run = async (args: string[]) => {

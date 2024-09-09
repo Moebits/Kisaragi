@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -24,22 +24,23 @@ export default class Upsample extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const factor2Option = new SlashCommandStringOption()
+        const factor2Option = new SlashCommandOption()
+            .setType("string")
             .setName("factor2")
             .setDescription("Factor of the effect in the dl subcommand.")
 
-        const factorOption = new SlashCommandStringOption()
+        const factorOption = new SlashCommandOption()
+            .setType("string")
             .setName("factor")
             .setDescription("Factor of the effect or dl to apply to an attachment.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(factorOption)
-            .addStringOption(factor2Option)
-            .toJSON()
+            .addOption(factorOption)
+            .addOption(factor2Option)
     }
 
     public run = async (args: string[]) => {

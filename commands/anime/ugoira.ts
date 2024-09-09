@@ -1,7 +1,7 @@
-import {Message, AttachmentBuilder, MessageReaction, User, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
+import {Message, AttachmentBuilder, MessageReaction, User} from "discord.js"
 import path from "path"
 import Pixiv, {PixivIllust, UgoiraMetaData} from "pixiv.ts"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -33,22 +33,23 @@ export default class Ugoira extends Command {
             aliases: ["u"],
             random: "none",
             cooldown: 30,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const tag2Option = new SlashCommandStringOption()
+        const tag2Option = new SlashCommandOption()
+            .setType("string")
             .setName("tags2")
             .setDescription("Can be tags for en/r18 subcommands.")
 
-        const tagOption = new SlashCommandStringOption()
+        const tagOption = new SlashCommandOption()
+            .setType("string")
             .setName("tags")
             .setDescription("Can be a link, tags to search, or en/r18 for subcommands.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(tagOption)
-            .addStringOption(tag2Option)
-            .toJSON()
+            .addOption(tagOption)
+            .addOption(tag2Option)
     }
 
     public run = async (args: string[]) => {

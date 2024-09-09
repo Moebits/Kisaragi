@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -19,8 +19,32 @@ export default class Tint extends Command {
           \`=>tint #ff5ce1 60\`
           `,
           aliases: ["colorize", "photofilter"],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+
+        const opacityOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("opacity")
+            .setDescription("Opacity of the tint.")
+            .setRequired(true)
+
+        const colorOption = new SlashCommandOption()
+            .setType("string")
+            .setName("color")
+            .setDescription("Hex color of the tint.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(colorOption)
+            .addOption(opacityOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

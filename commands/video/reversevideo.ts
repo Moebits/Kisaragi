@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
@@ -14,7 +14,7 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
-export default class Reversevideo extends Command {
+export default class ReverseVideo extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Reverses a video.",
@@ -28,8 +28,18 @@ export default class Reversevideo extends Command {
             \`=>reversevideo\`
             `,
             aliases: ["vreverse", "reversevid"],
-            cooldown: 20
+            cooldown: 20,
+            subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Optional url, or will use last posted video.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

@@ -1,6 +1,6 @@
-import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption, ChatInputCommandInteraction, APIInteractionGuildMember} from "discord.js"
+import {Message, EmbedBuilder, ChatInputCommandInteraction} from "discord.js"
 import {getVoiceConnection, joinVoiceChannel} from "@discordjs/voice"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import * as defaults from "./../../assets/json/defaultSongs.json"
 import {Audio} from "./../../structures/Audio"
@@ -33,27 +33,29 @@ export default class Play extends Command {
             guildOnly: true,
             aliases: ["pl", "stream"],
             cooldown: 15,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const thirdOption = new SlashCommandStringOption()
+        const thirdOption = new SlashCommandOption()
+            .setType("string")
             .setName("song3")
             .setDescription("This is the final option for song input if you have yet to specify it.")
 
-        const secondOption = new SlashCommandStringOption()
+        const secondOption = new SlashCommandOption()
+            .setType("string")
             .setName("song2")
             .setDescription("This can be the song to search for or yt.")
 
-        const firstOption = new SlashCommandStringOption()
+        const firstOption = new SlashCommandOption()
+            .setType("string")
             .setName("song")
             .setDescription("This can be the song to search for or any of the yt/first/reverse/loop options.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(firstOption)
-            .addStringOption(secondOption)
-            .addStringOption(thirdOption)
-            .toJSON()
+            .addOption(firstOption)
+            .addOption(secondOption)
+            .addOption(thirdOption)
     }
 
     public run = async (args: string[]) => {

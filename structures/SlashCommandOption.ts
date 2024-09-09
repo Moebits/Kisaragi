@@ -8,8 +8,73 @@ import {
     SlashCommandMentionableOption, 
     SlashCommandNumberOption, 
     SlashCommandRoleOption,
-    SlashCommandUserOption 
+    SlashCommandUserOption,
+	SlashCommandSubcommandBuilder
 } from "discord.js"
+
+type SlashCommandOptionType =
+	| SlashCommandAttachmentOption
+	| SlashCommandBooleanOption
+	| SlashCommandChannelOption
+	| SlashCommandIntegerOption
+	| SlashCommandMentionableOption
+	| SlashCommandNumberOption
+	| SlashCommandRoleOption
+	| SlashCommandStringOption
+	| SlashCommandUserOption
+
+type SlashCommandOptionTypeConstructor =
+	| typeof SlashCommandAttachmentOption
+	| typeof SlashCommandBooleanOption
+	| typeof SlashCommandChannelOption
+	| typeof SlashCommandIntegerOption
+	| typeof SlashCommandMentionableOption
+	| typeof SlashCommandNumberOption
+	| typeof SlashCommandRoleOption
+	| typeof SlashCommandStringOption
+	| typeof SlashCommandUserOption
+
+const optionMap = new Map<string, SlashCommandOptionTypeConstructor>([
+	["SlashCommandAttachmentOption", SlashCommandAttachmentOption],
+	["SlashCommandBooleanOption", SlashCommandBooleanOption],
+	["SlashCommandChannelOption", SlashCommandChannelOption],
+	["SlashCommandIntegerOption", SlashCommandIntegerOption],
+	["SlashCommandMentionableOption", SlashCommandMentionableOption],
+	["SlashCommandNumberOption", SlashCommandNumberOption],
+	["SlashCommandRoleOption", SlashCommandRoleOption],
+	["SlashCommandStringOption", SlashCommandStringOption],
+	["SlashCommandUserOption", SlashCommandUserOption],
+])
+
+export class SlashCommandSubcommand extends SlashCommandSubcommandBuilder {
+	public constructor() {
+		super()
+	}
+
+	public addOption(input: SlashCommandOptionType | ((builder: SlashCommandOptionType) => SlashCommandOptionType)): this {
+		if (typeof input === "function") {
+			for (const OptionConstructor of optionMap.values()) {
+				try {
+					const instance = new OptionConstructor()
+					const result = input(instance)
+					const OptionBuilder = optionMap.get(result.constructor.name)
+					// @ts-ignore
+					if (OptionBuilder) return this._sharedAddOptionMethod(input, OptionBuilder)
+				} catch {
+					// Ignore errors from passing incorrect arguments to input
+				}
+			}
+
+			throw new Error(`Unsupported option type returned from function input to addOption()`)
+		}
+
+		const OptionBuilder = optionMap.get(input?.constructor.name)
+		// @ts-ignore
+		if (OptionBuilder) return this._sharedAddOptionMethod(input, OptionBuilder)
+
+		throw new Error(`Unsupported option type passed to addOption(): ${input?.constructor.name}`)
+	}
+}
 
 export type ApplicationCommandOptionStringType =
 	| "attachment"
@@ -47,7 +112,7 @@ export type ApplicationCommandOptionStringTypeMap<OptionType extends Application
 export type ApplicationCommandOptionTypeMap<OptionType extends ApplicationCommandOptionStringType | ApplicationCommandOptionType> = 
 	OptionType extends ApplicationCommandOptionType ? ApplicationCommandOptionEnumTypeMap<OptionType> : 
 	OptionType extends ApplicationCommandOptionStringType ? ApplicationCommandOptionStringTypeMap<OptionType> : 
-	SlashCommandStringOption
+	never
 
 export class SlashCommandOption {
 	constructor() {}

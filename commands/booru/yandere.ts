@@ -1,7 +1,7 @@
 import axios from "axios"
 import Booru from "booru"
-import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -30,17 +30,17 @@ export default class Yandere extends Command {
             aliases: ["y", "ydere"],
             random: "none",
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const tagOption = new SlashCommandStringOption()
+        const tagOption = new SlashCommandOption()
+            .setType("string")
             .setName("tag")
             .setDescription("tags or link to search")
         
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(tagOption)
-            .toJSON()
+            .addOption(tagOption)
     }
 
     public run = async (args: string[]) => {

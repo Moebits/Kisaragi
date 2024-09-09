@@ -1,13 +1,12 @@
 import axios from "axios"
 import {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
-
-const Kuroshiro = require("kuroshiro")
-const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji")
+import Kuroshiro from "kuroshiro"
+import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji"
 
 export default class Jisho extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -24,8 +23,17 @@ export default class Jisho extends Command {
             aliases: ["kanji"],
             random: "string",
             cooldown: 5,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const wordOption = new SlashCommandOption()
+            .setType("string")
+            .setName("word")
+            .setDescription("Word to search.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(wordOption)
     }
 
     public run = async (args: string[]) => {
@@ -78,7 +86,7 @@ export default class Jisho extends Command {
         }
 
         if (jishoArray.length === 1) {
-            message.channel.send({embeds: [jishoArray[0]]})
+            message.reply({embeds: [jishoArray[0]]})
         } else {
             embeds.createReactionEmbed(jishoArray)
         }

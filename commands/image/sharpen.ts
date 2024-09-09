@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import config from "../../config.json"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,8 +22,30 @@ export default class Sharpen extends Command {
           \`=>sharpen 5\`
           `,
           aliases: ["sharp", "sharpness"],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+
+        const sigmaOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("sigma")
+            .setDescription("Sigma of the sharpening.")
+
+        const amountOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("amount")
+            .setDescription("Amount of sharpening.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(amountOption)
+            .addOption(sigmaOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

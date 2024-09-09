@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, SlashCommandBuilder} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
@@ -23,12 +23,11 @@ export default class Effects extends Command {
             aliases: ["fx"],
             guildOnly: true,
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {

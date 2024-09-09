@@ -1,5 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import snoowrap from "snoowrap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -34,8 +34,23 @@ export default class Reddit extends Command {
             aliases: ["r"],
             random: "none",
             cooldown: 10,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query or hot/new/top/rising/controversial.")
+
+        const subredditOption = new SlashCommandOption()
+            .setType("string")
+            .setName("subreddit")
+            .setDescription("Can be a subreddit/user or url.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(subredditOption)
+            .addOption(queryOption)
     }
 
     public getSubmissions = async <T extends boolean | undefined = false>(reddit: snoowrap, postIDS: string[], imagesOnly?: boolean, descOnly?: T): Promise<T extends true ? string : EmbedBuilder[]> => {

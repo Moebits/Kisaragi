@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -25,57 +25,65 @@ export default class Flanger extends Command {
             aliases: ["flg"],
             guildOnly: true,
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const interp2Option = new SlashCommandStringOption()
+        const interp2Option = new SlashCommandOption()
+            .setType("string")
             .setName("interp2")
             .setDescription("Interp of the effect in the dl subcommand.")
 
-        const interpOption = new SlashCommandStringOption()
+        const interpOption = new SlashCommandOption()
+            .setType("string")
             .setName("interp")
             .setDescription("Interp of the effect or phase in the dl subcommand.")
 
-        const phaseOption = new SlashCommandStringOption()
+        const phaseOption = new SlashCommandOption()
+            .setType("string")
             .setName("phase")
             .setDescription("Phase of the effect or shape in the dl subcommand.")
 
-        const shapeOption = new SlashCommandStringOption()
+        const shapeOption = new SlashCommandOption()
+            .setType("string")
             .setName("shape")
             .setDescription("Shape of the effect or speed in the dl subcommand.")
 
-        const speedOption = new SlashCommandStringOption()
+        const speedOption = new SlashCommandOption()
+            .setType("string")
             .setName("speed")
             .setDescription("Speed of the effect or width in the dl subcommand.")
 
-        const widthOption = new SlashCommandStringOption()
+        const widthOption = new SlashCommandOption()
+            .setType("string")
             .setName("width")
             .setDescription("Width of the effect or regen in the dl subcommand.")
 
-        const regenOption = new SlashCommandStringOption()
+        const regenOption = new SlashCommandOption()
+            .setType("string")
             .setName("regen")
             .setDescription("Regen of the effect or depth in the dl subcommand.")
 
-        const depthOption = new SlashCommandStringOption()
+        const depthOption = new SlashCommandOption()
+            .setType("string")
             .setName("depth")
             .setDescription("Depth of the effect or delay in the dl subcommand.")
 
-        const delayOption = new SlashCommandStringOption()
+        const delayOption = new SlashCommandOption()
+            .setType("string")
             .setName("delay")
             .setDescription("Delay of the effect or dl to apply to an attachment.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(delayOption)
-            .addStringOption(depthOption)
-            .addStringOption(regenOption)
-            .addStringOption(widthOption)
-            .addStringOption(speedOption)
-            .addStringOption(shapeOption)
-            .addStringOption(phaseOption)
-            .addStringOption(interpOption)
-            .addStringOption(interp2Option)
-            .toJSON()
+            .addOption(delayOption)
+            .addOption(depthOption)
+            .addOption(regenOption)
+            .addOption(widthOption)
+            .addOption(speedOption)
+            .addOption(shapeOption)
+            .addOption(phaseOption)
+            .addOption(interpOption)
+            .addOption(interp2Option)
     }
 
     public run = async (args: string[]) => {

@@ -1,5 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -24,8 +24,24 @@ export default class LevelChannels extends Command {
             `,
             guildOnly: true,
             aliases: ["pointchannels"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const settingOption = new SlashCommandOption()
+            .setType("string")
+            .setName("setting")
+            .setDescription("Setting to delete in the delete subcommand.")
+
+        const channelOption = new SlashCommandOption()
+            .setType("string")
+            .setName("channel")
+            .setDescription("Can be delete/reset or a channel.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(channelOption)
+            .addOption(settingOption)
     }
 
     public run = async (args: string[]) => {

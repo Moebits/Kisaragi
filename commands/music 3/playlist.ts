@@ -1,5 +1,5 @@
-import {Message, EmbedBuilder, Embed} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"

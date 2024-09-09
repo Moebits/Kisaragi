@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -21,8 +21,24 @@ export default class Award extends Command {
             \`=>award @user1 -99999\`
             `,
             aliases: ["give"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const pointsOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("points")
+            .setDescription("Amount of points.")
+
+        const userOption = new SlashCommandOption()
+            .setType("user")
+            .setName("user")
+            .setDescription("User to award points to.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(userOption)
+            .addOption(pointsOption)
     }
 
     public run = async (args: string[]) => {

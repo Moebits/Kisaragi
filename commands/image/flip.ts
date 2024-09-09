@@ -1,23 +1,23 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Brightness extends Command {
+export default class Flip extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
           description: "Flips an image horizontally, vertically, or both.",
           help:
           `
           _Note: Some param aliases that can be used are horizontal, h, vertical, and v._
-          \`flip x?\` - Flips the image horizontally (the default)
-          \`flip y\` - Flips an image vertically.
-          \`flip xy\` - Flips the image in both directions.
-          \`flop yx\` - Inverse of flip (vertical becomes the default).
-          \`flipflop\` - Alias for flipping in both directions.
+          \`flip x? url?\` - Flips the image horizontally (the default)
+          \`flip y url?\` - Flips an image vertically.
+          \`flip xy url?\` - Flips the image in both directions.
+          \`flop yx url?\` - Inverse of flip (vertical becomes the default).
+          \`flipflop url?\` - Alias for flipping in both directions.
           `,
           examples:
           `
@@ -25,8 +25,24 @@ export default class Brightness extends Command {
           \`=>flip y\`
           `,
           aliases: ["flop", "flipflop"],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+
+        const flipOption = new SlashCommandOption()
+            .setType("string")
+            .setName("flip")
+            .setDescription("Can be x/y/xy/yx.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(flipOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

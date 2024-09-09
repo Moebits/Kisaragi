@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -26,8 +26,36 @@ export default class Points extends Command {
             \`=>points destroy\`
             `,
             aliases: ["point", "pointsettings"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const timeoutOption = new SlashCommandOption()
+            .setType("string")
+            .setName("timeout")
+            .setDescription("Can be the <timeout>.")
+
+        const thresholdOption = new SlashCommandOption()
+            .setType("string")
+            .setName("threshold")
+            .setDescription("Can be the {threshold}.")
+
+        const rangeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("range")
+            .setDescription("Can be the [point, range].")
+
+        const enableOption = new SlashCommandOption()
+            .setType("string")
+            .setName("enable")
+            .setDescription("Can be enable/disable/destroy/reset.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(enableOption)
+            .addOption(rangeOption)
+            .addOption(thresholdOption)
+            .addOption(timeoutOption)
     }
 
     public run = async (args: string[]) => {

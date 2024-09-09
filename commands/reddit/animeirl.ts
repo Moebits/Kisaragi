@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import snoowrap from "snoowrap"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -23,8 +24,11 @@ export default class Animeirl extends Command {
             aliases: [],
             random: "none",
             cooldown: 10,
-            nsfw: true
+            subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

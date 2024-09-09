@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
@@ -29,8 +29,32 @@ export default class Video2GIF extends Command {
             \`=>video2gif 30 3\`
             `,
             aliases: ["vgif", "vid2gif"],
-            cooldown: 20
+            cooldown: 20,
+            subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Optional url, or will use last posted video.")
+
+        const lengthOption = new SlashCommandOption()
+            .setType("number")
+            .setName("length")
+            .setDescription("Length in seconds.")
+            .setRequired(true)
+
+        const startOption = new SlashCommandOption()
+            .setType("number")
+            .setName("start")
+            .setDescription("Start time in seconds.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(startOption)
+            .addOption(lengthOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -25,22 +25,23 @@ export default class Delay extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const delay2Option = new SlashCommandStringOption()
+        const delay2Option = new SlashCommandOption()
+            .setType("string")
             .setName("delaypairs2")
             .setDescription("Add delay and decay pairs in the dl subcommand.")
 
-        const delayOption = new SlashCommandStringOption()
+        const delayOption = new SlashCommandOption()
+            .setType("string")
             .setName("delaypairs")
             .setDescription("Add an even amount of delay and decay pairs separated by space, or dl to apply to an attachment.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(delayOption)
-            .addStringOption(delay2Option)
-            .toJSON()
+            .addOption(delayOption)
+            .addOption(delay2Option)
     }
 
     public run = async (args: string[]) => {

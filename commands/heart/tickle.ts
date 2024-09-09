@@ -1,5 +1,5 @@
-import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import nekoClient from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -28,10 +28,10 @@ export default class Tickle extends Command {
             .setName("user")
             .setDescription("User to tickle.")
             
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addMentionableOption(userOption)
+            .addOption(userOption)
     }
 
     public run = async (args: string[]) => {

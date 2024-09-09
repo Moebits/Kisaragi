@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -24,27 +24,29 @@ export default class Distortion extends Command {
             aliases: ["overdrive"],
             guildOnly: true,
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const color2Option = new SlashCommandStringOption()
+        const color2Option = new SlashCommandOption()
+            .setType("string")
             .setName("color2")
             .setDescription("Color of the effect in the dl subcommand.")
 
-        const colorOption = new SlashCommandStringOption()
+        const colorOption = new SlashCommandOption()
+            .setType("string")
             .setName("color")
             .setDescription("Color of the effect or gain in the dl subcommand.")
 
-        const gainOption = new SlashCommandStringOption()
+        const gainOption = new SlashCommandOption()
+            .setType("string")
             .setName("gain")
             .setDescription("Gain of the effect or dl to apply to an attachment.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(gainOption)
-            .addStringOption(colorOption)
-            .addStringOption(color2Option)
-            .toJSON()
+            .addOption(gainOption)
+            .addOption(colorOption)
+            .addOption(color2Option)
     }
 
     public run = async (args: string[]) => {

@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -24,32 +24,35 @@ export default class Phaser extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const speed2Option = new SlashCommandStringOption()
+        const speed2Option = new SlashCommandOption()
+            .setType("string")
             .setName("speed2")
             .setDescription("Speed of the effect in the dl subcommand.")
 
-        const speedOption = new SlashCommandStringOption()
+        const speedOption = new SlashCommandOption()
+            .setType("string")
             .setName("speed")
             .setDescription("Speed of the effect or decay in dl subcommand.")
 
-        const decayOption = new SlashCommandStringOption()
+        const decayOption = new SlashCommandOption()
+            .setType("string")
             .setName("decay")
             .setDescription("Decay of the effect or delay in dl subcommand.")
 
-        const delayOption = new SlashCommandStringOption()
+        const delayOption = new SlashCommandOption()
+            .setType("string")
             .setName("delay")
             .setDescription("Delay of the effect or dl to apply to an attachment.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(delayOption)
-            .addStringOption(decayOption)
-            .addStringOption(speedOption)
-            .addStringOption(speed2Option)
-            .toJSON()
+            .addOption(delayOption)
+            .addOption(decayOption)
+            .addOption(speedOption)
+            .addOption(speed2Option)
     }
 
     public run = async (args: string[]) => {

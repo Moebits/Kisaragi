@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -21,8 +21,45 @@ export default class Crop extends Command {
           \`=>crop 200 300 1280\`
           `,
           aliases: [],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+
+        const heightOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("height")
+            .setDescription("Height of crop.")
+
+        const widthOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("width")
+            .setDescription("Width of crop.")
+            .setRequired(true)
+
+        const yOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("y")
+            .setDescription("Y-position of crop.")
+            .setRequired(true)
+
+        const xOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("x")
+            .setDescription("X-position of crop.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(xOption)
+            .addOption(yOption)
+            .addOption(widthOption)
+            .addOption(heightOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

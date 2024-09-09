@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -19,8 +20,12 @@ export default class Sistine extends Command {
             `,
             aliases: ["sistinefibel"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

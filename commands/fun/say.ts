@@ -1,5 +1,5 @@
-import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -27,10 +27,10 @@ export default class Say extends Command {
             .setDescription("The text to post.")
             .setRequired(true)
 
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(textOption)
+            .addOption(textOption)
     }
 
     public run = async (args: string[]) => {

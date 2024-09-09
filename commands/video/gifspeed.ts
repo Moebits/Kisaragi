@@ -1,9 +1,8 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
-import {Audio} from "../../structures/Audio"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -11,7 +10,7 @@ import {Images} from "../../structures/Images"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
-export default class ConstrainGIF extends Command {
+export default class GifSpeed extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Speeds up a gif by constraining the amount of frames.",
@@ -28,8 +27,24 @@ export default class ConstrainGIF extends Command {
             \`=>gifspeed 1.5\`
             `,
             aliases: ["gspeed", "cgif", "constraingif", "compressgif"],
-            cooldown: 20
+            cooldown: 20,
+            subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Optional url, or will use last posted gif.")
+
+        const factorOption = new SlashCommandOption()
+            .setType("number")
+            .setName("factor")
+            .setDescription("Factor or number of frames.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(factorOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

@@ -1,6 +1,6 @@
 import axios from "axios"
-import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -25,17 +25,17 @@ export default class AnimeBooks extends Command {
             aliases: ["books", "animegirlbooks", "animegirlsholdingprogrammingbooks"],
             random: "string",
             cooldown: 10,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const languageOption = new SlashCommandStringOption()
+        const languageOption = new SlashCommandOption()
+            .setType("string")
             .setName("language")
             .setDescription("Specify a programming language.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(languageOption)
-            .toJSON()
+            .addOption(languageOption)
     }
 
     public run = async (args: string[]) => {

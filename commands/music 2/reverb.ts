@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -26,47 +26,53 @@ export default class Reverb extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 5,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const wet2GainOption = new SlashCommandStringOption()
+        const wet2GainOption = new SlashCommandOption()
+            .setType("string")
             .setName("wet-gain2")
             .setDescription("Wet gain of the effect in the dl subcommand.")
 
-        const wetGainOption = new SlashCommandStringOption()
+        const wetGainOption = new SlashCommandOption()
+            .setType("string")
             .setName("wet-gain")
             .setDescription("Wet gain of the effect or pre-delay in the dl subcommand.")
 
-        const predelayOption = new SlashCommandStringOption()
+        const predelayOption = new SlashCommandOption()
+            .setType("string")
             .setName("pre-delay")
             .setDescription("Predelay of the effect or stereo in the dl subcommand.")
 
-        const stereoOption = new SlashCommandStringOption()
+        const stereoOption = new SlashCommandOption()
+            .setType("string")
             .setName("stereo")
             .setDescription("Stereo of the effect or room in the dl subcommand.")
 
-        const roomOption = new SlashCommandStringOption()
+        const roomOption = new SlashCommandOption()
+            .setType("string")
             .setName("room")
             .setDescription("Room of the effect or damping in the dl subcommand.")
 
-        const dampingOption = new SlashCommandStringOption()
+        const dampingOption = new SlashCommandOption()
+            .setType("string")
             .setName("damping")
             .setDescription("Damping of the effect or amount in the dl subcommand.")
 
-        const amountOption = new SlashCommandStringOption()
+        const amountOption = new SlashCommandOption()
+            .setType("string")
             .setName("amount")
             .setDescription("Amount of the effect or dl to apply to an attachment.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(amountOption)
-            .addStringOption(dampingOption)
-            .addStringOption(roomOption)
-            .addStringOption(stereoOption)
-            .addStringOption(predelayOption)
-            .addStringOption(wetGainOption)
-            .addStringOption(wet2GainOption)
-            .toJSON()
+            .addOption(amountOption)
+            .addOption(dampingOption)
+            .addOption(roomOption)
+            .addOption(stereoOption)
+            .addOption(predelayOption)
+            .addOption(wetGainOption)
+            .addOption(wet2GainOption)
     }
 
     public run = async (args: string[]) => {

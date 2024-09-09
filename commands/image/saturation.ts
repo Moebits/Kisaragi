@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -11,18 +11,34 @@ export default class Saturation extends Command {
           description: "Increases or decreases the saturation of an image.",
           help:
           `
-          _Note: Use positive values for lightness, negative for darkness._
-          \`value amount\` - Changes the value of the last posted image
-          \`value amount url\` - Changes the value of the linked image
+          \`saturation amount\` - Changes the saturation of the last posted image
+          \`saturation amount url\` - Changes the saturation of the linked image
           `,
           examples:
           `
-          \`=>value 50\`
-          \`=>value -25\`
+          \`=>saturation 50\`
+          \`=>saturation -25\`
           `,
           aliases: ["saturate", "desaturate"],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+
+        const factorOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("factor")
+            .setDescription("Saturation factor.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(factorOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

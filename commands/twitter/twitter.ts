@@ -1,5 +1,5 @@
 import type {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import Twitter from "twitter"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -28,8 +28,24 @@ export default class TwitterCommand extends Command {
             aliases: ["t"],
             random: "string",
             cooldown: 10,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const query2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("query2")
+            .setDescription("The query in the user subcommand.")
+
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query, url, or user for subcommand.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
+            .addOption(query2Option)
     }
 
     public run = async (args: string[]) => {

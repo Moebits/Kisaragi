@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -21,8 +21,25 @@ export default class Blur extends Command {
           \`=>gaussian 40\`
           `,
           aliases: ["gaussian", "blurry", "blurriness"],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+
+        const radiusOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("radius")
+            .setDescription("Radius of the blur.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(radiusOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

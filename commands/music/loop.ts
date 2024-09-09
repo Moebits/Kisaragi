@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
@@ -24,17 +24,17 @@ export default class Loop extends Command {
             aliases: ["repeat"],
             guildOnly: true,
             cooldown: 10,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const linkOption = new SlashCommandStringOption()
+        const linkOption = new SlashCommandOption()
+            .setType("string")
             .setName("query")
             .setDescription("Optional song link/query to play.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(linkOption)
-            .toJSON()
+            .addOption(linkOption)
     }
 
     public run = async (args: string[]) => {

@@ -1,4 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
@@ -18,7 +19,7 @@ export default class NumberCommand extends Command {
             cooldown: 10,
             subcommandEnabled: true
         })
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName("number")
             .setDescription(this.options.description)
     }

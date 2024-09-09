@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import Twitter from "twitter"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -22,8 +22,19 @@ export default class Tweet extends Command {
             \`=>tweet posted by Kisaragi Bot!\`
             `,
             aliases: [],
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const contentOption = new SlashCommandOption()
+            .setType("string")
+            .setName("content")
+            .setDescription("Tweet to post.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(contentOption)
     }
 
     public run = async (args: string[]) => {

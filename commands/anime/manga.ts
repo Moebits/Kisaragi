@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -25,18 +25,18 @@ export default class Manga extends Command {
             aliases: ["m"],
             random: "string",
             cooldown: 10,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const queryOption = new SlashCommandStringOption()
+        const queryOption = new SlashCommandOption()
+            .setType("string")
             .setName("query")
             .setDescription("The query to search for")
             .setRequired(true)
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(queryOption)
-            .toJSON()
+            .addOption(queryOption)
     }
 
     public run = async (args: string[]) => {

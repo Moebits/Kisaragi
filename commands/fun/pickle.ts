@@ -1,5 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
@@ -28,10 +28,10 @@ export default class Pickle extends Command {
             .setName("user")
             .setDescription("Which user's pickle to get.")
 
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription("Posts your pickle size.")
-            .addUserOption(userOption)
+            .addOption(userOption)
     }
 
     public run = async (args: string[]) => {

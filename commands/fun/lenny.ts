@@ -1,5 +1,5 @@
-import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import lenny from "lenny"
@@ -30,10 +30,10 @@ export default class Lenny extends Command {
             .setName("query")
             .setDescription("Set to face/shrug/tableflip/unflip for the popular faces or search for something else.")
             
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(queryOption)
+            .addOption(queryOption)
     }
 
     public run = async (args: string[]) => {

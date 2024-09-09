@@ -1,6 +1,6 @@
 import {createCanvas} from "@napi-rs/canvas"
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -24,8 +24,12 @@ export default class Rank extends Command {
             \`=>rank\`
             `,
             aliases: ["score", "level", "xp"],
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

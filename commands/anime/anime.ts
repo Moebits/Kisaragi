@@ -1,12 +1,11 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-
-const weeb = require("node-weeb")
+import weeb from "node-weeb"
 
 export default class Anime extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -25,18 +24,18 @@ export default class Anime extends Command {
             aliases: ["a"],
             random: "string",
             cooldown: 10,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const queryOption = new SlashCommandStringOption()
+        const queryOption = new SlashCommandOption()
+            .setType("string")
             .setName("query")
             .setDescription("The query to search for.")
             .setRequired(true)
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(queryOption)
-            .toJSON()
+            .addOption(queryOption)
     }
 
     public run = async (args: string[]) => {

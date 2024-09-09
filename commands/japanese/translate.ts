@@ -1,13 +1,12 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
-import * as langs from "../../assets/json/langs.json"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
+import langs from "../../assets/json/langs.json"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
+import translate from "@vitalets/google-translate-api"
 
-const translate = require("@vitalets/google-translate-api")
-
-export default class Japanese extends Command {
+export default class Translate extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Translates text to another language.",
@@ -24,8 +23,24 @@ export default class Japanese extends Command {
             \`=>japanese this will be translated to japanese\`
             `,
             aliases: ["tr", "trans", "japanese", "jp"],
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const text2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("text2")
+            .setDescription("Text to translate after providing language code.")
+
+        const textOption = new SlashCommandOption()
+            .setType("string")
+            .setName("text")
+            .setDescription("Can be a language code or text (for english translation).")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(textOption)
+            .addOption(text2Option)
     }
 
     public run = async (args: string[]) => {
@@ -42,7 +57,7 @@ export default class Japanese extends Command {
         }
 
         const result = await translate(translateText, {to: code})
-        await message.channel.send(`**Translated to ${langs[code]}** ${discord.getEmoji("kannaCurious")}`)
+        await message.reply(`**Translated to ${langs[code]}** ${discord.getEmoji("kannaCurious")}`)
         message.channel.send(result.text)
     }
 }

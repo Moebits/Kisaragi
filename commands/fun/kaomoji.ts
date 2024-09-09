@@ -1,5 +1,5 @@
 import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -29,10 +29,10 @@ export default class Kaomoji extends Command {
             .setName("query")
             .setDescription("The query to search for a kaomoji.")
 
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(queryOption)
+            .addOption(queryOption)
     }
 
     public run = async (args: string[]) => {

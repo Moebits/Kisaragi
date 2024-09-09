@@ -1,5 +1,5 @@
-import {Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -29,10 +29,10 @@ export default class RPS extends Command {
             .addChoices([{name: "rock", value: "rock"}, {name: "paper", value: "paper"}, {name: "scissors", value: "scissors"}])
             .setRequired(true)
 
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(pickOption)
+            .addOption(pickOption)
     }
 
     public run = async (args: string[]) => {

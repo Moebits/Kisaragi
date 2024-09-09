@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Collection, Message, MessageReaction, TextChannel, User} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import jimp from "jimp"
 import path from "path"
@@ -35,8 +35,18 @@ export default class Photoshop extends Command {
           \`=>photoshop\`
           `,
           aliases: ["ps", "edit", "editor", "adjust", "hsv", "hsb"],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(urlOption)
     }
 
     public getProcBlock = () => {

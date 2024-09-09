@@ -1,4 +1,5 @@
 import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Permission} from "../../structures/Permission"
@@ -10,7 +11,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class RedditOauth extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
-            description: "Authorize read and write access to your reddit account. **Requires oauth2 and a connection with your reddit account on discord**.",
+            description: "Authorize read and write access to your reddit account. **Requires oauth2**.",
             help:
             `
             \`redditoauth\` - Follow the url and click on "Authorize" to authorize your reddit account
@@ -23,8 +24,18 @@ export default class RedditOauth extends Command {
             `,
             guildOnly: true,
             aliases: ["roauth"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const revokeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("revoke")
+            .setDescription("Type revoke/delete to delete your token.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(revokeOption)
     }
 
     public run = async (args: string[]) => {

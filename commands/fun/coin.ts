@@ -1,4 +1,5 @@
-import {Message, SlashCommandSubcommandBuilder} from "discord.js"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -20,7 +21,7 @@ export default class Coin extends Command {
             cooldown: 3,
             subcommandEnabled: true
         })
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
         .setName(this.constructor.name.toLowerCase())
         .setDescription(this.options.description)
     }

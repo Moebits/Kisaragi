@@ -1,6 +1,6 @@
-import {Message, AttachmentBuilder, TextChannel, SlashCommandStringOption, SlashCommandBuilder} from "discord.js"
+import {Message, AttachmentBuilder, TextChannel} from "discord.js"
 import {getVoiceConnection, joinVoiceChannel, EndBehaviorType} from "@discordjs/voice"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -28,17 +28,17 @@ export default class Record extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 10,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const nameOption = new SlashCommandStringOption()
+        const nameOption = new SlashCommandOption()
+            .setType("string")
             .setName("name")
             .setDescription("Filename of the recording.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(nameOption)
-            .toJSON()
+            .addOption(nameOption)
     }
 
     public run = async (args: string[]) => {

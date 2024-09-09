@@ -1,5 +1,5 @@
 import {GuildEmoji, ApplicationEmoji, Message, SlashCommandSubcommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
@@ -43,13 +43,13 @@ export default class React extends Command {
             .setDescription("This can be an emoji or dev/global/msg for additional subcommands.")
             .setRequired(true)
 
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(firstOption)
-            .addStringOption(secondOption)
-            .addStringOption(thirdOption)
-            .addStringOption(fourthOption)
+            .addOption(firstOption)
+            .addOption(secondOption)
+            .addOption(thirdOption)
+            .addOption(fourthOption)
     }
 
     public run = async (args: string[]) => {

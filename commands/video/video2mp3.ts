@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
@@ -12,7 +12,7 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
-export default class ConstrainGIF extends Command {
+export default class Video2MP3 extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Converts a video file or link to mp3.",
@@ -20,15 +20,25 @@ export default class ConstrainGIF extends Command {
             `
             _Note: Passing in youtube links is an alias for the \`youtube download mp3\` command._
             \`video2mp3\` - Convert the last posted video
-            \`video2mp3\` - Convert the linked video
+            \`video2mp3 url\` - Convert the linked video
             `,
             examples:
             `
             \`=>video2mp3\`
             `,
             aliases: ["vid2mp3", "yt2mp3"],
-            cooldown: 20
+            cooldown: 20,
+            subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Optional url, or will use last posted video.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

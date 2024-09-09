@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -11,7 +11,6 @@ export default class Pixelate extends Command {
           description: "Adds a pixelation effect to an image.",
           help:
           `
-          _Note: The range is -100 to 100._
           \`pixelate factor\` - Edits the pixelation of the last posted image
           \`pixelate factor url\` - Edits the pixelation of the linked image
           `,
@@ -20,8 +19,25 @@ export default class Pixelate extends Command {
           \`=>pixelate 50\`
           `,
           aliases: ["censor"],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+
+        const factorOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("factor")
+            .setDescription("Pixelation factor.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(factorOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

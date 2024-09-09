@@ -1,6 +1,6 @@
 import axios from "axios"
-import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import nekoClient from "nekos.life"
 import {Command} from "../../structures/Command"
 import {Functions} from "../../structures/Functions"
@@ -29,17 +29,17 @@ export default class Neko extends Command {
             aliases: ["nekos", "catgirl", "catgirls"],
             random: "none",
             cooldown: 10,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const tagOption = new SlashCommandStringOption()
+        const tagOption = new SlashCommandOption()
+            .setType("string")
             .setName("tags")
             .setDescription("Searches for images with the tags.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(tagOption)
-            .toJSON()
+            .addOption(tagOption)
     }
 
     public run = async (args: string[]) => {

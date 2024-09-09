@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -25,23 +25,24 @@ export default class Pitch extends Command {
             aliases: ["pitchshift", "semitones"],
             guildOnly: true,
             cooldown: 10,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const opt2Option = new SlashCommandStringOption()
+        const opt2Option = new SlashCommandOption()
+            .setType("string")
             .setName("semitones2")
             .setDescription("Specify the semitones here if you are using the dl subcommand.")
 
-        const semitoneOption = new SlashCommandStringOption()
+        const semitoneOption = new SlashCommandOption()
+            .setType("string")
             .setName("semitones")
             .setDescription("The amount of semitones to pitch the song or dl to trigger the second subcommand.")
             .setRequired(true)
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(semitoneOption)
-            .addStringOption(opt2Option)
-            .toJSON()
+            .addOption(semitoneOption)
+            .addOption(opt2Option)
     }
 
     public run = async (args: string[]) => {

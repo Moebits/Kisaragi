@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -24,32 +24,35 @@ export default class Peak extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const gain2Option = new SlashCommandStringOption()
+        const gain2Option = new SlashCommandOption()
+            .setType("string")
             .setName("gain2")
             .setDescription("Gain of the filter in the dl subcommand.")
 
-        const gainOption = new SlashCommandStringOption()
+        const gainOption = new SlashCommandOption()
+            .setType("string")
             .setName("gain")
             .setDescription("Gain of the filter or resonance in the dl subcommand.")
 
-        const resonanceOption = new SlashCommandStringOption()
+        const resonanceOption = new SlashCommandOption()
+            .setType("string")
             .setName("resonance")
             .setDescription("Resonance of the filter or freq in the dl subcommand.")
 
-        const freqOption = new SlashCommandStringOption()
+        const freqOption = new SlashCommandOption()
+            .setType("string")
             .setName("freq")
             .setDescription("Freq of the filter or dl to apply to an attachment.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(freqOption)
-            .addStringOption(resonanceOption)
-            .addStringOption(gainOption)
-            .addStringOption(gain2Option)
-            .toJSON()
+            .addOption(freqOption)
+            .addOption(resonanceOption)
+            .addOption(gainOption)
+            .addOption(gain2Option)
         
     }
 

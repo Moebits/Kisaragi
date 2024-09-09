@@ -1,4 +1,6 @@
-import {Collection, Message, SlashCommandSubcommandBuilder, EmbedBuilder, MessageReaction, TextChannel, User, HexColorString} from "discord.js"
+import {Collection, Message, SlashCommandSubcommandBuilder, EmbedBuilder, 
+MessageReaction, TextChannel, User, HexColorString} from "discord.js"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -22,7 +24,7 @@ export default class Embed extends Command {
             cooldown: 3,
             subcommandEnabled: true
         })
-        this.subcommand = new SlashCommandSubcommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
         .setName(this.constructor.name.toLowerCase())
         .setDescription(this.options.description)
     }

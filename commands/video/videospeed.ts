@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import gifFrames from "gif-frames"
 import path from "path"
@@ -14,7 +14,7 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
-export default class Videospeed extends Command {
+export default class VideoSpeed extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Changes the speed of a video.",
@@ -28,8 +28,25 @@ export default class Videospeed extends Command {
             \`=>videospeed 1.5\`
             `,
             aliases: ["vspeed"],
-            cooldown: 20
+            cooldown: 20,
+            subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Optional url, or will use last posted video.")
+
+        const factorOption = new SlashCommandOption()
+            .setType("number")
+            .setName("factor")
+            .setDescription("Speed factor.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(factorOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

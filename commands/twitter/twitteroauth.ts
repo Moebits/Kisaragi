@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {OAuth} from "oauth"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -11,7 +11,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class TwitterOauth extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
-            description: "Authorize read and write access to your twitter account. **Requires oauth2 and a connection with your twitter account on discord**.",
+            description: "Authorize read and write access to your twitter account. **Requires oauth2**.",
             help:
             `
             \`twitteroauth\` - Follow the url and click on "Authorize" to authorize your twitter account
@@ -24,8 +24,18 @@ export default class TwitterOauth extends Command {
             `,
             guildOnly: true,
             aliases: ["toauth"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const revokeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("revoke")
+            .setDescription("Type revoke/delete to delete your token.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(revokeOption)
     }
 
     public run = async (args: string[]) => {

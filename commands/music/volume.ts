@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandIntegerOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,18 +22,18 @@ export default class Volume extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 5,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const volumeOption = new SlashCommandIntegerOption()
+        const volumeOption = new SlashCommandOption()
+            .setType("integer")
             .setName("volume")
             .setDescription("The new volume (0-200)")
             .setRequired(true)
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addIntegerOption(volumeOption)
-            .toJSON()
+            .addOption(volumeOption)
     }
 
     public run = async (args: string[]) => {

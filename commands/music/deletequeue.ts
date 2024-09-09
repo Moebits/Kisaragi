@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -24,12 +24,18 @@ export default class DeleteQueue extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 5,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        const rangeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("range")
+            .setDescription("Range to remove")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .toJSON()
+            .addOption(rangeOption)
     }
 
     public run = async (args: string[]) => {

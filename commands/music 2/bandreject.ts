@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -24,27 +24,29 @@ export default class Bandreject extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const width2Option = new SlashCommandStringOption()
+        const width2Option = new SlashCommandOption()
+            .setType("string")
             .setName("width2")
             .setDescription("Width of the filter in the dl subcommand.")
 
-        const widthOption = new SlashCommandStringOption()
+        const widthOption = new SlashCommandOption()
+            .setType("string")
             .setName("width")
             .setDescription("Width of the filter or freq in the dl subcommand.")
 
-        const freqOption = new SlashCommandStringOption()
+        const freqOption = new SlashCommandOption()
+            .setType("string")
             .setName("freq")
             .setDescription("Frequency of the filter or dl to apply to an attachment.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(freqOption)
-            .addStringOption(widthOption)
-            .addStringOption(width2Option)
-            .toJSON()
+            .addOption(freqOption)
+            .addOption(widthOption)
+            .addOption(width2Option)
     }
 
     public run = async (args: string[]) => {

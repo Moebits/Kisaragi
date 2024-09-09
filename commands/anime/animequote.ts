@@ -1,12 +1,11 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-
-const animeQuotes = require("animequotes")
+import animeQuotes from "animequotes"
 
 export default class AnimeQuote extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -31,18 +30,17 @@ export default class AnimeQuote extends Command {
             aliases: ["aq"],
             random: "none",
             cooldown: 5,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const idOption = new SlashCommandStringOption()
+        const idOption = new SlashCommandOption()
+            .setType("string")
             .setName("id")
             .setDescription("Can be a quote id, anime, or character.")
-            .setRequired(true)
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(idOption)
-            .toJSON()
+            .addOption(idOption)
     }
 
     public replaceQuery = (query: string) => {
@@ -99,13 +97,13 @@ export default class AnimeQuote extends Command {
                 return message.channel.send({embeds: [animeQuoteEmbed]})
             }
 
-            let quote = animeQuotes.getQuotesByAnime(query)
-            let random = Math.floor(Math.random() * quote.length)
-            quote = quote[random]
+            let quotes = animeQuotes.getQuotesByAnime(query)
+            let random = Math.floor(Math.random() * quotes.length)
+            const quote = quotes[random]
             if (quote === undefined) {
-                    let aniQuote = animeQuotes.getQuotesByCharacter(query)
-                    random = Math.floor(Math.random() * aniQuote.length)
-                    aniQuote = aniQuote[random]
+                    let aniQuotes = animeQuotes.getQuotesByCharacter(query)
+                    random = Math.floor(Math.random() * aniQuotes.length)
+                    const aniQuote = aniQuotes[random]
                     if (aniQuote === undefined) {
                         return this.invalidQuery(animeQuoteEmbed, "Could not find a quote!")
                     }

@@ -1,6 +1,6 @@
 import axios from "axios"
 import {AttachmentBuilder, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import * as fs from "fs"
 import * as path from "path"
 import waifu2x from "waifu2x"
@@ -25,8 +25,24 @@ export default class Waifu2x extends Command {
             \`=>waifu2x\`
             `,
             aliases: ["2x"],
-            cooldown: 30
+            cooldown: 30,
+            subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+            
+        const upscalerOption = new SlashCommandOption()
+            .setType("string")
+            .setName("upscaler")
+            .setDescription("Can be waifu2x/cugan/esrgan/anime4k or a url.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(upscalerOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

@@ -1,6 +1,6 @@
 import axios from "axios"
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -30,17 +30,17 @@ export default class Genshin extends Command {
             aliases: ["genshinimpact"],
             random: "none",
             cooldown: 10,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const characterOption = new SlashCommandStringOption()
+        const characterOption = new SlashCommandOption()
+            .setType("string")
             .setName("character")
             .setDescription("Character to search for.")
             
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(characterOption)
-            .toJSON()
+            .addOption(characterOption)
     }
 
     public run = async (args: string[]) => {

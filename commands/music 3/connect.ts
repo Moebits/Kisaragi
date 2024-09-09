@@ -1,7 +1,6 @@
-import {Message, VoiceChannel, ChannelType, SlashCommandChannelOption, SlashCommandBuilder} from "discord.js"
+import {Message, VoiceChannel, ChannelType} from "discord.js"
 import {joinVoiceChannel} from "@discordjs/voice"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
-import {Audio} from "../../structures/Audio"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -22,17 +21,17 @@ export default class Connect extends Command {
             aliases: ["join"],
             guildOnly: true,
             cooldown: 10,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const channelOption = new SlashCommandChannelOption()
+        const channelOption = new SlashCommandOption()
+            .setType("channel")
             .setName("channel")
             .setDescription("The voice channel to connect to (if not specified it's the one you are in).")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addChannelOption(channelOption)
-            .toJSON()
+            .addOption(channelOption)
     }
 
     public run = async (args: string[]) => {

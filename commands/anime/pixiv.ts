@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -37,27 +37,29 @@ export default class Pixiv extends Command {
             aliases: ["p"],
             random: "none",
             cooldown: 60,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const tag3Option = new SlashCommandStringOption()
+        const tag3Option = new SlashCommandOption()
+            .setType("string")
             .setName("tags3")
             .setDescription("Can be tags or optional folder map for the download subcommand.")
 
-        const tag2Option = new SlashCommandStringOption()
+        const tag2Option = new SlashCommandOption()
+            .setType("string")
             .setName("tags2")
             .setDescription("Can be tags or en/popular for subcommands.")
 
-        const tagOption = new SlashCommandStringOption()
+        const tagOption = new SlashCommandOption()
+            .setType("string")
             .setName("tags")
             .setDescription("Can be a link, tags to search, or en/popular/download/r18 for subcommands.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(tagOption)
-            .addStringOption(tag2Option)
-            .addStringOption(tag3Option)
-            .toJSON()
+            .addOption(tagOption)
+            .addOption(tag2Option)
+            .addOption(tag3Option)
     }
 
     public run = async (args: string[]) => {

@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Audio} from "./../../structures/Audio"
 import {Embeds} from "./../../structures/Embeds"
@@ -25,22 +25,23 @@ export default class Compress extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 20,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const amount2Option = new SlashCommandStringOption()
+        const amount2Option = new SlashCommandOption()
+            .setType("string")
             .setName("decay")
             .setDescription("Amount of the effect in the dl subcommand.")
 
-        const amountOption = new SlashCommandStringOption()
+        const amountOption = new SlashCommandOption()
+            .setType("string")
             .setName("delay")
             .setDescription("Amount of the effect or dl to apply to an attachment.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(amountOption)
-            .addStringOption(amount2Option)
-            .toJSON()
+            .addOption(amountOption)
+            .addOption(amount2Option)
     }
 
     public run = async (args: string[]) => {

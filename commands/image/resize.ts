@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import jimp from "jimp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -21,8 +21,31 @@ export default class Resize extends Command {
           \`=>resize 1920\`
           `,
           aliases: [],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Url, or use the last posted image.")
+
+        const heightOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("height")
+            .setDescription("Resize height.")
+
+        const widthOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("width")
+            .setDescription("Resize width.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(widthOption)
+            .addOption(heightOption)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {
