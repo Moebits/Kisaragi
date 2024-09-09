@@ -63,7 +63,6 @@ export default class Blur extends Command {
         }
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer!)
-        await message.reply({content:`Blurred the image by a factor of **${factor}**!`, files: [attachment]})
-        return
+        return message.reply({content:`Blurred the image by a factor of **${factor}**!`, files: [attachment]})
     }
 }

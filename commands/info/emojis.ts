@@ -1,5 +1,5 @@
 import {Emoji, Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -22,8 +22,18 @@ export default class Emojis extends Command {
             guildOnly: true,
             aliases: [],
             random: "none",
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const infoOption = new SlashCommandOption()
+            .setType("string")
+            .setName("info")
+            .setDescription("Set to info to post with info.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(infoOption)
     }
 
     public run = async (args: string[]) => {

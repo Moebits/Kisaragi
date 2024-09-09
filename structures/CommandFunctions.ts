@@ -1,9 +1,7 @@
-import {Collection, Message, TextChannel, ChannelType} from "discord.js"
-import {Functions} from "./Functions"
+import {Message, TextChannel, ChannelType} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 import {Command} from "./Command"
-import fs from "fs"
 import path from "path"
 
 const noCmdCool = new Set()
@@ -14,16 +12,16 @@ export class CommandFunctions {
     // Run Command
     public runCommand = async (msg: Message<true>, args: string[], noMsg?: boolean) => {
         args = args.filter(Boolean)
-        const cmdPath = await this.findCommand(args?.[0]) as string
-        if (!cmdPath) return this.noCommand(args?.[0], noMsg)
-        const cp = new (require(path.join(__dirname, `${cmdPath.slice(0, -3)}`)).default)(this.discord, msg)
-        if (cp.options.guildOnly) {
+        const command = this.findCommand(args?.[0])
+        if (!command) return this.noCommand(args?.[0], noMsg)
+        if (command.options.guildOnly) {
             // @ts-ignore
             if (msg.channel.type === ChannelType.DM) return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
         }
+        command.message = this.message
         let data: any
         await new Promise<void>(async (resolve, reject) => {
-            await cp.run(args).then((d: any) => {
+            await command.run(args).then((d: any) => {
                 data = d
                 resolve()
             })
@@ -37,6 +35,7 @@ export class CommandFunctions {
 
     // Run Command (from Class)
     public runCommandClass = async (cmd: Command, msg: Message<true>, args: string[]) => {
+        cmd.message = msg
         if (cmd.options.guildOnly) {
             // @ts-ignore
             if (msg.channel.type === ChannelType.DM) return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
@@ -102,12 +101,12 @@ export class CommandFunctions {
     public noCommand = async (input: string, noMsg?: boolean) => {
         if (noMsg || this.discord.checkMuted(this.message)) return
         if (noCmdCool.has(this.message.guild!.id)) return
-        const commands = await SQLQuery.selectColumn("commands", "command")
-        for (let i = 0; i < commands.length; i++) {
-            if (commands[i].toLowerCase().includes(input.toLowerCase())) {
+        const commands = [...this.discord.commands.values()]
+        for (const command of commands) {
+            if (command.name.toLowerCase().includes(input.toLowerCase())) {
                 noCmdCool.add(this.message.guild!.id)
                 setTimeout(() => {noCmdCool.delete(this.message.guild!.id)}, 10000)
-                return this.message.reply(`This is not a command! Did you mean **${commands[i]}**?`)
+                return this.message.reply(`This is not a command! Did you mean **${command.name}**?`)
             }
         }
         noCmdCool.add(this.message.guild!.id)
@@ -115,88 +114,20 @@ export class CommandFunctions {
         return this.message.reply(`This is not a command, type **help** for help!`)
     }
 
-    public findCommand = async (cmd: string) => {
-        let cmdPath = await SQLQuery.fetchCommand(cmd, "path")
-        loop1:
-        if (!cmdPath) {
-            const directories = fs.readdirSync(path.join(__dirname, `../commands/`))
-            for (let i = 0; i < directories.length; i++) {
-                const commands = fs.readdirSync(path.join(__dirname, `../commands/${directories[i]}`))
-                for (let j = 0; j < commands.length; j++) {
-                    commands[j] = commands[j].slice(0, -3)
-                    if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
-                    const cmdClass = new (require(path.join(__dirname, `../commands/${directories[i]}/${commands[j]}.js`)).default)(this.discord, this.message)
-                    const aliases = cmdClass.options.aliases
-                    for (let k = 0; k < aliases.length; k++) {
-                        if (aliases[k] === cmd) {
-                            cmdPath = [`../commands/${directories[i]}/${commands[j]}.js`]
-                            break loop1
-                        }
+    public findCommand = (cmd: string) => {
+        let command = this.discord.commands.get(cmd)
+        if (!command) {
+            loop1:
+            for (const parentCommand of this.discord.commands.values()) {
+                const aliases = parentCommand.options.aliases
+                for (const alias of aliases) {
+                    if (alias === cmd) {
+                        command = parentCommand
+                        break loop1
                     }
                 }
             }
         }
-        if (!cmdPath) {
-            return false
-        } else {
-            return String(cmdPath)
-        }
-    }
-
-    // Assert Last Command Worked
-    public assertLast = async <T extends string | boolean>(test: T, timeout?: number): Promise<T extends true ? number : boolean> => {
-        type assertLast = Promise<T extends true ? number : boolean>
-        if (!timeout) timeout = 20
-        await Functions.timeout(timeout)
-        const channel = this.message.channel as TextChannel
-        if (channel.nsfw === false) await channel.setNSFW(true)
-        const lastMsg = await this.message.channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
-        if (lastMsg!.embeds?.[0]) {
-            if (test === true) return lastMsg!.embeds?.[0].description!.length as unknown as assertLast
-            return lastMsg!.embeds?.[0].description!.includes(String(test)) as unknown as assertLast
-        } else {
-            if (test === true) return lastMsg!.content.length as unknown as assertLast
-            return lastMsg!.content.includes(String(test)) as unknown as assertLast
-        }
-    }
-
-    // Assert Command only works in NSFW channels
-    public assertNSFW = async (cmd: string[], timeout?: number) => {
-        if (!timeout) timeout = 20
-        const channel = this.message.channel as TextChannel
-        await channel.setNSFW(false)
-        await this.runCommand(this.message, cmd)
-        await Functions.timeout(timeout)
-        await channel.setNSFW(true)
-        if (await this.assertLast("You can only use this command in NSFW channels!")) {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    // Assert Command Image
-    public assertImage = async (cmd: string[], timeout?: number) => {
-        if (!timeout) timeout = 20
-        await this.runCommand(this.message, cmd)
-        await Functions.timeout(timeout)
-        const lastMsg = await this.message.channel.messages.fetch({limit: 1}).then((c: Collection<string, Message>) => c.first())
-        if (lastMsg!.embeds?.[0]) {
-            const check = lastMsg!.embeds?.[0].image ? true : false
-            return check
-        } else {
-            const check = lastMsg!.attachments.first() ? true : false
-            return check
-        }
-    }
-
-    // Assert that command was rejected
-    public assertReject = async (cmd: string[], timeout?: number) => {
-        if (!timeout) timeout = 20
-        await this.runCommand(this.message, cmd)
-        await Functions.timeout(timeout)
-        let reject = await this.assertLast("No results were found.")
-        if (!reject) reject = await this.assertLast("You must provide a search query.")
-        return reject
+        return command
     }
 }

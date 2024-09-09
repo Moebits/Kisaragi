@@ -1,8 +1,7 @@
-import {GuildMember, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import SQL from "../bot developer/sql"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -24,8 +23,32 @@ export default class TempMute extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("The temp mute reason.")
+
+        const timeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("time")
+            .setDescription("Time in 0y 0mo 0w 0d 0h 0m 0s format.")
+            .setRequired(true)
+
+        const userOption = new SlashCommandOption()
+            .setType("user")
+            .setName("user")
+            .setDescription("The user to temp mute.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(userOption)
+            .addOption(timeOption)
+            .addOption(reasonOption)
     }
 
     public run = async (args: string[]) => {

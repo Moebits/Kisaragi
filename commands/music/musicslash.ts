@@ -41,20 +41,15 @@ export default class MusicSlash extends Command {
     }
 
     public run = async (args: string[]) => {
+        const discord = this.discord
+        const message = this.message
         const cmd = new CommandFunctions(this.discord, this.message)
         const subcommand = args[1]
 
-        const commandDir = fs.readdirSync(path.join(__dirname, "./"))
-        for (let commandFile of commandDir) {
-            if (!commandFile.endsWith(".ts") && !commandFile.endsWith(".js")) continue
-            const commandName = commandFile.replace(".js", "").replace(".ts", "")
-
-            if (commandName === subcommand) {
-                const command = new (require(path.join(__dirname, commandFile)).default)(this.discord, this.message)
-                args.shift()
-                cmd.runCommandClass(command, this.message, args)
-                break
-            }
-        }
+        const command = discord.commands.get(subcommand)
+        if (!command) return
+        args.shift()
+        command.message = message
+        cmd.runCommandClass(command, this.message, args)
     }
 }

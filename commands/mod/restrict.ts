@@ -1,5 +1,5 @@
 import {GuildMember, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,8 +22,25 @@ export default class Restrict extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("The restrict reason.")
+
+        const userOption = new SlashCommandOption()
+            .setType("user")
+            .setName("user")
+            .setDescription("The user to restrict.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(userOption)
+            .addOption(reasonOption)
     }
 
     public run = async (args: string[]) => {

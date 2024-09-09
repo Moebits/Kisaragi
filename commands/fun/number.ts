@@ -30,13 +30,13 @@ export default class NumberCommand extends Command {
 
         const num = Math.floor(Math.random() * 1000000)
 
-        await message.reply(`I picked a number! Try to guess what it is ${discord.getEmoji("raphiOMG")}`)
+        await this.reply(`I picked a number! Try to guess what it is ${discord.getEmoji("raphiOMG")}`)
         const filter = (m: Message) => m.author.id === message.author.id && m.channel.id === message.channel.id
 
         const gameLoop = async () => {
             try {
                 const collected = await message.channel.awaitMessages({filter, max: 1, time: 60000}).then((c) => c.first()?.content.trim().toLowerCase())
-                if (!collected) return message.reply(`Quit, no message was sent ${discord.getEmoji("kannaFacepalm")}`)
+                if (!collected) return this.reply(`Quit, no message was sent ${discord.getEmoji("kannaFacepalm")}`)
                 if (collected === "quit") {
                     return message.channel.send(`You lost the game! The correct number was **${num}** ${discord.getEmoji("smugFace")}`)
                 } else if (!Number(collected)) {

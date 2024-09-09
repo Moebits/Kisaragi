@@ -66,6 +66,6 @@ export default class Kiss extends Command {
         .setTitle(`**Kiss** ${discord.getEmoji("kannaFreeze")}`)
         .setDescription(`**${message.author.username}** kissed **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.reply({embeds: [kissEmbed]})
+        return this.reply(kissEmbed)
     }
 }

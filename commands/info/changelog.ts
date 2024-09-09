@@ -1,7 +1,7 @@
-import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandIntegerOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
-import * as config from "./../../config.json"
+import config from "./../../config.json"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -22,17 +22,17 @@ export default class Changelog extends Command {
             aliases: ["updates"],
             random: "none",
             cooldown: 10,
-            slashEnabled: false
+            subcommandEnabled: true
         })
-        const numOption = new SlashCommandIntegerOption()
+        const numOption = new SlashCommandOption()
+            .setType("integer")
             .setName("num")
             .setDescription("Num of changelog.")
             
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addIntegerOption(numOption)
-            .toJSON()
+            .addOption(numOption)
     }
 
     public run = async (args: string[]) => {

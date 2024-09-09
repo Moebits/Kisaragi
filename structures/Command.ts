@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder, SlashCommandSubcommandBuilder, RESTPostAPIChatInputApplicationCommandsJSONBody} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandSubcommandBuilder, RESTPostAPIChatInputApplicationCommandsJSONBody, AttachmentBuilder} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
 
 interface CommandOptions {
@@ -20,11 +20,14 @@ interface CommandOptions {
 }
 
 export class Command {
-  public readonly options: CommandOptions
+  public name: string
+  public category: string
+  public path: string
+  public options: CommandOptions
   public slash: RESTPostAPIChatInputApplicationCommandsJSONBody
   public subcommand: SlashCommandSubcommandBuilder
 
-  constructor(public readonly discord: Kisaragi, public readonly message: Message<true>, {
+  constructor(public discord: Kisaragi, public message: Message<true>, {
       params = "",
       description = "No description provided.",
       help = "This command is not documented.",
@@ -41,6 +44,9 @@ export class Command {
       slashEnabled = false,
       subcommandEnabled = false
     }) {
+      this.name = ""
+      this.category = ""
+      this.path = ""
       this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, random, unlist, nsfw, slashEnabled, subcommandEnabled}
       this.slash = null as unknown as RESTPostAPIChatInputApplicationCommandsJSONBody
       this.subcommand = null as unknown as SlashCommandSubcommandBuilder
@@ -51,6 +57,39 @@ export class Command {
   }
 
   public run = async (args: string[]): Promise<void | Message> => {}
+
+  public reply = (embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
+    let options = {} as any
+    if (embed instanceof EmbedBuilder) {
+      options.embeds = [embed]
+    } else if (typeof embed === "string") {
+      options.content = embed
+    }
+    if (file) options.file = [file]
+    return this.message.reply(options)
+  }
+
+  public send = (embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
+    let options = {} as any
+    if (embed instanceof EmbedBuilder) {
+      options.embeds = [embed]
+    } else if (typeof embed === "string") {
+      options.content = embed
+    }
+    if (file) options.file = [file]
+    return this.message.channel.send(options)
+  }
+
+  public edit = (msg: Message, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
+    let options = {} as any
+    if (embed instanceof EmbedBuilder) {
+      options.embeds = [embed]
+    } else if (typeof embed === "string") {
+      options.content = embed
+    }
+    if (file) options.file = [file]
+    return msg.edit(options)
+  }
 
   public noQuery = (embed: EmbedBuilder, text?: string) => {
     const discord = this.discord
@@ -65,5 +104,4 @@ export class Command {
     embed.setDescription(desc)
     this.message.reply({embeds: [embed]})
   }
-
 }

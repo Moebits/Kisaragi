@@ -45,7 +45,7 @@ export default class Ship extends Command {
         const discord = this.discord
         const message = this.message
         if (!args[2]) {
-            return message.reply(`You need to mention two users! ${discord.getEmoji("kannaWave")}`)
+            return this.reply(`You need to mention two users! ${discord.getEmoji("kannaWave")}`)
         }
         const user1ID = args[1].match(/\d+/)?.[0]
         const user1 = await message.guild?.members.fetch(user1ID!)
@@ -65,9 +65,7 @@ export default class Ship extends Command {
 
         const attachment = new AttachmentBuilder(can.toBuffer("image/png"), {name: "ship.png"})
 
-        message.reply({content:
-            `Aww, what a cute shipping! ${discord.getEmoji("gabrielLick")}\n` +
-            `_Shipping Name:_ **${shipname}**`, files: [attachment]})
-        return
+        return this.reply(`Aww, what a cute shipping! ${discord.getEmoji("gabrielLick")}\n` +
+            `_Shipping Name:_ **${shipname}**`, attachment)
     }
 }

@@ -1,11 +1,11 @@
 import {GuildMember, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Kick extends Command {
+export default class VCKick extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Disconnects users from a voice channel.",
@@ -20,8 +20,25 @@ export default class Kick extends Command {
             `,
             guildOnly: true,
             aliases: ["vcdisconnect"],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("The voice kick reason.")
+
+        const userOption = new SlashCommandOption()
+            .setType("user")
+            .setName("user")
+            .setDescription("The user to voice kick.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(userOption)
+            .addOption(reasonOption)
     }
 
     public run = async (args: string[]) => {

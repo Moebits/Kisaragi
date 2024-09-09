@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -19,8 +19,12 @@ export default class GuildIcon extends Command {
             guildOnly: true,
             aliases: ["gicon", "guildicon"],
             random: "none",
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

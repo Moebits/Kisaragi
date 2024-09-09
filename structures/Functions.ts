@@ -16,6 +16,11 @@ const activeStreams = new Set()
 export class Functions {
     constructor(private readonly message: Message<true>) {}
 
+    // Defer delete
+    public static deferDelete = (response: Message, timeout: number) => {
+        setTimeout(() => response.delete(), timeout)
+    }
+
     // Timeout
     public static timeout = (ms: number) => {
         return new Promise((resolve) => setTimeout(resolve, ms))

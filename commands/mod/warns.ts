@@ -1,5 +1,5 @@
 import {GuildMember, Message, EmbedBuilder, Role} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -28,8 +28,36 @@ export default class Warns extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const warningOption = new SlashCommandOption()
+            .setType("string")
+            .setName("warning")
+            .setDescription("The new warning in the edit subcommand.")
+
+        const num2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("num2")
+            .setDescription("The num in the edit subcommand.")
+
+        const numOption = new SlashCommandOption()
+            .setType("string")
+            .setName("num")
+            .setDescription("Can be a number or edit/delete.")
+
+        const userOption = new SlashCommandOption()
+            .setType("string")
+            .setName("user")
+            .setDescription("Can be a user or destroy.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(userOption)
+            .addOption(numOption)
+            .addOption(num2Option)
+            .addOption(warningOption)
     }
 
     public deleteCase = async (hash: string) => {

@@ -75,7 +75,7 @@ export default class Slots extends Command {
             }
         }
 
-        let matchText
+        let matchText = ""
         switch (matches) {
             case 1:
                 matchText = `**Matches: 1** ${discord.getEmoji("mexShrug")}`
@@ -89,12 +89,12 @@ export default class Slots extends Command {
         }
 
         const left = discord.getEmoji("left")
-        await message.reply(`**Slot Machine** ${discord.getEmoji("kannaXD")}\n`)
-        await message.channel.send(
+        await this.reply(`**Slot Machine** ${discord.getEmoji("kannaXD")}\n`)
+        await this.send(
             `${discord.getEmoji(slotArray[0])} ${discord.getEmoji(slotArray[1])} ${discord.getEmoji(slotArray[2])} ${row === 1 ? left : ""}\n` +
             `${discord.getEmoji(slotArray[3])} ${discord.getEmoji(slotArray[4])} ${discord.getEmoji(slotArray[5])} ${row === 2 ? left : ""}\n` +
             `${discord.getEmoji(slotArray[6])} ${discord.getEmoji(slotArray[7])} ${discord.getEmoji(slotArray[8])} ${row === 3 ? left : ""}\n`
         )
-        return message.channel.send(matchText)
+        return this.send(matchText)
     }
 }

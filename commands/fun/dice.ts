@@ -23,8 +23,8 @@ export default class Dice extends Command {
             subcommandEnabled: true
         })
         this.subcommand = new SlashCommandSubcommand()
-        .setName(this.constructor.name.toLowerCase())
-        .setDescription(this.options.description)
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {
@@ -35,17 +35,12 @@ export default class Dice extends Command {
         const dices = ["dice1", "dice2", "dice3", "dice4", "dice5", "dice6"]
 
         const roll = Math.ceil(Math.random()*6)
-
         const loading = message.channel.lastMessage
 
-        const msg = await message.reply(
-            // `**Dice Roll** ${discord.getEmoji("smugFace")}\n` +
-            `**Rolling the dice...** ${discord.getEmoji("diceRoll")}`)
+        const msg = await this.reply(`**Rolling the dice...** ${discord.getEmoji("diceRoll")}`)
 
         if (message instanceof Message) loading?.delete()
         await Functions.timeout(700)
-        msg.edit(
-            // `**Dice Roll** ${discord.getEmoji("chinoSmug")}\n` +
-            `**Rolled ${roll}!** ${discord.getEmoji(dices[roll-1])}`)
+        msg.edit(`**Rolled ${roll}!** ${discord.getEmoji(dices[roll-1])}`)
     }
 }

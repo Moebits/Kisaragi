@@ -1,5 +1,5 @@
-import {GuildMember, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -20,8 +20,25 @@ export default class Ban extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("The ban reason.")
+
+        const userOption = new SlashCommandOption()
+            .setType("user")
+            .setName("user")
+            .setDescription("The user to ban.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(userOption)
+            .addOption(reasonOption)
     }
 
     public run = async (args: string[]) => {

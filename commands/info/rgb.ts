@@ -1,5 +1,5 @@
 import canvas from "@napi-rs/canvas"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Message, AttachmentBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -21,8 +21,18 @@ export default class RGB extends Command {
           \`=>rgb 50 50 50\`
           `,
           aliases: ["color"],
-          cooldown: 5
+          cooldown: 5,
+          subcommandEnabled: true
         })
+        const colorOption = new SlashCommandOption()
+            .setType("string")
+            .setName("color")
+            .setDescription("The color to post.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(colorOption)
     }
 
     public run = async (args: string[]) => {

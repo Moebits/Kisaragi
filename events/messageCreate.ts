@@ -27,6 +27,7 @@ export default class MessageCreate {
     constructor(private readonly discord: Kisaragi) {}
 
     public run = async (message: Message<true>) => {
+      const discord = this.discord
       if (message.partial) {
         try {
           message = await message.fetch()
@@ -185,12 +186,12 @@ export default class MessageCreate {
       const args = message.content.trim().slice(prefix.length).trim().split(/ +/g)
       if (args[0] === undefined) return
       const cmd = args[0].toLowerCase()
-      const pathFind = await cmdFunctions.findCommand(cmd)
-      if (!pathFind) return cmdFunctions.noCommand(cmd)
-      const cmdPath = new (require(pathFind).default)(this.discord, message)
-      if (cmdPath.options.nsfw && this.discord.checkMuted(message)) return
+      const command = cmdFunctions.findCommand(cmd)
+      if (!command) return cmdFunctions.noCommand(cmd)
+      if (command.options.nsfw && this.discord.checkMuted(message)) return
+      command.message = message
 
-      if (cmdPath.options.guildOnly) {
+      if (command.options.guildOnly) {
         // @ts-ignore
         if (message.channel.type === ChannelType.DM) return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds. ${this.discord.getEmoji("smugFace")}`)
       }
@@ -213,28 +214,27 @@ export default class MessageCreate {
         return setEmbed ? message.channel.send({embeds: [permEmbed]}) : message.channel.send(permMessage)
       }
 
-      let category = path.dirname(pathFind.replace(/..\/commands\//, "../").slice(0, -3)).replace(/\.\.\//, "")
-      if (category === "japanese") category = "weeb"
       const disabledCategories = await sql.fetchColumn("guilds", "disabled categories")
-      if (disabledCategories?.includes(category) && cmd !== "help") {
-        return message.reply(`Sorry, commands in the category **${category}** were disabled on this server. ${this.discord.getEmoji("mexShrug")}`)
+      if (disabledCategories?.includes(command.category) && cmd !== "help") {
+        return message.reply(`Sorry, commands in the category **${command.category}** were disabled on this server. ${this.discord.getEmoji("mexShrug")}`)
       }
 
-      sql.usageStatistics(pathFind)
+      sql.usageStatistics(command.path)
       const cooldown = new Cooldown(this.discord, message)
-      const onCooldown = cooldown.cmdCooldown(path.basename(pathFind).slice(0, -3), cmdPath.options.cooldown)
+      const onCooldown = cooldown.cmdCooldown(command.name, command.options.cooldown)
       if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return message.reply({embeds: [onCooldown]})
-      if (cmdPath.options.unlist && message.author.id !== process.env.OWNER_ID) return message.reply(`Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
+      if (command.options.unlist && message.author.id !== process.env.OWNER_ID) return message.reply(`Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
 
       this.discord.muted = false
       const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("kisaragiCircle")}`) as Message
       this.discord.muted = this.discord.checkMuted(message)
 
-      cmdPath.run(args).then(() => {
-          const msgCheck = message.channel.messages
-          if (msgCheck.cache.has(msg.id)) setTimeout(() => msg.delete(), 1000)
-        }).catch((err: Error) => {
-          message.channel.send({embeds: [this.discord.cmdError(message, err)]})
-      })
+      try {
+        await command.run(args)
+        const msgCheck = message.channel.messages
+        if (msgCheck.cache.has(msg.id)) Functions.deferDelete(msg, 1000)
+      } catch (err: any) {
+        message.channel.send({embeds: [this.discord.cmdError(message, err)]})
+      }
     }
   }

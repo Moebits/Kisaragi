@@ -42,7 +42,7 @@ export default class RPS extends Command {
         const options = ["rock", "paper", "scissors", "r", "p", "s"]
         let choice = Functions.combineArgs(args, 1).trim()
         if (!options.includes(choice)) {
-            return message.reply(`You need to choose between **rock**, **paper**, or **scissors** ${discord.getEmoji("kannaCurious")}`)
+            return this.reply(`You need to choose between **rock**, **paper**, or **scissors** ${discord.getEmoji("kannaCurious")}`)
         }
         const botChoice = Math.floor(Math.random() * 3)
 
@@ -96,7 +96,6 @@ export default class RPS extends Command {
             str = `It's a draw... I chose **${botPick}** too. ${discord.getEmoji("raphi")}`
         }
 
-        message.reply(str)
-        return
+        return this.reply(str)
     }
 }

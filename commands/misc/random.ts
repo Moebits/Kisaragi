@@ -1,12 +1,10 @@
 import {Message, SlashCommandBuilder} from "discord.js"
 import {SlashCommandOption} from "../../structures/SlashCommandOption"
-import fs from "fs"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
 import {Permission} from "./../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import path from "path"
 
 export default class Random extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -60,25 +58,15 @@ export default class Random extends Command {
         const cmd = new CommandFunctions(discord, message)
         const perms = new Permission(discord, message)
 
-        const commandArray: string[] = []
-        const classArray: Command[] = []
-        const subDir = fs.readdirSync(path.join(__dirname, "../../commands"))
-        for (let i = 0; i < subDir.length; i++) {
-            const commands = fs.readdirSync(path.join(__dirname, `../../commands/${subDir[i]}`))
-            for (let j = 0; j < commands.length; j++) {
-                commands[j] = commands[j].slice(0, -3)
-                if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
-                const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message) as Command
-                if (!cmdClass.options.random || cmdClass.options.random === "ignore") continue
-                if (cmdClass.options.unlist) continue
-                if (cmdClass.options.nsfw) if (!perms.checkNSFW(true)) continue
-                classArray.push(cmdClass)
-                commandArray.push(commands[j])
-            }
-        }
-        const random = Math.floor(Math.random()*classArray.length)
-        const name = commandArray[random]
-        const command = classArray[random]
+        const commands = [...discord.commands.values()].filter((command) => {
+            if (!command.options.random || command.options.random === "ignore") return false
+            if (command.options.unlist) return false
+            if (command.options.nsfw) if (!perms.checkNSFW(true)) return false
+            return true
+        })
+        const random = Math.floor(Math.random()*commands.length)
+        const name = commands[random].name
+        const command = commands[random]
         switch (command.options.random) {
             case "none":
                 await cmd.runCommandClass(command, message, [name])

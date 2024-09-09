@@ -66,6 +66,6 @@ export default class Cuddle extends Command {
         .setTitle(`**Cuddle** ${discord.getEmoji("kannaBear")}`)
         .setDescription(`**${message.author.username}** cuddled **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.reply({embeds: [cuddleEmbed]})
+        return this.reply(cuddleEmbed)
     }
 }

@@ -1,5 +1,5 @@
 import {GuildMember, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -21,8 +21,33 @@ export default class Role extends Command {
           `,
           guildOnly: true,
           aliases: [],
-          cooldown: 5
+          cooldown: 5,
+          subcommandEnabled: true
         })
+        const roleOption = new SlashCommandOption()
+            .setType("role")
+            .setName("role")
+            .setDescription("The role to add/del.")
+            .setRequired(true)
+
+        const userOption = new SlashCommandOption()
+            .setType("user")
+            .setName("user")
+            .setDescription("The user to add/del the role.")
+            .setRequired(true)
+
+        const addOption = new SlashCommandOption()
+            .setType("string")
+            .setName("add")
+            .setDescription("Can be add/del.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(addOption)
+            .addOption(userOption)
+            .addOption(roleOption)
     }
 
     public run = async (args: string[]) => {

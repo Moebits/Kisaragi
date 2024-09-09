@@ -57,6 +57,6 @@ export default class Kaomoji extends Command {
                 }
             }
         }
-        message.reply("No kaomoji were found.")
+        return this.reply("No kaomoji were found.")
     }
 }

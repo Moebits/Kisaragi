@@ -37,8 +37,8 @@ export default class ReverseText extends Command {
         const message = this.message
 
         const text = Functions.combineArgs(args, 1)
-        if (!text) return message.reply("You did not provide any text.")
+        if (!text) return this.reply("You did not provide any text.")
 
-        return message.reply(text.split("").reverse().join(""))
+        return this.reply(text.split("").reverse().join(""))
     }
 }

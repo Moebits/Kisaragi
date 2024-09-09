@@ -5,10 +5,10 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import fs from "fs"
 import path from "path"
 
-export default class HeartSlash extends Command {
+export default class InfoSlash extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
-            description: "Heart commands",
+            description: "Info commands",
             unlist: true,
             slashEnabled: true
         })

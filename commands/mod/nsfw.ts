@@ -1,9 +1,7 @@
-import {GuildChannel, Message, TextChannel} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, TextChannel} from "discord.js"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class NSFW extends Command {
@@ -20,8 +18,12 @@ export default class NSFW extends Command {
           `,
           guildOnly: true,
           aliases: [],
-          cooldown: 5
+          cooldown: 5,
+          subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

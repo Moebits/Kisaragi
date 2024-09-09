@@ -1,12 +1,12 @@
 import {TextChannel, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Role extends Command {
+export default class Topic extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
           description: "Sets the topic on the current channel.",
@@ -20,8 +20,19 @@ export default class Role extends Command {
           `,
           guildOnly: true,
           aliases: ["channeltopic"],
-          cooldown: 5
+          cooldown: 5,
+          subcommandEnabled: true
         })
+        const topicOption = new SlashCommandOption()
+            .setType("string")
+            .setName("topic")
+            .setDescription("The new topic.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(topicOption)
     }
 
     public run = async (args: string[]) => {

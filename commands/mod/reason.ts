@@ -1,8 +1,7 @@
 import {Message, EmbedBuilder, TextChannel} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
@@ -21,8 +20,25 @@ export default class Reason extends Command {
           `,
           guildOnly: true,
           aliases: [],
-          cooldown: 5
+          cooldown: 5,
+          subcommandEnabled: true
         })
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("The new reason.")
+
+        const caseOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("case")
+            .setDescription("The case number.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(caseOption)
+            .addOption(reasonOption)
     }
 
     public run = async (args: string[]) => {

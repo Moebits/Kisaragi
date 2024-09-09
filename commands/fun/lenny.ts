@@ -40,15 +40,15 @@ export default class Lenny extends Command {
         const message = this.message
 
         if (args[1] === "face") {
-            message.reply("( ͡° ͜ʖ ͡°)")
+            this.reply("( ͡° ͜ʖ ͡°)")
         } else if (args[1] === "shrug") {
-            message.reply("¯\\_(ツ)_/¯")
+            this.reply("¯\\_(ツ)_/¯")
         } else if (args[1] === "tableflip") {
-            message.reply("(╯°□°）╯︵ ┻━┻")
+            this.reply("(╯°□°）╯︵ ┻━┻")
         } else if (args[1] === "unflip") {
-            message.reply("┬─┬ ノ( ゜-゜ノ)")
+            this.reply("┬─┬ ノ( ゜-゜ノ)")
         } else {
-            message.reply(lenny())
+            this.reply(lenny())
         }
         return
     }

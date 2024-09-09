@@ -57,6 +57,6 @@ export default class Eightball extends Command {
 
         const msg = Functions.combineArgs(args, 1).trim()
         if (!msg) return message.reply(`Umm... what are you asking ${discord.getEmoji("kannaFacepalm")}`)
-        return message.reply(responses[Math.floor(Math.random()*responses.length)])
+        return this.reply(responses[Math.floor(Math.random()*responses.length)])
     }
 }

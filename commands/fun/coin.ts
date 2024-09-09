@@ -32,6 +32,6 @@ export default class Coin extends Command {
 
         const options = ["heads", "tails"]
         const choice = options[Math.floor(Math.random() * 2)]
-        return message.reply(`Flipped **${choice}**! ${discord.getEmoji(choice)}`)
+        return this.reply(`Flipped **${choice}**! ${discord.getEmoji(choice)}`)
     }
 }

@@ -1,5 +1,5 @@
 import {Message, TextChannel} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
@@ -25,8 +25,25 @@ export default class Delete extends Command {
             `,
             aliases: ["del", "purge"],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const typeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("type")
+            .setDescription("Can be a user id/query/text/image.")
+
+        const numberOption = new SlashCommandOption()
+            .setType("integer")
+            .setName("number")
+            .setDescription("Number of messages to delete.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(numberOption)
+            .addOption(typeOption)
     }
 
     public bulkDelete = async (num: number, message: Message<true>, userID: boolean, search: boolean, args: string[], query: string, text: boolean, image: boolean) => {

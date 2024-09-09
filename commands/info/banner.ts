@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -20,12 +20,11 @@ export default class Banner extends Command {
             aliases: [],
             random: "none",
             cooldown: 5,
-            slashEnabled: false
+            subcommandEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .toJSON()
     }
 
     public run = async (args: string[]) => {

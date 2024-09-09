@@ -42,31 +42,31 @@ export default class Help extends Command {
     }
 
     public emojiMap: any = {
-        "admin": this.discord.getEmoji("raphiOMG"),
-        "anime": this.discord.getEmoji("gabYes"),
-        "bot developer": this.discord.getEmoji("no"),
-        "config": this.discord.getEmoji("akariLurk"),
-        "fun": this.discord.getEmoji("chinoSmug"),
-        "game": this.discord.getEmoji("yaoi"),
-        "heart": this.discord.getEmoji("kannaPat"),
-        "booru": this.discord.getEmoji("madokaLewd"),
-        "info": this.discord.getEmoji("kannaCurious"),
-        "weeb": this.discord.getEmoji("kannaHungry"),
-        "level": this.discord.getEmoji("kannaXD"),
-        "image": this.discord.getEmoji("tohruSmug"),
-        "misc": this.discord.getEmoji("karenXmas"),
-        "misc 2": this.discord.getEmoji("sataniaDead"),
-        "mod": this.discord.getEmoji("kannaFreeze"),
-        "music": this.discord.getEmoji("poiHug"),
-        "music 2": this.discord.getEmoji("yes"),
-        "music 3": this.discord.getEmoji("vigneDead"),
-        "reddit": this.discord.getEmoji("aquaWut"),
-        "twitter": this.discord.getEmoji("gabSip"),
-        "video": this.discord.getEmoji("vigneXD"),
-        "waifu": this.discord.getEmoji("karenSugoi"),
-        "website": this.discord.getEmoji("tohruThumbsUp2"),
-        "website 2": this.discord.getEmoji("mexShrug"),
-        "website 3": this.discord.getEmoji("think")
+        "admin": "raphiOMG",
+        "anime": "gabYes",
+        "bot developer": "no",
+        "config": "akariLurk",
+        "fun": "chinoSmug",
+        "game": "yaoi",
+        "heart": "kannaPat",
+        "booru": "madokaLewd",
+        "info": "kannaCurious",
+        "weeb": "kannaHungry",
+        "level": "kannaXD",
+        "image": "tohruSmug",
+        "misc": "karenXmas",
+        "misc 2": "sataniaDead",
+        "mod": "kannaFreeze",
+        "music": "poiHug",
+        "music 2": "yes",
+        "music 3": "vigneDead",
+        "reddit": "aquaWut",
+        "twitter": "gabSip",
+        "video": "vigneXD",
+        "waifu": "karenSugoi",
+        "website": "tohruThumbsUp2",
+        "website 2": "mexShrug",
+        "website 3": "think"
     }
     public imageMap: any = {
         "admin": "https://i.imgur.com/mMXKOPW.png",
@@ -131,37 +131,35 @@ export default class Help extends Command {
         // @ts-ignore
         if (message instanceof ChatInputCommandInteraction) await message.deferReply()
         
-        const subDir = fs.readdirSync(path.join(__dirname, "../../commands"))
+        const categories = [...discord.categories.values()]
+        const commands = [...discord.commands.values()]
         const helpEmbedArray: EmbedBuilder[] = []
         if (args[1] && !args[1].startsWith("!") && args[1]?.toLowerCase() !== "dm" && args[1] !== "2") {
             const helpDir = new (require(path.join(__dirname, "./helpInfo")).default)(this.discord, this.message)
-            await helpDir.run(args)
-            return
+            return helpDir.run(args)
         }
         if (args[1]?.toLowerCase() === "dm") {
             const dmEmbeds: EmbedBuilder[] = []
             const step = 10.0
-            const increment = Math.ceil(subDir.length / step)
+            const increment = Math.ceil(categories.length / step)
             for (let i = 0; i < increment; i++) {
                 const dmEmbed = embeds.createEmbed()
                 for (let j = 0; j < step; j++) {
                     let help = ""
                     const k = (i*step)+j
-                    if (!subDir[k]) break
+                    const category = categories[k]
+                    if (!category) break
                     let counter = 0
-                    const commands = fs.readdirSync(path.join(__dirname, `../../commands/${subDir[k]}`))
                     for (let m = 0; m < commands.length; m++) {
-                        commands[m] = commands[m].slice(0, -3)
-                        if (commands[m] === "empty" || commands[m] === "tempCodeRunnerFile") continue
-                        const cmdClass = new (require(`../${subDir[k]}/${commands[m]}`).default)(this.discord, this.message)
-                        if (cmdClass.options.unlist === true) continue
-                        if (discord.checkMuted(message)) if (cmdClass.options.nsfw === true) continue
-                        help += `\`${commands[m]}\` `
+                        const command = commands[m]
+                        if (command.category !== category) continue
+                        if (command.options.unlist === true) continue
+                        if (discord.checkMuted(message)) if (command.options.nsfw === true) continue
+                        help += `\`${command.name}\` `
                         counter++
                     }
-                    if (subDir[k] === "japanese") subDir[k] = "weeb"
                     dmEmbed
-                    .addFields([{name: `${this.emojiMap[subDir[k]]} ${Functions.toProperCase(subDir[k])} (${counter})`.trim(), value: help}])
+                    .addFields([{name: `${discord.getEmoji(this.emojiMap[category])} ${Functions.toProperCase(category)} (${counter})`.trim(), value: help}])
                 }
                 dmEmbed
                 .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
@@ -181,37 +179,33 @@ export default class Help extends Command {
             if (args[2] === "delete") setTimeout(() => rep.delete(), 3000)
             return
         }
-        // const unlistedDirs = ["bot developer", "heart", "logging", "music"]
         let setIndex = -1
-        for (let i = 0; i < subDir.length; i++) {
-            // if (unlistedDirs.includes(subDir[i])) continue
+        for (let i = 0; i < categories.length; i++) {
             let help = ""
-            const commands = fs.readdirSync(path.join(__dirname, `../../commands/${subDir[i]}`))
+            const category = categories[i]
             for (let j = 0; j < commands.length; j++) {
-                commands[j] = commands[j].slice(0, -3)
-                if (commands[j] === "empty" || commands[j] === "tempCodeRunnerFile") continue
-                const cmdClass = new (require(`../${subDir[i]}/${commands[j]}`).default)(this.discord, this.message)
-                if (cmdClass.options.unlist === true) continue
-                if (discord.checkMuted(message)) if (cmdClass.options.nsfw === true) continue
-                help += `${discord.getEmoji("star")}\`${commands[j]}\`` + ` -> _${cmdClass.options.description}_\n`
+                const command = commands[j]
+                if (command.category !== category) continue
+                if (command.options.unlist === true) continue
+                if (discord.checkMuted(message)) if (command.options.nsfw === true) continue
+                help += `${discord.getEmoji("star")}\`${command.name}\`` + ` -> _${command.options.description}_\n`
             }
-            if (subDir[i] === "japanese") subDir[i] = "weeb"
             if (args[1]?.startsWith("!")) {
                 let input = Functions.combineArgs(args, 1).replace("!", "").trim().toLowerCase()
                 if (input === "japanese") input = "weeb"
-                setIndex = subDir.indexOf(input)
+                setIndex = categories.indexOf(input)
             }
             const helpEmbed = embeds.createEmbed()
             helpEmbed
-            .setTitle(`**${Functions.toProperCase(subDir[i])} Commands** ${this.emojiMap[subDir[i]]}`)
+            .setTitle(`**${Functions.toProperCase(category)} Commands** ${discord.getEmoji(this.emojiMap[category])}`)
             .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
-            .setImage(this.imageMap[subDir[i]])
-            .setThumbnail(discord.muted ? "" : this.thumbMap[subDir[i]])
+            .setImage(this.imageMap[category])
+            .setThumbnail(discord.muted ? "" : this.thumbMap[category])
             .setDescription(
                 `Type \`help (command)\` for detailed help info! ${discord.getEmoji("aquaUp")}\n` +
                 `To display only one category, use \`help !(category)\` ${discord.getEmoji("gabYes")}\n` +
                 `_Click on a reaction twice to toggle compact mode._\n` + help)
-            if (!discord.checkMuted(message)) helpEmbed.addFields([{name: `${discord.getEmoji("raphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Source](${config.repo})`}])
+            if (!discord.checkMuted(message)) helpEmbed.addFields([{name: `${discord.getEmoji("raphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)})`}])
             helpEmbedArray.push(helpEmbed)
         }
         if (setIndex > -1) {

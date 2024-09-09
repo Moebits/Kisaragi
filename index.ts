@@ -67,6 +67,10 @@ const start = async (): Promise<void> => {
         const addFiles = fs.readdirSync(path.join(__dirname, `./commands/${currDir}`))
         if (addFiles !== null) cmdFiles.push(addFiles)
 
+        let category = currDir
+        if (category === "japanese") category = "weeb"
+        discord.categories.add(category)
+
         await Promise.all(addFiles.map(async (file: string) => {
             if (!file.endsWith(".ts") && !file.endsWith(".js")) return
             const p = `../commands/${currDir}/${file}`
@@ -74,6 +78,12 @@ const start = async (): Promise<void> => {
             if (commandName === "empty" || commandName === "tempCodeRunnerFile") return
             const cmdFind = await SQLQuery.fetchCommand(commandName, "command")
             const command = new (require(path.join(__dirname, `./commands/${currDir}/${file}`)).default)(discord, null)
+
+            command.name = commandName 
+            command.category = category
+            command.path = p
+
+            discord.commands.set(commandName, command)
 
             if (!cmdFind) {
                 await SQLQuery.insertCommand(commandName, p, command)

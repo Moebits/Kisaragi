@@ -12,10 +12,12 @@ import {Functions} from "./Functions"
 import {SQLQuery} from "./SQLQuery"
 
 export class Kisaragi extends Client {
+    public readonly categories = new Set<string>()
+    public readonly commands: Collection<string, Command> = new Collection()
     public readonly cooldowns: Collection<string, Collection<string, number>> = new Collection()
     public static username = "Kisaragi"
     public static pfp = "https://cdn.discordapp.com/avatars/593838271650332672/78ec2f4a3d4ab82a40791cb522cf36f5.png?size=2048"
-    private starIndex = 0
+    public replyStatus = "rejected"
     public muted = false
     
     constructor(options: ClientOptions) {
@@ -298,5 +300,13 @@ export class Kisaragi extends Client {
     public createAPIMessage = async (interaction: any, content: any) => {
         const {body, files} = await MessagePayload.create(this.channels.resolve(interaction.channel_id) as MessageTarget, content).resolveBody().resolveFiles()
         return {...body, files}
+    }
+
+    public resetReplyStatus = () => {
+        this.replyStatus = "rejected"
+    }
+
+    public assertReplyStatus = () => {
+        return this.replyStatus === "fulfilled"
     }
 }

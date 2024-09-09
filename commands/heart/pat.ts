@@ -66,6 +66,6 @@ export default class Pat extends Command {
         .setTitle(`**Pat** ${discord.getEmoji("kannaPat")}`)
         .setDescription(`**${message.author.username}** pats **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.reply({embeds: [patEmbed]})
+        return this.reply(patEmbed)
     }
 }

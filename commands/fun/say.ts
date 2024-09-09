@@ -40,7 +40,7 @@ export default class Say extends Command {
         if (!prefix) prefix = "=>"
 
         const rawText = Functions.combineArgs(args, 1)
-        if (!rawText) return message.reply("You did not provide any text.")
+        if (!rawText) return this.reply("You did not provide any text.")
 
         if (message instanceof Message) {
             await message.channel.send({content: Functions.checkChar(rawText, 2000, "."), allowedMentions: {parse: []}})

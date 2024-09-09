@@ -62,7 +62,6 @@ export default class Pickle extends Command {
         } else {
                 flavorText = `Wow... ${discord.getEmoji("raphi")}`
         }
-        message.reply(`**${name}**, your ${args[0]} size is **${pickleSize.toFixed(2)}inches** (${(pickleSize*2.54).toFixed(2)}cm). ${flavorText}`)
-        return
+        return this.reply(`**${name}**, your ${args[0]} size is **${pickleSize.toFixed(2)}inches** (${(pickleSize*2.54).toFixed(2)}cm). ${flavorText}`)
     }
 }

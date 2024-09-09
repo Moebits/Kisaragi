@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -21,8 +21,12 @@ export default class Privacy extends Command {
           `,
           aliases: ["privacypolicy"],
           random: "none",
-          cooldown: 5
+          cooldown: 5,
+          subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

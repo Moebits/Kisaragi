@@ -41,8 +41,6 @@ export default class Emojify extends Command {
         const text = Functions.combineArgs(args, 1)
         if (!text) return message.reply("You did not provide any text.")
         const emojiFied = letters.letters(text)
-        message.reply(`${emojiFied}`)
-        return
-
+        return this.reply(`${emojiFied}`)
     }
 }

@@ -1,5 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
@@ -25,8 +25,24 @@ export default class Cases extends Command {
           `,
           guildOnly: true,
           aliases: ["modlog", "caselog"],
-          cooldown: 10
+          cooldown: 10,
+          subcommandEnabled: true
         })
+        const user2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("user2")
+            .setDescription("The user in the mod subcommand.")
+
+        const userOption = new SlashCommandOption()
+            .setType("string")
+            .setName("user")
+            .setDescription("Can be a user or mod.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(userOption)
+            .addOption(user2Option)
     }
 
     public run = async (args: string[]) => {

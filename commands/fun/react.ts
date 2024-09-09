@@ -10,7 +10,7 @@ export default class React extends Command {
             help:
             `
             \`react emoji/name/id\` - Adds a reaction from this server
-            \`react dev emoji/name/id\` - Adds a reaction from the developer's servers.
+            \`react bot emoji/name/id\` - Adds a reaction from the bot's emojis.
             \`react global emoji/name/id\` - Finds a reaction from all servers that the bot is in.
             \`react msg/message id dev?/global? emoji/name/id\` - Adds a reaction to the specified message instead of the last one.
             `,
@@ -25,12 +25,12 @@ export default class React extends Command {
         const fourthOption = new SlashCommandOption()
             .setType("string")
             .setName("emoji4")
-            .setDescription("This is the emoji for the dev/global msg subcommand.")
+            .setDescription("This is the emoji for the bot/global msg subcommand.")
 
         const thirdOption = new SlashCommandOption()
             .setType("string")
             .setName("emoji3")
-            .setDescription("This can be an emoji or dev/global for the msg subcommand.")
+            .setDescription("This can be an emoji or bot/global for the msg subcommand.")
 
         const secondOption = new SlashCommandOption()
             .setType("string")
@@ -40,7 +40,7 @@ export default class React extends Command {
         const firstOption = new SlashCommandOption()
             .setType("string")
             .setName("emoji")
-            .setDescription("This can be an emoji or dev/global/msg for additional subcommands.")
+            .setDescription("This can be an emoji or bot/global/msg for additional subcommands.")
             .setRequired(true)
 
         this.subcommand = new SlashCommandSubcommand()
@@ -55,7 +55,7 @@ export default class React extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        if (!args[1]) return message.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)
+        if (!args[1]) return this.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)
 
         let lastMessage = await discord.getLastMessage(message)
 
@@ -64,25 +64,25 @@ export default class React extends Command {
             if (msg) {
                 lastMessage = msg
             } else {
-                return message.reply(`Can't find this message ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`Can't find this message ${discord.getEmoji("kannaFacepalm")}`)
             }
             args.shift()
             args.shift()
         }
         let emoji: GuildEmoji | ApplicationEmoji | null
         switch (args[1]) {
-            case "dev":
-                if (!args[2]) return message.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)
+            case "bot":
+                if (!args[2]) return this.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)
                 emoji = discord.getEmoji(args[2])
                 break
             case "global":
-                if (!args[2]) return message.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)
+                if (!args[2]) return this.reply(`What reaction do you want to add ${discord.getEmoji("kannaFacepalm")}`)
                 emoji = discord.getEmojiGlobal(args[2], true)
                 break
             default:
                 emoji = discord.getEmojiServer(args[1], message, true)
         }
-        if (!emoji) return message.reply(`Could not find this emoji ${discord.getEmoji("kannaFacepalm")}`)
+        if (!emoji) return this.reply(`Could not find this emoji ${discord.getEmoji("kannaFacepalm")}`)
 
         await lastMessage.react(emoji)
         message.delete().catch(() => null)

@@ -7,8 +7,8 @@ import {SQLQuery} from "../structures/SQLQuery"
 export default class Ready {
     constructor(private readonly discord: Kisaragi) {}
 
-    public run = () => {
-      this.discord.application?.emojis.fetch()
+    public run = async () => {
+      await this.discord.application?.emojis.fetch()
       this.discord.user!.setPresence({activities: [{type: ActivityType.Playing, name: `=>help | ${this.discord.guilds.cache.size} guilds`, state: "dnd"}]})
       const timestamp = `${moment().format("MM DD YYYY hh:mm:ss")} ->`
       const logString = `${timestamp} Logged in as ${this.discord.user!.tag}!`

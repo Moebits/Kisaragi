@@ -47,6 +47,6 @@ export default class Ascii extends Command {
         asciiEmbed
         .setTitle(`**Ascii Art** ${discord.getEmoji("kannaSip")}`)
         .setDescription("```" + Functions.checkChar(asciiText, 2000, "|") + "```")
-        message.reply({embeds: [asciiEmbed]})
+        return this.reply(asciiEmbed)
     }
 }

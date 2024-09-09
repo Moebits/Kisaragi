@@ -10,9 +10,10 @@
     "bot": "node --max-old-space-size=8192 --optimize-for-size dist/index.js",
     "server": "node --max-old-space-size=8192 --optimize-for-size dist/server.js",
     "pm2": "pm2-runtime start ecosystem.config.js --env production",
-    "post": "node dist/post.js",
+    "test": "ts-mocha --timeout 100000 -p tsconfig.json test/**/*.spec.ts",
     "register": "npm run build && cross-env REDIS=off node dist/register.js",
     "generate": "npm run build && node dist/generate.js",
+    "post": "node dist/post.js",
     "clean": "del-cli dist"
   },
   "engines": {
@@ -142,6 +143,7 @@
     "@types/archiver": "^6.0.2",
     "@types/bad-words": "^3.0.3",
     "@types/bcrypt": "^5.0.2",
+    "@types/chai": "^4.3.19",
     "@types/concat-stream": "^2.0.3",
     "@types/express": "^4.17.21",
     "@types/fluent-ffmpeg": "^2.1.25",
@@ -152,6 +154,7 @@
     "@types/imagemin-gifsicle": "^7.0.4",
     "@types/mathjs": "^9.4.2",
     "@types/md5": "^2.3.5",
+    "@types/mocha": "^10.0.7",
     "@types/moment": "^2.13.0",
     "@types/node": "^22.4.2",
     "@types/nodemailer": "^6.4.15",
@@ -160,7 +163,11 @@
     "@types/twitter": "^1.7.4",
     "@types/unzip": "^0.1.4",
     "@types/unzipper": "^0.10.10",
+    "chai": "^5.1.1",
     "cross-env": "^7.0.3",
+    "mocha": "^10.7.3",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
 }

@@ -1,0 +1,52 @@
+import {discord} from "./mock"
+import "mocha"
+
+describe("weeb", async function() {
+    it("furigana", async () => {
+        let name = "furigana"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        await command.run([name, "好き"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+    it("hiragana", async () => {
+        let name = "hiragana"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        await command.run([name, "好き"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+    it("jisho", async () => {
+        let name = "jisho"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        await command.run([name, "好き"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+    it("katakana", async () => {
+        let name = "katakana"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        await command.run([name, "好き"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+    it("romaji", async () => {
+        let name = "romaji"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        await command.run([name, "好き"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+    it("translate", async () => {
+        let name = "translate"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        await command.run([name, "好き"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+})

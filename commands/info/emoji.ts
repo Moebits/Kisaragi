@@ -1,5 +1,5 @@
 import {GuildEmoji, ApplicationEmoji, Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -12,7 +12,7 @@ export default class Emoji extends Command {
             help:
             `
             \`emoji emoji/name\` - Posts an emoji from the emoji or name
-            \`emoji dev emoji/name\` - Gets an emoji from servers the developer owns
+            \`emoji bot emoji/name\` - Gets an emoji from the bot
             \`emoji list\` - Posts a list of all the emojis in the server
             `,
             examples:
@@ -23,8 +23,25 @@ export default class Emoji extends Command {
             \`=>emoji list\`
             `,
             aliases: [],
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const emoji2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("emoji2")
+            .setDescription("The emoji for the bot subcommand.")
+
+        const emojiOption = new SlashCommandOption()
+            .setType("string")
+            .setName("emoji")
+            .setDescription("Can be an emoji or bot/list.")
+            .setRequired(true)
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(emojiOption)
+            .addOption(emoji2Option)
     }
 
     public getImage = (emoji: GuildEmoji | ApplicationEmoji) => {
@@ -76,7 +93,7 @@ export default class Emoji extends Command {
 
         if (emojiID === "null") {
             let emojiFound: GuildEmoji | ApplicationEmoji | undefined
-            if (args[1] === "dev") {
+            if (args[1] === "bot") {
                 emojiFound = discord.getEmoji(args[2])
             } else  {
                 emojiFound = discord.emojis.cache.find((emoji: GuildEmoji) => emoji.name?.toLowerCase() === emojiName.toLowerCase())

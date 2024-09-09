@@ -66,6 +66,6 @@ export default class Hug extends Command {
         .setTitle(`**Hug** ${discord.getEmoji("yes")}`)
         .setDescription(`**${message.author.username}** hugged **${name}**! ${flavorText}`)
         .setImage(image.url)
-        message.reply({embeds: [hugEmbed]})
+        return this.reply(hugEmbed)
     }
 }

@@ -1,5 +1,5 @@
 import {Guild, Message, EmbedBuilder, User} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -33,8 +33,23 @@ export default class Usage extends Command {
             aliases: ["activity"],
             random: "none",
             cooldown: 5,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const command2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("command2")
+            .setDescription("Can be a command or list.")
+
+        const commandOption = new SlashCommandOption()
+            .setType("string")
+            .setName("command")
+            .setDescription("Can be a command or guild id/user id/me/guild/user.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(commandOption)
+            .addOption(command2Option)
     }
 
     public run = async (args: string[]) => {
@@ -193,10 +208,9 @@ export default class Usage extends Command {
             return
         }
 
-        const cmdPath = await cmd.findCommand(args[1])
-        if (!cmdPath) return message.reply(`Invalid command ${discord.getEmoji("kannaFacepalm")}`)
-        let usage = await sql.fetchColumn("commands", "usage", "path", cmdPath)
-        const command = await sql.fetchColumn("commands", "command", "path", cmdPath)
+        const command = cmd.findCommand(args[1])
+        if (!command) return message.reply(`Invalid command ${discord.getEmoji("kannaFacepalm")}`)
+        let usage = await sql.fetchColumn("commands", "usage", "path", command.path)
         if (!usage) usage = 0
 
         const usageEmbed = embeds.createEmbed()
@@ -204,7 +218,7 @@ export default class Usage extends Command {
         .setTitle(`**Command Usage Statistics** ${discord.getEmoji("raphi")}`)
         .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
         .setDescription(
-            `${discord.getEmoji("star")}The command **${command}** has been used **${usage}** times!\n`
+            `${discord.getEmoji("star")}The command **${command.name}** has been used **${usage}** times!\n`
         )
         return message.channel.send({embeds: [usageEmbed]})
     }

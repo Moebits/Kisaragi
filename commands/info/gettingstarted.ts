@@ -1,5 +1,5 @@
 import {Message, MessageReaction, TextChannel, User} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import * as config from "./../../config.json"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
@@ -22,8 +22,18 @@ export default class GettingStarted extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const channelOption = new SlashCommandOption()
+            .setType("string")
+            .setName("channel")
+            .setDescription("Optional channel to post in")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(channelOption)
     }
 
     public run = async (args: string[]) => {

@@ -22,14 +22,12 @@ export default class HelpInfo extends Command {
         const message = this.message
         const cmdFunctions = new CommandFunctions(discord, message)
         const embeds = new Embeds(discord, message)
-        let cmdPath = await cmdFunctions.findCommand(args[1])
-        if (!cmdPath) return cmdFunctions.noCommand(args[1])
-        cmdPath = cmdPath.replace(/..\/commands\//, "../").slice(0, -3)
-        const command = new (require(cmdPath).default)(discord, message).options
-        const category = path.dirname(cmdPath).replace(/\.\.\//, "")
-        const name = path.basename(cmdPath)
-        const aliases = command.aliases.join("") ? `**${command.aliases.join(", ")}**` : "_None_"
-        let image
+        const command = discord.commands.get(args[1])
+        if (!command) return cmdFunctions.noCommand(args[1])
+        const category = command.category
+        const name = command.name
+        const aliases = command.options.aliases.join("") ? `**${command.options.aliases.join(", ")}**` : "_None_"
+        let image = ""
         if (fs.existsSync(path.join(__dirname, `../../../assets/help/${category}/${name}.png`))) {
             image = path.join(__dirname, `../../../assets/help/${category}/${name}.png`)
         } else if (fs.existsSync(path.join(__dirname, `../../../assets/help/${category}/${name}.gif`))) {
@@ -52,11 +50,11 @@ export default class HelpInfo extends Command {
         .setDescription(Functions.multiTrim(`
             ${discord.getEmoji("star")}_Name:_ **${name}**
             ${discord.getEmoji("star")}_Category:_ **${category}**
-            ${discord.getEmoji("star")}_Description:_ ${command.description}
+            ${discord.getEmoji("star")}_Description:_ ${command.options.description}
             ${discord.getEmoji("star")}_Aliases:_ ${aliases}
-            ${discord.getEmoji("star")}_Cooldown:_ **${command.cooldown}**
-            ${discord.getEmoji("star")}_Help:_ \n${Functions.multiTrim(command.help)}
-            ${discord.getEmoji("star")}_Examples:_ \n${Functions.multiTrim(command.examples)}
+            ${discord.getEmoji("star")}_Cooldown:_ **${command.options.cooldown}**
+            ${discord.getEmoji("star")}_Help:_ \n${Functions.multiTrim(command.options.help)}
+            ${discord.getEmoji("star")}_Examples:_ \n${Functions.multiTrim(command.options.examples)}
         `))
         if (this.message instanceof ChatInputCommandInteraction) {
             // @ts-ignore

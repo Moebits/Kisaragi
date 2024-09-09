@@ -1,5 +1,5 @@
-import {GuildMember, Message, User} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, User} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -19,8 +19,25 @@ export default class Unban extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("The temp ban reason.")
+
+        const userOption = new SlashCommandOption()
+            .setType("string")
+            .setName("user")
+            .setDescription("The user id to unban.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(userOption)
+            .addOption(reasonOption)
     }
 
     public run = async (args: string[]) => {

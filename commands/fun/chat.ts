@@ -34,15 +34,15 @@ export default class Chat extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
 
-        if (discord.checkMuted(message)) return message.reply(`This server was blacklisted on the global`)
+        if (discord.checkMuted(message)) return this.reply(`This server was blacklisted on the global`)
 
         const channel = await sql.fetchColumn("guilds", "global chat")
         if (!channel) {
             await sql.updateColumn("guilds", "global chat", message.channel.id)
-            return message.reply(`You are now connected to the global chat! ${discord.getEmoji("tohruSmug")}`)
+            return this.reply(`You are now connected to the global chat! ${discord.getEmoji("tohruSmug")}`)
         } else {
             await sql.updateColumn("guilds", "global chat", null)
-            return message.reply(`Disconnected from the global chat! ${discord.getEmoji("mexShrug")}`)
+            return this.reply(`Disconnected from the global chat! ${discord.getEmoji("mexShrug")}`)
         }
     }
 }
