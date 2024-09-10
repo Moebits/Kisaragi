@@ -16,7 +16,7 @@ export class Permission {
         const mod = await this.sql.fetchColumn("guilds", "mod role")
         if (!mod) {
             if (ignore) return false
-            this.message.reply("In order to use moderator commands, you must first " +
+            this.discord.reply(this.message, "In order to use moderator commands, you must first " +
             "configure the server's moderator role using the **mod** command!")
             return false
         } else {
@@ -26,7 +26,7 @@ export class Permission {
                 const adminRole = this.message.member!.roles.cache.find((r: Role) => r.id === String(admin))
                 if (adminRole) return true
                 if (ignore) return false
-                this.message.reply("In order to use moderator commands, you must have " +
+                this.discord.reply(this.message, "In order to use moderator commands, you must have " +
                 `the mod role which is currently set to <@&${mod}>!`)
                 return false
             } else {
@@ -42,14 +42,14 @@ export class Permission {
         const admin = await this.sql.fetchColumn("guilds", "admin role")
         if (!admin) {
             if (ignore) return false
-            this.message.reply("In order to use administrator commands, you must first " +
+            this.discord.reply(this.message, "In order to use administrator commands, you must first " +
             "configure the server's administrator role using the **mod** command!")
             return false
         } else {
             const adminRole = this.message.member!.roles.cache.find((r: Role) => r.id === String(admin))
             if (!adminRole) {
                 if (ignore) return false
-                this.message.reply("In order to use administrator commands, you must have " +
+                this.discord.reply(this.message, "In order to use administrator commands, you must have " +
                 `the admin role which is currently set to <@&${admin}>!`)
                 return false
             } else {
@@ -63,7 +63,7 @@ export class Permission {
         if (this.message.author.id === process.env.OWNER_ID) {
             return true
         } else {
-            this.message.reply(`Sorry, only the bot developer can use bot developer commands. ${this.discord.getEmoji("sagiriBleh")}`)
+            this.discord.reply(this.message, `Sorry, only the bot developer can use bot developer commands. ${this.discord.getEmoji("sagiriBleh")}`)
             return false
         }
     }
@@ -76,7 +76,7 @@ export class Permission {
         if (this.message.member!.permissions.has(permission)) {
             return true
         } else {
-            this.message.reply(`You must have the ${perm} permission in order to use this command.`)
+            this.discord.reply(this.message, `You must have the ${perm} permission in order to use this command.`)
             return false
         }
     }
@@ -109,7 +109,7 @@ export class Permission {
             return true
         } else {
             if (noMsg) return false
-            this.message.reply(`You can only use this command in **NSFW channels**, pervert! ${this.discord.getEmoji("madokaLewd")}`)
+            this.discord.reply(this.message, `You can only use this command in **NSFW channels**, pervert! ${this.discord.getEmoji("madokaLewd")}`)
             return false
         }
     }

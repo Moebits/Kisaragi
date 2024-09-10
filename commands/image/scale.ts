@@ -21,6 +21,7 @@ export default class Scale extends Command {
           `,
           aliases: [],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -52,13 +53,12 @@ export default class Scale extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         image = await jimp.read(url)
         const factor = Number(args[1]) ? Number(args[1]) : 1
         image.scale(factor)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Scaled the image by a factor of **${factor}x**!`, files: [attachment]})
-        return
+        return this.reply(`Scaled the image by a factor of **${factor}x**!`, attachment)
     }
 }

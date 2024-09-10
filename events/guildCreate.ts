@@ -14,9 +14,8 @@ export default class GuildCreate {
         const message = await this.discord.fetchFirstMessage(guild) as Message<true>
         if (!message && guild.id !== "264445053596991498") {
             const chan = guild.channels.cache.find(((c) => c.permissionsFor(guild.members.me!)?.has("SendMessages") ?? false))
-            if (chan) await (chan as TextChannel).send(`The permissions **View Channel** and **Read Message History** are required. Reinvite the bot with sufficient permissions ${discord.getEmoji("kannaFacepalm")}`)
-            await guild.leave()
-            return
+            if (chan) await this.discord.channelSend(chan as TextChannel, `The permissions **View Channel** and **Read Message History** are required. Reinvite the bot with sufficient permissions ${discord.getEmoji("kannaFacepalm")}`)
+            return guild.leave()
         }
         const embeds = new Embeds(discord, message)
         const cmd = new CommandFunctions(discord, message)
@@ -46,8 +45,7 @@ export default class GuildCreate {
         if (!discord.checkMuted(message)) {
             const bots = guild.members.cache.filter((m) => m.user.bot).size
             if (guild.memberCount >= 10 && Math.floor(bots/guild.memberCount*1.0)*100 > 70) {
-                await guild.leave()
-                return
+                return guild.leave()
             }
         }
 
@@ -77,8 +75,7 @@ export default class GuildCreate {
                 `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(guild.createdAt)}**\n` +
                 `${discord.getEmoji("star")}_Members:_ **${guild.memberCount}**\n`
             )
-            guildChannel.send({embeds: [logEmbed]})
-            return
+            return this.discord.channelSend(guildChannel, logEmbed)
         }
         logGuild(guild)
 

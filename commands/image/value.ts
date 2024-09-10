@@ -22,6 +22,7 @@ export default class Value extends Command {
           `,
           aliases: ["lighten", "darken", "lightness", "darkness"],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -58,7 +59,7 @@ export default class Value extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
         if (setDarkness) {
             // @ts-ignore
@@ -69,7 +70,6 @@ export default class Value extends Command {
         }
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Changed the value of the image!`, files: [attachment]})
-        return
+        return this.reply(`Changed the value of the image!`, attachment)
     }
 }

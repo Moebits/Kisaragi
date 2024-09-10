@@ -17,14 +17,14 @@ export default class ChannelPinsUpdate {
             try {
                 webhook = await pinChannel.createWebhook({name: "Pinboard", avatar: this.discord.user!.displayAvatarURL({extension: "png"})})
             } catch {
-                return channel.send(`I need the **Manage Webhooks** permission to forward pinned messages ${discord.getEmoji("kannaFacepalm")}`)
+                return this.discord.channelSend(channel, `I need the **Manage Webhooks** permission to forward pinned messages ${discord.getEmoji("kannaFacepalm")}`)
             }
         }
         let pin: Message
         try {
             pin = await channel.messages.fetchPinned().then((m) => m.first()!)
         } catch {
-            return channel.send(`I need the **Manage Messages** permission to see pins ${discord.getEmoji("kannaFacepalm")}`)
+            return this.discord.channelSend(channel, `I need the **Manage Messages** permission to see pins ${discord.getEmoji("kannaFacepalm")}`)
         }
         if (!pin?.pinned) return
         const pinEmbed = embeds.createEmbed()

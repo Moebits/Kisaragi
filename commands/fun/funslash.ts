@@ -50,6 +50,6 @@ export default class FunSlash extends Command {
         if (!command) return
         args.shift()
         command.message = message
-        cmd.runCommandClass(command, this.message, args)
+        cmd.runCommandClass(command, message, args)
     }
 }

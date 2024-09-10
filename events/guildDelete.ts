@@ -33,8 +33,7 @@ export default class GuildDelete {
                 `${discord.getEmoji("star")}_Creation Date:_ **${Functions.formatDate(guild.createdAt)}**\n` +
                 `${discord.getEmoji("star")}_Members:_ **${guild.memberCount}**\n`
             )
-            await guildChannel.send({embeds: [logEmbed]})
-            return
+            return this.discord.channelSend(guildChannel, logEmbed)
         }
         logGuild(guild)
     }

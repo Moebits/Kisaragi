@@ -30,7 +30,7 @@ export default class CaseUpdate {
         )
         .setFooter({text: channelName, iconURL: executor.displayAvatarURL({extension: "png"})})
         .setTimestamp(Date.now())
-        const msg = await modLog?.send({embeds: [embed]}).then((m) => m.id).catch(() => null)
+        const msg = await this.discord.channelSend(modLog, embed).then((m) => m.id).catch(() => null)
         const data = {...instance, case: caseNumber, message: msg}
         cases.push(data)
         await sql.updateColumn("warns", "cases", cases)

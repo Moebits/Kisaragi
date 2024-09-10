@@ -45,7 +45,7 @@ export default class MessageDeleteBulk {
                     executor + content + imageText + attachments
                 )
                 .setFooter({text: `#${(message.channel as TextChannel).name} • ${Functions.formatDate(message.createdAt)}`})
-                await msgChannel.send({embeds: [logEmbed]}).catch(() => null)
+                await this.discord.channelSend(msgChannel, logEmbed).catch(() => null)
             }
         }
         logDeleted(messages.map((m) => m))

@@ -37,7 +37,7 @@ export default class GuildMemberUpdate {
                     `${discord.getEmoji("star")}_New Nickname:_ **$newMember.displayName}**\n`
                 )
                 .setFooter({text: `${newMember.guild.name} • ${Functions.formatDate(new Date())}`, iconURL: newMember.guild.iconURL({extension: "png"}) ?? ""})
-                await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
+                await this.discord.channelSend(memberChannel, logEmbed).catch(() => null)
             }
         }
         if (setNick) logNick(oldMember, newMember)
@@ -65,7 +65,7 @@ export default class GuildMemberUpdate {
                     `${discord.getEmoji("star")}_Roles:_ **${newMember.roles.cache.size - 1}**`
                 )
                 .setFooter({text: `${newMember.guild.name} • ${Functions.formatDate(new Date())}`, iconURL: newMember.guild.iconURL({extension: "png"}) ?? ""})
-                await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
+                await this.discord.channelSend(memberChannel, logEmbed).catch(() => null)
             }
         }
         if (setNewRole) logNewRole(oldMember, newMember)
@@ -93,7 +93,7 @@ export default class GuildMemberUpdate {
                     `${discord.getEmoji("star")}_Roles:_ **${newMember.roles.cache.size - 1}**`
                 )
                 .setFooter({text: `${newMember.guild.name} • ${Functions.formatDate(new Date())}`, iconURL: newMember.guild.iconURL({extension: "png"}) ?? ""})
-                await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
+                await this.discord.channelSend(memberChannel, logEmbed).catch(() => null)
             }
         }
         if (setRemoveRole) logRoleRemoval(oldMember, newMember)

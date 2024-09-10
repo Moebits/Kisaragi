@@ -18,12 +18,17 @@ export default class InteractionCreate {
 
         const command = discord.commands.get(slashCommand)
 
+        let targetCommand = command
+        if (subcommand) {
+            targetCommand = discord.commands.get(subcommand)
+        }
+
         if (command) {
             if (!command.slash) return
 
             const cooldown = new Cooldown(discord, interaction as any)
             const onCooldown = cooldown.cmdCooldown(subcommand ? subcommand : slashCommand, command.options.cooldown)
-            if (onCooldown && (interaction.user.id !== process.env.OWNER_ID)) return interaction.reply({embeds: [onCooldown]})
+            if (onCooldown && (interaction.user.id !== process.env.OWNER_ID)) return this.discord.reply(interaction,onCooldown)
 
             // We override some properties to run message command based code with minimal changes
             // @ts-expect-error
@@ -43,6 +48,7 @@ export default class InteractionCreate {
             } else {
                 args = [slashCommand, ...interaction.options.data.map((o) => o.value)] as string[]
             }
+            if (targetCommand?.options.defer) await command.deferReply(interaction)
             await cmd.runCommandClass(command, interaction as any, args)
         }
     }

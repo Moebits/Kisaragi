@@ -20,6 +20,7 @@ export default class Tint extends Command {
           `,
           aliases: ["colorize", "photofilter"],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -61,12 +62,11 @@ export default class Tint extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
         image.color([{apply: "mix" as any, params: [color, opacity]}])
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Tinted the image with the color **${color}**!`, files: [attachment]})
-        return
+        return this.reply(`Tinted the image with the color **${color}**!`, attachment)
     }
 }

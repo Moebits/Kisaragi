@@ -1,7 +1,5 @@
-import axios from "axios"
-import {GuildMember, Message, Role} from "discord.js"
+import {GuildMember, Message, Role, EmbedBuilder, AttachmentBuilder} from "discord.js"
 import Sagiri from "sagiri"
-import config from "../config.json"
 import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
@@ -9,6 +7,7 @@ import {animedetect} from "animedetect"
 
 export class Detector {
     constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
+
     public detectIgnore = async () => {
         const sql = new SQLQuery(this.message)
         const ignored = await sql.fetchColumn("guilds", "ignored")
@@ -32,7 +31,7 @@ export class Detector {
             for (let i = 0; i < urls.length; i++) {
                 const result = await animedetect(urls[i])
                 if (!result) {
-                    const reply = await this.message.reply("You can only post anime pictures!")
+                    const reply = await this.discord.reply(this.message, "You can only post anime pictures!")
                     await this.message.delete()
                     setTimeout(() => reply.delete(), 10000)
                 }
@@ -64,7 +63,7 @@ export class Detector {
                 if (counter) {
                     return false
                 } else {
-                    await this.message.reply(`You were swapped to the <@&${normie}> role because you do not have an anime profile picture!`)
+                    await this.discord.reply(this.message, `You were swapped to the <@&${normie}> role because you do not have an anime profile picture!`)
                 }
             }
         } else {
@@ -79,7 +78,7 @@ export class Detector {
                 if (counter) {
                     return true
                 } else {
-                    await this.message.reply(`You were swapped to the <@&${weeb}> role because you have an anime profile picture!`)
+                    await this.discord.reply(this.message, `You were swapped to the <@&${weeb}> role because you have an anime profile picture!`)
                 }
             }
         }
@@ -120,7 +119,7 @@ export class Detector {
             const siteEmbed = embeds.createEmbed()
             siteEmbed
             .setDescription(description)
-            this.message.channel.send({embeds: [siteEmbed]})
+            this.discord.send(this.message, siteEmbed)
         }
     }
 }

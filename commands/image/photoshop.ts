@@ -36,6 +36,7 @@ export default class Photoshop extends Command {
           `,
           aliases: ["ps", "edit", "editor", "adjust", "hsv", "hsb"],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -107,7 +108,7 @@ export default class Photoshop extends Command {
         // console.log(this.historyValues)
         const hsvEmbed = embeds.createEmbed()
         hsvEmbed
-        .setAuthor({name: "photoshop", iconURL: "https://pbs.twimg.com/media/EIjD9I6UcAArKf4.jpg"})
+        .setAuthor({name: "photoshop", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Adobe_Photoshop_CC_icon.svg/512px-Adobe_Photoshop_CC_icon.svg.png"})
         .setTitle(`**Photoshop** ${this.discord.getEmoji("chinoSmug")}`)
         .setImage(url)
         .setURL(url)
@@ -180,7 +181,7 @@ export default class Photoshop extends Command {
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
         if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has("ManageMessages")) {
-            message.reply(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
+            this.reply(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
             return
         }
         const seed = Math.floor(Math.random() * 10000)
@@ -190,8 +191,8 @@ export default class Photoshop extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaFacepalm")}`)
-        if (!url.includes("http")) return message.reply(`Invalid image url ${discord.getEmoji("kannaFacepalm")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaFacepalm")}`)
+        if (!url.includes("http")) return this.reply(`Invalid image url ${discord.getEmoji("kannaFacepalm")}`)
         const hsvEmbed = embeds.createEmbed()
         if (!fs.existsSync(path.join(__dirname, "../../images"))) fs.mkdirSync(path.join(__dirname, "../../images"))
         const link = await images.upload([url]).then((l) => l[0])
@@ -199,12 +200,12 @@ export default class Photoshop extends Command {
         this.original = link
         this.originalEmbed = description
         hsvEmbed
-        .setAuthor({name: "photoshop", iconURL: "https://pbs.twimg.com/media/EIjD9I6UcAArKf4.jpg"})
+        .setAuthor({name: "photoshop", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Adobe_Photoshop_CC_icon.svg/512px-Adobe_Photoshop_CC_icon.svg.png"})
         .setTitle(`**Photoshop** ${discord.getEmoji("chinoSmug")}`)
         .setImage(link)
         .setURL(link)
         .setDescription(description)
-        const msg = await message.channel.send({embeds: [hsvEmbed]})
+        const msg = await this.reply(hsvEmbed)
         const reactions = ["brightness", "contrast", "hue", "saturation", "value", "flip", "tint", "invert", "posterize", "crop", "scale", "rotate", "blur", "sharpen", "undo", "redo", "reset"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 

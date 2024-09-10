@@ -32,14 +32,14 @@ export default class MessageReactionRemove {
                             .setAuthor({name: "reaction role", iconURL: "https://cdn.discordapp.com/emojis/585938418572328981.gif"})
                             .setTitle(`**Reaction Role Remove** ${this.discord.getEmoji("gabuTank")}`)
                             .setDescription(`${this.discord.getEmoji("star")}Removed the role **${roleName}** in the guild **${reaction.message.guild?.name}**`)
-                            await user.send({embeds: [dmEmbed]}).catch(() => null)
+                            await this.discord.dmSend(user as User, dmEmbed).catch(() => null)
                         }
                     } catch {
                         const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message) as Message<true>
                         try {
-                            await foundMsg?.channel.send(`I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
+                            await this.discord.send(foundMsg, `I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
                         } catch {
-                            await user.send(`I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
+                            await this.discord.dmSend(user as User, `I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
                             .catch(() => null)
                         }
                     }

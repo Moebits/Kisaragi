@@ -42,7 +42,7 @@ export default class MessageDelete {
                 .setImage(image)
                 .setDescription(executor + content + imageText + attachments)
                 .setFooter({text: `#${(message.channel as TextChannel).name} • ${Functions.formatDate(message.createdAt)}`})
-                await msgChannel.send({embeds: [logEmbed]}).catch(() => null)
+                await this.discord.channelSend(msgChannel, logEmbed).catch(() => null)
             }
         }
         logDeleted(message)

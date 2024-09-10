@@ -32,7 +32,7 @@ export default class MessageUpdate {
                 .setImage(image)
                 .setDescription(oldContent + newContent + attachments)
                 .setFooter({text: `#${(newMsg.channel as TextChannel).name} • ${Functions.formatDate(newMsg.editedAt!)}`})
-                await msgChannel.send({embeds: [logEmbed]}).catch(() => null)
+                await this.discord.channelSend(msgChannel, logEmbed).catch(() => null)
             }
         }
         logUpdated(oldMessage, newMessage)

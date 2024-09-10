@@ -22,6 +22,7 @@ export default class Resize extends Command {
           `,
           aliases: [],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -72,14 +73,13 @@ export default class Resize extends Command {
             url = args[1]
         }
         if (!url) url = await discord.fetchLastAttachment(message)
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         image = await jimp.read(url)
         if (!width) width = jimp.AUTO
         if (!height) height = jimp.AUTO
         image.resize(width, height)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Resized the image to **${width}x${height}**!`, files: [attachment]})
-        return
+        return this.reply(`Resized the image to **${width}x${height}**!`, attachment)
     }
 }

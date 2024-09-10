@@ -1,4 +1,4 @@
-import {Message, TextChannel, ChannelType} from "discord.js"
+import {Message, TextChannel, ChannelType, EmbedBuilder, AttachmentBuilder} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
 import {SQLQuery} from "./SQLQuery"
 import {Command} from "./Command"
@@ -106,12 +106,12 @@ export class CommandFunctions {
             if (command.name.toLowerCase().includes(input.toLowerCase())) {
                 noCmdCool.add(this.message.guild!.id)
                 setTimeout(() => {noCmdCool.delete(this.message.guild!.id)}, 10000)
-                return this.message.reply(`This is not a command! Did you mean **${command.name}**?`)
+                return this.discord.reply(this.message, `This is not a command! Did you mean **${command.name}**?`)
             }
         }
         noCmdCool.add(this.message.guild!.id)
         setTimeout(() => {noCmdCool.delete(this.message.guild!.id)}, 10000)
-        return this.message.reply(`This is not a command, type **help** for help!`)
+        return this.discord.reply(this.message, `This is not a command, type **help** for help!`)
     }
 
     public findCommand = (cmd: string) => {

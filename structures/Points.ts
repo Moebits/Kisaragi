@@ -25,7 +25,7 @@ export class Points {
                 try {
                     await this.message.member?.roles.add(role)
                 } catch {
-                    return this.message.channel.send(`I need the **Manage Roles** permission to add level up roles ${this.discord.getEmoji("kannaFacepalm")}`)
+                    return this.discord.send(this.message, `I need the **Manage Roles** permission to add level up roles ${this.discord.getEmoji("kannaFacepalm")}`)
                 }
                 if (batch) {
                     if (remove) continue
@@ -34,7 +34,7 @@ export class Points {
                 } else {
                     let levelMessage = curr.message ? curr.message : `Congrats user, you now have the role rolename! ${this.discord.getEmoji("kannaWave")}`
                     levelMessage = levelMessage.replace("user", `<@${this.message.author!.id}>`).replace("tag", `**${this.message.author.tag}**`).replace("rolename", role.name).replace("name", `**${this.message.author.username}**`).replace("rolemention", `<@&${role.id}>`)
-                    await this.message.channel.send(levelMessage)
+                    await this.discord.send(this.message, levelMessage)
                 }
             } else if (Number(user.level) < Number(curr.level)) {
                 const role = this.message.guild?.roles.cache.get(curr.role)
@@ -60,7 +60,7 @@ export class Points {
             .setAuthor({name: authorText, iconURL: authorImage})
             .setTitle(title)
             .setDescription(roleMessage)
-            await this.message.channel.send({embeds: [levelRoleEmbed]})
+            await this.discord.send(this.message, levelRoleEmbed)
         }
     }
 
@@ -114,7 +114,7 @@ export class Points {
                         levelEmbed
                         .setTitle(`**Level Up!** ${this.discord.getEmoji("karenXmas")}`)
                         .setDescription(levelUpMessage)
-                        await this.message.channel.send({embeds: [levelEmbed]})
+                        await this.discord.send(this.message, levelEmbed)
                         await this.levelRoles(user, true)
                     }
 
@@ -126,7 +126,7 @@ export class Points {
                         levelEmbed
                         .setTitle(`**Level Down!** ${this.discord.getEmoji("kaosWTF")}`)
                         .setDescription(`You were leveled down to level **${newLevel}**!`)
-                        await this.message.channel.send({embeds: [levelEmbed]})
+                        await this.discord.send(this.message, levelEmbed)
                         await this.levelRoles(user, true)
                     }
                 }
@@ -205,7 +205,7 @@ export class Points {
                     levelEmbed
                     .setTitle(`**Level Up!** ${this.discord.getEmoji("karenXmas")}`)
                     .setDescription(levelUpMessage)
-                    await this.message.channel.send({embeds: [levelEmbed]})
+                    await this.discord.send(this.message, levelEmbed)
                     await this.levelRoles(user)
                 }
                 user.score = newPoints

@@ -50,7 +50,7 @@ export default class GuildMemberAdd {
             const newMsg = String(welcomeMsg).replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
             .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())
 
-            channel.send({content: newMsg, files: [attachment]})
+            this.discord.channelSend(channel, newMsg, attachment)
         }
 
         welcomeMessages()
@@ -67,13 +67,12 @@ export default class GuildMemberAdd {
                 .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
                 .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
                 .setDescription(`${discord.getEmoji("star")}_Successfully banned <@${member.user.id}> for reason:_ **${reason}**`)
-                if (channel) channel.send({embeds: [banEmbed]})
+                if (channel) this.discord.channelSend(channel, banEmbed)
                 banEmbed
                 .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
                 .setDescription(`${discord.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`)
-                const dm = await member.user.createDM()
                 try {
-                    await dm.send({embeds: [banEmbed]})
+                    await this.discord.dmSend(member.user, banEmbed)
                 } catch (err) {
                     console.log(err)
                 }
@@ -99,25 +98,9 @@ export default class GuildMemberAdd {
                     `${discord.getEmoji("star")}_Guild Members:_ **${member.guild.members.cache.size}**\n`
                 )
                 .setFooter({text: `${member.guild.name} • ${Functions.formatDate(member.joinedAt ?? new Date())}`, iconURL: member.guild.iconURL({extension: "png"}) ?? ""})
-                await joinChannel.send({embeds: [joinEmbed]}).catch(() => null)
+                await this.discord.channelSend(joinChannel, joinEmbed).catch(() => null)
             }
         }
         logJoin(member)
-
-        const logsEnabledDMs = async (member: GuildMember) => {
-            const messageLog = await sql.fetchColumn("guilds", "message log")
-            if (messageLog) {
-                const embed = embeds.createEmbed()
-                embed
-                .setTitle(`**Logs Enabled** ${discord.getEmoji("kannaHungry")}`)
-                .setThumbnail(member.user.displayAvatarURL({extension: "png"}))
-                .setDescription(
-                    `${discord.getEmoji("star")}_Privacy Notice:_ The guild **${member.guild.name}** has deleted message logging enabled. This means that if you post
-                    a message and then delete it, it could still be present on a channel within that guild. If you don't agree with this, we suggest leaving that guild.`
-                )
-                await member.send({embeds: [embed]}).catch(() => null)
-            }
-        }
-        logsEnabledDMs(member)
     }
 }

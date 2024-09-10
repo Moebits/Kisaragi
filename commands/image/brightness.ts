@@ -21,6 +21,7 @@ export default class Brightness extends Command {
           `,
           aliases: ["brighten"],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -52,7 +53,7 @@ export default class Brightness extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         if (!factor) factor = 0
         factor /= 100
         if (factor < -1) factor = -1
@@ -61,7 +62,6 @@ export default class Brightness extends Command {
         image.brightness(factor)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content:`Shifted the brightness by a factor of **${factor*100}**!`, files: [attachment]})
-        return
+        return this.reply(`Shifted the brightness by a factor of **${factor*100}**!`, attachment)
     }
 }

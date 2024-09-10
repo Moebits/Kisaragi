@@ -20,8 +20,7 @@ export default class GuildBanRemove {
                 const modChannel = guild?.channels.cache.get(modLog)! as TextChannel
                 const log = await guild.fetchAuditLogs({type: AuditLogEvent.MemberBanRemove, limit: 1}).then((l) => l.entries.first())
                 .catch(async () => {
-                    await modChannel.send(`I need the **View Audit Logs** permission in order to log guild bans.`).catch(() => null)
-                    return
+                    return this.discord.channelSend(modChannel, `I need the **View Audit Logs** permission in order to log guild bans.`).catch(() => null) 
                 }) as GuildAuditLogsEntry
                 if (!log) return
                 const data = {type: "unban", user: (log.target as User).id, executor: log.executor?.id, date: Date.now(), guild: guild.id, reason: log.reason}

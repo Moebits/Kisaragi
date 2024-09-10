@@ -22,6 +22,7 @@ export default class Crop extends Command {
           `,
           aliases: [],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -76,7 +77,7 @@ export default class Crop extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
         let width = Number(args[3]) ? Number(args[3]) : image.bitmap.width
         let height = Number(args[4]) ? Number(args[4]) : Math.floor(image.bitmap.height / (image.bitmap.width / width * 1.0))
@@ -85,7 +86,6 @@ export default class Crop extends Command {
         image.crop(x, y, width, height)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Cropped the image to an offset of **${x}, ${y}** pixels, to a width of **${width}** pixels, and to a height of **${height}** pixels!`, files: [attachment]})
-        return
+        return this.reply(`Cropped the image to an offset of **${x}, ${y}** pixels, to a width of **${width}** pixels, and to a height of **${height}** pixels!`, attachment)
     }
 }

@@ -1,12 +1,11 @@
 import axios from "axios"
-import {MessagePayload, ChannelType, Client, ClientOptions, Guild, Collection, GuildBasedChannel, ApplicationEmoji, GuildEmoji, Message, MessageTarget, Role, TextChannel, User, PartialMessage} from "discord.js"
-import fs from "fs"
-import path from "path"
+import {MessagePayload, ChannelType, Client, ClientOptions, Guild, Collection, GuildBasedChannel, 
+ApplicationEmoji, GuildEmoji, Message, MessageTarget, Role, TextChannel, User, PartialMessage, AttachmentBuilder,
+EmbedBuilder, ChatInputCommandInteraction, GuildMember} from "discord.js"
 import querystring from "querystring"
 import muted from "../assets/json/muted.json"
 import {Command} from "../structures/Command"
 import config from "./../config.json"
-import {CommandFunctions} from "./CommandFunctions"
 import {Embeds} from "./Embeds"
 import {Functions} from "./Functions"
 import {SQLQuery} from "./SQLQuery"
@@ -14,6 +13,7 @@ import {SQLQuery} from "./SQLQuery"
 export class Kisaragi extends Client {
     public readonly categories = new Set<string>()
     public readonly commands: Collection<string, Command> = new Collection()
+    public deferState = new Set<string>()
     public readonly cooldowns: Collection<string, Collection<string, number>> = new Collection()
     public static username = "Kisaragi"
     public static pfp = "https://cdn.discordapp.com/avatars/593838271650332672/78ec2f4a3d4ab82a40791cb522cf36f5.png?size=2048"
@@ -32,6 +32,69 @@ export class Kisaragi extends Client {
     /** Set the username */
     public setUsername = (username: string) => {
         Kisaragi.username = username
+    }
+
+    /** Reply or edit depending on defer state */
+    public reply = (input: Message | ChatInputCommandInteraction, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
+        let options = {} as any
+        if (embed instanceof EmbedBuilder) {
+          options.embeds = [embed]
+        } else if (typeof embed === "string") {
+          options.content = embed
+        }
+        if (file) options.files = [file]
+        if (this.deferState.has(input.id)) {
+          this.deferState.delete(input.id)
+          return (input as ChatInputCommandInteraction).editReply(options)
+        }
+        return input.reply(options)
+    }
+    
+    /** Send message to a channel */
+    public send = (input: Message<true>, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
+        return this.channelSend(input.channel as TextChannel, embed, file)
+    }
+
+    /** Send message to a channel */
+    public channelSend = (channel: TextChannel, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
+        let options = {} as any
+        if (embed instanceof EmbedBuilder) {
+            options.embeds = [embed]
+        } else if (typeof embed === "string") {
+            options.content = embed
+        }
+        if (file) options.files = [file]
+        return channel.send(options)
+    }
+
+    /** Send message to a user */
+    public dmSend = (user: User | GuildMember, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
+        let options = {} as any
+        if (embed instanceof EmbedBuilder) {
+            options.embeds = [embed]
+        } else if (typeof embed === "string") {
+            options.content = embed
+        }
+        if (file) options.files = [file]
+        return user.send(options)
+    }
+
+    /** Edit message */
+    public edit = (msg: Message, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
+        let options = {} as any
+        if (embed instanceof EmbedBuilder) {
+            options.embeds = [embed]
+        } else if (typeof embed === "string") {
+            options.content = embed
+        }
+        if (file) options.files = [file]
+        return msg.edit(options)
+    }
+
+    /** Defer this reply */
+    public deferReply = (interaction: ChatInputCommandInteraction) => {
+        this.deferState.add(interaction.id)
+        return interaction.deferReply()
     }
 
     /** Get emojis (application emojis) */

@@ -23,6 +23,7 @@ export default class Sharpen extends Command {
           `,
           aliases: ["sharp", "sharpness"],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -67,11 +68,10 @@ export default class Sharpen extends Command {
             url = args[1]
         }
         if (!url) url = await discord.fetchLastAttachment(message)
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const sharpened = await sharpen(url, {amount, sigma})
         const buffer = await sharpened.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Sharpened the image with an amount of **${amount}** and sigma of **${sigma}**!`, files: [attachment]})
-        return
+        return this.reply(`Sharpened the image with an amount of **${amount}** and sigma of **${sigma}**!`, attachment)
     }
 }

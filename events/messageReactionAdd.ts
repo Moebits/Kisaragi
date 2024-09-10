@@ -77,14 +77,14 @@ export default class MessageReactionAdd {
                             .setAuthor({name: "reaction role", iconURL: "https://cdn.discordapp.com/emojis/589152499617759232.gif"})
                             .setTitle(`**Reaction Role Add** ${this.discord.getEmoji("gabYes")}`)
                             .setDescription(`${this.discord.getEmoji("star")}Added the role **${roleName}** in the guild **${reaction.message.guild?.name}**`)
-                            await user.send({embeds: [dmEmbed]}).catch(() => null)
+                            await this.discord.dmSend(user as User, dmEmbed).catch(() => null)
                         }
                     } catch {
                         const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message) as Message<true>
                         try {
-                            await foundMsg?.channel.send(`I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
+                            await this.discord.send(foundMsg, `I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
                         } catch {
-                            await user.send(`I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
+                            await this.discord.dmSend(user as User, `I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
                             .catch(() => null)
                         }
                     }
@@ -117,7 +117,7 @@ export default class MessageReactionAdd {
                 .setDescription(`[**Message Link**](${reaction.message.url})\n` + content)
                 .setImage(reaction.message.attachments.first() ? reaction.message.attachments.first()!.url : "")
                 .setFooter({text: `${reaction.message.author.tag} • #${(reaction.message.channel as TextChannel).name}`, iconURL: reaction.message.author.displayAvatarURL({extension: "png"})})
-                const msg = await starChannel?.send({embeds: [starEmbed]})
+                await this.discord.channelSend(starChannel, starEmbed)
                 active.push(reaction.message.id)
                 await SQLQuery.redisSet("starboard", JSON.stringify(active))
             }

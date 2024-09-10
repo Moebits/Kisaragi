@@ -26,6 +26,7 @@ export default class Flip extends Command {
           `,
           aliases: ["flop", "flipflop"],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -50,16 +51,16 @@ export default class Flip extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         let url: string | undefined
-        if (args[4] && !args[4].match(/x|y|vertical|horizontal|h|v/)) {
+        if (args[4] && args[3].match(/x|y|vertical|horizontal|h|v/)) {
             url = args[4]
-        } else if (args[3] && !args[3].match(/x|y|vertical|horizontal|h|v/)) {
+        } else if (args[3] && args[2].match(/x|y|vertical|horizontal|h|v/)) {
             url = args[3]
-        } else if (args[2] && !args[2].match(/x|y|vertical|horizontal|h|v/)) {
+        } else if (args[2] && args[1].match(/x|y|vertical|horizontal|h|v/)) {
             url = args[2]
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
         const input = Functions.combineArgs(args, 1).replace(url, "").trim()
         let setHorizontal = true
@@ -91,7 +92,6 @@ export default class Flip extends Command {
         } else if (setVertical) {
             text = "Flipped the image **vertically**!"
         }
-        await message.reply({content: text, files: [attachment]})
-        return
+        return this.reply(text, attachment)
     }
 }

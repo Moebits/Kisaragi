@@ -76,7 +76,7 @@ export class Audio {
     public checkMusicPermissions = () => {
         const message = this.message
         if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has(["Connect", "Speak"])) {
-            message.reply(`The bot needs the permissions **Connect** and **Speak** for all music commands. ${this.discord.getEmoji("kannaFacepalm")}`)
+            this.discord.reply(this.message, `The bot needs the permissions **Connect** and **Speak** for all music commands. ${this.discord.getEmoji("kannaFacepalm")}`)
             return false
         } else {
             return true
@@ -88,7 +88,7 @@ export class Audio {
         const requesterID = queue[0].requesterID
         const hasPermission = await this.perms.checkAudioPermission(user, requesterID)
         if (!hasPermission) {
-            this.message.reply(`Only the requester and moderators can edit effects. Wait until it's your turn! ${this.discord.getEmoji("kannaSad")}`)
+            this.discord.reply(this.message, `Only the requester and moderators can edit effects. Wait until it's your turn! ${this.discord.getEmoji("kannaSad")}`)
             return false
         } else {
             return true
@@ -99,7 +99,7 @@ export class Audio {
         const connection = getVoiceConnection(this.message.guild!.id)
         const queue = this.getQueue()
         if (!connection || !queue?.[0]) {
-            this.message.reply(`You must be playing music in order to use this command ${this.discord.getEmoji("kannaFacepalm")}`)
+            this.discord.reply(this.message, `You must be playing music in order to use this command ${this.discord.getEmoji("kannaFacepalm")}`)
             return false
         } else {
             return true
@@ -836,7 +836,7 @@ export class Audio {
     }
 
     public volume = async (num: number) => {
-        if (num < 0 || num > 2) return this.message.reply("The volume must be between 0 and 2.")
+        if (num < 0 || num > 2) return this.discord.reply(this.message, "The volume must be between 0 and 2.")
         /*const connection = getVoiceConnection(this.message.guild!.id)
         if (connection?.state.status !== VoiceConnectionStatus.Ready) return
         const player = connection.state.subscription?.player
@@ -865,7 +865,7 @@ export class Audio {
         if (!queue) return "It looks like you aren't playing anything..."
         const now = queue[0]
         const nowEmbed = await this.updateNowPlaying()
-        const msg = await this.message.channel.send({embeds: [nowEmbed]})
+        const msg = await this.discord.send(this.message, nowEmbed)
         now.message = msg
         const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear"]
         if (now.requesterID === process.env.OWNER_ID) reactions.push("mp3")
@@ -912,7 +912,7 @@ export class Audio {
                 if (reaction.emoji.name === "fx") test = false
                 if (this.getProcBlock() && !test) {
                     await reaction.users.remove(user)
-                    const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                    const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                     setTimeout(() => proc.delete(), 3000)
                     return
                 }
@@ -920,7 +920,7 @@ export class Audio {
                 await msg.edit({embeds: [await this.updateNowPlaying()]})
                 if (reaction.emoji.name === "reverse") {
                     await reaction.users.remove(user)
-                    const rep = await this.message.channel.send(`<@${user.id}>, _Please wait, reversing the file..._`)
+                    const rep = await this.discord.send(this.message, `<@${user.id}>, _Please wait, reversing the file..._`)
                     await this.reverse(now.file)
                     rep.delete()
                     await msg.edit({embeds: [await this.updateNowPlaying()]})
@@ -942,7 +942,7 @@ export class Audio {
                         }
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter a volume scaling factor \`0-2\`. _(Or cancel to quit)._`)
+                    const rep = await this.discord.send(this.message, `<@${user.id}>, Enter a volume scaling factor \`0-2\`. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getVolumeChange)
                     rep.delete()
                     if (canceled) return this.setProcBlock(true)
@@ -971,11 +971,11 @@ export class Audio {
                         }
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new speed, eg \`1.5x\`. Add \`pitch\` to also change the pitch along with the speed. _(Or cancel to quit)._`)
+                    const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the new speed, eg \`1.5x\`. Add \`pitch\` to also change the pitch along with the speed. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getSpeedChange)
                     rep.delete()
                     if (canceled) return this.setProcBlock(true)
-                    const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the speed of the file..._`)
+                    const rep2 = await this.discord.send(this.message, `<@${user.id}>, _Please wait, changing the speed of the file..._`)
                     await this.speed(now.file, factor, setPitch)
                     rep2.delete()
                     await msg.edit({embeds: [await this.updateNowPlaying()]})
@@ -984,7 +984,7 @@ export class Audio {
                 } else if (reaction.emoji.name === "loop") {
                     await reaction.users.remove(user)
                     const loopText = settings.looping === true ? "Disabled looping!" : "Enabled looping!"
-                    const rep = await this.message.channel.send(`<@${user.id}>, ${loopText}`)
+                    const rep = await this.discord.send(this.message, `<@${user.id}>, ${loopText}`)
                     this.loop()
                     await msg.edit({embeds: [await this.updateNowPlaying()]})
                     setTimeout(() => rep.delete(), 1000)
@@ -992,7 +992,7 @@ export class Audio {
                     return
                 } else if (reaction.emoji.name === "skip") {
                     await reaction.users.remove(user)
-                    const rep = await this.message.channel.send(`<@${user.id}>, Skipping this track! **If you added effects, be patient because they need to be re-applied.**`)
+                    const rep = await this.discord.send(this.message, `<@${user.id}>, Skipping this track! **If you added effects, be patient because they need to be re-applied.**`)
                     setTimeout(() => rep.delete(), 5000)
                     await this.skip()
                     this.setProcBlock(true)
@@ -1013,11 +1013,11 @@ export class Audio {
                         }
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new pitch in semitones. 12 semitones = 1 octave. _(Or cancel to quit)._`)
+                    const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the new pitch in semitones. 12 semitones = 1 octave. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getPitchChange)
                     rep.delete()
                     if (canceled) return this.setProcBlock(true)
-                    const rep2 = await this.message.channel.send(`<@${user.id}>, _Please wait, changing the pitch of the file..._`)
+                    const rep2 = await this.discord.send(this.message, `<@${user.id}>, _Please wait, changing the pitch of the file..._`)
                     await this.pitch(now.file, semitones)
                     rep2.delete()
                     await msg.edit({embeds: [await this.updateNowPlaying()]})
@@ -1034,7 +1034,7 @@ export class Audio {
                         position = response.content
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the new song position, eg. \`1:00\`. You can also fastforward or rewind, eg. \`+10\` and \`-10\`. _(Or cancel to quit)._`)
+                    const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the new song position, eg. \`1:00\`. You can also fastforward or rewind, eg. \`+10\` and \`-10\`. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getPositionChange)
                     rep.delete()
                     if (canceled) return this.setProcBlock(true)
@@ -1048,7 +1048,7 @@ export class Audio {
                         settings.ablooping = false
                         await this.play(queue[0].file)
                         await msg.edit({embeds: [await this.updateNowPlaying()]})
-                        const rep = await this.message.channel.send(`<@${user.id}>, Disabled A-B looping!`)
+                        const rep = await this.discord.send(this.message, `<@${user.id}>, Disabled A-B looping!`)
                         setTimeout(() => rep.delete(), 3000)
                         return
                     }
@@ -1064,11 +1064,11 @@ export class Audio {
                         end = repArgs[1]
                         await response.delete()
                     }
-                    const rep = await this.message.channel.send(`<@${user.id}>, Enter the starting time and the ending time for the A-B loop. eg \`1:00 1:30\`. _(Or cancel to quit)._`)
+                    const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the starting time and the ending time for the A-B loop. eg \`1:00 1:30\`. _(Or cancel to quit)._`)
                     await this.embeds.createPrompt(getABLoop)
                     rep.delete()
                     if (canceled) return this.setProcBlock(true)
-                    const rep2 = await this.message.channel.send(`<@${user.id}>, Enabled A-B Looping!`)
+                    const rep2 = await this.discord.send(this.message, `<@${user.id}>, Enabled A-B Looping!`)
                     setTimeout(() => rep2.delete(), 3000)
                     settings.ablooping = true
                     await msg.edit({embeds: [await this.updateNowPlaying()]})
@@ -1078,7 +1078,7 @@ export class Audio {
                 } else if (reaction.emoji.name === "clear") {
                     await reaction.users.remove(user)
                     await this.clear()
-                    const rep = await this.message.channel.send(`<@${user.id}>, Cleared all effects that were applied to this song!`)
+                    const rep = await this.discord.send(this.message, `<@${user.id}>, Cleared all effects that were applied to this song!`)
                     setTimeout(() => rep.delete(), 3000)
                     await msg.edit({embeds: [await this.updateNowPlaying()]})
                     this.setProcBlock(true)
@@ -1174,14 +1174,7 @@ export class Audio {
         if (song?.match(/youtube.com|youtu.be/)) {
             file = await this.youtube.util.downloadMP3(song, path.join(__dirname, `../assets/misc/tracks`)).then((f) => path.join(__dirname, f))
         } else if (song?.match(/soundcloud.com/)) {
-            try {
-                file = await this.soundcloud.util.downloadTrack(song, path.join(__dirname, `../assets/misc/tracks`))
-            } catch (e) {
-                console.log(e)
-                await this.message.channel.send("The Soundcloud token has expired, so the bot will search YouTube as fallback. Let the developer know with the \`feedback\` command.")
-                const link = await this.songPickerYT(query ?? song, true)
-                return link ? this.download(link) : ""
-            }
+            file = await this.soundcloud.util.downloadTrack(song, path.join(__dirname, `../assets/misc/tracks`))
         } else {
             let name = song.split("#").shift()?.split("?").shift()?.split("/").pop()
             name = name?.match(/.(mp3|wav|ogg|webm)/) ? name : name + ".mp3"
@@ -1248,7 +1241,7 @@ export class Audio {
             await this.play(next)
             let nowPlaying: string | undefined
             if (!skipPlaying) nowPlaying = await this.nowPlaying()
-            if (nowPlaying) await this.message.channel.send(nowPlaying)
+            if (nowPlaying) await this.discord.send(this.message, nowPlaying)
         } else {
             if (settings.autoplay) {
                 const defSong = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
@@ -1257,14 +1250,14 @@ export class Audio {
                 await this.applyEffects(file)
                 await this.play(file)
                 const nowPlaying = await this.nowPlaying()
-                if (nowPlaying) await this.message.channel.send(nowPlaying)
+                if (nowPlaying) await this.discord.send(this.message, nowPlaying)
             } else {
                 player.stop()
                 const connection = getVoiceConnection(this.message.guild!.id)
                 connection?.disconnect()
                 connection?.destroy()
                 this.deleteQueue()
-                return this.message.channel.send(`There are no more songs left in the queue, left the voice channel.`)
+                return this.discord.send(this.message, `There are no more songs left in the queue, left the voice channel.`)
             }
         }
     }
@@ -1314,7 +1307,7 @@ export class Audio {
             await this.applyEffects(next)
             await this.play(next)
             const nowPlaying = await this.nowPlaying()
-            if (nowPlaying) await this.message.channel.send(nowPlaying)
+            if (nowPlaying) await this.discord.send(this.message, nowPlaying)
         } else {
             if (settings.autoplay) {
                 const defSong = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
@@ -1323,13 +1316,13 @@ export class Audio {
                 await this.applyEffects(file)
                 await this.play(file)
                 const nowPlaying = await this.nowPlaying()
-                if (nowPlaying) await this.message.channel.send(nowPlaying)
+                if (nowPlaying) await this.discord.send(this.message, nowPlaying)
             } else {
                 const connection = getVoiceConnection(this.message.guild!.id)
                 if (connection?.state.status === VoiceConnectionStatus.Ready) connection.state.subscription?.player.stop()
                 connection?.disconnect()
                 connection?.destroy()
-                return this.message.channel.send(`There are no more songs in the queue, stopped playback.`)
+                return this.discord.send(this.message, `There are no more songs in the queue, stopped playback.`)
             }
         }
     }
@@ -1345,7 +1338,7 @@ export class Audio {
         const connection = getVoiceConnection(this.message.guild!.id)
         if (!connection) return
         const seconds = this.parseSeconds(position)
-        if (Number.isNaN(seconds)) return this.message.reply("Provide the time in \`00:00\` format...").then((m) => setTimeout(() => m.delete(), 3000))
+        if (Number.isNaN(seconds)) return this.discord.reply(this.message, "Provide the time in \`00:00\` format...").then((m) => setTimeout(() => m.delete(), 3000))
         const queue = this.getQueue()
         return this.play(queue[0].file, seconds)
     }
@@ -1356,7 +1349,7 @@ export class Audio {
         const startSec = this.parseSeconds(start)
         const endSec = this.parseSeconds(end)
         if (Number.isNaN(startSec) || Number.isNaN(endSec)) {
-            const rep = await this.message.reply("Provide the time in \`00:00\` format...")
+            const rep = await this.discord.reply(this.message, "Provide the time in \`00:00\` format...")
             setTimeout(() => rep.delete(), 3000)
             return
         }
@@ -1388,8 +1381,7 @@ export class Audio {
         const queue = this.getQueue()
         const file = queue[0].file
         const attachment = new AttachmentBuilder(file, {name: `${path.basename(file)}`})
-        await this.message.channel.send(`<@${userID}>, Here is the download for this file!`)
-        await this.message.channel.send({files: [attachment]})
+        await this.discord.send(this.message, `<@${userID}>, Here is the download for this file!`, attachment)
         return
     }
 
@@ -1471,7 +1463,7 @@ export class Audio {
         const message = this.message
         const discord = this.discord
         if (!songArray[0]) return null
-        const msg = await message.channel.send({embeds: [songArray[0]]})
+        const msg = await this.discord.send(this.message, songArray[0])
         const reactions = ["right", "left", "1n", "2n", "3n", "random"]
         await msg.react(discord.getEmoji(reactions[0]))
         await msg.react(discord.getEmoji(reactions[1]))
@@ -1615,7 +1607,7 @@ export class Audio {
             `${discord.getEmoji("lowpass")}-lowpass Filter_ -> _Removes high frequencies._\n` +
             `_Frequency and width are in Hz. If applicable, resonance is a Q factor and gain is in decibels._`
         )
-        const msg = await this.message.channel.send({embeds: [eqEmbed]})
+        const msg = await this.discord.send(this.message, eqEmbed)
         const reactions = ["highpass", "highshelf", "bandpass", "peak", "bandreject", "lowshelf", "lowpass", "cancel"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
@@ -1648,7 +1640,7 @@ export class Audio {
                 if (!(await this.checkEffectPermissions(user))) return
                 if (this.getProcBlock()) {
                     await reaction.users.remove(user)
-                    const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                    const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                     setTimeout(() => proc.delete(), 3000)
                     return
                 }
@@ -1666,18 +1658,18 @@ export class Audio {
                     width = Number(rArgs[1])
                     await response.delete()
                 }
-                const rep = await this.message.channel.send(`<@${user.id}>, Enter the cutoff frequency and filter width (in Hz). _(Or cancel to quit)._`)
+                const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the cutoff frequency and filter width (in Hz). _(Or cancel to quit)._`)
                 await this.embeds.createPrompt(getParams)
                 rep.delete()
                 if (canceled) return this.setProcBlock(true)
                 const settings = this.getSettings()
                 const queue = this.getQueue()
                 settings.filters.push(pass[i])
-                const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a ${pass[i]} filter, please wait...`)
+                const rep3 = await this.discord.send(this.message, `<@${user.id}>, Adding a ${pass[i]} filter, please wait...`)
                 await this[pass[i]](queue[0].file, freq, width, false)
                 this.setProcBlock(true)
                 rep3.delete()
-                const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${pass[i]} filter!`)
+                const rep2 = await this.discord.send(this.message, `<@${user.id}>, Added a ${pass[i]} filter!`)
                 setTimeout(() => rep2.delete(), 3000)
                 resolve()
             })
@@ -1688,7 +1680,7 @@ export class Audio {
                 if (!(await this.checkEffectPermissions(user))) return
                 if (this.getProcBlock()) {
                     await reaction.users.remove(user)
-                    const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                    const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                     setTimeout(() => proc.delete(), 3000)
                     return
                 }
@@ -1708,18 +1700,18 @@ export class Audio {
                     width = Number(rArgs[2])
                     await response.delete()
                 }
-                const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency, and the filter width (in Hz). _(Or cancel to quit)._`)
+                const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the gain (in decibels), the cutoff frequency, and the filter width (in Hz). _(Or cancel to quit)._`)
                 await this.embeds.createPrompt(getParams)
                 rep.delete()
                 if (canceled) return this.setProcBlock(true)
                 const settings = this.getSettings()
                 const queue = this.getQueue()
                 settings.filters.push(shelf[i])
-                const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a ${shelf[i]} filter, please wait...`)
+                const rep3 = await this.discord.send(this.message, `<@${user.id}>, Adding a ${shelf[i]} filter, please wait...`)
                 await this[pass[i]](queue[0].file, gain, freq, width, false)
                 this.setProcBlock(true)
                 rep3.delete()
-                const rep2 = await this.message.channel.send(`<@${user.id}>, Added a ${shelf[i]} filter!`)
+                const rep2 = await this.discord.send(this.message, `<@${user.id}>, Added a ${shelf[i]} filter!`)
                 setTimeout(() => rep2.delete(), 3000)
                 resolve()
             })
@@ -1729,7 +1721,7 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
@@ -1749,18 +1741,18 @@ export class Audio {
                 resonance = Number(rArgs[2])
                 await response.delete()
             }
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain (in decibels), the cutoff frequency (in Hz), and the resonance (Q Factor). _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the gain (in decibels), the cutoff frequency (in Hz), and the resonance (Q Factor). _(Or cancel to quit)._`)
             await this.embeds.createPrompt(getParams)
             rep.delete()
             if (canceled) return this.setProcBlock(true)
             const settings = this.getSettings()
             const queue = this.getQueue()
             settings.filters.push("peak")
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Adding a peak filter, please wait...`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Adding a peak filter, please wait...`)
             await this.peak(queue[0].file, freq, resonance, gain)
             this.setProcBlock(true)
             rep3.delete()
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Added a peak filter!`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Added a peak filter!`)
             setTimeout(() => rep2.delete(), 3000)
             resolve()
         })
@@ -1794,7 +1786,7 @@ export class Audio {
             `${discord.getEmoji("tremolo")}-tremelo_ -> _Amplitude modulation with an LFO._`
         )
         const reactions = ["reverb", "delay", "chorus", "phaser", "flanger", "bitcrush", "upsample", "distortion", "compression", "allpass", "tremolo", "cancel"]
-        const msg = await this.message.channel.send({embeds: [fxEmbed]})
+        const msg = await this.discord.send(this.message, fxEmbed)
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
         const reverbCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("reverb").id && user.bot === false
@@ -1838,13 +1830,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the amount, damping, room, stereo, pre-delay, and wet-gain. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the amount, damping, room, stereo, pre-delay, and wet-gain. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const amount = Number(argArray[0])
             const damping = Number(argArray[1])
@@ -1859,11 +1851,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("reverb")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding reverb, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding reverb, please wait...`)
             await this.reverb(file, amount, damping, room, stereo, preDelay, wetGain, reverse, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added reverb!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added reverb!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -1872,13 +1864,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter pairs of delay and decay times. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter pairs of delay and decay times. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const delaysDecays = argArray.map((a) => Number(a) ? Number(a) : 0)
             if (delaysDecays.length % 2 === 1) delaysDecays.push(0)
@@ -1888,11 +1880,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("delay")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding delay, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding delay, please wait...`)
             await this.delay(file, delaysDecays, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added delay!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added delay!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -1901,13 +1893,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, speed, and depth. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the delay, decay, speed, and depth. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const delay = Number(argArray[0])
             const decay = Number(argArray[1])
@@ -1919,11 +1911,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("chorus")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding chorus, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding chorus, please wait...`)
             await this.chorus(file, delay, decay, speed, depth, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added chorus!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added chorus!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -1932,13 +1924,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, decay, and speed. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the delay, decay, and speed. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const delay = Number(argArray[0])
             const decay = Number(argArray[1])
@@ -1949,11 +1941,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("phaser")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding phaser, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding phaser, please wait...`)
             await this.phaser(file, delay, decay, speed, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added phaser!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added phaser!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -1962,13 +1954,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the delay, depth, regen, width, speed, shape, phase, and interp. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the delay, depth, regen, width, speed, shape, phase, and interp. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const delay = Number(argArray[0])
             const depth = Number(argArray[1])
@@ -1984,11 +1976,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("flanger")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding flanger, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding flanger, please wait...`)
             await this.flanger(file, delay, depth, regen, width, speed, shape, phase, interp, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added flanger!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added flanger!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -1997,13 +1989,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the bitcrush factor. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the bitcrush factor. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const factor = Number(argArray[0])
             rep.delete()
@@ -2012,11 +2004,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("bitcrush")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding bitcrushing, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding bitcrushing, please wait...`)
             await this.bitcrush(file, factor, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added bitcrushing!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added bitcrushing!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -2025,13 +2017,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the upsample factor. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the upsample factor. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const factor = Number(argArray[0])
             rep.delete()
@@ -2040,11 +2032,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("upsample")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding upsampling, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding upsampling, please wait...`)
             await this.upsample(file, factor, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added upsampling!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added upsampling!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -2053,13 +2045,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the gain and color. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the gain and color. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const gain = Number(argArray[0])
             const color = Number(argArray[1])
@@ -2069,11 +2061,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("distortion")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding distortion, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding distortion, please wait...`)
             await this.distortion(file, gain, color, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added distortion!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added distortion!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -2082,13 +2074,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the compression amount (0-100). _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the compression amount (0-100). _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const amount = Number(argArray[0])
             rep.delete()
@@ -2097,11 +2089,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("compression")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding compression, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding compression, please wait...`)
             await this.compression(file, amount, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added compression!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added compression!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -2110,13 +2102,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the frequency and width. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the frequency and width. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const freq = Number(argArray[0])
             const width = Number(argArray[1])
@@ -2126,11 +2118,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("allpass")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding an allpass filter, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding an allpass filter, please wait...`)
             await this.allPass(file, freq, width, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added an allpass filter!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added an allpass filter!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })
@@ -2139,13 +2131,13 @@ export class Audio {
             if (!(await this.checkEffectPermissions(user))) return
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.discord.send(this.message, `<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user)
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the speed and depth. _(Or cancel to quit)._`)
+            const rep = await this.discord.send(this.message, `<@${user.id}>, Enter the speed and depth. _(Or cancel to quit)._`)
             await this.embeds.createPrompt(parseArgs)
             const speed = Number(argArray[0])
             const depth = Number(argArray[1])
@@ -2155,11 +2147,11 @@ export class Audio {
             const queue = this.getQueue()
             settings.effects.push("tremolo")
             const file = queue[0].file
-            const rep2 = await this.message.channel.send(`<@${user.id}>, Adding tremolo, please wait...`)
+            const rep2 = await this.discord.send(this.message, `<@${user.id}>, Adding tremolo, please wait...`)
             await this.tremolo(file, speed, depth, false)
             this.setProcBlock(true)
             rep2.delete()
-            const rep3 = await this.message.channel.send(`<@${user.id}>, Added tremolo!`)
+            const rep3 = await this.discord.send(this.message, `<@${user.id}>, Added tremolo!`)
             setTimeout(() => rep3.delete(), 3000)
             resolve()
         })

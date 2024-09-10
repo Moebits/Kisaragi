@@ -83,12 +83,12 @@ export class PixivApi {
         .setTitle(`**Pixiv Image** ${this.discord.getEmoji("chinoSmug")}`)
         .setDescription("No results were found. You can turn off the bookmark filter by adding **all**. Also, try searching for the japanese tag on the " +
         "[**Pixiv Website**](https://www.pixiv.net/), as some tags can't be translated to english.")
-        return this.message.reply({embeds: [pixivEmbed]})
+        return this.discord.reply(this.message, pixivEmbed)
     }
 
     // Pixiv Image
     public getPixivImage = async (tag?: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
-        const msg1 = await this.message.channel.send(`**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
         if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         let setFast = false
         if (tag && /fast/.test(tag)) {
@@ -135,7 +135,7 @@ export class PixivApi {
             if (!image) return this.pixivErrorEmbed()
             return image
         }
-        const msg2 = await this.message.channel.send(`**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: EmbedBuilder[] = []
         const attachments: AttachmentBuilder[] = []
         const max = illusts.length > 5 ? 5 : illusts.length
@@ -166,7 +166,7 @@ export class PixivApi {
         msg2.delete()
         if (!pixivArray[0]) return this.pixivErrorEmbed()
         if (pixivArray.length === 1) {
-            this.message.channel.send({embeds: [pixivArray[0]]})
+            this.discord.send(this.message, pixivArray[0])
         } else {
             this.embeds.createReactionEmbed(pixivArray, true, true)
         }
@@ -188,19 +188,19 @@ export class PixivApi {
         }
         const pixivEmbed = await this.createPixivEmbed(image)
         if (!pixivEmbed) return this.pixivErrorEmbed()
-        return this.message.channel.send({embeds: [pixivEmbed.embed]})
+        return this.discord.send(this.message, pixivEmbed.embed)
     }
 
     // Pixiv Popular Image
     public getPopularPixivImage = async () => {
-        const msg1 = await this.message.channel.send(`**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
         const mode = "day_male"
         if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         const json = await this.pixiv.illust.ranking({mode})
         const illusts = this.pixiv.util.sort(json)
         if (msg1) msg1.delete()
         if (!illusts[0]) return this.pixivErrorEmbed()
-        const msg2 = await this.message.channel.send(`**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: EmbedBuilder[] = []
         let attachments: AttachmentBuilder[] = []
         const max = illusts.length > 5 ? 5 : illusts.length
@@ -223,7 +223,7 @@ export class PixivApi {
         if (msg2) msg2.delete()
         if (!pixivArray[0]) return this.pixivErrorEmbed()
         if (pixivArray.length === 1) {
-            this.message.channel.send({embeds: [pixivArray[0]]})
+            this.discord.send(this.message, pixivArray[0])
         } else {
             this.embeds.createReactionEmbed(pixivArray, true, true)
         }
@@ -232,14 +232,14 @@ export class PixivApi {
 
     // Pixiv Popular R18 Image
     public getPopularPixivR18Image = async () => {
-        const msg1 = await this.message.channel.send(`**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
         const mode = "day_male_r18"
         if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         const json = await this.pixiv.illust.ranking({mode})
         const illusts = this.pixiv.util.sort(json)
         if (msg1) msg1.delete()
         if (!illusts[0]) return this.pixivErrorEmbed()
-        const msg2 = await this.message.channel.send(`**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: EmbedBuilder[] = []
         let attachments: AttachmentBuilder[] = []
         const max = illusts.length > 5 ? 5 : illusts.length
@@ -262,7 +262,7 @@ export class PixivApi {
         if (msg2) msg2.delete()
         if (!pixivArray[0]) return this.pixivErrorEmbed()
         if (pixivArray.length === 1) {
-            this.message.channel.send({embeds: [pixivArray[0]]})
+            this.discord.send(this.message, pixivArray[0])
         } else {
             this.embeds.createReactionEmbed(pixivArray, true, true)
         }
@@ -273,7 +273,7 @@ export class PixivApi {
     public downloadPixivImages = async (tag: string, r18?: boolean, folderMap?: PixivFolderMap[]) => {
         const embeds = new Embeds(this.discord, this.message)
         if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
-        const msg1 = await this.message.channel.send(`**Downloading the pictures, please wait...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg1 = await this.discord.send(this.message, `**Downloading the pictures, please wait...** ${this.discord.getEmoji("gabCircle")}`)
         tag = tag.trim()
         const rand = Math.floor(Math.random()*10000)
         const src = path.join(__dirname, `../assets/misc/images/pixiv/zip/${rand}/`)
@@ -286,7 +286,7 @@ export class PixivApi {
         }
         if (msg1) msg1.delete()
         if (!files?.[0]) return this.pixivErrorEmbed()
-        const msg2 = await this.message.channel.send(`**Creating a zip file...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg2 = await this.discord.send(this.message, `**Creating a zip file...** ${this.discord.getEmoji("gabCircle")}`)
         const name = tag.trim() ? tag.replace(/ +/g, "-") : "pixiv_dl_default"
         const dir = path.join(__dirname, `../assets/misc/images/pixiv/zip/${rand}/`)
         const dest = path.join(__dirname, `../assets/misc/images/pixiv/zip/${name}.zip`)
@@ -311,11 +311,11 @@ export class PixivApi {
         }
         if (msg2) msg2.delete()
         if (downloadArray.length === 1) {
-            await this.message.channel.send({embeds: [downloadArray[0]]})
+            await this.discord.send(this.message, downloadArray[0])
         } else {
             await this.embeds.createReactionEmbed(downloadArray)
         }
-        await this.message.channel.send({files: [attachment]})
+        await this.discord.send(this.message, "", attachment)
         Functions.removeDirectory(src)
         return
     }

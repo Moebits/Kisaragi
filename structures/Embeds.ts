@@ -76,7 +76,7 @@ export class Embeds {
                 return this.message
             }
         } else {
-            msg = await this.message.reply({embeds: [embeds[page]]})
+            msg = await this.discord.reply(this.message, embeds[page]) as Message<true>
         }
         for (let i = 0; i < reactions.length; i++) await msg.react(reactions[i] as ReactionEmoji)
 
@@ -107,7 +107,7 @@ export class Embeds {
                     collapsed = false
                 }
                 const embed = await this.updateEmbed(embeds, page, user)
-                if (embed) msg.edit({embeds: [embed]})
+                if (embed) this.discord.edit(msg, embed)
                 await reaction.users.remove(user).catch(() => null)
             })
         }
@@ -127,7 +127,7 @@ export class Embeds {
                         images.push(embeds[i].data.image?.url!)
                     }
                 }
-                const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
                 const src = path.join(__dirname, `../assets/misc/images/dump/${rand}/`)
                 const dest = path.join(__dirname, `../assets/misc/images/dump/${rand}.zip`)
@@ -143,11 +143,11 @@ export class Embeds {
                     .setAuthor({name: "download", iconURL: this.discord.checkMuted(reaction.message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
                     .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
                     .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
-                    await msg.channel.send({embeds: [downloadEmbed]})
+                    await this.discord.send(msg, downloadEmbed)
                 } else {
                     const cleanTitle = embeds[0].data.title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
                     const attachment = new AttachmentBuilder(dest, {name: `${cleanTitle}.zip`})
-                    await msg.channel.send({content: `<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, files: [attachment]})
+                    await this.discord.send(msg, `<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
                 }
                 if (rep) rep.delete()
                 Functions.removeDirectory(src)
@@ -184,7 +184,7 @@ export class Embeds {
                 page--
             }
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            if (embed) msg.edit({embeds: [embed]})
+            if (embed) this.discord.edit(msg, embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -195,7 +195,7 @@ export class Embeds {
                 page++
             }
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            if (embed) msg.edit({embeds: [embed]})
+            if (embed) this.discord.edit(msg, embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -207,7 +207,7 @@ export class Embeds {
             }
             if (page < 0) page += embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            if (embed) msg.edit({embeds: [embed]})
+            if (embed) this.discord.edit(msg, embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -219,13 +219,13 @@ export class Embeds {
             }
             if (page > embeds.length - 1) page -= embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            if (embed) msg.edit({embeds: [embed]})
+            if (embed) this.discord.edit(msg, embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
                 setTimeout(() => rep.delete(), 3000)
                 return
             }
@@ -244,11 +244,11 @@ export class Embeds {
                 } else {
                     page = Number(response.content) - 1
                     const embed = await self.updateEmbed(embeds, page, user, msg)
-                    if (embed) msg.edit({embeds: [embed]})
+                    if (embed) this.discord.edit(msg, embed)
                 }
                 await response.delete().catch(() => null)
             }
-            const numReply = await msg.channel.send(`<@${user.id}>, Enter the page number to jump to.`)
+            const numReply = await this.discord.send(msg, `<@${user.id}>, Enter the page number to jump to.`)
             await reaction.users.remove(user).catch(() => null)
             await this.createPrompt(getPageNumber)
             await numReply.delete()
@@ -260,14 +260,14 @@ export class Embeds {
             await reaction.users.remove(user).catch(() => null)
             if (copyOn) return
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
                 setTimeout(() => rep.delete(), 3000)
                 return
             }
             const content = msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "")
             if (!content) return
-            const desc = await msg.channel.send(content)
-            const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
+            const desc = await this.discord.send(msg, content)
+            const rep = await this.discord.send(msg, `<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
             copyOn = true
             await Functions.timeout(10000)
             desc.delete()
@@ -298,7 +298,7 @@ export class Embeds {
                         page++
                     }
                     await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit({embeds: [embeds[page]]})
+                    this.discord.edit(msg, embeds[page])
                     break
             case "left":
                     if (page === 0) {
@@ -307,7 +307,7 @@ export class Embeds {
                         page--
                     }
                     await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit({embeds: [embeds[page]]})
+                    this.discord.edit(msg, embeds[page])
                     break
             case "tripleRight":
                     if (page === embeds.length - 1) {
@@ -316,7 +316,7 @@ export class Embeds {
                         page++
                     }
                     await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit({embeds: [embeds[page]]})
+                    this.discord.edit(msg, embeds[page])
                     break
             case "tripleLeft":
                     if (page === 0) {
@@ -326,10 +326,10 @@ export class Embeds {
                     }
                     if (page < 0) page *= -1
                     await this.updateEmbed(embeds, page, this.message.author!, msg)
-                    msg.edit({embeds: [embeds[page]]})
+                    this.discord.edit(msg, embeds[page])
                     break
             case "numberSelect":
-                    const rep3 = await msg.reply(`The page selection function is disabled on old embeds. However, you can repost it.`)
+                    const rep3 = await this.discord.reply(msg, `The page selection function is disabled on old embeds. However, you can repost it.`)
                     setTimeout(() => rep3.delete(), 3000)
                     break
             case "download":
@@ -339,7 +339,7 @@ export class Embeds {
                             images.push(embeds[i].data.image?.url!)
                         }
                     }
-                    const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
+                    const rep = await this.discord.send(msg, `<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                     const rand = Math.floor(Math.random()*10000)
                     const src = path.join(__dirname, `../assets/misc/images/dump/${rand}/`)
                     const dest = path.join(__dirname, `../assets/misc/images/dump/${rand}.zip`)
@@ -355,23 +355,23 @@ export class Embeds {
                         .setAuthor({name: "download", iconURL: this.discord.checkMuted(msg) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
                         .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
                         .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
-                        await msg.channel.send({embeds: [downloadEmbed]})
+                        await this.discord.send(msg, downloadEmbed)
                     } else {
                         const cleanTitle = embeds[0].data.title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
                         const attachment = new AttachmentBuilder(dest, {name: `${cleanTitle}.zip`})
-                        await msg.channel.send({content: `<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, files: [attachment]})
+                        await this.discord.send(msg, `<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
                     }
                     if (rep) rep.delete()
                     Functions.removeDirectory(src)
                     break
             case "copy":
                     if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
-                        const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
+                        const rep = await this.discord.send(msg, `<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
                         setTimeout(() => rep.delete(), 3000)
                         return
                     }
-                    const desc = await msg.channel.send(msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "") ?? "")
-                    const rep2 = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
+                    const desc = await this.discord.send(msg, msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "") ?? "")
+                    const rep2 = await this.discord.send(msg, `<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
                     await Functions.timeout(10000)
                     desc.delete()
                     rep2.delete()
@@ -381,7 +381,7 @@ export class Embeds {
                         embeds[i].setDescription(description[i])
                         embeds[i].setThumbnail(thumbnail[i]?.url ?? null)
                     }
-                    msg.edit({embeds: [embeds[page]]})
+                    this.discord.edit(msg, embeds[page])
                     break
             default:
         }
@@ -423,7 +423,7 @@ export class Embeds {
                     collapsed = false
                 }
                 const embed = await this.updateEmbed(embeds, page, user)
-                if (embed) msg.edit({embeds: [embed]})
+                if (embed) this.discord.edit(msg, embed)
                 await reaction.users.remove(user).catch(() => null)
             })
         }
@@ -443,7 +443,7 @@ export class Embeds {
                         images.push(embeds[i].data.image?.url!)
                     }
                 }
-                const rep = await msg.channel.send(`<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
                 const src = path.join(__dirname, `../assets/misc/images/dump/${rand}/`)
                 const dest = path.join(__dirname, `../assets/misc/images/dump/${rand}.zip`)
@@ -459,11 +459,11 @@ export class Embeds {
                     .setAuthor({name: "download", iconURL: this.discord.checkMuted(reaction.message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
                     .setTitle(`**Image Download** ${this.discord.getEmoji("chinoSmug")}`)
                     .setDescription(`${this.discord.getEmoji("star")}Downloaded **${downloads.length}** images from this embed. This file is too large for attachments, download it [**here**](${link})`)
-                    await msg.channel.send({embeds: [downloadEmbed]})
+                    await this.discord.send(msg, downloadEmbed)
                 } else {
                     const cleanTitle = embeds[0].data.title?.trim().replace(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/, "").trim() || "None"
                     const attachment = new AttachmentBuilder(dest, {name: `${cleanTitle}.zip`})
-                    await msg.channel.send({content: `<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, files: [attachment]})
+                    await this.discord.send(msg, `<@${user.id}>, downloaded **${downloads.length}** images from this embed.`, attachment)
                 }
                 if (rep) rep.delete()
                 Functions.removeDirectory(src)
@@ -477,7 +477,7 @@ export class Embeds {
                 page--
             }
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            if (embed) msg.edit({embeds: [embed]})
+            if (embed) this.discord.edit(msg, embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -488,7 +488,7 @@ export class Embeds {
                 page++
             }
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            if (embed) msg.edit({embeds: [embed]})
+            if (embed) this.discord.edit(msg, embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -500,7 +500,7 @@ export class Embeds {
             }
             if (page < 0) page += embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            if (embed) msg.edit({embeds: [embed]})
+            if (embed) this.discord.edit(msg, embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
@@ -512,13 +512,13 @@ export class Embeds {
             }
             if (page > embeds.length - 1) page -= embeds.length
             const embed = await this.updateEmbed(embeds, page, user, msg)
-            if (embed) msg.edit({embeds: [embed]})
+            if (embed) this.discord.edit(msg, embed)
             await reaction.users.remove(user).catch(() => null)
         })
 
         numberSelect.on("collect", async (reaction: MessageReaction, user: User) => {
             await reaction.users.remove(user).catch(() => null)
-            const rep3 = await msg.reply(`The page selection function is disabled on old embeds. However, you can repost it.`)
+            const rep3 = await this.discord.reply(msg, `The page selection function is disabled on old embeds. However, you can repost it.`)
             setTimeout(() => rep3.delete(), 3000)
         })
 
@@ -528,14 +528,14 @@ export class Embeds {
             await reaction.users.remove(user).catch(() => null)
             if (copyOn) return
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, The bot needs the permission **Manage Messages** to use this function. ${this.discord.getEmoji("kannaFacepalm")}`)
                 setTimeout(() => rep.delete(), 3000)
                 return
             }
             const content = msg.embeds[0].description?.replace(/(<a:star)(.*?)(>)/g, "")
             if (!content) return
-            const desc = await msg.channel.send(content)
-            const rep = await msg.channel.send(`<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
+            const desc = await this.discord.send(msg, content)
+            const rep = await this.discord.send(msg, `<@${user.id}>, copy the content in this embed (Deleting in **10** seconds).`)
             copyOn = true
             await Functions.timeout(10000)
             desc.delete()
@@ -544,7 +544,7 @@ export class Embeds {
         })
 
         repost.on("collect", async (reaction: MessageReaction, user: User) => {
-            await this.message.channel.send(`<@${user.id}>, I reposted this embed.`)
+            await this.discord.send(this.message, `<@${user.id}>, I reposted this embed.`)
             await this.createReactionEmbed(embeds, true, true)
             await reaction.users.remove(user).catch(() => null)
         })
@@ -611,13 +611,7 @@ export class Embeds {
         const pages = [page1, page2]
         let pageIndex = 0
         if (reactionPage === 2) pageIndex = 1
-        let msg: Message<true>
-        if (this.message instanceof ChatInputCommandInteraction) {
-            // @ts-ignore
-            msg = await this.message.editReply({embeds: [embeds[page]]})
-        } else {
-            msg = await this.message.channel.send({embeds: [embeds[page]]})
-        }
+        let msg = await this.discord.reply(this.message, embeds[page]) as Message<true>
         await SQLQuery.insertInto("collectors", "message", msg.id)
         await this.sql.updateColumn("collectors", "embeds", embeds, "message", msg.id)
         await this.sql.updateColumn("collectors", "collapse", true, "message", msg.id)
@@ -716,14 +710,14 @@ export class Embeds {
                 const curr = filtered.findIndex((e) => e.name === reaction.emoji.name)
                 page = i
                 const embed = await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
-                if (embed) msg.edit({embeds: [embed]})
+                if (embed) this.discord.edit(msg, embed)
                 await reaction.users.remove(user).catch(() => null)
             })
         }
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
                 setTimeout(() => rep.delete(), 5000)
                 return
             }
@@ -736,7 +730,7 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help\` to send the first page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help\` to send the first page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
                 setTimeout(() => rep.delete(), 5000)
                 return
             }
@@ -784,7 +778,7 @@ export class Embeds {
             shortDescription.push(desc)
         }
         let page = emojiMap.indexOf(emoji) || 0
-        msg.edit({embeds: [embeds[page]]})
+        this.discord.edit(msg, embeds[page])
 
         const page1 = [
             this.discord.getEmoji("arrowRight"),
@@ -909,14 +903,14 @@ export class Embeds {
                 const curr = filtered.findIndex((e) => e.name === reaction.emoji.name)
                 page = i
                 const embed = await this.updateEmbed(embeds, page, user, msg, true, curr, commandCount)
-                if (embed) msg.edit({embeds: [embed]})
+                if (embed) this.discord.edit(msg, embed)
                 await reaction.users.remove(user).catch(() => null)
             })
         }
 
         right.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help 2\` to send the second page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
                 setTimeout(() => rep.delete(), 5000)
                 return
             }
@@ -929,7 +923,7 @@ export class Embeds {
 
         left.on("collect", async (reaction: MessageReaction, user: User) => {
             if (!(msg.channel as TextChannel).permissionsFor(msg.guild?.members.me!)?.has("ManageMessages")) {
-                const rep = await msg.channel.send(`<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help\` to send the first page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, The bot needs the permission **Manage Messages** to remove every reaction on this message. You can use \`help\` to send the first page in a new message. ${this.discord.getEmoji("kannaFacepalm")}`)
                 setTimeout(() => rep.delete())
                 return
             }
@@ -963,7 +957,7 @@ export class Embeds {
 
             collector.on("end", async (collector, reason) => {
                 if (reason === "time") {
-                    const time = await this.message.reply(`Ended the prompt because you took too long to answer.`)
+                    const time = await this.discord.reply(this.message, `Ended the prompt because you took too long to answer.`)
                     setTimeout(() => time.delete(), 600000)
                 }
                 resolve()

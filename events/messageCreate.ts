@@ -61,14 +61,14 @@ export default class MessageCreate {
           if (globalChat && !message.content.startsWith(prefix) && !message.author.bot) {
             const globalChannel = message.guild.channels.cache.find((c) => c.id === globalChat)
             if (message.channel.id === globalChannel?.id) {
-              if (globalChatCool.has(message.author.id)) return message.reply(`You hit the rate limit for **global chat**! Wait 3 seconds before trying again. ${this.discord.getEmoji("kannaHungry")}`)
-              if (message.content.length > 300) return message.reply(`There is a limit of 300 characters on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
-              if (message.mentions.users.size) return message.reply(`You can't mention anyone on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
-              if (block.containsInvite()) return message.reply(`You can't post invite links on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
+              if (globalChatCool.has(message.author.id)) return this.discord.reply(message, `You hit the rate limit for **global chat**! Wait 3 seconds before trying again. ${this.discord.getEmoji("kannaHungry")}`)
+              if (message.content.length > 300) return this.discord.reply(message, `There is a limit of 300 characters on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
+              if (message.mentions.users.size) return this.discord.reply(message, `You can't mention anyone on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
+              if (block.containsInvite()) return this.discord.reply(message, `You can't post invite links on the global chat. ${this.discord.getEmoji("sagiriBleh")}`)
               if (message.attachments.first()) message.content = message.attachments.first()!.url
               const cleaned = message.content.replace(/@/g, `@\u200b`)
               const translated = await Functions.googleTranslate(cleaned)
-              if (Functions.badWords(translated, true)) return message.reply(`You can't post messages containing profane or dirty words. ${this.discord.getEmoji("sagiriBleh")}`)
+              if (Functions.badWords(translated, true)) return this.discord.reply(message, `You can't post messages containing profane or dirty words. ${this.discord.getEmoji("sagiriBleh")}`)
               let globalChannels = await SQLQuery.selectColumn("guilds", "global chat")
               globalChannels = globalChannels.filter(Boolean)
               for (let i = 0; i < globalChannels.length; i++) {
@@ -93,14 +93,14 @@ export default class MessageCreate {
           const haikuEmbed = haiku.haiku()
           if (haikuEmbed) {
             if (haikuCool.has(message.author.id) || haikuCool.has(message.guild?.id)) {
-              const reply = await message.channel.send(`<@${message.author.id}>, You hit the rate limit for **haiku**! Please wait 3 seconds before trying again. ${this.discord.getEmoji("kannaHungry")}`)
+              const reply = await this.discord.send(message, `<@${message.author.id}>, You hit the rate limit for **haiku**! Please wait 3 seconds before trying again. ${this.discord.getEmoji("kannaHungry")}`)
               setTimeout(() => reply.delete(), 3000)
               return
             }
             const id = message.guild?.id ?? message.author.id
             haikuCool.add(id)
             setTimeout(() => haikuCool.delete(id), 3000)
-            return message.channel.send({embeds: [haikuEmbed]})
+            return this.discord.send(message, haikuEmbed)
           }
 
           if (!pointCool.get(message.guild.id)?.has(message.author.id)) {
@@ -127,7 +127,7 @@ export default class MessageCreate {
             const response = message.content.trim().toLowerCase()
             if (!message.author!.bot) {
               if (responseTextCool.has(message.author.id) || responseTextCool.has(message.guild?.id)) {
-                const reply = await message.channel.send(`<@${message.author.id}>, You hit the rate limit for **${response}**! Wait 3 seconds before trying again. ${this.discord.getEmoji("kannaHungry")}`)
+                const reply = await this.discord.send(message, `<@${message.author.id}>, You hit the rate limit for **${response}**! Wait 3 seconds before trying again. ${this.discord.getEmoji("kannaHungry")}`)
                 setTimeout(() => {
                   reply.delete()
                   message.delete().catch(() => null)
@@ -145,14 +145,14 @@ export default class MessageCreate {
               } else if (Array.isArray(text)) {
                 text = text.join("")
               }
-              return message.channel.send(text)
+              return this.discord.send(message, text)
             }
           }
           if (responses.image[message.content.trim().toLowerCase()]) {
             const response = message.content.trim().toLowerCase()
             if (!message.author!.bot) {
               if (responseImageCool.has(message.author.id) || responseImageCool.has(message.guild?.id)) {
-                const reply = await message.channel.send(`<@${message.author.id}>, You hit the rate limit for **${response}**! Please wait 10 seconds before trying again.`)
+                const reply = await this.discord.send(message, `<@${message.author.id}>, You hit the rate limit for **${response}**! Please wait 10 seconds before trying again.`)
                 setTimeout(() => {
                   reply.delete()
                   message.delete().catch(() => null)
@@ -162,7 +162,7 @@ export default class MessageCreate {
               const id = message.guild?.id ?? message.author.id
               responseImageCool.add(id)
               setTimeout(() => responseImageCool.delete(id), 10000)
-              return message.channel.send({files: [new AttachmentBuilder(responses.image[response])]})
+              return this.discord.send(message, "", new AttachmentBuilder(responses.image[response]))
             }
          }
         }
@@ -171,7 +171,7 @@ export default class MessageCreate {
           if (args[0]) {
             cmdFunctions.runCommand(message, args)
           } else {
-            message.reply(`My prefix is set to "**${prefix}**"!\n`)
+            this.discord.reply(message, `My prefix is set to "**${prefix}**"!\n`)
           }
         }
         if (!message.content.trim().startsWith(prefix) && message.content.match(/https?:\/\//)) {
@@ -193,7 +193,7 @@ export default class MessageCreate {
 
       if (command.options.guildOnly) {
         // @ts-ignore
-        if (message.channel.type === ChannelType.DM) return message.channel.send(`<@${message.author.id}>, sorry but you can only use this command in guilds. ${this.discord.getEmoji("smugFace")}`)
+        if (message.channel.type === ChannelType.DM) return this.discord.send(message, `<@${message.author.id}>, sorry but you can only use this command in guilds. ${this.discord.getEmoji("smugFace")}`)
       }
 
       if (message.guild && !(message.channel as TextChannel).permissionsFor(message.guild.members.me!)?.has(["SendMessages", "ReadMessageHistory", "AddReactions", "EmbedLinks", "AttachFiles", "UseExternalEmojis", "Connect", "Speak"])) {
@@ -211,22 +211,22 @@ export default class MessageCreate {
         permEmbed
         .setTitle(`**Missing Permissions** ${this.discord.getEmoji("kannaFacepalm")}`)
         .setDescription(permMessage)
-        return setEmbed ? message.channel.send({embeds: [permEmbed]}) : message.channel.send(permMessage)
+        return setEmbed ? this.discord.send(message, permEmbed) : this.discord.send(message, permMessage)
       }
 
       const disabledCategories = await sql.fetchColumn("guilds", "disabled categories")
       if (disabledCategories?.includes(command.category) && cmd !== "help") {
-        return message.reply(`Sorry, commands in the category **${command.category}** were disabled on this server. ${this.discord.getEmoji("mexShrug")}`)
+        return this.discord.reply(message, `Sorry, commands in the category **${command.category}** were disabled on this server. ${this.discord.getEmoji("mexShrug")}`)
       }
 
       sql.usageStatistics(command.path)
       const cooldown = new Cooldown(this.discord, message)
       const onCooldown = cooldown.cmdCooldown(command.name, command.options.cooldown)
-      if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return message.reply({embeds: [onCooldown]})
-      if (command.options.unlist && message.author.id !== process.env.OWNER_ID) return message.reply(`Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
+      if (onCooldown && (message.author?.id !== process.env.OWNER_ID)) return this.discord.reply(message, onCooldown)
+      if (command.options.unlist && message.author.id !== process.env.OWNER_ID) return this.discord.reply(message, `Only the bot developer can use commands not listed on the help command. ${this.discord.getEmoji("sagiriBleh")}`)
 
       this.discord.muted = false
-      const msg = await message.channel.send(`**Loading** ${this.discord.getEmoji("kisaragiCircle")}`) as Message
+      const msg = await this.discord.send(message, `**Loading** ${this.discord.getEmoji("kisaragiCircle")}`) as Message
       this.discord.muted = this.discord.checkMuted(message)
 
       try {
@@ -234,7 +234,7 @@ export default class MessageCreate {
         const msgCheck = message.channel.messages
         if (msgCheck.cache.has(msg.id)) Functions.deferDelete(msg, 1000)
       } catch (err: any) {
-        message.channel.send({embeds: [this.discord.cmdError(message, err)]})
+        this.discord.send(message, this.discord.cmdError(message, err))
       }
     }
   }

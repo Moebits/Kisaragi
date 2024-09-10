@@ -19,6 +19,7 @@ export default class Posterize extends Command {
           `,
           aliases: [],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -50,12 +51,11 @@ export default class Posterize extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
         image.posterize(level)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Applied a posterization effect!`, files: [attachment]})
-        return
+        return this.reply(`Applied a posterization effect!`, attachment)
     }
 }

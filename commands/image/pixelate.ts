@@ -20,6 +20,7 @@ export default class Pixelate extends Command {
           `,
           aliases: ["censor"],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -51,13 +52,12 @@ export default class Pixelate extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         if (!factor) factor = 0
         const image = await jimp.read(url)
         image.pixelate(factor)
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Pixelated the image by a factor of **${factor}**!`, files: [attachment]})
-        return
+        return this.reply(`Pixelated the image by a factor of **${factor}**!`, attachment)
     }
 }

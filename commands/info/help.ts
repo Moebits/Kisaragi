@@ -28,6 +28,7 @@ export default class Help extends Command {
             `,
             aliases: ["h"],
             cooldown: 20,
+            defer: true,
             slashEnabled: true
         })
         const commandOption = new SlashCommandStringOption()
@@ -128,14 +129,13 @@ export default class Help extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        // @ts-ignore
-        if (message instanceof ChatInputCommandInteraction) await message.deferReply()
         
         const categories = [...discord.categories.values()]
         const commands = [...discord.commands.values()]
         const helpEmbedArray: EmbedBuilder[] = []
         if (args[1] && !args[1].startsWith("!") && args[1]?.toLowerCase() !== "dm" && args[1] !== "2") {
-            const helpDir = new (require(path.join(__dirname, "./helpInfo")).default)(this.discord, this.message)
+            const helpDir = discord.commands.get("helpInfo")!
+            helpDir.message = message
             return helpDir.run(args)
         }
         if (args[1]?.toLowerCase() === "dm") {
@@ -169,13 +169,7 @@ export default class Help extends Command {
                 dmEmbeds.push(dmEmbed)
             }
             embeds.createReactionEmbed(dmEmbeds, false, false, 1, message.author)
-            let rep: Message
-            if (message instanceof ChatInputCommandInteraction) {
-                // @ts-ignore
-                rep = await message.editReply(`Sent you the commands list! Make sure you have direct messages enabled, globally and server wide. ${discord.getEmoji("karenSugoi")}`)
-            } else {
-                rep = await message.reply(`Sent you the commands list! Make sure you have direct messages enabled, globally and server wide. ${discord.getEmoji("karenSugoi")}`)
-            }
+            let rep = await this.reply(`Sent you the commands list! Make sure you have direct messages enabled, globally and server wide. ${discord.getEmoji("karenSugoi")}`)
             if (args[2] === "delete") setTimeout(() => rep.delete(), 3000)
             return
         }
@@ -209,12 +203,7 @@ export default class Help extends Command {
             helpEmbedArray.push(helpEmbed)
         }
         if (setIndex > -1) {
-            if (message instanceof ChatInputCommandInteraction) {
-                // @ts-ignore
-                return message.editReply({embeds: [helpEmbedArray[setIndex]]})
-            } else {
-                return message.channel.send({embeds: [helpEmbedArray[setIndex]]})
-            }
+            return this.reply(helpEmbedArray[setIndex])
         } else {
             if (args[1] === "2") {
                 embeds.createHelpEmbed(helpEmbedArray, 2)

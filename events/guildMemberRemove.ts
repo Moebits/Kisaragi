@@ -47,7 +47,7 @@ export default class GuildMemberRemove {
             const newMsg = String(leaveMsg).replace(/user/g, `<@${member.user.id}>`).replace(/guild/g, member.guild.name)
             .replace(/tag/g, member.user.tag).replace(/name/g, member.displayName).replace(/count/g, member.guild.memberCount.toString())
 
-            channel.send({content: newMsg, files: [attachment]})
+            this.discord.channelSend(channel, newMsg, attachment)
         }
 
         leaveMessages()
@@ -65,7 +65,7 @@ export default class GuildMemberRemove {
                 .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
                 .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
                 .setDescription(`${discord.getEmoji("star")}_Successfully banned <@${member.user.id}> for reason:_ **${reason}**`)
-                if (channel) channel.send({embeds: [banEmbed]})
+                if (channel) this.discord.channelSend(channel, banEmbed)
                 banEmbed
                 .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
                 .setDescription(`${discord.getEmoji("star")}_You were banned from ${member.guild.name} for reason:_ **${reason}**`)
@@ -82,7 +82,7 @@ export default class GuildMemberRemove {
                 const modChannel = member.guild?.channels.cache.get(modLog)! as TextChannel
                 const log = await member.guild.fetchAuditLogs({type: AuditLogEvent.MemberKick, limit: 5}).then((l) => l.entries.find((e) => (e.target as User).id === member.id))
                 .catch(async () => {
-                    await modChannel.send(`I need the **View Audit Logs** permission in order to log guild kicks.`).catch(() => null)
+                    await this.discord.channelSend(modChannel, `I need the **View Audit Logs** permission in order to log guild kicks.`).catch(() => null)
                     return
                 }) as GuildAuditLogsEntry
                 if (!log || member.id !== (log?.target as User).id || log.createdTimestamp > calc) return
@@ -109,7 +109,7 @@ export default class GuildMemberRemove {
                     `${discord.getEmoji("star")}_Guild Members:_ **${member.guild.members.cache.size}**\n`
                 )
                 .setFooter({text: `${member.guild.name} • ${Functions.formatDate(member.joinedAt ?? new Date())}`, iconURL: member.guild.iconURL({extension: "png"}) ?? ""})
-                await leaveChannel.send({embeds: [leaveEmbed]}).catch(() => null)
+                await this.discord.channelSend(leaveChannel, leaveEmbed).catch(() => null)
             }
         }
         logLeave(member)

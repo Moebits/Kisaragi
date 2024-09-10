@@ -20,6 +20,7 @@ export default class Rotate extends Command {
           `,
           aliases: [],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -56,13 +57,12 @@ export default class Rotate extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
         image.rotate(degrees)
         image.autocrop()
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Rotated the image **${Number(args[1])}** degrees!`, files: [attachment]})
-        return
+        return this.reply(`Rotated the image **${Number(args[1])}** degrees!`, attachment)
     }
 }

@@ -1,4 +1,4 @@
-import {Message} from "discord.js"
+import {Message, EmbedBuilder, AttachmentBuilder} from "discord.js"
 import {Embeds} from "./Embeds"
 import {Kisaragi} from "./Kisaragi"
 import {Permission} from "./Permission"
@@ -6,6 +6,7 @@ import {SQLQuery} from "./SQLQuery"
 
 export class Block {
     constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
+
     public blockWord = async () => {
         const message = this.message
         const sql = new SQLQuery(message)
@@ -18,16 +19,16 @@ export class Block {
         const match = await sql.fetchColumn("guilds", "block match")
         if (String(match) === "exact") {
             if (words.some((w: string) => w.includes(message.content) || (asterisk ? message.content.match(/\*/g) : false))) {
-                if (!message.guild?.members.me?.permissions.has("ManageMessages")) return message.channel.send("I need the **Manage Messages** permission in order to delete the message with the blocked word.")
-                const reply = await message.reply("Your post was removed because it contained a blocked word.")
+                if (!message.guild?.members.me?.permissions.has("ManageMessages")) return this.discord.send(this.message, "I need the **Manage Messages** permission in order to delete the message with the blocked word.")
+                const reply = await this.discord.reply(this.message, "Your post was removed because it contained a blocked word.")
                 await message.delete()
                 setTimeout(() => reply.delete(), 10000)
             }
         } else {
             for (let i = 0; i < words.length; i++) {
                 if (message.content.includes(words[i]) || (asterisk ? message.content.match(/\*/g) : false)) {
-                    if (!message.guild?.members.me?.permissions.has("ManageMessages")) return message.channel.send("I need the **Manage Messages** permission in order to delete the message with the blocked word.")
-                    const reply = await message.reply("Your post was removed because it contained a blocked word.")
+                    if (!message.guild?.members.me?.permissions.has("ManageMessages")) return this.discord.send(this.message, "I need the **Manage Messages** permission in order to delete the message with the blocked word.")
+                    const reply = await this.discord.reply(this.message, "Your post was removed because it contained a blocked word.")
                     await message.delete()
                     setTimeout(() => reply.delete(), 10000)
                 }
@@ -56,7 +57,7 @@ export class Block {
                 // Do nothing
             }
             if (del) {
-                const reply = await message.reply("Your post was removed because it contained an invite to another server.")
+                const reply = await this.discord.reply(this.message, "Your post was removed because it contained an invite to another server.")
                 await message.delete()
                 setTimeout(() => reply.delete(), 10000)
             }
@@ -106,10 +107,10 @@ export class Block {
         if (gallery.includes(message.channel.id)) {
             try {
                 await message.delete()
-                const rep = await message.reply(`This is a gallery channel, you can only post images here!`)
+                const rep = await this.discord.reply(this.message, `This is a gallery channel, you can only post images here!`)
                 setTimeout(() => rep.delete(), 3000)
             } catch {
-                return message.channel.send(`I need the **Manage Messages** permission to delete text messages in gallery channels ${this.discord.getEmoji("kannaFacepalm")}`)
+                return this.discord.send(this.message, `I need the **Manage Messages** permission to delete text messages in gallery channels ${this.discord.getEmoji("kannaFacepalm")}`)
             }
         }
     }

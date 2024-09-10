@@ -4,6 +4,8 @@ import fs from "fs"
 import path from "path"
 
 const discord = new Kisaragi({intents: []})
+// @ts-ignore
+discord.getEmoji = () => null
 
 const guild = Reflect.construct(Guild,  [discord, {
         unavailable: false,

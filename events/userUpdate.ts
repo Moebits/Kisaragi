@@ -40,7 +40,7 @@ export default class UserUpdate {
                         `${discord.getEmoji("star")}_New Username:_ **${newUser.username}**\n`
                     )
                     .setFooter({text: `${guild.name} • ${Functions.formatDate(new Date())}`, iconURL: guild.iconURL({extension: "png"}) ?? ""})
-                    await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
+                    await this.discord.channelSend(memberChannel, logEmbed).catch(() => null)
                 }
             }
             if (setUsername) logUsername(oldUser, newUser)
@@ -62,7 +62,7 @@ export default class UserUpdate {
                         `${discord.getEmoji("star")}_New Avatar:_ [**Link**](${newUser.displayAvatarURL({extension: "png"})})\n`
                     )
                     .setFooter({text: `${guild.name} • ${Functions.formatDate(new Date())}`, iconURL: guild.iconURL({extension: "png"}) ?? ""})
-                    await memberChannel.send({embeds: [logEmbed]}).catch(() => null)
+                    await this.discord.channelSend(memberChannel, logEmbed).catch(() => null)
                 }
             }
             if (setAvatar) logAvatar(oldUser, newUser)

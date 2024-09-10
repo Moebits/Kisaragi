@@ -1,6 +1,6 @@
 import axios from "axios"
 import child_process from "child_process"
-import {Message, AttachmentBuilder} from "discord.js"
+import {Message, AttachmentBuilder, EmbedBuilder} from "discord.js"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs"
 import path from "path"
@@ -76,7 +76,7 @@ export class AudioEffects {
             .setDescription(
                 `${this.discord.getEmoji("star")}This audio file is too large for attachments. Download it [**here**](${link}).\n`
             )
-            return this.message.channel.send({embeds: [effectEmbed]})
+            return this.discord.send(this.message, effectEmbed)
         } else {
             const attachName = path.basename(fileDest)
             const attachment = new AttachmentBuilder(path.join(__dirname, fileDest), {name: `${attachName}`})
@@ -87,8 +87,7 @@ export class AudioEffects {
             .setDescription(
                 `${this.discord.getEmoji("star")}Applied the **${effect}** effect to this mp3 file!\n`
             )
-            await this.message.channel.send({embeds: [effectEmbed]})
-            return this.message.channel.send({files: [attachment]})
+            return this.discord.send(this.message, effectEmbed, attachment)
         }
     }
 

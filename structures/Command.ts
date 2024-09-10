@@ -1,4 +1,5 @@
-import {Message, EmbedBuilder, SlashCommandSubcommandBuilder, RESTPostAPIChatInputApplicationCommandsJSONBody, AttachmentBuilder} from "discord.js"
+import {Message, EmbedBuilder, ChatInputCommandInteraction, SlashCommandSubcommandBuilder, 
+RESTPostAPIChatInputApplicationCommandsJSONBody, AttachmentBuilder, Collection} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
 
 interface CommandOptions {
@@ -15,6 +16,7 @@ interface CommandOptions {
   random: "none" | "string" | "specific" | "ignore"
   unlist: boolean
   nsfw: boolean
+  defer: boolean
   slashEnabled: boolean
   subcommandEnabled: boolean
 }
@@ -41,13 +43,14 @@ export class Command {
       random = "ignore" as "none" | "string" | "specific" | "ignore",
       unlist = false,
       nsfw = false,
+      defer = false,
       slashEnabled = false,
       subcommandEnabled = false
     }) {
       this.name = ""
       this.category = ""
       this.path = ""
-      this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, random, unlist, nsfw, slashEnabled, subcommandEnabled}
+      this.options = {params, description, help, examples, enabled, guildOnly, aliases, cooldown, permission, botPermission, random, unlist, nsfw, defer, slashEnabled, subcommandEnabled}
       this.slash = null as unknown as RESTPostAPIChatInputApplicationCommandsJSONBody
       this.subcommand = null as unknown as SlashCommandSubcommandBuilder
     }
@@ -59,36 +62,19 @@ export class Command {
   public run = async (args: string[]): Promise<void | Message> => {}
 
   public reply = (embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-    let options = {} as any
-    if (embed instanceof EmbedBuilder) {
-      options.embeds = [embed]
-    } else if (typeof embed === "string") {
-      options.content = embed
-    }
-    if (file) options.file = [file]
-    return this.message.reply(options)
+    return this.discord.reply(this.message, embed, file)
   }
 
   public send = (embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-    let options = {} as any
-    if (embed instanceof EmbedBuilder) {
-      options.embeds = [embed]
-    } else if (typeof embed === "string") {
-      options.content = embed
-    }
-    if (file) options.file = [file]
-    return this.message.channel.send(options)
+    return this.discord.send(this.message, embed, file)
   }
 
   public edit = (msg: Message, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-    let options = {} as any
-    if (embed instanceof EmbedBuilder) {
-      options.embeds = [embed]
-    } else if (typeof embed === "string") {
-      options.content = embed
-    }
-    if (file) options.file = [file]
-    return msg.edit(options)
+    return this.discord.edit(msg, embed, file)
+  }
+
+  public deferReply = (interaction?: ChatInputCommandInteraction) => {
+    return this.discord.deferReply(interaction ? interaction : this.message as any)
   }
 
   public noQuery = (embed: EmbedBuilder, text?: string) => {

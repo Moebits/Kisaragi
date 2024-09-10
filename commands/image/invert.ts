@@ -19,6 +19,7 @@ export default class Invert extends Command {
           `,
           aliases: [],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -37,17 +38,16 @@ export default class Invert extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         let url: string | undefined
-        if (args[2]) {
-            url = args[2]
+        if (args[1]) {
+            url = args[1]
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
         image.invert()
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Inverted the colors!`, files: [attachment]})
-        return
+        return this.reply(`Inverted the colors!`, attachment)
     }
 }

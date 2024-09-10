@@ -359,7 +359,18 @@ export class Images {
                 if (persist) {
                     result = await catbox.uploadURL({url: files[i]})
                 } else {
-                    result = await litterbox.upload({path: files[i], duration: "72h"})
+                    const tempFolder = path.join(__dirname, "../assets/misc/images/dump")
+                    if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder, {recursive: true})
+                    const arrayBuffer = await fetch(files[i]).then((r) => r.arrayBuffer())
+                    let temp = path.join(tempFolder, "temp.png")
+                    let j = 1
+                    while (fs.existsSync(temp)) {
+                        temp = path.join(tempFolder, `temp${j}.png`)
+                        j++
+                    }
+                    fs.writeFileSync(temp, Buffer.from(arrayBuffer))
+                    result = await litterbox.upload({path: temp, duration: "72h"})
+                    fs.unlinkSync(temp)
                 }
                 links.push(result)
             } else {

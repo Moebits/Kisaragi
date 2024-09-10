@@ -21,6 +21,7 @@ export default class Saturation extends Command {
           `,
           aliases: ["saturate", "desaturate"],
           cooldown: 10,
+          defer: true,
           subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -57,7 +58,7 @@ export default class Saturation extends Command {
         } else {
             url = await discord.fetchLastAttachment(message)
         }
-        if (!url) return message.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find an image ${discord.getEmoji("kannaCurious")}`)
         const image = await jimp.read(url)
         if (setDesaturate) {
             // @ts-ignore
@@ -68,7 +69,6 @@ export default class Saturation extends Command {
         }
         const buffer = await image.getBufferAsync(jimp.MIME_PNG)
         const attachment = new AttachmentBuilder(buffer)
-        await message.reply({content: `Changed the saturation of the image!`, files: [attachment]})
-        return
+        return this.reply(`Changed the saturation of the image!`, attachment)
     }
 }

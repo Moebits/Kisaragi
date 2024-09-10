@@ -33,6 +33,7 @@ export default class Play extends Command {
             guildOnly: true,
             aliases: ["pl", "stream"],
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const thirdOption = new SlashCommandOption()
@@ -66,8 +67,6 @@ export default class Play extends Command {
         const perms = new Permission(discord, message)
         if (!message.guild) return
         if (!audio.checkMusicPermissions()) return
-        // @ts-ignore
-        if (message instanceof ChatInputCommandInteraction) await message.deferReply()
 
         let voiceChannel = message.member?.voice.channel
         let connection = getVoiceConnection(message.guild!.id)
@@ -76,10 +75,10 @@ export default class Play extends Command {
             try {
                 connection = joinVoiceChannel({channelId: voiceChannel.id, guildId: message.guild.id, adapterCreator: message.guild.voiceAdapterCreator, selfDeaf: false})
             } catch {
-                return message.reply(`I need the **Connect** permission to connect to this channel. ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Connect** permission to connect to this channel. ${discord.getEmoji("kannaFacepalm")}`)
             }
         } else if (!message.member?.voice.channel) {
-            return message.reply(`You must join a voice channel first. How will you listen to the song ${discord.getEmoji("kannaFacepalm")}`)
+            return this.reply(`You must join a voice channel first. How will you listen to the song ${discord.getEmoji("kannaFacepalm")}`)
         }
 
         const loading = message.channel.lastMessage
@@ -131,28 +130,23 @@ export default class Play extends Command {
             }
             if (setYT) {
                 const link = await audio.songPickerYT(song, setFirst)
-                if (!link) return message.reply("No results were found for your query!")
+                if (!link) return this.reply("No results were found for your query!")
                 song = link
                 file = await audio.download(link)
                 queueEmbed = await audio.queueAdd(link, file)
             } else {
                 const link = await audio.songPickerSC(song, setFirst)
-                if (!link) return message.reply("No results were found for your query!")
+                if (!link) return this.reply("No results were found for your query!")
                 song = link
                 file = await audio.download(link, song)
                 queueEmbed = await audio.queueAdd(link, file)
             }
         }
-        if (message instanceof ChatInputCommandInteraction) {
-            // @ts-ignore
-            await message.editReply({embeds: [queueEmbed]})
-        } else {
-            await message.channel.send({embeds: [queueEmbed]})
-        }
+        await this.reply(queueEmbed)
         queue = audio.getQueue()
         const settings = audio.getSettings() as any
         if (setLoop) settings[0].looping = true
-        if (loading) await loading?.delete()
+        if (message instanceof Message) if (loading) await loading?.delete()
         if (queue.length === 1 && !queue[0].playing) {
             const next = audio.next()!
             if (setReverse) {
@@ -161,7 +155,7 @@ export default class Play extends Command {
                 await audio.play(next)
             }
             const nowPlaying = await audio.nowPlaying()
-            if (nowPlaying) await message.channel.send(nowPlaying)
+            if (nowPlaying) await this.send(nowPlaying)
         }
     }
 }

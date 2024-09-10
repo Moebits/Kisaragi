@@ -26,6 +26,7 @@ export default class Waifu2x extends Command {
             `,
             aliases: ["2x"],
             cooldown: 30,
+            defer: true,
             subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -79,7 +80,7 @@ export default class Waifu2x extends Command {
 
         if (!lastAttachment) {
             lastAttachment = await discord.fetchLastAttachment(message) as string
-            if (!lastAttachment) return message.reply("You must post an image first!")
+            if (!lastAttachment) return this.reply("You must post an image first!")
         }
 
         const folder =  path.join(__dirname, `../../assets/misc/images/waifu2x`)
@@ -113,6 +114,6 @@ export default class Waifu2x extends Command {
         .setAuthor({name: "waifu2x", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9hWZ1ptE9IrNWOUqHzcf9OFD7RMMQEXeUwqpE3zCMB8PWD8Caeg"})
         .setTitle(`**Waifu 2x Upscaling** ${discord.getEmoji("gabYes")}`)
         .setImage("attachment://upscaled.png")
-        return message.channel.send({embeds: [waifuEmbed], files: [attachment]})
+        return this.reply(waifuEmbed, attachment)
     }
 }
