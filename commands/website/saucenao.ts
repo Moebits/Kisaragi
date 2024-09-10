@@ -1,5 +1,5 @@
 import {Message, User} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import Sagiri from "sagiri"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"

@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -21,8 +21,18 @@ export default class Hastebin extends Command {
             \`=>hastebin insert code\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const textOption = new SlashCommandOption()
+            .setType("string")
+            .setName("text")
+            .setDescription("The text to upload, or use last posted text file.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(textOption)
     }
 
     public run = async (args: string[]) => {

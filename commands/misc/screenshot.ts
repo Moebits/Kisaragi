@@ -1,5 +1,5 @@
-import {Message, AttachmentBuilder, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, AttachmentBuilder} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -25,22 +25,23 @@ export default class Screenshot extends Command {
             `,
           aliases: ["screencap"],
           cooldown: 15,
-          slashEnabled: true
+          subcommandEnabled: true
         })
-        const url2Option = new SlashCommandStringOption()
-          .setName("url2")
-          .setDescription("The url to screencap if you specified mobile.")
+        const url2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("url2")
+            .setDescription("The url to screencap if you specified mobile.")
 
-        const urlOption = new SlashCommandStringOption()
-          .setName("url")
-          .setDescription("The url to screencap or mobile for a mobile screenshot.")
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("The url to screencap or mobile for a mobile screenshot.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
           .setName(this.constructor.name.toLowerCase())
           .setDescription(this.options.description)
-          .addStringOption(urlOption)
-          .addStringOption(url2Option)
-          .toJSON()
+          .addOption(urlOption)
+          .addOption(url2Option)
     }
 
     public run = async (args: string[]) => {

@@ -1,5 +1,5 @@
 import type {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import TwitchClient from "twitch"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"

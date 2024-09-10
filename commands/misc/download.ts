@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder, TextChannel} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -29,8 +29,29 @@ export default class Download extends Command {
             `,
             aliases: ["dl"],
             cooldown: 10,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const num3Option = new SlashCommandOption()
+            .setType("string")
+            .setName("num3")
+            .setDescription("The last chance to enter number of images.")
+
+        const num2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("num2")
+            .setDescription("Can be the number of images or gif.")
+
+        const numOption = new SlashCommandOption()
+            .setType("string")
+            .setName("num")
+            .setDescription("Can be the number of images or gif/a message id.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(numOption)
+            .addOption(num2Option)
+            .addOption(num3Option)
     }
 
     public sendDownload = async (name: string, images: string[], last?: string | null) => {

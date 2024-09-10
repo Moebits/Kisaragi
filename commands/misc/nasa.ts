@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
@@ -25,8 +25,18 @@ export default class Nasa extends Command {
             `,
             aliases: ["space", "apod"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const dateOption = new SlashCommandOption()
+            .setType("string")
+            .setName("date")
+            .setDescription("Can be an optional date or today.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(dateOption)
     }
 
     public run = async (args: string[]) => {

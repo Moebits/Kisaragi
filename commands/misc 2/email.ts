@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import nodemailer from "nodemailer"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -10,11 +10,11 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class Email extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
-            description: "Sends you or someone an email address with text content/attachment. **Requires oauth2**",
+            description: "Sends you an email with text content/attachment. **Requires oauth2**",
             help:
             `
             _Note: If no link is provided, the attachment on the last message is sent (if any)._
-            \`email @user? content? link?\` - Sends you an email address with the content and link
+            \`email content? link?\` - Sends you an email with the content and link
             `,
             examples:
             `
@@ -22,8 +22,23 @@ export default class Email extends Command {
             `,
             aliases: ["gmail", "mail"],
             cooldown: 3,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const linkOption = new SlashCommandOption()
+            .setType("string")
+            .setName("link")
+            .setDescription("The link of the email attachment.")
+
+        const contentOption = new SlashCommandOption()
+            .setType("string")
+            .setName("content")
+            .setDescription("The content of the email.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(contentOption)
+            .addOption(linkOption)
     }
 
     public run = async (args: string[]) => {
@@ -32,7 +47,6 @@ export default class Email extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         let id = message.author.id
-        if (message.mentions.users.size) id = message.mentions.users.first()!.id
         const email = await sql.fetchColumn("oauth2", "email", "user id", id)
         if (!email) return message.reply(`You need to give me additional oauth2 permissions. See the **oauth2** command.`)
 

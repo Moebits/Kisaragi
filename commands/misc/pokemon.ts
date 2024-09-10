@@ -1,5 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -11,7 +11,7 @@ export default class Pokemon extends Command {
             description: "Gets information on a pokemon.",
             help:
             `
-            \`pokemon\` - Posts info on a pokemon
+            \`pokemon query\` - Posts info on a pokemon
             `,
             examples:
             `
@@ -19,8 +19,19 @@ export default class Pokemon extends Command {
             `,
             aliases: ["pokedex"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("The pokemon to search.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
     }
 
     public getInfo = (result: any, image: string) => {

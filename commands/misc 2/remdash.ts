@@ -1,5 +1,5 @@
 import {GuildBasedChannel, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
@@ -8,12 +8,31 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Remdash extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
-            description: "Removes dashes from channel names (disabled).",
+            description: "Removes dashes from channel names.",
+            help:
+            `
+            \`remdash\` - Removes dashes
+            \`remdash add\` - Adds dashes
+            `,
+            examples:
+            `
+            \`=>remdash\`
+            \`=>remdash add\`
+            `,
             aliases: ["delhyphen"],
             guildOnly: true,
             cooldown: 5,
-            unlist: true
+            subcommandEnabled: true
         })
+        const addOption = new SlashCommandOption()
+            .setType("string")
+            .setName("add")
+            .setDescription("Set to add to add dashes.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(addOption)
     }
 
     public run = async (args: string[]) => {
@@ -21,23 +40,34 @@ export default class Remdash extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        //return message.reply("This command no longer works, it is disabled! (Discord patched unicode spaces in channel names.)")
         if (!await perms.checkMod()) return
         const remEmbed = embeds.createEmbed()
         const nameArray = message.guild!.channels.cache.map((c: GuildBasedChannel) => c.name)
         const idArray = message.guild!.channels.cache.map((c: GuildBasedChannel) => c.id)
-        for (let i = 0; i < nameArray.length; i++) {
-            if (nameArray[i].includes("-")) {
-                const newName = nameArray[i].replace(/-/g, "\u2005")
-                const channel = message.guild!.channels.cache.find((c: GuildBasedChannel) => c.id === idArray[i])
-                await channel!.setName(newName)
+        if (args[1] === "add") {
+            for (let i = 0; i < nameArray.length; i++) {
+                if (nameArray[i].includes("﹒")) {
+                    const newName = nameArray[i].replace(/﹒/g, "-")
+                    const channel = message.guild!.channels.cache.find((c: GuildBasedChannel) => c.id === idArray[i])
+                    await channel!.setName(newName)
+                }
             }
+            remEmbed
+            .setTitle(`**Adddash** ${discord.getEmoji("kannaXD")}`)
+            .setDescription("Added dashes to the channel names!")
+            return message.channel.send({embeds: [remEmbed]})
+        } else {
+            for (let i = 0; i < nameArray.length; i++) {
+                if (nameArray[i].includes("-")) {
+                    const newName = nameArray[i].replace(/-/g, "﹒")
+                    const channel = message.guild!.channels.cache.find((c: GuildBasedChannel) => c.id === idArray[i])
+                    await channel!.setName(newName)
+                }
+            }
+            remEmbed
+            .setTitle(`**Remdash** ${discord.getEmoji("kannaXD")}`)
+            .setDescription("Removed dashes from all channel names!")
+            return message.channel.send({embeds: [remEmbed]})
         }
-        remEmbed
-        .setTitle(`**Remdash** ${discord.getEmoji("kannaXD")}`)
-        .setDescription("Removed dashes from all channel names!")
-        message.channel.send({embeds: [remEmbed]})
-        return
-
     }
 }

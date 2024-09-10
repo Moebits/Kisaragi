@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -19,8 +19,18 @@ export default class Shorten extends Command {
             \`=>shorten https://www.youtube.com/\`
             `,
             aliases: [],
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("The url to shorten.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(urlOption)
     }
 
     public run = async (args: string[]) => {

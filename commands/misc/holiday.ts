@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -24,8 +24,17 @@ export default class Holiday extends Command {
             aliases: [],
             random: "none",
             cooldown: 10,
-            unlist: true
+            subcommandEnabled: true
         })
+        const dateOption = new SlashCommandOption()
+            .setType("string")
+            .setName("date")
+            .setDescription("Can be an optional date.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(dateOption)
     }
 
     public run = async (args: string[]) => {

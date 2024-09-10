@@ -1,5 +1,5 @@
 import {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {breach, breaches} from "hibp"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,8 +22,18 @@ export default class Pwned extends Command {
             `,
             aliases: ["haveibeenpwned"],
             random: "none",
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const textOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Search for a breach.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(textOption)
     }
 
     public run = async (args: string[]) => {

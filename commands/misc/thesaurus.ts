@@ -1,12 +1,11 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-
-const {CollegiateThesaurus} = require("mw-dict")
+import {CollegiateThesaurus} from "mw-dict"
 
 export default class Thesaurus extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -23,8 +22,17 @@ export default class Thesaurus extends Command {
             aliases: ["synonym"],
             random: "string",
             cooldown: 10,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const wordOption = new SlashCommandOption()
+            .setType("string")
+            .setName("word")
+            .setDescription("The word to search in the thesaurus.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(wordOption)
     }
 
     public run = async (args: string[]) => {

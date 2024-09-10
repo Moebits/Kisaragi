@@ -1,5 +1,5 @@
 import DeviantArt, {DeviantArtSearchResults, DeviationRSS, DeviationRSSExtended} from "deviantart.ts"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import type {Message, EmbedBuilder} from "discord.js"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"

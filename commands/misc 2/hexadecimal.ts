@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -19,8 +19,19 @@ export default class Hexadecimal extends Command {
             \`=>hexadecimal hi\`
             `,
             aliases: ["hex"],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const textOption = new SlashCommandOption()
+            .setType("string")
+            .setName("text")
+            .setDescription("Hex or decimal number. Add decode to decode hex to decimal.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(textOption)
     }
 
     public run = async (args: string[]) => {

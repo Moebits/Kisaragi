@@ -1,5 +1,5 @@
 import {Message, SnowflakeUtil} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -21,8 +21,18 @@ export default class Snowflake extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const flakeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("flake")
+            .setDescription("Can be a snowflake or date.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(flakeOption)
     }
 
     public run = async (args: string[]) => {

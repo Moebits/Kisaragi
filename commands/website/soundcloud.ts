@@ -1,5 +1,5 @@
 import {Message, AttachmentBuilder, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import Soundcloud from "soundcloud.ts"
 import {Command} from "../../structures/Command"

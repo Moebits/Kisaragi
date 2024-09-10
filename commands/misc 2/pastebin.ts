@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -22,8 +22,24 @@ export default class Pastebin extends Command {
             \`=>pastebin [some code]\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const textOption = new SlashCommandOption()
+            .setType("string")
+            .setName("text")
+            .setDescription("Pastebin text.")
+
+        const titleOption = new SlashCommandOption()
+            .setType("string")
+            .setName("title")
+            .setDescription("Can be the [title]. Add public to post publicly.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(titleOption)
+            .addOption(textOption)
     }
 
     public run = async (args: string[]) => {

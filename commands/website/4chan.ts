@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Message, EmbedBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -31,8 +31,29 @@ export default class $4chan extends Command {
             `,
             aliases: ["4", "4ch"],
             cooldown: 15,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const query2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("query2")
+            .setDescription("Last chance to input the query.")
+
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query or board.")
+
+        const boardOption = new SlashCommandOption()
+            .setType("string")
+            .setName("board")
+            .setDescription("Can be a board or images.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(boardOption)
+            .addOption(queryOption)
+            .addOption(query2Option)
     }
 
     public nsfwBoards = (board: string) => {

@@ -1,10 +1,7 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
-import fs from "fs"
-import path from "path"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
@@ -24,8 +21,18 @@ export default class JSONCommand extends Command {
             \`=>json\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const embedOption = new SlashCommandOption()
+            .setType("string")
+            .setName("embed")
+            .setDescription("Can be embed or an id")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName("json")
+            .setDescription(this.options.description)
+            .addOption(embedOption)
     }
 
     public getEmbed = async (msg: Message) => {

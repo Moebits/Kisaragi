@@ -1,12 +1,11 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-
-const {CollegiateDictionary} = require("mw-dict")
+import {CollegiateDictionary} from "mw-dict"
 
 export default class Define extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -22,8 +21,18 @@ export default class Define extends Command {
             `,
             aliases: ["def", "definition", "word", "dictionary"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const wordOption = new SlashCommandOption()
+            .setType("string")
+            .setName("word")
+            .setDescription("The word to define.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(wordOption)
     }
 
     public run = async (args: string[]) => {

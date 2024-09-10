@@ -1,6 +1,6 @@
 import axios from "axios"
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -19,8 +19,19 @@ export default class Time extends Command {
             \`=>time new york\`
             `,
             aliases: ["clock"],
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const cityOption = new SlashCommandOption()
+            .setType("string")
+            .setName("city")
+            .setDescription("The city or country.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(cityOption)
     }
 
     public run = async (args: string[]) => {

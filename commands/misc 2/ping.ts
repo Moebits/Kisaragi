@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
@@ -19,12 +19,11 @@ export default class Ping extends Command {
           aliases: [],
           random: "none",
           cooldown: 3,
-          slashEnabled: true
+          subcommandEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
           .setName(this.constructor.name.toLowerCase())
           .setDescription(this.options.description)
-          .toJSON()
     }
 
     public run = async (args: string[]) => {
@@ -34,10 +33,9 @@ export default class Ping extends Command {
 
         const pingEmbed = embeds.createEmbed()
 
-        const msg = await message.reply({embeds: [pingEmbed
-        .setDescription("Ping?")]}) as Message
-        msg.edit({embeds: [pingEmbed
-        .setTitle(`**Ping** ${discord.getEmoji("kannaHungry")}`)
-        .setDescription(`Ping is **${msg.createdTimestamp - message.createdTimestamp}ms**`)]})
+        const msg = await this.reply(pingEmbed.setDescription("Ping?"))
+        this.edit(msg, pingEmbed
+          .setTitle(`**Ping** ${discord.getEmoji("kannaHungry")}`)
+          .setDescription(`Ping is **${msg.createdTimestamp - message.createdTimestamp}ms**`))
     }
   }

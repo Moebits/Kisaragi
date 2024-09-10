@@ -1,6 +1,6 @@
-import {Message, SlashCommandBuilder, SlashCommandStringOption} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
-import * as math from "mathjs"
+import {Message} from "discord.js"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
+import math from "mathjs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
@@ -20,17 +20,17 @@ export default class Calc extends Command {
             `,
             aliases: [],
             cooldown: 3,
-            slashEnabled: true
+            subcommandEnabled: true
         })
-        const expressionOption = new SlashCommandStringOption()
+        const expressionOption = new SlashCommandOption()
+            .setType("string")
             .setName("expression")
             .setDescription("Math expression to evaluate.")
 
-        this.slash = new SlashCommandBuilder()
+        this.subcommand = new SlashCommandSubcommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(expressionOption)
-            .toJSON()
+            .addOption(expressionOption)
     }
 
     public run = async (args: string[]) => {
@@ -49,6 +49,5 @@ export default class Calc extends Command {
         .setTitle(`**Math Calculation** ${discord.getEmoji("vigneDead")}`)
         .setDescription(result)
         return message.reply({embeds: [calcEmbed]})
-
     }
 }
