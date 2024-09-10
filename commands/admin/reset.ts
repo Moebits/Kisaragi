@@ -20,8 +20,12 @@ export default class Captcha extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

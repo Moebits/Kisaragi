@@ -30,8 +30,18 @@ export default class Mod extends Command {
             `,
             aliases: ["moderation"],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Check help for all settings.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
     }
 
     public run = async (args: string[]) => {

@@ -26,8 +26,24 @@ export default class Starboard extends Command {
             aliases: [],
             guildOnly: true,
             botPermission: "MANAGE_WEBHOOKS",
-            cooldown: 15
+            cooldown: 15,
+            subcommandEnabled: true
         })
+        const numOption = new SlashCommandOption()
+            .setType("string")
+            .setName("threshold")
+            .setDescription("Sets the star threshold.")
+
+        const channelOption = new SlashCommandOption()
+            .setType("string")
+            .setName("channel")
+            .setDescription("Can be #channel or reset.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(channelOption)
+            .addOption(numOption)
     }
 
     public run = async (args: string[]) => {

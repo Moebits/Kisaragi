@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "../../structures/Embeds"
@@ -7,7 +7,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
 
-export default class Clean extends Command {
+export default class Blacklist extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Blacklists a user or entire guild.",
@@ -24,8 +24,31 @@ export default class Clean extends Command {
             `,
             aliases: [],
             cooldown: 3,
-            botdev: true
+            botdev: true,
+            subcommandEnabled: true
         })
+        const reason2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("reason2")
+            .setDescription("Last chance to type reason.")
+
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("Can be a reason or id.")
+
+        const idOption = new SlashCommandOption()
+            .setType("string")
+            .setName("id")
+            .setDescription("Can be an id/user/guild.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(idOption)
+            .addOption(reasonOption)
+            .addOption(reason2Option)
     }
 
     public run = async (args: string[]) => {

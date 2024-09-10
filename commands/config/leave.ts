@@ -32,8 +32,17 @@ export default class Leave extends Command {
             guildOnly: true,
             aliases: ["farewell"],
             cooldown: 10,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Check help for all the options or reset.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
     }
 
     public run = async (args: string[]) => {

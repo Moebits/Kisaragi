@@ -25,8 +25,18 @@ export default class Oauth2 extends Command {
             `,
             guildOnly: true,
             aliases: ["authorize", "discordoauth"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const revokeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("revoke")
+            .setDescription("Type revoke to delete your token.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(revokeOption)
     }
 
     public run = async (args: string[]) => {

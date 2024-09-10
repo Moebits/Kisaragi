@@ -25,8 +25,30 @@ export default class EmojiRoles extends Command {
             `,
             aliases: ["er", "eroles"],
             guildOnly: true,
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const editOption = new SlashCommandOption()
+            .setType("string")
+            .setName("edit")
+            .setDescription("Setting input in the edit subcommand.")
+
+        const settingOption = new SlashCommandOption()
+            .setType("string")
+            .setName("setting")
+            .setDescription("Can be a setting number.")
+
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be delete/edit/reset or setting input.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
+            .addOption(settingOption)
+            .addOption(editOption)
     }
 
     public run = async (args: string[]) => {

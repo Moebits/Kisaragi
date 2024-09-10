@@ -23,13 +23,35 @@ export default class TwitchNotify extends Command {
             examples:
             `
             \`=>twitchnotify\`
-            \`=>twitchnotify imtenpi #updates\`
+            \`=>twitchnotify channel #updates\`
             `,
             aliases: ["twitchnotification", "twitchnotifications"],
             botPermission: "MANAGE_WEBHOOKS",
             guildOnly: true,
-            cooldown: 15
+            cooldown: 15,
+            subcommandEnabled: true
         })
+        const editOption = new SlashCommandOption()
+            .setType("string")
+            .setName("edit")
+            .setDescription("Setting input in the edit subcommand.")
+
+        const settingOption = new SlashCommandOption()
+            .setType("string")
+            .setName("setting")
+            .setDescription("Can be a setting number.")
+
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be delete/edit/reset or setting input.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
+            .addOption(settingOption)
+            .addOption(editOption)
     }
 
     public getTwitch = async (channels: string[], reset?: boolean) => {

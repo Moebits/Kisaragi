@@ -23,8 +23,19 @@ export default class DeleteCase extends Command {
             `,
             aliases: ["delcase"],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const caseOption = new SlashCommandOption()
+            .setType("string")
+            .setName("case")
+            .setDescription("Can be a case/all.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(caseOption)
     }
 
     public run = async (args: string[]) => {

@@ -27,13 +27,35 @@ export default class YTNotify extends Command {
             examples:
             `
             \`=>ytnotify\`
-            \`=>ytnotify tenpi #updates\`
+            \`=>ytnotify channel #updates\`
             `,
             aliases: ["ytnotification", "ytnotifications"],
             botPermission: "MANAGE_WEBHOOKS",
             guildOnly: true,
-            cooldown: 15
+            cooldown: 15,
+            subcommandEnabled: true
         })
+        const editOption = new SlashCommandOption()
+            .setType("string")
+            .setName("edit")
+            .setDescription("Can be @role to change role mention..")
+
+        const settingOption = new SlashCommandOption()
+            .setType("string")
+            .setName("setting")
+            .setDescription("Can be a setting number.")
+
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be delete/edit/reset or setting input.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
+            .addOption(settingOption)
+            .addOption(editOption)
     }
 
     public getName = async (channel: string) => {

@@ -24,8 +24,31 @@ export default class Remove extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("Optional reason for removal.")
+
+        const nameOption = new SlashCommandOption()
+            .setType("string")
+            .setName("name")
+            .setDescription("Name or id.")
+
+        const typeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("type")
+            .setDescription("Can be channel/role/emoji.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(typeOption)
+            .addOption(nameOption)
+            .addOption(reasonOption)
     }
 
     public run = async (args: string[]) => {

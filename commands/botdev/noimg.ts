@@ -1,5 +1,5 @@
 import {EmbedBuilder, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import {Command} from "../../structures/Command"
@@ -9,14 +9,27 @@ import {SQLQuery} from "../../structures/SQLQuery"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
-export default class NoIMG extends Command {
+export default class NoImg extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Lists all commands with no image.",
+            help:
+            `
+            \`noimg\` - Show noimg commands
+            \`unlist\` - Show unlisted commands
+            `,
+            examples:
+            `
+            \`=>noimg\`
+            `,
             aliases: ["unlist", "hidden"],
             cooldown: 10,
-            botdev: true
+            botdev: true,
+            subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

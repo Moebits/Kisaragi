@@ -28,8 +28,24 @@ export default class Selfroles extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const settingOption = new SlashCommandOption()
+            .setType("string")
+            .setName("setting")
+            .setDescription("Can be a setting number.")
+
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be list/delete/reset or @role.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
+            .addOption(settingOption)
     }
 
     public run = async (args: string[]) => {

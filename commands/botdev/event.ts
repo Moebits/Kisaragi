@@ -1,5 +1,5 @@
 import {Collection, Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "../../structures/Embeds"
@@ -10,10 +10,29 @@ export default class Event extends Command {
   constructor(discord: Kisaragi, message: Message<true>) {
       super(discord, message, {
           description: "Triggers an event.",
+          help:
+          `
+          \`event event\` - Triggers the event
+          `,
+          examples:
+          `
+          \`=>event guildCreate\`
+          `,
           aliases: [],
           cooldown: 3,
-          botdev: true
+          botdev: true,
+          subcommandEnabled: true
       })
+      const eventOption = new SlashCommandOption()
+          .setType("string")
+          .setName("event")
+          .setDescription("The event.")
+          .setRequired(true)
+          
+      this.subcommand = new SlashCommandSubcommand()
+          .setName(this.constructor.name.toLowerCase())
+          .setDescription(this.options.description)
+          .addOption(eventOption)
   }
 
   public run = async (args: string[]) => {

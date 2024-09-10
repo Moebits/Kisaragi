@@ -29,8 +29,18 @@ export default class Detect extends Command {
             `,
             guildOnly: true,
             aliases: ["detection"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be link/anime/pfp/response/reset/@role [@role].")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
     }
 
     public run = async (args: string[]) => {

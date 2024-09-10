@@ -25,7 +25,7 @@ export default class Block extends Command {
             `,
             examples:
             `
-            \`=>block lolicon\`
+            \`=>block badword\`
             \`=>block delete 1\`
             \`=>block asterisk disable\`
             \`=>block partial\`
@@ -35,8 +35,18 @@ export default class Block extends Command {
             aliases: ["filter"],
             permission: "MANAGE_MESSAGES",
             botPermission: "MANAGE_MESSAGES",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be word/enable/disable/exact/partial/asterisk/invite/delete/reset.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
     }
 
     public run = async (args: string[]) => {

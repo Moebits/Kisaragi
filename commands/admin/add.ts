@@ -22,8 +22,18 @@ export default class Add extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const addOption = new SlashCommandOption()
+            .setType("string")
+            .setName("add")
+            .setDescription("Can be an id/tag.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(addOption)
     }
 
     public run = async (args: string[]) => {

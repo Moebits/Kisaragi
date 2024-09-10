@@ -30,8 +30,29 @@ export default class Auto extends Command {
             guildOnly: true,
             aliases: [],
             cooldown: 10,
-            unlist: true
+            subcommandEnabled: true
         })
+        const editOption = new SlashCommandOption()
+            .setType("string")
+            .setName("edit")
+            .setDescription("The cmd #channel num in edit subcommand")
+
+        const settingOption = new SlashCommandOption()
+            .setType("string")
+            .setName("setting")
+            .setDescription("Can be a setting number")
+
+        const toggleOption = new SlashCommandOption()
+            .setType("string")
+            .setName("toggle")
+            .setDescription("Can toggle/edit/delete/reset or cmd #channel num")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(toggleOption)
+            .addOption(settingOption)
+            .addOption(editOption)
     }
 
     public run = async (args: string[]) => {

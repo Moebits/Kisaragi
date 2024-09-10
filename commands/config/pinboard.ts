@@ -26,8 +26,18 @@ export default class Pinboard extends Command {
             aliases: [],
             guildOnly: true,
             botPermission: "MANAGE_WEBHOOKS",
-            cooldown: 15
+            cooldown: 15,
+            subcommandEnabled: true
         })
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be #channel/[#channel]/reset.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
     }
 
     public run = async (args: string[]) => {

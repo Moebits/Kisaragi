@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "../../structures/Embeds"
@@ -10,10 +10,22 @@ export default class ResetDB extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Reconstructs the database.",
+            help:
+            `
+            \`resetdb\` - Reset the database
+            `,
+            examples:
+            `
+            \`=>resetdb\`
+            `,
             aliases: ["purgedb"],
             cooldown: 3,
-            botdev: true
+            botdev: true,
+            subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

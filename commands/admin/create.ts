@@ -13,7 +13,7 @@ export default class Create extends Command {
             help:
             `
             \`create channel name above? reason?\` - Creates a new channel with the name above the current one, or above the "above" channel.
-            \`create role Role_Name? #color? position? hoisted? mentionable?\` - Creates a role with these properties. Dashes and underscores in the name are replaced by spaces.
+            \`create role role-name? #color? position? hoisted? mentionable?\` - Creates a role with these properties. Dashes and underscores in the name are replaced by spaces.
             \`create emoji name imageLink? reason?\` - Creates a new emoji with the name, if no image link is provided the last sent image is used (if found).
             `,
             examples:
@@ -24,8 +24,31 @@ export default class Create extends Command {
             `,
             aliases: [],
             guildOnly: true,
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("Optional reason for creation.")
+
+        const nameOption = new SlashCommandOption()
+            .setType("string")
+            .setName("name")
+            .setDescription("Name and other options.")
+
+        const typeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("type")
+            .setDescription("Can be channel/role/emoji.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(typeOption)
+            .addOption(nameOption)
+            .addOption(reasonOption)
     }
 
     public run = async (args: string[]) => {

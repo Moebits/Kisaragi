@@ -21,8 +21,19 @@ export default class Mention extends Command {
             `,
             guildOnly: true,
             aliases: [],
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const roleOption = new SlashCommandOption()
+            .setType("string")
+            .setName("role")
+            .setDescription("Role to mention")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(roleOption)
     }
 
     public run = async (args: string[]) => {

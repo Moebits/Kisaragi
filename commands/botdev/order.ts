@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "../../structures/Embeds"
@@ -11,10 +11,22 @@ export default class Order extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Orders the rows in the guilds table.",
+            help:
+            `
+            \`order\` - Order rows
+            `,
+            examples:
+            `
+            \`=>order\`
+            `,
             aliases: [],
             cooldown: 3,
-            botdev: true
+            botdev: true,
+            subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

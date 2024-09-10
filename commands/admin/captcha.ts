@@ -31,8 +31,18 @@ export default class CaptchaCmd extends Command {
             `,
             guildOnly: true,
             aliases: ["verification"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be enable/disable/@role/text/math/difficulty/#color/reset.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
     }
 
     public run = async (args: string[]) => {

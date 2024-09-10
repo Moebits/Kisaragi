@@ -1,5 +1,5 @@
 import {Guild, Message, TextChannel} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
@@ -10,10 +10,36 @@ export default class LeaveGuild extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Forcefully leaves a guild.",
+            help:
+            `
+            \`leaveguild id reason?\` - Leaves the guild
+            \`leaveguild silent id\` - Leaves the guild without a reason
+            `,
+            examples:
+            `
+            \`=>leaveguild 123\`
+            `,
             aliases: ["lg"],
             cooldown: 10,
-            botdev: true
+            botdev: true,
+            subcommandEnabled: true
         })
+        const reasonOption = new SlashCommandOption()
+            .setType("string")
+            .setName("reason")
+            .setDescription("Can be a reason/id.")
+
+        const idOption = new SlashCommandOption()
+            .setType("string")
+            .setName("id")
+            .setDescription("Can be an id/silent.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(idOption)
+            .addOption(reasonOption)
     }
 
     public run = async (args: string[]) => {

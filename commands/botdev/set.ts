@@ -1,5 +1,5 @@
 import {Message, ActivityType} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "../../structures/Embeds"
@@ -12,7 +12,7 @@ export default class Set extends Command {
             description: "Sets the bot's activity text.",
             help:
             `
-            \`set type activity, status\`
+            \`set activity, status\` - Set the activity and status
             `,
             examples:
             `
@@ -20,8 +20,19 @@ export default class Set extends Command {
             `,
             aliases: [],
             cooldown: 3,
-            botdev: true
+            botdev: true,
+            subcommandEnabled: true
         })
+        const textOption = new SlashCommandOption()
+            .setType("string")
+            .setName("text")
+            .setDescription("Set the activity text.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(textOption)
     }
 
     public run = async (args: string[]) => {

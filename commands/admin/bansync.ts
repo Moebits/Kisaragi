@@ -26,8 +26,24 @@ export default class BanSync extends Command {
             guildOnly: true,
             aliases: ["syncbans"],
             cooldown: 10,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const perfectOption = new SlashCommandOption()
+            .setType("string")
+            .setName("perfect")
+            .setDescription("Type perfect to sync bans perfectly.")
+
+        const guildOption = new SlashCommandOption()
+            .setType("string")
+            .setName("guild")
+            .setDescription("Name/id of the other server.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(guildOption)
+            .addOption(perfectOption)
     }
 
     public run = async (args: string[]) => {

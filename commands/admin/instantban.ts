@@ -24,8 +24,18 @@ export default class InstantBan extends Command {
             `,
             aliases: ["iban"],
             guildOnly: true,
-            cooldown: 3
+            cooldown: 3,
+            subcommandEnabled: true
         })
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be pfp/everyone/leave.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
     }
 
     public run = async (args: string[]) => {

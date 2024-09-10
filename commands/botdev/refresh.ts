@@ -1,13 +1,13 @@
 import child_process from "child_process"
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
-export default class Reload extends Command {
+export default class Refresh extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
           description: "Refreshes all commands and events.",
@@ -21,8 +21,12 @@ export default class Reload extends Command {
           `,
           aliases: ["reload"],
           cooldown: 50,
-          botdev: true
+          botdev: true,
+          subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

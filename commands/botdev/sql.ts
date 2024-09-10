@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {Embeds} from "../../structures/Embeds"
@@ -11,10 +11,29 @@ export default class SQL extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Runs an sql query on the database.",
+            help:
+            `
+            \`sql query\` - Run sql query
+            `,
+            examples:
+            `
+            \`=>sql select * from guilds\`
+            `,
             aliases: [],
             cooldown: 3,
-            botdev: true
+            botdev: true,
+            subcommandEnabled: true
         })
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("The sql query.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
     }
 
     public run = async (args: string[]) => {

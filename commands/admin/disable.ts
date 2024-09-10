@@ -24,8 +24,17 @@ export default class Disable extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 3,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const categoryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("category")
+            .setDescription("Can be a category/reset.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(categoryOption)
     }
 
     public run = async (args: string[]) => {

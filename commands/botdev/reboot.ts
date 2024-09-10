@@ -1,6 +1,6 @@
 import child_process from "child_process"
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import {Command} from "../../structures/Command"
 import {Embeds} from "../../structures/Embeds"
@@ -11,10 +11,22 @@ export default class Reboot extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
           description: "Reboots the bot.",
+          help:
+          `
+          \`reboot\` - Reboot the bot
+          `,
+          examples:
+          `
+          \`=>reboot\`
+          `,
           aliases: ["restart"],
           cooldown: 100,
-          botdev: true
+          botdev: true,
+          subcommandEnabled: true
         })
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
     }
 
     public run = async (args: string[]) => {

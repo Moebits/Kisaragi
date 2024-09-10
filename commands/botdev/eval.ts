@@ -1,5 +1,5 @@
 import {Message} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import util from "util"
 import {Audio} from "../../structures/Audio"
 import {AudioEffects} from "../../structures/AudioEffects"
@@ -27,10 +27,29 @@ export default class Eval extends Command {
   constructor(discord: Kisaragi, message: Message<true>) {
       super(discord, message, {
           description: "Evaluates Javascript code.",
+          help:
+          `
+          \`eval code\` - Evaluates the code
+          `,
+          examples:
+          `
+          \`=>code 1+1\`
+          `,
           aliases: [],
           cooldown: 3,
-          botdev: true
+          botdev: true,
+          subcommandEnabled: true
       })
+      const codeOption = new SlashCommandOption()
+          .setType("string")
+          .setName("code")
+          .setDescription("The code.")
+          .setRequired(true)
+          
+      this.subcommand = new SlashCommandSubcommand()
+          .setName(this.constructor.name.toLowerCase())
+          .setDescription(this.options.description)
+          .addOption(codeOption)
   }
 
   public clean = (text: string) => {

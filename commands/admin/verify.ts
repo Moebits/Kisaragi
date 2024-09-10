@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder, Role} from "discord.js"
+import {Message, EmbedBuilder, Role, SlashCommandBuilder} from "discord.js"
 import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Captcha} from "./../../structures/Captcha"
@@ -22,8 +22,13 @@ export default class Verify extends Command {
             guildOnly: true,
             botPermission: "MANAGE_ROLES",
             aliases: [],
-            cooldown: 10
+            cooldown: 10,
+            slashEnabled: true
         })
+        this.slash = new SlashCommandBuilder()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

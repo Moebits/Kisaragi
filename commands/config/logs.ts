@@ -26,8 +26,24 @@ export default class Logs extends Command {
             `,
             aliases: ["log", "logging"],
             guildOnly: true,
-            cooldown: 15
+            cooldown: 15,
+            subcommandEnabled: true
         })
+        const typeOption = new SlashCommandOption()
+            .setType("string")
+            .setName("type")
+            .setDescription("Can be message/mod/user/member.")
+
+        const optOption = new SlashCommandOption()
+            .setType("string")
+            .setName("opt")
+            .setDescription("Can be delete/reset or channels.")
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(optOption)
+            .addOption(typeOption)
     }
 
     public run = async (args: string[]) => {

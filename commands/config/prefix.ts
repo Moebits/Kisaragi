@@ -20,8 +20,19 @@ export default class Prefix extends Command {
             `,
             guildOnly: true,
             aliases: ["pref"],
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const prefixOption = new SlashCommandOption()
+            .setType("string")
+            .setName("prefix")
+            .setDescription("The new prefix.")
+            .setRequired(true)
+            
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(prefixOption)
     }
 
     public run = async (args: string[]) => {
