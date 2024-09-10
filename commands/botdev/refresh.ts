@@ -20,7 +20,8 @@ export default class Reload extends Command {
           \`=>refresh\`
           `,
           aliases: ["reload"],
-          cooldown: 50
+          cooldown: 50,
+          botdev: true
         })
     }
 

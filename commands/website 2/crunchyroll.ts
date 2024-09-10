@@ -63,8 +63,18 @@ export default class Crunchyroll extends Command {
             `,
             aliases: ["cr", "crunchy"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("The query to search.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
     }
 
     public getEmbed = async (season: CrunchyrollSeason) => {

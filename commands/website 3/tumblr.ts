@@ -22,8 +22,23 @@ export default class TumblrCommand extends Command {
             aliases: [],
             random: "none",
             cooldown: 10,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const query2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("query2")
+            .setDescription("Query in the blog subcommand.")
+
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query/blog.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName("tumblr")
+            .setDescription(this.options.description)
+            .addOption(queryOption)
+            .addOption(query2Option)
     }
 
     public run = async (args: string[]) => {

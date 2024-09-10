@@ -1,4 +1,4 @@
-import {Message, EmbedBuilder, ChatInputCommandInteraction} from "discord.js"
+import {Message, EmbedBuilder, SlashCommandBuilder} from "discord.js"
 import {getVoiceConnection, joinVoiceChannel} from "@discordjs/voice"
 import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
@@ -34,7 +34,7 @@ export default class Play extends Command {
             aliases: ["pl", "stream"],
             cooldown: 15,
             defer: true,
-            subcommandEnabled: true
+            slashEnabled: true
         })
         const thirdOption = new SlashCommandOption()
             .setType("string")
@@ -51,12 +51,13 @@ export default class Play extends Command {
             .setName("song")
             .setDescription("This can be the song to search for or any of the yt/first/reverse/loop options.")
 
-        this.subcommand = new SlashCommandSubcommand()
+        this.slash = new SlashCommandBuilder()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addOption(firstOption)
-            .addOption(secondOption)
-            .addOption(thirdOption)
+            .addStringOption(firstOption)
+            .addStringOption(secondOption)
+            .addStringOption(thirdOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

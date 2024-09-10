@@ -21,8 +21,18 @@ export default class Itunes extends Command {
             `,
             aliases: [],
             random: "string",
-            cooldown: 15
+            cooldown: 15,
+            subcommandEnabled: true
         })
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("The query to search.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
     }
 
     public run = async (args: string[]) => {

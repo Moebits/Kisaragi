@@ -32,8 +32,18 @@ export default class ReverseImage extends Command {
             `,
             aliases: ["revimg", "reverseimg"],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const urlOption = new SlashCommandOption()
+            .setType("string")
+            .setName("url")
+            .setDescription("Can be a url/user/guild/me.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(urlOption)
     }
 
     public revSearch = async (image: string) => {

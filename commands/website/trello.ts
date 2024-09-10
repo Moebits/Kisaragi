@@ -7,7 +7,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
-export default class Twitch extends Command {
+export default class TrelloCommand extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for trello boards and users.",
@@ -23,8 +23,18 @@ export default class Twitch extends Command {
             `,
             aliases: [],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query or url.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName("trello")
+            .setDescription(this.options.description)
+            .addOption(queryOption)
     }
 
     public run = async (args: string[]) => {

@@ -27,8 +27,24 @@ export default class Github extends Command {
             `,
             aliases: ["gh"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const query2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("query2")
+            .setDescription("The query in the user subcommand.")
+
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query or user.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
+            .addOption(query2Option)
     }
 
     public run = async (args: string[]) => {

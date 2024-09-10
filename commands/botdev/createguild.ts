@@ -2,7 +2,7 @@ import {GuildChannel, Message, TextChannel} from "discord.js"
 import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import {Kisaragi} from "./../../structures/Kisaragi"
+import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class CreateGuild extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -10,7 +10,7 @@ export default class CreateGuild extends Command {
             description: "Creates a new guild.",
             aliases: ["cg"],
             cooldown: 3,
-            nsfw: true
+            botdev: true
         })
     }
 

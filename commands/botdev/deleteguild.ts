@@ -3,7 +3,7 @@ import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
-import {Kisaragi} from "./../../structures/Kisaragi"
+import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class DeleteGuild extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -11,7 +11,7 @@ export default class DeleteGuild extends Command {
             description: "Deletes a guild (created by the bot).",
             aliases: ["dg"],
             cooldown: 3,
-            nsfw: true
+            botdev: true
         })
     }
 
@@ -25,6 +25,7 @@ export default class DeleteGuild extends Command {
         const guildID = args[1]
         const guild = discord.guilds.cache.find((g: Guild) => g.id.toString() === guildID) as Guild
         const name = guild.name
+
 
         try {
             guild.delete()

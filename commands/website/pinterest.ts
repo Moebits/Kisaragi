@@ -31,8 +31,29 @@ export default class Pinterest extends Command {
             aliases: ["pint"],
             random: "string",
             cooldown: 15,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const boardOption = new SlashCommandOption()
+            .setType("string")
+            .setName("boardname")
+            .setDescription("Boardname in the board subcommand.")
+
+        const usernameOption = new SlashCommandOption()
+            .setType("string")
+            .setName("username")
+            .setDescription("Can be a username.")
+
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query/user/board.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
+            .addOption(usernameOption)
+            .addOption(boardOption)
     }
 
     public pinterestError = (discord: Kisaragi, message: Message<true>, embeds: Embeds, msg?: string) => {

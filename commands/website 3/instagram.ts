@@ -24,9 +24,23 @@ export default class Instagram extends Command {
             aliases: ["insta"],
             random: "none",
             cooldown: 10,
-            nsfw: true,
-            unlist: true
+            subcommandEnabled: true
         })
+        const query2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("query2")
+            .setDescription("Query in the user subcommand.")
+
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query/user.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
+            .addOption(query2Option)
     }
 
     public getUsername = async (id: string) => {

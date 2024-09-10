@@ -10,6 +10,7 @@ class Dummy {
     public getEmoji = () => null
 }
 
+let devCommands = [] as any
 let slashCommands = [] as any
 
 const register = async () => {
@@ -27,8 +28,12 @@ const register = async () => {
             
             const command = new (require(path.join(__dirname, `./commands/${currDir}/${file}`)).default)(new Dummy(), null)
 
-            if (command.options.slashEnabled) {
-                if (command.slash) slashCommands.push(command.slash)
+            if (command.options.slashEnabled && command.slash) {
+                if (command.options.botdev) {
+                    devCommands.push(command.slash)
+                } else {
+                    slashCommands.push(command.slash)
+                }
             }
         }))
     }

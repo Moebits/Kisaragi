@@ -45,7 +45,7 @@ export default class Help extends Command {
     public emojiMap: any = {
         "admin": "raphiOMG",
         "anime": "gabYes",
-        "bot developer": "no",
+        "botdev": "no",
         "config": "akariLurk",
         "fun": "chinoSmug",
         "game": "yaoi",
@@ -72,7 +72,7 @@ export default class Help extends Command {
     public imageMap: any = {
         "admin": "https://i.imgur.com/mMXKOPW.png",
         "anime": "https://i.imgur.com/JvuBhSL.png",
-        "bot developer": "https://i.imgur.com/pc9syrB.png",
+        "botdev": "https://i.imgur.com/pc9syrB.png",
         "config": "https://i.imgur.com/wWolBwY.png",
         "fun": "https://i.imgur.com/lTRD9J0.png",
         "game": "https://i.imgur.com/WCbOnxm.png",
@@ -100,7 +100,7 @@ export default class Help extends Command {
     public thumbMap: any = {
         "admin": "https://cdn.discordapp.com/emojis/1280922651984138260.png",
         "anime": "https://cdn.discordapp.com/emojis/1280922668698173500.png",
-        "bot developer": "https://cdn.discordapp.com/emojis/1280922779473940560.png",
+        "botdev": "https://cdn.discordapp.com/emojis/1280922779473940560.png",
         "config": "https://cdn.discordapp.com/emojis/1280922887926059091.png",
         "fun": "https://cdn.discordapp.com/emojis/1280923131237629973.gif",
         "game": "https://cdn.discordapp.com/emojis/1280923170706165771.png",

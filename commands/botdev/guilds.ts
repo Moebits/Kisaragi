@@ -1,10 +1,10 @@
 import {Guild, Message, EmbedBuilder} from "discord.js"
 import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permission} from "./../../structures/Permission"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
+import {Permission} from "../../structures/Permission"
 
 export default class Guilds extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -20,7 +20,8 @@ export default class Guilds extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 3
+            cooldown: 3,
+            botdev: true
         })
     }
 

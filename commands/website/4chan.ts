@@ -49,7 +49,7 @@ export default class $4chan extends Command {
             .setDescription("Can be a board or images.")
 
         this.subcommand = new SlashCommandSubcommand()
-            .setName(this.constructor.name.toLowerCase())
+            .setName("4chan")
             .setDescription(this.options.description)
             .addOption(boardOption)
             .addOption(queryOption)

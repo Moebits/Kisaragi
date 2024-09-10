@@ -12,7 +12,7 @@ export default class ResetDB extends Command {
             description: "Reconstructs the database.",
             aliases: ["purgedb"],
             cooldown: 3,
-            unlist: true
+            botdev: true
         })
     }
 

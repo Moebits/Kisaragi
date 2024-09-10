@@ -8,7 +8,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
-export default class FlickrCommand extends Command {
+export default class Gravatar extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Gets the profile picture of a gravatar email.",
@@ -23,8 +23,18 @@ export default class FlickrCommand extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const emailOption = new SlashCommandOption()
+            .setType("string")
+            .setName("email")
+            .setDescription("Gets the avatar of this email.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(emailOption)
     }
 
     public run = async (args: string[]) => {

@@ -33,8 +33,24 @@ export default class YoutubeCommand extends Command {
             `,
             aliases: ["yt"],
             random: "string",
-            cooldown: 10
+            cooldown: 10,
+            subcommandEnabled: true
         })
+        const query2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("query2")
+            .setDescription("Query in the channel/playlist/video subcommands.")
+
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query/channel/playlist/video.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
+            .addOption(query2Option)
     }
 
     public ytChannelEmbed = async (discord: Kisaragi, embeds: Embeds, youtube: yt, channelLink: string) => {

@@ -12,7 +12,8 @@ export default class Reboot extends Command {
         super(discord, message, {
           description: "Reboots the bot.",
           aliases: ["restart"],
-          cooldown: 100
+          cooldown: 100,
+          botdev: true
         })
     }
 

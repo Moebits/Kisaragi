@@ -2,16 +2,17 @@ import {Collection, Message} from "discord.js"
 import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Event extends Command {
   constructor(discord: Kisaragi, message: Message<true>) {
       super(discord, message, {
           description: "Triggers an event.",
           aliases: [],
-          cooldown: 3
+          cooldown: 3,
+          botdev: true
       })
   }
 

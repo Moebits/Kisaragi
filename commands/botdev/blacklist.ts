@@ -2,15 +2,15 @@ import {Message} from "discord.js"
 import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
+import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Clean extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
-            description: "Blacklists a user or entire guild so that they cannot use Kisaragi.",
+            description: "Blacklists a user or entire guild.",
             help:
             `
             \`blacklist id reason?\` - Blacklists a guild (the default).
@@ -23,7 +23,8 @@ export default class Clean extends Command {
             \`=>blacklist user <user id>\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            botdev: true
         })
     }
 

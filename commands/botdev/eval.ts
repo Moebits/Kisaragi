@@ -19,16 +19,17 @@ import {PixivApi} from "../../structures/PixivApi"
 import {Points} from "../../structures/Points"
 import {SQLQuery} from "../../structures/SQLQuery"
 import {Video} from "../../structures/Video"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Eval extends Command {
   constructor(discord: Kisaragi, message: Message<true>) {
       super(discord, message, {
           description: "Evaluates Javascript code.",
           aliases: [],
-          cooldown: 3
+          cooldown: 3,
+          botdev: true
       })
   }
 

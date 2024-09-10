@@ -16,12 +16,21 @@ export default class Patreon extends Command {
             `,
             examples:
             `
-            \`=>patreon synthion\`
+            \`=>patreon creator\`
             `,
             aliases: [],
             cooldown: 10,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const creatorOption = new SlashCommandOption()
+            .setType("string")
+            .setName("creator")
+            .setDescription("The creator to search.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(creatorOption)
     }
 
     public run = async (args: string[]) => {

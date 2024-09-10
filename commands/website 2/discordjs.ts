@@ -25,8 +25,18 @@ export default class Discordjs extends Command {
             \`=>discordjs stable message\`
             `,
             aliases: ["djs"],
-            cooldown: 5
+            cooldown: 5,
+            subcommandEnabled: true
         })
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("The query to search.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
     }
 
     public run = async (args: string[]) => {

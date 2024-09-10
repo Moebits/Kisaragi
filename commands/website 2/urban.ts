@@ -19,12 +19,21 @@ export default class Urban extends Command {
             examples:
             `
             \`=>urban\`
-            \`=>urban loli\`
+            \`=>urban anime\`
             `,
             aliases: [],
             random: "none",
             cooldown: 5
         })
+        const wordOption = new SlashCommandOption()
+            .setType("string")
+            .setName("word")
+            .setDescription("The word to search.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(wordOption)
     }
 
     public run = async (args: string[]) => {

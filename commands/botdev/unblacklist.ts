@@ -2,10 +2,10 @@ import {Message} from "discord.js"
 import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
+import {Embeds} from "../../structures/Embeds"
+import {Functions} from "../../structures/Functions"
+import {Kisaragi} from "../../structures/Kisaragi"
+import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Unblacklist extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -23,7 +23,8 @@ export default class Unblacklist extends Command {
             \`=>unblacklist user <user id>\`
             `,
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            botdev: true
         })
     }
 

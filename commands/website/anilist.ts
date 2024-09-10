@@ -13,7 +13,7 @@ export default class AnilistCommand extends Command {
             help:
             `
             \`anilist\` - Gets the top anime
-            \`mal query\` - Searches for anime matching the query
+            \`anilist query\` - Searches for anime matching the query
             \`anilist manga query\` - Searches for manga with the query
             `,
             examples:
@@ -23,8 +23,23 @@ export default class AnilistCommand extends Command {
             aliases: ["animelist", "anilist"],
             random: "none",
             cooldown: 10,
-            unlist: true
+            subcommandEnabled: true
         })
+        const query2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("query2")
+            .setDescription("Last chance to input the query.")
+
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query or manga.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
+            .addOption(query2Option)
     }
 
     public run = async (args: string[]) => {

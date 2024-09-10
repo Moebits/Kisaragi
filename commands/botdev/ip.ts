@@ -2,17 +2,16 @@ import {Message} from "discord.js"
 import {SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
-import {Embeds} from "./../../structures/Embeds"
-import {Functions} from "./../../structures/Functions"
-import {Kisaragi} from "./../../structures/Kisaragi"
-import {SQLQuery} from "./../../structures/SQLQuery"
+import {Embeds} from "../../structures/Embeds"
+import {Kisaragi} from "../../structures/Kisaragi"
 
-export default class Order extends Command {
+export default class IP extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
-            description: "Orders the rows in the guilds table.",
+            description: "Posts the bot's ip address.",
             aliases: [],
-            cooldown: 3
+            cooldown: 3,
+            botdev: true
         })
     }
 
@@ -22,12 +21,13 @@ export default class Order extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         if (!perms.checkBotDev()) return
-        const orderEmbed = embeds.createEmbed()
+        const ip = require("ip")
+        const ipEmbed = embeds.createEmbed()
+        const result = ip.address()
+        ipEmbed
+            .setTitle(`**IP Address** ${discord.getEmoji("vigneDead")}`)
+            .setDescription(`My IP Address is ${result}`)
+        message.channel.send({embeds: [ipEmbed]})
 
-        await SQLQuery.orderTables()
-        orderEmbed
-        .setTitle(`**Order** ${discord.getEmoji("gabStare")}`)
-        .setDescription("The table was ordered!")
-        message.channel.send({embeds: [orderEmbed]})
     }
 }

@@ -38,8 +38,23 @@ export default class Deviantart extends Command {
             aliases: ["da", "deviant"],
             random: "none",
             cooldown: 30,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const query2Option = new SlashCommandOption()
+            .setType("string")
+            .setName("query2")
+            .setDescription("Can be a query/user/date.")
+
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("Can be a query/user/gallery/daily/hot/new/popular.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
+            .addOption(query2Option)
     }
 
     public createDeviantEmbed = async (deviantArt: DeviantArt, discord: Kisaragi, embeds: Embeds, result: DeviantArtSearchResults) => {

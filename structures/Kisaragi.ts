@@ -44,10 +44,19 @@ export class Kisaragi extends Client {
         }
         if (file) options.files = [file]
         if (this.deferState.has(input.id)) {
-          this.deferState.delete(input.id)
-          return (input as ChatInputCommandInteraction).editReply(options)
+          return (input as ChatInputCommandInteraction).followUp(options)
         }
         return input.reply(options)
+    }
+
+    public clearDeferState = (input: Message | ChatInputCommandInteraction) => {
+        this.deferState.delete(input.id)
+    }
+
+    /** Defer this reply */
+    public deferReply = (interaction: ChatInputCommandInteraction) => {
+        this.deferState.add(interaction.id)
+        return interaction.deferReply()
     }
     
     /** Send message to a channel */
@@ -89,12 +98,6 @@ export class Kisaragi extends Client {
         }
         if (file) options.files = [file]
         return msg.edit(options)
-    }
-
-    /** Defer this reply */
-    public deferReply = (interaction: ChatInputCommandInteraction) => {
-        this.deferState.add(interaction.id)
-        return interaction.deferReply()
     }
 
     /** Get emojis (application emojis) */

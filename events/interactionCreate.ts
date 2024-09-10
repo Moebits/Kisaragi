@@ -48,6 +48,7 @@ export default class InteractionCreate {
             } else {
                 args = [slashCommand, ...interaction.options.data.map((o) => o.value)] as string[]
             }
+            discord.clearDeferState(interaction)
             if (targetCommand?.options.defer) await command.deferReply(interaction)
             await cmd.runCommandClass(command, interaction as any, args)
         }

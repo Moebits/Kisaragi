@@ -34,6 +34,15 @@ export default class Xkcd extends Command {
             random: "none",
             cooldown: 5
         })
+        const idOption = new SlashCommandOption()
+            .setType("string")
+            .setName("id")
+            .setDescription("Can be an id/url/today.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(idOption)
     }
 
     public getComic = async (id?: number) => {

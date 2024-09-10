@@ -1,4 +1,4 @@
-import {Message, ChatInputCommandInteraction} from "discord.js"
+import {Message, SlashCommandBuilder, ChatInputCommandInteraction} from "discord.js"
 import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
@@ -22,17 +22,18 @@ export default class Chain extends Command {
             `,
             aliases: [],
             cooldown: 200,
-            subcommandEnabled: true
+            slashEnabled: true
         })
         const chainOption = new SlashCommandOption()
             .setType("string")
             .setName("chain")
             .setDescription("The commands to chain separated by \"&\".")
             
-        this.subcommand = new SlashCommandSubcommand()
+        this.slash = new SlashCommandBuilder()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addOption(chainOption)
+            .addStringOption(chainOption)
+            .toJSON()
     }
 
     public run = async (args: string[]) => {

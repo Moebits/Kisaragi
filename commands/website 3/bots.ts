@@ -6,7 +6,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
-export default class DiscordBotList extends Command {
+export default class Bots extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Searches for bots on discord.bots.gg.",
@@ -22,8 +22,17 @@ export default class DiscordBotList extends Command {
             aliases: ["bot", "discordbots"],
             random: "none",
             cooldown: 15,
-            nsfw: true
+            subcommandEnabled: true
         })
+        const queryOption = new SlashCommandOption()
+            .setType("string")
+            .setName("query")
+            .setDescription("The query to search.")
+
+        this.subcommand = new SlashCommandSubcommand()
+            .setName(this.constructor.name.toLowerCase())
+            .setDescription(this.options.description)
+            .addOption(queryOption)
     }
 
     public run = async (args: string[]) => {
