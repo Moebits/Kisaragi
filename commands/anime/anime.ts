@@ -47,7 +47,7 @@ export default class Anime extends Command {
         let query = Functions.combineArgs(args, 1)
         const animeEmbed = embeds.createEmbed()
         .setAuthor({name: "kitsu", iconURL: "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4"})
-        .setTitle(`**Anime** ${discord.getEmoji("gabYes")}`)
+        .setTitle(`**Anime**`)
 
         if (!query) {
             return this.noQuery(animeEmbed,
@@ -67,7 +67,7 @@ export default class Anime extends Command {
         animeEmbed
         .setAuthor({name: "kitsu", iconURL: "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4"})
         .setURL(`https://kitsu.io/anime/${data.attributes.slug}`)
-        .setTitle(`**${data.attributes.titles.en_jp}** ${discord.getEmoji("gabYes")}`)
+        .setTitle(`**${data.attributes.titles.en_jp}**`)
         .setDescription(
             `${discord.getEmoji("star")}_Japanese Title:_ **${data.attributes.titles.ja_jp}**\n` +
             `${discord.getEmoji("star")}_Popularity Rank:_ **#${data.attributes.popularityRank}**\n` +

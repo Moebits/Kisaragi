@@ -81,7 +81,7 @@ export class Functions {
     // Response Time
     public responseTime = () => {
         const time = Date.now() - this.message?.createdTimestamp
-        return `${time ? time : 0} ms`
+        return `${time ? Math.abs(time) : 0} ms`
     }
 
     // Format Date

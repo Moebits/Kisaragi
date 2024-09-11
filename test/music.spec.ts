@@ -1,18 +1,9 @@
 import {discord} from "./mock"
 import "mocha"
 
-describe("anime", async () => {
-    it("anime", async () => {
-        let name = "anime"
-        discord.resetReplyStatus()
-        const command = discord.commands.get(name)!
-        if (command.options.defer) command.deferReply()
-        await command.run([name, "konosuba"])
-        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
-    })
-
-    it("animebooks", async () => {
-        let name = "animebooks"
+describe("music", async () => {
+    it("abloop", async () => {
+        let name = "abloop"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -20,8 +11,8 @@ describe("anime", async () => {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("animequote", async () => {
-        let name = "animequote"
+	it("clear", async () => {
+        let name = "clear"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -29,8 +20,8 @@ describe("anime", async () => {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("chibi", async () => {
-        let name = "chibi"
+	it("deletequeue", async () => {
+        let name = "deletequeue"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -38,8 +29,8 @@ describe("anime", async () => {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("kawaii", async () => {
-        let name = "kawaii"
+	it("fastforward", async () => {
+        let name = "fastforward"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -47,8 +38,8 @@ describe("anime", async () => {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("kitsune", async () => {
-        let name = "kitsune"
+	it("loop", async () => {
+        let name = "loop"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -56,17 +47,8 @@ describe("anime", async () => {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("manga", async () => {
-        let name = "manga"
-        discord.resetReplyStatus()
-        const command = discord.commands.get(name)!
-        if (command.options.defer) command.deferReply()
-        await command.run([name, "konosuba"])
-        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
-    })
-
-    it("neko", async () => {
-        let name = "neko"
+	it("nowplaying", async () => {
+        let name = "nowplaying"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -74,8 +56,8 @@ describe("anime", async () => {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("pixiv", async () => {
-        let name = "pixiv"
+	it("pause", async () => {
+        let name = "pause"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -83,8 +65,8 @@ describe("anime", async () => {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("stockings", async () => {
-        let name = "stockings"
+	it("pitch", async () => {
+        let name = "pitch"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -92,17 +74,98 @@ describe("anime", async () => {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("trace", async () => {
-        let name = "trace"
+	it("play", async () => {
+        let name = "play"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "https://i.imgur.com/XEocavS.jpeg"])
+        await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("ugoira", async () => {
-        let name = "ugoira"
+	it("queue", async () => {
+        let name = "queue"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+	it("resume", async () => {
+        let name = "resume"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+	it("reverse", async () => {
+        let name = "reverse"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+	it("rewind", async () => {
+        let name = "rewind"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+	it("scrub", async () => {
+        let name = "scrub"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+	it("shuffle", async () => {
+        let name = "shuffle"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+	it("skip", async () => {
+        let name = "skip"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+	it("speed", async () => {
+        let name = "speed"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+	it("stop", async () => {
+        let name = "stop"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+	it("volume", async () => {
+        let name = "volume"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()

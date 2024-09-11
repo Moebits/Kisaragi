@@ -30,6 +30,7 @@ export default class $nHentai extends Command {
             aliases: ["nh"],
             random: "none",
             cooldown: 15,
+            defer: true,
             nsfw: true,
             unlist: true
         })
@@ -57,7 +58,7 @@ export default class $nHentai extends Command {
             const nhentaiEmbed = this.embeds.createEmbed()
             nhentaiEmbed
             .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
-            .setTitle(`**${doujin.titles.english}** ${this.discord.getEmoji("chinoSmug")}`)
+            .setTitle(`**${doujin.titles.english}**`)
             .setURL(doujin.url)
             .setDescription(
             `${discord.getEmoji("star")}_Japanese Title:_ **${doujin.titles.japanese}**\n` +
@@ -119,7 +120,7 @@ export default class $nHentai extends Command {
                 if (!result.doujins[0]) {
                     const nHentaiEmbed = this.embeds.createEmbed()
                     .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
-                    .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`)
+                    .setTitle(`**nHentai Search**`)
                     return this.invalidQuery(nHentaiEmbed, "Try searching on the [**nhentai Website**](https://nhentai.net/).")
                 }
                 let counter = 0
@@ -131,7 +132,7 @@ export default class $nHentai extends Command {
                     if (counter >= result.doujins.length) {
                         return this.invalidQuery(this.embeds.createEmbed()
                         .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
-                        .setTitle(`**nHentai Search** ${this.discord.getEmoji("chinoSmug")}`))
+                        .setTitle(`**nHentai Search**`))
                     }
                     counter++
                 }

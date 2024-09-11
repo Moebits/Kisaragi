@@ -30,6 +30,7 @@ export default class Safebooru extends Command {
             aliases: ["safe"],
             random: "none",
             cooldown: 20,
+            defer: true,
             subcommandEnabled: true
         })
         const tagOption = new SlashCommandOption()
@@ -62,8 +63,7 @@ export default class Safebooru extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const safebooruEmbed = embeds.createEmbed()
         .setAuthor({name: "safebooru", iconURL: "https://safebooru.org/images/safechibi.png"})
-        .setTitle(`**Safebooru Search** ${discord.getEmoji("gabLewd")}`)
-        if (!perms.checkNSFW()) return
+        .setTitle(`**Safebooru Search**`)
 
         let tags: string[] = []
         if (!args[1]) {
@@ -105,7 +105,7 @@ export default class Safebooru extends Command {
             const image = await this.getImage(img.directory, img.image)
             const safebooruEmbed = embeds.createEmbed()
             .setAuthor({name: "safebooru", iconURL: "https://safebooru.org/images/safechibi.png"})
-            .setTitle(`**Safebooru Search** ${discord.getEmoji("gabLewd")}`)
+            .setTitle(`**Safebooru Search**`)
             .setURL(`https://safebooru.org/index.php?page=post&s=view&id=${img.id}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Uploader:_ **${img.owner}**\n` +
@@ -119,9 +119,9 @@ export default class Safebooru extends Command {
             return this.invalidQuery(safebooruEmbed)
         }
         if (safebooruArray.length === 1) {
-            message.channel.send({embeds: [safebooruArray[0]]})
+            return this.reply(safebooruArray[0])
         } else {
-            embeds.createReactionEmbed(safebooruArray, true, true)
+            return embeds.createReactionEmbed(safebooruArray, true, true)
         }
     }
 }

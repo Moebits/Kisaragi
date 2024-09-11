@@ -4,7 +4,6 @@ import {Command} from "../../structures/Command"
 import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import {Permission} from "./../../structures/Permission"
 import {ImgurClient} from "imgur"
 
 export default class Imgur extends Command {
@@ -40,13 +39,12 @@ export default class Imgur extends Command {
         const discord = this.discord
         const message = this.message
         const embeds = new Embeds(discord, message)
-        const perms = new Permission(discord, message)
 
         const imgur = new ImgurClient({clientId: process.env.IMGUR_CLIENT_ID})
         const query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/cg9Y3if.jpeg"})
+            .setAuthor({name: "imgur", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUMEceBr6JB9DpdklcH5EyxjTOx130lz8LA&s"})
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`))
         }
 
@@ -62,7 +60,7 @@ export default class Imgur extends Command {
             }
             const cover = `https://imgur.com/${image.id}.${extension}`
             imgurEmbed
-            .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/cg9Y3if.jpeg", url: "https://imgur.com/"})
+            .setAuthor({name: "imgur", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUMEceBr6JB9DpdklcH5EyxjTOx130lz8LA&s", url: "https://imgur.com/"})
             .setURL(image.link)
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription(
@@ -82,7 +80,7 @@ export default class Imgur extends Command {
         if (!image) {
             const imgurEmbed = embeds.createEmbed()
             imgurEmbed
-            .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/cg9Y3if.jpeg", url: "https://imgur.com/"})
+            .setAuthor({name: "imgur", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUMEceBr6JB9DpdklcH5EyxjTOx130lz8LA&s", url: "https://imgur.com/"})
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription("No results were found! Try searching for a tag on the imgur website.\n" +
             "[Imgur Website](https://imgur.com/)")
@@ -98,7 +96,7 @@ export default class Imgur extends Command {
             }
             const cover = `https://imgur.com/${image.id}.${extension}`
             imgurEmbed
-            .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/cg9Y3if.jpeg", url: "https://imgur.com/"})
+            .setAuthor({name: "imgur", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUMEceBr6JB9DpdklcH5EyxjTOx130lz8LA&s", url: "https://imgur.com/"})
             .setURL(image.link)
             .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
             .setDescription(
@@ -123,7 +121,7 @@ export default class Imgur extends Command {
                 }
                 const cover = `https://imgur.com/${image.images[i].id}.${extension}`
                 imgurEmbed
-                .setAuthor({name: "imgur", iconURL: "https://i.imgur.com/cg9Y3if.jpeg", url: "https://imgur.com/"})
+                .setAuthor({name: "imgur", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUMEceBr6JB9DpdklcH5EyxjTOx130lz8LA&s", url: "https://imgur.com/"})
                 .setURL(image.link)
                 .setTitle(`**Imgur Search** ${discord.getEmoji("kannaWave")}`)
                 .setDescription(

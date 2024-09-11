@@ -30,6 +30,7 @@ export default class Danbooru extends Command {
             aliases: ["d", "dan"],
             random: "none",
             cooldown: 20,
+            defer: true,
             subcommandEnabled: true
         })
         const tagOption = new SlashCommandOption()
@@ -52,20 +53,19 @@ export default class Danbooru extends Command {
         const danbooru = Booru("danbooru", process.env.DANBOORU_API_KEY as any)
         const danbooruEmbed = embeds.createEmbed()
         .setAuthor({name: "danbooru", iconURL: "https://i.imgur.com/88HP9ik.png"})
-        .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
-        if (!perms.checkNSFW()) return
+        .setTitle(`**Danbooru Search**`)
 
         let tags: string[] = []
         if (!args[1]) {
-            tags = ["pantyhose", "rating:safe"]
+            tags = ["pantyhose", "rating:general"]
         } else if (args[1].toLowerCase() === "r18") {
             if (!perms.checkNSFW()) return
             tags = Functions.combineArgs(args, 2).split(",")
             if (!tags.join("")) tags = ["pantyhose"]
-            tags.push("-rating:safe")
+            tags.push("-rating:general")
         } else {
             tags = Functions.combineArgs(args, 1).split(",")
-            tags.push("rating:safe")
+            tags.push("rating:general")
         }
 
         const tagArray: string[] = []
@@ -99,7 +99,7 @@ export default class Danbooru extends Command {
             }
             const danbooruEmbed = embeds.createEmbed()
             .setAuthor({name: "danbooru", iconURL: "https://i.imgur.com/88HP9ik.png"})
-            .setTitle(`**Danbooru Search** ${discord.getEmoji("gabLewd")}`)
+            .setTitle(`**Danbooru Search**`)
             .setURL(`https://danbooru.donmai.us/posts/${img.id}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Character:_ **${img.tag_string_character ? Functions.toProperCase(img.tag_string_character.replace(/ /g, "\n").replace(/_/g, " ")) : "Original"}**\n` +
@@ -116,9 +116,9 @@ export default class Danbooru extends Command {
             return this.invalidQuery(danbooruEmbed)
         }
         if (danbooruArray.length === 1) {
-            message.channel.send({embeds: [danbooruArray[0]]})
+            return this.reply(danbooruArray[0])
         } else {
-            embeds.createReactionEmbed(danbooruArray, true, true)
+            return embeds.createReactionEmbed(danbooruArray, true, true)
         }
     }
 }

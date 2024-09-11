@@ -67,7 +67,7 @@ export default class AnimeQuote extends Command {
 
         const animeQuoteEmbed = embeds.createEmbed()
         .setAuthor({name: "animequotes", iconURL: "https://discordemoji.com/assets/emoji/KannaCurious.png"})
-        .setTitle(`**Anime Quote** ${discord.getEmoji("raphi")}`)
+        .setTitle(`**Anime Quote**`)
 
         if (!args[1]) {
             const quote = animeQuotes.randomQuote()

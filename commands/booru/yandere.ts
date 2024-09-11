@@ -30,6 +30,7 @@ export default class Yandere extends Command {
             aliases: ["y", "ydere"],
             random: "none",
             cooldown: 20,
+            defer: true,
             subcommandEnabled: true
         })
         const tagOption = new SlashCommandOption()
@@ -52,8 +53,7 @@ export default class Yandere extends Command {
         const yandere = Booru("yande.re", process.env.KONACHAN_API_KEY as any)
         const yandereEmbed = embeds.createEmbed()
         .setAuthor({name: "yandere", iconURL: "https://i.imgur.com/5DiQTnW.png"})
-        .setTitle(`**Yandere Image** ${discord.getEmoji("gabLewd")}`)
-        if (!perms.checkNSFW()) return
+        .setTitle(`**Yandere Image**`)
 
         let tags: string[] = []
         if (!args[1]) {
@@ -99,7 +99,7 @@ export default class Yandere extends Command {
             }
             const yandereEmbed = embeds.createEmbed()
             .setAuthor({name: "yandere", iconURL: "https://i.imgur.com/5DiQTnW.png"})
-            .setTitle(`**Yandere Image** ${discord.getEmoji("gabLewd")}`)
+            .setTitle(`**Yandere Image**`)
             .setURL(`https://yande.re/post/show/${img.id}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
@@ -114,9 +114,9 @@ export default class Yandere extends Command {
             return this.invalidQuery(yandereEmbed)
         }
         if (yandereArray.length === 1) {
-            message.channel.send({embeds: [yandereArray[0]]})
+            return this.reply(yandereArray[0])
         } else {
-            embeds.createReactionEmbed(yandereArray, true, true)
+            return embeds.createReactionEmbed(yandereArray, true, true)
         }
     }
 }

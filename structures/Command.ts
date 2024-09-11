@@ -87,13 +87,13 @@ export class Command {
     const discord = this.discord
     const desc = text ? `${discord.getEmoji("star")}You must provide a search query. ${text}` : `${discord.getEmoji("star")}You must provide a search query.`
     embed.setDescription(desc)
-    this.message.reply({embeds: [embed]})
+    this.reply(embed)
   }
 
   public invalidQuery = (embed: EmbedBuilder, text?: string) => {
     const discord = this.discord
     const desc = text ? `${discord.getEmoji("star")}No results were found. ${text}` : `${discord.getEmoji("star")}No results were found.`
     embed.setDescription(desc)
-    this.message.reply({embeds: [embed]})
+    this.reply(embed)
   }
 }

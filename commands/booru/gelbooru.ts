@@ -29,6 +29,7 @@ export default class Gelbooru extends Command {
             aliases: ["gel"],
             random: "none",
             cooldown: 20,
+            defer: true,
             subcommandEnabled: true
         })
         const tagOption = new SlashCommandOption()
@@ -51,8 +52,7 @@ export default class Gelbooru extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const gelbooruEmbed = embeds.createEmbed()
         .setAuthor({name: "gelbooru", iconURL: "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png"})
-        .setTitle(`**Gelbooru Search** ${discord.getEmoji("gabLewd")}`)
-        if (!perms.checkNSFW()) return
+        .setTitle(`**Gelbooru Search**`)
 
         let tags: string[] = []
         if (!args[1]) {
@@ -97,7 +97,7 @@ export default class Gelbooru extends Command {
             }
             const gelbooruEmbed = embeds.createEmbed()
             .setAuthor({name: "gelbooru", iconURL: "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png"})
-            .setTitle(`**Gelbooru Search** ${discord.getEmoji("gabLewd")}`)
+            .setTitle(`**Gelbooru Search**`)
             .setURL(`https://gelbooru.com/index.php?page=post&s=view&id=${img.id}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +
@@ -112,9 +112,9 @@ export default class Gelbooru extends Command {
             return this.invalidQuery(gelbooruEmbed)
         }
         if (gelbooruArray.length === 1) {
-            message.channel.send({embeds: [gelbooruArray[0]]})
+            return this.reply(gelbooruArray[0])
         } else {
-            embeds.createReactionEmbed(gelbooruArray, true, true)
+            return embeds.createReactionEmbed(gelbooruArray, true, true)
         }
     }
 }
