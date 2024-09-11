@@ -56,7 +56,7 @@ export default class Neko extends Command {
             nekoEmbed
             .setTitle(`**${title}** ${discord.getEmoji("madokaLewd")}`)
             .setImage(image.url)
-            return message.channel.send({embeds: [nekoEmbed]})
+            return this.reply(nekoEmbed)
         }
 
         const headers = {
@@ -97,9 +97,9 @@ export default class Neko extends Command {
             nekoEmbeds.push(nekoEmbed)
         }
         if (nekoEmbeds.length === 1) {
-            message.reply({embeds: [nekoEmbeds[0]]})
+            return this.reply(nekoEmbeds[0])
         } else {
-            embeds.createReactionEmbed(nekoEmbeds, true, true)
+            return embeds.createReactionEmbed(nekoEmbeds, true, true)
         }
     }
 }

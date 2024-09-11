@@ -25,6 +25,7 @@ export default class AnimeBooks extends Command {
             aliases: ["books", "animegirlbooks", "animegirlsholdingprogrammingbooks"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const languageOption = new SlashCommandOption()
@@ -47,27 +48,37 @@ export default class AnimeBooks extends Command {
         const query = Functions.combineArgs(args, 1).trim().replace(/ +/g, "_")
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"}
 
-        const url = `https://anime-girls-holding-programming-books.netlify.com/${query}`
-        const html = await axios.get(url, {headers}).then((r) => r.data).catch(() => {
-            return message.reply(`Invalid programming language ${discord.getEmoji("kannaFacepalm")}`)
-        })
-        let pictures = html.match(/(?<=src=")\/static\/(.*?)(?=")/gm)?.map((m) => `https://anime-girls-holding-programming-books.netlify.com${m}`)
+        let pictures = [] as string[]
+        if (!query) {
+            for (let i = 0; i < 20; i++) {
+                const random = `https://api.senpy.club/v2/random`
+                const image = await axios.get(random, {headers}).then((r) => r.data.image)
+                pictures.push(image)
+            }
+        } else {
+            const url = `https://api.senpy.club/v2/language/${query}`
+            const json = await axios.get(url, {headers}).then((r) => r.data).catch(() => {
+                return message.reply(`Invalid programming language ${discord.getEmoji("kannaFacepalm")}`)
+            })
+            pictures.push(...json)
+        }
+
         pictures = Functions.shuffleArray(pictures)
 
         const bookArray: EmbedBuilder[] = []
         for (let i = 0; i < pictures.length; i++) {
             const bookEmbed = embeds.createEmbed()
             bookEmbed
-            .setURL(url)
+            .setURL("https://anime-girls-holding-programming-books-app.pages.dev/")
             .setTitle(`**Anime Girls Holding Programming Books** ${discord.getEmoji("kannaCurious")}`)
             .setImage(pictures[i])
             bookArray.push(bookEmbed)
         }
 
         if (bookArray.length === 1) {
-            return message.channel.send({embeds: [bookArray[0]]})
+            return this.reply(bookArray[0])
         } else {
-            embeds.createReactionEmbed(bookArray, false, true)
+            return embeds.createReactionEmbed(bookArray, false, true)
         }
     }
 }

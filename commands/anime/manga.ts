@@ -83,6 +83,6 @@ export default class Manga extends Command {
         )
         .setImage(data.attributes.coverImage ? data.attributes.coverImage.original : data.attributes.posterImage.original)
         .setThumbnail(data.attributes.posterImage.original)
-        message.channel.send({embeds: [mangaEmbed]})
+        return this.reply(mangaEmbed)
     }
 }

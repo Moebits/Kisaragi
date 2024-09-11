@@ -87,7 +87,7 @@ export class PixivApi {
     }
 
     // Pixiv Image
-    public getPixivImage = async (tag?: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: boolean) => {
+    public getPixivImage = async <T extends boolean = false>(tag?: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: T) => {
         const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
         if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         let setFast = false
@@ -128,12 +128,12 @@ export class PixivApi {
         }
         if (msg1) msg1.delete()
         const illusts = json
-        if (!illusts[0]) return this.pixivErrorEmbed()
+        if (!illusts[0]) return this.pixivErrorEmbed() as Promise<T extends true ? PixivIllust : Message>
         if (noEmbed) {
             const index = Math.floor(Math.random() * (illusts.length - illusts.length/2) + illusts.length/2)
             const image = illusts[index]
-            if (!image) return this.pixivErrorEmbed()
-            return image
+            if (!image) return this.pixivErrorEmbed() as Promise<T extends true ? PixivIllust : Message>
+            return image as unknown as Promise<T extends true ? PixivIllust : Message>
         }
         const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
         const pixivArray: EmbedBuilder[] = []
@@ -164,13 +164,12 @@ export class PixivApi {
         }
 
         msg2.delete()
-        if (!pixivArray[0]) return this.pixivErrorEmbed()
+        if (!pixivArray[0]) return this.pixivErrorEmbed() as Promise<T extends true ? PixivIllust : Message>
         if (pixivArray.length === 1) {
-            this.discord.send(this.message, pixivArray[0])
+            return this.discord.reply(this.message, pixivArray[0]) as Promise<T extends true ? PixivIllust : Message>
         } else {
-            this.embeds.createReactionEmbed(pixivArray, true, true)
+            return this.embeds.createReactionEmbed(pixivArray, true, true) as Promise<T extends true ? PixivIllust : Message>
         }
-        return
     }
 
     // Pixiv Image ID

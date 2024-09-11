@@ -6,6 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
+import kawaii from "../../assets/json/kawaii.json"
 
 export default class Kawaii extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
@@ -22,6 +23,7 @@ export default class Kawaii extends Command {
             aliases: [],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         this.subcommand = new SlashCommandSubcommand()
@@ -38,7 +40,7 @@ export default class Kawaii extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const imageArray: EmbedBuilder[] = []
 
-        const links = await images.parseImgurAlbum("K746bJw", 10)
+        const links = Functions.shuffleArray(kawaii.kawaii).slice(0, 20)
         for (let i = 0; i < links.length; i++) {
             await Functions.timeout(100)
             const imageEmbed = embeds.createEmbed()

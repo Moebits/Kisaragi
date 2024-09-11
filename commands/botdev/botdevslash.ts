@@ -11,6 +11,7 @@ export default class BotdevSlash extends Command {
         super(discord, message, {
             description: "Botdev commands",
             unlist: true,
+            botdev: true,
             slashEnabled: true
         })
 

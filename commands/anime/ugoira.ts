@@ -33,6 +33,7 @@ export default class Ugoira extends Command {
             aliases: ["u"],
             random: "none",
             cooldown: 30,
+            defer: true,
             subcommandEnabled: true
         })
         const tag2Option = new SlashCommandOption()
@@ -71,9 +72,9 @@ export default class Ugoira extends Command {
             input = Functions.combineArgs(args, 1)
         }
         const loading = message.channel.lastMessage
-        loading?.delete()
-        const msg1 = await message.channel.send(`**Fetching Ugoira** ${discord.getEmoji("gabCircle")}`) as Message
-        let pixivID
+        if (message instanceof Message) loading?.delete()
+        const msg1 = await this.reply(`**Fetching Ugoira** ${discord.getEmoji("kisaragiCircle")}`) as Message
+        let pixivID = null as any
         if (input.match(/\d\d\d+/g)) {
             pixivID = input.match(/\d+/g)!.join("")
         } else {
@@ -81,17 +82,17 @@ export default class Ugoira extends Command {
                 if (!perms.checkNSFW()) return
                 if (args[2] && args[2].toLowerCase() === "en") {
                     const image = await pixivApi.getPixivImage(input, true, true, true, true)
-                    pixivID = image!.id
+                    pixivID = image.id
                 } else {
                     const image = await pixivApi.getPixivImage(input, true, false, true, true)
-                    pixivID = image!.id
+                    pixivID = image.id
                 }
             } else if (args[1] && args[1].toLowerCase() === "en") {
                 const image = await pixivApi.getPixivImage(input, false, true, true, true)
-                pixivID = image!.id
+                pixivID = image.id
             } else {
                 const image = await pixivApi.getPixivImage(input, false, false, true, true)
-                pixivID = image!.id
+                pixivID = image.id
             }
         }
         if (String(pixivID).length > 14) return
@@ -107,11 +108,9 @@ export default class Ugoira extends Command {
         try {
             details = await pixiv.illust.detail({illust_id: pixivID as number})
         } catch {
-            setTimeout(() => msg1.delete(), 1000)
-            return
+            return Functions.deferDelete(msg1, 1000)
         }
-
-        setTimeout(() => msg1.delete(), 1000)
+        Functions.deferDelete(msg1, 1000)
         const ugoiraEmbed = embeds.createEmbed()
         const outGif = new AttachmentBuilder(path.join(__dirname, `../../assets/misc/images/gifs/${pixivID}.gif`))
         const comments = await pixiv.illust.comments({illust_id: pixivID as number})
@@ -138,7 +137,8 @@ export default class Ugoira extends Command {
             )
         .setThumbnail(`attachment://author.png`)
         .setImage(`attachment://${pixivID}.gif`)
-        const msg = await message.channel.send({embeds: [ugoiraEmbed], files: [outGif.attachment as string, authorAttachment]})
+        const msg = await this.send(ugoiraEmbed, [outGif.attachment as any, authorAttachment])
+
         const reactions = ["reverse"]
         await msg.react(discord.getEmoji(reactions[0]))
         const reverseCheck = (reaction: MessageReaction, user: User) => reaction.emoji.id === this.discord.getEmoji("reverse").id && user.bot === false
@@ -155,21 +155,21 @@ export default class Ugoira extends Command {
                     response.content = response.content.replace("reverse", "")
                 }
                 if (response.content?.trim() && Number.isNaN(Number(response.content))) {
-                    const rep = await response.reply("You must pass a valid speed factor, eg. \`1.5x\` or \`0.5x\`.")
-                    setTimeout(() => rep.delete(), 3000)
+                    const rep = await discord.reply(response, "You must pass a valid speed factor, eg. \`1.5x\` or \`0.5x\`.")
+                    Functions.deferDelete(rep, 3000)
                     bad = true
                 } else if (response.content) {
                     factor = Number(response.content)
                 }
                 await response.delete()
             }
-            const rep = await this.message.channel.send(`<@${user.id}>, Enter the speed change for this ugoira, eg \`2.0\`. Type \`reverse\` to also reverse the frames.`)
+            const rep = await this.send(`<@${user.id}>, Enter the speed change for this ugoira, eg \`2.0\`. Type \`reverse\` to also reverse the frames.`)
             await embeds.createPrompt(getSpeedChange)
             rep.delete()
             if (bad) return
             await pixiv.util.downloadUgoira(String(pixivID), `assets/images/gifs/`, {speed: factor, reverse: setReverse})
             const outGif = new AttachmentBuilder(path.join(__dirname, `../../assets/misc/images/gifs/${pixivID}.gif`))
-            await message.channel.send({files: [outGif]})
+            await this.send("", outGif)
         })
     }
 }

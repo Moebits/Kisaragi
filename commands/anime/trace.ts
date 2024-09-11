@@ -53,11 +53,11 @@ export default class Trace extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         let url = Functions.combineArgs(args, 1)
         if (!url) url = await discord.fetchLastAttachment(message, false, /.(png|jpg)/) as string
-        if (!url) return message.reply(`What image do you want to trace ${discord.getEmoji("kannaFacepalm")}`)
+        if (!url) return this.reply(`What image do you want to trace ${discord.getEmoji("kannaFacepalm")}`)
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"}
 
         const json = await axios.get(`https://trace.moe/api/search?url=${url}`, {headers}).then((r) => r.data)
-        if (!json?.docs) return message.reply(`No search results found ${discord.getEmoji("aquaCry")}`)
+        if (!json?.docs) return this.reply(`No search results found ${discord.getEmoji("aquaCry")}`)
 
         const traceArray: EmbedBuilder[] = []
         for (let i = 0; i < json.docs.length; i++) {
@@ -98,9 +98,9 @@ export default class Trace extends Command {
             .setTitle(`Anime Scene Search ${discord.getEmoji("vigneXD")}`), "If this is a hentai, try searching in a NSFW channel.")
         }
         if (traceArray.length === 1) {
-            return message.channel.send({embeds: [traceArray[0]]})
+            return this.reply(traceArray[0])
         } else {
-            embeds.createReactionEmbed(traceArray, true, true)
+            return embeds.createReactionEmbed(traceArray, true, true)
         }
     }
 }

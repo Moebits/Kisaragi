@@ -78,7 +78,7 @@ export default class AnimeQuote extends Command {
             `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
             `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
             )
-            return message.channel.send({embeds: [animeQuoteEmbed]})
+            return this.reply(animeQuoteEmbed)
         } else {
             let query = Functions.combineArgs(args, 1).trim()
             query = this.replaceQuery(query)
@@ -94,7 +94,7 @@ export default class AnimeQuote extends Command {
                 `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
                 `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
                 )
-                return message.channel.send({embeds: [animeQuoteEmbed]})
+                return this.reply(animeQuoteEmbed)
             }
 
             let quotes = animeQuotes.getQuotesByAnime(query)
@@ -114,7 +114,7 @@ export default class AnimeQuote extends Command {
                     `${discord.getEmoji("star")}_Character:_ **${aniQuote.name}**\n` +
                     `${discord.getEmoji("star")}_Quote:_ ${aniQuote.quote}`
                     )
-                    return message.channel.send({embeds: [animeQuoteEmbed]})
+                    return this.reply(animeQuoteEmbed)
                 }
             animeQuoteEmbed
                 .setDescription(
@@ -123,7 +123,7 @@ export default class AnimeQuote extends Command {
                 `${discord.getEmoji("star")}_Character:_ **${quote.name}**\n` +
                 `${discord.getEmoji("star")}_Quote:_ ${quote.quote}`
                 )
-            return message.channel.send({embeds: [animeQuoteEmbed]})
+            return this.reply(animeQuoteEmbed)
             }
     }
 }

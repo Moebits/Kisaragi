@@ -131,21 +131,6 @@ export class Images {
         return destArray
     }
 
-    /** Parse Imgur Album */
-    public parseImgurAlbum = async (albumID: string, max?: number) => {
-        const imgur = require("imgur")
-        await imgur.setClientId(process.env.IMGUR_discord_ID)
-        await imgur.setAPIUrl("https://api.imgur.com/3/")
-        const album = await imgur.getAlbumInfo(albumID)
-        let images = album.data.images.map((i: any) => i.link)
-        images = Functions.shuffleArray(images)
-        if (max) {
-            return images.slice(0, max)
-        } else {
-            return images
-        }
-    }
-
     /** Fetch channel attachments */
     public fetchChannelAttachments = async (channel: GuildTextBasedChannel | DMChannel | PartialDMChannel, limit?: number, gif?: boolean, messageID?: string) => {
         if (!limit) limit = Infinity

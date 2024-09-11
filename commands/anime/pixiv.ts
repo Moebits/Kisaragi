@@ -37,6 +37,7 @@ export default class Pixiv extends Command {
             aliases: ["p"],
             random: "none",
             cooldown: 60,
+            defer: true,
             subcommandEnabled: true
         })
         const tag3Option = new SlashCommandOption()
@@ -69,51 +70,43 @@ export default class Pixiv extends Command {
         const perms = new Permission(discord, message)
 
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
 
         const tags = Functions.combineArgs(args, 1)
 
         if (tags.match(/\d\d\d+/g)) {
-            await pixivApi.getPixivImageID(String(tags.match(/\d+/g)))
-            return
+            return pixivApi.getPixivImageID(String(tags.match(/\d+/g)))
         }
 
         if (args[1]?.toLowerCase() === "r18") {
             if (!perms.checkNSFW()) return
             if (args[2] === "en") {
                 const r18Tags = Functions.combineArgs(args, 3)
-                await pixivApi.getPixivImage(r18Tags, true, true)
-                return
+                return pixivApi.getPixivImage(r18Tags, true, true)
             } else if (args[2] === "popular") {
-                await pixivApi.getPopularPixivR18Image()
-                return
+                return pixivApi.getPopularPixivR18Image()
             } else if (args[2] === "download" || args[2] === "dl") {
                 const r18Input = Functions.combineArgs(args, 3)
                 const {tags, folderMap} = this.getFolderMap(r18Input)
-                await pixivApi.downloadPixivImages(tags, true, folderMap)
-                return
+                return pixivApi.downloadPixivImages(tags, true, folderMap)
             } else {
                 const r18Tags = Functions.combineArgs(args, 2)
-                await pixivApi.getPixivImage(r18Tags, true)
-                return
+                return pixivApi.getPixivImage(r18Tags, true)
             }
         }
 
         if (args[1] === "en") {
             const enTags = Functions.combineArgs(args, 2)
-            await pixivApi.getPixivImage(enTags, false, true)
-            return
+            return pixivApi.getPixivImage(enTags, false, true)
         } else if (args[1] === "download" || args[1] === "dl") {
             const input = Functions.combineArgs(args, 2)
             const {tags, folderMap} = this.getFolderMap(input)
-            await pixivApi.downloadPixivImages(tags, false, folderMap)
-            return
+            return pixivApi.downloadPixivImages(tags, false, folderMap)
         } else if (args[1] === "popular") {
-            await pixivApi.getPopularPixivImage()
-            return
+            return pixivApi.getPopularPixivImage()
         }
 
-        await pixivApi.getPixivImage(tags)
+        return pixivApi.getPixivImage(tags)
     }
 
     public getFolderMap = (tags: string) => {

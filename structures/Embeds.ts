@@ -127,7 +127,7 @@ export class Embeds {
                         images.push(embeds[i].data.image?.url!)
                     }
                 }
-                const rep = await this.discord.send(msg, `<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("kisaragiCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
                 const src = path.join(__dirname, `../assets/misc/images/dump/${rand}/`)
                 const dest = path.join(__dirname, `../assets/misc/images/dump/${rand}.zip`)
@@ -151,6 +151,7 @@ export class Embeds {
                 }
                 if (rep) rep.delete()
                 Functions.removeDirectory(src)
+                fs.unlinkSync(dest)
             })
         }
         if (!dm) await msg.react(this.discord.getEmoji("numberSelect"))
@@ -339,7 +340,7 @@ export class Embeds {
                             images.push(embeds[i].data.image?.url!)
                         }
                     }
-                    const rep = await this.discord.send(msg, `<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
+                    const rep = await this.discord.send(msg, `<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("kisaragiCircle")}`)
                     const rand = Math.floor(Math.random()*10000)
                     const src = path.join(__dirname, `../assets/misc/images/dump/${rand}/`)
                     const dest = path.join(__dirname, `../assets/misc/images/dump/${rand}.zip`)
@@ -443,7 +444,7 @@ export class Embeds {
                         images.push(embeds[i].data.image?.url!)
                     }
                 }
-                const rep = await this.discord.send(msg, `<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("gabCircle")}`)
+                const rep = await this.discord.send(msg, `<@${user.id}>, **Downloading the images, please wait** ${this.discord.getEmoji("kisaragiCircle")}`)
                 const rand = Math.floor(Math.random()*10000)
                 const src = path.join(__dirname, `../assets/misc/images/dump/${rand}/`)
                 const dest = path.join(__dirname, `../assets/misc/images/dump/${rand}.zip`)
