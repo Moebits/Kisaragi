@@ -1,4 +1,4 @@
-import {BaseInteraction, InteractionReplyOptions} from "discord.js"
+import {BaseInteraction, InteractionReplyOptions, ChatInputCommandInteraction} from "discord.js"
 import {Kisaragi} from "../structures/Kisaragi"
 import {CommandFunctions} from "../structures/CommandFunctions"
 import {Cooldown} from "../structures/Cooldown"
@@ -9,7 +9,6 @@ export default class InteractionCreate {
     public run = async (interaction: BaseInteraction) => {
         const discord = this.discord
         if (!interaction.isChatInputCommand()) return
-        if (!interaction.channel) return
         const cmd = new CommandFunctions(discord, interaction as any)
 
         const subcommand = interaction.options.getSubcommand(false)
@@ -25,11 +24,6 @@ export default class InteractionCreate {
 
         if (command) {
             if (!command.slash) return
-
-            const cooldown = new Cooldown(discord, interaction as any)
-            const onCooldown = cooldown.cmdCooldown(subcommand ? subcommand : slashCommand, command.options.cooldown)
-            if (onCooldown && (interaction.user.id !== process.env.OWNER_ID)) return this.discord.reply(interaction,onCooldown)
-
             // We override some properties to run message command based code with minimal changes
             // @ts-expect-error
             interaction.author = interaction.user
@@ -41,6 +35,10 @@ export default class InteractionCreate {
                     return originalReply.call(this, {fetchReply: true, ...options})
                 }
             })(interaction.reply)
+
+            const cooldown = new Cooldown(discord, interaction as any)
+            const onCooldown = cooldown.cmdCooldown(subcommand ? subcommand : slashCommand, command.options.cooldown)
+            if (onCooldown && (interaction.user.id !== process.env.OWNER_ID)) return this.discord.reply(interaction,onCooldown)
 
             let args = [] as string[]
             if (subcommand) {

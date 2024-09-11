@@ -40,7 +40,7 @@ export default class CaptchaCmd extends Command {
             .setDescription("Can be enable/disable/@role/text/math/difficulty/#color/reset.")
             
         this.subcommand = new SlashCommandSubcommand()
-            .setName(this.constructor.name.toLowerCase())
+            .setName("captcha")
             .setDescription(this.options.description)
             .addOption(optOption)
     }
@@ -97,7 +97,7 @@ export default class CaptchaCmd extends Command {
             ${discord.getEmoji("star")}_Type **reset** to reset all settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send({embeds: [captchaEmbed], files})
+        this.reply(captchaEmbed, files)
 
         async function captchaPrompt(msg: Message<true>) {
             const vRole = await sql.fetchColumn("guilds", "verify role")
@@ -107,8 +107,7 @@ export default class CaptchaCmd extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "verify toggle", "off")
@@ -118,8 +117,7 @@ export default class CaptchaCmd extends Command {
                 await sql.updateColumn("guilds", "difficulty", "medium")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
 
             const newRole = msg.content.match(/\d+/g)
@@ -138,23 +136,20 @@ export default class CaptchaCmd extends Command {
 
             if (setOn && setOff) {
                 responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
+                return discord.send(msg, responseEmbed)
             }
 
             if (setText && setMath) {
                 responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}You cannot set both captcha types at the same time.`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                .setDescription(`${discord.getEmoji("star")}You cannot set both captcha types at the same time.`)
+                return discord.send(msg, responseEmbed)
             }
 
             if (setOn && !setRole && !vRole?.[0]) {
                 responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}In order to enable verification, you must set the verify role.`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                .setDescription(`${discord.getEmoji("star")}In order to enable verification, you must set the verify role.`)
+                return discord.send(msg, responseEmbed)
             }
 
             let description = ""
@@ -195,8 +190,7 @@ export default class CaptchaCmd extends Command {
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             responseEmbed
             .setDescription(description)
-            msg.channel.send({embeds: [responseEmbed]})
-            return
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(captchaPrompt)

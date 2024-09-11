@@ -1,5 +1,5 @@
-import {Message, EmbedBuilder, Role, SlashCommandBuilder} from "discord.js"
-import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, EmbedBuilder, Role} from "discord.js"
+import {SlashCommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Captcha} from "./../../structures/Captcha"
 import {Embeds} from "./../../structures/Embeds"
@@ -25,7 +25,7 @@ export default class Verify extends Command {
             cooldown: 10,
             slashEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        this.slash = new SlashCommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
             .toJSON()
@@ -38,7 +38,7 @@ export default class Verify extends Command {
         const captchaClass = new Captcha(discord, message)
         const sql = new SQLQuery(message)
         const vToggle = await sql.fetchColumn("guilds", "verify toggle")
-        if (vToggle === "off") return message.reply(`Looks like verification is disabled. Enable it in the **captcha** command.`)
+        if (vToggle === "off") return this.reply(`Looks like verification is disabled. Enable it in the **captcha** command.`)
         const vRole = await sql.fetchColumn("guilds", "verify role")
         const cType = await sql.fetchColumn("guilds", "captcha type")
         const color = await sql.fetchColumn("guilds", "captcha color")
@@ -48,7 +48,7 @@ export default class Verify extends Command {
         if (!role) {
             const vErrorEmbed = embeds.createEmbed()
             vErrorEmbed.setDescription("Could not find the verify role!")
-            return message.channel.send({embeds: [vErrorEmbed]})
+            return this.reply(vErrorEmbed)
         }
         const type = cType
 
@@ -60,8 +60,8 @@ export default class Verify extends Command {
 
         let fail = false
 
-        function sendCaptcha(cap: EmbedBuilder, txt: string) {
-            message.channel.send({embeds: [cap]}).then(() => {
+        const sendCaptcha = (cap: EmbedBuilder, txt: string) => {
+            this.reply(cap).then(() => {
                 message.channel.awaitMessages({filter, max: 1, time: 30000, errors: ["time"]})
                     .then(async (collected) => {
                         const msg = collected.first() as Message<true>
@@ -73,7 +73,7 @@ export default class Verify extends Command {
                             .setDescription("Quit the captcha.")
                             return msg.channel.send({embeds: [responseEmbed]})
                         } else if (msg.content.trim() === "skip") {
-                            message.reply("Skipped this captcha!")
+                            this.reply("Skipped this captcha!")
                             const result = await captchaClass.createCaptcha(String(type), String(color), String(difficulty))
                             return sendCaptcha(result.captcha, result.text)
                         } else if (msg.content.trim() === txt) {
@@ -83,14 +83,14 @@ export default class Verify extends Command {
                                     await msg.member!.roles.add!(role!, "Successfully solved the captcha")
                                 } catch {
                                     fail = true
-                                    return message.channel.send("Verification failed. Either I don't have the **Manage Roles** permission, or the verify role is above my highest role in the role hierarchy.")
+                                    return this.send("Verification failed. Either I don't have the **Manage Roles** permission, or the verify role is above my highest role in the role hierarchy.")
                                 }
                             } else {
                                 try {
                                     await msg.member!.roles.add(role!, "Successfully solved the captcha")
                                 } catch {
                                     fail = true
-                                    return message.channel.send("Verification failed. Either I don't have the **Manage Roles** permission, or the verify role is above my highest role in the role hierarchy.")
+                                    return this.send("Verification failed. Either I don't have the **Manage Roles** permission, or the verify role is above my highest role in the role hierarchy.")
                                 }
                             }
                             responseEmbed
@@ -104,7 +104,7 @@ export default class Verify extends Command {
                     })
                     .catch(() => {
                         if (fail) return
-                        message.channel.send("Quit the captcha because the time has run out.")
+                        this.send("Quit the captcha because the time has run out.")
                     })
             })
 

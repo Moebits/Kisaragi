@@ -63,8 +63,7 @@ export default class EmojiRoles extends Command {
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            await linkPrompt(message)
-            return
+            return linkPrompt(message)
         }
         const emojiRoles = await sql.fetchColumn("guilds", "emoji roles")
         const step = 3.0
@@ -109,7 +108,7 @@ export default class EmojiRoles extends Command {
         }
 
         if (emojiArray.length === 1) {
-            message.channel.send({embeds: [emojiArray[0]]})
+            this.reply(emojiArray[0])
         } else {
             embeds.createReactionEmbed(emojiArray)
         }
@@ -123,8 +122,7 @@ export default class EmojiRoles extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 for (let i = 0; i < emojiRoles.length; i++) {
@@ -135,8 +133,7 @@ export default class EmojiRoles extends Command {
                 await sql.updateColumn("guilds", "emoji roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
@@ -150,14 +147,12 @@ export default class EmojiRoles extends Command {
                         await sql.updateColumn("guilds", "emoji roles", emojiRoles)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                        msg.channel.send({embeds: [responseEmbed]})
-                        return
+                        return discord.send(msg, responseEmbed)
                     }
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send({embeds: [responseEmbed]})
-                    return
+                    return discord.send(msg, responseEmbed)
                 }
             }
 
@@ -208,11 +203,11 @@ export default class EmojiRoles extends Command {
                         }
                         editDesc += `${discord.getEmoji("star")}These settings were **applied**!\n`
                     }
-                    if (!editDesc) return msg.channel.send({embeds: [responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`)]})
+                    if (!editDesc) return discord.send(msg, responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`))
                     await sql.updateColumn("guilds", "emoji roles", emojiRoles)
-                    return msg.channel.send({embeds: [responseEmbed.setDescription(editDesc)]})
+                    return discord.send(msg, responseEmbed.setDescription(editDesc))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`)]})
+                    return discord.send(msg, responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`))
                 }
             }
 
@@ -274,7 +269,7 @@ export default class EmojiRoles extends Command {
             await sql.updateColumn("guilds", "emoji roles", emojiRoles)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(linkPrompt)

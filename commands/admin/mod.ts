@@ -14,6 +14,7 @@ export default class Mod extends Command {
             description: "Configures moderation settings for the server.",
             help:
             `
+            \`mod\` - Configure settings
             \`mod @role/id\` - Set the admin role.
             \`mod !@role/id!\` - Set the mod role.
             \`mod #@role/id#\` - Sets the mute role.
@@ -50,14 +51,13 @@ export default class Mod extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        if (!message.member?.permissions.has("Administrator") || message.author.id !== message.guild?.ownerId) return message.reply(`You must have the **Administrator** permission or be the owner of this guild in order to use this command. ${discord.getEmoji("sagiriBleh")}`)
+        if (!message.member?.permissions.has("Administrator") || message.author.id !== message.guild?.ownerId) return this.reply(`You must have the **Administrator** permission or be the owner of this guild in order to use this command. ${discord.getEmoji("sagiriBleh")}`)
         const loading = message.channel.lastMessage
         loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
-            await modPrompt(message)
-            return
+            return modPrompt(message)
         }
 
         const ascii = await sql.fetchColumn("guilds", "ascii name toggle")
@@ -109,7 +109,7 @@ export default class Mod extends Command {
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
 
-        message.channel.send({embeds: [modEmbed]})
+        this.reply(modEmbed)
 
         async function modPrompt(msg: Message<true>) {
             const ascii = await sql.fetchColumn("guilds", "ascii name toggle")
@@ -119,8 +119,7 @@ export default class Mod extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "ascii name toggle", "off")
@@ -132,8 +131,7 @@ export default class Mod extends Command {
                 await sql.updateColumn("guilds", "warn threshold", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             const newMsg = msg.content.replace(/<@&/g, "").replace(/>/g, "")
             const adminRole = newMsg.replace(/\s+\d\s+/, "").replace(/\s+/g, "").replace(/(?<=\$)(.*?)(?=\$)/g, "").replace(/(?<=\()(.*?)(?=\))/g, "")
@@ -218,7 +216,7 @@ export default class Mod extends Command {
             if (!description) description = `${discord.getEmoji("star")}No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(modPrompt)

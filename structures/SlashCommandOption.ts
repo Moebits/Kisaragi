@@ -9,7 +9,12 @@ import {
     SlashCommandNumberOption, 
     SlashCommandRoleOption,
     SlashCommandUserOption,
-	SlashCommandSubcommandBuilder
+	SlashCommandSubcommandBuilder,
+	InteractionContextType,
+	ApplicationIntegrationType,
+	SlashCommandBuilder,
+	ChatInputCommandInteraction,
+	UserContextMenuCommandInteraction
 } from "discord.js"
 
 type SlashCommandOptionType =
@@ -45,6 +50,40 @@ const optionMap = new Map<string, SlashCommandOptionTypeConstructor>([
 	["SlashCommandStringOption", SlashCommandStringOption],
 	["SlashCommandUserOption", SlashCommandUserOption],
 ])
+
+export class SlashCommand extends SlashCommandBuilder {
+	public constructor() {
+		super()
+		this.setContexts(InteractionContextType.Guild, InteractionContextType.BotDM)
+		this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
+	}
+
+	public addOption(input: SlashCommandOptionType | ((builder: SlashCommandOptionType) => SlashCommandOptionType)): this {
+		if (typeof input === "function") {
+			for (const OptionConstructor of optionMap.values()) {
+				try {
+					const instance = new OptionConstructor()
+					const result = input(instance)
+					const OptionBuilder = optionMap.get(result.constructor.name)
+					// @ts-ignore
+					if (OptionBuilder) return this._sharedAddOptionMethod(input, OptionBuilder)
+				} catch {
+					// Ignore errors from passing incorrect arguments to input
+				}
+			}
+
+			throw new Error(`Unsupported option type returned from function input to addOption()`)
+		}
+
+		const OptionBuilder = optionMap.get(input?.constructor.name)
+		// @ts-ignore
+		if (OptionBuilder) return this._sharedAddOptionMethod(input, OptionBuilder)
+
+		throw new Error(`Unsupported option type passed to addOption(): ${input?.constructor.name}`)
+	}
+}
+
+
 
 export class SlashCommandSubcommand extends SlashCommandSubcommandBuilder {
 	public constructor() {

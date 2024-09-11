@@ -6,6 +6,7 @@ describe("weeb", async function() {
         let name = "furigana"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name, "好き"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -14,6 +15,7 @@ describe("weeb", async function() {
         let name = "hiragana"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name, "好き"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -22,6 +24,7 @@ describe("weeb", async function() {
         let name = "jisho"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name, "好き"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -30,6 +33,7 @@ describe("weeb", async function() {
         let name = "katakana"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name, "好き"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -38,6 +42,7 @@ describe("weeb", async function() {
         let name = "romaji"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name, "好き"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -46,6 +51,7 @@ describe("weeb", async function() {
         let name = "translate"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name, "好き"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })

@@ -1,5 +1,5 @@
 import {Message, EmbedBuilder, ChatInputCommandInteraction, SlashCommandSubcommandBuilder, 
-RESTPostAPIChatInputApplicationCommandsJSONBody, AttachmentBuilder, Collection} from "discord.js"
+RESTPostAPIChatInputApplicationCommandsJSONBody, AttachmentBuilder, MessageReplyOptions} from "discord.js"
 import {Kisaragi} from "./Kisaragi"
 
 interface CommandOptions {
@@ -64,16 +64,19 @@ export class Command {
 
   public run = async (args: string[]): Promise<void | Message> => {}
 
-  public reply = (embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-    return this.discord.reply(this.message, embed, file)
+  public reply = (embeds: EmbedBuilder | EmbedBuilder[] | string, 
+    files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
+    return this.discord.reply(this.message, embeds, files, opts)
   }
 
-  public send = (embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-    return this.discord.send(this.message, embed, file)
+  public send = (embeds: EmbedBuilder | EmbedBuilder[] | string, 
+    files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
+    return this.discord.send(this.message, embeds, files, opts)
   }
 
-  public edit = (msg: Message, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-    return this.discord.edit(msg, embed, file)
+  public edit = (msg: Message, embeds: EmbedBuilder | EmbedBuilder[] | string, 
+    files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
+    return this.discord.edit(msg, embeds, files, opts)
   }
 
   public deferReply = (interaction?: ChatInputCommandInteraction) => {

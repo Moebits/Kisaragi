@@ -41,11 +41,11 @@ export default class Swap extends Command {
         const pfp = await sql.fetchColumn("guilds", "pfp")
         const weeb = await sql.fetchColumn("guilds", "weeb")
         const normie = await sql.fetchColumn("guilds", "normie")
-        if (!pfp || pfp === "off") return message.reply("Cannot use this command, have not set the weeb and normie roles!")
+        if (!pfp || pfp === "off") return this.reply("Cannot use this command, have not set the weeb and normie roles!")
         let weebCounter = 0
         let normieCounter = 0
 
-        const wait = await message.channel.send(`**Scanning every member in the server. This will take awhile** ${discord.getEmoji("gabCircle")}`)
+        const wait = await this.reply(`**Scanning every member in the server. This will take awhile** ${discord.getEmoji("gabCircle")}`)
 
         for (let i = 0; i < message.guild!.members.cache.size; i++) {
             const memberArray = message.guild!.members.cache.map((m: GuildMember) => m)
@@ -66,6 +66,6 @@ export default class Swap extends Command {
             `${discord.getEmoji("star")}**${weebCounter}** members were swapped into the <@&${weeb}> role.\n` +
             `${discord.getEmoji("star")}**${normieCounter}** members were swapped into the <@&${normie}> role.\n`
         )
-        message.channel.send({embeds: [swapEmbed]})
+        return this.send(swapEmbed)
     }
 }

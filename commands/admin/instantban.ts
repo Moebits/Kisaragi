@@ -85,7 +85,7 @@ export default class InstantBan extends Command {
             ${discord.getEmoji("star")}_Type **reset** to disable all settings._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send({embeds: [instantBanEmbed]})
+        this.reply(instantBanEmbed)
 
         async function instantBanPrompt(msg: Message<true>) {
             const responseEmbed = embeds.createEmbed()
@@ -93,8 +93,7 @@ export default class InstantBan extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "pfp ban toggle", "off")
@@ -102,8 +101,7 @@ export default class InstantBan extends Command {
                 await sql.updateColumn("guilds", "everyone ban toggle", "off")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were disabled!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.match(/pfp/g)) setPfp = true
             if (msg.content.match(/leave/g)) setLeave = true
@@ -151,7 +149,7 @@ export default class InstantBan extends Command {
             if (!description) return msg.reply(`Invalid arguments ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(instantBanPrompt)

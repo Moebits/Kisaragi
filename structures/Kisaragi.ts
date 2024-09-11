@@ -1,7 +1,7 @@
 import axios from "axios"
 import {MessagePayload, ChannelType, Client, ClientOptions, Guild, Collection, GuildBasedChannel, 
 ApplicationEmoji, GuildEmoji, Message, MessageTarget, Role, TextChannel, User, PartialMessage, AttachmentBuilder,
-EmbedBuilder, ChatInputCommandInteraction, GuildMember} from "discord.js"
+EmbedBuilder, GuildMember, ChatInputCommandInteraction, MessageReplyOptions} from "discord.js"
 import querystring from "querystring"
 import muted from "../assets/json/muted.json"
 import {Command} from "../structures/Command"
@@ -35,17 +35,21 @@ export class Kisaragi extends Client {
     }
 
     /** Reply or edit depending on defer state */
-    public reply = (input: Message | ChatInputCommandInteraction, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-        let options = {} as any
-        if (embed instanceof EmbedBuilder) {
-          options.embeds = [embed]
-        } else if (typeof embed === "string") {
-          options.content = embed
+    public reply = (input: Message | ChatInputCommandInteraction, embeds: EmbedBuilder | EmbedBuilder[] | string, 
+    files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
+        let options = {...opts} as any
+        if (Array.isArray(embeds)) {
+            options.embeds = embeds
+        } else if (embeds instanceof EmbedBuilder) {
+          options.embeds = [embeds]
+        } else if (typeof embeds === "string") {
+          options.content = embeds
         }
-        if (file) options.files = [file]
+        if (files) options.files = Array.isArray(files) ? files : [files]
         if (this.deferState.has(input.id)) {
           return (input as ChatInputCommandInteraction).followUp(options)
         }
+        if (!this.deferState.has(input.id)) this.deferState.add(input.id)
         return input.reply(options)
     }
 
@@ -60,43 +64,54 @@ export class Kisaragi extends Client {
     }
     
     /** Send message to a channel */
-    public send = (input: Message<true>, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-        return this.channelSend(input.channel as TextChannel, embed, file)
+    public send = (input: Message<true>, embeds: EmbedBuilder | EmbedBuilder[] | string, 
+        files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
+        if (!input.channel) return this.reply(input, embeds, files, opts)
+        return this.channelSend(input.channel as TextChannel, embeds, files, opts)
     }
 
     /** Send message to a channel */
-    public channelSend = (channel: TextChannel, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-        let options = {} as any
-        if (embed instanceof EmbedBuilder) {
-            options.embeds = [embed]
-        } else if (typeof embed === "string") {
-            options.content = embed
+    public channelSend = (channel: TextChannel, embeds: EmbedBuilder | EmbedBuilder[] | string, 
+        files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
+        let options = {...opts} as any
+        if (Array.isArray(embeds)) {
+            options.embeds = embeds
+        } else if (embeds instanceof EmbedBuilder) {
+          options.embeds = [embeds]
+        } else if (typeof embeds === "string") {
+          options.content = embeds
         }
-        if (file) options.files = [file]
+        if (files) options.files = Array.isArray(files) ? files : [files]
         return channel.send(options)
     }
 
     /** Send message to a user */
-    public dmSend = (user: User | GuildMember, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-        let options = {} as any
-        if (embed instanceof EmbedBuilder) {
-            options.embeds = [embed]
-        } else if (typeof embed === "string") {
-            options.content = embed
+    public dmSend = (user: User | GuildMember,embeds: EmbedBuilder | EmbedBuilder[] | string, 
+        files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
+        let options = {...opts} as any
+        if (Array.isArray(embeds)) {
+            options.embeds = embeds
+        } else if (embeds instanceof EmbedBuilder) {
+            options.embeds = [embeds]
+        } else if (typeof embeds === "string") {
+            options.content = embeds
         }
-        if (file) options.files = [file]
+        if (files) options.files = Array.isArray(files) ? files : [files]
         return user.send(options)
     }
 
     /** Edit message */
-    public edit = (msg: Message, embed: EmbedBuilder | string, file?: AttachmentBuilder) => {
-        let options = {} as any
-        if (embed instanceof EmbedBuilder) {
-            options.embeds = [embed]
-        } else if (typeof embed === "string") {
-            options.content = embed
+    public edit = (msg: Message, embeds: EmbedBuilder | EmbedBuilder[] | string, 
+        files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
+        let options = {...opts} as any
+        if (Array.isArray(embeds)) {
+            options.embeds = embeds
+        } else if (embeds instanceof EmbedBuilder) {
+          options.embeds = [embeds]
+        } else if (typeof embeds === "string") {
+          options.content = embeds
         }
-        if (file) options.files = [file]
+        if (files) options.files = Array.isArray(files) ? files : [files]
         return msg.edit(options)
     }
 
@@ -370,6 +385,7 @@ export class Kisaragi extends Client {
 
     public resetReplyStatus = () => {
         this.replyStatus = "rejected"
+        this.deferState.clear()
     }
 
     public assertReplyStatus = () => {

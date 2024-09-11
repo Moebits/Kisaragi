@@ -38,7 +38,7 @@ export class Permission {
     /** Check Admin */
     public checkAdmin = async (ignore?: boolean) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
-        if (this.message.author.id === this.discord.user!.id) return true
+        if (this.message.author.id === this.discord.user?.id) return true
         const admin = await this.sql.fetchColumn("guilds", "admin role")
         if (!admin) {
             if (ignore) return false

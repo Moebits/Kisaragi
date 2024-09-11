@@ -57,10 +57,10 @@ export default class Remove extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         if (!await perms.checkAdmin()) return
-        if (!args[1]) return message.reply(`You need to specify whether you are removing a **channel**, **role**, or **emoji** ${discord.getEmoji("kannaCurious")}`)
+        if (!args[1]) return this.reply(`You need to specify whether you are removing a **channel**, **role**, or **emoji** ${discord.getEmoji("kannaCurious")}`)
 
         if (args[1] === "channel") {
-            if (!args[2]) return message.reply(`You must specify a channel name or id.`)
+            if (!args[2]) return this.reply(`You must specify a channel name or id.`)
             const reason = Functions.combineArgs(args, 3) ? Functions.combineArgs(args, 3).trim() : "None provided!"
             let channel: GuildBasedChannel | undefined
             if (args[2].match(/\d{17,}/)) {
@@ -68,7 +68,7 @@ export default class Remove extends Command {
             } else {
                 channel = message.guild?.channels.cache.find((c) => c.name.toLowerCase().includes(args[2].toLowerCase()))
             }
-            if (!channel) return message.reply(`Could not find this channel!`)
+            if (!channel) return this.reply(`Could not find this channel!`)
             const channelName = channel.name
             try {
                 await channel.delete(reason)
@@ -77,15 +77,15 @@ export default class Remove extends Command {
                 .setAuthor({name: "remove", iconURL: "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png"})
                 .setTitle(`**Channel Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
                 .setDescription(`The channel **#${channelName}** was deleted for reason: **${reason}**`)
-                return message.reply({embeds: [removeEmbed]})
+                return this.reply(removeEmbed)
             } catch {
-                return message.reply("Could not delete this channel, I need the **Manage Channels** permission.")
+                return this.reply("Could not delete this channel, I need the **Manage Channels** permission.")
             }
 
         }
 
         if (args[1] === "role") {
-            if (!args[2]) return message.reply(`You must specify a role name or id.`)
+            if (!args[2]) return this.reply(`You must specify a role name or id.`)
             const reason = Functions.combineArgs(args, 3) ? Functions.combineArgs(args, 3).trim() : "None provided!"
             let role: Role | undefined
             if (args[2].match(/\d{17,}/)) {
@@ -93,7 +93,7 @@ export default class Remove extends Command {
             } else {
                 role = message.guild?.roles.cache.find((r) => r.name.toLowerCase().includes(args[2].toLowerCase().replace(/_/g, " ").replace(/-/g, " ")))
             }
-            if (!role) return message.reply(`Could not find a role!`)
+            if (!role) return this.reply(`Could not find a role!`)
             const roleName = role.name
             try {
                 await role.delete(reason)
@@ -102,14 +102,14 @@ export default class Remove extends Command {
                 .setAuthor({name: "remove", iconURL: "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png"})
                 .setTitle(`**Role Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
                 .setDescription(`The role **${roleName}** was deleted for reason: **${reason}**`)
-                return message.reply({embeds: [removeEmbed]})
+                return this.reply(removeEmbed)
             } catch {
-                return message.reply("Could not delete this role, I need the **Manage Roles** permission.")
+                return this.reply("Could not delete this role, I need the **Manage Roles** permission.")
             }
         }
 
         if (args[1] === "emoji") {
-            if (!args[2]) return message.reply(`You must specify an emoji name or id.`)
+            if (!args[2]) return this.reply(`You must specify an emoji name or id.`)
             const reason = Functions.combineArgs(args, 3) ? Functions.combineArgs(args, 3).trim() : "None provided!"
             let emoji: GuildEmoji | undefined
             if (args[2].match(/\d{17,}/)) {
@@ -117,7 +117,7 @@ export default class Remove extends Command {
             } else {
                 emoji = message.guild?.emojis.cache.find((e) => e.name?.toLowerCase().includes(args[2].toLowerCase()))
             }
-            if (!emoji) return message.reply(`Could not find this emoji!`)
+            if (!emoji) return this.reply(`Could not find this emoji!`)
             const emojiName = emoji.name
             try {
                 await emoji.delete(reason)
@@ -126,9 +126,9 @@ export default class Remove extends Command {
                 .setAuthor({name: "remove", iconURL: "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png"})
                 .setTitle(`**Emoji Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
                 .setDescription(`The emoji **${emojiName}** was deleted for reason: **${reason}**`)
-                return message.reply({embeds: [removeEmbed]})
+                return this.reply(removeEmbed)
             } catch {
-                return message.reply("Could not delete this emoji, I need the **Manage Emojis** permission.")
+                return this.reply("Could not delete this emoji, I need the **Manage Emojis** permission.")
             }
         }
     }

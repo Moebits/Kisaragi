@@ -118,7 +118,7 @@ export default class Block extends Command {
         ${discord.getEmoji("star")}_Type **reset** to delete all words._
         ${discord.getEmoji("star")}_Type **cancel** to exit_.
         `))
-        message.channel.send({embeds: [blockEmbed]})
+        this.reply(blockEmbed)
 
         async function blockPrompt(msg: Message<true>) {
             let words = await sql.fetchColumn("guilds", "blocked words")
@@ -128,8 +128,7 @@ export default class Block extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "blocked words", null)
@@ -140,8 +139,7 @@ export default class Block extends Command {
                 await sql.updateColumn("guilds", "self promo", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All blocked words were deleted!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
@@ -152,14 +150,12 @@ export default class Block extends Command {
                         await sql.updateColumn("guilds", "blocked words", words)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                        msg.channel.send({embeds: [responseEmbed]})
-                        return
+                        return discord.send(msg, responseEmbed)
                     }
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send({embeds: [responseEmbed]})
-                    return
+                    discord.send(msg, responseEmbed)
                 }
             }
 
@@ -179,16 +175,14 @@ export default class Block extends Command {
 
             if (setOn && setOff) {
                 responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
+                return discord.send(msg, responseEmbed)
             }
 
             if (setExact && setPartial) {
                 responseEmbed
-                    .setDescription(`${discord.getEmoji("star")}You can only choose one matching algorithm.`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                .setDescription(`${discord.getEmoji("star")}You can only choose one matching algorithm.`)
+                return discord.send(msg, responseEmbed)
             }
 
             let description = ""
@@ -251,9 +245,8 @@ export default class Block extends Command {
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             responseEmbed
             .setDescription(description)
-            msg.channel.send({embeds: [responseEmbed]})
-            return
+            return discord.send(msg, responseEmbed)
         }
-        await embeds.createPrompt(blockPrompt)
-        }
+        return embeds.createPrompt(blockPrompt)
+    }
 }

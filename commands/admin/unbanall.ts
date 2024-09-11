@@ -37,7 +37,7 @@ export default class UnbanAll extends Command {
         if (!await perms.checkAdmin()) return
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
-        if (!message.guild?.members.me?.permissions.has(["ManageGuild", "BanMembers"])) return message.reply(`I need the **Manage Server** and **Ban Members** permissions ${discord.getEmoji("kannaFacepalm")}`)
+        if (!message.guild?.members.me?.permissions.has(["ManageGuild", "BanMembers"])) return this.reply(`I need the **Manage Server** and **Ban Members** permissions ${discord.getEmoji("kannaFacepalm")}`)
         const banList = await message.guild!.bans.fetch().then((e) => e.map((b) => b.user.id))
 
         for (let i = 0; i < banList.length; i++) {
@@ -49,6 +49,6 @@ export default class UnbanAll extends Command {
             }
         }
 
-        return message.reply(`Unbanned everyone in this server! ${discord.getEmoji("mexShrug")}`)
+        return this.reply(`Unbanned everyone in this server! ${discord.getEmoji("mexShrug")}`)
     }
 }

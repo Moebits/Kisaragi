@@ -54,7 +54,7 @@ export default class BanSync extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         let input = Functions.combineArgs(args, 1)
-        if (!input) return message.reply(`You must specify a server ${discord.getEmoji("kannaFacepalm")}`)
+        if (!input) return this.reply(`You must specify a server ${discord.getEmoji("kannaFacepalm")}`)
         let perfect = false
         if (input.match(/perfect/)) {
             perfect = true
@@ -67,7 +67,7 @@ export default class BanSync extends Command {
         } else {
             guild = discord.guilds.cache.find((g) => g.name.toLowerCase() === input.toLowerCase())
         }
-        if (!guild) return message.reply(`Guild not found ${discord.getEmoji("kannaFacepalm")}`)
+        if (!guild) return this.reply(`Guild not found ${discord.getEmoji("kannaFacepalm")}`)
 
         try {
             const banList = await guild.bans.fetch().then((e) => e.map((b) => b.user.id))
@@ -86,9 +86,9 @@ export default class BanSync extends Command {
                     }
                 }))
             }
-            return message.reply(`Synced this guild's ban list with **${guild.name}**! ${discord.getEmoji("aquaUp")}`)
+            return this.reply(`Synced this guild's ban list with **${guild.name}**! ${discord.getEmoji("aquaUp")}`)
         } catch {
-            return message.reply(`I need the **Manage Server** and the **Ban Members** permission in both servers. ${discord.getEmoji("kannaFacepalm")}`)
+            return this.reply(`I need the **Manage Server** and the **Ban Members** permission in both servers. ${discord.getEmoji("kannaFacepalm")}`)
         }
     }
 }

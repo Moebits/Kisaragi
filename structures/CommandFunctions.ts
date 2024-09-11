@@ -38,7 +38,7 @@ export class CommandFunctions {
         cmd.message = msg
         if (cmd.options.guildOnly) {
             // @ts-ignore
-            if (msg.channel.type === ChannelType.DM) return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
+            if (msg.channel?.type === ChannelType.DM) return msg.channel.send(`<@${msg.author.id}>, sorry but you can only use this command in guilds ${this.discord.getEmoji("smugFace")}`)
         }
         let data: any
         await new Promise<void>(async (resolve, reject) => {
@@ -47,7 +47,7 @@ export class CommandFunctions {
                 resolve()
             })
             .catch((err: Error) => {
-                if (msg) msg.channel.send({embeds: [this.discord.cmdError(msg, err)]})
+                if (msg) this.discord.send(msg, this.discord.cmdError(msg, err))
                 reject()
             })
         })

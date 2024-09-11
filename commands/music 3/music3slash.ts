@@ -1,4 +1,5 @@
-import {Message, SlashCommandBuilder} from "discord.js"
+import {Message} from "discord.js"
+import {SlashCommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "../../structures/CommandFunctions"
 import {Kisaragi} from "../../structures/Kisaragi"
@@ -29,7 +30,7 @@ export default class Music3Slash extends Command {
             }
         }
 
-        const slashCommand = new SlashCommandBuilder()
+        const slashCommand = new SlashCommand()
             .setName(this.constructor.name.toLowerCase().replace("slash", ""))
             .setDescription(this.options.description)
 

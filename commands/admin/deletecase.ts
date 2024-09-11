@@ -46,19 +46,19 @@ export default class DeleteCase extends Command {
         const sql = new SQLQuery(message)
         if (!await perms.checkAdmin()) return
 
-        if (!args[1]) return message.reply(`What case do you want to delete ${discord.getEmoji("kannaFacepalm")}`)
+        if (!args[1]) return this.reply(`What case do you want to delete ${discord.getEmoji("kannaFacepalm")}`)
 
         if (args[1] === "all") {
             await sql.updateColumn("guilds", "cases", null)
-            return message.reply(`Deleted all cases! ${discord.getEmoji("kaosWTF")}`)
+            return this.reply(`Deleted all cases! ${discord.getEmoji("kaosWTF")}`)
         }
 
         let cases = await sql.fetchColumn("guilds", "cases")
-        if (!cases) return message.reply(`There are no cases ${discord.getEmoji("kannaFacepalm")}`)
+        if (!cases) return this.reply(`There are no cases ${discord.getEmoji("kannaFacepalm")}`)
         cases = cases.map((c: any) => JSON.parse(c))
 
         const index = cases.findIndex((c: any) => Number(c.case) === Number(args[1]))
-        if (index === -1) return message.reply(`Invalid case ${discord.getEmoji("kannaFacepalm")}`)
+        if (index === -1) return this.reply(`Invalid case ${discord.getEmoji("kannaFacepalm")}`)
         cases[index] = ""
         cases = cases.filter(Boolean)
         cases.forEach((c: any) => {
@@ -81,6 +81,6 @@ export default class DeleteCase extends Command {
             }
             await sql.updateColumn("guilds", "warn log", warns)
         }
-        return message.reply(`Deleted case **#${Number(args[1])}**!`)
+        return this.reply(`Deleted case **#${Number(args[1])}**!`)
     }
 }

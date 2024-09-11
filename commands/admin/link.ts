@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
-export default class ChannelLink extends Command {
+export default class Link extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Configure settings for linked channels.",
@@ -114,7 +114,7 @@ export default class ChannelLink extends Command {
         }
 
         if (linkArray.length === 1) {
-            message.channel.send({embeds: [linkArray[0]]})
+            this.reply(linkArray[0])
         } else {
             embeds.createReactionEmbed(linkArray)
         }
@@ -128,15 +128,13 @@ export default class ChannelLink extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "linked", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
-                return
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
@@ -147,14 +145,12 @@ export default class ChannelLink extends Command {
                         await sql.updateColumn("guilds", "linked", linked)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                        msg.channel.send({embeds: [responseEmbed]})
-                        return
+                        return discord.send(msg, responseEmbed)
                     }
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send({embeds: [responseEmbed]})
-                    return
+                    return discord.send(msg, responseEmbed)
                 }
             }
             if (msg.content.toLowerCase().startsWith("toggle")) {
@@ -165,14 +161,14 @@ export default class ChannelLink extends Command {
                         if (testLink[num].state === "off") {
                             testLink[num].state = "on"
                             await sql.updateColumn("guilds", "linked", testLink)
-                            return msg.channel.send({embeds: [responseEmbed.setDescription(`State of setting **${newMsg}** is now **on**!`)]})
+                            return discord.send(msg, responseEmbed.setDescription(`State of setting **${newMsg}** is now **on**!`))
                         } else {
                             testLink[num].state = "off"
                             await sql.updateColumn("guilds", "linked", testLink)
-                            return msg.channel.send({embeds: [responseEmbed.setDescription(`State of setting **${newMsg}** is now **off**!`)]})
+                            return discord.send(msg, responseEmbed.setDescription(`State of setting **${newMsg}** is now **off**!`))
                         }
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("You cannot use the toggle command on an unfinished setting!")]})
+                    return discord.send(msg, responseEmbed.setDescription("You cannot use the toggle command on an unfinished setting!"))
                 }
             }
 
@@ -202,7 +198,7 @@ export default class ChannelLink extends Command {
                             linked[num].voice = channel.id
                             editDesc += `${discord.getEmoji("star")}Voice channel set to **<#${channel.id}>**!\n`
                         } else {
-                            return msg.channel.send({embeds: [responseEmbed.setDescription("Voice channel not found!")]})
+                            return discord.send(msg, responseEmbed.setDescription("Voice channel not found!"))
                         }
                     }
                     if (setText && setVoice) {
@@ -213,9 +209,9 @@ export default class ChannelLink extends Command {
                         editDesc += `${discord.getEmoji("star")}Status set to **off**!\n`
                     }
                     await sql.updateColumn("guilds", "linked", linked)
-                    return msg.channel.send({embeds: [responseEmbed.setDescription(editDesc)]})
+                    return discord.send(msg, responseEmbed.setDescription(editDesc))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("No edits specified!")]})
+                    return discord.send(msg, responseEmbed.setDescription("No edits specified!"))
                 }
             }
 
@@ -245,7 +241,7 @@ export default class ChannelLink extends Command {
                     obj.voice = channel.id
                     description += `${discord.getEmoji("star")}Voice channel set to **<#${channel.id}>**!\n`
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("Voice channel not found!")]})
+                    return discord.send(msg, responseEmbed.setDescription("Voice channel not found!"))
                 }
             }
 
@@ -262,7 +258,7 @@ export default class ChannelLink extends Command {
             await sql.updateColumn("guilds", "linked", linked)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(linkPrompt)

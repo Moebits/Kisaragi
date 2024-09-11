@@ -1,5 +1,5 @@
-import {Message, EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption, ChatInputCommandInteraction} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, EmbedBuilder} from "discord.js"
+import {SlashCommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import fs from "fs"
 import path from "path"
 import * as config from "../../config.json"
@@ -31,11 +31,12 @@ export default class Help extends Command {
             defer: true,
             slashEnabled: true
         })
-        const commandOption = new SlashCommandStringOption()
+        const commandOption = new SlashCommandOption()
+            .setType("string")
             .setName("command")
             .setDescription("This can be dm, a specific command, or !category to retrieve a category.")
 
-        this.slash = new SlashCommandBuilder()
+        this.slash = new SlashCommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
             .addStringOption(commandOption)

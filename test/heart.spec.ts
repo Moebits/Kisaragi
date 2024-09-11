@@ -6,6 +6,7 @@ describe("heart", async function() {
         let name = "cuddle"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -14,6 +15,7 @@ describe("heart", async function() {
         let name = "hug"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -22,6 +24,7 @@ describe("heart", async function() {
         let name = "kiss"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -30,6 +33,7 @@ describe("heart", async function() {
         let name = "pat"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -38,6 +42,7 @@ describe("heart", async function() {
         let name = "slap"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -46,6 +51,7 @@ describe("heart", async function() {
         let name = "smug"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
@@ -54,6 +60,7 @@ describe("heart", async function() {
         let name = "tickle"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
         await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })

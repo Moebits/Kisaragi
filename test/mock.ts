@@ -119,7 +119,8 @@ message.channel.send = (...opts: any) => dummy
 message.reply = (...opts: any) => dummy
 message.edit = (...opts: any) => dummy
 message.react = (...opts: any) => null
-interaction.author = message.author
+interaction.author = user
+discord.user = user
 
 interaction.reply = (...opts: any) => {
     if (discord.replyStatus === "fulfilled") {
@@ -141,10 +142,8 @@ interaction.deferReply = (...opts: any) => {
     }
     return dummy
 }
-interaction.editReply = (...opts: any) => {
-    if (discord.replyStatus === "fulfilled") {
-        discord.replyStatus = "rejected"
-    } else if (discord.replyStatus === "pending") {
+interaction.followUp = (...opts: any) => {
+    if (discord.replyStatus === "pending") {
         discord.replyStatus = "fulfilled"
     }
     return dummy

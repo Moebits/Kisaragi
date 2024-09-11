@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder, ChatInputCommandInteraction} from "discord.js"
-import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message, ChatInputCommandInteraction} from "discord.js"
+import {SlashCommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
@@ -29,7 +29,7 @@ export default class Chain extends Command {
             .setName("chain")
             .setDescription("The commands to chain separated by \"&\".")
             
-        this.slash = new SlashCommandBuilder()
+        this.slash = new SlashCommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
             .addStringOption(chainOption)

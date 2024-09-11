@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
-export default class Captcha extends Command {
+export default class Reset extends Command {
     constructor(discord: Kisaragi, message: Message<true>) {
         super(discord, message, {
             description: "Deletes and resets all data on your guild (no undo).",
@@ -40,10 +40,8 @@ export default class Captcha extends Command {
 
         await SQLQuery.deleteGuild(message.guild!.id)
         await SQLQuery.initGuild(message, true)
-        message.channel.send({embeds:
-        [initEmbed
+        return this.reply(initEmbed
         .setTitle(`**Reset** ${discord.getEmoji("kaosWTF")}`)
-        .setDescription("All guild settings have been reset to the default!")]})
-        return
+        .setDescription("All guild settings have been reset to the default!"))
     }
 }

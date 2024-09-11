@@ -71,7 +71,7 @@ export default class Disable extends Command {
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
 
-        message.channel.send({embeds: [disableEmbed]})
+        this.reply(disableEmbed)
 
         async function disablePrompt(msg: Message<true>) {
             let categories = await sql.fetchColumn("guilds", "disabled categories")
@@ -81,13 +81,13 @@ export default class Disable extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "disabled categories", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
 
             const newCategories: string[] = []
@@ -144,7 +144,7 @@ export default class Disable extends Command {
             await sql.updateColumn("guilds", "disabled categories", categories)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
         await embeds.createPrompt(disablePrompt)
     }

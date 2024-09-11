@@ -1,5 +1,5 @@
-import {Message, SlashCommandBuilder} from "discord.js"
-import {SlashCommandOption} from "../../structures/SlashCommandOption"
+import {Message} from "discord.js"
+import {SlashCommand} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
 import {Embeds} from "./../../structures/Embeds"
@@ -22,7 +22,7 @@ export default class Random extends Command {
             cooldown: 10,
             slashEnabled: true
         })
-        this.slash = new SlashCommandBuilder()
+        this.slash = new SlashCommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
             .toJSON()

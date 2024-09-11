@@ -1,27 +1,18 @@
 import {discord} from "./mock"
 import "mocha"
 
-describe("fun", async function() {
-    it("8ball", async () => {
-        let name = "8ball"
+describe("admin", async () => {
+    it("bansync", async () => {
+        let name = "bansync"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "hi?"])
+        await command.run([name, "123"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("ascii", async () => {
-        let name = "ascii"
-        discord.resetReplyStatus()
-        const command = discord.commands.get(name)!
-        if (command.options.defer) command.deferReply()
-        await command.run([name, "hi"])
-        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
-    })
-
-    it.skip("chat", async () => {
-        let name = "chat"
+    it.skip("block", async () => {
+        let name = "block"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -29,8 +20,8 @@ describe("fun", async function() {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("coin", async () => {
-        let name = "coin"
+    it.skip("captcha", async () => {
+        let name = "captcha"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -38,8 +29,26 @@ describe("fun", async function() {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("dice", async () => {
-        let name = "dice"
+    it("create", async () => {
+        let name = "create"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name, "channel", "a"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+    it.skip("deletecase", async () => {
+        let name = "deletecase"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name, "1"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+    it.skip("disable", async () => {
+        let name = "disable"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -47,8 +56,8 @@ describe("fun", async function() {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("embed", async () => {
-        let name = "embed"
+    it.skip("emojiroles", async () => {
+        let name = "emojiroles"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -56,17 +65,8 @@ describe("fun", async function() {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("emojify", async () => {
-        let name = "emojify"
-        discord.resetReplyStatus()
-        const command = discord.commands.get(name)!
-        if (command.options.defer) command.deferReply()
-        await command.run([name, "hi"])
-        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
-    })
-
-    it("kaomoji", async () => {
-        let name = "kaomoji"
+    it.skip("instantban", async () => {
+        let name = "instantban"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -74,8 +74,8 @@ describe("fun", async function() {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("lenny", async () => {
-        let name = "lenny"
+    it.skip("link", async () => {
+        let name = "link"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -83,8 +83,17 @@ describe("fun", async function() {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("number", async () => {
-        let name = "number"
+    it.skip("mention", async () => {
+        let name = "mention"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name, "@role"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+    it("mod", async () => {
+        let name = "mod"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -92,8 +101,17 @@ describe("fun", async function() {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("pickle", async () => {
-        let name = "pickle"
+    it("remove", async () => {
+        let name = "remove"
+        discord.resetReplyStatus()
+        const command = discord.commands.get(name)!
+        if (command.options.defer) command.deferReply()
+        await command.run([name, "channel", "a"])
+        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
+    })
+
+    it.skip("reset", async () => {
+        let name = "reset"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
@@ -101,53 +119,26 @@ describe("fun", async function() {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it.skip("react", async () => {
-        let name = "react"
+    it.skip("swap", async () => {
+        let name = "swap"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "id"])
+        await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("reversetext", async () => {
-        let name = "reversetext"
+    it("unbanall", async () => {
+        let name = "unbanall"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "hi"])
+        await command.run([name])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-    it("rps", async () => {
-        let name = "rps"
-        discord.resetReplyStatus()
-        const command = discord.commands.get(name)!
-        if (command.options.defer) command.deferReply()
-        await command.run([name, "rock"])
-        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
-    })
-
-    it("say", async () => {
-        let name = "say"
-        discord.resetReplyStatus()
-        const command = discord.commands.get(name)!
-        if (command.options.defer) command.deferReply()
-        await command.run([name, "hi"])
-        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
-    })
-
-    it.skip("ship", async () => {
-        let name = "ship"
-        discord.resetReplyStatus()
-        const command = discord.commands.get(name)!
-        if (command.options.defer) command.deferReply()
-        await command.run([name, "id", "id2"])
-        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
-    })
-
-    it("slots", async () => {
-        let name = "slots"
+    it.skip("verify", async () => {
+        let name = "verify"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()

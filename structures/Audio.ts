@@ -865,7 +865,7 @@ export class Audio {
         if (!queue) return "It looks like you aren't playing anything..."
         const now = queue[0]
         const nowEmbed = await this.updateNowPlaying()
-        const msg = await this.discord.send(this.message, nowEmbed)
+        const msg = await this.discord.send(this.message, nowEmbed) as Message<true>
         now.message = msg
         const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear"]
         if (now.requesterID === process.env.OWNER_ID) reactions.push("mp3")

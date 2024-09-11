@@ -1,6 +1,6 @@
-import {Message, EmbedBuilder, SlashCommandBuilder} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {getVoiceConnection, joinVoiceChannel} from "@discordjs/voice"
-import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
+import {SlashCommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import * as defaults from "./../../assets/json/defaultSongs.json"
 import {Audio} from "./../../structures/Audio"
@@ -51,12 +51,12 @@ export default class Play extends Command {
             .setName("song")
             .setDescription("This can be the song to search for or any of the yt/first/reverse/loop options.")
 
-        this.slash = new SlashCommandBuilder()
+        this.slash = new SlashCommand()
             .setName(this.constructor.name.toLowerCase())
             .setDescription(this.options.description)
-            .addStringOption(firstOption)
-            .addStringOption(secondOption)
-            .addStringOption(thirdOption)
+            .addOption(firstOption)
+            .addOption(secondOption)
+            .addOption(thirdOption)
             .toJSON()
     }
 
