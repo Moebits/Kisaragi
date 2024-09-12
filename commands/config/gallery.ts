@@ -8,7 +8,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Gallery extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures gallery (image only) channels.",
             help:
@@ -50,9 +50,10 @@ export default class Gallery extends Command {
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        if (!message.channel.isSendable()) return
         if (!await perms.checkAdmin()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -98,10 +99,10 @@ export default class Gallery extends Command {
         if (galleryArray.length > 1) {
             embeds.createReactionEmbed(galleryArray)
         } else {
-            message.channel.send({embeds: [galleryArray[0]]})
+            this.reply(galleryArray[0])
         }
 
-        async function galleryPrompt(msg: Message<true>) {
+        async function galleryPrompt(msg: Message) {
             let gallery = await sql.fetchColumn("guilds", "gallery")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Gallery Channels** ${discord.getEmoji("raphiOMG")}`)
@@ -109,14 +110,14 @@ export default class Gallery extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "gallery", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
@@ -126,9 +127,9 @@ export default class Gallery extends Command {
                     gallery[num] = ""
                     gallery = gallery.filter(Boolean)
                     await sql.updateColumn("guilds", "gallery", gallery)
-                    return msg.channel.send({embeds: [responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`)]})
+                    return discord.send(msg, responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("Setting not found!")]})
+                    return discord.send(msg, responseEmbed.setDescription("Setting not found!"))
                 }
             }
 
@@ -144,7 +145,7 @@ export default class Gallery extends Command {
             await sql.updateColumn("guilds", "gallery", gallery)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(galleryPrompt)

@@ -11,7 +11,7 @@ import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 
 export default class Ugoira extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for animated pixiv images (pixiv ugoira).",
             help:
@@ -56,10 +56,10 @@ export default class Ugoira extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
-        const images = new Images(discord, message)
         const embeds = new Embeds(discord, message)
         const pixivApi = new PixivApi(discord, message)
         const perms = new Permission(discord, message)
+        if (!message.channel.isSendable()) return
         const pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         let input: string
         if (args[1] && (args[1].toLowerCase() === "r18" || args[1].toLowerCase() === "en" || args[1].toLowerCase() === "popular")) {

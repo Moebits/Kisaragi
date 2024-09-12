@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Order extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Orders the rows in the guilds table.",
             help:
@@ -41,6 +41,6 @@ export default class Order extends Command {
         orderEmbed
         .setTitle(`**Order** ${discord.getEmoji("gabStare")}`)
         .setDescription("The table was ordered!")
-        message.channel.send({embeds: [orderEmbed]})
+        this.reply(orderEmbed)
     }
 }

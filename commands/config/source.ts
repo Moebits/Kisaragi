@@ -8,7 +8,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Source extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configure auto image reverse search channels.",
             help:
@@ -51,8 +51,9 @@ export default class Source extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!await perms.checkAdmin()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -98,10 +99,10 @@ export default class Source extends Command {
         if (sourceArray.length > 1) {
             embeds.createReactionEmbed(sourceArray)
         } else {
-            message.channel.send({embeds: [sourceArray[0]]})
+            this.reply(sourceArray[0])
         }
 
-        async function sourcePrompt(msg: Message<true>) {
+        async function sourcePrompt(msg: Message) {
             let source = await sql.fetchColumn("guilds", "source")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Source Channels** ${discord.getEmoji("tohruThumbsUp2")}`)
@@ -109,14 +110,14 @@ export default class Source extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "source", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
@@ -126,9 +127,9 @@ export default class Source extends Command {
                     source[num] = ""
                     source = source.filter(Boolean)
                     await sql.updateColumn("guilds", "source", source)
-                    return msg.channel.send({embeds: [responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`)]})
+                    return discord.send(msg, responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("Setting not found!")]})
+                    return discord.send(msg, responseEmbed.setDescription("Setting not found!"))
                 }
             }
 
@@ -144,7 +145,7 @@ export default class Source extends Command {
             await sql.updateColumn("guilds", "source", source)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(sourcePrompt)

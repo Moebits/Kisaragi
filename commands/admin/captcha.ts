@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class CaptchaCmd extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configure settings for captcha verification.",
             help:
@@ -52,9 +52,10 @@ export default class CaptchaCmd extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const captchaClass = new Captcha(discord, message)
+        if (!message.channel.isSendable()) return
         if (!await perms.checkAdmin()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1).trim()
         if (input.trim()) {
             message.content = input.trim()
@@ -99,7 +100,7 @@ export default class CaptchaCmd extends Command {
         `))
         this.reply(captchaEmbed, files)
 
-        async function captchaPrompt(msg: Message<true>) {
+        async function captchaPrompt(msg: Message) {
             const vRole = await sql.fetchColumn("guilds", "verify role")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)

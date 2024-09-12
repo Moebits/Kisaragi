@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
 export default class Safebooru extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for anime pictures on safebooru.",
             help:

@@ -9,7 +9,7 @@ import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class TwitchNotify extends Command {
     private readonly sql = new SQLQuery(this.message)
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configure twitch livestream notifications.",
             help:
@@ -86,8 +86,9 @@ export default class TwitchNotify extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -144,12 +145,12 @@ export default class TwitchNotify extends Command {
         }
 
         if (twitchArray.length === 1) {
-            message.channel.send({embeds: [twitchArray[0]]})
+            this.reply(twitchArray[0])
         } else {
             embeds.createReactionEmbed(twitchArray)
         }
 
-        async function twitchPrompt(msg: Message<true>) {
+        async function twitchPrompt(msg: Message) {
             let channels = await sql.fetchColumn("guilds", "twitch channels")
             if (!channels) channels = []
             const twitch = channels[0] ? await self.getTwitch(channels) : []
@@ -159,14 +160,14 @@ export default class TwitchNotify extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "twitch channels", null)
                 await self.getTwitch(channels, true)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Twitch notify settings were wiped!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
 
             if (msg.content.toLowerCase().includes("delete")) {
@@ -181,11 +182,11 @@ export default class TwitchNotify extends Command {
                     await self.getTwitch([channel], true)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 }
             }
             if (msg.content.toLowerCase().includes("toggle")) {
@@ -208,11 +209,11 @@ export default class TwitchNotify extends Command {
                     config[index] = current
                     await sql.updateColumn("twitch", "config", config, "channel", current.channel)
                     responseEmbed.setDescription(desc)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 }
             }
             if (msg.content.toLowerCase().includes("edit")) {
@@ -240,11 +241,11 @@ export default class TwitchNotify extends Command {
                     config[index] = current
                     await sql.updateColumn("twitch", "config", config, "channel", current.channel)
                     responseEmbed.setDescription(desc)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 }
             }
 
@@ -263,7 +264,7 @@ export default class TwitchNotify extends Command {
             request.guild = message.guild?.id
 
             if (channels.length >= 5) {
-                return msg.channel.send({embeds: [responseEmbed.setDescription("You can set a maximum of 5 twitch channels!")]})
+                return discord.send(msg, responseEmbed.setDescription("You can set a maximum of 5 twitch channels!"))
             }
 
             if (setChannel) {
@@ -317,7 +318,7 @@ export default class TwitchNotify extends Command {
             if (!description) return message.reply(`No edits were made ${discord.getEmoji("kannaFacepalm")}`)
             await sql.updateColumn("guilds", "twitch channels", channels)
             responseEmbed.setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
         await embeds.createPrompt(twitchPrompt)
     }

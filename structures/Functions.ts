@@ -14,7 +14,7 @@ import {SQLQuery} from "./SQLQuery"
 const activeStreams = new Set()
 
 export class Functions {
-    constructor(private readonly message: Message<true>) {}
+    constructor(private readonly message: Message) {}
 
     // Defer delete
     public static deferDelete = (response: Message, timeout: number) => {

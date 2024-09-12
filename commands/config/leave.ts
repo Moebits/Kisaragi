@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Leave extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for leave messages.",
             help:
@@ -53,8 +53,9 @@ export default class Leave extends Command {
         const images = new Images(discord, message)
         const sql = new SQLQuery(message)
         if (!await perms.checkAdmin()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const axios = require("axios")
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -111,12 +112,12 @@ export default class Leave extends Command {
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
         if (leaveBGToggle === "on") {
-            message.channel.send({embeds: [leaveEmbed], files: [attachment]})
+            this.reply(leaveEmbed, attachment)
         } else {
-            message.channel.send({embeds: [leaveEmbed]})
+            this.reply(leaveEmbed)
         }
 
-        async function leavePrompt(msg: Message<true>) {
+        async function leavePrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             let [setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor, setBGToggle] = [false, false, false, false, false, false, false, false]
             responseEmbed.setTitle(`**Leave Messages** ${discord.getEmoji("sagiriBleh")}`)
@@ -129,7 +130,7 @@ export default class Leave extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -142,7 +143,7 @@ export default class Leave extends Command {
                 await sql.updateColumn("guilds", "leave bg toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Leave settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
 
@@ -157,14 +158,14 @@ export default class Leave extends Command {
             if (setOn && setOff) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
 
             if (!setChannel && setOn) {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}In order to enable leave messages, you must specify a leave channel!`)
-                    msg.channel.send({embeds: [responseEmbed]})
+                    discord.send(msg, responseEmbed)
                     return
             }
             let description = ""
@@ -216,7 +217,7 @@ export default class Leave extends Command {
             if (!description) return message.reply(`No edits were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(leavePrompt)

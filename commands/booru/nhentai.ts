@@ -12,7 +12,7 @@ const nhentai = new API()
 
 export default class $nHentai extends Command {
     private readonly embeds = new Embeds(this.discord, this.message)
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches a doujinshi on nhentai.",
             help:

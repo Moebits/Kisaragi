@@ -32,7 +32,7 @@ type QueueItem = {
     file: string
     originalFile: string
     playing: boolean
-    message: Message<true> | null
+    message: Message | null
     kind: string
 }
 
@@ -64,7 +64,7 @@ export class Audio {
     private readonly soundcloud: Soundcloud
     private readonly embeds: Embeds
     private readonly perms: Permission
-    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
         this.embeds = new Embeds(this.discord, this.message)
         this.perms = new Permission(this.discord, this.message)
         this.soundcloud = new Soundcloud()
@@ -865,7 +865,7 @@ export class Audio {
         if (!queue) return "It looks like you aren't playing anything..."
         const now = queue[0]
         const nowEmbed = await this.updateNowPlaying()
-        const msg = await this.discord.send(this.message, nowEmbed) as Message<true>
+        const msg = await this.discord.send(this.message, nowEmbed) as Message
         now.message = msg
         const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear"]
         if (now.requesterID === process.env.OWNER_ID) reactions.push("mp3")

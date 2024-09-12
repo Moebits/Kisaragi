@@ -7,7 +7,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Event extends Command {
-  constructor(discord: Kisaragi, message: Message<true>) {
+  constructor(discord: Kisaragi, message: Message) {
       super(discord, message, {
           description: "Triggers an event.",
           help:
@@ -57,10 +57,10 @@ export default class Event extends Command {
             discord.emit(event, message.member)
             break
         case "messageCreate":
-            discord.emit(event, message)
+            discord.emit(event, message as any)
             break
         case "messageDelete":
-            discord.emit(event, message)
+            discord.emit(event, message as any)
             break
         case "messageDeleteBulk":
             const col = new Collection() as any
@@ -96,6 +96,6 @@ export default class Event extends Command {
         default:
             discord.emit(event as any)
       }
-      return message.reply("Triggered the event!")
+      return this.reply("Triggered the event!")
   }
 }

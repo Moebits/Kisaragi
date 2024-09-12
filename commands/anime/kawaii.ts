@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import kawaii from "../../assets/json/kawaii.json"
 
 export default class Kawaii extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts some kawaii anime pictures.",
             help:

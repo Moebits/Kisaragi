@@ -6,7 +6,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {PixivApi} from "./../../structures/PixivApi"
 
 export default class Stockings extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts pictures of anime girls wearing stockings.",
             help:

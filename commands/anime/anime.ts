@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import weeb from "node-weeb"
 
 export default class Anime extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for an anime series.",
             help:

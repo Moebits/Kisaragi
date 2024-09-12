@@ -11,7 +11,7 @@ export default class GuildDelete {
     public run = async (guild: Guild) => {
         if (!guild.available) return
         const discord = this.discord
-        const message = await this.discord.fetchFirstMessage(guild) as Message<true>
+        const message = await this.discord.fetchFirstMessage(guild) as Message
         const star = discord.getEmoji("star")
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)

@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Selfrole extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Adds a role from the self assignable roles list.",
             help:
@@ -45,8 +45,8 @@ export default class Selfrole extends Command {
         if (!await perms.checkMod()) return
         let selfroles = await sql.fetchColumn("guilds", "self roles")
 
-        if (!selfroles) return message.reply(`You have not set any selfroles, do so in the \`selfroles\` command ${discord.getEmoji("raphi")}`)
-        if (!args[1]) return message.reply(`What role are you asking for ${discord.getEmoji("kannaCurious")}`)
+        if (!selfroles) return this.reply(`You have not set any selfroles, do so in the \`selfroles\` command ${discord.getEmoji("raphi")}`)
+        if (!args[1]) return this.reply(`What role are you asking for ${discord.getEmoji("kannaCurious")}`)
 
         const roles = message.guild!.roles.cache.filter((r: Role) => {
             for (let i = 0; i < selfroles.length; i++) {
@@ -79,7 +79,7 @@ export default class Selfrole extends Command {
                 selfEmbed
                 .setTitle(`**Self Role** ${discord.getEmoji("karenSugoi")}`)
                 .setDescription(description)
-                message.channel.send({embeds: [selfEmbed]})
+                return this.reply(selfEmbed)
             }
         }
     }

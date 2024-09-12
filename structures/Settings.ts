@@ -10,7 +10,7 @@ export class Settings {
     private tableMap: object
     private guildSettings: Init
 
-   constructor(private readonly message: Message<true>) {
+   constructor(private readonly message: Message) {
         this.sql = new SQLQuery(this.message)
 
         this.guildSettings = {

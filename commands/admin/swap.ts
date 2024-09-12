@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 import {Functions} from "./../../structures/Functions"
 
 export default class Swap extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Swaps all members to a weeb or normie role.",
             help:

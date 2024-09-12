@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Auto extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for auto commands.",
             help:
@@ -62,9 +62,10 @@ export default class Auto extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         const cmdFunc = new CommandFunctions(discord, message)
+        if (!message.channel.isSendable()) return
         if (!await perms.checkAdmin()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -125,10 +126,10 @@ export default class Auto extends Command {
         if (autoArray.length > 1) {
             embeds.createReactionEmbed(autoArray)
         } else {
-            message.channel.send({embeds: autoArray})
+            this.reply(autoArray)
         }
 
-        async function autoPrompt(msg: Message<true>) {
+        async function autoPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Auto Commands** ${discord.getEmoji("think")}`)
             let [setCmd, setChannel, setFreq, setInit] = [] as boolean[]
@@ -144,7 +145,7 @@ export default class Auto extends Command {
             if (msg.content.toLowerCase().startsWith("cancel")) {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase().startsWith("reset")) {
                 await sql.updateColumn("auto", "command", null)
@@ -154,7 +155,7 @@ export default class Auto extends Command {
                 await sql.updateColumn("auto", "timeout", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Auto settings were wiped!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
                 const newMsg = Number(msg.content.replace(/delete/g, "").trim())
@@ -175,9 +176,9 @@ export default class Auto extends Command {
                         await sql.updateColumn("auto", "frequency", arrFreq)
                         await sql.updateColumn("auto", "toggle", arrTog)
                         await sql.updateColumn("auto", "timeout", arrTim)
-                        return msg.channel.send({embeds: [responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`)]})
+                        return discord.send(msg, responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("Setting not found!")]})
+                    return discord.send(msg, responseEmbed.setDescription("Setting not found!"))
                 }
             }
             if (msg.content.toLowerCase().startsWith("toggle")) {
@@ -189,13 +190,13 @@ export default class Auto extends Command {
                 if (newMsg && testCmd && testChan && testFreq) {
                         if (tog[num] === "inactive") {
                             await sql.updateColumn("auto", "toggle", "active")
-                            return msg.channel.send({embeds: [responseEmbed.setDescription(`State of setting **${newMsg}** is now **active**!`)]})
+                            return discord.send(msg, responseEmbed.setDescription(`State of setting **${newMsg}** is now **active**!`))
                         } else {
                             await sql.updateColumn("auto", "toggle", "inactive")
-                            return msg.channel.send({embeds: [responseEmbed.setDescription(`State of setting **${newMsg}** is now **inactive**!`)]})
+                            return discord.send(msg, responseEmbed.setDescription(`State of setting **${newMsg}** is now **inactive**!`))
                         }
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("You cannot use the toggle command on an unfinished setting!")]})
+                    return discord.send(msg, responseEmbed.setDescription("You cannot use the toggle command on an unfinished setting!"))
                 }
             }
             if (msg.content.toLowerCase().startsWith("edit")) {
@@ -237,9 +238,9 @@ export default class Auto extends Command {
                         await sql.updateColumn("auto", "toggle", tog)
                         editDesc += `${discord.getEmoji("star")}This setting is **inactive**!\n`
                     }
-                    return msg.channel.send({embeds: [responseEmbed.setDescription(editDesc)]})
+                    return discord.send(msg, responseEmbed.setDescription(editDesc))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("No edits specified!")]})
+                    return discord.send(msg, responseEmbed.setDescription("No edits specified!"))
                 }
             }
 
@@ -254,7 +255,7 @@ export default class Auto extends Command {
 
             if (setCmd) {
                 if (cmd.length >= 10) {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("You can only set 10 auto commands!")]})
+                    return discord.send(msg, responseEmbed.setDescription("You can only set 10 auto commands!"))
                 } else {
                     cmd.push(newCmd)
                     const arrCmd = cmd.filter(Boolean)
@@ -265,7 +266,7 @@ export default class Auto extends Command {
 
             if (setChannel) {
                 if (cmd.length === 10) {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("You can only set 10 auto commands!")]})
+                    return discord.send(msg, responseEmbed.setDescription("You can only set 10 auto commands!"))
                 } else {
                     chan.push(newChan)
                     const arrChan = chan.filter(Boolean)
@@ -276,7 +277,7 @@ export default class Auto extends Command {
 
             if (setFreq) {
                 if (cmd.length === 10) {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("You can only set 10 auto commands!")]})
+                    return discord.send(msg, responseEmbed.setDescription("You can only set 10 auto commands!"))
                 } else {
                     freq.push(newFreq)
                     const arrFreq = freq.filter(Boolean)
@@ -315,7 +316,7 @@ export default class Auto extends Command {
             }
             responseEmbed
             .setDescription(description)
-            msg.channel.send({embeds: [responseEmbed]})
+            discord.send(msg, responseEmbed)
             return
         }
 

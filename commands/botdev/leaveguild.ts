@@ -7,7 +7,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class LeaveGuild extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Forcefully leaves a guild.",
             help:
@@ -59,16 +59,16 @@ export default class LeaveGuild extends Command {
         }
         const reason = Functions.combineArgs(args, 2)
         const guild = discord.guilds.cache.find((g: Guild) => g.id.toString() === guildID) as Guild
-        if (!guild) return message.reply(`Not in this server ${discord.getEmoji("kannaFacepalm")}`)
+        if (!guild) return this.reply(`Not in this server ${discord.getEmoji("kannaFacepalm")}`)
         const name = guild.name
 
         if (!silent) {
             const msg = await discord.fetchFirstMessage(guild)
-            await (msg?.channel as TextChannel).send(`I am leaving this guild. Message from bot developer: **${reason ? reason : "None provided!"}**`)
+            await discord.send(msg!, `I am leaving this guild. Message from bot developer: **${reason ? reason : "None provided!"}**`)
         }
 
         await guild.leave()
         await SQLQuery.deleteGuild(guildID)
-        await message.channel.send(`Left the guild **${name}**!`)
+        await this.reply(`Left the guild **${name}**!`)
     }
 }

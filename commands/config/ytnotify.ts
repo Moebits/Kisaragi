@@ -13,7 +13,7 @@ import {SQLQuery} from "../../structures/SQLQuery"
 export default class YTNotify extends Command {
     private readonly youtube = new Youtube(process.env.GOOGLE_API_KEY!)
     private readonly sql = new SQLQuery(this.message)
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configure youtube video upload notifications.",
             help:
@@ -88,8 +88,9 @@ export default class YTNotify extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -146,12 +147,12 @@ export default class YTNotify extends Command {
         }
 
         if (ytArray.length === 1) {
-            message.channel.send({embeds: [ytArray[0]]})
+            this.reply(ytArray[0])
         } else {
             embeds.createReactionEmbed(ytArray)
         }
 
-        async function ytPrompt(msg: Message<true>) {
+        async function ytPrompt(msg: Message) {
             let channels = await sql.fetchColumn("guilds", "yt channels")
             if (!channels) channels = []
             const yt = channels[0] ? await self.getYT(channels) : []
@@ -161,14 +162,14 @@ export default class YTNotify extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "yt channels", null)
                 await axios.delete(`${config.kisaragiAPI}/youtube`, {data: {channels, guild: message.guild?.id}})
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}YT Notify settings were wiped!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
@@ -182,11 +183,11 @@ export default class YTNotify extends Command {
                     await axios.delete(`${config.kisaragiAPI}/youtube`, {data: {channels: [channel], guild: message.guild?.id}})
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 }
             }
             if (msg.content.toLowerCase().includes("toggle")) {
@@ -205,11 +206,11 @@ export default class YTNotify extends Command {
                     await axios.post(`${config.kisaragiAPI}/youtube`, current)
                     responseEmbed
                     .setDescription(desc)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 }
             }
             if (msg.content.toLowerCase().includes("edit")) {
@@ -233,11 +234,11 @@ export default class YTNotify extends Command {
                     await axios.post(`${config.kisaragiAPI}/youtube`, current)
                     responseEmbed
                     .setDescription(desc)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 }
             }
 
@@ -264,7 +265,7 @@ export default class YTNotify extends Command {
             request.guild = message.guild?.id
 
             if (channels.length >= 5) {
-                return msg.channel.send({embeds: [responseEmbed.setDescription("You can set a maximum of 5 youtube channels!")]})
+                return discord.send(msg, responseEmbed.setDescription("You can set a maximum of 5 youtube channels!"))
             }
 
             if (setChannel) {
@@ -312,7 +313,7 @@ export default class YTNotify extends Command {
             await sql.updateColumn("guilds", "yt channels", channels)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
 
         }
 

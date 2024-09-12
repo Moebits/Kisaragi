@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class SQL extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Runs an sql query on the database.",
             help:
@@ -48,7 +48,7 @@ export default class SQL extends Command {
         try {
             result = await SQLQuery.run(query, true)
         } catch (err) {
-            message.channel.send(`\`ERROR\` \`\`\`xl\n${err}\n\`\`\``)
+            this.reply(`\`ERROR\` \`\`\`xl\n${err}\n\`\`\``)
         }
         sqlEmbed
         .setTitle(`**SQL Query** ${discord.getEmoji("karenAnger")}`)
@@ -57,7 +57,7 @@ export default class SQL extends Command {
         `**${result ? (result[0][0] ? result[0].length : result.length) : 0}** rows were selected!\n` +
         "\n" +
         `\`\`\`${Functions.checkChar(JSON.stringify(result), 1500, ",")}\`\`\``)
-        message.channel.send({embeds: [sqlEmbed]})
+        this.reply(sqlEmbed)
 
     }
 }

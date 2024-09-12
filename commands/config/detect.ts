@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Detect extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures detection settings.",
             help:
@@ -50,8 +50,9 @@ export default class Detect extends Command {
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         if (!await perms.checkAdmin()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         const links = await sql.fetchColumn("guilds", "links")
         const anime = await sql.fetchColumn("guilds", "anime")
@@ -96,9 +97,9 @@ export default class Detect extends Command {
             ${discord.getEmoji("star")}Type **reset** to reset settings.
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
-        message.channel.send({embeds: [detectEmbed]})
+        this.reply(detectEmbed)
 
-        async function detectPrompt(msg: Message<true>) {
+        async function detectPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Detection Settings** ${discord.getEmoji("sagiriBleh")}`)
             let [setLink, setAnime, setPfp, setResponse, setWeeb, setNormie] = [] as boolean[]
@@ -106,7 +107,7 @@ export default class Detect extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -118,7 +119,7 @@ export default class Detect extends Command {
                 await sql.updateColumn("guilds", "normie", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
 
@@ -175,7 +176,7 @@ export default class Detect extends Command {
                         if (!(testWeeb && testNormie)) {
                             responseEmbed
                             .setDescription("In order to turn on pfp detection, you must set both the weeb and normie role.")
-                            message.channel.send({embeds: [responseEmbed]})
+                            this.send(responseEmbed)
                             return
                         }
                     }
@@ -199,7 +200,7 @@ export default class Detect extends Command {
 
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(detectPrompt)

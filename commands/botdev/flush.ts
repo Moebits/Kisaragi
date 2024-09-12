@@ -7,7 +7,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Flush extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Flushes cached data.",
             help:
@@ -57,6 +57,6 @@ export default class Flush extends Command {
         flushEmbed
         .setTitle(`**Flush** ${discord.getEmoji("gabStare")}`)
         .setDescription(desc)
-        message.channel.send({embeds: [flushEmbed]})
+        this.reply(flushEmbed)
     }
 }

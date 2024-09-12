@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Mention extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Mentions any role, then sets it to unmentionable.",
             help:
@@ -42,8 +42,9 @@ export default class Mention extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         if (!await perms.checkAdmin()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const mentionEmbed = embeds.createEmbed()
         const prefix = await SQLQuery.fetchPrefix(message)
 

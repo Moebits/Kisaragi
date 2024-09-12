@@ -26,7 +26,7 @@ const pointCool = new Collection() as Collection<string, Set<string>>
 export default class MessageCreate {
     constructor(private readonly discord: Kisaragi) {}
 
-    public run = async (message: Message<true>) => {
+    public run = async (message: Message) => {
       const discord = this.discord
       if (message.partial) {
         try {

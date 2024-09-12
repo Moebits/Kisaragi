@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Mod extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures moderation settings for the server.",
             help:
@@ -51,9 +51,10 @@ export default class Mod extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
+        if (!message.channel.isSendable()) return
         if (!message.member?.permissions.has("Administrator") || message.author.id !== message.guild?.ownerId) return this.reply(`You must have the **Administrator** permission or be the owner of this guild in order to use this command. ${discord.getEmoji("sagiriBleh")}`)
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -111,7 +112,7 @@ export default class Mod extends Command {
 
         this.reply(modEmbed)
 
-        async function modPrompt(msg: Message<true>) {
+        async function modPrompt(msg: Message) {
             const ascii = await sql.fetchColumn("guilds", "ascii name toggle")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Moderator Settings** ${discord.getEmoji("karenAnger")}`)

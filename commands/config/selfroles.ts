@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Selfroles extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for self-assignable roles, or lists all of them.",
             help:
@@ -54,8 +54,9 @@ export default class Selfroles extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
 
         // If not admin, only shows the role list.
         if (!await perms.checkAdmin(true) || args[1] === "list") {
@@ -139,10 +140,10 @@ export default class Selfroles extends Command {
         if (selfArray.length > 1) {
             embeds.createReactionEmbed(selfArray)
         } else {
-            message.channel.send({embeds: [selfArray[0]]})
+            this.reply(selfArray[0])
         }
 
-        async function selfPrompt(msg: Message<true>) {
+        async function selfPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Self Roles** ${discord.getEmoji("karenSugoi")}`)
             let selfroles = await sql.fetchColumn("guilds", "self roles")
@@ -150,14 +151,14 @@ export default class Selfroles extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "self roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Self role settings were wiped!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase().includes("delete")) {
@@ -169,12 +170,12 @@ export default class Selfroles extends Command {
                     await sql.updateColumn("guilds", "self roles", selfroles)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                    msg.channel.send({embeds: [responseEmbed]})
+                    discord.send(msg, responseEmbed)
                     return
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send({embeds: [responseEmbed]})
+                    discord.send(msg, responseEmbed)
                     return
                 }
             }
@@ -195,7 +196,7 @@ export default class Selfroles extends Command {
 
             responseEmbed
             .setDescription(description)
-            msg.channel.send({embeds: [responseEmbed]})
+            discord.send(msg, responseEmbed)
             return
 
         }

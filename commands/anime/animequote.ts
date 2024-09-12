@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import animeQuotes from "animequotes"
 
 export default class AnimeQuote extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts a random anime quote.",
             help:

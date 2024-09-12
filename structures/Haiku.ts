@@ -4,7 +4,7 @@ import {Kisaragi} from "./Kisaragi"
 import syllable from "syllable"
 
 export class Haiku {
-    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Haiku
     public haiku = () => {

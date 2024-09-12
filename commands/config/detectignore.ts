@@ -50,9 +50,10 @@ export default class DetectIgnore extends Command {
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        if (!message.channel.isSendable()) return
         if (!await perms.checkAdmin()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message )loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -98,10 +99,10 @@ export default class DetectIgnore extends Command {
         if (detectArray.length > 1) {
             embeds.createReactionEmbed(detectArray)
         } else {
-            message.channel.send({embeds: [detectArray[0]]})
+            this.reply(detectArray[0])
         }
 
-        async function detectPrompt(msg: Message<true>) {
+        async function detectPrompt(msg: Message) {
             let ignored = await sql.fetchColumn("guilds", "ignored")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Ignored Anime Detection Channels** ${discord.getEmoji("kisaragiBawls")}`)
@@ -109,14 +110,14 @@ export default class DetectIgnore extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "ignored", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
@@ -126,9 +127,9 @@ export default class DetectIgnore extends Command {
                     ignored[num] = ""
                     ignored = ignored.filter(Boolean)
                     await sql.updateColumn("guilds", "ignored", ignored)
-                    return msg.channel.send({embeds: [responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`)]})
+                    return discord.send(msg, responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("Setting not found!")]})
+                    return discord.send(msg, responseEmbed.setDescription("Setting not found!"))
                 }
             }
 
@@ -144,7 +145,7 @@ export default class DetectIgnore extends Command {
             await sql.updateColumn("guilds", "ignored", ignored)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(detectPrompt)

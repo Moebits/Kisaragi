@@ -10,7 +10,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Welcome extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for welcome messages.",
             help:
@@ -53,8 +53,9 @@ export default class Welcome extends Command {
         const images = new Images(discord, message)
         const perms = new Permission(discord, message)
         if (!await perms.checkAdmin()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -111,12 +112,12 @@ export default class Welcome extends Command {
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
         if (welcomeBGToggle === "on") {
-            message.channel.send({embeds: [welcomeEmbed], files: [attachment]})
+            this.reply(welcomeEmbed, attachment)
         } else {
-            message.channel.send({embeds: [welcomeEmbed]})
+            this.reply(welcomeEmbed)
         }
 
-        async function welcomePrompt(msg: Message<true>) {
+        async function welcomePrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             let [setMsg, setOn, setOff, setChannel, setImage, setBGText, setBGColor, setBGToggle] = [] as boolean[]
             responseEmbed.setTitle(`**Welcome Messages** ${discord.getEmoji("karenSugoi")}`)
@@ -129,7 +130,7 @@ export default class Welcome extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -142,7 +143,7 @@ export default class Welcome extends Command {
                 await sql.updateColumn("guilds", "welcome bg toggle", "on")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Welcome settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
 
@@ -158,14 +159,14 @@ export default class Welcome extends Command {
             if (setOn && setOff) {
                 responseEmbed
                     .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
 
             if (!setChannel && setOn) {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}In order to enable welcome messages, you must specify a welcome channel!`)
-                    msg.channel.send({embeds: [responseEmbed]})
+                    discord.send(msg, responseEmbed)
                     return
             }
             let description = ""
@@ -217,7 +218,7 @@ export default class Welcome extends Command {
             if (!description) return message.reply(`No edits were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
         await embeds.createPrompt(welcomePrompt)
     }

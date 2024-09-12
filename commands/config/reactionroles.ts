@@ -1,4 +1,4 @@
-import type {Message, EmbedBuilder} from "discord.js"
+import {Message, EmbedBuilder} from "discord.js"
 import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class ReactionRoles extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for reaction roles.",
             help:
@@ -61,8 +61,9 @@ export default class ReactionRoles extends Command {
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -119,10 +120,10 @@ export default class ReactionRoles extends Command {
         if (reactArray.length > 1) {
             embeds.createReactionEmbed(reactArray)
         } else {
-            message.channel.send({embeds: [reactArray[0]]})
+            this.reply(reactArray[0])
         }
 
-        async function reactPrompt(msg: Message<true>) {
+        async function reactPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             .setTitle(`**Reaction Roles** ${discord.getEmoji("tohruThumbsUp2")}`)
             let reactionroles = await sql.fetchColumn("guilds", "reaction roles")
@@ -132,13 +133,13 @@ export default class ReactionRoles extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "reaction roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Reaction role settings were wiped!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase().includes("delete")) {
                 const num = Number(msg.content.replace(/delete/gi, "").replace(/\s+/g, ""))
@@ -149,11 +150,11 @@ export default class ReactionRoles extends Command {
                     await sql.updateColumn("guilds", "reaction roles", reactionroles)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 }
             }
 
@@ -178,11 +179,11 @@ export default class ReactionRoles extends Command {
                     await sql.updateColumn("guilds", "reaction roles", reactionroles)
                     responseEmbed
                     .setDescription(desc)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 }
             }
 
@@ -269,14 +270,14 @@ export default class ReactionRoles extends Command {
                         await sql.updateColumn("guilds", "reaction roles", reactionroles)
                         responseEmbed
                         .setDescription(editDesc)
-                        return msg.channel.send({embeds: [responseEmbed]})
+                        return discord.send(msg, responseEmbed)
                     } else {
-                        return msg.channel.send({embeds: [responseEmbed.setDescription("No edits specified!")]})
+                        return discord.send(msg, responseEmbed.setDescription("No edits specified!"))
                     }
                 } else {
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting not found!`)
-                    msg.channel.send({embeds: [responseEmbed]})
+                    discord.send(msg, responseEmbed)
                     return
                 }
             }
@@ -375,7 +376,7 @@ export default class ReactionRoles extends Command {
 
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(reactPrompt)

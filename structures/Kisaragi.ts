@@ -1,7 +1,7 @@
 import axios from "axios"
 import {MessagePayload, ChannelType, Client, ClientOptions, Guild, Collection, GuildBasedChannel, 
 ApplicationEmoji, GuildEmoji, Message, MessageTarget, Role, TextChannel, User, PartialMessage, AttachmentBuilder,
-EmbedBuilder, GuildMember, ChatInputCommandInteraction, MessageReplyOptions} from "discord.js"
+EmbedBuilder, GuildMember, ChatInputCommandInteraction, MessageReplyOptions, SendableChannels} from "discord.js"
 import querystring from "querystring"
 import muted from "../assets/json/muted.json"
 import {Command} from "../structures/Command"
@@ -34,7 +34,7 @@ export class Kisaragi extends Client {
         Kisaragi.username = username
     }
 
-    /** Reply or edit depending on defer state */
+    /** Reply or follow up depending on defer state */
     public reply = (input: Message | ChatInputCommandInteraction, embeds: EmbedBuilder | EmbedBuilder[] | string, 
     files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
         let options = {...opts} as any
@@ -53,6 +53,7 @@ export class Kisaragi extends Client {
         return input.reply(options)
     }
 
+    /** Clear defer state */
     public clearDeferState = (input: Message | ChatInputCommandInteraction) => {
         this.deferState.delete(input.id)
     }
@@ -64,14 +65,15 @@ export class Kisaragi extends Client {
     }
     
     /** Send message to a channel */
-    public send = (input: Message<true>, embeds: EmbedBuilder | EmbedBuilder[] | string, 
+    public send = (input: Message, embeds: EmbedBuilder | EmbedBuilder[] | string, 
         files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
+        if (!input.channel.isSendable()) return input
         if (!input.channel) return this.reply(input, embeds, files, opts)
-        return this.channelSend(input.channel as TextChannel, embeds, files, opts)
+        return this.channelSend(input.channel, embeds, files, opts)
     }
 
     /** Send message to a channel */
-    public channelSend = (channel: TextChannel, embeds: EmbedBuilder | EmbedBuilder[] | string, 
+    public channelSend = (channel: SendableChannels, embeds: EmbedBuilder | EmbedBuilder[] | string, 
         files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
         let options = {...opts} as any
         if (Array.isArray(embeds)) {
@@ -249,12 +251,12 @@ export class Kisaragi extends Client {
         } catch {
             const lastMsg = channel?.messages.cache.first()
             if (lastMsg) return lastMsg
-            return channel?.lastMessage as Message<true>
+            return channel?.lastMessage as Message
         }
     }
 
     // Check for Bot Mention
-    public checkBotMention = (message: Message<true>) => {
+    public checkBotMention = (message: Message) => {
         if (message.author.bot) return false
         if (!message.content.startsWith("<@")) return false
         const regex = new RegExp(`${this.user?.id}`)
@@ -262,7 +264,7 @@ export class Kisaragi extends Client {
     }
 
     // Errors
-    public cmdError = (msg: Message<true>, error: Error) => {
+    public cmdError = (msg: Message, error: Error) => {
         const embeds = new Embeds(this, msg)
         console.log(error)
         const messageErrorEmbed = embeds.createEmbed()
@@ -276,7 +278,7 @@ export class Kisaragi extends Client {
     }
 
     /** Stops responding if the user is blacklisted. */
-    public blacklistStop = async (msg: Message<true>) => {
+    public blacklistStop = async (msg: Message) => {
         const sql = new SQLQuery(msg)
         const blacklists = await SQLQuery.selectColumn("blacklist", "user id")
         const found = blacklists.find((u) => String(u) === msg.author.id)
@@ -340,7 +342,7 @@ export class Kisaragi extends Client {
     }
 
     /** Gets the last message on the channel */
-    public getLastMessage = async (message: Message<true>) => {
+    public getLastMessage = async (message: Message) => {
         let prefix = await SQLQuery.fetchPrefix(message)
         if (!prefix) prefix = "=>"
         const messages = await message.channel.messages.fetch({limit: 100})

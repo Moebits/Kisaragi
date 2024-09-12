@@ -7,7 +7,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class GCount extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Refreshes the guild count and reposts stats.",
             help:

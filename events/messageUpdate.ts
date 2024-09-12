@@ -7,9 +7,9 @@ import {SQLQuery} from "./../structures/SQLQuery"
 export default class MessageUpdate {
     constructor(private readonly discord: Kisaragi) {}
 
-    public run = async (oldMessage: Message<true> | PartialMessage, newMessage: Message<true> | PartialMessage) => {
+    public run = async (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage) => {
         const discord = this.discord
-        if (newMessage.partial) newMessage = await newMessage.fetch() as Message<true>
+        if (newMessage.partial) newMessage = await newMessage.fetch() as Message
         const sql = new SQLQuery(newMessage)
         const embeds = new Embeds(discord, newMessage)
         if (newMessage.author.bot) return

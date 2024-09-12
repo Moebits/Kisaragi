@@ -5,7 +5,7 @@ import {Permission} from "./Permission"
 import {SQLQuery} from "./SQLQuery"
 
 export class Block {
-    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     public blockWord = async () => {
         const message = this.message
@@ -83,14 +83,14 @@ export class Block {
               .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
               .setTitle(`**Member Banned** ${this.discord.getEmoji("kannaFU")}`)
               .setDescription(`${this.discord.getEmoji("star")}_Successfully banned <@${msg.author.id}> for reason:_ **Mentioning everyone without having the permission to do so.**`)
-              msg.channel.send({embeds: [banEmbed]})
+              this.discord.send(msg, banEmbed)
               const dmEmbed = embeds.createEmbed()
               dmEmbed
               .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
               .setTitle(`**You Were Banned** ${this.discord.getEmoji("kannaFU")}`)
               .setDescription(`${this.discord.getEmoji("star")}_You were banned from ${msg.guild!.name} for reason:_ **Mentioning everyone without having the permission to do so.**`)
               const dm = await msg.author.createDM()
-              await msg.author.send({embeds: [dmEmbed]}).catch(() => null)
+              await this.discord.dmSend(msg.author, dmEmbed).catch(() => null)
             } catch {
               // Do nothing
             }

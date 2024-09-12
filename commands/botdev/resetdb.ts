@@ -7,7 +7,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class ResetDB extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Reconstructs the database.",
             help:
@@ -44,6 +44,6 @@ export default class ResetDB extends Command {
         purgeEmbed
         .setTitle(`**ResetDB** ${discord.getEmoji("gabStare")}`)
         .setDescription("**Reconstructed the database**!")
-        message.channel.send({embeds: [purgeEmbed]})
+        this.reply(purgeEmbed)
     }
 }

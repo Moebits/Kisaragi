@@ -7,7 +7,7 @@ import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 
 export default class Pixiv extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for or downloads anime images on pixiv.",
             help:
@@ -68,6 +68,7 @@ export default class Pixiv extends Command {
         const message = this.message
         const pixivApi = new PixivApi(discord, message)
         const perms = new Permission(discord, message)
+        if (!message.channel.isSendable()) return
 
         const loading = message.channel.lastMessage
         if (message instanceof Message) loading?.delete()

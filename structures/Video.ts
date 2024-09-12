@@ -8,7 +8,7 @@ import {Kisaragi} from "./Kisaragi"
 
 export class Video {
     private readonly iphoneFlags = ["-vcodec", "libx264", "-profile:v", "main", "-level", "3.1", "-preset", "ultrafast", "-crf", "24", "-x264-params", "ref=4", "-movflags", "+faststart"]
-    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     public init = (remove?: boolean) => {
         const dir = path.join(__dirname, `../videos/transform`)

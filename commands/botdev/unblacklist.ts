@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Unblacklist extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Unblacklists a user or guild.",
             help:
@@ -71,24 +71,24 @@ export default class Unblacklist extends Command {
         }
         const id = args[1]
         const reason = Functions.combineArgs(args, 2) ? Functions.combineArgs(args, 2) : null
-        if (!id) return message.reply("Who do you want to unblacklist...")
+        if (!id) return this.reply("Who do you want to unblacklist...")
         if (setGuild) {
             const exists = await sql.fetchColumn("blacklist", "guild id", "guild id", id)
             if (exists) {
                 await SQLQuery.deleteRow("blacklist", "guild id", id)
-                return message.reply({embeds: [blacklistEmbed.setDescription(`Unblacklisted the guild **${id}**!`)]})
+                return this.reply(blacklistEmbed.setDescription(`Unblacklisted the guild **${id}**!`))
             } else {
-                return message.reply("This guild isn't blacklisted...")
+                return this.reply("This guild isn't blacklisted...")
             }
         } else {
             const exists = await sql.fetchColumn("blacklist", "user id", "user id", id)
             if (exists) {
                 const user = await discord.users.fetch(id)
                 await SQLQuery.deleteRow("blacklist", "user id", id)
-                await user?.send({embeds: [blacklistEmbed.setDescription(`You were unblacklisted from Kisaragi Bot. Message from developer: **${reason ?? "None provided!"}**.`)]})
-                return message.reply({embeds: [blacklistEmbed.setDescription(`Unblacklisted the user **${user!.tag}**`)]})
+                await discord.dmSend(user, blacklistEmbed.setDescription(`You were unblacklisted from Kisaragi Bot. Message from developer: **${reason ?? "None provided!"}**.`))
+                return this.reply(blacklistEmbed.setDescription(`Unblacklisted the user **${user!.tag}**`))
             } else {
-                return message.reply("This user isn't blacklisted...")
+                return this.reply("This user isn't blacklisted...")
             }
         }
     }

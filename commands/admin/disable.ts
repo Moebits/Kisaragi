@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Disable extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Disables certain command categories.",
             help:
@@ -43,8 +43,9 @@ export default class Disable extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -73,7 +74,7 @@ export default class Disable extends Command {
 
         this.reply(disableEmbed)
 
-        async function disablePrompt(msg: Message<true>) {
+        async function disablePrompt(msg: Message) {
             let categories = await sql.fetchColumn("guilds", "disabled categories")
             if (!categories) categories = []
             const responseEmbed = embeds.createEmbed()

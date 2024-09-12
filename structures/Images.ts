@@ -27,7 +27,7 @@ GlobalFonts.registerFromPath(path.join(__dirname, "../../assets/fonts/07nikumaru
 export class Images {
     // let blacklist = require("../blacklist.json");
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     /** Compresses a gif. */
     public compressGif = async (input: string[]) => {
@@ -186,6 +186,7 @@ export class Images {
 
     /** Creates a welcome/leave canvas */
     public createCanvas = async (member: GuildMember, image: string, text: string, color: string, uri?: boolean | false, iterator?: number | false, bgElements?: "on" | "off") => {
+        if (!this.message.channel.isSendable()) return
         const colorStops = this.colorStops
         const newText = text.replace(/username/g, Functions.toProperCase(member.user.username)).replace(/user/g, `@${member.user.username}`)
         .replace(/guild/g, Functions.toProperCase(member.guild.name)).replace(/name/g, Functions.toProperCase(member.displayName)).replace(/count/g, String(member.guild.memberCount))

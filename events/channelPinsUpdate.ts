@@ -6,7 +6,7 @@ import {SQLQuery} from "./../structures/SQLQuery"
 export default class ChannelPinsUpdate {
     constructor(private readonly discord: Kisaragi) {}
 
-    public postPin = async (channel: TextChannel, pinChannel: TextChannel, message: Message<true>) => {
+    public postPin = async (channel: TextChannel, pinChannel: TextChannel, message: Message) => {
         const discord = this.discord
         const embeds = new Embeds(discord, message)
         const webhooks = await pinChannel.fetchWebhooks()
@@ -43,7 +43,7 @@ export default class ChannelPinsUpdate {
 
     public run = async (channel: TextBasedChannel, time: Date) => {
         if (!(channel instanceof TextChannel)) return
-        const message = channel.lastMessage! as Message<true>
+        const message = channel.lastMessage! as Message
         const sql = new SQLQuery(message)
 
         const pinboardID = await sql.fetchColumn("guilds", "pinboard")

@@ -7,7 +7,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Guilds extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts all the guilds the bot is in.",
             help:
@@ -59,7 +59,6 @@ export default class Guilds extends Command {
             .setDescription(`${discord.getEmoji("star")}_Guild Count:_ **${guildArray.length}**\n` + description)
             userEmbedArray.push(userEmbed)
         }
-        embeds.createReactionEmbed(userEmbedArray)
-        return
+        return embeds.createReactionEmbed(userEmbedArray)
     }
 }

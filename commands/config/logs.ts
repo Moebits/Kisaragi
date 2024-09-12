@@ -1,4 +1,4 @@
-import type {Message} from "discord.js"
+import {Message} from "discord.js"
 import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Logs extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures logging settings (message log, mod log, etc).",
             help:
@@ -53,8 +53,9 @@ export default class Logs extends Command {
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -95,16 +96,16 @@ export default class Logs extends Command {
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
 
-        message.channel.send({embeds: [logEmbed]})
+        this.reply(logEmbed)
 
-        async function logPrompt(msg: Message<true>) {
+        async function logPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             .setTitle(`**Logs** ${discord.getEmoji("kannaSpook")}`)
 
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "message log", null)
@@ -113,7 +114,7 @@ export default class Logs extends Command {
                 await sql.updateColumn("guilds", "member log", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Logging settings were wiped!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
                 let desc = ""
@@ -136,7 +137,7 @@ export default class Logs extends Command {
                 if (!desc) desc = `No deletions were made ${discord.getEmoji("kannaFacepalm")}\n`
                 responseEmbed
                 .setDescription(desc)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
 
             let [setMsg, setMod, setUser, setMember] = [false, false, false, false]
@@ -183,7 +184,7 @@ export default class Logs extends Command {
             if (!description) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(logPrompt)

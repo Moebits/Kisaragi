@@ -15,7 +15,7 @@ export class AudioEffects {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
     private readonly images: Images
     private readonly embeds: Embeds
-    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
         this.embeds = new Embeds(this.discord, this.message)
         this.images = new Images(this.discord, this.message)
     }

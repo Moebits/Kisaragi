@@ -76,6 +76,6 @@ export default class Refresh extends Command {
         const reloadEmbed = embeds.createEmbed()
         .setTitle(`**Refresh** ${discord.getEmoji("gabStare")}`)
         .setDescription(`All commands and events were refreshed!`)
-        return message.channel.send({embeds: [reloadEmbed]})
+        return this.reply(reloadEmbed)
     }
 }

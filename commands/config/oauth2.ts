@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Oauth2 extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Authorize Kisaragi with additional permissions over your discord account.",
             help:
@@ -51,7 +51,7 @@ export default class Oauth2 extends Command {
             .setAuthor({name: "discord oauth", iconURL: "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png"})
             .setTitle(`**Discord Oauth 2.0** ${discord.getEmoji("gabYes")}`)
             .setDescription(`${discord.getEmoji("star")}Revoked your oauth token! This also deletes your twitter oauth token, if it was set.`)
-            return message.channel.send({embeds: [oauth2Embed]})
+            return this.reply(oauth2Embed)
         }
 
         const state = Functions.randomString(16)
@@ -66,6 +66,6 @@ export default class Oauth2 extends Command {
         .setAuthor({name: "discord oauth", iconURL: "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png"})
         .setTitle(`**Discord Oauth 2.0** ${discord.getEmoji("gabYes")}`)
         .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) to authenticate additional permissions over your discord account for oauth2 commands (ex. Sending you email, adding you to a guild, creating a group dm).`)
-        return message.channel.send({embeds: [oauth2Embed]})
+        return this.reply(oauth2Embed)
     }
 }

@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Reboot extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Reboots the bot.",
           help:
@@ -34,6 +34,7 @@ export default class Reboot extends Command {
         const message = this.message
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
+        if (!message.channel.isSendable()) return
         if (!perms.checkBotDev()) return
 
         const subDir = fs.readdirSync("commands")
@@ -45,13 +46,13 @@ export default class Reboot extends Command {
         }
 
         const loading = message.channel.lastMessage
-        await loading?.delete()
+        if (message instanceof Message) await loading?.delete()
 
         const rebootEmbed = embeds.createEmbed()
         .setTitle(`**Reboot** ${discord.getEmoji("gabStare")}`)
         .setDescription("Rebooting bot!")
 
-        await message.channel.send({embeds: [rebootEmbed]})
+        await this.reply(rebootEmbed)
         child_process.execSync("cd ../ && npm run build")
         process.exit(0)
       }

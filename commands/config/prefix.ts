@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Prefix extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Changes the bot prefix.",
             help:
@@ -42,7 +42,7 @@ export default class Prefix extends Command {
         const embeds = new Embeds(discord, message)
         if (!await perms.checkAdmin()) return
 
-        if (!args[1]) return message.reply(`You must specify the new prefix ${discord.getEmoji("kannaCurious")}`)
+        if (!args[1]) return this.reply(`You must specify the new prefix ${discord.getEmoji("kannaCurious")}`)
         const newPrefix = args[1]
 
         await SQLQuery.updatePrefix(message, newPrefix)
@@ -50,7 +50,6 @@ export default class Prefix extends Command {
         const prefixEmbed = embeds.createEmbed()
         prefixEmbed
         .setDescription(`The prefix has been changed to ${newPrefix}\n If you ever forget the prefix just tag me!`)
-        message.channel.send({embeds: [prefixEmbed]})
-        return
+        return this.reply(prefixEmbed)
     }
 }

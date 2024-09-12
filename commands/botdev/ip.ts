@@ -6,7 +6,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class IP extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts the bot's ip address.",
             help:
@@ -39,7 +39,6 @@ export default class IP extends Command {
         ipEmbed
             .setTitle(`**IP Address** ${discord.getEmoji("vigneDead")}`)
             .setDescription(`My IP Address is ${result}`)
-        message.channel.send({embeds: [ipEmbed]})
-
+        this.reply(ipEmbed)
     }
 }

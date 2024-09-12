@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Verify extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts a captcha that must be solved to be verified.",
             help:
@@ -62,16 +62,17 @@ export default class Verify extends Command {
 
         const sendCaptcha = (cap: EmbedBuilder, txt: string) => {
             this.reply(cap).then(() => {
+                if (!message.channel.isSendable()) return
                 message.channel.awaitMessages({filter, max: 1, time: 30000, errors: ["time"]})
                     .then(async (collected) => {
-                        const msg = collected.first() as Message<true>
+                        const msg = collected.first() as Message
                         const responseEmbed = embeds.createEmbed()
                         responseEmbed
                         .setTitle(`Captcha ${discord.getEmoji("kannaAngry")}`)
                         if (msg.content.trim() === "cancel") {
                             responseEmbed
                             .setDescription("Quit the captcha.")
-                            return msg.channel.send({embeds: [responseEmbed]})
+                            return discord.send(msg, responseEmbed)
                         } else if (msg.content.trim() === "skip") {
                             this.reply("Skipped this captcha!")
                             const result = await captchaClass.createCaptcha(String(type), String(color), String(difficulty))
@@ -95,7 +96,7 @@ export default class Verify extends Command {
                             }
                             responseEmbed
                             .setDescription(`${discord.getEmoji("pinkCheck")} **${msg.member!.displayName}** was verified!`)
-                            return msg.channel.send({embeds: [responseEmbed]})
+                            return discord.send(msg, responseEmbed)
                         } else {
                             msg.reply("Wrong answer! Please try again.")
                             const result = await captchaClass.createCaptcha(String(type), String(color), String(difficulty))

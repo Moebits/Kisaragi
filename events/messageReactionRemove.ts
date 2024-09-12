@@ -10,8 +10,8 @@ export default class MessageReactionRemove {
         const removeReactionRole = async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
             if (user.id === this.discord.user!.id) return
             if (reaction.message.partial) reaction.message = await reaction.message.fetch()
-            const sql = new SQLQuery(reaction.message as Message<true>)
-            const embeds = new Embeds(this.discord, reaction.message as Message<true>)
+            const sql = new SQLQuery(reaction.message as Message)
+            const embeds = new Embeds(this.discord, reaction.message as Message)
             const reactionroles = await sql.fetchColumn("guilds", "reaction roles")
             if (!reactionroles?.[0]) return
             for (let i = 0; i < reactionroles.length; i++) {
@@ -35,7 +35,7 @@ export default class MessageReactionRemove {
                             await this.discord.dmSend(user as User, dmEmbed).catch(() => null)
                         }
                     } catch {
-                        const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message) as Message<true>
+                        const foundMsg = await this.discord.fetchMessage(reaction.message, reactionrole.message) as Message
                         try {
                             await this.discord.send(foundMsg, `I need the **Manage Roles** permission, or this role is above my highest role ${this.discord.getEmoji("kannaFacepalm")}`)
                         } catch {

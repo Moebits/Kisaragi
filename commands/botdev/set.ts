@@ -7,7 +7,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Set extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Sets the bot's activity text.",
             help:
@@ -61,7 +61,7 @@ export default class Set extends Command {
         .setTitle(`**Set Presence ${discord.getEmoji("karenSugoi")}**`)
 
         discord.user!.setPresence({activities: [{name, type: activity, state: status}]})
-        message.channel.send({embeds: [setEmbed
-        .setDescription(`I am now **${status}** and **${args[1]} ${name}**!`)]})
+        this.reply(setEmbed
+        .setDescription(`I am now **${status}** and **${args[1]} ${name}**!`))
     }
 }

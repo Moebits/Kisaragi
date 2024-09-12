@@ -30,7 +30,7 @@ export class Command {
   public slash: RESTPostAPIChatInputApplicationCommandsJSONBody
   public subcommand: SlashCommandSubcommandBuilder
 
-  constructor(public discord: Kisaragi, public message: Message<true>, {
+  constructor(public discord: Kisaragi, public message: Message, {
       params = "",
       description = "No description provided.",
       help = "This command is not documented.",

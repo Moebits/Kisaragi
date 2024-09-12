@@ -24,7 +24,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Eval extends Command {
-  constructor(discord: Kisaragi, message: Message<true>) {
+  constructor(discord: Kisaragi, message: Message) {
       super(discord, message, {
           description: "Evaluates Javascript code.",
           help:
@@ -90,9 +90,9 @@ export default class Eval extends Command {
           evalEmbed
           .setTitle(`**Javascript Code Eval** ${discord.getEmoji("kaosWTF")}`)
           .setDescription(Functions.checkChar(this.clean(evaled), 2000, ""))
-          message.channel.send({embeds: [evalEmbed]})
+          this.reply(evalEmbed)
         } catch (error: any) {
-          message.channel.send(`\`ERROR\` \`\`\`xl\n${this.clean(error)}\n\`\`\``)
+          this.reply(`\`ERROR\` \`\`\`xl\n${this.clean(error)}\n\`\`\``)
         }
   }
 }

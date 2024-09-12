@@ -30,7 +30,7 @@ const pgPool = new Pool({
 if (process.env.REDIS === "on") redis.connect()
 
 export class SQLQuery {
-  constructor(private readonly message: Message<true>) {}
+  constructor(private readonly message: Message) {}
 
   /** Run query */
   public static run = async (query: QueryConfig | QueryArrayConfig, newData?: boolean): Promise<string[][]> => {
@@ -129,7 +129,7 @@ export class SQLQuery {
   }
 
   /** Fetch prefix */
-  public static fetchPrefix = async (message: Message<true>, update?: boolean): Promise<string> => {
+  public static fetchPrefix = async (message: Message, update?: boolean): Promise<string> => {
     if (!message?.guild?.id) return "=>"
     const query: QueryArrayConfig = {
         text: `SELECT prefix FROM guilds WHERE "guild id" = $1`,
@@ -211,7 +211,7 @@ export class SQLQuery {
   }
 
   /** Update prefix */
-  public static updatePrefix = async (message: Message<true>, prefix: string): Promise<void> => {
+  public static updatePrefix = async (message: Message, prefix: string): Promise<void> => {
   const query: QueryConfig = {
       text: `UPDATE "guilds" SET "prefix" = $1 WHERE "guild id" = $2`,
       values: [prefix, message.guild?.id]
@@ -300,7 +300,7 @@ export class SQLQuery {
   }
 
   /** Initialize guild settings */
-  public static initGuild = async (message: Message<true>, force?: boolean) => {
+  public static initGuild = async (message: Message, force?: boolean) => {
     const settings = new Settings(message)
     const query: QueryArrayConfig = {
           text: `SELECT "guild id" FROM guilds`,

@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class EmojiRoles extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Restricts an emoji to certain roles (Bot exclusive feature).",
             help:
@@ -57,8 +57,9 @@ export default class EmojiRoles extends Command {
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         if (!await perms.checkAdmin()) return
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
@@ -113,7 +114,7 @@ export default class EmojiRoles extends Command {
             embeds.createReactionEmbed(emojiArray)
         }
 
-        async function linkPrompt(msg: Message<true>) {
+        async function linkPrompt(msg: Message) {
             let emojiRoles = await sql.fetchColumn("guilds", "emoji roles")
             let [setEmoji, setRole, setType] = [] as boolean[]
             if (!emojiRoles) emojiRoles = []

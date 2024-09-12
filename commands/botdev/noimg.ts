@@ -10,7 +10,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class NoImg extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lists all commands with no image.",
             help:
@@ -83,7 +83,7 @@ export default class NoImg extends Command {
         }
 
         if (embedArray.length === 1) {
-            message.channel.send({embeds: [embedArray[0]]})
+            this.reply(embedArray[0])
         } else {
             embeds.createReactionEmbed(embedArray)
         }

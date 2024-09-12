@@ -9,7 +9,7 @@ export default class MessageDeleteBulk {
 
     public run = async (messages:  ReadonlyCollection<Snowflake, Message| PartialMessage>, channel: GuildTextBasedChannel) => {
         const discord = this.discord
-        const message = channel.lastMessage as Message<true>
+        const message = channel.lastMessage as Message
         if (!message) return
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)

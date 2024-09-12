@@ -7,10 +7,10 @@ import path from "path"
 const noCmdCool = new Set()
 
 export class CommandFunctions {
-    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {}
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {}
 
     // Run Command
-    public runCommand = async (msg: Message<true>, args: string[], noMsg?: boolean) => {
+    public runCommand = async (msg: Message, args: string[], noMsg?: boolean) => {
         args = args.filter(Boolean)
         const command = this.findCommand(args?.[0])
         if (!command) return this.noCommand(args?.[0], noMsg)
@@ -26,7 +26,7 @@ export class CommandFunctions {
                 resolve()
             })
             .catch((err: Error) => {
-                if (msg) msg.channel.send({embeds: [this.discord.cmdError(msg, err)]})
+                if (msg) this.discord.send(msg, this.discord.cmdError(msg, err))
                 reject()
             })
         })
@@ -34,7 +34,7 @@ export class CommandFunctions {
     }
 
     // Run Command (from Class)
-    public runCommandClass = async (cmd: Command, msg: Message<true>, args: string[]) => {
+    public runCommandClass = async (cmd: Command, msg: Message, args: string[]) => {
         cmd.message = msg
         if (cmd.options.guildOnly) {
             // @ts-ignore

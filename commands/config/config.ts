@@ -8,7 +8,7 @@ import {Permission} from "./../../structures/Permission"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Config extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures bot settings like embed colors.",
             help:
@@ -45,9 +45,10 @@ export default class Config extends Command {
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
+        if (!message.channel.isSendable()) return
         if (!await perms.checkAdmin()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -78,9 +79,9 @@ export default class Config extends Command {
         `
         ))
 
-        message.channel.send({embeds: [configEmbed]})
+        this.reply(configEmbed)
 
-        async function configPrompt(msg: Message<true>) {
+        async function configPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Bot Config Settings** ${discord.getEmoji("gabStare")}`)
             let [setColor, setPerm] = [] as boolean[]
@@ -88,7 +89,7 @@ export default class Config extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -96,7 +97,7 @@ export default class Config extends Command {
                 await sql.updateColumn("guilds", "permissions", "role")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
 
@@ -127,7 +128,7 @@ export default class Config extends Command {
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt ${discord.getEmoji("kannaFacepalm")}`
             responseEmbed
             .setDescription(description)
-            msg.channel.send({embeds: [responseEmbed]})
+            discord.send(msg, responseEmbed)
             return
         }
         await embeds.createPrompt(configPrompt)

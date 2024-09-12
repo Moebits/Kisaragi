@@ -1,4 +1,4 @@
-import type {Message} from "discord.js"
+import {Message} from "discord.js"
 import {SlashCommandSubcommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {Permission} from "../../structures/Permission"
@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Starboard extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Forwards messages that exceed a threshold of star reactions to a starboard channel.",
             help:
@@ -53,8 +53,9 @@ export default class Starboard extends Command {
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -90,16 +91,16 @@ export default class Starboard extends Command {
             ${discord.getEmoji("star")}Type **cancel** to exit.
         `))
 
-        message.channel.send({embeds: [pinboardEmbed]})
+        this.reply(pinboardEmbed)
 
-        async function pinboardPrompt(msg: Message<true>) {
+        async function pinboardPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             .setTitle(`**Starboard** ${discord.getEmoji("tohruSmug")}`)
 
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "starboard", null)
@@ -107,7 +108,7 @@ export default class Starboard extends Command {
                 await sql.updateColumn("guilds", "star emoji", "⭐")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Starboard settings were reset!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
 
             let [setStar, setThreshold, setEmoji] = [false, false, false]
@@ -151,7 +152,7 @@ export default class Starboard extends Command {
             if (!description) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(pinboardPrompt)

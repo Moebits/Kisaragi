@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class InstantBan extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configure settings for instant bans.",
             help:
@@ -45,8 +45,9 @@ export default class InstantBan extends Command {
         const embeds = new Embeds(discord, message)
         const sql = new SQLQuery(message)
         if (!await perms.checkAdmin()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -87,7 +88,7 @@ export default class InstantBan extends Command {
         `))
         this.reply(instantBanEmbed)
 
-        async function instantBanPrompt(msg: Message<true>) {
+        async function instantBanPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             let [setPfp, setLeave, setChannel, setEveryone] = [false, false, false, false]
             if (msg.content.toLowerCase() === "cancel") {

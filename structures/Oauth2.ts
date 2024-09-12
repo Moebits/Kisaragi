@@ -12,14 +12,14 @@ export class Oauth2 {
     private readonly sql: SQLQuery
     private readonly embeds: Embeds
     private readonly redditCmd: RedditCmd
-    constructor(private readonly discord: Kisaragi, private readonly message: Message<true>) {
+    constructor(private readonly discord: Kisaragi, private readonly message: Message) {
         this.sql = new SQLQuery(this.message)
         this.embeds = new Embeds(this.discord, this.message)
         this.redditCmd = new RedditCmd(this.discord, this.message)
     }
 
     /** Add Reddit options to a reddit embed */
-    public redditOptions = async (msg: Message<true>) => {
+    public redditOptions = async (msg: Message) => {
         const reactions = ["upvote", "downvote", "comment", "redditsave", "subscribe"]
         for (let i = 0; i < reactions.length; i++) await msg.react(this.discord.getEmoji(reactions[i]))
 
@@ -90,6 +90,7 @@ export class Oauth2 {
         })
 
         comment.on("collect", async (reaction, user) => {
+            if (!this.message.channel.isSendable()) return
             await reaction.users.remove(user).catch(() => null)
             const refreshToken = await this.sql.fetchColumn("oauth2", "reddit refresh", "user id", this.message.author.id)
             if (!refreshToken) {
@@ -182,7 +183,7 @@ export class Oauth2 {
     }
 
     /** Add twitter options to a twitter embed */
-    public twitterOptions = async (msg: Message<true>) => {
+    public twitterOptions = async (msg: Message) => {
         const reactions = ["reply", "retweet", "twitterheart"]
         for (let i = 0; i < reactions.length; i++) await msg.react(this.discord.getEmoji(reactions[i]))
 
@@ -195,6 +196,7 @@ export class Oauth2 {
         const heart = msg.createReactionCollector({filter: heartCheck})
 
         reply.on("collect", async (reaction, user) => {
+            if (!this.message.channel.isSendable()) return
             await reaction.users.remove(user).catch(() => null)
             const token = await this.sql.fetchColumn("oauth2", "twitter token", "user id", user.id)
             if (!token) {
@@ -252,6 +254,7 @@ export class Oauth2 {
         })
 
         retweet.on("collect", async (reaction, user) => {
+            if (!this.message.channel.isSendable()) return
             await reaction.users.remove(user).catch(() => null)
             const token = await this.sql.fetchColumn("oauth2", "twitter token", "user id", user.id)
             if (!token) {
@@ -282,6 +285,7 @@ export class Oauth2 {
         })
 
         heart.on("collect", async (reaction, user) => {
+            if (!this.message.channel.isSendable()) return
             await reaction.users.remove(user).catch(() => null)
             const token = await this.sql.fetchColumn("oauth2", "twitter token", "user id", user.id)
             if (!token) {
