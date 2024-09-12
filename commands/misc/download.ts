@@ -77,7 +77,7 @@ export default class Download extends Command {
         const downloads = fs.readdirSync(src).map((m) => src + m)
         await Functions.createZip(downloads, dest)
         const stats = fs.statSync(dest)
-        if (stats.size > 8000000) {
+        if (stats.size > Functions.getMBBytes(10)) {
             const link = await i.upload([dest]).then((l) => l[0])
             const downloadEmbed = embeds.createEmbed()
             downloadEmbed

@@ -15,7 +15,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
 export default class Video2GIF extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Converts a portion of a video to a gif.",
             help:
@@ -30,6 +30,7 @@ export default class Video2GIF extends Command {
             `,
             aliases: ["vgif", "vid2gif"],
             cooldown: 20,
+            defer: true,
             subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -71,8 +72,8 @@ export default class Video2GIF extends Command {
         let url: string | undefined
         const start = Functions.parseSeconds(args[1])
         const length = Number(args[2])
-        if (Number.isNaN(start) || Number.isNaN(length)) return message.reply("You must provide a valid start/length time.")
-        if (length > 10) return message.reply("The length is too long, keep it under 10 seconds...")
+        if (Number.isNaN(start) || Number.isNaN(length)) return this.reply("You must provide a valid start/length time.")
+        if (length > 10) return this.reply("The length is too long, keep it under 10 seconds...")
         console.log(start)
         console.log(length)
         if (args[3]) {
@@ -80,13 +81,13 @@ export default class Video2GIF extends Command {
         } else {
             url = await discord.fetchLastAttachment(message, false, regex)
         }
-        if (!url) return message.reply(`Could not find a video file ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find a video file ${discord.getEmoji("kannaCurious")}`)
 
         if (!fs.existsSync(path.join(__dirname, `../../videos`))) fs.mkdirSync(path.join(__dirname, `../../videos`), {recursive: true})
         let src = ""
         let dest = ""
         if (/youtube.com/.test(url) || /youtu.be/.test(url)) {
-            return message.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
+            return this.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
             /*
             const video = await youtube.videos.get(url)
             const title = video.snippet.title
@@ -106,7 +107,7 @@ export default class Video2GIF extends Command {
         .setDescription(`${discord.getEmoji("star")}Converted the video to a gif! ${discord.getEmoji("chinoSmug")}`)
 
         const stats = fs.statSync(dest)
-        if (stats.size > 8000000) {
+        if (stats.size > Functions.getMBBytes(10)) {
             let link = await images.upload(dest)
             link = encodeURI(link)
             videoEmbed
@@ -115,9 +116,9 @@ export default class Video2GIF extends Command {
                 `${discord.getEmoji("star")}Converted the video to a gif! ${discord.getEmoji("chinoSmug")}\n` +
                 `This file is too large for attachments. Download the file [**here**](${link}).`
             )
-            return message.channel.send({embeds: [videoEmbed]})
+            return this.reply(videoEmbed)
         }
         const attachment = new AttachmentBuilder(dest)
-        await message.reply({content: `Converted the video to a gif! ${discord.getEmoji("chinoSmug")}`, files: [attachment]})
+        await this.reply(`Converted the video to a gif! ${discord.getEmoji("chinoSmug")}`, attachment)
     }
 }

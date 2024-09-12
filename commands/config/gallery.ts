@@ -25,6 +25,7 @@ export default class Gallery extends Command {
             guildOnly: true,
             aliases: [],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const settingOption = new SlashCommandOption()

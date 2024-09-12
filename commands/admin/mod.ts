@@ -32,6 +32,7 @@ export default class Mod extends Command {
             aliases: ["moderation"],
             guildOnly: true,
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const optOption = new SlashCommandOption()

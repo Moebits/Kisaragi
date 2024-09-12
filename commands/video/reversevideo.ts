@@ -15,7 +15,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
 export default class ReverseVideo extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Reverses a video.",
             help:
@@ -29,6 +29,7 @@ export default class ReverseVideo extends Command {
             `,
             aliases: ["vreverse", "reversevid"],
             cooldown: 20,
+            defer: true,
             subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -60,13 +61,13 @@ export default class ReverseVideo extends Command {
         } else {
             url = await discord.fetchLastAttachment(message, false, regex)
         }
-        if (!url) return message.reply(`Could not find a video file ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find a video file ${discord.getEmoji("kannaCurious")}`)
 
         if (!fs.existsSync(path.join(__dirname, `../../videos`))) fs.mkdirSync(path.join(__dirname, `../../videos`), {recursive: true})
         let src = ""
         let dest = ""
         if (/youtube.com/.test(url) || /youtu.be/.test(url)) {
-            return message.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
+            return this.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
             /*
             const video = await youtube.videos.get(url)
             const seconds = audio.parseYTDuration(video.contentDetails.duration, true)
@@ -88,7 +89,7 @@ export default class ReverseVideo extends Command {
         .setDescription(`${discord.getEmoji("star")}Reversed this video! ${discord.getEmoji("chinoSmug")}`)
 
         const stats = fs.statSync(dest)
-        if (stats.size > 8000000) {
+        if (stats.size > Functions.getMBBytes(10)) {
             let link = await images.upload(dest)
             link = encodeURI(link)
             videoEmbed
@@ -97,10 +98,9 @@ export default class ReverseVideo extends Command {
                 `${discord.getEmoji("star")}Reversed this video! ${discord.getEmoji("chinoSmug")}\n` +
                 `This file is too large for attachments. Download the file [**here**](${link}).\n`
             )
-            return message.channel.send({embeds: [videoEmbed]})
+            return this.reply(videoEmbed)
         }
         const attachment = new AttachmentBuilder(dest)
-        await message.channel.send({embeds: [videoEmbed]})
-        await message.channel.send({files: [attachment]})
+        await this.reply(videoEmbed, attachment)
     }
 }

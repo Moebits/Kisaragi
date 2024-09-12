@@ -36,6 +36,7 @@ export default class Block extends Command {
             permission: "MANAGE_MESSAGES",
             botPermission: "MANAGE_MESSAGES",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const optOption = new SlashCommandOption()

@@ -32,6 +32,7 @@ export default class Leave extends Command {
             guildOnly: true,
             aliases: ["farewell"],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const optOption = new SlashCommandOption()

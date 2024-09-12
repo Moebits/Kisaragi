@@ -25,6 +25,7 @@ export default class InstantBan extends Command {
             aliases: ["iban"],
             guildOnly: true,
             cooldown: 3,
+            defer: true,
             subcommandEnabled: true
         })
         const optOption = new SlashCommandOption()

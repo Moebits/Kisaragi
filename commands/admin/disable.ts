@@ -24,6 +24,7 @@ export default class Disable extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 3,
+            defer: true,
             subcommandEnabled: true
         })
         const categoryOption = new SlashCommandOption()

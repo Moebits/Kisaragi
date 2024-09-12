@@ -25,6 +25,7 @@ export default class Source extends Command {
             guildOnly: true,
             aliases: ["autosaucenao"],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const settingOption = new SlashCommandOption()

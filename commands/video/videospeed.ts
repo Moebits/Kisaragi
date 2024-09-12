@@ -15,7 +15,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
 export default class VideoSpeed extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Changes the speed of a video.",
             help:
@@ -29,6 +29,7 @@ export default class VideoSpeed extends Command {
             `,
             aliases: ["vspeed"],
             cooldown: 20,
+            defer: true,
             subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -63,24 +64,24 @@ export default class VideoSpeed extends Command {
         const regex = new RegExp(/.(mp4|avi|mov|mkv|flv|swf|wmv)/)
         let url: string | undefined
         const factor = Number(args[1])
-        if (Number.isNaN(factor)) return message.reply("You must provide a valid speed factor.")
+        if (Number.isNaN(factor)) return this.reply("You must provide a valid speed factor.")
         if (args[2]) {
             url = args[2]
         } else {
             url = await discord.fetchLastAttachment(message, false, regex)
         }
-        if (!url) return message.reply(`Could not find a video file ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find a video file ${discord.getEmoji("kannaCurious")}`)
 
         if (!fs.existsSync(path.join(__dirname, `../../videos`))) fs.mkdirSync(path.join(__dirname, `../../videos`), {recursive: true})
         let src = ""
         let dest = ""
         if (/youtube.com/.test(url) || /youtu.be/.test(url)) {
-            return message.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
+            return this.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
             /*
             const video = await youtube.videos.get(url)
             const seconds = audio.parseYTDuration(video.contentDetails.duration, true)
             console.log(seconds)
-            if ((Number(seconds) / factor) > 600) return message.reply(`Sorry, this video will be too long... Keep it under 10 minutes.`)
+            if ((Number(seconds) / factor) > 600) return this.reply(`Sorry, this video will be too long... Keep it under 10 minutes.`)
             const title = video.snippet.title
             src = path.join(__dirname, `../../videos/`)
             dest = path.join(__dirname, `../../videos/transform/${title}_speed.mp4`)
@@ -99,7 +100,7 @@ export default class VideoSpeed extends Command {
         .setDescription(`${discord.getEmoji("star")}Changed the video speed by a factor of **${factor}x**! ${discord.getEmoji("chinoSmug")}`)
 
         const stats = fs.statSync(dest)
-        if (stats.size > 8000000) {
+        if (stats.size > Functions.getMBBytes(10)) {
             let link = await images.upload(dest)
             link = encodeURI(link)
             videoEmbed
@@ -108,10 +109,9 @@ export default class VideoSpeed extends Command {
                 `${discord.getEmoji("star")}Changed the video speed by a factor of **${factor}x**! ${discord.getEmoji("chinoSmug")}\n` +
                 `This file is too large for attachments. Download the file [**here**](${link}).`
             )
-            return message.channel.send({embeds: [videoEmbed]})
+            return this.reply(videoEmbed)
         }
         const attachment = new AttachmentBuilder(dest)
-        await message.channel.send({embeds: [videoEmbed]})
-        await message.channel.send({files: [attachment]})
+        await this.reply(videoEmbed, attachment)
     }
 }

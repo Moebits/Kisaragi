@@ -34,6 +34,7 @@ export default class Reddit extends Command {
             aliases: ["r"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -100,7 +101,7 @@ export default class Reddit extends Command {
         .setTitle(`**Reddit Search** ${this.discord.getEmoji("aquaUp")}`)
         .setDescription("No results were found. Try searching on the reddit website: " +
         "[Reddit Website](https://www.reddit.com)")
-        return this.message.channel.send({embeds: [redditEmbed]})
+        return this.reply(redditEmbed)
     }
 
     public run = async (args: string[]) => {
@@ -124,7 +125,7 @@ export default class Reddit extends Command {
             if (this.postID) {
                 const redditArray = await this.getSubmissions(reddit, [this.postID])
                 if (!redditArray[0]) return message.reply(`No search results found.`)
-                return message.channel.send({embeds: [redditArray[0]]})
+                return this.reply(redditArray[0])
             }
         }
 
@@ -151,7 +152,7 @@ export default class Reddit extends Command {
                 `${discord.getEmoji("star")}_Friends:_ **${user.num_friends ?? "None"}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${user.subreddit.display_name.public_description}\n`
             )
-            const msg = await message.channel.send({embeds: [redditEmbed]})
+            const msg = await this.reply(redditEmbed)
             await oauth2.redditOptions(msg)
             return
         }
@@ -204,7 +205,7 @@ export default class Reddit extends Command {
         if (!redditArray[0]) return this.noResults()
         let msg: Message
         if (redditArray.length === 1) {
-            msg = await message.channel.send({embeds: [redditArray[0]]})
+            msg = await this.reply(redditArray[0])
         } else {
             msg = await embeds.createReactionEmbed(redditArray, true, true)
         }

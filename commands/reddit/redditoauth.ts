@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class RedditOauth extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Authorize read and write access to your reddit account. **Requires oauth2**.",
             help:
@@ -50,7 +50,7 @@ export default class RedditOauth extends Command {
             .setAuthor({name: "reddit oauth", iconURL: "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png"})
             .setTitle(`**Reddit Oauth 2.0** ${discord.getEmoji("mexShrug")}`)
             .setDescription(`${discord.getEmoji("star")}Revoked your reddit token!`)
-            return message.channel.send({embeds: [oauth2Embed]})
+            return this.reply(oauth2Embed)
         }
 
         const state = Functions.randomString(16)
@@ -64,6 +64,6 @@ export default class RedditOauth extends Command {
         .setAuthor({name: "reddit oauth", iconURL: "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png"})
         .setTitle(`**Reddit Oauth 2.0** ${discord.getEmoji("mexShrug")}`)
         .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) in order to upvote, downvote, comment, and save posts and in order to subscribe to subreddits.`)
-        return message.channel.send({embeds: [redditOauthEmbed]})
+        return this.reply(redditOauthEmbed)
     }
 }

@@ -7,7 +7,7 @@ import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 
 export default class Raphi extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts pictures of raphiel.",
             help:
@@ -21,6 +21,7 @@ export default class Raphi extends Command {
             aliases: ["raphiel"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         this.subcommand = new SlashCommandSubcommand()

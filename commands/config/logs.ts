@@ -27,6 +27,7 @@ export default class Logs extends Command {
             aliases: ["log", "logging"],
             guildOnly: true,
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const typeOption = new SlashCommandOption()

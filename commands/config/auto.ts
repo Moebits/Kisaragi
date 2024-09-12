@@ -30,6 +30,7 @@ export default class Auto extends Command {
             guildOnly: true,
             aliases: [],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const editOption = new SlashCommandOption()

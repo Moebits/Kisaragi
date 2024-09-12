@@ -10,7 +10,7 @@ import {Permission} from "./../../structures/Permission"
 import Reddit from "./reddit"
 
 export default class Moestash extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lots of moe art.",
             help:
@@ -24,6 +24,7 @@ export default class Moestash extends Command {
             aliases: ["redditbooru"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         this.subcommand = new SlashCommandSubcommand()
@@ -56,9 +57,9 @@ export default class Moestash extends Command {
         let redditArray = await redditCmd.getSubmissions(reddit, postIDS, true)
         redditArray = Functions.shuffleArray(redditArray)
         if (!redditArray[0]) return redditCmd.noResults()
-        let msg: Message<true>
+        let msg: Message
         if (redditArray.length === 1) {
-            msg = await message.channel.send({embeds: [redditArray[0]]})
+            msg = await this.reply(redditArray[0])
         } else {
             msg = await embeds.createReactionEmbed(redditArray, true, true)
         }

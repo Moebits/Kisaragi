@@ -28,6 +28,7 @@ export default class Record extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const nameOption = new SlashCommandOption()
@@ -80,7 +81,7 @@ export default class Record extends Command {
         }
         const stats = fs.statSync(mp3Dest)
 
-        if (stats.size > 8000000) {
+        if (stats.size > Functions.getMBBytes(10)) {
             const link = await images.upload(mp3Dest)
             const recordingEmbed = embeds.createEmbed()
             recordingEmbed

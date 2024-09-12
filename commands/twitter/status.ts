@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Status extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Updates your twitter profile description. **Requires twitteroauth**",
             help:
@@ -43,7 +43,7 @@ export default class Status extends Command {
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
         const token = await sql.fetchColumn("oauth2", "twitter token", "user id", message.author.id)
-        if (!token) return message.reply(`You need to give me read and writing permissions over your twitter account. See the **twitteroauth** command.`)
+        if (!token) return this.reply(`You need to give me read and writing permissions over your twitter account. See the **twitteroauth** command.`)
         const secret = await sql.fetchColumn("oauth2", "twitter secret", "user id", message.author.id)
         const twitterID = await sql.fetchColumn("oauth2", "twitter id", "user id", message.author.id)
 
@@ -55,8 +55,8 @@ export default class Status extends Command {
         })
 
         const content = Functions.combineArgs(args, 1).trim()
-        if (!content) return message.reply(`What do you want to update your status to ${discord.getEmoji("kannaFacepalm")}`)
+        if (!content) return this.reply(`What do you want to update your status to ${discord.getEmoji("kannaFacepalm")}`)
         await twitter.post(`account/update_profile`, {description: content})
-        return message.reply(`Updated your twitter status! ${discord.getEmoji("aquaUp")}`)
+        return this.reply(`Updated your twitter status! ${discord.getEmoji("aquaUp")}`)
     }
 }

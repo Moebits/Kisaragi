@@ -29,6 +29,7 @@ export default class ReactionRoles extends Command {
             aliases: ["rr"],
             guildOnly: true,
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const editOption = new SlashCommandOption()

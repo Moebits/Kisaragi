@@ -11,7 +11,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class GifSpeed extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Speeds up a gif by constraining the amount of frames.",
             help:
@@ -28,6 +28,7 @@ export default class GifSpeed extends Command {
             `,
             aliases: ["gspeed", "cgif", "constraingif", "compressgif"],
             cooldown: 20,
+            defer: true,
             subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -68,7 +69,7 @@ export default class GifSpeed extends Command {
         if (String(constrain).includes(".")) {
             constrain = Math.round(frames.length / constrain)
         }
-        if (constrain >= frames.length) return message.reply(`Adding frames to or slowing down a gif is not supported, because it requires more information than what is available in the original. ${discord.getEmoji("kannaFacepalm")}`)
+        if (constrain >= frames.length) return this.reply(`Adding frames to or slowing down a gif is not supported. ${discord.getEmoji("kannaFacepalm")}`)
         const newFrames = Functions.constrain(frames, constrain) as any[]
         const random = Math.floor(Math.random() * 10000)
         const dir = path.join(__dirname, `../../assets/misc/images/dump/${random}/`)
@@ -85,11 +86,11 @@ export default class GifSpeed extends Command {
             promises.push(prom)
         }
         await Promise.all(promises)
-        const msg = await this.message.channel.send(`**Encoding Gif. This might take awhile...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg = await this.reply(`**Encoding Gif. This might take awhile...** ${this.discord.getEmoji("kisaragiCircle")}`)
         const file = fs.createWriteStream(path.join(dir, `./animated.gif`))
         await images.encodeGif(files, dir, file)
         msg.delete()
         const attachment = new AttachmentBuilder(path.join(dir, `./animated.gif`), {name: "animated.gif"})
-        return message.reply({content: `Constrained a **${frames.length}** frame gif down to **${files.length}** frames!`, files: [attachment]})
+        return this.reply(`Constrained a **${frames.length}** frame gif down to **${files.length}** frames!`, attachment)
     }
 }

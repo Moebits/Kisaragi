@@ -26,6 +26,7 @@ export default class EmojiRoles extends Command {
             aliases: ["er", "eroles"],
             guildOnly: true,
             cooldown: 3,
+            defer: true,
             subcommandEnabled: true
         })
         const editOption = new SlashCommandOption()

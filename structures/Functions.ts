@@ -558,4 +558,8 @@ export class Functions {
     public static lcm = (a: number, b: number) => {
         return (a * b) / Functions.gcd(a, b)
     }
+
+    public static getMBBytes(MB: number) {
+        return MB * 1024 * 1024
+    }
 }

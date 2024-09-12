@@ -11,7 +11,7 @@ import {Permission} from "./../../structures/Permission"
 export default class TwitterCommand extends Command {
     private user = null as any
     private search = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for twitter tweets and users.",
             help:
@@ -28,6 +28,7 @@ export default class TwitterCommand extends Command {
             aliases: ["t"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -99,7 +100,7 @@ export default class TwitterCommand extends Command {
                 )
             .setThumbnail(user.profile_image_url)
             .setImage(user.profile_banner_url)
-            return message.channel.send({embeds: [twitterEmbed]})
+            return this.reply(twitterEmbed)
         }
 
         const query = this.search || Functions.combineArgs(args, 1)

@@ -33,6 +33,7 @@ export default class YTNotify extends Command {
             botPermission: "MANAGE_WEBHOOKS",
             guildOnly: true,
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const editOption = new SlashCommandOption()

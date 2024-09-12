@@ -13,7 +13,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Video} from "./../../structures/Video"
 
 export default class Video2MP3 extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Converts a video file or link to mp3.",
             help:
@@ -28,6 +28,7 @@ export default class Video2MP3 extends Command {
             `,
             aliases: ["vid2mp3", "yt2mp3"],
             cooldown: 20,
+            defer: true,
             subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -57,9 +58,9 @@ export default class Video2MP3 extends Command {
         } else {
             url = await discord.fetchLastAttachment(message, false, regex)
         }
-        if (!url) return message.reply(`Could not find a video file ${discord.getEmoji("kannaCurious")}`)
+        if (!url) return this.reply(`Could not find a video file ${discord.getEmoji("kannaCurious")}`)
         if (/youtube.com/.test(url) || /youtu.be/.test(url)) {
-            if (discord.checkMuted(message)) return message.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
+            if (discord.checkMuted(message)) return this.reply(`Sorry, you need to provide a discord attachment link. Downloading YouTube videos is against their TOS.`)
             return cmd.runCommand(message, ["youtube", "download", "mp3", url])
         }
 
@@ -75,7 +76,7 @@ export default class Video2MP3 extends Command {
         .setDescription(`${discord.getEmoji("star")}Converted this video to an mp3 file! ${discord.getEmoji("chinoSmug")}`)
 
         const stats = fs.statSync(dest)
-        if (stats.size > 8000000) {
+        if (stats.size > Functions.getMBBytes(10)) {
             let link = await images.upload(dest)
             link = encodeURI(link)
             videoEmbed
@@ -84,10 +85,9 @@ export default class Video2MP3 extends Command {
                 `${discord.getEmoji("star")}Converted this video to an mp3 file! ${discord.getEmoji("chinoSmug")}\n` +
                 `This file is too large for attachments. Download the file [**here**](${link}).`
             )
-            return message.channel.send({embeds: [videoEmbed]})
+            return this.reply(videoEmbed)
         }
         const attachment = new AttachmentBuilder(dest)
-        await message.channel.send({embeds: [videoEmbed]})
-        await message.channel.send({files: [attachment]})
+        await this.reply(videoEmbed, attachment)
     }
 }

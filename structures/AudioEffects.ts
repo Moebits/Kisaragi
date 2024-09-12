@@ -67,7 +67,7 @@ export class AudioEffects {
         const filename = path.basename(filepath.replace(`-${effect}`, "")).slice(0, -4)
         const fileDest = path.join(__dirname, `../assets/misc/tracks/transform/${filename}-${effect}${ext}`)
         const stats = fs.statSync(fileDest)
-        if (stats.size > 8000000) {
+        if (stats.size > Functions.getMBBytes(10)) {
             const link = await this.images.upload(fileDest)
             const effectEmbed = this.embeds.createEmbed()
             effectEmbed

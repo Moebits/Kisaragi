@@ -30,6 +30,7 @@ export default class Detect extends Command {
             guildOnly: true,
             aliases: ["detection"],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const optOption = new SlashCommandOption()

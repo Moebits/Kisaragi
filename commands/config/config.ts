@@ -26,6 +26,7 @@ export default class Config extends Command {
             guildOnly: true,
             aliases: [],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const optOption = new SlashCommandOption()

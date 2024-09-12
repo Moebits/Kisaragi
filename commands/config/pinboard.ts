@@ -27,6 +27,7 @@ export default class Pinboard extends Command {
             guildOnly: true,
             botPermission: "MANAGE_WEBHOOKS",
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const optOption = new SlashCommandOption()

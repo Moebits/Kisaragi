@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class TwitterOauth extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Authorize read and write access to your twitter account. **Requires oauth2**.",
             help:
@@ -51,7 +51,7 @@ export default class TwitterOauth extends Command {
             .setAuthor({name: "twitter oauth", iconURL: "https://www.aps.edu/sapr/images/pnglot.comtwitterbirdlogopng139932.png"})
             .setTitle(`**Twitter Oauth 1.0a** ${discord.getEmoji("gabYes")}`)
             .setDescription(`${discord.getEmoji("star")}Deleted the local copy of your twitter token. To invalidate this token, revoke access in your [**application settings**](https://twitter.com/settings/applications).`)
-            return message.channel.send({embeds: [oauth2Embed]})
+            return this.reply(oauth2Embed)
         }
 
         const callback = config.testing ? config.twitterRedirectTesting : config.twitterRedirect
@@ -81,6 +81,6 @@ export default class TwitterOauth extends Command {
         .setAuthor({name: "twitter oauth", iconURL: "https://www.aps.edu/sapr/images/pnglot.comtwitterbirdlogopng139932.png"})
         .setTitle(`**Twitter Oauth 1.0a** ${discord.getEmoji("gabYes")}`)
         .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) to post, like, and retweet tweets on your behalf. This only gives reading and writing permissions of public data (not private, such as direct messages).`)
-        return message.channel.send({embeds: [twitterOauthEmbed]})
+        return this.reply(twitterOauthEmbed)
     }
 }

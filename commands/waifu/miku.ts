@@ -7,7 +7,7 @@ import {Permission} from "./../../structures/Permission"
 import {PixivApi} from "./../../structures/PixivApi"
 
 export default class Miku extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts pictures of hatsune miku.",
             help:
@@ -21,6 +21,7 @@ export default class Miku extends Command {
             aliases: ["hatsunemiku"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         this.subcommand = new SlashCommandSubcommand()

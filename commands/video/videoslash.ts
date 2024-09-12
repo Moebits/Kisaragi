@@ -7,7 +7,7 @@ import fs from "fs"
 import path from "path"
 
 export default class VideoSlash extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Video commands",
             unlist: true,

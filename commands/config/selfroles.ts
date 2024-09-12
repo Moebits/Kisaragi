@@ -29,6 +29,7 @@ export default class Selfroles extends Command {
             guildOnly: true,
             aliases: [],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const settingOption = new SlashCommandOption()

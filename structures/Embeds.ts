@@ -136,7 +136,7 @@ export class Embeds {
                 const downloads = fs.readdirSync(src).map((m) => src + m)
                 await Functions.createZip(downloads, dest)
                 const stats = fs.statSync(dest)
-                if (stats.size > 8000000) {
+                if (stats.size > Functions.getMBBytes(10)) {
                     const link = await this.images.upload(dest)
                     const downloadEmbed = this.createEmbed()
                     downloadEmbed
@@ -349,7 +349,7 @@ export class Embeds {
                     const downloads = fs.readdirSync(src).map((m) => src + m)
                     await Functions.createZip(downloads, dest)
                     const stats = fs.statSync(dest)
-                    if (stats.size > 8000000) {
+                    if (stats.size > Functions.getMBBytes(10)) {
                         const link = await this.images.upload(dest)
                         const downloadEmbed = this.createEmbed()
                         downloadEmbed
@@ -453,7 +453,7 @@ export class Embeds {
                 const downloads = fs.readdirSync(src).map((m) => src + m)
                 await Functions.createZip(downloads, dest)
                 const stats = fs.statSync(dest)
-                if (stats.size > 8000000) {
+                if (stats.size > Functions.getMBBytes(10)) {
                     const link = await this.images.upload(dest)
                     const downloadEmbed = this.createEmbed()
                     downloadEmbed

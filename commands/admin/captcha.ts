@@ -32,6 +32,7 @@ export default class CaptchaCmd extends Command {
             guildOnly: true,
             aliases: ["verification"],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const optOption = new SlashCommandOption()

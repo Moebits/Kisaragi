@@ -10,7 +10,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Tweet extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts a new tweet onto your account, on your behalf. **Requires twitteroauth**",
             help:
@@ -45,7 +45,7 @@ export default class Tweet extends Command {
         const images = new Images(discord, message)
         const perms = new Permission(discord, message)
         const token = await sql.fetchColumn("oauth2", "twitter token", "user id", message.author.id)
-        if (!token) return message.reply(`You need to give me read and writing permissions over your twitter account. See the **twitteroauth** command.`)
+        if (!token) return this.reply(`You need to give me read and writing permissions over your twitter account. See the **twitteroauth** command.`)
         const secret = await sql.fetchColumn("oauth2", "twitter secret", "user id", message.author.id)
         const twitterID = await sql.fetchColumn("oauth2", "twitter id", "user id", message.author.id)
 
@@ -95,6 +95,6 @@ export default class Tweet extends Command {
             )
         .setThumbnail(user.profile_image_url)
         .setImage(user.status.entities.media ? user.status.entities.media[0].media_url : user.profile_banner_url)
-        return message.channel.send({embeds: [twitterEmbed]})
+        return this.reply(twitterEmbed)
     }
 }
