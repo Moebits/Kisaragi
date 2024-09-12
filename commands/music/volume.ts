@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Volume extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Sets the volume of the music stream.",
             help:
@@ -45,12 +45,11 @@ export default class Volume extends Command {
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
 
-        if (!Number(args[1])) return this.message.reply(`What do you want to set the volume to ${discord.getEmoji("kannaCurious")}`)
+        if (!Number(args[1])) return this.reply(`What do you want to set the volume to ${discord.getEmoji("kannaCurious")}`)
         audio.volume(Number(args[1]))
-        const rep = await message.reply("Changed the volume!")
+        const rep = await this.reply("Changed the volume!")
         await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
-        return
     }
 }

@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {CollegiateThesaurus} from "mw-dict"
 
 export default class Thesaurus extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets synonyms for a word from merriam webster.",
             help:
@@ -61,8 +61,7 @@ export default class Thesaurus extends Command {
             .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
             .setTitle(`**Thesaurus** ${discord.getEmoji("raphi")}`)
             .setDescription(`No synonyms were found. Here are some word suggestions: \n${error.suggestions.join(", ")}`)
-            message.channel.send({embeds: [thesaurusEmbed]})
-            return
+            return this.reply(thesaurusEmbed)
         }
 
         const meaningArray: string[] = []
@@ -107,6 +106,6 @@ export default class Thesaurus extends Command {
             `${discord.getEmoji("star")}_Popularity:_ **${result[0].popularity}**\n` +
             `${Functions.checkChar(synonyms, 2000, ",")}\n`
         )
-        message.channel.send({embeds: [thesaurusEmbed]})
+        this.reply(thesaurusEmbed)
     }
 }

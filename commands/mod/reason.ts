@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Reason extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Edits the reason of a case.",
           help:
@@ -49,14 +49,14 @@ export default class Reason extends Command {
         if (!await perms.checkMod()) return
 
         const caseNumber = Number(args[1])
-        if (!caseNumber) return message.reply(`You need to specify a case number ${discord.getEmoji("kannaFacepalm")}`)
+        if (!caseNumber) return this.reply(`You need to specify a case number ${discord.getEmoji("kannaFacepalm")}`)
         let reason = Functions.combineArgs(args, 2).trim()
         if (!reason) reason = "None provided!"
         let cases = await sql.fetchColumn("guilds", "cases")
         cases = cases.map((c: any) => JSON.parse(c))
-        if (!cases) return message.reply(`This server has no cases. You need to enable **mod log** in \`logs\` to record them. ${discord.getEmoji("kannaFacepalm")}`)
+        if (!cases) return this.reply(`This server has no cases. You need to enable **mod log** in \`logs\` to record them. ${discord.getEmoji("kannaFacepalm")}`)
         const index = cases.findIndex((c: any) => Number(c.case) === caseNumber)
-        if (index === -1) return message.reply(`Invalid case number ${discord.getEmoji("kannaFacepalm")}`)
+        if (index === -1) return this.reply(`Invalid case number ${discord.getEmoji("kannaFacepalm")}`)
 
         cases[index].reason = reason
         await sql.updateColumn("guilds", "cases", cases)
@@ -83,7 +83,7 @@ export default class Reason extends Command {
             )
             await msg.edit({embeds: [embed]})
         }
-        const rep = await message.reply(`Successfully edited this case! ${discord.getEmoji("aquaUp")}`)
+        const rep = await this.reply(`Successfully edited this case! ${discord.getEmoji("aquaUp")}`)
         setTimeout(() => rep.delete().catch(() => null), 3000)
         message.delete().catch(() => null)
     }

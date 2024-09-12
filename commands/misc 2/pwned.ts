@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Pwned extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches have i been pwned.",
             help:
@@ -60,8 +60,7 @@ export default class Pwned extends Command {
                 )
                 pwnedArray.push(pwnedEmbed)
             }
-            embeds.createReactionEmbed(pwnedArray)
-            return
+            return embeds.createReactionEmbed(pwnedArray)
         }
         const query = Functions.combineArgs(args, 1)
         const result = await breach(query)
@@ -83,6 +82,6 @@ export default class Pwned extends Command {
                     `${discord.getEmoji("star")}_Pwned Data:_ **${result!.DataClasses.join(", ")}**\n` +
                     `${discord.getEmoji("star")}_Description:_ ${result!.Description.replace(/<\/?[^>]+(>|$)/g, "")}\n`
                 )
-        message.channel.send({embeds: [pwnedEmbed]})
+        this.reply(pwnedEmbed)
     }
 }

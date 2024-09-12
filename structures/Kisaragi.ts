@@ -67,7 +67,7 @@ export class Kisaragi extends Client {
     /** Send message to a channel */
     public send = (input: Message, embeds: EmbedBuilder | EmbedBuilder[] | string, 
         files?: AttachmentBuilder | AttachmentBuilder[], opts?: MessageReplyOptions) => {
-        if (!input.channel.isSendable()) return input
+        if (!input.channel.isSendable()) return Promise.resolve(input)
         if (!input.channel) return this.reply(input, embeds, files, opts)
         return this.channelSend(input.channel, embeds, files, opts)
     }

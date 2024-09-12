@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Skip extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Skips a song, or skips to a song.",
             help:
@@ -51,14 +51,13 @@ export default class Skip extends Command {
         if (Number(input)) {
             amount = Number(input)
         } else if (input) {
-            const queue = audio.getQueue() as any
-            const index =  queue.findIndex((q: any) => q.title.toLowerCase().includes(input.toLowerCase()))
-            if (index === -1) return message.reply(`Could not find a song with that name ${discord.getEmoji("kannaCurious")}`)
+            const queue = audio.getQueue()
+            const index =  queue.findIndex((q) => q.title.toLowerCase().includes(input.toLowerCase()))
+            if (index === -1) return this.reply(`Could not find a song with that name ${discord.getEmoji("kannaCurious")}`)
             amount = index + 1
         }
         const text = amount === 1 ? "Skipped this song!" : (Number(input) ? `Skipped to the song at position **${amount}**!` : `Skipped to **${input}**!`)
-        await message.reply(text)
+        await this.reply(text)
         await audio.skip(amount)
-        return
     }
 }

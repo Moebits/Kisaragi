@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Undeafen extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Server undeafens a user.",
             help:
@@ -79,16 +79,15 @@ export default class Undeafen extends Command {
                 const data = {type: "undeafen", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **undeafen Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **undeafen Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [undeafenEmbed]}).catch(() => null)
+            await discord.channelSend(dm, undeafenEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         undeafenEmbed
         .setAuthor({name: "undeafen", iconURL: "https://d29fhpw069ctt2.cloudfront.net/icon/image/39276/preview.png"})
         .setTitle(`**Member Undeafened** ${discord.getEmoji("mexShrug")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully undeafened ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [undeafenEmbed]})
-        return
+        return this.reply(undeafenEmbed)
     }
 }

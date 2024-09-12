@@ -10,7 +10,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
 export default class Play extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Plays any song from soundcloud, youtube, a link, or an attachment.",
             help:
@@ -66,6 +66,7 @@ export default class Play extends Command {
         const embeds = new Embeds(discord, message)
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
+        if (!message.channel.isSendable()) return
         if (!message.guild) return
         if (!audio.checkMusicPermissions()) return
 
@@ -145,7 +146,7 @@ export default class Play extends Command {
         }
         await this.reply(queueEmbed)
         queue = audio.getQueue()
-        const settings = audio.getSettings() as any
+        const settings = audio.getSettings()
         if (setLoop) settings[0].looping = true
         if (message instanceof Message) if (loading) await loading?.delete()
         if (queue.length === 1 && !queue[0].playing) {

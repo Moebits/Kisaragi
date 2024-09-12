@@ -13,7 +13,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Record extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Records your voice and uploads the recording.",
             help:
@@ -49,11 +49,11 @@ export default class Record extends Command {
         const fx = new AudioEffects(discord, message)
         const images = new Images(discord, message)
         const perms = new Permission(discord, message)
+        if (!message.channel.isSendable()) return
         if (!message.guild) return
         const name = Functions.combineArgs(args, 1) ? Functions.combineArgs(args, 1) : message.author.username
         if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has(["Connect", "Speak"])) {
-            await message.channel.send(`The bot needs the permissions **Connect** and **Speak** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
-            return
+            return this.reply(`The bot needs the permissions **Connect** and **Speak** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
         }
 
         let voiceChannel = message.member?.voice.channel
@@ -62,13 +62,13 @@ export default class Record extends Command {
         if (!connection && voiceChannel) {
             connection = joinVoiceChannel({channelId: voiceChannel.id, guildId: message.guild.id, adapterCreator: message.guild.voiceAdapterCreator, selfDeaf: false})
         } else if (!message.member?.voice.channel) {
-            return message.reply(`You must join a voice channel first. What am I going to record ${discord.getEmoji("kannaFacepalm")}`)
+            return this.reply(`You must join a voice channel first. What am I going to record ${discord.getEmoji("kannaFacepalm")}`)
         }
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const recording = connection.receiver.subscribe(message.author.id, {end: {behavior: EndBehaviorType.AfterSilence, duration: 1000}})
         const pcm = path.join(__dirname, `../../assets/misc/tracks/${name}.pcm`)
-        await message.channel.send(`Recording started! Please use **push to talk**, the recording will stop once the push button is released.`)
+        await this.reply(`Recording started! Please use **push to talk**, the recording will stop once the push button is released.`)
         await new Promise<void>((resolve) => {
             recording.pipe(fs.createWriteStream(pcm) as unknown as NodeJS.WritableStream).on("finish", () => resolve())
         })
@@ -76,7 +76,7 @@ export default class Record extends Command {
         try {
             mp3Dest = await fx.convertToFormat(pcm, "mp3")
         } catch {
-            return message.reply(`Nothing was recorded ${discord.getEmoji("kannaFacepalm")}`)
+            return this.reply(`Nothing was recorded ${discord.getEmoji("kannaFacepalm")}`)
         }
         const stats = fs.statSync(mp3Dest)
 
@@ -89,7 +89,7 @@ export default class Record extends Command {
             .setDescription(
                 `${discord.getEmoji("star")}Recorded your voice! This file is too large for attachments, download it [**here**](${link}).`
             )
-            await message.channel.send({embeds: [recordingEmbed]})
+            await this.reply(recordingEmbed)
         } else {
             const attachment = new AttachmentBuilder(mp3Dest)
             const recordingEmbed = embeds.createEmbed()
@@ -99,9 +99,7 @@ export default class Record extends Command {
             .setDescription(
                 `${discord.getEmoji("star")}Here is your voice recording!`
             )
-            await message.channel.send({embeds: [recordingEmbed]})
-            await message.channel.send({files: [attachment]})
+            await this.reply(recordingEmbed, attachment)
         }
-        return
     }
 }

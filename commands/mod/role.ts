@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Role extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Adds or removes a role from a user.",
           help:
@@ -69,29 +69,29 @@ export default class Role extends Command {
           let roleID: string = roleName.substring(roleName.search(snowflake))
           if (roleID.includes(">")) roleID = roleID.slice(0, -1)
           const role = message.guild!.roles.cache.get(roleID)
-          if (!role) return message.channel.send({embeds: [roleEmbed.setDescription(`The role **${roleName}** could not be found.`)]})
+          if (!role) return this.reply(roleEmbed.setDescription(`The role **${roleName}** could not be found.`))
 
           switch (args[1]) {
             case "add": {
                 try {
                   await member.roles.add(role)
-                  await message.channel.send({embeds: [roleEmbed.setDescription(`${member.displayName} now has the ${role} role!`)]})
+                  await this.reply(roleEmbed.setDescription(`${member.displayName} now has the ${role} role!`))
                 } catch {
-                  return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
+                  return this.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
                 }
                 break
             }
             case "del": {
               try {
                 await member.roles.remove(role)
-                await message.channel.send({embeds: [roleEmbed.setDescription(`${member.displayName} no longer has the ${role} role!`)]})
+                await this.reply(roleEmbed.setDescription(`${member.displayName} no longer has the ${role} role!`))
               } catch {
-                return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
               }
               break
             }
             default:
-              return message.reply(`You must specify whether you want to **add** or **del** a role ${discord.getEmoji("kannaFacepalm")}`)
+              return this.reply(`You must specify whether you want to **add** or **del** a role ${discord.getEmoji("kannaFacepalm")}`)
           }
       }
 

@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Remdash extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Removes dashes from channel names.",
             help:
@@ -55,7 +55,7 @@ export default class Remdash extends Command {
             remEmbed
             .setTitle(`**Adddash** ${discord.getEmoji("kannaXD")}`)
             .setDescription("Added dashes to the channel names!")
-            return message.channel.send({embeds: [remEmbed]})
+            return this.reply(remEmbed)
         } else {
             for (let i = 0; i < nameArray.length; i++) {
                 if (nameArray[i].includes("-")) {
@@ -67,7 +67,7 @@ export default class Remdash extends Command {
             remEmbed
             .setTitle(`**Remdash** ${discord.getEmoji("kannaXD")}`)
             .setDescription("Removed dashes from all channel names!")
-            return message.channel.send({embeds: [remEmbed]})
+            return this.reply(remEmbed)
         }
     }
 }

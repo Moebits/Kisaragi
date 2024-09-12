@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Unmute extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Unmutes users.",
             help:
@@ -51,7 +51,7 @@ export default class Unmute extends Command {
         if (!await perms.checkMod()) return
         const muteEmbed = embeds.createEmbed()
         const mute = await sql.fetchColumn("special roles", "mute role")
-        if (!mute) return message.reply("You need to set a mute role first!")
+        if (!mute) return this.reply("You need to set a mute role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []
 
@@ -80,12 +80,11 @@ export default class Unmute extends Command {
             .setDescription(`${discord.getEmoji("star")}_You were unmuted in ${message.guild!.name} for reason:_ **${reason}**`)
             await dm.send({embeds: [muteEmbed]}).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         muteEmbed
         .setAuthor({name: "unmute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
         .setTitle(`**Member Unmuted** ${discord.getEmoji("mexShrug")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully unmuted ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [muteEmbed]})
-        return
+        return this.reply(muteEmbed)
     }
 }

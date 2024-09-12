@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import * as nasa from "nasa-sdk"
 
 export default class Nasa extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts a random picture of space.",
             help:
@@ -77,6 +77,6 @@ export default class Nasa extends Command {
         .setImage(data.url)
         .setThumbnail(message.author!.displayAvatarURL())
 
-        message.channel.send({embeds: [nasaEmbed]})
+        this.reply(nasaEmbed)
     }
 }

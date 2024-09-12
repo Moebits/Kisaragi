@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Resume extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Resumes a paused music stream.",
             help:
@@ -38,10 +38,9 @@ export default class Resume extends Command {
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         audio.resume()
-        const rep = await message.reply("Resumed the song!")
+        const rep = await this.reply("Resumed the song!")
         await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
-        return
     }
 }

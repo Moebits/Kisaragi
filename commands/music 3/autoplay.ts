@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Autoplay extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Autoplays default songs when there are no songs left in the queue.",
             help:
@@ -38,15 +38,14 @@ export default class Autoplay extends Command {
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         audio.autoplay()
-        const queue = audio.getQueue() as any
-        const settings = audio.getSettings() as any
+        const queue = audio.getQueue()
+        const settings = audio.getSettings()
         const embed = await audio.updateNowPlaying()
-        queue[0].message.edit(embed)
+        discord.edit(queue[0].message!, embed)
         const text = settings.autoplay === true ? "on" : "off"
-        const rep = await message.reply(`Turned ${text} autoplay!`)
+        const rep = await this.reply(`Turned ${text} autoplay!`)
         await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
-        return
     }
 }

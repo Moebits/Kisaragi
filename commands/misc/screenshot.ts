@@ -10,7 +10,7 @@ import path from "path"
 import fs from "fs"
 
 export default class Screenshot extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Posts a website screenshot.",
           help:
@@ -86,6 +86,6 @@ export default class Screenshot extends Command {
         screenEmbed
         .setAuthor({name: "google chrome", iconURL: "https://cdn.pixabay.com/photo/2016/04/13/14/27/google-chrome-1326908_960_720.png"})
         .setTitle(`**Website Screenshot** ${discord.getEmoji("kannaXD")}`)
-        message.channel.send({embeds: [screenEmbed], files: [attachment]})
+        this.reply(screenEmbed, attachment)
   }
 }

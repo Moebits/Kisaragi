@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Weather extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts the current weather in a city or zip code.",
             help:
@@ -67,6 +67,6 @@ export default class Weather extends Command {
             `❄️_Humidity:_ \`${w.main.humidity}%\`\n` +
             `💨_Wind Speed/Direction:_ \`${w.wind.speed}m/s, ${w.wind.deg}°\`\n`
         )
-        return message.channel.send({embeds: [weatherEmbed]})
+        return this.reply(weatherEmbed)
     }
 }

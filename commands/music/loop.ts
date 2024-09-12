@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Loop extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Loops the current track, or stops looping.",
             help:
@@ -51,10 +51,10 @@ export default class Loop extends Command {
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         audio.loop()
-        const queue = audio.getQueue() as any
+        const queue = audio.getQueue()
         const embed = await audio.updateNowPlaying()
-        queue[0].message.edit(embed)
-        const rep = await message.reply("Enabled looping!")
+        discord.edit(queue[0].message!, embed)
+        const rep = await this.reply("Enabled looping!")
         await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete?.().catch(() => null)

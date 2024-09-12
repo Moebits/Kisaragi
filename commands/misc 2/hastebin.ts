@@ -9,7 +9,7 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Hastebin extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Uploads a message or text file to hastebin.",
             help:
@@ -55,9 +55,9 @@ export default class Hastebin extends Command {
                 content = fs.readFileSync(dest, "utf8")
             }
         }
-        if (!content) return message.reply(`What do you want to post on hastebin ${discord.getEmoji("kannaFacepalm")}`)
+        if (!content) return this.reply(`What do you want to post on hastebin ${discord.getEmoji("kannaFacepalm")}`)
         const link = await images.hastebinUpload(content).catch(() => {
-            return message.reply(`Something went wrong ${discord.getEmoji("kannaFacepalm")}`)
+            return this.reply(`Something went wrong ${discord.getEmoji("kannaFacepalm")}`)
         }) as string
         const hastebinEmbed = embeds.createEmbed()
         hastebinEmbed
@@ -65,6 +65,6 @@ export default class Hastebin extends Command {
         .setTitle(`**Hastebin Upload** ${discord.getEmoji("mexShrug")}`)
         .setURL(link)
         .setDescription(`${discord.getEmoji("star")}Successfully uploaded to hastebin, the link is [**here**](${link})`)
-        return message.channel.send({embeds: [hastebinEmbed]})
+        return this.reply(hastebinEmbed)
     }
 }

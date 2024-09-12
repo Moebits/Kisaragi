@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class MD5 extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Hashes a message using the md5 algorithm.",
             help:
@@ -40,10 +40,10 @@ export default class MD5 extends Command {
         const embeds = new Embeds(discord, message)
 
         const text = Functions.combineArgs(args, 1).trim()
-        if (!text) return message.reply(`What do you want to hash ${discord.getEmoji("kannaCurious")}`)
+        if (!text) return this.reply(`What do you want to hash ${discord.getEmoji("kannaCurious")}`)
 
         const hash = md5(text)
-        await message.channel.send(`**MD5 Hash** ${discord.getEmoji("kannaCurious")}`)
-        return message.channel.send(hash)
+        await this.reply(`**MD5 Hash** ${discord.getEmoji("kannaCurious")}`)
+        return this.send(hash)
     }
 }

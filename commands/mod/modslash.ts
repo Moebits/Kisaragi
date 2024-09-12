@@ -7,7 +7,7 @@ import fs from "fs"
 import path from "path"
 
 export default class ModSlash extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Mod commands",
             unlist: true,

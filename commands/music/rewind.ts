@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Rewind extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Rewinds the position of the song.",
             help:
@@ -48,10 +48,10 @@ export default class Rewind extends Command {
         let rewind = args[1] ? args[1] : "0"
         rewind = rewind.replace(/h|m/gi, ":").replace(/s/gi, "").replace(/ +/g, "")
         await audio.rewind(rewind)
-        const queue = audio.getQueue() as any
+        const queue = audio.getQueue()
         const embed = await audio.updateNowPlaying()
-        queue[0].message.edit(embed)
-        const rep = await message.reply(`Rewinded the song!`)
+        discord.edit(queue[0].message!, embed)
+        const rep = await this.reply(`Rewinded the song!`)
         await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)

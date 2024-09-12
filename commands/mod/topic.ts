@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Topic extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Sets the topic on the current channel.",
           help:
@@ -42,9 +42,9 @@ export default class Topic extends Command {
         if (!await perms.checkMod()) return
 
         const topic = Functions.combineArgs(args, 1).trim()
-        if (!topic) return message.reply(`You need to specify what you want to set the topic to ${discord.getEmoji("kannaCurious")}`)
+        if (!topic) return this.reply(`You need to specify what you want to set the topic to ${discord.getEmoji("kannaCurious")}`)
 
         await (message.channel as TextChannel).setTopic(topic, "Changed the channel topic to a better one.").catch(() => null)
-        return message.reply(`Set the topic to: **${topic}** ${discord.getEmoji("aquaUp")}`)
+        return this.reply(`Set the topic to: **${topic}** ${discord.getEmoji("aquaUp")}`)
     }
 }

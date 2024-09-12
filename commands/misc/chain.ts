@@ -2,11 +2,12 @@ import {Message, ChatInputCommandInteraction} from "discord.js"
 import {SlashCommand, SlashCommandOption} from "../../structures/SlashCommandOption"
 import {Command} from "../../structures/Command"
 import {CommandFunctions} from "./../../structures/CommandFunctions"
+import {Functions} from "../../structures/Functions"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Chain extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Runs multiple commands in succession.",
             help:
@@ -42,6 +43,7 @@ export default class Chain extends Command {
         const commands = new CommandFunctions(discord, message)
         const embeds = new Embeds(discord, message)
         if (!args[1]) return this.noQuery(embeds.createEmbed())
+        if (!message.channel.isSendable()) return
 
         const loading = message.channel.lastMessage
         if (message instanceof Message) loading?.delete()
@@ -49,14 +51,10 @@ export default class Chain extends Command {
         const cmdArgs = args.join(" ").split("& ")
         if (cmdArgs.length > 5 && (message.author.id !== process.env.OWNER_ID)) return message.reply(`Chaining 5+ commands is restricted to the bot developer. ${discord.getEmoji("sagiriBleh")}`)
         for (let i = 0; i < cmdArgs.length; i++) {
-            if (message instanceof ChatInputCommandInteraction && i == 1) {
-                // @ts-ignore
-                return message.channel.send("Sorry, running more than one chain isn't supported in slash commands.")
-            }
-            const running = await message.channel.send(`**Running Chain ${i + 1}** ${discord.getEmoji("kisaragiCircle")}`)
+            const running = await this.reply(`**Running Chain ${i + 1}** ${discord.getEmoji("kisaragiCircle")}`)
             await commands.runCommand(message, cmdArgs[i].replace(/chain/g, "").split(" "))
-            setTimeout(() => running.delete(), 1000)
+            Functions.deferDelete(running, 1000)
         }
-        await message.channel.send(" ").catch(() => null)
+        await this.send(" ").catch(() => null)
     }
 }

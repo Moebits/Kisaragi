@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Softban extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Bans and immediately unbans the specified users.",
             help:
@@ -81,16 +81,15 @@ export default class Softban extends Command {
                 const data = {type: "softban", user: id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [softBanEmbed]}).catch(() => null)
+            await discord.channelSend(dm, softBanEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         softBanEmbed
         .setAuthor({name: "softban", iconURL: "https://cdn.discordapp.com/emojis/593867503055274006.png"})
         .setTitle(`**Member Soft Banned** ${discord.getEmoji("sagiriBleh")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully soft banned ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [softBanEmbed]})
-        return
+        return this.reply(softBanEmbed)
     }
 }

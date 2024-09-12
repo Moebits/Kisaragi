@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Binary extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Converts to and from binary.",
             help:
@@ -59,11 +59,11 @@ export default class Binary extends Command {
         if (!input) return message.reply(`What do you want to encode/decode ${discord.getEmoji("kannaCurious")}`)
 
         if (!input.match(/^[01]+$/gm)?.[0]) {
-            await message.channel.send(`**Binary Conversion** ${discord.getEmoji("think")}`)
-            return message.channel.send(this.toBinary(input))
+            await this.reply(`**Binary Conversion** ${discord.getEmoji("think")}`)
+            return this.send(this.toBinary(input))
         } else {
-            await message.channel.send(`**Binary Conversion** ${discord.getEmoji("think")}`)
-            return message.channel.send(this.fromBinary(input))
+            await this.reply(`**Binary Conversion** ${discord.getEmoji("think")}`)
+            return this.send(this.fromBinary(input))
         }
 
     }

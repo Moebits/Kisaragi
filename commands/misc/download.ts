@@ -9,7 +9,7 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Download extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Downloads images and gifs from a text channel.",
             help:
@@ -29,6 +29,7 @@ export default class Download extends Command {
             `,
             aliases: ["dl"],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const num3Option = new SlashCommandOption()
@@ -66,7 +67,7 @@ export default class Download extends Command {
             .setAuthor({name: "download", iconURL: discord.checkMuted(message) ? "" : "https://cdn.discordapp.com/emojis/685894156647661579.gif"})
             .setTitle(`**Image Downloader** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(`${discord.getEmoji("star")}Could not find any images. By default I only search the last **300** messages from the current message, or from a message id if provided. ${last ? `To continue from where this search left off, run the command \`download ${last}\`.` : "There are no more messages left in this channel!"}`)
-            return message.channel.send({embeds: [downloadEmbed]})
+            return this.reply(downloadEmbed)
         }
         const rand = Math.floor(Math.random()*10000)
         const src = path.join(__dirname, `../../assets/misc/images/dump/${rand}/`)
@@ -86,7 +87,7 @@ export default class Download extends Command {
                 `${discord.getEmoji("star")}Downloaded **${images.length}** images from this text channel!\n` +
                 `${discord.getEmoji("star")}This file is too large for attachments. Download it [**here**](${link}).\n`
             )
-            await message.channel.send({embeds: [downloadEmbed]})
+            await this.reply(downloadEmbed)
         } else {
             const attachment = new AttachmentBuilder(dest, {name: `${name}.zip`})
             const lastText = last ? `There are still more messages left in this text channel. To continue from where this search left off, run the command \`download ${last}\`.` : `There are no more images left after this. Congrats!`
@@ -98,8 +99,7 @@ export default class Download extends Command {
                 `${discord.getEmoji("star")}Downloaded **${images.length}** images from this text channel!\n` +
                 lastText
             )
-            await message.channel.send({embeds: [downloadEmbed]})
-            await message.channel.send({files: [attachment]})
+            await this.reply(downloadEmbed, attachment)
         }
         Functions.removeDirectory(src)
         return
@@ -111,13 +111,14 @@ export default class Download extends Command {
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
         const name = message.channel instanceof TextChannel ? message.channel.name : message.author.username + "_dm"
+        if (!message.channel.isSendable()) return
         let attachments: string[] = []
         let last: string | null = null
         let amount = 300
 
         const loading = message.channel.lastMessage
-        loading?.delete()
-        const rep = await message.channel.send(`**Searching the messages in this channel, please wait** ${discord.getEmoji("gabCircle")}`)
+        if (message instanceof Message) loading?.delete()
+        const rep = await this.reply(`**Searching the messages in this channel, please wait** ${discord.getEmoji("gabCircle")}`)
 
         if (args[1] === "gif") {
             if (Number(args[2]) && Number(args[2]) > 0 && Number(args[2]) <= 1000) amount = Number(args[2])
@@ -144,9 +145,8 @@ export default class Download extends Command {
             last = result.last!
         }
         if (rep) rep.delete()
-        const rep2 = await message.channel.send(`**Downloading the images, please wait** ${discord.getEmoji("gabCircle")}`)
+        const rep2 = await this.reply(`**Downloading the images, please wait** ${discord.getEmoji("gabCircle")}`)
         await this.sendDownload(name, attachments, last)
         if (rep2) rep2.delete()
-        return
     }
 }

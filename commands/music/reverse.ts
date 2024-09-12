@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Reverse extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Reverses an audio file (this one is awesome).",
             help:
@@ -45,7 +45,7 @@ export default class Reverse extends Command {
         const audio = new Audio(discord, message)
         const cmd = new CommandFunctions(discord, message)
         const perms = new Permission(discord, message)
-        const queue = audio.getQueue() as any
+        const queue = audio.getQueue()
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {
             setDownload = true
@@ -57,27 +57,26 @@ export default class Reverse extends Command {
         }
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
-        const rep = await message.reply("_Reversing the file, please wait..._")
+        const rep = await this.reply("_Reversing the file, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
             const attachment = await discord.fetchLastAttachment(message, false, regex)
-            if (!attachment) return message.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
+            if (!attachment) return this.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
             file = attachment
         } else {
-            const queue = audio.getQueue() as any
+            const queue = audio.getQueue()
             file = queue?.[0].file
         }
         await audio.reverse(file, setDownload)
         if (rep) rep.delete()
         if (!setDownload) {
             const embed = await audio.updateNowPlaying()
-            queue[0].message.edit(embed)
-            const rep = await message.reply("Reversed the file!")
+            discord.edit(queue[0].message!, embed)
+            const rep = await this.reply("Reversed the file!")
             await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
         }
-        return
     }
 }

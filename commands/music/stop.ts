@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Stop extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Stops a music stream and leaves the voice channel.",
             help:
@@ -36,18 +36,19 @@ export default class Stop extends Command {
         const audio = new Audio(discord, message)
         const perms = new Permission(discord, message)
         if (!message.guild) return
+        if (!audio.checkMusicPermissions()) return
 
         const connection = getVoiceConnection(message.guild.id)
 
-        if (!connection) return message.reply(`I am not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
+        if (!connection) return this.reply(`I am not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
         const memberVoice = message.member?.voice?.channel
         if (connection.joinConfig.channelId === memberVoice?.id) {
             audio.deleteQueue()
             connection?.disconnect()
             connection?.destroy()
-            return message.channel.send(`Left the voice channel and stopped playback.`)
+            return this.reply(`Left the voice channel and stopped playback.`)
         } else {
-            return message.reply(`You are not in same voice channel as me..? ${discord.getEmoji("confusedAnime")}`)
+            return this.reply(`You are not in same voice channel as me..? ${discord.getEmoji("confusedAnime")}`)
         }
     }
 }

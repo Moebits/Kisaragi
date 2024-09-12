@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class AllPass extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Applies an allpass filter to an audio file.",
             help:
@@ -64,35 +64,34 @@ export default class AllPass extends Command {
         }
         const freq = Number(args[1])
         const width = Number(args[2])
-        if (Number.isNaN(freq) || Number.isNaN(width)) return message.reply(`The parameters must be numbers ${discord.getEmoji("kannaCurious")}`)
-        const rep = await message.reply("_Applying an allpass filter, please wait..._")
+        if (Number.isNaN(freq) || Number.isNaN(width)) return this.reply(`The parameters must be numbers ${discord.getEmoji("kannaCurious")}`)
+        const rep = await this.reply("_Applying an allpass filter, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
             const attachment = await discord.fetchLastAttachment(message, false, regex)
-            if (!attachment) return message.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
+            if (!attachment) return this.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
             file = attachment
         } else {
-            const queue = audio.getQueue() as any
+            const queue = audio.getQueue()
             file = queue?.[0].file
         }
         try {
             await audio.allPass(file, freq, width, setDownload)
         } catch {
-            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+            return this.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
         }
         if (rep) rep.delete()
         if (!setDownload) {
-            const queue = audio.getQueue() as any
-            const settings = audio.getSettings() as any
+            const queue = audio.getQueue()
+            const settings = audio.getSettings()
             settings.effects.push("allpass")
             const embed = await audio.updateNowPlaying()
-            queue[0].message.edit(embed)
-            const rep = await message.reply("Applied an allpass filter!")
+            discord.edit(queue[0].message!, embed)
+            const rep = await this.reply("Applied an allpass filter!")
             await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
         }
-        return
     }
 }

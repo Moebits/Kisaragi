@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Warn extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gives users a warning.",
             guildOnly: true,
@@ -59,7 +59,7 @@ export default class Warn extends Command {
                     if (warnOneRole) {
                         if (!member.roles.cache.has(warnOneRole.id)) {
                             await member.roles.add(warnOneRole)
-                            await message.channel.send(`<@${userID}>, you were given the ${warnOneRole} role because you have one warn.`)
+                            await this.send(`<@${userID}>, you were given the ${warnOneRole} role because you have one warn.`)
                         }
                     }
                 }
@@ -67,7 +67,7 @@ export default class Warn extends Command {
                     if (warnTwoRole) {
                         if (!member.roles.cache.has(warnTwoRole.id)) {
                             await member.roles.add(warnTwoRole)
-                            await message.channel.send(`<@${userID}>, you were given the ${warnTwoRole} role because you have two warns.`)
+                            await this.send(`<@${userID}>, you were given the ${warnTwoRole} role because you have two warns.`)
                         }
                     }
                 }
@@ -78,26 +78,26 @@ export default class Warn extends Command {
                             .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
                             .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were banned from ${message.guild!.name} for reason:_ **${warnReason}**`)
-                            await dm.send({embeds: [dmEmbed]}).catch(() => null)
+                            await discord.channelSend(dm, dmEmbed).catch(() => null)
                             guildEmbed
                             .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
                             .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_Successfully banned <@${userID}> for reason:_ **${warnReason}**`)
                             await member?.ban({reason: warnReason})
-                            message.channel.send({embeds: [guildEmbed]})
+                            this.send(guildEmbed)
                             break
                         case "kick":
                             dmEmbed
                             .setAuthor({name: "kick", iconURL: "https://discordemoji.com/assets/emoji/4331_UmaruWave.png"})
                             .setTitle(`**You Were Kicked** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were kicked from ${message.guild!.name} for reason:_ **${warnReason}**`)
-                            await dm.send({embeds: [dmEmbed]}).catch(() => null)
+                            await discord.channelSend(dm, dmEmbed).catch(() => null)
                             guildEmbed
                             .setAuthor({name: "kick", iconURL: "https://discordemoji.com/assets/emoji/4331_UmaruWave.png"})
                             .setTitle(`**Member Kicked** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_Successfully kicked <@${userID}> for reason:_ **${warnReason}**`)
                             await member?.kick(warnReason).catch(() => null)
-                            message.channel.send({embeds: [guildEmbed]})
+                            this.send(guildEmbed)
                             break
                         case "mute":
                             const mute = await sql.fetchColumn("guilds", "mute role")
@@ -110,12 +110,12 @@ export default class Warn extends Command {
                             .setAuthor({name: "mute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
                             .setTitle(`**You Were Muted** ${discord.getEmoji("sagiriBleh")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were muted from ${message.guild!.name} for reason:_ **${warnReason}**`)
-                            await dm.send({embeds: [dmEmbed]}).catch(() => null)
+                            await discord.channelSend(dm, dmEmbed).catch(() => null)
                             guildEmbed
                             .setAuthor({name: "mute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
                             .setTitle(`**Member Muted** ${discord.getEmoji("sagiriBleh")}`)
                             .setDescription(`${discord.getEmoji("star")}_Successfully muted <@${userID}> for reason:_ **${warnReason}**`)
-                            message.channel.send({embeds: [guildEmbed]})
+                            this.send(guildEmbed)
                             break
                         default:
                     }
@@ -188,7 +188,7 @@ export default class Warn extends Command {
             )
             const member = message.guild!.members.cache.find((m: GuildMember) => m.id === userArray[i])
             try {
-                await member?.send({embeds: [warnDMEmbed]})
+                await discord.dmSend(member!, warnDMEmbed)
             } catch {
                 continue
             }
@@ -201,6 +201,6 @@ export default class Warn extends Command {
         .setDescription(
             `${discord.getEmoji("star")}_Successfully warned ${users} for reason: **${reason}**_`
         )
-        message.channel.send({embeds: [warnEmbed]})
+        this.reply(warnEmbed)
     }
 }

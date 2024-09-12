@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Warns extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lists all warns.",
             help:
@@ -29,6 +29,7 @@ export default class Warns extends Command {
             guildOnly: true,
             aliases: [],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const warningOption = new SlashCommandOption()
@@ -84,8 +85,9 @@ export default class Warns extends Command {
         const sql = new SQLQuery(message)
         const self = this
         if (!await perms.checkMod()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -132,10 +134,10 @@ export default class Warns extends Command {
         if (warnArray.length > 1) {
             embeds.createReactionEmbed(warnArray)
         } else {
-            message.channel.send({embeds: [warnArray[0]]})
+            this.reply(warnArray[0])
         }
 
-        async function warnPrompt(msg: Message<true>) {
+        async function warnPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Warn Log** ${discord.getEmoji("kaosWTF")}`)
             const warnOne = await sql.fetchColumn("guilds", "warn one")
@@ -151,13 +153,13 @@ export default class Warns extends Command {
                 await sql.updateColumn("guilds", "warn log", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All warns were destroyed!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
 
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
 
             const userID = msg.content.match(/\d{15,}/g)?.[0] ?? ""
@@ -179,9 +181,9 @@ export default class Warns extends Command {
                     }
                     if (!found) return msg.reply("That user does not have any warns!")
                     responseEmbed.setDescription(`Edited warn **#${num+1}** for <@${member.id}>!`)
-                    return msg.channel.send({embeds: [responseEmbed]})
+                    return discord.send(msg, responseEmbed)
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("No warning found!")]})
+                    return discord.send(msg, responseEmbed.setDescription("No warning found!"))
                 }
             }
 
@@ -207,7 +209,7 @@ export default class Warns extends Command {
                             if (warnOneRole) {
                                 if (member.roles.cache.has(warnOneRole.id)) {
                                     await member.roles.remove(warnOneRole)
-                                    await message.channel.send(`<@${userID}>, you were removed from the ${warnOneRole} role because you do not have any warns.`)
+                                    await this.send(`<@${userID}>, you were removed from the ${warnOneRole} role because you do not have any warns.`)
                                 }
                             }
                         }
@@ -215,7 +217,7 @@ export default class Warns extends Command {
                             if (warnTwoRole) {
                                 if (member.roles.cache.has(warnTwoRole.id)) {
                                     await member.roles.remove(warnTwoRole)
-                                    await message.channel.send(`<@${userID}>, you were removed from the ${warnTwoRole} role because you do not have two warns.`)
+                                    await this.send(`<@${userID}>, you were removed from the ${warnTwoRole} role because you do not have two warns.`)
                                 }
                             }
                         }
@@ -223,7 +225,7 @@ export default class Warns extends Command {
                 }
                 if (!found) return msg.reply("That user does not have any warns!")
                 responseEmbed.setDescription(`Purged all warns from <@${member.id}>!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (setUser) {
                 let warns = ""
@@ -245,7 +247,7 @@ export default class Warns extends Command {
                     `**${member.displayName}'s Warns**\n` +
                     warns + "\n"
                 )
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
             if (setDelete) {
                 let num: number = Number(msg.content.replace(/(?<=<@)(.*?)(?=>)/g, "").match(/\s+\d/g)![0])
@@ -263,7 +265,7 @@ export default class Warns extends Command {
                             if (warnOneRole) {
                                 if (member.roles.cache.has(warnOneRole.id)) {
                                     await member.roles.remove(warnOneRole)
-                                    await message.channel.send(`<@${userID}>, you were removed from the ${warnOneRole} role because you do not have any warns.`)
+                                    await this.send(`<@${userID}>, you were removed from the ${warnOneRole} role because you do not have any warns.`)
                                 }
                             }
                         }
@@ -271,7 +273,7 @@ export default class Warns extends Command {
                             if (warnTwoRole) {
                                 if (member.roles.cache.has(warnTwoRole.id)) {
                                     await member.roles.remove(warnTwoRole)
-                                    await message.channel.send(`<@${userID}>, you were removed from the ${warnTwoRole} role because you do not have two warns.`)
+                                    await this.send(`<@${userID}>, you were removed from the ${warnTwoRole} role because you do not have two warns.`)
                                 }
                             }
                         }
@@ -279,7 +281,7 @@ export default class Warns extends Command {
                 }
                 if (!found) return msg.reply("That user does not have any warns!")
                 responseEmbed.setDescription(`Deleted warn **${num + 1}** from <@${member.id}>!`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
         }
         await embeds.createPrompt(warnPrompt)

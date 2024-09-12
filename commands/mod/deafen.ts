@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Deafen extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Server deafens a user.",
             help:
@@ -79,16 +79,15 @@ export default class Deafen extends Command {
                 const data = {type: "deafen", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **Deafen Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Deafen Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [deafenEmbed]}).catch(() => null)
+            await discord.channelSend(dm, deafenEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         deafenEmbed
         .setAuthor({name: "deafen", iconURL: "https://cdn4.iconfinder.com/data/icons/music-audio-4/24/mute_sound_speaker_headphone_headset_music-512.png"})
         .setTitle(`**Member Deafened** ${discord.getEmoji("sataniaDead")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully deafened ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [deafenEmbed]})
-        return
+        this.reply(deafenEmbed)
     }
 }

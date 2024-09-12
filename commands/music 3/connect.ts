@@ -7,7 +7,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Connect extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Connects to a voice channel.",
             help:
@@ -48,14 +48,14 @@ export default class Connect extends Command {
         } else if (!message.member?.voice.channel) {
             if (!args[1]) {
                 voiceChannel = message.guild?.channels.cache.find((c) => c.type === ChannelType.GuildVoice) as VoiceChannel
-                if (!voiceChannel) return message.reply("Could not find a channel to join!")
+                if (!voiceChannel) return this.reply("Could not find a channel to join!")
             } else {
                 if (args[1].match(/\d{15,}/)) {
                     voiceChannel = message.guild?.channels.cache.find((c) => c.id === args[1].match(/\d{15,}/)?.[0]) as VoiceChannel
-                    if (!voiceChannel) return message.reply("Could not find a channel to join!")
+                    if (!voiceChannel) return this.reply("Could not find a channel to join!")
                 } else {
                     voiceChannel = message.guild?.channels.cache.find((c) => c.name.toLowerCase().includes(args[1].toLowerCase()) && c.type === ChannelType.GuildVoice) as VoiceChannel
-                    if (!voiceChannel) return message.reply("Could not find a channel to join!")
+                    if (!voiceChannel) return this.reply("Could not find a channel to join!")
                 }
             }
 
@@ -63,8 +63,8 @@ export default class Connect extends Command {
         try {
             joinVoiceChannel({guildId: message.guild.id, channelId: voiceChannel.id, adapterCreator: message.guild.voiceAdapterCreator, selfDeaf: false})
         } catch {
-            return message.reply(`This is not a voice channel, or I don't have the **Connect** permission. ${discord.getEmoji("kannaFacepalm")}`)
+            return this.reply(`This is not a voice channel, or I don't have the **Connect** permission. ${discord.getEmoji("kannaFacepalm")}`)
         }
-        return message.channel.send(`Connected to the channel **<#${voiceChannel.id}>**!`)
+        return this.reply(`Connected to the channel **<#${voiceChannel.id}>**!`)
     }
 }

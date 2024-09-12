@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Bassboost extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Preset for lowshelf (500Hz, +5db).",
             help:
@@ -38,18 +38,17 @@ export default class Bassboost extends Command {
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         const queue = audio.getQueue() as any
-        const rep = await message.reply("_Applying a bass boost, please wait..._")
+        const rep = await this.reply("_Applying a bass boost, please wait..._")
         const file = queue?.[0].file
         await audio.lowshelf(file, 10, 500, 100)
         if (rep) rep.delete()
         const settings = audio.getSettings() as any
         settings.filters.push("lowshelf")
         const embed = await audio.updateNowPlaying()
-        queue[0].message.edit(embed)
-        const rep2 = await message.reply("Applied bass boosting!")
+        discord.edit(queue[0].message!, embed)
+        const rep2 = await this.reply("Applied bass boosting!")
         await Functions.timeout(3000)
         rep2.delete().catch(() => null)
         message.delete().catch(() => null)
-        return
     }
 }

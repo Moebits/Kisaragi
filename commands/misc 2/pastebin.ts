@@ -9,7 +9,7 @@ import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Pastebin extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Uploads a message or text file to pastebin.",
             help:
@@ -71,10 +71,10 @@ export default class Pastebin extends Command {
                 content = fs.readFileSync(dest, "utf8")
             }
         }
-        if (!content) return message.reply(`What do you want to post on pastebin ${discord.getEmoji("kannaFacepalm")}`)
+        if (!content) return this.reply(`What do you want to post on pastebin ${discord.getEmoji("kannaFacepalm")}`)
         if (!title) title = `Paste from ${user.tag}`
         const link = await images.pastebinUpload(title, content, privacy)
-        if (!link.startsWith("http")) return message.reply(`Something went wrong ${discord.getEmoji("kannaFacepalm")}`)
+        if (!link.startsWith("http")) return this.reply(`Something went wrong ${discord.getEmoji("kannaFacepalm")}`)
 
         const pastebinEmbed = embeds.createEmbed()
         pastebinEmbed
@@ -82,6 +82,6 @@ export default class Pastebin extends Command {
         .setTitle(`**Pastebin Upload** ${discord.getEmoji("raphi")}`)
         .setURL(link)
         .setDescription(`${discord.getEmoji("star")}Successfully uploaded to pastebin, find your paste [**here**](${link})`)
-        return message.channel.send({embeds: [pastebinEmbed]})
+        return this.reply(pastebinEmbed)
     }
 }

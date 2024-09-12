@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Scrub extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Starts playing from a new position.",
             help:
@@ -48,13 +48,12 @@ export default class Scrub extends Command {
         let scrub = args[1] ? args[1] : "0"
         scrub = scrub.replace(/h|m/gi, ":").replace(/s/gi, "").replace(/ +/g, "")
         await audio.scrub(scrub)
-        const queue = audio.getQueue() as any
+        const queue = audio.getQueue()
         const embed = await audio.updateNowPlaying()
-        queue[0].message.edit(embed)
-        const rep = await message.reply(`Changed the position of the song!`)
+        discord.edit(queue[0].message!, embed)
+        const rep = await this.reply(`Changed the position of the song!`)
         await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
-        return
     }
 }

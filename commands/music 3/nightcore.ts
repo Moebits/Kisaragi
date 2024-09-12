@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Nightcore extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Preset for speed (1.3x pitch).",
             help:
@@ -39,15 +39,14 @@ export default class Nightcore extends Command {
         if (!audio.checkMusicPlaying()) return
         const queue = audio.getQueue() as any
         const file = queue?.[0].file
-        const rep = await message.reply("_Applying a nightcore effect, please wait..._")
+        const rep = await this.reply("_Applying a nightcore effect, please wait..._")
         await audio.speed(file, 1.3, true)
         if (rep) rep.delete()
         const embed = await audio.updateNowPlaying()
-        queue[0].message.edit(embed)
-        const rep2 = await message.reply(`Applied a nightcore effect!`)
+        discord.edit(queue[0].message!, embed)
+        const rep2 = await this.reply(`Applied a nightcore effect!`)
         await Functions.timeout(3000)
         rep2.delete().catch(() => null)
         message.delete().catch(() => null)
-        return
     }
 }

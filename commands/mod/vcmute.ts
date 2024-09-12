@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class VCMute extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Voice mutes a user.",
             help:
@@ -79,16 +79,15 @@ export default class VCMute extends Command {
                 const data = {type: "vcmute", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **Mute Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Mute Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [vcmuteEmbed]}).catch(() => null)
+            await discord.channelSend(dm, vcmuteEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         vcmuteEmbed
         .setAuthor({name: "voice mute", iconURL: "https://www.kindpng.com/picc/m/499-4998592_mute-microphone-comments-mute-mic-icon-png-transparent.png"})
         .setTitle(`**Member Voice Muted** ${discord.getEmoji("vigneDead")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully voice muted ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [vcmuteEmbed]})
-        return
+        return this.reply(vcmuteEmbed)
     }
 }

@@ -5,7 +5,7 @@ import {Permission} from "../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class NSFW extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Turns nsfw on/off for the current channel.",
           help:
@@ -40,6 +40,6 @@ export default class NSFW extends Command {
             await channel.setNSFW(true, "Definitely not a safe channel to open in public.")
             state = "on"
         }
-        return message.reply(`Set nsfw on this channel **${state}**! ${discord.getEmoji("aquaUp")}`)
+        return this.reply(`Set nsfw on this channel **${state}**! ${discord.getEmoji("aquaUp")}`)
     }
 }

@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Queue extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Displays the full queue of songs.",
             help:
@@ -37,7 +37,7 @@ export default class Queue extends Command {
         const perms = new Permission(discord, message)
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
-        const queue = audio.getQueue() as any
+        const queue = audio.getQueue()
         const queueArray: EmbedBuilder[] = []
         for (let i = 0; i < queue.length; i++) {
             const embed = await audio.updateNowPlaying(i)
@@ -46,7 +46,6 @@ export default class Queue extends Command {
             .setTitle(`**Position #${i+1}** ${discord.getEmoji("gabYes")}`)
             queueArray.push(embed)
         }
-        embeds.createReactionEmbed(queueArray)
-        return
+        return embeds.createReactionEmbed(queueArray)
     }
 }

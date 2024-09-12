@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Kick extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Kicks the specified users.",
             help:
@@ -79,16 +79,15 @@ export default class Kick extends Command {
                 const data = {type: "kick", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **Kick Members** permission ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Kick Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [kickEmbed]}).catch(() => null)
+            await discord.channelSend(dm, kickEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         kickEmbed
         .setAuthor({name: "kick", iconURL: "https://discordemoji.com/assets/emoji/4331_UmaruWave.png"})
         .setTitle(`**Member Kicked** ${discord.getEmoji("kannaFU")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully kicked ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [kickEmbed]})
-        return
+        return this.reply(kickEmbed)
     }
 }

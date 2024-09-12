@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class TempMute extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Mutes a user for the specified period.",
             help:
@@ -60,7 +60,7 @@ export default class TempMute extends Command {
         if (!await perms.checkMod()) return
         const tempMuteEmbed = embeds.createEmbed()
         const mute = await sql.fetchColumn("special roles", "mute role")
-        if (!mute) return message.reply("You need to set a mute role first!")
+        if (!mute) return this.reply("You need to set a mute role first!")
         const reasonArray: string[] = []
         const timeArray: string[] = []
         const userArray: string[] = []
@@ -76,7 +76,7 @@ export default class TempMute extends Command {
                 }
             }
         }
-        if (!timeArray[0]) return message.reply(`You must provide a time limit ${discord.getEmoji("kannaFacepalm")}`)
+        if (!timeArray[0]) return this.reply(`You must provide a time limit ${discord.getEmoji("kannaFacepalm")}`)
         const rawTime = timeArray.join(" ")
         const seconds = Functions.parseCalenderSeconds(rawTime)
 
@@ -135,16 +135,15 @@ export default class TempMute extends Command {
                 }, seconds*1000)
             } catch (e) {
                 console.log(e)
-                return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [tempMuteEmbed]}).catch(() => null)
+            await discord.channelSend(dm, tempMuteEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         tempMuteEmbed
         .setAuthor({name: "tempmute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
         .setTitle(`**Member Temp Muted** ${discord.getEmoji("sagiriBleh")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully temp muted ${members.join(", ")} for the duration **${rawTime}** for reason:_ **${reason}**`)
-        message.channel.send({embeds: [tempMuteEmbed]})
-        return
+        return this.reply(tempMuteEmbed)
     }
 }

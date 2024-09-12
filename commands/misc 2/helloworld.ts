@@ -6,7 +6,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class HelloWorld extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Hello world!",
             help:
@@ -31,11 +31,11 @@ export default class HelloWorld extends Command {
         const message = this.message
 
         if (args[0] === "helloworld") {
-            return message.channel.send("Hello World!")
+            return this.reply("Hello World!")
         } else if (args[0] === "hello") {
-            return message.channel.send("Hello!")
+            return this.reply("Hello!")
         } else {
-            return message.channel.send("Hi!")
+            return this.reply("Hi!")
         }
     }
 }

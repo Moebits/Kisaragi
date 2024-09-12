@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Bcrypt extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Hashes a message using the bcrypt algorithm.",
             help:
@@ -43,7 +43,7 @@ export default class Bcrypt extends Command {
         if (!text) return message.reply(`What do you want to hash ${discord.getEmoji("kannaCurious")}`)
 
         const hash = await bcrypt.hash(text, 10)
-        await message.channel.send(`**Bcrypt Hash** ${discord.getEmoji("kaosWTF")}`)
-        return message.channel.send(hash)
+        await this.reply(`**Bcrypt Hash** ${discord.getEmoji("kaosWTF")}`)
+        return this.send(hash)
     }
 }

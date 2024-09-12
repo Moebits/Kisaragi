@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Ban extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Bans the specified users.",
             help:
@@ -81,14 +81,13 @@ export default class Ban extends Command {
             } catch {
                 return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [banEmbed]}).catch(() => null)
+            await discord.channelSend(dm, banEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         banEmbed
         .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
         .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully banned ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [banEmbed]})
-        return
+        this.reply(banEmbed)
     }
 }

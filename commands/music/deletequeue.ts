@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class DeleteQueue extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Deletes the entire queue or a range.",
             help:
@@ -50,17 +50,16 @@ export default class DeleteQueue extends Command {
         const input = Functions.combineArgs(args, 1)
         if (!Number(input) && !input.includes("-")) {
             audio.deleteQueue()
-            rep = await message.reply("Deleted the queue!")
+            rep = await this.reply("Deleted the queue!")
         } else {
             const newArgs = input.split("-")
             const pos = Number(newArgs[1])
             const end = Number(newArgs[2]) ? Number(args[2]) - Number(newArgs[1]) : 1
             audio.deleteQueue(pos, end)
-            rep = await message.reply(`Deleted **${end}** songs starting at position **${pos}**!`)
+            rep = await this.reply(`Deleted **${end}** songs starting at position **${pos}**!`)
         }
         await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
-        return
     }
 }

@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Equalizer extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Opens the equalizer menu.",
             help:
@@ -38,14 +38,14 @@ export default class Equalizer extends Command {
         const perms = new Permission(discord, message)
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const msg = await audio.equalizerMenu()
         msg.delete()
-        const queue = audio.getQueue() as any
+        const queue = audio.getQueue()
         const embed = await audio.updateNowPlaying()
-        queue[0].message.edit(embed)
+        discord.edit(queue[0].message!, embed)
         message.delete().catch(() => null)
-        return
     }
 }

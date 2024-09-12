@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class JSONCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets the JSON data of a message, embed, guild, role, channel, or emoji.",
             help:
@@ -97,7 +97,7 @@ export default class JSONCommand extends Command {
         try {
             link = await images.hastebinUpload(JSON.stringify(json, null, 4))
         } catch {
-            return message.reply(`Something went wrong ${discord.getEmoji("kannaFacepalm")}`)
+            return this.reply(`Something went wrong ${discord.getEmoji("kannaFacepalm")}`)
         }
 
         const jsonEmbed = embeds.createEmbed()
@@ -106,6 +106,6 @@ export default class JSONCommand extends Command {
         .setTitle(`**JSON Data** ${discord.getEmoji("kannaCurious")}`)
         .setURL(link)
         .setDescription(`${discord.getEmoji("star")}Find the JSON data [**here**](${link})`)
-        return message.channel.send({embeds: [jsonEmbed]})
+        return this.reply(jsonEmbed)
     }
 }

@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Compress extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Applies compression to an audio file (reduces dynamic range).",
             help:
@@ -52,41 +52,40 @@ export default class Compress extends Command {
         const perms = new Permission(discord, message)
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
-        const queue = audio.getQueue() as any
+        const queue = audio.getQueue()
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {
             setDownload = true
             args.shift()
         }
         const amount = Number(args[1])
-        const rep = await message.reply("_Applying compression to the file, please wait..._")
+        const rep = await this.reply("_Applying compression to the file, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
             const attachment = await discord.fetchLastAttachment(message, false, regex)
-            if (!attachment) return message.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
+            if (!attachment) return this.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
             file = attachment
         } else {
-            const queue = audio.getQueue() as any
+            const queue = audio.getQueue()
             file = queue?.[0].file
         }
         try {
             await audio.compression(file, amount, setDownload)
         } catch {
-            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+            return this.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
         }
         if (rep) rep.delete()
         if (!setDownload) {
-            const queue = audio.getQueue() as any
-            const settings = audio.getSettings() as any
+            const queue = audio.getQueue()
+            const settings = audio.getSettings()
             settings.effects.push("compression")
             const embed = await audio.updateNowPlaying()
-            queue[0].message.edit(embed)
-            const rep = await message.reply("Applied compression to the file!")
+            discord.edit(queue[0].message!, embed)
+            const rep = await this.reply("Applied compression to the file!")
             await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
         }
-        return
     }
 }

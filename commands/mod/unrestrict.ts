@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Unrestrict extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Unrestricts users.",
             help:
@@ -51,7 +51,7 @@ export default class Unrestrict extends Command {
         if (!await perms.checkMod()) return
         const restrictEmbed = embeds.createEmbed()
         const restrict = await sql.fetchColumn("special roles", "restricted role")
-        if (!restrict) return message.reply("You need to set a restricted role first!")
+        if (!restrict) return this.reply("You need to set a restricted role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []
 
@@ -78,14 +78,13 @@ export default class Unrestrict extends Command {
             .setAuthor({name: "unrestrict", iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png"})
             .setTitle(`**You Were Unrestricted** ${discord.getEmoji("yes")}`)
             .setDescription(`${discord.getEmoji("star")}_You were unrestricted in ${message.guild!.name} for reason:_ **${reason}**`)
-            await dm.send({embeds: [restrictEmbed]}).catch(() => null)
+            await discord.channelSend(dm, restrictEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         restrictEmbed
         .setAuthor({name: "restrict", iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png"})
         .setTitle(`**Member Unrestricted** ${discord.getEmoji("yes")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully unrestricted ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [restrictEmbed]})
-        return
+        return this.reply(restrictEmbed)
     }
 }

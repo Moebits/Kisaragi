@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Holiday extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for daily holidays.",
             help:
@@ -65,7 +65,7 @@ export default class Holiday extends Command {
                     `${discord.getEmoji("star")}_Holiday:_ **${holidayName}**\n` +
                     `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(description, 2000, ".")}`
                     )
-                return message.channel.send({embeds: [holidayEmbed]})
+                return this.reply(holidayEmbed)
             }
 
             for (let i = 0; i < monthNames.length; i++) {
@@ -109,6 +109,6 @@ export default class Holiday extends Command {
             `${discord.getEmoji("star")}_Holiday:_ **${date} - ${holidayName}**\n` +
             `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(description, 2000, ".")}`
             )
-        message.channel.send({embeds: [holidayEmbed]})
+        this.reply(holidayEmbed)
     }
 }

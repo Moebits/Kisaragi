@@ -8,7 +8,7 @@ import {Permission} from "../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class ABLoop extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Loops a song from point A to point B.",
             help:
@@ -52,16 +52,15 @@ export default class ABLoop extends Command {
         const perms = new Permission(discord, message)
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
-        const queue = audio.getQueue() as any
+        const queue = audio.getQueue()
         const start = args[1] ? args[1] : "0"
         const end = args[2] ? args[2] : queue[0]?.duration
         audio.abloop(start, end)
         const embed = await audio.updateNowPlaying()
-        queue[0].message.edit(embed)
-        const rep = await message.reply("Enabled A-B looping!")
+        discord.edit(queue[0].message!, embed)
+        const rep = await this.reply("Enabled A-B looping!")
         await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
-        return
     }
 }

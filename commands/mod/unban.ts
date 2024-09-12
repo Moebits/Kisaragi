@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Unban extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Unbans the specified users.",
             help:
@@ -77,16 +77,15 @@ export default class Unban extends Command {
                 const data = {type: "unban", user: user.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await user.send({embeds: [banEmbed]}).catch(() => null)
+            await discord.dmSend(user, banEmbed).catch(() => null)
         }
-        if (!users[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!users[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         banEmbed
         .setAuthor({name: "unban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
         .setTitle(`**Member Unbanned** ${discord.getEmoji("ceaseBullying")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully unbanned ${users.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [banEmbed]})
-        return
+        return this.reply(banEmbed)
     }
 }

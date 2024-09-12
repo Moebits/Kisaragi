@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Restrict extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Adds a restricted role to the specified users.",
             help:
@@ -52,7 +52,7 @@ export default class Restrict extends Command {
         if (!await perms.checkMod()) return
         const restrictEmbed = embeds.createEmbed()
         const restrict = await sql.fetchColumn("special roles", "restricted role")
-        if (!restrict) return message.reply("You need to set a restricted role first!")
+        if (!restrict) return this.reply("You need to set a restricted role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []
 
@@ -75,7 +75,7 @@ export default class Restrict extends Command {
                 const data = {type: "restrict", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
@@ -83,14 +83,13 @@ export default class Restrict extends Command {
             .setAuthor({name: "restrict", iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png"})
             .setTitle(`**You Were Restricted** ${discord.getEmoji("no")}`)
             .setDescription(`${discord.getEmoji("star")}_You were restricted in ${message.guild!.name} for reason:_ **${reason}**`)
-            await dm.send({embeds: [restrictEmbed]})
+            await discord.channelSend(dm, restrictEmbed)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         restrictEmbed
         .setAuthor({name: "restrict", iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png"})
         .setTitle(`**Member Restricted** ${discord.getEmoji("no")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully restricted ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [restrictEmbed]})
-        return
+        return this.reply(restrictEmbed)
     }
 }

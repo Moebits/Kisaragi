@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Delay extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Applies a delay effect to an audio file.",
             help:
@@ -64,35 +64,34 @@ export default class Delay extends Command {
                 delaysDecays.push(Number(args[i]))
             }
         }
-        if (delaysDecays.length % 2 === 1) return message.reply(`There must be an even amount of arguments (delay and decay pairs).`)
-        const rep = await message.reply("_Adding delay to the file, please wait..._")
+        if (delaysDecays.length % 2 === 1) return this.reply(`There must be an even amount of arguments (delay and decay pairs).`)
+        const rep = await this.reply("_Adding delay to the file, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
             const attachment = await discord.fetchLastAttachment(message, false, regex)
-            if (!attachment) return message.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
+            if (!attachment) return this.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
             file = attachment
         } else {
-            const queue = audio.getQueue() as any
+            const queue = audio.getQueue()
             file = queue?.[0].file
         }
         try {
             await audio.delay(file, delaysDecays, setDownload)
         } catch {
-            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+            return this.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
         }
         if (rep) rep.delete()
         if (!setDownload) {
-            const queue = audio.getQueue() as any
-            const settings = audio.getSettings() as any
+            const queue = audio.getQueue()
+            const settings = audio.getSettings()
             settings.effects.push("delay")
             const embed = await audio.updateNowPlaying()
-            queue[0].message.edit(embed)
-            const rep = await message.reply("Applied a delay effect to the file!")
+            discord.edit(queue[0].message!, embed)
+            const rep = await this.reply("Applied a delay effect to the file!")
             await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
         }
-        return
     }
 }

@@ -7,7 +7,7 @@ import {Permission} from "./../../structures/Permission"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Random extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Executes a random command, excluding permission related commands.",
             help:
@@ -45,8 +45,7 @@ export default class Random extends Command {
             "kisaragi",
             "satania",
             "tohru",
-            "kanna",
-            "loli"
+            "kanna"
         ]
         return strings[Math.floor(Math.random()*strings.length)]
     }

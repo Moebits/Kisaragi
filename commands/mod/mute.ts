@@ -7,7 +7,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Mute extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Mutes the specified users.",
             help:
@@ -52,7 +52,7 @@ export default class Mute extends Command {
         if (!await perms.checkMod()) return
         const muteEmbed = embeds.createEmbed()
         const mute = await sql.fetchColumn("special roles", "mute role")
-        if (!mute) return message.reply("You need to set a mute role first!")
+        if (!mute) return this.reply("You need to set a mute role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []
 
@@ -75,7 +75,7 @@ export default class Mute extends Command {
                 const data = {type: "mute", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Manage Roles** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
@@ -83,14 +83,13 @@ export default class Mute extends Command {
             .setAuthor({name: "mute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
             .setTitle(`**You Were Muted** ${discord.getEmoji("sagiriBleh")}`)
             .setDescription(`${discord.getEmoji("star")}_You were muted in ${message.guild!.name} for reason:_ **${reason}**`)
-            await dm.send({embeds: [muteEmbed]}).catch(() => null)
+            await discord.channelSend(dm, muteEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         muteEmbed
         .setAuthor({name: "mute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
         .setTitle(`**Member Muted** ${discord.getEmoji("sagiriBleh")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully muted ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [muteEmbed]})
-        return
+        return this.reply(muteEmbed)
     }
 }

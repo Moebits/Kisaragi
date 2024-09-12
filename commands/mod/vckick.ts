@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class VCKick extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Disconnects users from a voice channel.",
             help:
@@ -79,16 +79,15 @@ export default class VCKick extends Command {
                 const data = {type: "vckick", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **Move Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Move Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [vckickEmbed]}).catch(() => null)
+            await discord.channelSend(dm, vckickEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         vckickEmbed
         .setAuthor({name: "voice kick", iconURL: "https://cdn1.iconfinder.com/data/icons/interface-filled-blue/32/Microphone_recorder_sound_voice-512.png"})
         .setTitle(`**Member Voice Kicked** ${discord.getEmoji("tohruSmug")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully voice kicked ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [vckickEmbed]})
-        return
+        return this.reply(vckickEmbed)
     }
 }

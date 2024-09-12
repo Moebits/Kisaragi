@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Base64 extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Encodes or decodes a message using the base64 algorithm.",
             help:
@@ -49,7 +49,7 @@ export default class Base64 extends Command {
             result = base64.encode(text)
         }
 
-        await message.channel.send(`**Base64 Conversion** ${discord.getEmoji("tohruThink")}`)
-        return message.channel.send(result)
+        await this.reply(`**Base64 Conversion** ${discord.getEmoji("tohruThink")}`)
+        return this.send(result)
     }
 }

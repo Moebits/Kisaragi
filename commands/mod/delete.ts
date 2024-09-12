@@ -7,7 +7,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 
 export default class Delete extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Deletes the specified number of messages.",
             help:
@@ -26,6 +26,7 @@ export default class Delete extends Command {
             aliases: ["del", "purge"],
             guildOnly: true,
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const typeOption = new SlashCommandOption()
@@ -46,7 +47,7 @@ export default class Delete extends Command {
             .addOption(typeOption)
     }
 
-    public bulkDelete = async (num: number, message: Message<true>, userID: boolean, search: boolean, args: string[], query: string, text: boolean, image: boolean) => {
+    public bulkDelete = async (num: number, message: Message, userID: boolean, search: boolean, args: string[], query: string, text: boolean, image: boolean) => {
         const msgArray: string[] = []
         if (userID) {
             const messages = await message.channel.messages.fetch({limit: num}).then((c) => c.map((m: Message) => m))
@@ -108,17 +109,13 @@ export default class Delete extends Command {
         }
 
         if (!num) {
-            delEmbed
-            .setDescription("Correct usage is =>del (number).")
-            message.channel.send({embeds: [delEmbed]})
-            return
+            delEmbed.setDescription("Correct usage is =>del (number).")
+            return this.reply(delEmbed)
         }
 
         if (num < 2 || num > 1002) {
-            delEmbed
-            .setDescription("You must type a number between 0 and 1000!")
-            message.channel.send({embeds: [delEmbed]})
-            return
+            delEmbed.setDescription("You must type a number between 0 and 1000!")
+            return this.reply(delEmbed)
         }
 
         if (num <= 100) {
@@ -152,8 +149,7 @@ export default class Delete extends Command {
             delEmbed
             .setDescription(`Deleted **${args[1]}** messages in this channel!`)
         }
-        const msg = await message.channel.send({embeds: [delEmbed]}) as Message
-        setTimeout(() => msg.delete(), 5000)
-        return
+        const msg = await this.reply(delEmbed) as Message
+        Functions.deferDelete(msg, 5000)
     }
 }

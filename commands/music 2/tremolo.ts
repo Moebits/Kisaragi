@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Tremolo extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Applies tremolo (amplitude modulation) to an audio file.",
             help:
@@ -57,7 +57,7 @@ export default class Tremolo extends Command {
         const perms = new Permission(discord, message)
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
-        const queue = audio.getQueue() as any
+        const queue = audio.getQueue()
         let setDownload = false
         if (args[1] === "download" || args[1] === "dl") {
             setDownload = true
@@ -65,34 +65,33 @@ export default class Tremolo extends Command {
         }
         const speed = Number(args[1])
         const depth = Number(args[2])
-        const rep = await message.reply("_Adding a tremolo effect to the file, please wait..._")
+        const rep = await this.reply("_Adding a tremolo effect to the file, please wait..._")
         let file = ""
         if (setDownload) {
             const regex = new RegExp(/.(mp3|wav|flac|ogg|aiff)/)
             const attachment = await discord.fetchLastAttachment(message, false, regex)
-            if (!attachment) return message.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
+            if (!attachment) return this.reply(`Only **mp3**, **wav**, **flac**, **ogg**, and **aiff** files are supported.`)
             file = attachment
         } else {
-            const queue = audio.getQueue() as any
+            const queue = audio.getQueue()
             file = queue?.[0].file
         }
         try {
             await audio.tremolo(file, speed, depth, setDownload)
         } catch {
-            return message.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
+            return this.reply("Sorry, these parameters will cause clipping distortion on the audio file.")
         }
         if (rep) rep.delete()
         if (!setDownload) {
-            const queue = audio.getQueue() as any
-            const settings = audio.getSettings() as any
+            const queue = audio.getQueue()
+            const settings = audio.getSettings()
             settings.effects.push("tremolo")
             const embed = await audio.updateNowPlaying()
-            queue[0].message.edit(embed)
-            const rep = await message.reply("Added a tremolo effect to the file!")
+            discord.edit(queue[0].message!, embed)
+            const rep = await this.reply("Added a tremolo effect to the file!")
             await Functions.timeout(3000)
         rep.delete().catch(() => null)
         message.delete().catch(() => null)
         }
-        return
     }
 }

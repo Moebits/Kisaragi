@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class TempBan extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Bans a user for the specified period.",
             help:
@@ -74,7 +74,7 @@ export default class TempBan extends Command {
                 }
             }
         }
-        if (!timeArray[0]) return message.reply(`You must provide a time limit ${discord.getEmoji("kannaFacepalm")}`)
+        if (!timeArray[0]) return this.reply(`You must provide a time limit ${discord.getEmoji("kannaFacepalm")}`)
         const rawTime = timeArray.join(" ")
         const seconds = Functions.parseCalenderSeconds(rawTime)
 
@@ -133,16 +133,15 @@ export default class TempBan extends Command {
                 }, seconds*1000)
             } catch (e) {
                 console.log(e)
-                return message.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Ban Members** permission ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [tempBanEmbed]}).catch(() => null)
+            await discord.channelSend(dm, tempBanEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         tempBanEmbed
         .setAuthor({name: "tempban", iconURL: "https://cdn.discordapp.com/emojis/579870079735562261.png"})
         .setTitle(`**Member Temp Banned** ${discord.getEmoji("kannaFU")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully temp banned ${members.join(", ")} for the duration **${rawTime}** for reason:_ **${reason}**`)
-        message.channel.send({embeds: [tempBanEmbed]})
-        return
+        return this.reply(tempBanEmbed)
     }
 }

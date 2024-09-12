@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Shorten extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Shortens a url using is.gd.",
             help:
@@ -41,6 +41,6 @@ export default class Shorten extends Command {
         if (!input) return this.noQuery(embeds.createEmbed())
         const json = await axios.get(`https://is.gd/create.php?format=json&url=${input.trim()}`, {headers})
         const newLink = json.data.shorturl
-        message.channel.send(newLink)
+        this.reply(newLink)
     }
 }

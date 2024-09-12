@@ -8,7 +8,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Cases extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Lists all logged moderation cases.",
           help:
@@ -54,7 +54,7 @@ export default class Cases extends Command {
         if (!await perms.checkMod()) return
 
         let cases = await sql.fetchColumn("guilds", "cases")
-        if (!cases) return message.reply(`This server has no cases. Cases are only recorded if you have the **mod log** on, which you can enable in \`logs\`. ${discord.getEmoji("kannaFacepalm")}`)
+        if (!cases) return this.reply(`This server has no cases. Cases are only recorded if you have the **mod log** on, which you can enable in \`logs\`. ${discord.getEmoji("kannaFacepalm")}`)
         cases = cases.map((c: any) => JSON.parse(c))
 
         if (args[1]) {
@@ -96,7 +96,7 @@ export default class Cases extends Command {
         }
 
         if (caseArray.length === 1) {
-            message.channel.send({embeds: [caseArray[0]]})
+            this.reply(caseArray[0])
         } else {
             embeds.createReactionEmbed(caseArray)
         }

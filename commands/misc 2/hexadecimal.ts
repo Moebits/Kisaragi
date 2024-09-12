@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Hexadecimal extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Converts a number to and from hexadecimal.",
             help:
@@ -54,7 +54,7 @@ export default class Hexadecimal extends Command {
             result =  Number(text).toString(16)
         }
 
-        await message.channel.send(`**Hexadecimal Conversion** ${discord.getEmoji("tohruThink")}`)
-        return message.channel.send(result)
+        await this.reply(`**Hexadecimal Conversion** ${discord.getEmoji("tohruThink")}`)
+        return this.send(result)
     }
 }

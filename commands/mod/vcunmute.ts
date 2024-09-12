@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class VCUnmute extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Voice unmutes a user.",
             help:
@@ -79,16 +79,15 @@ export default class VCUnmute extends Command {
                 const data = {type: "vcunmute", user: member.id, executor: message.author.id, date: Date.now(), guild: message.guild?.id, reason, context: message.url}
                 discord.emit("caseUpdate", data)
             } catch {
-                return message.reply(`I need the **Mute Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`I need the **Mute Members** permission, or this user is not in a voice channel ${discord.getEmoji("kannaFacepalm")}`)
             }
-            await dm.send({embeds: [vcunmuteEmbed]}).catch(() => null)
+            await discord.channelSend(dm, vcunmuteEmbed).catch(() => null)
         }
-        if (!members[0]) return message.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
+        if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         vcunmuteEmbed
         .setAuthor({name: "voice unmute", iconURL: "https://images.assetsdelivery.com/compings_v2/vectorgalaxy/vectorgalaxy1808/vectorgalaxy180807510.jpg"})
         .setTitle(`**Member Voice Unmuted** ${discord.getEmoji("aquaUp")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully voice unmuted ${members.join(", ")} for reason:_ **${reason}**`)
-        message.channel.send({embeds: [vcunmuteEmbed]})
-        return
+        return this.reply(vcunmuteEmbed)
     }
 }

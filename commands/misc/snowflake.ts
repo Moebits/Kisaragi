@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Snowflake extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Deconstructs or generates a discord snowflake.",
             help:
@@ -54,7 +54,7 @@ export default class Snowflake extends Command {
                 `${discord.getEmoji("star")}_Process ID:_ **${snowflake.processId}**\n` +
                 `${discord.getEmoji("star")}_Increment:_ **${snowflake.increment}**\n`
             )
-            message.channel.send({embeds: [snowflakeEmbed]})
+            this.reply(snowflakeEmbed)
 
         } else {
             const snowflake = SnowflakeUtil.generate({timestamp: input.trim() ? new Date(input) : Date.now()})
@@ -64,7 +64,7 @@ export default class Snowflake extends Command {
             .setDescription(
                 `${discord.getEmoji("star")}_Snowflake:_ **${snowflake}**\n`
             )
-            return message.channel.send({embeds: [snowflakeEmbed]})
+            return this.reply(snowflakeEmbed)
         }
     }
 }

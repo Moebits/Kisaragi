@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Time extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets the current time in a city.",
             help:
@@ -83,6 +83,6 @@ export default class Time extends Command {
             `${discord.getEmoji("star")}_Date:_ \`${weekDays[weekDay-1]}, ${day}\`\n` +
             `${discord.getEmoji("star")}_Current Time:_ \`${format(date)}\``
         )
-        return message.channel.send({embeds: [timeEmbed]})
+        return this.reply(timeEmbed)
     }
 }

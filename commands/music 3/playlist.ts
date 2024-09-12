@@ -9,7 +9,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 import {Permission} from "../../structures/Permission"
 
 export default class Playlists extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Plays or manages your playlists.",
             help:
@@ -71,7 +71,7 @@ export default class Playlists extends Command {
             `))
             playlistArray.push(playlistEmbed)
         }
-        const msg = await message.channel.send({embeds: [playlistArray[0]]})
+        const msg = await this.reply(playlistArray[0])
         const reactions = ["right", "left", "1n", "2n", "3n", "random", "edit", "add"]
         return
     }

@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Email extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Sends you an email with text content/attachment. **Requires oauth2**",
             help:
@@ -48,7 +48,7 @@ export default class Email extends Command {
         const sql = new SQLQuery(message)
         let id = message.author.id
         const email = await sql.fetchColumn("oauth2", "email", "user id", id)
-        if (!email) return message.reply(`You need to give me additional oauth2 permissions. See the **oauth2** command.`)
+        if (!email) return this.reply(`You need to give me additional oauth2 permissions. See the **oauth2** command.`)
 
         const content = Functions.combineArgs(args, 1).trim().replace(/(<@)(.*?)(>)/g, "").replace(/(http)(.*?)(?= |$)/g, "")
         let links = Functions.combineArgs(args, 1).trim().match(/(http)(.*?)(?= |$)/)
@@ -60,7 +60,7 @@ export default class Email extends Command {
                 attach.push({path: links[i]})
             }
         }
-        if (!content && !attach) return message.reply(`Do you want to send an empty email ${discord.getEmoji("kannaFacepalm")}`)
+        if (!content && !attach) return this.reply(`Do you want to send an empty email ${discord.getEmoji("kannaFacepalm")}`)
 
         const transport = nodemailer.createTransport({
             service: "gmail",
@@ -85,6 +85,6 @@ export default class Email extends Command {
         .setDescription(
             `${discord.getEmoji("star")}The email was delivered! Check your inbox and spam folder.`
         )
-        return message.channel.send({embeds: [emailEmbed]})
+        return this.reply(emailEmbed)
     }
 }

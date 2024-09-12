@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Calc extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Calculates a math expression.",
             help:
@@ -48,6 +48,6 @@ export default class Calc extends Command {
         calcEmbed
         .setTitle(`**Math Calculation** ${discord.getEmoji("vigneDead")}`)
         .setDescription(result)
-        return message.reply({embeds: [calcEmbed]})
+        return this.reply(calcEmbed)
     }
 }

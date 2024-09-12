@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {CollegiateDictionary} from "mw-dict"
 
 export default class Define extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Retrieves the definition of a word from merriam webster.",
             help:
@@ -61,8 +61,7 @@ export default class Define extends Command {
             .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
             .setTitle(`**Dictionary** ${discord.getEmoji("raphi")}`)
             .setDescription(`No definitions were found. Here are some word suggestions: \n${error.suggestions.join(", ")}`)
-            message.channel.send({embeds: [defineEmbed]})
-            return
+            return this.reply(defineEmbed)
         }
         const definArray: string[] = []
         const exampleArray: string[] = []
@@ -116,6 +115,6 @@ export default class Define extends Command {
             `${discord.getEmoji("star")}_Etymology:_ ${result[0].etymology ? result[0].etymology : "None"}\n` +
             `${Functions.checkChar(definitions, 2000, ".")}\n`
         )
-        message.channel.send({embeds: [defineEmbed]})
+        this.reply(defineEmbed)
     }
 }
