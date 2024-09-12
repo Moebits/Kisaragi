@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Roles extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Info on all roles.",
             help:
@@ -56,7 +56,6 @@ export default class Roles extends Command {
             .setDescription(`${discord.getEmoji("star")}_Role Count:_ **${roleArray.length}**\n` + description)
             userEmbedArray.push(userEmbed)
         }
-        embeds.createReactionEmbed(userEmbedArray)
-        return
+        return embeds.createReactionEmbed(userEmbedArray)
     }
 }

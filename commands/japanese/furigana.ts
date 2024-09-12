@@ -8,7 +8,7 @@ import Kuroshiro from "kuroshiro"
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji"
 
 export default class Furigana extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Adds furigana to japanese text.",
             help:
@@ -50,7 +50,7 @@ export default class Furigana extends Command {
         const result = await kuroshiro.convert(input, {mode: "furigana", to: "hiragana"})
         const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
 
-        await message.reply(`**Furigana Conversion** ${discord.getEmoji("kannaXD")}`)
-        message.channel.send(cleanResult)
+        await this.reply(`**Furigana Conversion** ${discord.getEmoji("kannaXD")}`)
+        this.send(cleanResult)
     }
 }

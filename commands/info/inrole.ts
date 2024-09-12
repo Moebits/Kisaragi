@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class InRole extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Lists all users in a role.",
             help:
@@ -45,7 +45,7 @@ export default class InRole extends Command {
             const query = Functions.combineArgs(args, 1)?.trim()
             role = message.guild?.roles.cache.find((r) => r.name.toLowerCase().includes(query.toLowerCase()))
         }
-        if (!role) return message.reply("Could not find this role!")
+        if (!role) return this.reply("Could not find this role!")
         const userArray = role.members.map((m) => m.user.tag)
         const step = 20.0
         const increment = Math.ceil(role.members.size! / step)
@@ -70,12 +70,11 @@ export default class InRole extends Command {
             )
             inRoleArray.push(roleEmbed)
         }
-        if (!inRoleArray[0]) return message.reply(`No one is in this role ${discord.getEmoji("kannaFacepalm")}`)
+        if (!inRoleArray[0]) return this.reply(`No one is in this role ${discord.getEmoji("kannaFacepalm")}`)
         if (inRoleArray.length === 1) {
-            message.channel.send({embeds: [inRoleArray[0]]})
+            this.reply(inRoleArray[0])
         } else {
             embeds.createReactionEmbed(inRoleArray)
         }
-        return
     }
 }

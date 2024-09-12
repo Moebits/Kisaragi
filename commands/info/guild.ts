@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Guild extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets information on this server.",
             help:
@@ -33,7 +33,7 @@ export default class Guild extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has(["ManageGuild", "BanMembers"])) {
-            return message.reply(`The bot needs the permission **Manage Server** and **Ban Members** in order to use this command. This is for counting the amount of invites and bans. ${this.discord.getEmoji("kannaFacepalm")}`)
+            return this.reply(`The bot needs the permission **Manage Server** and **Ban Members** in order to use this command. This is for counting the amount of invites and bans. ${this.discord.getEmoji("kannaFacepalm")}`)
         }
         const guildImg = message.guild?.bannerURL() ? message.guild.bannerURL({extension: "png"}) : (message.guild?.splashURL() ? message.guild.splashURL({extension: "png"}) : "")
         const inviteURL = await discord.getInvite(message.guild)
@@ -66,7 +66,6 @@ export default class Guild extends Command {
             }).join(" ")!, 200, " ")}\n` +
             `${discord.getEmoji("star")}_Invite Link:_ ${inviteURL}\n`
         )
-        message.channel.send({embeds: [guildEmbed]})
-        return
+        return this.reply(guildEmbed)
     }
 }

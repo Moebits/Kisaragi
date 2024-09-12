@@ -7,7 +7,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Points} from "../../structures/Points"
 
 export default class Award extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Award users level xp.",
             help:
@@ -50,7 +50,7 @@ export default class Award extends Command {
         const input = Functions.combineArgs(args, 1)
         let users = input.match(/(?<=<@)(.*?)(?=>)/g)?.map((u) => u)
         if (!users) users = input.match(/\d{17,}/g)?.map((u) => u)
-        if (!users) return message.reply(`You must mention a user ${discord.getEmoji("kannaFacepalm")}`)
+        if (!users) return this.reply(`You must mention a user ${discord.getEmoji("kannaFacepalm")}`)
         let newMsg = input
         users = Functions.removeDuplicates(users)
         for (let i = 0; i < users.length; i++) {
@@ -61,7 +61,7 @@ export default class Award extends Command {
             try {
                 await points.giveScore(users[i].replace("!", ""), Number(amount))
             } catch {
-                return message.reply(`This server has no scores ${discord.getEmoji("kannaFacepalm")}`)
+                return this.reply(`This server has no scores ${discord.getEmoji("kannaFacepalm")}`)
             }
         }
 
@@ -72,6 +72,6 @@ export default class Award extends Command {
         .setDescription(
             `${discord.getEmoji("star")}Awarded **${amount}** points to ${users.map((u) => `<@${u}>`).join(", ")}!`
         )
-        return message.channel.send({embeds: [awardEmbed]})
+        return this.reply(awardEmbed)
     }
 }

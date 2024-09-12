@@ -11,7 +11,7 @@ import {SQLQuery} from "./../../structures/SQLQuery"
 export default class OsuCommand extends Command {
     private user = null as any
     private beatmap = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for osu beatmaps, players, and scores.",
             help:
@@ -92,7 +92,7 @@ export default class OsuCommand extends Command {
                 await SQLQuery.insertInto("misc", "user id", message.author.id)
             } finally {
                 await sql.updateColumn("misc", "osu name", playerName, "user id", message.author.id)
-                message.reply(`Successfully linked your account to **${playerName}**! ${discord.getEmoji("tohruThumbsUp")}`)
+                this.reply(`Successfully linked your account to **${playerName}**! ${discord.getEmoji("tohruThumbsUp")}`)
             }
             return
         }
@@ -130,7 +130,7 @@ export default class OsuCommand extends Command {
             )
             .setImage(await osu.users.banner(playerName))
             .setThumbnail(`https://a.ppy.sh/${player.user_id}`)
-            return message.channel.send({embeds: [osuEmbed]})
+            return this.reply(osuEmbed)
         }
 
         if (args[1] === "recent" || args[1] === "rs") {
@@ -172,10 +172,10 @@ export default class OsuCommand extends Command {
                 .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                 .setTitle(`**${playername}'s Recent Plays** ${discord.getEmoji("kannaSip")}`)
                 .setDescription(`There are no recent plays available!`)
-                return message.channel.send({embeds: [osuEmbed]})
+                return this.reply(osuEmbed)
             }
             if (osuArray.length === 1) {
-                return message.channel.send({embeds: [osuArray[0]]})
+                return this.reply(osuArray[0])
             } else {
                 return embeds.createReactionEmbed(osuArray, false, true)
             }
@@ -220,10 +220,10 @@ export default class OsuCommand extends Command {
                 .setAuthor({name: "osu", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/220px-Osu%21Logo_%282015%29.svg.png"})
                 .setTitle(`**${playername}'s Best Plays** ${discord.getEmoji("kannaSip")}`)
                 .setDescription(`There are no best plays available!`)
-                return message.channel.send({embeds: [osuEmbed]})
+                return this.reply(osuEmbed)
             }
             if (osuArray.length === 1) {
-                return message.channel.send({embeds: [osuArray[0]]})
+                return this.reply(osuArray[0])
             } else {
                 return embeds.createReactionEmbed(osuArray, false, true)
             }
@@ -260,7 +260,7 @@ export default class OsuCommand extends Command {
                 osuArray.push(osuEmbed)
             }
             if (osuArray.length === 1) {
-                return message.channel.send({embeds: osuArray})
+                return this.reply(osuArray)
             } else {
                 return embeds.createReactionEmbed(osuArray, false, true)
             }
@@ -293,7 +293,7 @@ export default class OsuCommand extends Command {
                 osuArray.push(osuEmbed)
             }
             if (osuArray.length === 1) {
-                return message.channel.send({embeds: osuArray})
+                return this.reply(osuArray)
             } else {
                 return embeds.createReactionEmbed(osuArray, false, true)
             }

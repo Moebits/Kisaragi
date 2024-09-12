@@ -18,7 +18,7 @@ export default class AzurLane extends Command {
         "Nicholas", "Radford", "Little Bel", "Agano", "Z18", "22", "Noire", "33",
         "HDN Neptune", "Ayanami", "Murasaki Shion"
     ]
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets information on an azur lane ship girl.",
             help:
@@ -125,10 +125,9 @@ export default class AzurLane extends Command {
         }
 
         if (azurArray.length === 1) {
-            message.reply({embeds: [azurArray[0]]})
+            this.reply(azurArray[0])
         } else {
             embeds.createReactionEmbed(azurArray, true, true)
         }
-        return
     }
 }

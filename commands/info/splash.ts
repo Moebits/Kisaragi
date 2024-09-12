@@ -5,7 +5,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Splash extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts the guild's splash screen.",
             help:
@@ -34,11 +34,11 @@ export default class Splash extends Command {
 
         const splashEmbed = embeds.createEmbed()
         const splash = message.guild?.splashURL({extension: "png", size: 1024})
-        if (!splash) return message.reply(`This guild doesn't have a splash screen ${discord.getEmoji("kannaFacepalm")}`)
+        if (!splash) return this.reply(`This guild doesn't have a splash screen ${discord.getEmoji("kannaFacepalm")}`)
 
-        await message.channel.send({embeds: [splashEmbed
+        await this.reply(splashEmbed
         .setDescription(`**${message.guild!.name}'s Splash Screen**`)
         .setURL(splash)
-        .setImage(splash)]})
+        .setImage(splash))
     }
 }

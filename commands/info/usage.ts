@@ -9,7 +9,7 @@ import {Functions} from "./../../structures/Functions"
 import {Permission} from "./../../structures/Permission"
 
 export default class Usage extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Get the usage statistics of a command, guild, or user.",
             help:
@@ -84,11 +84,10 @@ export default class Usage extends Command {
             }
 
             if (usageArray.length === 1) {
-                message.channel.send({embeds: [usageArray[0]]})
+                return this.reply(usageArray[0])
             } else {
-                embeds.createReactionEmbed(usageArray)
+                return embeds.createReactionEmbed(usageArray)
             }
-            return
         }
 
         if (args[2] === "list") {
@@ -140,11 +139,10 @@ export default class Usage extends Command {
             }
 
             if (usageArray.length === 1) {
-                message.channel.send({embeds: [usageArray[0]]})
+                this.reply(usageArray[0])
             } else {
                 embeds.createReactionEmbed(usageArray)
             }
-            return
         }
 
         if (args[1].match(/\d{4,}/) || args[1] === "me" || args[1] === "guild" || args[1] === "server") {
@@ -182,7 +180,7 @@ export default class Usage extends Command {
                 .setDescription(
                     `${discord.getEmoji("star")}The command **${args[2]}** has been used **${usage[args[2]]}** times!\n`
                 )
-                return message.channel.send({embeds: [usageEmbed]})
+                return this.reply(usageEmbed)
             }
             let description = ""
             for (let i = 0; i < Object.keys(usage).length; i++) {
@@ -201,11 +199,10 @@ export default class Usage extends Command {
             }
 
             if (usageArray.length === 1) {
-                message.channel.send({embeds: [usageArray[0]]})
+                return this.reply(usageArray[0])
             } else {
-                embeds.createReactionEmbed(usageArray)
+                return embeds.createReactionEmbed(usageArray)
             }
-            return
         }
 
         const command = cmd.findCommand(args[1])
@@ -220,6 +217,6 @@ export default class Usage extends Command {
         .setDescription(
             `${discord.getEmoji("star")}The command **${command.name}** has been used **${usage}** times!\n`
         )
-        return message.channel.send({embeds: [usageEmbed]})
+        return this.reply(usageEmbed)
     }
 }

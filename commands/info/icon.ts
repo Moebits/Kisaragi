@@ -5,7 +5,7 @@ import {Embeds} from "../../structures/Embeds"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class GuildIcon extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts the guild's icon.",
             help:
@@ -34,11 +34,11 @@ export default class GuildIcon extends Command {
 
         const guildIconEmbed = embeds.createEmbed()
         const icon = message.guild?.iconURL({extension: "png", size: 1024})
-        if (!icon) return message.reply(`This guild doesn't have an icon ${discord.getEmoji("kannaFacepalm")}`)
+        if (!icon) return this.reply(`This guild doesn't have an icon ${discord.getEmoji("kannaFacepalm")}`)
 
-        await message.channel.send({embeds: [guildIconEmbed
+        await this.reply(guildIconEmbed
             .setDescription(`**${message.guild!.name}'s Icon**`)
             .setURL(icon)
-            .setImage(icon)]})
+            .setImage(icon))
     }
 }

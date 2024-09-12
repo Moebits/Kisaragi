@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class User extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets information on a user or on yourself.",
             help:
@@ -55,7 +55,6 @@ export default class User extends Command {
             `${discord.getEmoji("star")}_Created Account At:_ **${Functions.formatDate(user?.user.createdAt!)}**\n` +
             `${discord.getEmoji("star")}_Roles:_ ${Functions.checkChar(user?.roles.cache.map((r) => `<@&${r.id}>`).join(" ")!, 1000, " ")}`
         )
-        message.channel.send({embeds: [userEmbed]})
-        return
+        return this.reply(userEmbed)
     }
 }

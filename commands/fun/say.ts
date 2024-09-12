@@ -6,7 +6,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Say extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts your message.",
             help:
@@ -43,10 +43,10 @@ export default class Say extends Command {
         if (!rawText) return this.reply("You did not provide any text.")
 
         if (message instanceof Message) {
-            await message.channel.send({content: Functions.checkChar(rawText, 2000, "."), allowedMentions: {parse: []}})
+            await this.send(Functions.checkChar(rawText, 2000, "."), undefined, {allowedMentions: {parse: []}})
             if (message.content?.startsWith(prefix)) await message.delete().catch(() => null)
         } else {
-            await (message as any).reply({content: Functions.checkChar(rawText, 2000, "."), allowedMentions: {parse: []}})
+            await this.reply(Functions.checkChar(rawText, 2000, "."), undefined, {allowedMentions: {parse: []}})
         }
     }
 }

@@ -14,7 +14,7 @@ export default class Genshin extends Command {
         "Nahida", "Navia", "Nilou", "Noelle", "Qiqi", "Sayu", "Shenhe", "Sigewinne", "Xiangling", "Yae-Miko",
         "Raiden", "Yanfei", "Yaoyao", "Yelan", "Yoimiya", "Yun-Jin", "Lumine"
     ]
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets information on a genshin impact character.",
             help:
@@ -98,6 +98,6 @@ export default class Genshin extends Command {
             `${discord.getEmoji("star")}_Release Date:_ **${Functions.formatDate(json.release)}**\n` +
             `${discord.getEmoji("star")}_Description:_ ${json.description}\n`
         )
-        return message.reply({embeds: [genshinEmbed]})
+        return this.reply(genshinEmbed)
     }
 }

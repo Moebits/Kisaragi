@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Privacy extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Privacy policy of the bot.",
           help:
@@ -53,6 +53,6 @@ export default class Privacy extends Command {
             ${discord.getEmoji("star")}_Data Deletion:_ All oauth commands have an option to revoke your token. To revoke your twitter token you need to manually click on "revoke access" in your application settings. To delete all guild data, just remove the bot from your server.
             ${discord.getEmoji("star")}_Account Deletion:_ If you delete your discord account all user-specific settings and oauth2 data on your account is deleted.
         `))
-        return message.channel.send({embeds: [privacyPolicy]})
+        return this.reply(privacyPolicy)
     }
 }

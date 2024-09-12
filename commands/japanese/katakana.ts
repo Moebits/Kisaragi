@@ -8,7 +8,7 @@ import Kuroshiro from "kuroshiro"
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji"
 
 export default class Katakana extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Converts japanese text to katakana.",
             help:
@@ -51,7 +51,7 @@ export default class Katakana extends Command {
         const result = await kuroshiro.convert(input, {mode: "spaced", to: "katakana"})
         const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
 
-        await message.reply(`**Katakana Conversion** ${discord.getEmoji("kannaCurious")}`)
-        message.channel.send(cleanResult)
+        await this.reply(`**Katakana Conversion** ${discord.getEmoji("kannaCurious")}`)
+        this.send(cleanResult)
     }
 }

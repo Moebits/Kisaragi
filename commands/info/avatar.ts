@@ -5,7 +5,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Avatar extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Posts the avatar of a user.",
           help:
@@ -41,17 +41,17 @@ export default class Avatar extends Command {
         const avatarEmbed = embeds.createEmbed()
 
         if (!message.mentions.users.size) {
-          await message.channel.send({embeds: [avatarEmbed
+          await this.reply(avatarEmbed
             .setDescription(`**${message.author!.username}'s Profile Picture**`)
-            .setImage(message.author.displayAvatarURL({extension: "png", size: 512}))]})
+            .setImage(message.author.displayAvatarURL({extension: "png", size: 512})))
         }
 
         for (const [key, user] of message.mentions.users) {
           const avatar = user.displayAvatarURL({extension: "png", size: 512})
-          await message.channel.send({embeds: [avatarEmbed
+          await this.reply(avatarEmbed
             .setDescription(`**${user.username}'s Profile Picture**`)
             .setURL(avatar)
-            .setImage(avatar)]})
+            .setImage(avatar))
     }
   }
 }

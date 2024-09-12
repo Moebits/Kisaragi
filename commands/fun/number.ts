@@ -4,7 +4,7 @@ import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class NumberCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Guess the number!",
             help:
@@ -35,24 +35,25 @@ export default class NumberCommand extends Command {
 
         const gameLoop = async () => {
             try {
+                if (!message.channel.isSendable()) return
                 const collected = await message.channel.awaitMessages({filter, max: 1, time: 60000}).then((c) => c.first()?.content.trim().toLowerCase())
                 if (!collected) return this.reply(`Quit, no message was sent ${discord.getEmoji("kannaFacepalm")}`)
                 if (collected === "quit") {
-                    return message.channel.send(`You lost the game! The correct number was **${num}** ${discord.getEmoji("smugFace")}`)
+                    return this.send(`You lost the game! The correct number was **${num}** ${discord.getEmoji("smugFace")}`)
                 } else if (!Number(collected)) {
-                    await message.channel.send(`This is not a number! Try again. Type **quit** to give up.`)
+                    await this.send(`This is not a number! Try again. Type **quit** to give up.`)
                     return gameLoop()
                 } else if (Number(collected) === num) {
-                    return message.channel.send(`Congrats, you won the game! **${num}** was the correct number. ${discord.getEmoji("vigneWink")}`)
+                    return this.send(`Congrats, you won the game! **${num}** was the correct number. ${discord.getEmoji("vigneWink")}`)
                 } else if (Number(collected) < num) {
-                    await message.channel.send(`That number is too small! Type **quit** to give up.`)
+                    await this.send(`That number is too small! Type **quit** to give up.`)
                     return gameLoop()
                 } else if (Number(collected) > num) {
-                    await message.channel.send(`That number is too big! Type **quit** to give up.`)
+                    await this.send(`That number is too big! Type **quit** to give up.`)
                     return gameLoop()
                 }
             } catch {
-                return message.channel.send(`Sorry, the time has run out. Quit the game.`)
+                return this.send(`Sorry, the time has run out. Quit the game.`)
             }
         }
         gameLoop()

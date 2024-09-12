@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Info extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Posts info on the bot.",
           help:
@@ -74,6 +74,6 @@ export default class Info extends Command {
             `[**Support Server**](${config.support})\n` +
             `[**Github Repository**](${config.repo})`
         )
-        return message.channel.send({embeds: [infoEmbed]})
+        return this.reply(infoEmbed)
     }
 }

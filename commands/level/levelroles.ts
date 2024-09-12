@@ -8,7 +8,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class LevelRoles extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for level up roles.",
             help:
@@ -27,6 +27,7 @@ export default class LevelRoles extends Command {
             `,
             aliases: ["lr"],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const msg2Option = new SlashCommandOption()
@@ -65,8 +66,9 @@ export default class LevelRoles extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -126,10 +128,10 @@ export default class LevelRoles extends Command {
         if (levelArray.length > 1) {
             embeds.createReactionEmbed(levelArray)
         } else {
-            message.channel.send({embeds: levelArray})
+            this.reply(levelArray)
         }
 
-        async function levelPrompt(msg: Message<true>) {
+        async function levelPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             let roles = await sql.fetchColumn("guilds", "level roles")
             if (!roles) roles = []
@@ -138,14 +140,14 @@ export default class LevelRoles extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "level roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Level role settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase().startsWith("delete")) {
@@ -155,9 +157,9 @@ export default class LevelRoles extends Command {
                         roles[num] = ""
                         roles = roles.filter(Boolean)
                         await sql.updateColumn("guilds", "level roles", roles)
-                        return msg.channel.send({embeds: [responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`)]})
+                        return discord.send(msg, responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("Setting not found!")]})
+                    return discord.send(msg, responseEmbed.setDescription("Setting not found!"))
                 }
             }
             if (msg.content.toLowerCase().startsWith("edit")) {
@@ -189,9 +191,9 @@ export default class LevelRoles extends Command {
                     roles[num] = curr
                     await sql.updateColumn("guilds", "level roles", roles)
 
-                    return msg.channel.send({embeds: [responseEmbed.setDescription(editDesc)]})
+                    return discord.send(msg, responseEmbed.setDescription(editDesc))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("No edits specified!")]})
+                    return discord.send(msg, responseEmbed.setDescription("No edits specified!"))
                 }
             }
 
@@ -228,7 +230,7 @@ export default class LevelRoles extends Command {
             await sql.updateColumn("guilds", "level roles", roles)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         embeds.createPrompt(levelPrompt)

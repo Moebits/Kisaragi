@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Dice extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Rolls a dice.",
             help:
@@ -30,6 +30,7 @@ export default class Dice extends Command {
     public run = async (args: string[]) => {
         const discord = this.discord
         const message = this.message
+        if (!message.channel.isSendable()) return
         const embeds = new Embeds(discord, message)
 
         const dices = ["dice1", "dice2", "dice3", "dice4", "dice5", "dice6"]

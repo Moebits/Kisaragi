@@ -6,7 +6,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Invite extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Posts the invite link and support server link.",
           help:
@@ -39,6 +39,6 @@ export default class Invite extends Command {
             `[**Invite Link**](${config.invite.replace("CLIENTID", discord.user!.id)})\n` +
             `[**Support Server**](${config.support})`
         )
-        return message.channel.send({embeds: [inviteEmbed]})
+        return this.reply(inviteEmbed)
     }
 }

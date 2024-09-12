@@ -7,7 +7,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class RGB extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Posts a visual representation of a color.",
           help:
@@ -79,6 +79,6 @@ export default class RGB extends Command {
         .setTitle(`**RGB Color** ${discord.getEmoji("raphiSmile")}`)
         .setImage(`attachment://color.png`)
 
-        return message.channel.send({embeds: [colorEmbed], files: [attachment]})
+        return this.reply(colorEmbed, attachment)
     }
 }

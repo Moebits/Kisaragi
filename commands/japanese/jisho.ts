@@ -9,7 +9,7 @@ import Kuroshiro from "kuroshiro"
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji"
 
 export default class Jisho extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for a word or kanji on jisho.",
             help:
@@ -86,10 +86,9 @@ export default class Jisho extends Command {
         }
 
         if (jishoArray.length === 1) {
-            message.reply({embeds: [jishoArray[0]]})
+            this.reply(jishoArray[0])
         } else {
             embeds.createReactionEmbed(jishoArray)
         }
-        return
     }
 }

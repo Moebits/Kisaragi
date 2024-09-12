@@ -8,7 +8,7 @@ import {Permission} from "../../structures/Permission"
 import {Points} from "../../structures/Points"
 
 export default class Zero extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Resets your points back to zero (no undo).",
             help:
@@ -49,7 +49,7 @@ export default class Zero extends Command {
         try {
             await points.zero(user)
         } catch {
-            return message.reply(`This server has no scores ${discord.getEmoji("kannaFacepalm")}`)
+            return this.reply(`This server has no scores ${discord.getEmoji("kannaFacepalm")}`)
         }
 
         const zeroEmbed = embeds.createEmbed()
@@ -59,6 +59,6 @@ export default class Zero extends Command {
         .setDescription(
             `${discord.getEmoji("star")}Reset <@${user}>'s points back to **0**!`
         )
-        return message.channel.send({embeds: [zeroEmbed]})
+        return this.reply(zeroEmbed)
     }
 }

@@ -7,7 +7,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Tickle extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Tickles someone.",
             help:
@@ -44,7 +44,7 @@ export default class Tickle extends Command {
         let name = "someone"
         if (args[1]) {
             const userID = args[1].match(/\d+/)?.[0] || ""
-            const user = await message.guild.members.fetch(userID)
+            const user = await message.guild?.members.fetch(userID)
             if (user) {
                 name = user.user.username
                 if (user.id === message.author.id) name = "themselves"

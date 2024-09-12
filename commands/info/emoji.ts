@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Emoji extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts the image of an emoji.",
             help:
@@ -78,7 +78,7 @@ export default class Emoji extends Command {
                 emojiArray.push(emojiEmbed)
             }
             if (emojiArray.length === 1) {
-                return message.channel.send({embeds: [emojiArray[0]]})
+                return this.reply(emojiArray[0])
             } else {
                 return embeds.createReactionEmbed(emojiArray)
             }
@@ -99,23 +99,20 @@ export default class Emoji extends Command {
                 emojiFound = discord.emojis.cache.find((emoji: GuildEmoji) => emoji.name?.toLowerCase() === emojiName.toLowerCase())
             }
             if (!emojiFound) {
-                message.channel.send({embeds: [emojiEmbed
-                .setDescription("Could not find that emoji!")]})
+                this.reply(emojiEmbed
+                .setDescription("Could not find that emoji!"))
                 return
             }
 
-            message.channel.send({embeds: [emojiEmbed
-            .setDescription(`**${emojiFound.name} Emoji**`)
-            .setImage(this.getImage(emojiFound))]})
-            return
-
+            return this.reply(emojiEmbed
+                .setDescription(`**${emojiFound.name} Emoji**`)
+                .setImage(this.getImage(emojiFound)))
             } else {
                 const emojiGet = discord.emojis.cache.get(emojiID)
                 if (!emojiGet) return message.reply("Looks like this id is invalid...")
-                message.channel.send({embeds: [emojiEmbed
-                .setDescription(`**${emojiGet!.name} Emoji**`)
-                .setImage(this.getImage(emojiGet))]})
-                return
+                return this.reply(emojiEmbed
+                    .setDescription(`**${emojiGet!.name} Emoji**`)
+                    .setImage(this.getImage(emojiGet)))
             }
     }
 }

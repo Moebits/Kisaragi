@@ -22,7 +22,7 @@ export default class Photoshop extends Command {
     private historyIndex = -1
     private original = ""
     private originalEmbed = ""
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Opens the image editor to apply multiple edits to an image.",
           help:
@@ -252,13 +252,13 @@ export default class Photoshop extends Command {
         brightness.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the brightness factor (-100-100).`)
+            const rep = await this.send(`<@${user.id}>, Enter the brightness factor (-100-100).`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let factor = Number(argArray[0]) ? Number(argArray[0]) : 0
@@ -290,13 +290,13 @@ export default class Photoshop extends Command {
         contrast.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the contrast factor (-100-100).`)
+            const rep = await this.send(`<@${user.id}>, Enter the contrast factor (-100-100).`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let factor = Number(argArray[0]) ? Number(argArray[0]) : 0
@@ -328,13 +328,13 @@ export default class Photoshop extends Command {
         hue.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the hue (-360-360).`)
+            const rep = await this.send(`<@${user.id}>, Enter the hue (-360-360).`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             const factor = Number(argArray[0]) ? Number(argArray[0]) : 0
@@ -363,13 +363,13 @@ export default class Photoshop extends Command {
         saturation.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the saturation factor (-100-100).`)
+            const rep = await this.send(`<@${user.id}>, Enter the saturation factor (-100-100).`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let factor = Number(argArray[0]) ? Number(argArray[0]) : 0
@@ -409,13 +409,13 @@ export default class Photoshop extends Command {
         value.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the lightness factor (-100-100).`)
+            const rep = await this.send(`<@${user.id}>, Enter the lightness factor (-100-100).`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let factor = Number(argArray[0]) ? Number(argArray[0]) : 0
@@ -455,13 +455,13 @@ export default class Photoshop extends Command {
         flip.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Type \`x\` to flip horizontally, \`y\` to flip vertically, or \`xy\` for both.`)
+            const rep = await this.send(`<@${user.id}>, Type \`x\` to flip horizontally, \`y\` to flip vertically, or \`xy\` for both.`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             const input = argArray.join("")
@@ -520,13 +520,13 @@ export default class Photoshop extends Command {
         tint.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the color and opacity.`)
+            const rep = await this.send(`<@${user.id}>, Enter the color and opacity.`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             const color = argArray[0] ? argArray[0] : "#ff0fd3"
@@ -556,7 +556,7 @@ export default class Photoshop extends Command {
         invert.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
@@ -591,13 +591,13 @@ export default class Photoshop extends Command {
         posterize.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the number of levels.`)
+            const rep = await this.send(`<@${user.id}>, Enter the number of levels.`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let current: string
@@ -630,13 +630,13 @@ export default class Photoshop extends Command {
         crop.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the x offset, y offset, width, and height (in pixels).`)
+            const rep = await this.send(`<@${user.id}>, Enter the x offset, y offset, width, and height (in pixels).`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let current: string
@@ -668,13 +668,13 @@ export default class Photoshop extends Command {
         scale.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the width and height. Type \`scale\` if you want to use a scale factor instead (eg. 1.5x).`)
+            const rep = await this.send(`<@${user.id}>, Enter the width and height. Type \`scale\` if you want to use a scale factor instead (eg. 1.5x).`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let current: string
@@ -711,13 +711,13 @@ export default class Photoshop extends Command {
         rotate.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the the amount of degrees to rotate (clockwise).`)
+            const rep = await this.send(`<@${user.id}>, Enter the the amount of degrees to rotate (clockwise).`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let current: string
@@ -752,13 +752,13 @@ export default class Photoshop extends Command {
         blur.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the blur radius in pixels. Add \`gaussian\` to use a gaussian blur instead of a fast blur.`)
+            const rep = await this.send(`<@${user.id}>, Enter the blur radius in pixels. Add \`gaussian\` to use a gaussian blur instead of a fast blur.`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let current: string
@@ -796,13 +796,13 @@ export default class Photoshop extends Command {
         sharpen.on("collect", async (reaction, user) => {
             if (this.getProcBlock()) {
                 await reaction.users.remove(user)
-                const proc = await this.message.channel.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
+                const proc = await this.send(`<@${user.id}>, Please wait until the current effect is done processing before adding another.`)
                 setTimeout(() => proc.delete(), 3000)
                 return
             }
             this.setProcBlock()
             await reaction.users.remove(user).catch(() => null)
-            const rep = await message.channel.send(`<@${user.id}>, Enter the the sharpen amount and sigma.`)
+            const rep = await this.send(`<@${user.id}>, Enter the the sharpen amount and sigma.`)
             await embeds.createPrompt(getArgs)
             await rep.delete()
             let current: string

@@ -6,7 +6,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Leaderboard extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Show the guild xp leaderboard.",
           help:
@@ -33,7 +33,7 @@ export default class Leaderboard extends Command {
       const sql = new SQLQuery(message)
 
       let scores = await sql.fetchColumn("guilds", "scores")
-      if (!scores?.[0]) return message.reply(`This server has no scores ${discord.getEmoji("kannaFacepalm")}`)
+      if (!scores?.[0]) return this.reply(`This server has no scores ${discord.getEmoji("kannaFacepalm")}`)
       scores = scores.sort((a: any, b: any) => (Number(JSON.parse(a).score) > Number(JSON.parse(b).score)) ? -1 : 1)
       const iterations = Math.ceil(message.guild!.memberCount / 10)
       const step = 10
@@ -59,9 +59,9 @@ export default class Leaderboard extends Command {
         embedArray.push(topEmbed)
       }
 
-      if (!embedArray[0]) return message.reply(`There are no scores ${discord.getEmoji("kannaFacepalm")}`)
+      if (!embedArray[0]) return this.reply(`There are no scores ${discord.getEmoji("kannaFacepalm")}`)
       if (embedArray.length === 1) {
-        message.channel.send({embeds: [embedArray[0]]})
+        this.reply(embedArray[0])
       } else {
         embeds.createReactionEmbed(embedArray)
       }

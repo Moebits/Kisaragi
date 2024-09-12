@@ -8,7 +8,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class Points extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Configures settings for xp gaining.",
             help:
@@ -27,6 +27,7 @@ export default class Points extends Command {
             `,
             aliases: ["point", "pointsettings"],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const timeoutOption = new SlashCommandOption()
@@ -65,8 +66,9 @@ export default class Points extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
+        if (!message.channel.isSendable()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -117,16 +119,16 @@ export default class Points extends Command {
             ${discord.getEmoji("star")}_Type **reset** to reset all settings, excluding member points._
             ${discord.getEmoji("star")}_Type **cancel** to exit._
         `))
-        message.channel.send({embeds: [levelEmbed]})
+        this.reply(levelEmbed)
 
-        async function levelPrompt(msg: Message<true>) {
+        async function levelPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Point Settings** ${discord.getEmoji("mexShrug")}`)
             let [setOn, setOff, setRange, setThreshold, setTimeout, setMsg] = [false, false, false, false, false, false]
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
@@ -137,14 +139,14 @@ export default class Points extends Command {
                 await sql.updateColumn("guilds", "level message", "Congrats user, you are now level newlevel!")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Level settings were reset!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "destroy") {
                 await sql.updateColumn("guilds", "scores", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Points were destroyed for every member in the guild!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             const newMsg = msg.content.replace(/enable/g, "").replace(/disable/g, "").replace(/\[(.*)\]/g, "")
@@ -165,7 +167,7 @@ export default class Points extends Command {
             if (setOn && setOff) {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}You cannot disable/enable at the same time.`)
-                return msg.channel.send({embeds: [responseEmbed]})
+                return discord.send(msg, responseEmbed)
             }
 
             if (setMsg) {
@@ -197,7 +199,7 @@ export default class Points extends Command {
 
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         embeds.createPrompt(levelPrompt)

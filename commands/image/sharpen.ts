@@ -9,7 +9,7 @@ import jimp from "jimp"
 import {sharpen} from "animedetect"
 
 export default class Sharpen extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Sharpens an image.",
           help:

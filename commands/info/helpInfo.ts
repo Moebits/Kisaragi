@@ -8,7 +8,7 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 
 export default class HelpInfo extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Detailed help info.",
             aliases: [],
@@ -56,11 +56,6 @@ export default class HelpInfo extends Command {
             ${discord.getEmoji("star")}_Help:_ \n${Functions.multiTrim(command.options.help)}
             ${discord.getEmoji("star")}_Examples:_ \n${Functions.multiTrim(command.options.examples)}
         `))
-        if (this.message instanceof ChatInputCommandInteraction) {
-            // @ts-ignore
-            await this.message.editReply({embeds: [helpInfoEmbed], files: attachments})
-        } else {
-            await this.message.channel.send({embeds: [helpInfoEmbed], files: attachments})
-        }
+        await this.reply(helpInfoEmbed, attachments)
     }
 }

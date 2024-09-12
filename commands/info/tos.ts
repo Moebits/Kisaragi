@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class TOS extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
           description: "Terms of service for the bot.",
           help:
@@ -50,6 +50,6 @@ export default class TOS extends Command {
             **Appeal**
             You can contact me in the support server for an appeal after significant time has passed after your blacklist.
         `))
-        return message.channel.send({embeds: [termsOfService]})
+        return this.reply(termsOfService)
     }
 }

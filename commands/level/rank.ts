@@ -8,11 +8,10 @@ import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Points} from "./../../structures/Points"
 import {SQLQuery} from "./../../structures/SQLQuery"
-
-const imageDataURI = require("image-data-uri")
+import imageDataURI from "image-data-uri"
 
 export default class Rank extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts your rank (level and score).",
             help:
@@ -71,7 +70,7 @@ export default class Rank extends Command {
         `${discord.getEmoji("star")}**${percent.toFixed(1)}%** of the way there!`)
         .setImage(`attachment://rankBar.jpg`)
         .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
-        await message.channel.send({embeds: [rankEmbed], files: [attachment]})
+        await this.reply(rankEmbed, attachment)
         fs.unlink(image, () => null)
     }
 }

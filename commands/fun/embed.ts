@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const procBlock = new Collection()
 
 export default class Embed extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Creates a custom embed and sends it.",
             help:

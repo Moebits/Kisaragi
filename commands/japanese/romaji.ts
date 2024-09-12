@@ -8,7 +8,7 @@ import Kuroshiro from "kuroshiro"
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji"
 
 export default class Romaji extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Converts japanese text to romaji.",
             help:
@@ -50,7 +50,7 @@ export default class Romaji extends Command {
         const result = await kuroshiro.convert(input, {mode: "spaced", to: "romaji"})
         const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
 
-        await message.reply(`**Romaji Conversion** ${discord.getEmoji("kannaSip")}`)
-        message.channel.send(cleanResult)
+        await this.reply(`**Romaji Conversion** ${discord.getEmoji("kannaSip")}`)
+        this.send(cleanResult)
     }
 }

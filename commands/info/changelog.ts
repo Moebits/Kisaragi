@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class Changelog extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "The most recent bot updates in chronological order.",
             help:
@@ -93,7 +93,7 @@ export default class Changelog extends Command {
             .setAuthor({name: "changelog", iconURL: "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg"})
             .setTitle(`**Changelog #${log.num}** ${discord.getEmoji("tohruThumbsUp2")}`)
             .setDescription(`${discord.getEmoji("star")}**${log.num}** \`(${log.date})\` -> ${log.changes}\n`)
-            return message.channel.send({embeds: [changeEmbed]})
+            return this.reply(changeEmbed)
         }
 
         let changeDesc = ""
@@ -114,10 +114,9 @@ export default class Changelog extends Command {
         }
 
         if (changeArray.length === 1) {
-            message.channel.send({embeds: [changeArray[0]]})
+            this.reply(changeArray[0])
         } else {
             embeds.createReactionEmbed(changeArray)
         }
-        return
     }
 }

@@ -8,7 +8,7 @@ import Kuroshiro from "kuroshiro"
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji"
 
 export default class Hiragana extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Converts japanese text to hiragana.",
             help:
@@ -50,7 +50,7 @@ export default class Hiragana extends Command {
         const result = await kuroshiro.convert(input, {mode: "spaced", to: "hiragana"})
         const cleanResult = result.replace(/<\/?[^>]+(>|$)/g, "")
 
-        await message.reply(`**Hiragana Conversion** ${discord.getEmoji("aquaUp")}`)
-        message.channel.send(cleanResult)
+        await this.reply(`**Hiragana Conversion** ${discord.getEmoji("aquaUp")}`)
+        this.send(cleanResult)
     }
 }

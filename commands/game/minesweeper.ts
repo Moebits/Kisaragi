@@ -11,7 +11,7 @@ export default class Minesweeper extends Command {
     private done = false
     private original = null as any
     private revealed = false
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: `Starts a new game of minesweeper.`,
             help:
@@ -138,8 +138,7 @@ export default class Minesweeper extends Command {
         const perms = new Permission(discord, message)
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has("ManageMessages")) {
-            await message.reply(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
-            return
+            return this.reply(`The bot needs the permission **Manage Messages** in order to use this command. ${this.discord.getEmoji("kannaFacepalm")}`)
         }
 
         if (args[1] === "spoiler") {
@@ -167,8 +166,7 @@ export default class Minesweeper extends Command {
             .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
             .setTitle(`**Minesweeper** ${discord.getEmoji("kannaXD")}`)
             .setDescription(this.replaceEmoji(this.replaceEmoji(game)))
-            message.channel.send({embeds: [mineEmbed]})
-            return
+            return this.reply(mineEmbed)
         }
 
         let rows = 5
@@ -198,7 +196,7 @@ export default class Minesweeper extends Command {
         }
 
         const mineEmbed = this.createMineEmbed(board)
-        const msg = await message.channel.send({embeds: [mineEmbed]})
+        const msg = await this.reply(mineEmbed)
         const reactions = ["arrayReact", "mineFlagReact", "mineReveal"]
         for (let i = 0; i < reactions.length; i++) await msg.react(discord.getEmoji(reactions[i]))
 
@@ -227,15 +225,15 @@ export default class Minesweeper extends Command {
                     board[row][column] = game[row][column].replace(/\|/g, "")
                     self.original = Functions.cloneArray(board)
                     const mineEmbed = self.createMineEmbed(board)
-                    msg.edit({embeds: [mineEmbed]})
+                    discord.edit(msg, mineEmbed)
                 }
                 await response.delete()
             }
-            const numReply = await msg.channel.send(`<@${user.id}>, Enter the row number followed by the column number.`)
+            const numReply = await discord.send(msg, `<@${user.id}>, Enter the row number followed by the column number.`)
             await embeds.createPrompt(getRowsColumns)
             await numReply.delete()
             const win = this.checkWinLose(board, user, row, column, mineCount)
-            if (win) msg.channel.send(win)
+            if (win) discord.send(msg, win)
         })
 
         flag.on("collect", async (reaction: MessageReaction, user: User) => {
@@ -254,11 +252,11 @@ export default class Minesweeper extends Command {
                     board[row][column] = `${discord.getEmoji("mineFlag")}`
                     self.original = Functions.cloneArray(board)
                     const mineEmbed = self.createMineEmbed(board)
-                    msg.edit({embeds: [mineEmbed]})
+                    discord.edit(msg, mineEmbed)
                 }
                 await response.delete()
             }
-            const numReply = await msg.channel.send(`<@${user.id}>, Enter the row number followed by the column number.`)
+            const numReply = await discord.send(msg, `<@${user.id}>, Enter the row number followed by the column number.`)
             await embeds.createPrompt(getRowsColumns)
             await numReply.delete()
         })
@@ -266,7 +264,7 @@ export default class Minesweeper extends Command {
         reveal.on("collect", async (reaction: MessageReaction, user: User) => {
             await reaction.users.remove(user).catch(() => null)
             if (!this.done) {
-                await msg.channel.send(`<@${user.id}>, You revealed the game before it was done so you lost by default! ${discord.getEmoji("tohruSmug")}`)
+                await discord.send(msg, `<@${user.id}>, You revealed the game before it was done so you lost by default! ${discord.getEmoji("tohruSmug")}`)
                 this.done = true
             }
             if (this.original === null) this.original = Functions.cloneArray(board)
@@ -279,7 +277,7 @@ export default class Minesweeper extends Command {
                 mineEmbed = this.createMineEmbed(newBoard)
                 this.revealed = true
             }
-            await msg.edit({embeds: [mineEmbed]})
+            await discord.edit(msg, mineEmbed)
         })
     }
 

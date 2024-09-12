@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Feedback extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Sends bug reports or suggestions to the developer.",
             help:
@@ -55,7 +55,7 @@ export default class Feedback extends Command {
             `${discord.getEmoji("star")}_Invite:_ ${invite}\n` +
             `${discord.getEmoji("star")}_Feedback:_ ${Functions.checkChar(feedback, 1700, " ")}`
         )
-        feedChannel?.send({embeds: [feedEmbed]})
-        return message.reply(`Your message was successfully sent! I will get back to you if I implement your suggestion ${discord.getEmoji("gabYes")}`)
+        discord.channelSend(feedChannel, feedEmbed)
+        return this.reply(`Your message was successfully sent! I will get back to you if I implement your suggestion ${discord.getEmoji("gabYes")}`)
     }
 }

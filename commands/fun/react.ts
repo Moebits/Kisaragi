@@ -4,7 +4,7 @@ import {Command} from "../../structures/Command"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class React extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: `Adds a reaction to a message.`,
             help:
@@ -60,7 +60,7 @@ export default class React extends Command {
         let lastMessage = await discord.getLastMessage(message)
 
         if (args[1] === "msg" || args[1] === "message") {
-            const msg = await discord.fetchMessage(message, args[2]) as Message<true> ?? message
+            const msg = await discord.fetchMessage(message, args[2]) as Message ?? message
             if (msg) {
                 lastMessage = msg
             } else {

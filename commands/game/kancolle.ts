@@ -14,7 +14,7 @@ export default class Kancolle extends Command {
         "Uzuki", "Urakaze", "Amatsukaze", "Kawakaze", "Tokitsukaze", "Harusame",
         "Etorofu", "Matsuwa", "Tsushima"
     ]
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets information on a kancolle ship girl.",
             help:
@@ -104,7 +104,7 @@ export default class Kancolle extends Command {
             kancolleArray.push(kancolleEmbed)
         }
         if (kancolleArray.length === 1) {
-            message.channel.send({embeds: [kancolleArray[0]]})
+            this.reply(kancolleArray[0])
         } else {
             embeds.createReactionEmbed(kancolleArray, true, true)
         }

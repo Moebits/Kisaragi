@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {SQLQuery} from "./../../structures/SQLQuery"
 
 export default class GettingStarted extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Posts getting started info.",
             help:
@@ -69,17 +69,17 @@ export default class GettingStarted extends Command {
             `I hope that you enjoy using this bot! ${discord.getEmoji("aquaUp")}\n` +
             `The command documentation is also on my [**website**](${config.website}).`
         )
-        let msg = null as unknown as Message<true>
+        let msg = null as unknown as Message
         try {
             if (args[1]) {
                 const chan = message.guild?.channels.cache.find((c) => c.id === args[1].match(/\d{15,}/)?.[0]) as TextChannel
-                if (chan) msg = await chan.send({embeds: [joinEmbed]})
+                if (chan) msg = await discord.channelSend(chan, joinEmbed)
             } else {
-                msg = await message.channel.send({embeds: [joinEmbed]})
+                msg = await this.reply(joinEmbed)
             }
         } catch {
             const m = await discord.fetchFirstMessage(message.guild!)
-            if (m) msg = await m?.channel.send({embeds: [joinEmbed]})
+            if (m) msg = await discord.send(m, joinEmbed)
         }
 
         if (msg) await msg.react(discord.getEmoji("help"))
@@ -88,10 +88,9 @@ export default class GettingStarted extends Command {
 
         help?.on("collect", async (reaction, user) => {
             await reaction.users.remove(user)
-            await message.channel.send(`<@${user.id}>, here is the help command!`)
+            await this.send(`<@${user.id}>, here is the help command!`)
             await cmd.runCommand(msg, ["help"])
             help.stop()
         })
-        return
     }
 }

@@ -7,7 +7,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import translate from "@vitalets/google-translate-api"
 
 export default class Translate extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Translates text to another language.",
             help:
@@ -57,7 +57,7 @@ export default class Translate extends Command {
         }
 
         const result = await translate(translateText, {to: code})
-        await message.reply(`**Translated to ${langs[code]}** ${discord.getEmoji("kannaCurious")}`)
-        message.channel.send(result.text)
+        await this.reply(`**Translated to ${langs[code]}** ${discord.getEmoji("kannaCurious")}`)
+        this.send(result.text)
     }
 }

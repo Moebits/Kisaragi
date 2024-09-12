@@ -8,7 +8,7 @@ import {Permission} from "../../structures/Permission"
 import {SQLQuery} from "../../structures/SQLQuery"
 
 export default class LevelChannels extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Sets the channels where no xp will be awarded.",
             help:
@@ -25,6 +25,7 @@ export default class LevelChannels extends Command {
             guildOnly: true,
             aliases: ["pointchannels"],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const settingOption = new SlashCommandOption()
@@ -50,9 +51,10 @@ export default class LevelChannels extends Command {
         const sql = new SQLQuery(message)
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
+        if (!message.channel.isSendable()) return
         if (!await perms.checkMod()) return
         const loading = message.channel.lastMessage
-        loading?.delete()
+        if (message instanceof Message) loading?.delete()
         const input = Functions.combineArgs(args, 1)
         if (input.trim()) {
             message.content = input.trim()
@@ -63,7 +65,7 @@ export default class LevelChannels extends Command {
         const channels = await sql.fetchColumn("guilds", "level channels")
         const step = 5.0
         const increment = Math.ceil((channels ? channels.length : 1) / step)
-        const detectArray: EmbedBuilder[] = []
+        const levelChannelArr: EmbedBuilder[] = []
         for (let i = 0; i < increment; i++) {
             let description = ""
             for (let j = 0; j < step; j++) {
@@ -92,16 +94,16 @@ export default class LevelChannels extends Command {
                 ${discord.getEmoji("star")}_Type **reset** to delete all channels._
                 ${discord.getEmoji("star")}_Type **cancel** to exit._
             `))
-            detectArray.push(levelEmbed)
+            levelChannelArr.push(levelEmbed)
         }
 
-        if (detectArray.length > 1) {
-            embeds.createReactionEmbed(detectArray)
+        if (levelChannelArr.length > 1) {
+            embeds.createReactionEmbed(levelChannelArr)
         } else {
-            message.channel.send({embeds: [detectArray[0]]})
+            this.reply(levelChannelArr[0])
         }
 
-        async function detectPrompt(msg: Message<true>) {
+        async function detectPrompt(msg: Message) {
             let channels = await sql.fetchColumn("guilds", "level channels")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Level Channels** ${discord.getEmoji("think")}`)
@@ -109,14 +111,14 @@ export default class LevelChannels extends Command {
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Canceled the prompt!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
                 await sql.updateColumn("guilds", "level channels", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
-                msg.channel.send({embeds: [responseEmbed]})
+                discord.send(msg, responseEmbed)
                 return
             }
 
@@ -127,9 +129,9 @@ export default class LevelChannels extends Command {
                     channels[num] = ""
                     channels = channels.filter(Boolean)
                     await sql.updateColumn("guilds", "level channels", channels)
-                    return msg.channel.send({embeds: [responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`)]})
+                    return discord.send(msg, responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
-                    return msg.channel.send({embeds: [responseEmbed.setDescription("Setting not found!")]})
+                    return discord.send(msg, responseEmbed.setDescription("Setting not found!"))
                 }
             }
 
@@ -145,7 +147,7 @@ export default class LevelChannels extends Command {
             await sql.updateColumn("guilds", "level channels", channels)
             responseEmbed
             .setDescription(description)
-            return msg.channel.send({embeds: [responseEmbed]})
+            return discord.send(msg, responseEmbed)
         }
 
         await embeds.createPrompt(detectPrompt)
