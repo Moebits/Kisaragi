@@ -13,7 +13,7 @@ export default class YoutubeCommand extends Command {
     private video = null as any
     private channel = null as any
     private playlist = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for youtube videos, channels, and playlists.",
             help:
@@ -27,13 +27,13 @@ export default class YoutubeCommand extends Command {
             examples:
             `
             \`=>youtube anime\`
-            \`=>youtube channel tenpi\`
+            \`=>youtube channel mychannel\`
             \`=>youtube playlist kawaii music\`
-            \`=>youtube download mp3 energy drink\`
             `,
             aliases: ["yt"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -154,7 +154,7 @@ export default class YoutubeCommand extends Command {
             }
         }
 
-        const msg = await message.channel.send(`**Searching youtube** ${discord.getEmoji("gabCircle")}`) as Message
+        const msg = await this.reply(`**Searching youtube** ${discord.getEmoji("gabCircle")}`) as Message
 
         if (this.channel || args[1].toLowerCase() === "channel") {
             ytEmbeds = []
@@ -177,9 +177,8 @@ export default class YoutubeCommand extends Command {
                 return
             }
             await this.ytChannelEmbed(discord, embeds, youtube, channelLink)
-            message.channel.send({embeds: [ytEmbeds[0]]})
-            setTimeout(() => msg.delete(), 1000)
-            return
+            this.reply(ytEmbeds[0])
+            return Functions.deferDelete(msg, 1000)
         }
 
         if (this.playlist || args[1].toLowerCase() === "playlist") {
@@ -204,9 +203,8 @@ export default class YoutubeCommand extends Command {
                 return
             }
             await this.ytPlaylistEmbed(discord, embeds, youtube, playLink)
-            message.channel.send({embeds: [ytEmbeds[0]]})
-            setTimeout(() => msg.delete(), 1000)
-            return
+            this.reply(ytEmbeds[0])
+            return Functions.deferDelete(msg, 1000)
         }
 
         ytEmbeds = []
@@ -230,8 +228,7 @@ export default class YoutubeCommand extends Command {
                 return
             }
         await this.ytVideoEmbed(discord, embeds, youtube, videoLink)
-        message.channel.send({embeds: [ytEmbeds[0]]})
-        setTimeout(() => msg.delete(), 1000)
-        return
+        this.reply(ytEmbeds[0])
+        return Functions.deferDelete(msg, 1000)
     }
 }

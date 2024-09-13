@@ -7,7 +7,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class AppStore extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for apps on the iphone app store.",
             help:
@@ -22,6 +22,7 @@ export default class AppStore extends Command {
             aliases: ["app", "istore"],
             random: "string",
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -83,10 +84,9 @@ export default class AppStore extends Command {
             .setTitle(`**App Store Search** ${discord.getEmoji("poiHug")}`))
         }
         if (appArray.length === 1) {
-            message.channel.send({embeds: [appArray[0]]})
+            return this.reply(appArray[0])
         } else {
             embeds.createReactionEmbed(appArray, true, true)
         }
-        return
     }
 }

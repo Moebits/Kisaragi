@@ -6,7 +6,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class IMDB extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for movies and tv shows on imdb.",
             help:
@@ -21,6 +21,7 @@ export default class IMDB extends Command {
             aliases: ["movie", "film"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -64,6 +65,6 @@ export default class IMDB extends Command {
             `${discord.getEmoji("star")}_Actors:_ ${Functions.checkChar(result.actors, 100, ",")}\n` +
             `${discord.getEmoji("star")}_Synopsis:_ ${Functions.checkChar(result.plot, 1500, " ")}\n`
         )
-        return message.channel.send({embeds: [imdbEmbed]})
+        return this.reply(imdbEmbed)
     }
 }

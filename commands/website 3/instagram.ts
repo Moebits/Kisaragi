@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Instagram extends Command {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for posts and users on instagram.",
             help:
@@ -24,6 +24,7 @@ export default class Instagram extends Command {
             aliases: ["insta"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -116,11 +117,10 @@ export default class Instagram extends Command {
                 instagramArray.push(instagramEmbed)
             }
             if (instagramArray.length === 1) {
-                await message.channel.send({embeds: [instagramArray[0]]})
+                return this.reply(instagramArray[0])
             } else {
-                embeds.createReactionEmbed(instagramArray, true, true)
+                return embeds.createReactionEmbed(instagramArray, true, true)
             }
-            return
         }
 
         const text = Functions.combineArgs(args, 1).trim().replace(/ +/g, "")
@@ -160,10 +160,9 @@ export default class Instagram extends Command {
             instagramArray.push(instagramEmbed)
         }
         if (instagramArray.length === 1) {
-            await message.channel.send({embeds: [instagramArray[0]]})
+            return this.reply(instagramArray[0])
         } else {
-            embeds.createReactionEmbed(instagramArray, true, true)
+            return embeds.createReactionEmbed(instagramArray, true, true)
         }
-        return
     }
 }

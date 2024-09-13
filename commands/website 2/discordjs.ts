@@ -10,7 +10,7 @@ import {Permission} from "../../structures/Permission"
 export default class Discordjs extends Command {
     private src = null as any
     private search = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches the discord.js docs.",
             help:
@@ -26,6 +26,7 @@ export default class Discordjs extends Command {
             `,
             aliases: ["djs"],
             cooldown: 5,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -92,6 +93,6 @@ export default class Discordjs extends Command {
         `${discord.getEmoji("star")}_Description:_ ${result.description.replace(/__/g, "**")}\n` +
         fields
         )
-        message.channel.send({embeds: [discordjsEmbed]})
+        this.reply(discordjsEmbed)
     }
 }

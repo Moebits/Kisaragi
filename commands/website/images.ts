@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
 
 export default class GoogleImageCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for images on google images.",
             help:
@@ -22,6 +22,7 @@ export default class GoogleImageCommand extends Command {
             aliases: ["i", "image", "googleimages"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -77,6 +78,6 @@ export default class GoogleImageCommand extends Command {
             .setImage(result[i].url)
             imagesArray.push(imageEmbed)
         }
-        embeds.createReactionEmbed(imagesArray, true, true)
+        return embeds.createReactionEmbed(imagesArray, true, true)
     }
 }

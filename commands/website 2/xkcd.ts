@@ -16,7 +16,7 @@ const monthNames = [
 ]
 
 export default class Xkcd extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for an xkcd comic.",
             help:
@@ -32,7 +32,9 @@ export default class Xkcd extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 5
+            cooldown: 5,
+            defer: true,
+            subcommandEnabled: true
         })
         const idOption = new SlashCommandOption()
             .setType("string")
@@ -93,7 +95,7 @@ export default class Xkcd extends Command {
         if (args[1] === "today") {
             const comic = await this.getComic()
             const xkcdEmbed = this.getEmbed(comic)
-            return message.channel.send({embeds: [xkcdEmbed]})
+            return this.reply(xkcdEmbed)
         } else if (args[1]) {
             let id = args[1]
             if (args[1].match(/xkcd.com/)) {
@@ -102,13 +104,13 @@ export default class Xkcd extends Command {
             if (Number.isNaN(Number(id))) return message.reply(`Looks like the id is invalid...`)
             const comic = await this.getComic(Number(id))
             const xkcdEmbed = this.getEmbed(comic)
-            return message.channel.send({embeds: [xkcdEmbed]})
+            return this.reply(xkcdEmbed)
         } else {
             const c = await this.getComic()
             const random = Math.floor(Math.random() * c.num)
             const comic = await this.getComic(random)
             const xkcdEmbed = this.getEmbed(comic)
-            return message.channel.send({embeds: [xkcdEmbed]})
+            return this.reply(xkcdEmbed)
         }
     }
 }

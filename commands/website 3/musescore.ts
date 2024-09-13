@@ -9,7 +9,7 @@ import {Permission} from "../../structures/Permission"
 
 export default class Musescore extends Command {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for midi files and sheet music on musescore.",
             help:
@@ -23,6 +23,7 @@ export default class Musescore extends Command {
             aliases: [],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -83,10 +84,9 @@ export default class Musescore extends Command {
             museArray.push(museEmbed)
         }
         if (museArray.length === 1) {
-            await message.channel.send({embeds: [museArray[0]]})
+            return this.reply(museArray[0])
         } else {
-            embeds.createReactionEmbed(museArray)
+            return embeds.createReactionEmbed(museArray)
         }
-        return
     }
 }

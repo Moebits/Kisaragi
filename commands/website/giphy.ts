@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class GiphyCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for a gif on giphy.",
             help:
@@ -23,6 +23,7 @@ export default class GiphyCommand extends Command {
             aliases: ["gif"],
             random: "none",
             cooldown: 5,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -72,10 +73,9 @@ export default class GiphyCommand extends Command {
         }
 
         if (giphyArray.length === 1) {
-            message.channel.send({embeds: [giphyArray[0]]})
+            return this.reply(giphyArray[0])
         } else {
-            embeds.createReactionEmbed(Functions.shuffleArray(giphyArray), true, true)
+            return embeds.createReactionEmbed(Functions.shuffleArray(giphyArray), true, true)
         }
-        return
     }
 }

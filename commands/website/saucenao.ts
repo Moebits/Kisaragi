@@ -8,7 +8,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Saucenao extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Finds the source of an anime picture, avatar, or guild icon.",
             help:
@@ -27,6 +27,7 @@ export default class Saucenao extends Command {
             aliases: ["sn"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -124,6 +125,6 @@ export default class Saucenao extends Command {
         .setURL(url)
         .setImage(image)
         .setDescription(Functions.checkChar(description, 2000, " "))
-        return message.channel.send({embeds: [siteEmbed]})
+        return this.reply(siteEmbed)
     }
 }

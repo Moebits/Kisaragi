@@ -6,11 +6,10 @@ import {Functions} from "../../structures/Functions"
 import {Embeds} from "./../../structures/Embeds"
 import {Kisaragi} from "./../../structures/Kisaragi"
 import {Permission} from "./../../structures/Permission"
-
-const Spotify = require("node-spotify-api")
+import Spotify from "node-spotify-api"
 
 export default class SpotifyCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for spotify tracks and artists.",
             help:
@@ -26,6 +25,7 @@ export default class SpotifyCommand extends Command {
             aliases: [],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -83,7 +83,7 @@ export default class SpotifyCommand extends Command {
                 spotifyArray.push(spotifyEmbed)
             }
             if (spotifyArray.length === 1) {
-                return message.channel.send({embeds: [spotifyArray[0]]})
+                return this.reply(spotifyArray[0])
             }
             return embeds.createReactionEmbed(spotifyArray, true, true)
         }
@@ -131,7 +131,7 @@ export default class SpotifyCommand extends Command {
             if (urls.has(msg.embeds[0].url)) return
             if (!msg.embeds[0].url) return
             urls.add(msg.embeds[0].url)
-            await message.channel.send(msg.embeds[0].url)
+            await this.send(msg.embeds[0].url)
         })
     }
 }

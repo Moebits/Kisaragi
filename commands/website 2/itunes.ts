@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Itunes extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches the itunes store for tracks.",
             help:
@@ -22,6 +22,7 @@ export default class Itunes extends Command {
             aliases: [],
             random: "string",
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -82,10 +83,9 @@ export default class Itunes extends Command {
         }
 
         if (itunesArray.length === 1) {
-            message.channel.send({embeds: [itunesArray[0]]})
+            return this.reply(itunesArray[0])
         } else {
-            embeds.createReactionEmbed(itunesArray)
+            return embeds.createReactionEmbed(itunesArray)
         }
-        return
     }
 }

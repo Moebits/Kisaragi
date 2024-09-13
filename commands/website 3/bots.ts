@@ -7,7 +7,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class Bots extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for bots on discord.bots.gg.",
             help:
@@ -22,6 +22,7 @@ export default class Bots extends Command {
             aliases: ["bot", "discordbots"],
             random: "none",
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -82,10 +83,9 @@ export default class Bots extends Command {
         }
 
         if (botArray.length === 1) {
-            message.channel.send({embeds: [botArray[0]]})
+            return this.reply(botArray[0])
         } else {
-            embeds.createReactionEmbed(botArray)
+            return embeds.createReactionEmbed(botArray)
         }
-        return
     }
 }

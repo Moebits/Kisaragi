@@ -11,7 +11,7 @@ export default class Mal extends Command {
     private anime = null as any
     private character = null as any
     private user = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for anime, characters, and users on my anime list.",
             help:
@@ -30,6 +30,7 @@ export default class Mal extends Command {
             aliases: ["myanimelist"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -93,8 +94,7 @@ export default class Mal extends Command {
                 )
                 malArray.push(malEmbed)
             }
-            embeds.createReactionEmbed(malArray, true, true)
-            return
+            return embeds.createReactionEmbed(malArray, true, true)
         }
 
         if (this.user || args[1] === "user") {
@@ -124,12 +124,11 @@ export default class Mal extends Command {
                 `${discord.getEmoji("star")}_Favorite Characters:_ ${Functions.checkChar(characters.join(", "), 100, " ")}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(cleanText, 1500, " ")}\n`
             )
-            message.channel.send({embeds: [malEmbed]})
-            return
+            return this.reply(malEmbed)
 
         }
 
-        let result
+        let result: any
         let query = this.anime || Functions.combineArgs(args, 1)
         if (!query) {
             const raw = await mal.findTop("anime")
@@ -168,6 +167,6 @@ export default class Mal extends Command {
             )
             malArray.push(malEmbed)
         }
-        embeds.createReactionEmbed(malArray, true, true)
+        return embeds.createReactionEmbed(malArray, true, true)
     }
 }

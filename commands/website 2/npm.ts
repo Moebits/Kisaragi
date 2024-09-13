@@ -9,7 +9,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const npm = require("libnpmsearch")
 
 export default class NPM extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for packages on the npm registry.",
             help:
@@ -24,6 +24,7 @@ export default class NPM extends Command {
             aliases: [],
             random: "string",
             cooldown: 5,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -73,9 +74,9 @@ export default class NPM extends Command {
             npmArray.push(npmEmbed)
         }
         if (npmArray.length > 1) {
-            embeds.createReactionEmbed(npmArray)
+            return embeds.createReactionEmbed(npmArray)
         } else {
-            message.channel.send({embeds: [npmArray[0]]})
+            return this.reply(npmArray[0])
         }
     }
 }

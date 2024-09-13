@@ -12,7 +12,7 @@ import {Permission} from "./../../structures/Permission"
 const svg2img = require("svg2img")
 
 export default class Wikipedia extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for wikipedia articles.",
             help:
@@ -29,6 +29,7 @@ export default class Wikipedia extends Command {
             aliases: ["w", "wiki"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -51,7 +52,7 @@ export default class Wikipedia extends Command {
 
         const wikipedia = wiki()
 
-        let title
+        let title = [] as string[]
         if (!args[1]) {
             title = await wikipedia.random(1)
         } else {
@@ -74,11 +75,8 @@ export default class Wikipedia extends Command {
             await svg2img(mainImg, function(error: Error, buffer: Buffer) {
                     fs.writeFileSync(path.join(__dirname, "../../assets/misc/images/dump/wiki.png"), buffer)
             })
-
             await Functions.timeout(500)
-
             const attachment = new AttachmentBuilder(path.join(__dirname, "../../assets/misc/images/dump/wiki.png"))
-
             const wikiEmbed = embeds.createEmbed()
             wikiEmbed
             .setAuthor({name: "wikipedia", iconURL: "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", url: "https://en.wikipedia.org/wiki/Main_Page"})
@@ -91,10 +89,8 @@ export default class Wikipedia extends Command {
                 `${discord.getEmoji("star")}_Last Revision:_ **${Functions.formatDate(page.raw.touched)}**\n` +
                 `${discord.getEmoji("star")}_Summary:_ ${Functions.checkChar(summary, 1800, ".")}\n`
             )
-            message.channel.send({embeds: [wikiEmbed], files: [attachment]})
-
+            return this.reply(wikiEmbed, attachment)
         } else {
-
             const wikiEmbed = embeds.createEmbed()
             wikiEmbed
             .setAuthor({name: "wikipedia", iconURL: "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", url: "https://en.wikipedia.org/wiki/Main_Page"})
@@ -107,9 +103,7 @@ export default class Wikipedia extends Command {
                 `${discord.getEmoji("star")}_Last Revision:_ **${Functions.formatDate(page.raw.touched)}**\n` +
                 `${discord.getEmoji("star")}_Summary:_ ${Functions.checkChar(summary, 1800, ".")}\n`
             )
-            message.channel.send({embeds: [wikiEmbed]})
-
+            return this.reply(wikiEmbed)
         }
-
     }
 }

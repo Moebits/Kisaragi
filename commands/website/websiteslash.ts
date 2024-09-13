@@ -7,7 +7,7 @@ import fs from "fs"
 import path from "path"
 
 export default class WebsiteSlash extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Website commands",
             unlist: true,

@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class AnilistCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for anime and manga on anilist.",
             help:
@@ -23,6 +23,7 @@ export default class AnilistCommand extends Command {
             aliases: ["animelist", "anilist"],
             random: "none",
             cooldown: 10,
+            unlist: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()

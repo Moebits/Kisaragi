@@ -12,7 +12,7 @@ let deviantArray: EmbedBuilder[] = []
 export default class Deviantart extends Command {
     private user = null as any
     private deviation = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for deviantart deviations and users.",
             help:
@@ -38,6 +38,7 @@ export default class Deviantart extends Command {
             aliases: ["da", "deviant"],
             random: "none",
             cooldown: 30,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -165,11 +166,10 @@ export default class Deviantart extends Command {
             deviantArray.push(deviantEmbed)
         }
         if (deviantArray.length === 1) {
-            this.message.channel.send({embeds: [deviantArray[0]]})
+            return this.reply(deviantArray[0])
         } else {
-            embeds.createReactionEmbed(deviantArray, true, true)
+            return embeds.createReactionEmbed(deviantArray, true, true)
         }
-        return true
     }
 
     public run = async (args: string[]) => {
@@ -194,11 +194,10 @@ export default class Deviantart extends Command {
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send({embeds: [deviantArray[0]]})
+                return this.reply(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true, true)
+                return embeds.createReactionEmbed(deviantArray, true, true)
             }
-            return
         }
 
         if (args[1] === "hot") {
@@ -208,11 +207,10 @@ export default class Deviantart extends Command {
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send({embeds: [deviantArray[0]]})
+                return this.reply(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true, true)
+                return embeds.createReactionEmbed(deviantArray, true, true)
             }
-            return
         }
 
         if (args[1] === "new") {
@@ -223,11 +221,10 @@ export default class Deviantart extends Command {
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send({embeds: [deviantArray[0]]})
+                return this.reply(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true, true)
+                return embeds.createReactionEmbed(deviantArray, true, true)
             }
-            return
         }
 
         if (args[1] === "popular") {
@@ -238,11 +235,10 @@ export default class Deviantart extends Command {
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send({embeds: [deviantArray[0]]})
+                return this.reply(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true, true)
+                return embeds.createReactionEmbed(deviantArray, true, true)
             }
-            return
         }
 
         if (this.user || args[1] === "user") {
@@ -269,8 +265,7 @@ export default class Deviantart extends Command {
                 `${discord.getEmoji("star")}_Tag Line:_ ${result.tagline ? result.tagline : "None"}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(result.bio, 1800, ".")}\n`
             )
-            message.channel.send({embeds: [deviantEmbed]})
-            return
+            return this.reply(deviantEmbed)
         }
 
         if (args[1] === "gallery") {
@@ -283,11 +278,10 @@ export default class Deviantart extends Command {
             const invalid = await this.createDeviantEmbed(deviantArt, discord, embeds, result)
             if (invalid) return
             if (deviantArray.length === 1) {
-                message.channel.send({embeds: [deviantArray[0]]})
+                return this.reply(deviantArray[0])
             } else {
-                embeds.createReactionEmbed(deviantArray, true, true)
+                return embeds.createReactionEmbed(deviantArray, true, true)
             }
-            return
         }
 
         const query = Functions.combineArgs(args, 1).trim()
@@ -298,10 +292,9 @@ export default class Deviantart extends Command {
         const invalid = this.createRSSDeviantEmbed(discord, embeds, extended)
         if (invalid) return
         if (deviantArray.length === 1) {
-                message.channel.send({embeds: [deviantArray[0]]})
-            } else {
-                embeds.createReactionEmbed(deviantArray, true, true)
-            }
-        return
+            return this.reply(deviantArray[0])
+        } else {
+            return embeds.createReactionEmbed(deviantArray, true, true)
+        }
     }
 }

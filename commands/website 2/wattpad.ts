@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Wattpad extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for stories on wattpad.",
             help:
@@ -21,6 +21,7 @@ export default class Wattpad extends Command {
             aliases: [],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -111,10 +112,9 @@ export default class Wattpad extends Command {
             }
         }
         if (wattpadArray.length === 1) {
-            message.channel.send({embeds: [wattpadArray[0]]})
+            return this.reply(wattpadArray[0])
         } else {
-            embeds.createReactionEmbed(wattpadArray, false, true)
+            return embeds.createReactionEmbed(wattpadArray, false, true)
         }
-        return
     }
 }

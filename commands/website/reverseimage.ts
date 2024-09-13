@@ -12,7 +12,7 @@ export default class ReverseImage extends Command {
     private readonly headers = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
     }
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Reverse image searches an image, avatar, or guild icon.",
             help:
@@ -33,6 +33,7 @@ export default class ReverseImage extends Command {
             aliases: ["revimg", "reverseimg"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const urlOption = new SlashCommandOption()
@@ -103,7 +104,7 @@ export default class ReverseImage extends Command {
             .setDescription(
                 `${discord.getEmoji("star")}Sorry, but no results were found. [**Here**](https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url=${image}) is a direct link to the search.`
             )
-            return message.channel.send({embeds: [revEmbed]})
+            return this.reply(revEmbed)
         }
 
         const revArray: EmbedBuilder[] = []
@@ -125,9 +126,9 @@ export default class ReverseImage extends Command {
 
         if (!revArray[0]) return
         if (revArray.length === 1) {
-            message.channel.send({embeds: [revArray[0]]})
+            return this.reply(revArray[0])
         } else {
-            embeds.createReactionEmbed(revArray, true, true)
+            return embeds.createReactionEmbed(revArray, true, true)
         }
     }
 }

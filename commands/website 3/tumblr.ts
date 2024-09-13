@@ -7,7 +7,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class TumblrCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for tumblr posts and blogs.",
             help:
@@ -22,6 +22,7 @@ export default class TumblrCommand extends Command {
             aliases: [],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -113,10 +114,9 @@ export default class TumblrCommand extends Command {
             tumblrArray.push(tumblrEmbed)
         }
         if (tumblrArray.length === 1) {
-            await message.channel.send({embeds: [tumblrArray[0]]})
+            return this.reply(tumblrArray[0])
         } else {
-            embeds.createReactionEmbed(tumblrArray, true, true)
+            return embeds.createReactionEmbed(tumblrArray, true, true)
         }
-        return
     }
 }

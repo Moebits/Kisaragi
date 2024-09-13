@@ -8,7 +8,7 @@ import {Permission} from "./../../structures/Permission"
 
 const urban = require("urban.js")
 export default class Urban extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for words on urban dictionary.",
             help:
@@ -23,7 +23,9 @@ export default class Urban extends Command {
             `,
             aliases: [],
             random: "none",
-            cooldown: 5
+            cooldown: 5,
+            defer: true,
+            subcommandEnabled: true
         })
         const wordOption = new SlashCommandOption()
             .setType("string")
@@ -65,8 +67,7 @@ export default class Urban extends Command {
             `${discord.getEmoji("star")}**Example**: ${checkedExample ? checkedExample : "None"}`
             )
             .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
-            message.channel.send({embeds: [urbanEmbed]})
-            return
+            return this.reply(urbanEmbed)
         }
 
         const result = await urban.random()
@@ -85,6 +86,6 @@ export default class Urban extends Command {
             `${discord.getEmoji("star")}**Example**: ${checkedExample ? checkedExample : "None"}`
             )
             .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
-        message.channel.send({embeds: [urbanEmbed]})
+        return this.reply(urbanEmbed)
     }
 }

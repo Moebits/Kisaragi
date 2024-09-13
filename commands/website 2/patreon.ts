@@ -7,7 +7,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Patreon extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for a patreon creator.",
             help:
@@ -20,6 +20,7 @@ export default class Patreon extends Command {
             `,
             aliases: [],
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const creatorOption = new SlashCommandOption()
@@ -90,6 +91,6 @@ export default class Patreon extends Command {
             `${discord.getEmoji("star")}_Facebook:_ ${fb ? fb : "None"}\n` +
             `${discord.getEmoji("star")}_Description:_ ${Functions.checkChar(description, 1700, " ")}`
         )
-        return message.channel.send({embeds: [patreonEmbed]})
+        return this.reply(patreonEmbed)
     }
 }

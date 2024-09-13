@@ -9,7 +9,7 @@ import {Permission} from "../../structures/Permission"
 
 export default class Steam extends Command {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches the steam store.",
             help:
@@ -23,6 +23,7 @@ export default class Steam extends Command {
             aliases: [],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -78,10 +79,9 @@ export default class Steam extends Command {
             steamArray.push(steamEmbed)
         }
         if (steamArray.length === 1) {
-            await message.channel.send({embeds: [steamArray[0]]})
+            return this.reply(steamArray[0])
         } else {
-            embeds.createReactionEmbed(steamArray, true, true)
+            return embeds.createReactionEmbed(steamArray, true, true)
         }
-        return
     }
 }

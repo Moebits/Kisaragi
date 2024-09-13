@@ -8,7 +8,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class MDN extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches the mdn docs.",
             help:
@@ -22,6 +22,7 @@ export default class MDN extends Command {
             `,
             aliases: ["jsref"],
             cooldown: 5,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -85,7 +86,6 @@ export default class MDN extends Command {
         `${discord.getEmoji("star")}_Tags:_ ${this.mdnReplace(result.Tags.join(", "))}\n` +
         `${discord.getEmoji("star")}_Similar:_ \n${Functions.checkChar(similar, 1000, "\n")}`
         )
-
-        message.channel.send({embeds: [mdnEmbed]})
+        return this.reply(mdnEmbed)
     }
 }

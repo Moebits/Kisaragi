@@ -9,7 +9,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Gravatar extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Gets the profile picture of a gravatar email.",
             help:
@@ -43,14 +43,14 @@ export default class Gravatar extends Command {
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
         const email = args[1]
-        if (!email) return message.reply(`You must provide an email address ${discord.getEmoji("kannaCurious")}`)
-        if (message.channel instanceof TextChannel) await message.channel.bulkDelete(2)
+        if (!email) return this.reply(`You must provide an email address ${discord.getEmoji("kannaCurious")}`)
+        if (message instanceof Message && message.channel instanceof TextChannel) await message.channel.bulkDelete(2)
         const hash = md5(email.trim().toLowerCase())
         const gravatarEmbed = embeds.createEmbed()
         .setAuthor({name: "gravatar", iconURL: "https://cdn.wpbeginner.com/wp-content/uploads/2012/08/gravatarlogo.jpg", url: "https://en.gravatar.com/"})
         .setTitle(`**Gravatar Profile Picture** ${discord.getEmoji("kannaSpook")}`)
         .setImage(`https://www.gravatar.com/avatar/${hash}?size=500`)
-        await message.reply({content: "Here is your gravatar profile picture", embeds: [gravatarEmbed]})
-        return
+        await this.reply("Here is your gravatar profile picture")
+        return this.send(gravatarEmbed)
     }
 }

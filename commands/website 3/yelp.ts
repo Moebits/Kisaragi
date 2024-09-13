@@ -8,7 +8,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class Yelp extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for businesses on yelp.",
             help:
@@ -23,6 +23,7 @@ export default class Yelp extends Command {
             aliases: [],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -86,9 +87,9 @@ export default class Yelp extends Command {
             .setTitle(`**Yelp Search** ${discord.getEmoji("aquaUp")}`))
         }
         if (yelpArray.length === 1) {
-            message.channel.send({embeds: [yelpArray[0]]})
+            return this.reply(yelpArray[0])
         } else {
-            embeds.createReactionEmbed(yelpArray)
+            return embeds.createReactionEmbed(yelpArray)
         }
     }
 }

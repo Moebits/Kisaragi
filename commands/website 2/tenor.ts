@@ -8,7 +8,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const Tenor = require("tenorjs")
 
 export default class TenorCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for gifs on tenor.",
             help:
@@ -25,6 +25,7 @@ export default class TenorCommand extends Command {
             aliases: ["ten"],
             random: "none",
             cooldown: 5,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -51,7 +52,7 @@ export default class TenorCommand extends Command {
         })
 
         const query = Functions.combineArgs(args, 1)
-        let result
+        let result: any
         if (query) {
             if (query.match(/tenor.com/)) {
                 const id = query.match(/(?<=-)(?:.(?!-))+$/)
@@ -78,10 +79,9 @@ export default class TenorCommand extends Command {
         }
 
         if (tenorArray.length === 1) {
-            message.channel.send({embeds: [tenorArray[0]]})
+            return this.reply(tenorArray[0])
         } else {
-            embeds.createReactionEmbed(Functions.shuffleArray(tenorArray), true, true)
+            return embeds.createReactionEmbed(Functions.shuffleArray(tenorArray), true, true)
         }
-        return
     }
 }

@@ -13,7 +13,7 @@ const nsfwBoards = ["b", "r9k", "pol", "bant", "soc", "s4s", "s", "hc", "hm", "h
                     "e", "u", "d", "y", "t", "hr", "gif", "aco", "r"]
 
 export default class $4chan extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for posts and images on 4chan.",
             help:
@@ -31,6 +31,7 @@ export default class $4chan extends Command {
             `,
             aliases: ["4", "4ch"],
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -110,8 +111,7 @@ export default class $4chan extends Command {
             const threads = await chan.threadsWithTopics(board, query.split(","))
             const random = Math.floor(Math.random() * threads.length)
             if (!threads[random]) {
-                this.invalidQuery(badChanEmbed, "Try searching for a different tag.")
-                return
+                return this.invalidQuery(badChanEmbed, "Try searching for a different tag.")
             }
             const results = await chan.threadMediaLinks(threads[random].url)
             const rawUrl = `https://boards.4channel.org/${board}/thread/${threads[random].url.match(/\d+/g)}`
@@ -127,11 +127,10 @@ export default class $4chan extends Command {
                 imageArray.push(chanEmbed)
             }
             if (imageArray.length === 1) {
-                message.channel.send({embeds: [imageArray[0]]})
+                return this.reply(imageArray[0])
             } else {
-                embeds.createReactionEmbed(imageArray, false, true)
+                return embeds.createReactionEmbed(imageArray, false, true)
             }
-            return
         }
 
         let board = args[1]
@@ -163,11 +162,10 @@ export default class $4chan extends Command {
                 chanArray.push(chanEmbed)
             }
             if (chanArray.length === 1) {
-                message.channel.send({embeds: [chanArray[0]]})
+                return this.reply(chanArray[0])
             } else {
-                embeds.createReactionEmbed(chanArray, false, true)
+                return embeds.createReactionEmbed(chanArray, false, true)
             }
-            return
         }
         if (!board || !query) {
             return this.noQuery(badChanEmbed, "The first parameter is the board name, the rest is the search query. Try looking at the [**4chan Website**](https://www.4chan.org/)")
@@ -202,7 +200,7 @@ export default class $4chan extends Command {
             chanArray.push(chanEmbed)
         }
         if (chanArray.length === 1) {
-            message.channel.send({embeds: [chanArray[0]]})
+            this.reply(chanArray[0])
         } else {
             embeds.createReactionEmbed(chanArray, false, true)
         }

@@ -12,7 +12,7 @@ const GitHub = require("github-api")
 export default class Github extends Command {
     private user = null as any
     private repo = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for github repositories and users.",
             help:
@@ -28,6 +28,7 @@ export default class Github extends Command {
             aliases: ["gh"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -94,8 +95,7 @@ export default class Github extends Command {
                 `${discord.getEmoji("star")}_Bio:_ ${result.bio}\n`
             )
             .setThumbnail(result.avatar_url)
-            message.channel.send({embeds: [githubEmbed]})
-            return
+            return this.reply(githubEmbed)
         }
 
         const input = this.repo || Functions.combineArgs(args, 1)
@@ -138,6 +138,6 @@ export default class Github extends Command {
             .setImage(url ? url[0] : "")
             githubArray.push(githubEmbed)
         }
-        embeds.createReactionEmbed(githubArray, false, true)
+        return embeds.createReactionEmbed(githubArray, false, true)
     }
 }

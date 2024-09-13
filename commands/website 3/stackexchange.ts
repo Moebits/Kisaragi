@@ -7,7 +7,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class StackExchange extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for questions on a stack exchange site, use alias \`stackoverflow\` for stack overflow.",
             help:
@@ -24,6 +24,7 @@ export default class StackExchange extends Command {
             aliases: ["stack", "stackoverflow"],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -113,10 +114,9 @@ export default class StackExchange extends Command {
             stackArray.push(stackEmbed)
         }
         if (stackArray.length === 1) {
-            message.channel.send({embeds: [stackArray[0]]})
+            return this.reply(stackArray[0])
         } else {
-            embeds.createReactionEmbed(stackArray)
+            return embeds.createReactionEmbed(stackArray)
         }
-        return
     }
 }

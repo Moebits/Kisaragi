@@ -49,7 +49,7 @@ interface CrunchyrollSeason {
 
 export default class Crunchyroll extends Command {
     private readonly headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for an anime on crunchyroll.",
             help:
@@ -64,6 +64,7 @@ export default class Crunchyroll extends Command {
             aliases: ["cr", "crunchy"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -123,7 +124,6 @@ export default class Crunchyroll extends Command {
             const crunchyEmbed = await this.getEmbed(shows[i])
             crunchyArray.push(crunchyEmbed)
         }
-        embeds.createReactionEmbed(crunchyArray, false, true)
-        return
+        return embeds.createReactionEmbed(crunchyArray, false, true)
     }
 }

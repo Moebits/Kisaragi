@@ -7,7 +7,7 @@ import {Functions} from "../../structures/Functions"
 import {Kisaragi} from "../../structures/Kisaragi"
 
 export default class FlickrCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for images on flickr.",
             help:
@@ -22,6 +22,7 @@ export default class FlickrCommand extends Command {
             aliases: [],
             random: "none",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -70,8 +71,7 @@ export default class FlickrCommand extends Command {
                 `${discord.getEmoji("star")}_Occupation:_ ${profile.occupation ? profile.occupation : "None"}\n` +
                 `${discord.getEmoji("star")}_Description:_ ${profile.profile_description ? profile.profile_description : "None"}\n`
             )
-            await message.channel.send({embeds: [flickrEmbed]})
-            return
+            return this.reply(flickrEmbed)
         }
         let text = Functions.combineArgs(args, 1)?.trim()
         if (!text) text = "anime"
@@ -117,10 +117,9 @@ export default class FlickrCommand extends Command {
         flickrArray = Functions.sortObjectArray(flickrArray, "views", "desc")
         flickrArray = flickrArray.map((f) => f.embed)
         if (flickrArray.length === 1) {
-            message.channel.send(flickrArray[0])
+            return this.reply(flickrArray[0])
         } else {
-            embeds.createReactionEmbed(flickrArray, true, true)
+            return embeds.createReactionEmbed(flickrArray, true, true)
         }
-        return
     }
 }

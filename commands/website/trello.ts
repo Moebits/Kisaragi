@@ -8,7 +8,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class TrelloCommand extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for trello boards and users.",
             help:
@@ -24,6 +24,7 @@ export default class TrelloCommand extends Command {
             aliases: [],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -80,8 +81,7 @@ export default class TrelloCommand extends Command {
                 `${discord.getEmoji("star")}_Description:_ ${boardDesc?.trim() ?? "None"}\n` +
                 `${Functions.checkChar(cardDetails, 1700, " ")}`
             )
-            message.channel.send({embeds: [trelloEmbed]})
-            return
+            return this.reply(trelloEmbed)
         }
 
         if (!query) {
@@ -121,10 +121,9 @@ export default class TrelloCommand extends Command {
         }
 
         if (trelloArray.length === 1) {
-            message.channel.send({embeds: [trelloArray[0]]})
+            return this.reply(trelloArray[0])
         } else {
-            embeds.createReactionEmbed(trelloArray)
+            return embeds.createReactionEmbed(trelloArray)
         }
-        return
     }
 }

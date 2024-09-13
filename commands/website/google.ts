@@ -10,7 +10,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 const google = require("google-it")
 
 export default class Google extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches a search term on google.",
             help:
@@ -24,6 +24,7 @@ export default class Google extends Command {
             aliases: ["g"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -79,6 +80,6 @@ export default class Google extends Command {
             .setDescription(resultArray.slice(i, i+10).join("\n"))
             googleEmbedArray.push(googleEmbed)
         }
-        embeds.createReactionEmbed(googleEmbedArray)
+        return embeds.createReactionEmbed(googleEmbedArray)
     }
 }

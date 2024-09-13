@@ -13,7 +13,7 @@ let pinArray: EmbedBuilder[] = []
 export default class Pinterest extends Command {
     private user = null as any
     private board = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for images on pinterest.",
             help:
@@ -31,6 +31,7 @@ export default class Pinterest extends Command {
             aliases: ["pint"],
             random: "string",
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const boardOption = new SlashCommandOption()
@@ -56,7 +57,7 @@ export default class Pinterest extends Command {
             .addOption(boardOption)
     }
 
-    public pinterestError = (discord: Kisaragi, message: Message<true>, embeds: Embeds, msg?: string) => {
+    public pinterestError = (discord: Kisaragi, message: Message, embeds: Embeds, msg?: string) => {
         if (!msg) msg = ""
         const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
@@ -64,10 +65,10 @@ export default class Pinterest extends Command {
         .setTitle(`**Pinterest Search** ${discord.getEmoji("aquaUp")}`)
         .setDescription(`No results were found. ${msg}Try searching on the pinterest website: ` +
         "[Pinterest Website](https://www.pinterest.com/)")
-        message.channel.send({embeds: [pinterestEmbed]})
+        this.reply(pinterestEmbed)
     }
 
-    public pinterestPin = (discord: Kisaragi, message: Message<true>, response: any) => {
+    public pinterestPin = (discord: Kisaragi, message: Message, response: any) => {
         const embeds = new Embeds(discord, message)
         const pinterestEmbed = embeds.createEmbed()
         pinterestEmbed
@@ -134,15 +135,13 @@ export default class Pinterest extends Command {
                 pinArray.push(pinEmbed)
             }
             if (!pinArray.join("")) {
-                this.pinterestError(discord, message, embeds)
-                return
+                return this.pinterestError(discord, message, embeds)
             }
             if (pinArray.length === 1) {
-                message.channel.send({embeds: [pinArray[0]]})
+                return this.reply(pinArray[0])
             } else {
-                embeds.createReactionEmbed(pinArray, true, true)
+                return embeds.createReactionEmbed(pinArray, true, true)
             }
-            return
         }
 
         if (this.user || args[1] === "user") {
@@ -171,11 +170,10 @@ export default class Pinterest extends Command {
             }
             if (!pinArray.join("")) return this.pinterestError(discord, message, embeds)
             if (pinArray.length === 1) {
-                message.channel.send({embeds: [pinArray[0]]})
+                return this.reply(pinArray[0])
             } else {
-                embeds.createReactionEmbed(pinArray, true, true)
+                return embeds.createReactionEmbed(pinArray, true, true)
             }
-            return
         }
 
         let query = Functions.combineArgs(args, 1)
@@ -244,10 +242,9 @@ export default class Pinterest extends Command {
 
         if (!pinArray.join("")) return this.pinterestError(discord, message, embeds)
         if (pinArray.length === 1) {
-                message.channel.send({embeds: [pinArray[0]]})
+            return this.reply(pinArray[0])
         } else {
-                embeds.createReactionEmbed(pinArray, true, true)
+            return embeds.createReactionEmbed(pinArray, true, true)
         }
-        return
     }
 }

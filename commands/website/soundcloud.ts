@@ -15,7 +15,7 @@ export default class SoundCloud extends Command {
     private user = null as any
     private playlist = null as any
     private track = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for soundcloud tracks, users, and playlists or downloads them.",
             help:
@@ -37,6 +37,7 @@ export default class SoundCloud extends Command {
             aliases: ["sc"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -103,7 +104,7 @@ export default class SoundCloud extends Command {
                 soundcloudArray.push(soundcloudEmbed)
             }
             if (soundcloudArray.length === 1) {
-                return message.channel.send({embeds: [soundcloudArray[0]]})
+                return this.reply(soundcloudArray[0])
             }
             return embeds.createReactionEmbed(soundcloudArray, true, true)
         }
@@ -135,7 +136,7 @@ export default class SoundCloud extends Command {
                 soundcloudArray.push(soundcloudEmbed)
             }
             if (soundcloudArray.length === 1) {
-                return message.channel.send({embeds: [soundcloudArray[0]]})
+                return this.reply(soundcloudArray[0])
             }
             return embeds.createReactionEmbed(soundcloudArray, true, true)
         }
@@ -165,7 +166,7 @@ export default class SoundCloud extends Command {
             try {
                 file = await soundcloud.util.downloadTrack(track, src)
             } catch {
-                return message.channel.send(`Sorry but the Soundcloud token expired. Let the developer know with the \`feedback\` command.`)
+                return this.reply(`Sorry but the Soundcloud token expired. Let the developer know with the \`feedback\` command.`)
             }
             const stats = fs.statSync(file)
             if (stats.size > Functions.getMBBytes(10)) {
@@ -176,7 +177,7 @@ export default class SoundCloud extends Command {
                 .setURL(link)
                 .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
                 .setDescription(`${discord.getEmoji("star")}Downloaded the track! This file is too large for attachments. Download the file [**here**](${link}).\n`)
-                await message.channel.send({embeds: [soundcloudEmbed]})
+                await this.reply(soundcloudEmbed)
             } else {
                 const attachment = new AttachmentBuilder(file)
                 const soundcloudEmbed = embeds.createEmbed()
@@ -184,11 +185,9 @@ export default class SoundCloud extends Command {
                 .setAuthor({name: "soundcloud", iconURL: "https://icons.iconarchive.com/icons/danleech/simple/256/soundcloud-icon.png", url: "https://soundcloud.com/"})
                 .setTitle(`**Soundcloud Download** ${discord.getEmoji("karenSugoi")}`)
                 .setDescription(`${discord.getEmoji("star")}Downloaded the track!\n`)
-                await message.channel.send({embeds: [soundcloudEmbed]})
-                await message.channel.send({files: [attachment]})
+                await this.reply(soundcloudEmbed, attachment)
             }
-            Functions.removeDirectory(src)
-            return
+            return Functions.removeDirectory(src)
         }
 
         const query = this.track || Functions.combineArgs(args, 1)
@@ -221,7 +220,7 @@ export default class SoundCloud extends Command {
             soundcloudArray.push(soundcloudEmbed)
         }
         if (soundcloudArray.length === 1) {
-            return message.channel.send({embeds: [soundcloudArray[0]]})
+            return this.reply(soundcloudArray[0])
         }
         return embeds.createReactionEmbed(soundcloudArray, true, true)
     }

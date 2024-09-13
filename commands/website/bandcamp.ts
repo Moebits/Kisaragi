@@ -8,7 +8,7 @@ import {Functions} from "./../../structures/Functions"
 import {Kisaragi} from "./../../structures/Kisaragi"
 
 export default class Bandcamp extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for artists, tracks, and albums on bandcamp.",
             help:
@@ -23,6 +23,7 @@ export default class Bandcamp extends Command {
             aliases: ["bc"],
             random: "string",
             cooldown: 5,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -142,11 +143,10 @@ export default class Bandcamp extends Command {
         }
 
         if (bandcampArray.length === 1) {
-            message.channel.send({embeds: [bandcampArray[0]]})
+            return this.reply(bandcampArray[0])
         } else {
-            embeds.createReactionEmbed(bandcampArray, false, true)
+            return embeds.createReactionEmbed(bandcampArray, false, true)
         }
-        return
     }
 }
 

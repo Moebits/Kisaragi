@@ -10,7 +10,7 @@ import {Kisaragi} from "./../../structures/Kisaragi"
 export default class Twitch extends Command {
     private channel = null as any
     private search = null as any
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for twitch streams and channels.",
             help:
@@ -27,6 +27,7 @@ export default class Twitch extends Command {
             aliases: ["tw"],
             random: "string",
             cooldown: 10,
+            defer: true,
             subcommandEnabled: true
         })
         const query2Option = new SlashCommandOption()
@@ -86,8 +87,7 @@ export default class Twitch extends Command {
                 `${discord.getEmoji("star")}_Game:_ **${result[0].game}**\n` +
                 `${discord.getEmoji("star")}_Description:_ ${result[0].description}\n`
             )
-            message.channel.send({embeds: [twitchEmbed]})
-            return
+            return this.reply(twitchEmbed)
         }
 
         const term = this.search || Functions.combineArgs(args, 1)
@@ -117,6 +117,6 @@ export default class Twitch extends Command {
             )
             twitchArray.push(twitchEmbed)
         }
-        embeds.createReactionEmbed(twitchArray, true, true)
+        return embeds.createReactionEmbed(twitchArray, true, true)
     }
 }

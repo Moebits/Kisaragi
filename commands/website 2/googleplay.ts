@@ -7,7 +7,7 @@ import {Kisaragi} from "../../structures/Kisaragi"
 import {Permission} from "../../structures/Permission"
 
 export default class GooglePlay extends Command {
-    constructor(discord: Kisaragi, message: Message<true>) {
+    constructor(discord: Kisaragi, message: Message) {
         super(discord, message, {
             description: "Searches for apps on the google play store.",
             help:
@@ -21,6 +21,7 @@ export default class GooglePlay extends Command {
             aliases: ["gplay", "playstore"],
             random: "string",
             cooldown: 15,
+            defer: true,
             subcommandEnabled: true
         })
         const queryOption = new SlashCommandOption()
@@ -84,10 +85,9 @@ export default class GooglePlay extends Command {
         }
 
         if (playArray.length === 1) {
-            message.channel.send({embeds: [playArray[0]]})
+            return this.reply(playArray[0])
         } else {
-            embeds.createReactionEmbed(playArray, true, true)
+            return embeds.createReactionEmbed(playArray, true, true)
         }
-        return
     }
 }
