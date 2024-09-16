@@ -29,7 +29,6 @@ export default class Reddit extends Command {
             \`=>reddit\`
             \`=>reddit anime cute\`
             \`=>reddit animemes hot\`
-            \`=>reddit user imtenpi\`
             `,
             aliases: ["r"],
             random: "none",

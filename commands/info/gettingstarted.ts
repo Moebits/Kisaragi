@@ -55,19 +55,17 @@ export default class GettingStarted extends Command {
             `${discord.getEmoji("star")}The current prefix is set to \`${prefix}\`. Use \`${prefix}help\` at anytime to display the list of commands.\n` +
             `${discord.getEmoji("star")}For detailed command help, use \`${prefix}help (command)\`.\n` +
             `${discord.getEmoji("star")}If you would like to change the bot prefix, use \`${prefix}prefix\`. If you forget your prefix you can tag me.\n` +
-            `${discord.getEmoji("star")}Configure your server moderation settings with \`${prefix}mod\`, and general bot settings with \`${prefix}config\`.\n` +
-            `${discord.getEmoji("star")}Set welcome and leave messages with \`${prefix}welcome\` and \`${prefix}leave\` respectively.\n` +
-            `${discord.getEmoji("star")}Set selfroles and reactionroles with \`${prefix}selfroles\` and \`${prefix}reactionroles\` respectively.\n` +
+            `${discord.getEmoji("star")}Configure your server moderation settings with \`${prefix}mod\` and general bot settings with \`${prefix}config\`.\n` +
+            `${discord.getEmoji("star")}Set welcome and leave messages with \`${prefix}welcome\` and \`${prefix}leave\`.\n` +
+            `${discord.getEmoji("star")}Set selfroles and reactionroles with \`${prefix}selfroles\` and \`${prefix}reactionroles\`.\n` +
             `${discord.getEmoji("star")}Many commands run automatically when a link is posted, such as \`${prefix}youtube\` for youtube links. If you don't want this behavior change it in \`${prefix}detect\`.\n` +
-            `${discord.getEmoji("star")}Some commands such as \`${prefix}email\` and \`${prefix}tweet\` require oauth2 authentication in \`${prefix}oauth2\` and \`${prefix}twitteroauth\`.\n` +
             `${discord.getEmoji("star")}You can use \`${prefix}random\` to run a random command, or \`${prefix}chain\` to run multiple commands in succession.\n` +
             `${discord.getEmoji("star")}Send feedback and suggestions to the developer using \`${prefix}feedback\`.\n` +
             `${discord.getEmoji("star")}By adding the bot to your server, you agree to the privacy policy in \`${prefix}privacy\` and the terms of service in \`${prefix}tos\`.\n` +
             `\n` +
-            `${discord.getEmoji("termsofservice")}[**Terms of Service**](https://kisaragi.moe/terms)\n` +
-            `${discord.getEmoji("privacypolicy")}[**Privacy Policy**](https://kisaragi.moe/terms#privacy)\n` +
-            `I hope that you enjoy using this bot! ${discord.getEmoji("aquaUp")}\n` +
-            `The command documentation is also on my [**website**](${config.website}).`
+            `${discord.getEmoji("kisaragimoe")}[**Website**](${config.website})\n` +
+            `${discord.getEmoji("termsofservice")}[**Terms of Service**](${config.website}/terms)\n` +
+            `${discord.getEmoji("privacypolicy")}[**Privacy Policy**](${config.website}/terms#privacy)\n`
         )
         let msg = null as unknown as Message
         try {

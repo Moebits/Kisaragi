@@ -47,10 +47,10 @@ export default class Ship extends Command {
         if (!args[2]) {
             return this.reply(`You need to mention two users! ${discord.getEmoji("kannaWave")}`)
         }
-        const user1ID = args[1].match(/\d+/)?.[0]
-        const user1 = await message.guild?.members.fetch(user1ID!)
-        const user2ID = args[2].match(/\d+/)?.[0]
-        const user2 = await message.guild?.members.fetch(user2ID!)
+        const user1ID = args[1].match(/\d+/)?.[0] || ""
+        const user1 = await message.guild?.members.fetch(user1ID)
+        const user2ID = args[2].match(/\d+/)?.[0] || ""
+        const user2 = await message.guild?.members.fetch(user2ID)
         const shipname = String(user1?.user.displayName.substring(0, user1.displayName.length/2)) + String(user2?.displayName.substring(user2.displayName.length/2))
 
         const can = new canvas.Canvas(128*3, 128)

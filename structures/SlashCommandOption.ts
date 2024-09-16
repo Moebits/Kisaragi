@@ -54,7 +54,7 @@ const optionMap = new Map<string, SlashCommandOptionTypeConstructor>([
 export class SlashCommand extends SlashCommandBuilder {
 	public constructor() {
 		super()
-		this.setContexts(InteractionContextType.Guild, InteractionContextType.BotDM)
+		this.setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel)
 		this.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
 	}
 

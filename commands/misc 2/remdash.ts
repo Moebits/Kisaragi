@@ -22,6 +22,7 @@ export default class Remdash extends Command {
             aliases: ["delhyphen"],
             guildOnly: true,
             cooldown: 5,
+            defer: true,
             subcommandEnabled: true
         })
         const addOption = new SlashCommandOption()
