@@ -19,8 +19,8 @@ export default class Kancolle extends Command {
             description: "Gets information on a kancolle ship girl.",
             help:
             `
-            \`kancolle shipgirl\` - Gets information on the shipgirl.
             \`kancolle\` - Gets some handpicked girls
+            \`kancolle shipgirl\` - Gets information on the shipgirl.
             `,
             examples:
             `

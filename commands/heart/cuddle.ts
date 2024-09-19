@@ -13,7 +13,7 @@ export default class Cuddle extends Command {
             help:
             `
             \`cuddle @user\` - Cuddles the user.
-            \`baka\` - Cuddle no one...
+            \`cuddle\` - Cuddle no one...
             `,
             examples:
             `

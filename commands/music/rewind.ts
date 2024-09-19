@@ -54,7 +54,6 @@ export default class Rewind extends Command {
         const rep = await this.reply(`Rewinded the song!`)
         await Functions.timeout(3000)
         rep.delete().catch(() => null)
-        message.delete().catch(() => null)
-        return
+        if (message instanceof Message) message.delete().catch(() => null)
     }
 }

@@ -23,8 +23,8 @@ export default class AzurLane extends Command {
             description: "Gets information on an azur lane ship girl.",
             help:
             `
-            \`azurlane shipgirl\` - Gets information on the shipgirl.
             \`azurlane\` - Gets some handpicked girls.
+            \`azurlane shipgirl\` - Gets information on the shipgirl.
             `,
             examples:
             `

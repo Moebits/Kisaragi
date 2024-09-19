@@ -97,7 +97,6 @@
     "mathjs": "^13.0.3",
     "md5": "^2.3.0",
     "moment": "^2.30.1",
-    "mp3-duration": "^1.1.0",
     "mw-dict": "^3.0.0",
     "nasa-sdk": "^1.1.11",
     "nekos.life": "^3.0.0",
@@ -137,7 +136,7 @@
     "wikijs": "^6.4.1",
     "xkcd": "^1.1.3",
     "youtube-notification": "^1.1.0",
-    "youtube.ts": "^0.3.1",
+    "youtube.ts": "^0.3.4",
     "zlib-sync": "^0.1.9"
   },
   "devDependencies": {

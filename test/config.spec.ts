@@ -88,7 +88,7 @@ describe("config", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "!"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -106,7 +106,7 @@ describe("config", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "kanna"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 

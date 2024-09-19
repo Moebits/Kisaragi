@@ -46,6 +46,6 @@ export default class Effects extends Command {
         const queue = audio.getQueue()
         const embed = await audio.updateNowPlaying()
         discord.edit(queue[0].message!, embed)
-        message.delete().catch(() => null)
+        if (message instanceof Message) message.delete().catch(() => null)
     }
 }

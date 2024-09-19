@@ -42,12 +42,12 @@ export class AudioEffects {
         }
         const inDest = await this.convertToFormat(filepath, "aiff")
         fileDest = fileDest.replace(/(_)(.*?)(?=_)/g, "")
-        let outDest = fileDest.slice(0, -4) + `.aiff`
+        let outDest = path.join(path.dirname(fileDest), path.basename(fileDest, path.extname(fileDest)) + ".aiff")
         let index = 0
-        /*while (fs.existsSync(outDest)) {
+        while (fs.existsSync(outDest)) {
             outDest = index <= 1 ? `${fileDest}.aiff` : `${fileDest}${index}.aiff`
             index++
-        }*/
+        }
         const command = `"${soxPath}" "${inDest}" "${outDest}" gain -50 ${effect} gain -n -1`
         const child = child_process.exec(command)
         await new Promise<void>((resolve) => {
@@ -267,6 +267,7 @@ export class AudioEffects {
             .on("end", () => resolve())
             .on("error", () => reject())
         })
+        if (filepath.includes("tracks/transform")) fs.unlink(filepath, () => null)
         return newDest
     }
 
@@ -281,6 +282,15 @@ export class AudioEffects {
             .on("error", () => reject())
         })
         return newDest
+    }
+
+    public duration = async (filepath: string) => {
+        return new Promise<number>((resolve, reject) => {
+            ffmpeg.ffprobe(filepath, (err, data) => {
+                const duration = data.format.duration || 0
+                resolve(duration)
+            })
+        })
     }
 
     public getWavInfo = (header: Uint8Array) => {

@@ -43,7 +43,7 @@ describe("info", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "list"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -61,7 +61,7 @@ describe("info", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -124,7 +124,7 @@ describe("info", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "kawaii"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -151,7 +151,7 @@ describe("info", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "red"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 

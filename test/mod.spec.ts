@@ -7,7 +7,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -25,7 +25,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -34,7 +34,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "5"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -43,7 +43,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -52,7 +52,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -70,7 +70,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "5", "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -79,7 +79,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -88,7 +88,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "add", "@user", "@kawaii"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -97,7 +97,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -106,7 +106,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "6d", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -115,7 +115,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "6d", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -124,7 +124,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -133,7 +133,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -142,7 +142,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -151,7 +151,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -160,7 +160,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -169,7 +169,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -178,7 +178,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -187,7 +187,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -196,7 +196,7 @@ describe("mod", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "@user", "spammer"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 

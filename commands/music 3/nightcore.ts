@@ -47,6 +47,6 @@ export default class Nightcore extends Command {
         const rep2 = await this.reply(`Applied a nightcore effect!`)
         await Functions.timeout(3000)
         rep2.delete().catch(() => null)
-        message.delete().catch(() => null)
+        if (message instanceof Message) message.delete().catch(() => null)
     }
 }

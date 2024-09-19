@@ -20,8 +20,8 @@ export default class Screenshot extends Command {
             `,
           examples:
             `
-            \`=>screenshot https://www.youtube.com/c/Tenpi\`
-            \`=>screenshot mobile https://www.youtube.com/c/Tenpi\`
+            \`=>screenshot https://www.youtube.com/\`
+            \`=>screenshot mobile https://www.youtube.com/\`
             `,
           aliases: ["screencap"],
           cooldown: 15,

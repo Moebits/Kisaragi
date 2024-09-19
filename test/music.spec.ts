@@ -7,7 +7,7 @@ describe("music", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "1:30", "2:30"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -142,7 +142,7 @@ describe("music", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "3"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 

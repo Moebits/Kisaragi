@@ -24,7 +24,7 @@ export default class Skip extends Command {
             aliases: [],
             guildOnly: true,
             cooldown: 5,
-            slashEnabled: true
+            subcommandEnabled: true
         })
         const numOption = new SlashCommandOption()
             .setType("string")
@@ -56,7 +56,8 @@ export default class Skip extends Command {
             if (index === -1) return this.reply(`Could not find a song with that name ${discord.getEmoji("kannaCurious")}`)
             amount = index + 1
         }
-        const text = amount === 1 ? "Skipped this song!" : (Number(input) ? `Skipped to the song at position **${amount}**!` : `Skipped to **${input}**!`)
+        let fxText = audio.hasEffects() ? `**If you added effects, be patient because they need to be re-applied.**` : ""
+        const text = amount === 1 ? `Skipped this song! ${fxText}` : (Number(input) ? `Skipped to the song at position **${amount}**! ${fxText}` : `Skipped to **${input}**! ${fxText}`)
         await this.reply(text)
         await audio.skip(amount)
     }

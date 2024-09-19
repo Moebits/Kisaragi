@@ -7,7 +7,7 @@ describe("misc", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "sin(1)"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -16,7 +16,7 @@ describe("misc", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "calc 1+1 & base64 hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -25,7 +25,7 @@ describe("misc", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -61,7 +61,7 @@ describe("misc", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "pikachu"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -79,7 +79,7 @@ describe("misc", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "https://www.youtube.com/"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -88,7 +88,7 @@ describe("misc", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "579720679612612608"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -97,7 +97,7 @@ describe("misc", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -106,7 +106,7 @@ describe("misc", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "new york"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -115,7 +115,7 @@ describe("misc", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "new york"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 })

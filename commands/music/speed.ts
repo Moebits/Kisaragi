@@ -92,7 +92,7 @@ export default class Speed extends Command {
             const rep = await this.reply(`Changed the speed by a factor of ${factor}!`)
             await Functions.timeout(3000)
         rep.delete().catch(() => null)
-        message.delete().catch(() => null)
+        if (message instanceof Message) message.delete().catch(() => null)
         }
     }
 }

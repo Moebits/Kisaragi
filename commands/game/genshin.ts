@@ -19,8 +19,8 @@ export default class Genshin extends Command {
             description: "Gets information on a genshin impact character.",
             help:
             `
-            \`genshin character\` - Gets information on the character.
             \`genshin\` - Gets some picked characters.
+            \`genshin character\` - Gets information on the character.
             `,
             examples:
             `

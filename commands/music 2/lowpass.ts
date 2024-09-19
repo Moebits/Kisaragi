@@ -91,7 +91,7 @@ export default class Lowpass extends Command {
             const rep = await this.reply("Applied a lowpass filter to the file!")
             await Functions.timeout(3000)
         rep.delete().catch(() => null)
-        message.delete().catch(() => null)
+        if (message instanceof Message) message.delete().catch(() => null)
         }
     }
 }

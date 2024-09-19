@@ -7,7 +7,7 @@ describe("misc 2", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -16,7 +16,7 @@ describe("misc 2", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -25,7 +25,7 @@ describe("misc 2", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -34,7 +34,7 @@ describe("misc 2", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hello"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -43,16 +43,7 @@ describe("misc 2", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
-        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
-    })
-
-	it("helloworld", async () => {
-        let name = "helloworld"
-        discord.resetReplyStatus()
-        const command = discord.commands.get(name)!
-        if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -61,7 +52,7 @@ describe("misc 2", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -79,7 +70,7 @@ describe("misc 2", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -88,7 +79,7 @@ describe("misc 2", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "[title]", "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -110,21 +101,12 @@ describe("misc 2", async () => {
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
-	it("remdash", async () => {
-        let name = "remdash"
-        discord.resetReplyStatus()
-        const command = discord.commands.get(name)!
-        if (command.options.defer) command.deferReply()
-        await command.run([name])
-        if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
-    })
-
 	it("shorten", async () => {
         let name = "shorten"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "https://www.youtube.com/"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 })

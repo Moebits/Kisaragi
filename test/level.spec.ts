@@ -7,7 +7,7 @@ describe("level", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "user", "100"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 

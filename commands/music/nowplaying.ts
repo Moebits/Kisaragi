@@ -38,6 +38,5 @@ export default class NowPlaying extends Command {
         if (!audio.checkMusicPermissions()) return
         if (!audio.checkMusicPlaying()) return
         await audio.nowPlaying()
-        return
     }
 }

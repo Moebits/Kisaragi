@@ -2,7 +2,6 @@ import axios from "axios"
 import {Collection, Message, AttachmentBuilder, EmbedBuilder, MessageReaction, TextChannel, User} from "discord.js"
 import {getVoiceConnection, createAudioPlayer, createAudioResource, AudioPlayerStatus, AudioPlayer, VoiceConnectionStatus, AudioResource, AudioPlayerState} from "@discordjs/voice"
 import fs from "fs"
-import mp3Duration from "mp3-duration"
 import path from "path"
 import Soundcloud from "soundcloud.ts"
 import Youtube from "youtube.ts"
@@ -787,7 +786,7 @@ export class Audio {
         .setAuthor({name: `${kind}`, iconURL: topImg})
         .setTitle(`**Song Request** ${discord.getEmoji("aquaUp")}`)
         .setURL(queueObj.url)
-        .setThumbnail(queueObj?.image ?? "")
+        .setThumbnail(queueObj?.image)
         .setDescription(`Added a new song to position **${pos}** in the queue!\n${queueObj.details}`)
         return queueEmbed
     }
@@ -865,7 +864,7 @@ export class Audio {
         if (!queue) return "It looks like you aren't playing anything..."
         const now = queue[0]
         const nowEmbed = await this.updateNowPlaying()
-        const msg = await this.discord.send(this.message, nowEmbed) as Message
+        const msg = await this.discord.reply(this.message, nowEmbed) as Message
         now.message = msg
         const reactions = ["resume", "pause", "scrub", "reverse", "speed", "pitch", "loop", "abloop", "skip", "volume", "eq", "fx", "clear"]
         if (now.requesterID === process.env.OWNER_ID) reactions.push("mp3")
@@ -1137,7 +1136,7 @@ export class Audio {
             `${settings.autoplay ? `${discord.getEmoji("autoplay")}Autoplay is **on**! ${discord.getEmoji("tohruSmug")}\n` : ""}` +
             `${settings.looping || settings.ablooping ? `${settings.ablooping ? discord.getEmoji("abloop") : discord.getEmoji("loop")}Loop mode is **on**! ${discord.getEmoji("aquaUp")}\n` : ""}` +
             `${settings.reverse ? `${discord.getEmoji("reverse")}Reverse mode is **on**! ${discord.getEmoji("gabYes")}\n` : ""}` +
-            `${discord.getEmoji("star")}_Title:_ [**${now.title}**](${now.url})\n` +
+            `${discord.getEmoji("star")}_Title:_ [**${now?.title ?? "Unknown"}**](${now.url})\n` +
             `${discord.getEmoji("star")}_Artist:_ **${now.artist}**\n` +
             `${discord.getEmoji("star")}_Duration:_ \`${durationStr}\`\n` +
             `${discord.getEmoji("speed")}_Speed:_ **${settings.speed}x**  ` +
@@ -1152,27 +1151,21 @@ export class Audio {
         .setAuthor({name: "playing", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
         .setTitle(`**Now Playing** ${this.discord.getEmoji("chinoSmug")}`)
         .setURL(now.url)
-        .setThumbnail(now.image ?? "")
+        .setThumbnail(now.image)
         .setDescription(details)
         return nowEmbed
     }
 
     public getDuration = async () => {
         const queue = this.getQueue()
-        let duration = 0
-        await new Promise<void>((resolve) => {
-            mp3Duration(queue[0].file, function(err: Error, d: number) {
-                duration = d
-                resolve()
-            })
-        })
+        let duration = await this.fx.duration(queue[0].file)
         return Math.round(duration)
     }
 
     public download = async (song: string, query?: string) => {
         let file = ""
         if (song?.match(/youtube.com|youtu.be/)) {
-            file = await this.youtube.util.downloadMP3(song, path.join(__dirname, `../assets/misc/tracks`)).then((f) => path.join(__dirname, f))
+            file = await this.youtube.util.downloadMP3(song, path.join(__dirname, `../assets/misc/tracks`))
         } else if (song?.match(/soundcloud.com/)) {
             file = await this.soundcloud.util.downloadTrack(song, path.join(__dirname, `../assets/misc/tracks`))
         } else {
@@ -1214,7 +1207,38 @@ export class Audio {
                 await this[settings.effects[i]](newFile, ...params)
             }
         }
+        newFile = this.getQueue()[0].file
         return newFile
+    }
+
+    public hasEffects = () => {
+        const settings = this.getSettings()
+        if (settings.reverse) {
+            return true
+        }
+        if (Number(settings.pitch) !== 0) {
+            return true
+        }
+        if (Number(settings.speed) !== 1) {
+            return true
+        }
+        if (settings.filters[0]) {
+            return true
+        }
+        if (settings.effects[0]) {
+            return true
+        }
+        return false
+    }
+
+    public deleteCurrent = (onlyEffect?: boolean) => {
+        const queue = this.getQueue()
+        if (!onlyEffect) {
+            fs.unlink(queue[0].originalFile, () => null)
+        }
+        if (queue[0].file !== queue[0].originalFile) {
+            fs.unlink(queue[0].file, () => null)
+        }
     }
 
     public playerFinished = async (newState: AudioPlayerState, player: AudioPlayer, file: string) => {
@@ -1233,22 +1257,24 @@ export class Audio {
             }
             skipPlaying = true
         } else {
+            this.deleteCurrent()
             queue.shift()
             next = this.next()
         }
         if (next) {
-            await this.applyEffects(next)
-            await this.play(next)
+            const nextFX = await this.applyEffects(next)
+            await this.play(nextFX)
             let nowPlaying: string | undefined
             if (!skipPlaying) nowPlaying = await this.nowPlaying()
             if (nowPlaying) await this.discord.send(this.message, nowPlaying)
         } else {
             if (settings.autoplay) {
+                settings.seekOffset = 0
                 const defSong = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
                 const file = await this.download(defSong)
                 await this.queueAdd(defSong, file)
-                await this.applyEffects(file)
-                await this.play(file)
+                const nextFX = await this.applyEffects(file)
+                await this.play(nextFX)
                 const nowPlaying = await this.nowPlaying()
                 if (nowPlaying) await this.discord.send(this.message, nowPlaying)
             } else {
@@ -1278,7 +1304,9 @@ export class Audio {
         if (Number(start) === 0) {
             stream = createAudioResource(file)
         } else {
+            const queue = this.getQueue()
             const seeked = await this.fx.seek(file, start)
+            if (queue[0]) queue[0].file = seeked
             stream = createAudioResource(seeked)
             const settings = this.getSettings()
             settings.seekOffset = start
@@ -1297,6 +1325,7 @@ export class Audio {
         settings.looping = false
         settings.ablooping = false
         if (amount > queue.length) amount = queue.length
+        this.deleteCurrent()
         let i = 0
         do {
             queue.shift()
@@ -1304,17 +1333,18 @@ export class Audio {
         } while (i < amount - 1)
         const next = this.next()
         if (next) {
-            await this.applyEffects(next)
-            await this.play(next)
+            const nextFX = await this.applyEffects(next)
+            await this.play(nextFX)
             const nowPlaying = await this.nowPlaying()
             if (nowPlaying) await this.discord.send(this.message, nowPlaying)
         } else {
             if (settings.autoplay) {
+                settings.seekOffset = 0
                 const defSong = defaults.songs[Math.floor(Math.random()*defaults.songs.length)]
                 const file = await this.download(defSong)
                 await this.queueAdd(defSong, file)
-                await this.applyEffects(file)
-                await this.play(file)
+                const nextFX = await this.applyEffects(file)
+                await this.play(nextFX)
                 const nowPlaying = await this.nowPlaying()
                 if (nowPlaying) await this.discord.send(this.message, nowPlaying)
             } else {
@@ -1372,8 +1402,9 @@ export class Audio {
         settings.reverse = false
         settings.looping = false
         settings.ablooping = false
-        queue[0].file = queue[0].originalFile
+        this.deleteCurrent(true)
         this.setProcBlock(true)
+        queue[0].file = queue[0].originalFile
         return this.play(queue[0].originalFile)
     }
 
@@ -1598,13 +1629,13 @@ export class Audio {
         .setTitle(`**Audio Equalizer** ${discord.getEmoji("raphiSmile")}`)
         .setDescription(
             `_Here are the different filter types that you can choose from:_\n` +
-            `${discord.getEmoji("highpass")}-highpass Filter_ -> _Removes low frequencies._\n` +
-            `${discord.getEmoji("highshelf")}-highshelf Filter_ -> _Boosts/attenuates all frequencies above the cutoff frequency._\n` +
-            `${discord.getEmoji("bandpass")}-bandpass Filter_ -> _Removes both low frequencies and high frequencies._\n` +
-            `${discord.getEmoji("peak")}-peak Filter_ -> _Carves boosts/cuts in a certain frequency range._\n` +
-            `${discord.getEmoji("bandreject")}-bandreject Filter_ -> _An inverted bandpass filter, use a high Q factor to get a notch filter._\n` +
-            `${discord.getEmoji("lowshelf")}-lowshelf Filter_ -> _Boosts/attenuates all frequencies below the cutoff frequency._\n` +
-            `${discord.getEmoji("lowpass")}-lowpass Filter_ -> _Removes high frequencies._\n` +
+            `${discord.getEmoji("highpass")}_Highpass Filter_ -> _Removes low frequencies._\n` +
+            `${discord.getEmoji("highshelf")}_Highshelf Filter_ -> _Boosts/attenuates all frequencies above the cutoff frequency._\n` +
+            `${discord.getEmoji("bandpass")}_Bandpass Filter_ -> _Removes both low frequencies and high frequencies._\n` +
+            `${discord.getEmoji("peak")}_Peak Filter_ -> _Carves boosts/cuts in a certain frequency range._\n` +
+            `${discord.getEmoji("bandreject")}_Bandreject Filter_ -> _An inverted bandpass filter, use a high Q factor to get a notch filter._\n` +
+            `${discord.getEmoji("lowshelf")}_Lowshelf Filter_ -> _Boosts/attenuates all frequencies below the cutoff frequency._\n` +
+            `${discord.getEmoji("lowpass")}_Lowpass Filter_ -> _Removes high frequencies._\n` +
             `_Frequency and width are in Hz. If applicable, resonance is a Q factor and gain is in decibels._`
         )
         const msg = await this.discord.send(this.message, eqEmbed)
@@ -1773,17 +1804,17 @@ export class Audio {
         .setTitle(`**Special Effects** ${discord.getEmoji("raphiSmile")}`)
         .setDescription(
             `_Here are the different audio effects that you can add:_\n` +
-            `${discord.getEmoji("reverb")}-reverb_ -> _Emulates room reflections._\n` +
-            `${discord.getEmoji("delay")}-delay_ -> _Repeatedly replays the signal after a certain delay._\n` +
-            `${discord.getEmoji("chorus")}-chorus_ -> _Mixes the signal with delayed, pitch modulated copies._\n` +
-            `${discord.getEmoji("phaser")}-phaser_ -> _Modulates allpass filters for a phase cancellation effect._\n` +
-            `${discord.getEmoji("flanger")}-flanger_ -> _Modulates comb filters with a very short delay time._\n` +
-            `${discord.getEmoji("bitcrush")}-bitcrush_ -> _Decreases the sample rate._\n` +
-            `${discord.getEmoji("upsample")}-upsample_ -> _Increases the sample rate._\n` +
-            `${discord.getEmoji("distortion")}-distortion_ -> _Soft clips the audio._\n` +
-            `${discord.getEmoji("compression")}-compression_ -> _Reduces the dynamic range._\n` +
-            `${discord.getEmoji("allpass")}-allpass Filter_ -> _Changes the phase relationship of frequencies._\n` +
-            `${discord.getEmoji("tremolo")}-tremelo_ -> _Amplitude modulation with an LFO._`
+            `${discord.getEmoji("reverb")}_Reverb_ -> _Emulates room reflections._\n` +
+            `${discord.getEmoji("delay")}_Delay_ -> _Repeatedly replays the signal after a certain delay._\n` +
+            `${discord.getEmoji("chorus")}_Chorus_ -> _Mixes the signal with delayed, pitch modulated copies._\n` +
+            `${discord.getEmoji("phaser")}_Phaser_ -> _Modulates allpass filters for a phase cancellation effect._\n` +
+            `${discord.getEmoji("flanger")}_Flanger_ -> _Modulates comb filters with a very short delay time._\n` +
+            `${discord.getEmoji("bitcrush")}_Bitcrush_ -> _Decreases the sample rate._\n` +
+            `${discord.getEmoji("upsample")}_Upsample_ -> _Increases the sample rate._\n` +
+            `${discord.getEmoji("distortion")}_Distortion_ -> _Soft clips the audio._\n` +
+            `${discord.getEmoji("compression")}_Compression_ -> _Reduces the dynamic range._\n` +
+            `${discord.getEmoji("allpass")}_Allpass Filter_ -> _Changes the phase relationship of frequencies._\n` +
+            `${discord.getEmoji("tremolo")}_Tremelo_ -> _Amplitude modulation with an LFO._`
         )
         const reactions = ["reverb", "delay", "chorus", "phaser", "flanger", "bitcrush", "upsample", "distortion", "compression", "allpass", "tremolo", "cancel"]
         const msg = await this.discord.send(this.message, fxEmbed)
