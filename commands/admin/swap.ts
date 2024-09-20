@@ -45,7 +45,7 @@ export default class Swap extends Command {
         let weebCounter = 0
         let normieCounter = 0
 
-        const wait = await this.reply(`**Scanning every member in the server. This will take awhile** ${discord.getEmoji("gabCircle")}`)
+        const wait = await this.reply(`**Scanning every member in the server. This will take awhile** ${discord.getEmoji("kisaragiCircle")}`)
 
         for (let i = 0; i < message.guild!.members.cache.size; i++) {
             const memberArray = message.guild!.members.cache.map((m: GuildMember) => m)

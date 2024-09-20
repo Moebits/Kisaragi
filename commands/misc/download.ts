@@ -118,7 +118,7 @@ export default class Download extends Command {
 
         const loading = message.channel.lastMessage
         if (message instanceof Message) loading?.delete()
-        const rep = await this.reply(`**Searching the messages in this channel, please wait** ${discord.getEmoji("gabCircle")}`)
+        const rep = await this.reply(`**Searching the messages in this channel, please wait** ${discord.getEmoji("kisaragiCircle")}`)
 
         if (args[1] === "gif") {
             if (Number(args[2]) && Number(args[2]) > 0 && Number(args[2]) <= 1000) amount = Number(args[2])
@@ -145,7 +145,7 @@ export default class Download extends Command {
             last = result.last!
         }
         if (rep) rep.delete()
-        const rep2 = await this.reply(`**Downloading the images, please wait** ${discord.getEmoji("gabCircle")}`)
+        const rep2 = await this.reply(`**Downloading the images, please wait** ${discord.getEmoji("kisaragiCircle")}`)
         await this.sendDownload(name, attachments, last)
         if (rep2) rep2.delete()
     }

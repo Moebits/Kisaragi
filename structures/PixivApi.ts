@@ -88,7 +88,7 @@ export class PixivApi {
 
     // Pixiv Image
     public getPixivImage = async <T extends boolean = false>(tag?: string, r18?: boolean, en?: boolean, ugoira?: boolean, noEmbed?: T) => {
-        const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("kisaragiCircle")}`)
         if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         let setFast = false
         if (tag && /fast/.test(tag)) {
@@ -135,7 +135,7 @@ export class PixivApi {
             if (!image) return this.pixivErrorEmbed() as Promise<T extends true ? PixivIllust : Message>
             return image as unknown as Promise<T extends true ? PixivIllust : Message>
         }
-        const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("kisaragiCircle")}`)
         const pixivArray: EmbedBuilder[] = []
         const attachments: AttachmentBuilder[] = []
         const max = illusts.length > 5 ? 5 : illusts.length
@@ -148,7 +148,7 @@ export class PixivApi {
                 if (pixivEmbed.files.length > 0) attachments.push(...pixivEmbed.files)
                 break
             }
-            if (msg2) msg2.edit(`**Uploading pictures... (${i+1})** ${this.discord.getEmoji("gabCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
+            if (msg2) msg2.edit(`**Uploading pictures... (${i+1})** ${this.discord.getEmoji("kisaragiCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
             try {
                 pixivEmbed = await this.createPixivEmbed(illusts[i])
                 if (!pixivEmbed) continue
@@ -192,19 +192,19 @@ export class PixivApi {
 
     // Pixiv Popular Image
     public getPopularPixivImage = async () => {
-        const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("kisaragiCircle")}`)
         const mode = "day_male"
         if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         const json = await this.pixiv.illust.ranking({mode})
         const illusts = this.pixiv.util.sort(json)
         if (msg1) msg1.delete()
         if (!illusts[0]) return this.pixivErrorEmbed()
-        const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("kisaragiCircle")}`)
         const pixivArray: EmbedBuilder[] = []
         let attachments: AttachmentBuilder[] = []
         const max = illusts.length > 5 ? 5 : illusts.length
         for (let i = 0; i < max; i++) {
-            if (msg2) msg2.edit(`**Uploading pictures... (${i+1})** ${this.discord.getEmoji("gabCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
+            if (msg2) msg2.edit(`**Uploading pictures... (${i+1})** ${this.discord.getEmoji("kisaragiCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
             let pixivEmbed: {embed: EmbedBuilder, files: AttachmentBuilder[]} | undefined
             try {
                 pixivEmbed = await this.createPixivEmbed(illusts[i])
@@ -231,19 +231,19 @@ export class PixivApi {
 
     // Pixiv Popular R18 Image
     public getPopularPixivR18Image = async () => {
-        const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg1 = await this.discord.send(this.message, `**Searching Pixiv...** ${this.discord.getEmoji("kisaragiCircle")}`)
         const mode = "day_male_r18"
         if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
         const json = await this.pixiv.illust.ranking({mode})
         const illusts = this.pixiv.util.sort(json)
         if (msg1) msg1.delete()
         if (!illusts[0]) return this.pixivErrorEmbed()
-        const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg2 = await this.discord.send(this.message, `**Uploading pictures...** ${this.discord.getEmoji("kisaragiCircle")}`)
         const pixivArray: EmbedBuilder[] = []
         let attachments: AttachmentBuilder[] = []
         const max = illusts.length > 5 ? 5 : illusts.length
         for (let i = 0; i < max; i++) {
-            if (msg2) msg2.edit(`**Uploading pictures... (${i+1})** ${this.discord.getEmoji("gabCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
+            if (msg2) msg2.edit(`**Uploading pictures... (${i+1})** ${this.discord.getEmoji("kisaragiCircle")}\n_Want a faster command? Add the tag_ \`fast\` _somewhere._`)
             let pixivEmbed: {embed: EmbedBuilder, files: AttachmentBuilder[]} | undefined
             try {
                 pixivEmbed = await this.createPixivEmbed(illusts[i])
@@ -272,7 +272,7 @@ export class PixivApi {
     public downloadPixivImages = async (tag: string, r18?: boolean, folderMap?: PixivFolderMap[]) => {
         const embeds = new Embeds(this.discord, this.message)
         if (!this.pixiv) this.pixiv = await Pixiv.refreshLogin(process.env.PIXIV_REFRESH_TOKEN!)
-        const msg1 = await this.discord.send(this.message, `**Downloading the pictures, please wait...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg1 = await this.discord.send(this.message, `**Downloading the pictures, please wait...** ${this.discord.getEmoji("kisaragiCircle")}`)
         tag = tag.trim()
         const rand = Math.floor(Math.random()*10000)
         const src = path.join(__dirname, `../assets/misc/images/pixiv/zip/${rand}/`)
@@ -285,7 +285,7 @@ export class PixivApi {
         }
         if (msg1) msg1.delete()
         if (!files?.[0]) return this.pixivErrorEmbed()
-        const msg2 = await this.discord.send(this.message, `**Creating a zip file...** ${this.discord.getEmoji("gabCircle")}`)
+        const msg2 = await this.discord.send(this.message, `**Creating a zip file...** ${this.discord.getEmoji("kisaragiCircle")}`)
         const name = tag.trim() ? tag.replace(/ +/g, "-") : "pixiv_dl_default"
         const dir = path.join(__dirname, `../assets/misc/images/pixiv/zip/${rand}/`)
         const dest = path.join(__dirname, `../assets/misc/images/pixiv/zip/${name}.zip`)

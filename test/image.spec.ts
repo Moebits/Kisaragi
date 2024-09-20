@@ -1,7 +1,7 @@
 import {discord} from "./mock"
 import "mocha"
 
-let testImage = "https://i.imgur.com/kHxuSve.jpeg"
+let imageLink = "https://i.imgur.com/kHxuSve.jpeg"
 
 describe("image", async function() {
     it("blur", async () => {
@@ -9,7 +9,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "30", testImage])
+        await command.run([name, "30", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -18,7 +18,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "50", testImage])
+        await command.run([name, "50", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -27,7 +27,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "50", testImage])
+        await command.run([name, "50", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -36,7 +36,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "100", "200", "200", "200", testImage])
+        await command.run([name, "100", "200", "200", "200", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -45,7 +45,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "x", testImage])
+        await command.run([name, "x", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -54,7 +54,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, testImage])
+        await command.run([name, imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -63,7 +63,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "50", testImage])
+        await command.run([name, "50", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -72,7 +72,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, testImage])
+        await command.run([name, imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -81,7 +81,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "70", testImage])
+        await command.run([name, "70", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -99,7 +99,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "7", testImage])
+        await command.run([name, "7", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -108,7 +108,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "10", testImage])
+        await command.run([name, "10", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -117,7 +117,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "500", "700", testImage])
+        await command.run([name, "500", "700", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -126,7 +126,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "50", testImage])
+        await command.run([name, "50", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -135,7 +135,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "1.5", testImage])
+        await command.run([name, "1.5", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -144,7 +144,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, testImage])
+        await command.run([name, imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -153,7 +153,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "5", "5", testImage])
+        await command.run([name, "5", "5", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -162,7 +162,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "#ff5ce1", "60", testImage])
+        await command.run([name, "#ff5ce1", "60", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -171,7 +171,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "50", testImage])
+        await command.run([name, "50", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -180,7 +180,7 @@ describe("image", async function() {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name, "cugan", testImage])
+        await command.run([name, "cugan", imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 })

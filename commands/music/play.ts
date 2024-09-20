@@ -18,17 +18,14 @@ export default class Play extends Command {
             _Note: You must be in a voice channel._
             \`play\` - Plays the default songs.
             \`play song\` - Searches for songs on soundcloud and plays the one that you pick.
-            \`play yt song\` - Searches for songs on youtube and plays the one that you pick.
-            \`play first yt? song\` - Plays the first result automatically.
-            \`play reverse yt? song\` - Starts playback in reverse mode.
-            \`play loop yt? song\` - Starts playback in loop mode.
-            \`play sc song\` - You don't need to specify soundcloud, since it's the default.
+            \`play first song\` - Plays the first result automatically.
+            \`play reverse song\` - Starts playback in reverse mode.
+            \`play loop song\` - Starts playback in loop mode.
             `,
             examples:
             `
+            \`=>play\`
             \`=>play reverse first synthion comet\`
-            \`=>play virtual riot\`
-            \`=>play yt tenpi moonlight\`
             `,
             guildOnly: true,
             aliases: ["pl", "stream"],
@@ -44,12 +41,12 @@ export default class Play extends Command {
         const secondOption = new SlashCommandOption()
             .setType("string")
             .setName("song2")
-            .setDescription("This can be the song to search for or yt.")
+            .setDescription("This can be the song to search for or any of the first/reverse/loop options.")
 
         const firstOption = new SlashCommandOption()
             .setType("string")
             .setName("song")
-            .setDescription("This can be the song to search for or any of the yt/first/reverse/loop options.")
+            .setDescription("This can be the song to search for or any of the first/reverse/loop options.")
 
         this.slash = new SlashCommand()
             .setName(this.constructor.name.toLowerCase())
@@ -93,7 +90,7 @@ export default class Play extends Command {
         let setReverse = false
         let setLoop = false
         if (song.match(/yt/)) {
-            setYT = true
+            if (perms.checkBotDev()) setYT = true
             song = song.replace("yt", "")
         } else if (song.match(/sc/)) {
             song = song.replace("sc", "")

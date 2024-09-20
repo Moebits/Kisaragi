@@ -27,7 +27,7 @@ export default class OsuCommand extends Command {
             `
             \`=>osu\`
             \`=>osu https://osu.ppy.sh/beatmapsets/556393#osu/1177545\`
-            \`=>osu set tenpii\` _then_ \`=>osu best\`
+            \`=>osu set name\` _then_ \`=>osu best\`
             `,
             aliases: [],
             random: "none",

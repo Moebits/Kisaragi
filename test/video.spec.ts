@@ -1,13 +1,16 @@
 import {discord} from "./mock"
 import "mocha"
 
+let gifLink = "https://i.imgur.com/WOYlL17.gif"
+let videoLink = "https://i.imgur.com/v9t8Rmh.mp4"
+
 describe("video", async () => {
     it("gifspeed", async () => {
         let name = "gifspeed"
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "10", gifLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -16,7 +19,7 @@ describe("video", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, videoLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -25,7 +28,7 @@ describe("video", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "0", "3", videoLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -34,7 +37,7 @@ describe("video", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, videoLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -43,7 +46,7 @@ describe("video", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "2", videoLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 })

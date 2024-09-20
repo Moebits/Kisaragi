@@ -25,8 +25,8 @@ export default class Pinterest extends Command {
             examples:
             `
             \`=>pinterest anime\`
-            \`=>pinterest user tenpimusic\`
-            \`=>pinterest board tenpimusic anime\`
+            \`=>pinterest user name\`
+            \`=>pinterest board name anime\`
             `,
             aliases: ["pint"],
             random: "string",

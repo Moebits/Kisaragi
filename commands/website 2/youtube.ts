@@ -154,7 +154,7 @@ export default class YoutubeCommand extends Command {
             }
         }
 
-        const msg = await this.reply(`**Searching youtube** ${discord.getEmoji("gabCircle")}`) as Message
+        const msg = await this.reply(`**Searching youtube** ${discord.getEmoji("kisaragiCircle")}`) as Message
 
         if (this.channel || args[1].toLowerCase() === "channel") {
             ytEmbeds = []

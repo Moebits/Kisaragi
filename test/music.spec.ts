@@ -34,7 +34,7 @@ describe("music", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "3s"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -70,7 +70,7 @@ describe("music", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "12"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -115,7 +115,7 @@ describe("music", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "3s"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -124,7 +124,7 @@ describe("music", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "0"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -151,7 +151,7 @@ describe("music", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "2"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -169,7 +169,7 @@ describe("music", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "2"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 })

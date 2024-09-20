@@ -25,7 +25,6 @@ export default class Mal extends Command {
             `
             \`=>mal gabriel dropout\`
             \`=>mal satania\`
-            \`=>mal tenpi\`
             `,
             aliases: ["myanimelist"],
             random: "none",

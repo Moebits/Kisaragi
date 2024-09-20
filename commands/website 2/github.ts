@@ -23,7 +23,7 @@ export default class Github extends Command {
             examples:
             `
             \`=>github anime\`
-            \`=>github user tenpi\`
+            \`=>github user github\`
             `,
             aliases: ["gh"],
             random: "string",

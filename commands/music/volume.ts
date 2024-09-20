@@ -13,11 +13,11 @@ export default class Volume extends Command {
             description: "Sets the volume of the music stream.",
             help:
             `
-            \`volume num\` - Sets the volume (0-200)
+            \`volume num\` - Sets the volume (0-2)
             `,
             examples:
             `
-            \`=>volume 150\`
+            \`=>volume 1.5\`
             `,
             aliases: [],
             guildOnly: true,

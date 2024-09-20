@@ -1,6 +1,8 @@
 import {discord} from "./mock"
 import "mocha"
 
+let imageLink = "https://i.imgur.com/kHxuSve.jpeg"
+
 describe("website", async () => {
     it("4chan", async () => {
         let name = "4chan"
@@ -25,7 +27,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "kawaii future bass"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -52,7 +54,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -61,7 +63,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -79,7 +81,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -88,7 +90,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -97,7 +99,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, imageLink])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -106,7 +108,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -115,7 +117,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -124,7 +126,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -133,7 +135,7 @@ describe("website", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 

@@ -7,7 +7,7 @@ describe("twitter", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -16,7 +16,7 @@ describe("twitter", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "hi"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -25,7 +25,7 @@ describe("twitter", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 

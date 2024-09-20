@@ -17,7 +17,7 @@ export default class Itunes extends Command {
             `,
             examples:
             `
-            \`=>itunes tenpi\`
+            \`=>itunes anime\`
             `,
             aliases: [],
             random: "string",

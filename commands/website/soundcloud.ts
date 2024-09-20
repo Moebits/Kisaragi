@@ -32,7 +32,6 @@ export default class SoundCloud extends Command {
             \`=>soundcloud anime\`
             \`=>soundcloud user synthion\`
             \`=>soundcloud playlist kawaii\`
-            \`=>soundcloud download virtual riot troublemaker\`
             `,
             aliases: ["sc"],
             random: "string",

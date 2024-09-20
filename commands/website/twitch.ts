@@ -22,7 +22,7 @@ export default class Twitch extends Command {
             examples:
             `
             \`=>twitch osu\`
-            \`=>twitch channel imtenpi\`
+            \`=>twitch channel name\`
             `,
             aliases: ["tw"],
             random: "string",

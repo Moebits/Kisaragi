@@ -58,7 +58,6 @@ export default class Crunchyroll extends Command {
             `,
             examples:
             `
-            \`=>crunchyroll kiniro mosaic\`
             \`=>crunchyroll konosuba\`
             `,
             aliases: ["cr", "crunchy"],

@@ -23,7 +23,7 @@ export default class TwitterCommand extends Command {
             examples:
             `
             \`=>twitter anime\`
-            \`=>twitter user imtenpi\`
+            \`=>twitter user name\`
             `,
             aliases: ["t"],
             random: "string",

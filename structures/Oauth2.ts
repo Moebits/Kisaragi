@@ -41,7 +41,7 @@ export class Oauth2 {
         if (refreshToken) options = {refreshToken}
 
         const reddit = new snoowrap({
-            userAgent: "kisaragi bot v1.0 by /u/imtenpi",
+            userAgent: "kisaragi bot v1.0",
             clientId: process.env.REDDIT_APP_ID,
             clientSecret: process.env.REDDIT_APP_SECRET,
             ...options

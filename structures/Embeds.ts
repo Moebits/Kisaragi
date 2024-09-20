@@ -171,12 +171,14 @@ export class Embeds {
         const numberSelect = msg.createReactionCollector({filter: numberSelectCheck})
         const copy = msg.createReactionCollector({filter: copyCheck})
 
-        await SQLQuery.insertInto("collectors", "message", msg.id)
-        await this.sql.updateColumn("collectors", "embeds", insertEmbeds, "message", msg.id)
-        await this.sql.updateColumn("collectors", "collapse", collapseOn, "message", msg.id)
-        await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
-        await this.sql.updateColumn("collectors", "download", download, "message", msg.id)
-        await this.sql.updateColumn("collectors", "timestamp", new Date().toISOString(), "message", msg.id)
+        try {
+            await SQLQuery.insertInto("collectors", "message", msg.id)
+            await this.sql.updateColumn("collectors", "embeds", insertEmbeds, "message", msg.id)
+            await this.sql.updateColumn("collectors", "collapse", collapseOn, "message", msg.id)
+            await this.sql.updateColumn("collectors", "page", page, "message", msg.id)
+            await this.sql.updateColumn("collectors", "download", download, "message", msg.id)
+            await this.sql.updateColumn("collectors", "timestamp", new Date().toISOString(), "message", msg.id)
+        } catch {}
 
         backward.on("collect", async (reaction: MessageReaction, user: User) => {
             if (page === 0) {

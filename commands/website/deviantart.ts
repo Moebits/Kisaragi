@@ -30,7 +30,7 @@ export default class Deviantart extends Command {
             examples:
             `
             \`=>deviantart anime\`
-            \`=>deviantart user tenpii\`
+            \`=>deviantart user name\`
             \`=>deviantart daily 2019-07-03\`
             \`=>deviantart popular konosuba\`
             \`=>deviantart hot manga\`

@@ -60,7 +60,7 @@ export default class Neko extends Command {
         }
 
         const headers = {
-            "user-agent": "Kisaragi Bot by Tenpi",
+            "user-agent": "Kisaragi Bot",
             "authorization": process.env.NEKOS_MOE_TOKEN
         }
 

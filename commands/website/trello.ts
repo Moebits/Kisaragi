@@ -18,7 +18,7 @@ export default class TrelloCommand extends Command {
             `,
             examples:
             `
-            \`=>trello tenpi\`
+            \`=>trello name\`
             \`=>trello https://trello.com/b/boardID\`
             `,
             aliases: [],

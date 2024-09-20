@@ -16,7 +16,7 @@ describe("website 3", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -34,7 +34,7 @@ describe("website 3", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -43,7 +43,7 @@ describe("website 3", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -52,7 +52,7 @@ describe("website 3", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime", "slice of life"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -61,7 +61,7 @@ describe("website 3", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -70,7 +70,7 @@ describe("website 3", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "anime"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 
@@ -79,7 +79,7 @@ describe("website 3", async () => {
         discord.resetReplyStatus()
         const command = discord.commands.get(name)!
         if (command.options.defer) command.deferReply()
-        await command.run([name])
+        await command.run([name, "mcdonalds"])
         if (!discord.assertReplyStatus()) throw(new Error("failed reply status"))
     })
 })

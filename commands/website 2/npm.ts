@@ -18,7 +18,6 @@ export default class NPM extends Command {
             `,
             examples:
             `
-            \`=>npm soundcloud.ts\`
             \`=>npm pixiv.ts\`
             `,
             aliases: [],

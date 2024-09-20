@@ -44,7 +44,6 @@ export default class AnimeBooks extends Command {
         const message = this.message
         const embeds = new Embeds(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const query = Functions.combineArgs(args, 1).trim().replace(/ +/g, "_")
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"}
 

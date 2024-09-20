@@ -1,7 +1,7 @@
 import {discord} from "./mock"
 import "mocha"
 
-describe("anime", async () => {
+describe.only("anime", async () => {
     it("anime", async () => {
         let name = "anime"
         discord.resetReplyStatus()

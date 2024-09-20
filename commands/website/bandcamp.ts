@@ -18,7 +18,6 @@ export default class Bandcamp extends Command {
             examples:
             `
             \`=>bandcamp kawaii future bass\`
-            \`=>bandcamp tenpi\`
             `,
             aliases: ["bc"],
             random: "string",
