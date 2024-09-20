@@ -94,11 +94,11 @@ export default class StackExchange extends Command {
             const stackEmbed = embeds.createEmbed()
             if (site === "stackoverflow") {
                 stackEmbed
-                .setAuthor({name: "stackoverflow", iconURL: "https://upload.wikimedia.org/wikipedia/commons/8/81/Stackoverflow_icon.png", url: "https://stackoverflow.com/"})
+                .setAuthor({name: "stackoverflow", iconURL: "https://kisaragi.moe/assets/embed/stackoverflow.png", url: "https://stackoverflow.com/"})
                 .setTitle(`**Stack Overflow Search** ${discord.getEmoji("tohruThink")}`)
             } else {
                 stackEmbed
-                .setAuthor({name: "stackexchange", iconURL: "https://cdn.sstatic.net/Sites/stackexchange/img/apple-touch-icon@2.png", url: "https://stackexchange.com/"})
+                .setAuthor({name: "stackexchange", iconURL: "https://kisaragi.moe/assets/embed/stackexchange.png", url: "https://stackexchange.com/"})
                 .setTitle(`**Stack Exchange Search** ${discord.getEmoji("tohruThink")}`)
             }
             stackEmbed

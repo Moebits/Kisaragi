@@ -1,3 +1,5 @@
 import {Generate} from "./structures/Generate"
 
-Generate.generateJSON()
+//Generate.generateJSON()
+
+Generate.replaceURLS()

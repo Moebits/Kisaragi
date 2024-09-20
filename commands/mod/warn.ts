@@ -75,12 +75,12 @@ export default class Warn extends Command {
                     switch (warnPenalty.toLowerCase().trim()) {
                         case "ban":
                             dmEmbed
-                            .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
+                            .setAuthor({name: "ban", iconURL: "https://kisaragi.moe/assets/embed/ban.png"})
                             .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were banned from ${message.guild!.name} for reason:_ **${warnReason}**`)
                             await discord.channelSend(dm, dmEmbed).catch(() => null)
                             guildEmbed
-                            .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
+                            .setAuthor({name: "ban", iconURL: "https://kisaragi.moe/assets/embed/ban.png"})
                             .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_Successfully banned <@${userID}> for reason:_ **${warnReason}**`)
                             await member?.ban({reason: warnReason})
@@ -88,12 +88,12 @@ export default class Warn extends Command {
                             break
                         case "kick":
                             dmEmbed
-                            .setAuthor({name: "kick", iconURL: "https://discordemoji.com/assets/emoji/4331_UmaruWave.png"})
+                            .setAuthor({name: "kick", iconURL: "https://kisaragi.moe/assets/embed/kick.png"})
                             .setTitle(`**You Were Kicked** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were kicked from ${message.guild!.name} for reason:_ **${warnReason}**`)
                             await discord.channelSend(dm, dmEmbed).catch(() => null)
                             guildEmbed
-                            .setAuthor({name: "kick", iconURL: "https://discordemoji.com/assets/emoji/4331_UmaruWave.png"})
+                            .setAuthor({name: "kick", iconURL: "https://kisaragi.moe/assets/embed/kick.png"})
                             .setTitle(`**Member Kicked** ${discord.getEmoji("kannaFU")}`)
                             .setDescription(`${discord.getEmoji("star")}_Successfully kicked <@${userID}> for reason:_ **${warnReason}**`)
                             await member?.kick(warnReason).catch(() => null)
@@ -107,12 +107,12 @@ export default class Warn extends Command {
                             }
                             await member?.roles.add(mute)
                             dmEmbed
-                            .setAuthor({name: "mute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
+                            .setAuthor({name: "mute", iconURL: "https://kisaragi.moe/assets/embed/mute.png"})
                             .setTitle(`**You Were Muted** ${discord.getEmoji("sagiriBleh")}`)
                             .setDescription(`${discord.getEmoji("star")}_You were muted from ${message.guild!.name} for reason:_ **${warnReason}**`)
                             await discord.channelSend(dm, dmEmbed).catch(() => null)
                             guildEmbed
-                            .setAuthor({name: "mute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
+                            .setAuthor({name: "mute", iconURL: "https://kisaragi.moe/assets/embed/mute.png"})
                             .setTitle(`**Member Muted** ${discord.getEmoji("sagiriBleh")}`)
                             .setDescription(`${discord.getEmoji("star")}_Successfully muted <@${userID}> for reason:_ **${warnReason}**`)
                             this.send(guildEmbed)
@@ -181,7 +181,7 @@ export default class Warn extends Command {
             users += `<@${userArray[i]}> `
             const warnDMEmbed = embeds.createEmbed()
             warnDMEmbed
-            .setAuthor({name: "warn", iconURL: "https://www.emoji.co.uk/files/phantom-open-emojis/symbols-phantom/13025-warning-sign.png"})
+            .setAuthor({name: "warn", iconURL: "https://kisaragi.moe/assets/embed/warn.png"})
             .setTitle(`**You Were Warned** ${discord.getEmoji("raphi")}`)
             .setDescription(
                 `${discord.getEmoji("star")}_You were warned in ${message.guild!.name} for reason: **${reason}**_`
@@ -196,7 +196,7 @@ export default class Warn extends Command {
 
         const warnEmbed = embeds.createEmbed()
         warnEmbed
-        .setAuthor({name: "warn", iconURL: "https://www.emoji.co.uk/files/phantom-open-emojis/symbols-phantom/13025-warning-sign.png"})
+        .setAuthor({name: "warn", iconURL: "https://kisaragi.moe/assets/embed/warn.png"})
         .setTitle(`**Member Warned** ${discord.getEmoji("raphi")}`)
         .setDescription(
             `${discord.getEmoji("star")}_Successfully warned ${users} for reason: **${reason}**_`

@@ -1,14 +1,5 @@
 [
     {
-        "command": "add",
-        "category": "admin",
-        "description": "Adds members to this guild. **Requires oauth2**",
-        "help": "_Note: See the oauth2 command._\nadd id/tag - Adds the user if possible.",
-        "aliases": "none",
-        "examples": "=>add User#6666",
-        "cooldown": 10
-    },
-    {
         "command": "bansync",
         "category": "admin",
         "description": "Syncs the ban list of this server with another guild.",
@@ -23,7 +14,7 @@
         "description": "Configure settings for word and invite filtering.",
         "help": "_Note: You can type multiple options in one command._\nblock - Opens the interactive block prompt.\nblock word1 word2... - Adds blocked words.\nblock enable/disable - Toggles filtering on or off.\nblock exact/partial - Sets the matching algorithm.\nblock asterisk - Toggles asterisk filtering.\nblock invite - Block invites to other servers\nblock delete (number) - Deletes a word.\nblock reset - Deletes all words.",
         "aliases": "filter",
-        "examples": "=>block lolicon\n=>block delete 1\n=>block asterisk disable\n=>block partial\n=>block reset",
+        "examples": "=>block badword\n=>block delete 1\n=>block asterisk disable\n=>block partial\n=>block reset",
         "cooldown": 10
     },
     {
@@ -39,7 +30,7 @@
         "command": "create",
         "category": "admin",
         "description": "Create channels, roles, and emojis.",
-        "help": "create channel name above? reason? - Creates a new channel with the name above the current one, or above the \"above\" channel.\ncreate role Role_Name? #color? position? hoisted? mentionable? - Creates a role with these properties. Dashes and underscores in the name are replaced by spaces.\ncreate emoji name imageLink? reason? - Creates a new emoji with the name, if no image link is provided the last sent image is used (if found).",
+        "help": "create channel name above? reason? - Creates a new channel with the name above the current one, or above the \"above\" channel.\ncreate role role-name? #color? position? hoisted? mentionable? - Creates a role with these properties. Dashes and underscores in the name are replaced by spaces.\ncreate emoji name imageLink? reason? - Creates a new emoji with the name, if no image link is provided the last sent image is used (if found).",
         "aliases": "none",
         "examples": "=>create channel anime-chat gamer-chat\n=>create role Members #bf4dff 10 true true\n=>create emoji smugFace",
         "cooldown": 10
@@ -102,7 +93,7 @@
         "command": "mod",
         "category": "admin",
         "description": "Configures moderation settings for the server.",
-        "help": "mod @role/id - Set the admin role.\nmod !@role/id! - Set the mod role.\nmod #@role/id# - Sets the mute role.\nmod $@role/id$ - Sets the restricted role.\nmod (@role/id) - Sets the warn one role.\nmod [@role/id] - Sets the warn two role.\nmod none/mute/kick/ban - Sets the warn penalty.\nmod num - Sets the warn threshold.\nmod ascii - Toggles the removal of non-ascii characters in names.",
+        "help": "mod - Configure settings\nmod @role/id - Set the admin role.\nmod !@role/id! - Set the mod role.\nmod #@role/id# - Sets the mute role.\nmod $@role/id$ - Sets the restricted role.\nmod (@role/id) - Sets the warn one role.\nmod [@role/id] - Sets the warn two role.\nmod none/mute/kick/ban - Sets the warn penalty.\nmod num - Sets the warn threshold.\nmod ascii - Toggles the removal of non-ascii characters in names.",
         "aliases": "moderation",
         "examples": "=>mod @role !@role! #@role# $@role$",
         "cooldown": 10
@@ -178,15 +169,6 @@
         "aliases": "aq",
         "examples": "=>animequote\n=>animequote 6969\n=>animequote pokemon\n=>animequote himouto\n=>animequote rem",
         "cooldown": 5
-    },
-    {
-        "command": "books",
-        "category": "anime",
-        "description": "Anime girls holding programming books.",
-        "help": "books language - Searches for books in the language",
-        "aliases": "book, programmingbooks, animegirlbooks, animegirlsholdingbooks, animegirlsholdingprogrammingbooks",
-        "examples": "=>books\n=>books javascript\n=>books c",
-        "cooldown": 10
     },
     {
         "command": "chibi",
@@ -270,62 +252,80 @@
         "cooldown": 30
     },
     {
+        "command": "danbooru",
+        "category": "booru",
+        "description": "Searches for anime pictures on danbooru.",
+        "help": "_Note: Underscores are not required._\ndanbooru - Get a random image.\ndanbooru link/id - Gets the image from the link.\ndanbooru tag - Gets an image with the tag.\ndanbooru r18 - Get a random r18 image.\ndanbooru r18 tag - Get an r18 image with the tag.\n=>danbooru r18 gabriel dropout",
+        "aliases": "d, dan",
+        "examples": "=>danbooru\n=>danbooru tenma gabriel white",
+        "cooldown": 20
+    },
+    {
+        "command": "gelbooru",
+        "category": "booru",
+        "description": "Searches for anime pictures on gelbooru.",
+        "help": "_Note: Underscores are not required._\ngelbooru - Get a random image.\ngelbooru link/id - Gets the image from the link.\ngelbooru tag - Gets an image with the tag.\ngelbooru r18 - Get a random r18 image.\ngelbooru r18 tag - Get an r18 image with the tag.",
+        "aliases": "gel",
+        "examples": "=>gelbooru\n=>gelbooru tenma gabriel white",
+        "cooldown": 20
+    },
+    {
+        "command": "konachan",
+        "category": "booru",
+        "description": "Searches for anime pictures on konachan.",
+        "help": "_Note: Underscores are not required._\nkonachan - Get a random image.\nkonachan link/id - Gets the image from the link.\nkonachan tag - Gets an image with the tag.\nkonachan r18 - Get a random r18 image.\nkonachan r18 tag - Get an r18 image with the tag.\n=>konachan r18 azur lane",
+        "aliases": "k, kona, kchan",
+        "examples": "=>konachan\n=>konachan kisaragi (azur lane)",
+        "cooldown": 20
+    },
+    {
+        "command": "safebooru",
+        "category": "booru",
+        "description": "Searches for anime pictures on safebooru.",
+        "help": "_Note: Underscores are not required. This is safebooru, so r18 only gets you \"questionable\" images._\nsafebooru - Get a random image.\nsafebooru link/id - Gets the image from the link.\nsafebooru tag - Gets an image with the tag.\nsafebooru r18 - Get a random questionable image.\nsafebooru r18 tag - Get a questionable image with the tag.",
+        "aliases": "safe",
+        "examples": "=>safebooru\n=>safebooru tenma gabriel white\n=>safebooru r18 gabriel dropout",
+        "cooldown": 20
+    },
+    {
+        "command": "yandere",
+        "category": "booru",
+        "description": "Searches for anime pictures on yandere.",
+        "help": "_Note: Underscores are not required._\nyandere - Get a random image.\nyandere link/id - Gets the image from the link.\nyandere tag - Gets an image with the tag.\nyandere r18 - Get a random r18 image.\nyandere r18 tag - Get an r18 image with the tag.\n=>yandere r18 azur lane",
+        "aliases": "y, ydere",
+        "examples": "=>yandere\n=>yandere kisaragi (azur lane)",
+        "cooldown": 20
+    },
+    {
         "command": "blacklist",
-        "category": "bot developer",
-        "description": "Blacklists a user or entire guild so that they cannot use Kisaragi.",
+        "category": "botdev",
+        "description": "Blacklists a user or entire guild.",
         "help": "blacklist id reason? - Blacklists a guild (the default).\nblacklist user id reason? Blacklists a user.\nblacklist guild id reason? - Long form for blacklisting guilds",
         "aliases": "none",
         "examples": "=>blacklist <guild id>\n=>blacklist user <user id>",
         "cooldown": 3
     },
     {
-        "command": "cache",
-        "category": "bot developer",
-        "description": "Deletes cached embeds from the database.",
-        "help": "cache pixiv? - Deletes embeds and optionally pixiv embeds.",
-        "aliases": "none",
-        "examples": "=>cache",
-        "cooldown": 3
-    },
-    {
-        "command": "createguild",
-        "category": "bot developer",
-        "description": "Creates a new guild.",
-        "help": "This command is not documented.",
-        "aliases": "cg",
-        "examples": "There are no examples.",
-        "cooldown": 3
-    },
-    {
-        "command": "deleteguild",
-        "category": "bot developer",
-        "description": "Deletes a guild (created by the bot).",
-        "help": "This command is not documented.",
-        "aliases": "dg",
-        "examples": "There are no examples.",
-        "cooldown": 3
-    },
-    {
         "command": "eval",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Evaluates Javascript code.",
-        "help": "This command is not documented.",
+        "help": "eval code - Evaluates the code",
         "aliases": "none",
-        "examples": "There are no examples.",
+        "examples": "=>code 1+1",
         "cooldown": 3
     },
     {
         "command": "event",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Triggers an event.",
-        "help": "This command is not documented.",
+        "help": "event event - Triggers the event",
         "aliases": "none",
-        "examples": "There are no examples.",
+        "examples": "=>event guildCreate",
         "cooldown": 3
     },
     {
         "command": "flush",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Flushes cached data.",
         "help": "flush - Flushes the redis keys.\nflush embed - Flushes the cached embeds.\nflush pixiv - Flushes the pixiv embeds.",
         "aliases": "none",
@@ -334,16 +334,16 @@
     },
     {
         "command": "gcount",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Refreshes the guild count and reposts stats.",
-        "help": "This command is not documented.",
+        "help": "gcount - Refresh guild count",
         "aliases": "none",
-        "examples": "There are no examples.",
+        "examples": "=>gcount",
         "cooldown": 3
     },
     {
         "command": "guilds",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Posts all the guilds the bot is in.",
         "help": "guilds - Posts all of the bot guilds",
         "aliases": "none",
@@ -352,52 +352,52 @@
     },
     {
         "command": "ip",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Posts the bot's ip address.",
-        "help": "This command is not documented.",
+        "help": "ip - Posts the ip address",
         "aliases": "none",
-        "examples": "There are no examples.",
+        "examples": "=>ip",
         "cooldown": 3
     },
     {
         "command": "leaveguild",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Forcefully leaves a guild.",
-        "help": "This command is not documented.",
+        "help": "leaveguild id reason? - Leaves the guild\nleaveguild silent id - Leaves the guild without a reason",
         "aliases": "lg",
-        "examples": "There are no examples.",
+        "examples": "=>leaveguild 123",
         "cooldown": 10
     },
     {
         "command": "noimg",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Lists all commands with no image.",
-        "help": "This command is not documented.",
+        "help": "noimg - Show noimg commands\nunlist - Show unlisted commands",
         "aliases": "unlist, hidden",
-        "examples": "There are no examples.",
+        "examples": "=>noimg",
         "cooldown": 10
     },
     {
         "command": "order",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Orders the rows in the guilds table.",
-        "help": "This command is not documented.",
+        "help": "order - Order rows",
         "aliases": "none",
-        "examples": "There are no examples.",
+        "examples": "=>order",
         "cooldown": 3
     },
     {
         "command": "reboot",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Reboots the bot.",
-        "help": "This command is not documented.",
+        "help": "reboot - Reboot the bot",
         "aliases": "restart",
-        "examples": "There are no examples.",
+        "examples": "=>reboot",
         "cooldown": 100
     },
     {
         "command": "refresh",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Refreshes all commands and events.",
         "help": "refresh - Refreshes all commands and events, without needing to restart the bot.",
         "aliases": "reload",
@@ -405,31 +405,49 @@
         "cooldown": 50
     },
     {
+        "command": "resetdb",
+        "category": "botdev",
+        "description": "Reconstructs the database.",
+        "help": "resetdb - Reset the database",
+        "aliases": "purgedb",
+        "examples": "=>resetdb",
+        "cooldown": 3
+    },
+    {
         "command": "set",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Sets the bot's activity text.",
-        "help": "set type activity, status",
+        "help": "set activity, status - Set the activity and status",
         "aliases": "none",
         "examples": "=>set watching anime, dnd",
         "cooldown": 3
     },
     {
         "command": "sql",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Runs an sql query on the database.",
-        "help": "This command is not documented.",
+        "help": "sql query - Run sql query",
         "aliases": "none",
-        "examples": "There are no examples.",
+        "examples": "=>sql select * from guilds",
         "cooldown": 3
     },
     {
         "command": "unblacklist",
-        "category": "bot developer",
+        "category": "botdev",
         "description": "Unblacklists a user or guild.",
         "help": "unblacklist id - Unblacklists a guild (the default).\nunblacklist user id reason? Unblacklists a user. Reason is sent in dms.\nunblacklist guild id - Long form for unblacklisting guilds",
         "aliases": "none",
         "examples": "=>unblacklist <guild id>\n=>unblacklist user <user id>",
         "cooldown": 3
+    },
+    {
+        "command": "auto",
+        "category": "config",
+        "description": "Configures settings for auto commands.",
+        "help": "auto - Shows the auto settings prompt.\nauto cmd? #channel? num? - Sets the command, channel, and frequency (in hours).\nauto toggle setting - Turns a setting on or off.\nauto edit setting cmd? #channel? num? - Edits an existing setting.\nauto delete setting - Deletes a setting.\nauto reset - Resets all settings.",
+        "aliases": "none",
+        "examples": "=>auto holiday #holidays 24\n=>auto edit 1 #newchannel 12\n=>auto delete 1",
+        "cooldown": 10
     },
     {
         "command": "config",
@@ -473,7 +491,7 @@
         "description": "Configures settings for leave messages.",
         "help": "leave - Opens the leave prompt.\nleave enable/disable - Enables or disables leave messages\nleave msg - Sets the leave message\nleave #channel - Sets the channel where messages are sent\nleave url - Sets the background image(s)\nleave [msg] - Sets the background text\nleave rainbow/#hexcolor - Sets the background text color\nleave bg - Toggles the background text and picture (just displays the raw image)\nleave reset - Resets settings to the default",
         "aliases": "farewell",
-        "examples": "=>leave user left guild! #channel [tag left!] rainbow\n=>leave reset",
+        "examples": "=>leave user left guild! #channel [username left!] rainbow\n=>leave reset",
         "cooldown": 10
     },
     {
@@ -563,7 +581,7 @@
         "description": "Configure twitch livestream notifications.",
         "help": "twitchnotify - Opens the twitch notify prompt\ntwitchnotify name #channel @role/id? - Sets the text channel, text channel, and mention role (optional)\ntwitchnotify delete setting - Deletes a setting\ntwitchnotify edit setting @role/id? - Edits the role mention.\ntwitchnotify reset - Deletes all settings.",
         "aliases": "twitchnotification, twitchnotifications",
-        "examples": "=>twitchnotify\n=>twitchnotify imtenpi #updates",
+        "examples": "=>twitchnotify\n=>twitchnotify channel #updates",
         "cooldown": 15
     },
     {
@@ -572,7 +590,7 @@
         "description": "Configures settings for welcome messages.",
         "help": "welcome - Opens the welcome messages prompt\nwelcome msg - Sets the welcome message\nwelcome #channel - Sets the channel where welcome messages are sent\nwelcome url - Sets the background image(s)\nwelcome [msg] - Sets the background text\nwelcome rainbow/#hexcolor - Sets the background text color\nwelcome bg - Toggles the background text and picture (just displays the raw image)\nwelcome reset - Resets welcome settings to the default",
         "aliases": "greeting",
-        "examples": "=>welcome welcome user to guild! [welcome tag! There are now count members.]\n=>welcome enable rainbow",
+        "examples": "=>welcome welcome user to guild! [welcome username! There are now count members.]\n=>welcome enable rainbow",
         "cooldown": 10
     },
     {
@@ -581,7 +599,7 @@
         "description": "Configure youtube video upload notifications.",
         "help": "ytnotify - Opens the yt notify prompt.\nytnotify ytid/name #channel @role/id? - Sets the youtube channel, text channel, and mention role (optional).\nytnotify delete number - Deletes a setting.\nytnotify edit number @role/id? - Edits the role mention. Omit the role to remove role mentions.\nytnotify reset - Deletes all settings.",
         "aliases": "ytnotification, ytnotifications",
-        "examples": "=>ytnotify\n=>ytnotify tenpi #updates",
+        "examples": "=>ytnotify\n=>ytnotify channel #updates",
         "cooldown": 15
     },
     {
@@ -687,7 +705,7 @@
         "command": "react",
         "category": "fun",
         "description": "Adds a reaction to a message.",
-        "help": "react emoji/name/id - Adds a reaction from this server\nreact dev emoji/name/id - Adds a reaction from the developer's servers.\nreact global emoji/name/id - Finds a reaction from all servers that the bot is in.\nreact msg/message id dev?/global? emoji/name/id - Adds a reaction to the specified message instead of the last one.",
+        "help": "react emoji/name/id - Adds a reaction from this server\nreact bot emoji/name/id - Adds a reaction from the bot's emojis.\nreact global emoji/name/id - Finds a reaction from all servers that the bot is in.\nreact msg/message id dev?/global? emoji/name/id - Adds a reaction to the specified message instead of the last one.",
         "aliases": "reaction",
         "examples": "=>react raphiOMG",
         "cooldown": 5
@@ -741,16 +759,25 @@
         "command": "azurlane",
         "category": "game",
         "description": "Gets information on an azur lane ship girl.",
-        "help": "azurlane shipgirl - Gets information on the shipgirl.\nazurlane - Gets some handpicked girls.",
+        "help": "azurlane - Gets some handpicked girls.\nazurlane shipgirl - Gets information on the shipgirl.",
         "aliases": "al",
         "examples": "=>azurlane kisaragi\n=>azurlane laffey",
+        "cooldown": 10
+    },
+    {
+        "command": "genshin",
+        "category": "game",
+        "description": "Gets information on a genshin impact character.",
+        "help": "genshin - Gets some picked characters.\ngenshin character - Gets information on the character.",
+        "aliases": "genshinimpact",
+        "examples": "=>genshin klee\n=>genshin lumine",
         "cooldown": 10
     },
     {
         "command": "kancolle",
         "category": "game",
         "description": "Gets information on a kancolle ship girl.",
-        "help": "kancolle shipgirl - Gets information on the shipgirl.\nkancolle - Gets some handpicked girls",
+        "help": "kancolle - Gets some handpicked girls\nkancolle shipgirl - Gets information on the shipgirl.",
         "aliases": "kc, kantai, kantaicollection",
         "examples": "=>kancolle fubuki\n=>kancolle hibiki",
         "cooldown": 10
@@ -770,23 +797,14 @@
         "description": "Searches for osu beatmaps, players, and scores.",
         "help": "osu query? - Searches for beatmaps\nosu url - Gets the beatmap from the url\nosu user name - Gets a user profile\nosu set name - Links your account with your osu name, used for the recent/best sub commands\nosu recent/rs name? - Gets a user's recent plays\nosu best/bt name? - Gets a user's best plays",
         "aliases": "none",
-        "examples": "=>osu\n=>osu https://osu.ppy.sh/beatmapsets/556393#osu/1177545\n=>osu set tenpii _then_ =>osu best",
+        "examples": "=>osu\n=>osu https://osu.ppy.sh/beatmapsets/556393#osu/1177545\n=>osu set name _then_ =>osu best",
         "cooldown": 10
-    },
-    {
-        "command": "baka",
-        "category": "heart",
-        "description": "Calls someone a baka.",
-        "help": "baka @user - Call someone a baka.\nbaka - Call no one a baka...",
-        "aliases": "none",
-        "examples": "=>baka @user",
-        "cooldown": 5
     },
     {
         "command": "cuddle",
         "category": "heart",
         "description": "Cuddles someone.",
-        "help": "cuddle @user - Cuddles the user.\nbaka - Cuddle no one...",
+        "help": "cuddle @user - Cuddles the user.\ncuddle - Cuddle no one...",
         "aliases": "none",
         "examples": "=>cuddle @user",
         "cooldown": 3
@@ -816,15 +834,6 @@
         "help": "pat @user - Pats the user.\npat - Pats no one...",
         "aliases": "none",
         "examples": "=>hug @user",
-        "cooldown": 3
-    },
-    {
-        "command": "poke",
-        "category": "heart",
-        "description": "Pokes someone.",
-        "help": "poke @user - Pokes the user.\npoke - Pokes no one...",
-        "aliases": "none",
-        "examples": "=>poke @user",
         "cooldown": 3
     },
     {
@@ -894,18 +903,18 @@
         "command": "flip",
         "category": "image",
         "description": "Flips an image horizontally, vertically, or both.",
-        "help": "_Note: Some param aliases that can be used are horizontal, h, vertical, and v._\nflip x? - Flips the image horizontally (the default)\nflip y - Flips an image vertically.\nflip xy - Flips the image in both directions.\nflop yx - Inverse of flip (vertical becomes the default).\nflipflop - Alias for flipping in both directions.",
+        "help": "_Note: Some param aliases that can be used are horizontal, h, vertical, and v._\nflip x? url? - Flips the image horizontally (the default)\nflip y url? - Flips an image vertically.\nflip xy url? - Flips the image in both directions.\nflop yx url? - Inverse of flip (vertical becomes the default).\nflipflop url? - Alias for flipping in both directions.",
         "aliases": "flop, flipflop",
         "examples": "=>flip\n=>flip y",
         "cooldown": 10
     },
     {
-        "command": "greyscale",
+        "command": "grayscale",
         "category": "image",
-        "description": "Makes an image greyscale.",
-        "help": "greyscale - Makes the image greyscale",
-        "aliases": "grayscale",
-        "examples": "=>greyscale",
+        "description": "Makes an image grayscale.",
+        "help": "grayscale url? - Makes the image grayscale",
+        "aliases": "greyscale",
+        "examples": "=>grayscale",
         "cooldown": 10
     },
     {
@@ -921,7 +930,7 @@
         "command": "invert",
         "category": "image",
         "description": "Inverts the colors of an image.",
-        "help": "invert - Inverts the colors",
+        "help": "invert url? - Inverts the colors",
         "aliases": "none",
         "examples": "=>invert",
         "cooldown": 10
@@ -948,7 +957,7 @@
         "command": "pixelate",
         "category": "image",
         "description": "Adds a pixelation effect to an image.",
-        "help": "_Note: The range is -100 to 100._\npixelate factor - Edits the pixelation of the last posted image\npixelate factor url - Edits the pixelation of the linked image",
+        "help": "pixelate factor - Edits the pixelation of the last posted image\npixelate factor url - Edits the pixelation of the linked image",
         "aliases": "censor",
         "examples": "=>pixelate 50",
         "cooldown": 10
@@ -957,7 +966,7 @@
         "command": "posterize",
         "category": "image",
         "description": "Applies a posterization effect to an image.",
-        "help": "posterize level - Apples a posterization effect.",
+        "help": "posterize level url? - Apples a posterization effect.",
         "aliases": "none",
         "examples": "=>posterize 10",
         "cooldown": 10
@@ -984,9 +993,9 @@
         "command": "saturation",
         "category": "image",
         "description": "Increases or decreases the saturation of an image.",
-        "help": "_Note: Use positive values for lightness, negative for darkness._\nvalue amount - Changes the value of the last posted image\nvalue amount url - Changes the value of the linked image",
+        "help": "saturation amount - Changes the saturation of the last posted image\nsaturation amount url - Changes the saturation of the linked image",
         "aliases": "saturate, desaturate",
-        "examples": "=>value 50\n=>value -25",
+        "examples": "=>saturation 50\n=>saturation -25",
         "cooldown": 10
     },
     {
@@ -1083,7 +1092,7 @@
         "command": "emoji",
         "category": "info",
         "description": "Posts the image of an emoji.",
-        "help": "emoji emoji/name - Posts an emoji from the emoji or name\nemoji dev emoji/name - Gets an emoji from servers the developer owns\nemoji list - Posts a list of all the emojis in the server",
+        "help": "emoji emoji/name - Posts an emoji from the emoji or name\nemoji bot emoji/name - Gets an emoji from the bot\nemoji list - Posts a list of all the emojis in the server",
         "aliases": "none",
         "examples": "=>emoji karenSugoi\n=>emoji kannaHungry\n=>emoji dev download\n=>emoji list",
         "cooldown": 5
@@ -1359,60 +1368,6 @@
         "cooldown": 10
     },
     {
-        "command": "danbooru",
-        "category": "lewd",
-        "description": "Searches for anime pictures on danbooru.",
-        "help": "_Note: Underscores are not required._\ndanbooru - Get a random image.\ndanbooru link/id - Gets the image from the link.\ndanbooru tag - Gets an image with the tag.\ndanbooru r18 - Get a random r18 image.\ndanbooru r18 tag - Get an r18 image with the tag.\n=>danbooru r18 gabriel dropout",
-        "aliases": "d, dan",
-        "examples": "=>danbooru\n=>danbooru tenma gabriel white",
-        "cooldown": 20
-    },
-    {
-        "command": "gelbooru",
-        "category": "lewd",
-        "description": "Searches for anime pictures on gelbooru.",
-        "help": "_Note: Underscores are not required._\ngelbooru - Get a random image.\ngelbooru link/id - Gets the image from the link.\ngelbooru tag - Gets an image with the tag.\ngelbooru r18 - Get a random r18 image.\ngelbooru r18 tag - Get an r18 image with the tag.",
-        "aliases": "gel",
-        "examples": "=>gelbooru\n=>gelbooru tenma gabriel white",
-        "cooldown": 20
-    },
-    {
-        "command": "konachan",
-        "category": "lewd",
-        "description": "Searches for anime pictures on konachan.",
-        "help": "_Note: Underscores are not required._\nkonachan - Get a random image.\nkonachan link/id - Gets the image from the link.\nkonachan tag - Gets an image with the tag.\nkonachan r18 - Get a random r18 image.\nkonachan r18 tag - Get an r18 image with the tag.\n=>konachan r18 azur lane",
-        "aliases": "k, kona, kchan",
-        "examples": "=>konachan\n=>konachan kisaragi (azur lane)",
-        "cooldown": 20
-    },
-    {
-        "command": "nhentai",
-        "category": "lewd",
-        "description": "Searches a doujinshi on nhentai.",
-        "help": "nhentai - Gets a random doujinshi (after a quality filter)\nnhentai query - Searches for a doujinshi with the query\nnhentai url/id - Gets a doujinshi by url or id\nnhentai random - Gets a truly random doujinshi, not recommended",
-        "aliases": "nh",
-        "examples": "=>nhentai stockings\n=>nhentai",
-        "cooldown": 15
-    },
-    {
-        "command": "safebooru",
-        "category": "lewd",
-        "description": "Searches for anime pictures on safebooru.",
-        "help": "_Note: Underscores are not required. This is safebooru, so r18 only gets you \"questionable\" images._\nsafebooru - Get a random image.\nsafebooru link/id - Gets the image from the link.\nsafebooru tag - Gets an image with the tag.\nsafebooru r18 - Get a random questionable image.\nsafebooru r18 tag - Get a questionable image with the tag.",
-        "aliases": "safe",
-        "examples": "=>safebooru\n=>safebooru tenma gabriel white\n=>safebooru r18 gabriel dropout",
-        "cooldown": 20
-    },
-    {
-        "command": "yandere",
-        "category": "lewd",
-        "description": "Searches for anime pictures on yandere.",
-        "help": "_Note: Underscores are not required._\nyandere - Get a random image.\nyandere link/id - Gets the image from the link.\nyandere tag - Gets an image with the tag.\nyandere r18 - Get a random r18 image.\nyandere r18 tag - Get an r18 image with the tag.\n=>yandere r18 azur lane",
-        "aliases": "y, ydere",
-        "examples": "=>yandere\n=>yandere kisaragi (azur lane)",
-        "cooldown": 20
-    },
-    {
         "command": "calc",
         "category": "misc",
         "description": "Calculates a math expression.",
@@ -1449,6 +1404,15 @@
         "cooldown": 10
     },
     {
+        "command": "holiday",
+        "category": "misc",
+        "description": "Searches for daily holidays.",
+        "help": "holiday - Gets today's holiday.\nholiday date - Gets the holiday for the date",
+        "aliases": "none",
+        "examples": "=>holiday\n=>holiday January 20\n=>holiday 7/3",
+        "cooldown": 10
+    },
+    {
         "command": "nasa",
         "category": "misc",
         "description": "Posts a random picture of space.",
@@ -1461,7 +1425,7 @@
         "command": "pokemon",
         "category": "misc",
         "description": "Gets information on a pokemon.",
-        "help": "pokemon - Posts info on a pokemon",
+        "help": "pokemon query - Posts info on a pokemon",
         "aliases": "pokedex",
         "examples": "=>pokemon eevee",
         "cooldown": 10
@@ -1481,7 +1445,7 @@
         "description": "Posts a website screenshot.",
         "help": "screenshot url - Posts the screenshot of the webpage\nscreenshot mobile url - Posts the screenshot of the mobile version of the site",
         "aliases": "screencap",
-        "examples": "=>screenshot https://www.youtube.com/c/Tenpi\n=>screenshot mobile https://www.youtube.com/c/Tenpi",
+        "examples": "=>screenshot https://www.youtube.com/\n=>screenshot mobile https://www.youtube.com/",
         "cooldown": 15
     },
     {
@@ -1550,8 +1514,8 @@
     {
         "command": "email",
         "category": "misc 2",
-        "description": "Sends you or someone an email address with text content/attachment. **Requires oauth2**",
-        "help": "_Note: If no link is provided, the attachment on the last message is sent (if any)._\nemail @user? content? link? - Sends you an email address with the content and link",
+        "description": "Sends you an email with text content/attachment. **Requires oauth2**",
+        "help": "_Note: If no link is provided, the attachment on the last message is sent (if any)._\nemail content? link? - Sends you an email with the content and link",
         "aliases": "gmail, mail",
         "examples": "=>email (pic of cute anime girl)",
         "cooldown": 3
@@ -1572,15 +1536,6 @@
         "help": "_Note: Not all hexadecimal numbers contain letters, so add the param decode somewhere to explicitly convert from hex to decimal._\nhexadecimal number/hex string decode? - Converts decimal to hexadecimal or hexadecimal to decimal",
         "aliases": "hex",
         "examples": "=>hexadecimal hi",
-        "cooldown": 3
-    },
-    {
-        "command": "hi",
-        "category": "misc 2",
-        "description": "Hi!",
-        "help": "hi - Responds with hi.\nhello - Responds with hello.\nhelloworld - Responds with hello world.",
-        "aliases": "hello, helloworld",
-        "examples": "=>hi\n=>hello\n=>helloworld",
         "cooldown": 3
     },
     {
@@ -1920,9 +1875,9 @@
         "command": "play",
         "category": "music",
         "description": "Plays any song from soundcloud, youtube, a link, or an attachment.",
-        "help": "_Note: You must be in a voice channel._\nplay - Plays the default songs.\nplay song - Searches for songs on soundcloud and plays the one that you pick.\nplay yt song - Searches for songs on youtube and plays the one that you pick.\nplay first yt? song - Plays the first result automatically.\nplay reverse yt? song - Starts playback in reverse mode.\nplay loop yt? song - Starts playback in loop mode.\nplay sc song - You don't need to specify soundcloud, since it's the default.",
+        "help": "_Note: You must be in a voice channel._\nplay - Plays the default songs.\nplay song - Searches for songs on soundcloud and plays the one that you pick.\nplay first song - Plays the first result automatically.\nplay reverse song - Starts playback in reverse mode.\nplay loop song - Starts playback in loop mode.",
         "aliases": "pl, stream",
-        "examples": "=>play reverse first synthion comet\n=>play virtual riot\n=>play yt tenpi moonlight",
+        "examples": "=>play\n=>play reverse first synthion comet",
         "cooldown": 15
     },
     {
@@ -2010,9 +1965,9 @@
         "command": "volume",
         "category": "music",
         "description": "Sets the volume of the music stream.",
-        "help": "volume num - Sets the volume (0-200)",
+        "help": "volume num - Sets the volume (0-2)",
         "aliases": "none",
-        "examples": "=>volume 150",
+        "examples": "=>volume 1.5",
         "cooldown": 5
     },
     {
@@ -2408,13 +2363,13 @@
         "description": "Searches posts on a reddit subreddit.",
         "help": "reddit - Gets a random post\nreddit subreddit query? - Searches for posts in the subreddit or gets random ones\nreddit subreddit hot/new/top/rising/controversial - Gets hot, new, top, etc. posts in the board\nreddit user query - Searches for users\nreddit url - Gets the post from the url",
         "aliases": "r",
-        "examples": "=>reddit\n=>reddit anime cute\n=>reddit animemes hot\n=>reddit user imtenpi",
+        "examples": "=>reddit\n=>reddit anime cute\n=>reddit animemes hot",
         "cooldown": 10
     },
     {
         "command": "redditoauth",
         "category": "reddit",
-        "description": "Authorize read and write access to your reddit account. **Requires oauth2 and a connection with your reddit account on discord**.",
+        "description": "Authorize read and write access to your reddit account. **Requires oauth2**.",
         "help": "redditoauth - Follow the url and click on \"Authorize\" to authorize your reddit account\nredditoauth revoke/delete - Deletes and revokes your reddit token",
         "aliases": "roauth",
         "examples": "=>redditoauth\n=>redditoauth revoke",
@@ -2462,13 +2417,13 @@
         "description": "Searches for twitter tweets and users.",
         "help": "twitter query - Searches for tweets with the query\ntwitter user query - Searches for a user\ntwitter url - Gets the resource from the url",
         "aliases": "t",
-        "examples": "=>twitter anime\n=>twitter user imtenpi",
+        "examples": "=>twitter anime\n=>twitter user name",
         "cooldown": 10
     },
     {
         "command": "twitteroauth",
         "category": "twitter",
-        "description": "Authorize read and write access to your twitter account. **Requires oauth2 and a connection with your twitter account on discord**.",
+        "description": "Authorize read and write access to your twitter account. **Requires oauth2**.",
         "help": "twitteroauth - Follow the url and click on \"Authorize\" to authorize your twitter account\ntwitteroauth revoke/delete - Deletes your twitter oauth token. To revoke it, you have to go into your application settings.",
         "aliases": "toauth",
         "examples": "=>twitteroauth\n=>twitteroauth delete",
@@ -2505,7 +2460,7 @@
         "command": "video2mp3",
         "category": "video",
         "description": "Converts a video file or link to mp3.",
-        "help": "_Note: Passing in youtube links is an alias for the youtube download mp3 command._\nvideo2mp3 - Convert the last posted video\nvideo2mp3 - Convert the linked video",
+        "help": "_Note: Passing in youtube links is an alias for the youtube download mp3 command._\nvideo2mp3 - Convert the last posted video\nvideo2mp3 url - Convert the linked video",
         "aliases": "vid2mp3, yt2mp3",
         "examples": "=>video2mp3",
         "cooldown": 20
@@ -2517,15 +2472,6 @@
         "help": "videospeed factor - Changes the speed of the last posted video\nvideospeed factor url - Changes the speed of the linked video",
         "aliases": "vspeed",
         "examples": "=>videospeed 1.5",
-        "cooldown": 20
-    },
-    {
-        "command": "ytmp3",
-        "category": "video",
-        "description": "Short alias for youtube download mp3.",
-        "help": "ytmp3 url/query - Downloads the video mp3",
-        "aliases": "youtube download",
-        "examples": "=>ytmp3 https://youtu.be/mLJQ0HO5Alc",
         "cooldown": 20
     },
     {
@@ -2750,7 +2696,7 @@
         "description": "Searches for artists, tracks, and albums on bandcamp.",
         "help": "bandcamp query - Searches for everything matching the query",
         "aliases": "bc",
-        "examples": "=>bandcamp kawaii future bass\n=>bandcamp tenpi",
+        "examples": "=>bandcamp kawaii future bass",
         "cooldown": 5
     },
     {
@@ -2759,7 +2705,7 @@
         "description": "Searches for deviantart deviations and users.",
         "help": "deviantart - Gets popular deviations by default.\ndeviantart link - Gets the deviation from the link.\ndeviantart query - Gets deviations from the query.\ndeviantart user - Gets the profile of a user.\ndeviantart gallery user - Gets the deviations from the user.\ndeviantart daily date? - Gets daily deviations, optional date in yyyy-mm-dd format.\ndeviantart hot category? - Gets hot deviations, optional category.\ndeviantart new query? - Gets new deviations, optional query.\ndeviantart popular query? - Gets popular deviations, optional query.",
         "aliases": "da, deviant",
-        "examples": "=>deviantart anime\n=>deviantart user tenpii\n=>deviantart daily 2019-07-03\n=>deviantart popular konosuba\n=>deviantart hot manga",
+        "examples": "=>deviantart anime\n=>deviantart user name\n=>deviantart daily 2019-07-03\n=>deviantart popular konosuba\n=>deviantart hot manga",
         "cooldown": 30
     },
     {
@@ -2795,7 +2741,7 @@
         "description": "Searches for anime, characters, and users on my anime list.",
         "help": "mal - Gets the top anime\nmal query - Searches for anime matching the query\nmal character query - Searches for characters with the query\nmal user query - Searches for users matching the query",
         "aliases": "myanimelist",
-        "examples": "=>mal gabriel dropout\n=>mal satania\n=>mal tenpi",
+        "examples": "=>mal gabriel dropout\n=>mal satania",
         "cooldown": 10
     },
     {
@@ -2804,7 +2750,7 @@
         "description": "Searches for images on pinterest.",
         "help": "pinterest query - Searches pinterest for the query\npinterest user username - Searches for pins by the user\npinterest board username boardname - Searches for pins in a user's board",
         "aliases": "pint",
-        "examples": "=>pinterest anime\n=>pinterest user tenpimusic\n=>pinterest board tenpimusic anime",
+        "examples": "=>pinterest anime\n=>pinterest user name\n=>pinterest board name anime",
         "cooldown": 15
     },
     {
@@ -2831,7 +2777,7 @@
         "description": "Searches for soundcloud tracks, users, and playlists or downloads them.",
         "help": "_Note: The first search result is downloaded if you provide a query for the download._\nsoundcloud query - Searches for tracks with the query\nsoundcloud user query - Searches for users with the query\nsoundcloud playlist query - Searches for playlists with the query\nsoundcloud url - Fetches the resource from the url\nsoundcloud download/dl url/query - Downloads the track from url/query",
         "aliases": "sc",
-        "examples": "=>soundcloud anime\n=>soundcloud user synthion\n=>soundcloud playlist kawaii\n=>soundcloud download virtual riot troublemaker",
+        "examples": "=>soundcloud anime\n=>soundcloud user synthion\n=>soundcloud playlist kawaii",
         "cooldown": 10
     },
     {
@@ -2849,7 +2795,7 @@
         "description": "Searches for trello boards and users.",
         "help": "trello query - Searches for users with the query\ntrello url - Fetches the board from the url",
         "aliases": "none",
-        "examples": "=>trello tenpi\n=>trello https://trello.com/b/boardID",
+        "examples": "=>trello name\n=>trello https://trello.com/b/boardID",
         "cooldown": 10
     },
     {
@@ -2858,7 +2804,7 @@
         "description": "Searches for twitch streams and channels.",
         "help": "twitch query - Searches for streams with the query\ntwitch channel query - Searches for a channel\ntwitch url - Gets the resource from the url",
         "aliases": "tw",
-        "examples": "=>twitch osu\n=>twitch channel imtenpi",
+        "examples": "=>twitch osu\n=>twitch channel name",
         "cooldown": 10
     },
     {
@@ -2885,7 +2831,7 @@
         "description": "Searches for an anime on crunchyroll.",
         "help": "crunchyroll url/query - Searches crunchyroll for the url/query.",
         "aliases": "cr, crunchy",
-        "examples": "=>crunchyroll kiniro mosaic\n=>crunchyroll konosuba",
+        "examples": "=>crunchyroll konosuba",
         "cooldown": 10
     },
     {
@@ -2903,7 +2849,7 @@
         "description": "Searches for github repositories and users.",
         "help": "github query - Searches for repositories with the query\ngithub user query - Searches for users with the query",
         "aliases": "gh",
-        "examples": "=>github anime\n=>github user tenpi",
+        "examples": "=>github anime\n=>github user github",
         "cooldown": 10
     },
     {
@@ -2939,7 +2885,7 @@
         "description": "Searches the itunes store for tracks.",
         "help": "itunes query - Searches itunes with the query.",
         "aliases": "none",
-        "examples": "=>itunes tenpi",
+        "examples": "=>itunes anime",
         "cooldown": 15
     },
     {
@@ -2957,7 +2903,7 @@
         "description": "Searches for packages on the npm registry.",
         "help": "npm query - Searches for packages with the query",
         "aliases": "none",
-        "examples": "=>npm soundcloud.ts\n=>npm pixiv.ts",
+        "examples": "=>npm pixiv.ts",
         "cooldown": 5
     },
     {
@@ -2966,7 +2912,7 @@
         "description": "Searches for a patreon creator.",
         "help": "patreon creator - Searches for the creator page of the creator.",
         "aliases": "none",
-        "examples": "=>patreon synthion",
+        "examples": "=>patreon creator",
         "cooldown": 10
     },
     {
@@ -2984,7 +2930,7 @@
         "description": "Searches for words on urban dictionary.",
         "help": "urban - Posts a random word\nurban word - Searches for a word in the dictionary",
         "aliases": "none",
-        "examples": "=>urban\n=>urban loli",
+        "examples": "=>urban\n=>urban anime",
         "cooldown": 5
     },
     {
@@ -3011,7 +2957,7 @@
         "description": "Searches for youtube videos, channels, and playlists.",
         "help": "_Note: If a query is provided for the download, the first search result is downloaded._\nyoutube query - Searches for youtube videos\nyoutube channel query - Searches for youtube channels\nyoutube playlist query - Searches for youtube playlists\nyoutube video query - Searches for videos (long form)",
         "aliases": "yt",
-        "examples": "=>youtube anime\n=>youtube channel tenpi\n=>youtube playlist kawaii music\n=>youtube download mp3 energy drink",
+        "examples": "=>youtube anime\n=>youtube channel mychannel\n=>youtube playlist kawaii music",
         "cooldown": 10
     },
     {
@@ -3039,6 +2985,15 @@
         "help": "_Note: The invocation of this command is removed for privacy reasons._\ngravatar email - Gets the profile picture of the email",
         "aliases": "none",
         "examples": "=>gravatar someone@gmail.com",
+        "cooldown": 10
+    },
+    {
+        "command": "instagram",
+        "category": "website 3",
+        "description": "Searches for posts and users on instagram.",
+        "help": "instagram query - Searches for tagged posts\ninstagram user name - Searches for a user",
+        "aliases": "insta",
+        "examples": "=>instagram anime\n=>instagram user name",
         "cooldown": 10
     },
     {
