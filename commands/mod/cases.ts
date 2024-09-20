@@ -88,7 +88,7 @@ export default class Cases extends Command {
             }
             const caseEmbed = embeds.createEmbed()
             caseEmbed
-            .setAuthor({name: "cases", iconURL: "https://botbind.s3.amazonaws.com/addons/moderation/icon.png"})
+            .setAuthor({name: "cases", iconURL: "https://kisaragi.moe/assets/embed/cases.png"})
             .setTitle(`**Moderation Cases** ${discord.getEmoji("chinoSmug")}`)
             .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
             .setDescription(logs)

@@ -80,7 +80,7 @@ export default class Email extends Command {
 
         const emailEmbed = embeds.createEmbed()
         emailEmbed
-        .setAuthor({name: "gmail", iconURL: "https://cdn4.iconfinder.com/data/icons/free-colorful-icons/360/gmail.png"})
+        .setAuthor({name: "gmail", iconURL: "https://kisaragi.moe/assets/embed/email.png"})
         .setTitle(`**Email Delivery** ${discord.getEmoji("smugFace")}`)
         .setDescription(
             `${discord.getEmoji("star")}The email was delivered! Check your inbox and spam folder.`

@@ -36,7 +36,7 @@ export default class Privacy extends Command {
 
         const privacyPolicy = embeds.createEmbed()
         privacyPolicy
-        .setAuthor({name: "privacy policy", iconURL: "https://kisaragi.moe/assets/icons/privacypolicy.png"})
+        .setAuthor({name: "privacy policy", iconURL: "https://kisaragi.moe/assets/embed/privacy.png"})
         .setURL("https://kisaragi.moe/privacy")
         .setTitle(`**Privacy Policy** ${discord.getEmoji("kannaPat")}`)
         .setDescription(Functions.multiTrim(`

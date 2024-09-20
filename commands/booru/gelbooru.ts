@@ -51,7 +51,7 @@ export default class Gelbooru extends Command {
         const perms = new Permission(discord, message)
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const gelbooruEmbed = embeds.createEmbed()
-        .setAuthor({name: "gelbooru", iconURL: "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png"})
+        .setAuthor({name: "gelbooru", iconURL: "https://kisaragi.moe/assets/embed/gelbooru.png"})
         .setTitle(`**Gelbooru Search**`)
 
         let tags: string[] = []
@@ -96,7 +96,7 @@ export default class Gelbooru extends Command {
                 if (!perms.checkNSFW(true)) continue
             }
             const gelbooruEmbed = embeds.createEmbed()
-            .setAuthor({name: "gelbooru", iconURL: "https://pbs.twimg.com/profile_images/1118350008003301381/3gG6lQMl.png"})
+            .setAuthor({name: "gelbooru", iconURL: "https://kisaragi.moe/assets/embed/gelbooru.png"})
             .setTitle(`**Gelbooru Search**`)
             .setURL(`https://gelbooru.com/index.php?page=post&s=view&id=${img.id}`)
             .setDescription(

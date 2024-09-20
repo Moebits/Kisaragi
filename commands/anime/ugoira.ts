@@ -100,7 +100,7 @@ export default class Ugoira extends Command {
             await pixiv.util.downloadUgoira(String(pixivID), `assets/images/gifs/`, {speed: 1.0})
         } catch {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "pixiv", iconURL: "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814"})
+            .setAuthor({name: "pixiv", iconURL: "https://kisaragi.moe/assets/embed/ugoira.png"})
             .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("chinoSmug")}`), "The provided url is not a ugoira.")
         }
 
@@ -123,7 +123,7 @@ export default class Ugoira extends Command {
                     commentArray.push(comments.comments[i].comment)
                 }
         ugoiraEmbed
-        .setAuthor({name: "pixiv", iconURL: "https://dme8nb6778xpo.cloudfront.net/images/app/service_logos/12/0f3b665db199/large.png?1532986814"})
+        .setAuthor({name: "pixiv", iconURL: "https://kisaragi.moe/assets/embed/ugoira.png"})
         .setTitle(`**Pixiv Ugoira** ${discord.getEmoji("chinoSmug")}`)
         .setURL(`https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${pixivID}`)
         .setDescription(

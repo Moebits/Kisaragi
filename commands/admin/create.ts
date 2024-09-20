@@ -76,7 +76,7 @@ export default class Create extends Command {
                 const nChannel = await message.guild!.channels.create({name, position, parent, reason, type: ChannelType.GuildText})
                 const createEmbed = embeds.createEmbed()
                 createEmbed
-                .setAuthor({name: "create", iconURL: "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png"})
+                .setAuthor({name: "create", iconURL: "https://kisaragi.moe/assets/embed/create.png"})
                 .setTitle(`**Channel Creation** ${discord.getEmoji("gabYes")}`)
                 .setDescription(`The channel **<#${nChannel.id}>** was created for reason: **${reason}**`)
                 return this.reply(createEmbed)
@@ -101,7 +101,7 @@ export default class Create extends Command {
                 const nRole = await message.guild!.roles.create({name, position, color, hoist, mentionable})
                 const createEmbed = embeds.createEmbed()
                 createEmbed
-                .setAuthor({name: "create", iconURL: "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png"})
+                .setAuthor({name: "create", iconURL: "https://kisaragi.moe/assets/embed/create.png"})
                 .setTitle(`**Role Creation** ${discord.getEmoji("gabYes")}`)
                 .setDescription(`The role **<@&${nRole.id}>** was created!`)
                 return this.reply(createEmbed)
@@ -122,7 +122,7 @@ export default class Create extends Command {
                 const emojiTag = nEmoji.animated ? `<${nEmoji.identifier}>` : `<:${nEmoji.identifier}>`
                 const createEmbed = embeds.createEmbed()
                 createEmbed
-                .setAuthor({name: "create", iconURL: "https://discordemoji.com/assets/emoji/2674_SayoriNervous.png"})
+                .setAuthor({name: "create", iconURL: "https://kisaragi.moe/assets/embed/create.png"})
                 .setTitle(`**Emoji Creation** ${discord.getEmoji("gabYes")}`)
                 .setDescription(`The emoji **${emojiTag}** was created for reason: **${reason}**`)
                 return this.reply(createEmbed)

@@ -83,7 +83,7 @@ export default class Unban extends Command {
         }
         if (!users[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         banEmbed
-        .setAuthor({name: "unban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
+        .setAuthor({name: "unban", iconURL: "https://kisaragi.moe/assets/embed/unban.png"})
         .setTitle(`**Member Unbanned** ${discord.getEmoji("ceaseBullying")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully unbanned ${users.join(", ")} for reason:_ **${reason}**`)
         return this.reply(banEmbed)

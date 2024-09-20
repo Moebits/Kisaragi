@@ -71,7 +71,7 @@ export default class Video2MP3 extends Command {
         await video.extractAudio(src, dest)
         const videoEmbed = embeds.createEmbed()
         videoEmbed
-        .setAuthor({name: "ffmpeg", iconURL: "https://cdn.iconscout.com/icon/free/png-512/ffmpeg-569477.png", url: "https://www.ffmpeg.org/"})
+        .setAuthor({name: "ffmpeg", iconURL: "https://kisaragi.moe/assets/embed/video2mp3.png", url: "https://www.ffmpeg.org/"})
         .setTitle(`**Video to mp3** ${discord.getEmoji("karenSugoi")}`)
         .setDescription(`${discord.getEmoji("star")}Converted this video to an mp3 file! ${discord.getEmoji("chinoSmug")}`)
 

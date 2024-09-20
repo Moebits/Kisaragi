@@ -85,12 +85,12 @@ export default class Changelog extends Command {
             const log = changelog.find((c) => c.num === Number(args[1]))
             if (!log) {
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor({name: "changelog", iconURL: "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg"})
+                .setAuthor({name: "changelog", iconURL: "https://kisaragi.moe/assets/embed/changelog.png"})
                 .setTitle(`**Changelog** ${discord.getEmoji("tohruThumbsUp2")}`))
             }
             const changeEmbed = embeds.createEmbed()
             changeEmbed
-            .setAuthor({name: "changelog", iconURL: "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg"})
+            .setAuthor({name: "changelog", iconURL: "https://kisaragi.moe/assets/embed/changelog.png"})
             .setTitle(`**Changelog #${log.num}** ${discord.getEmoji("tohruThumbsUp2")}`)
             .setDescription(`${discord.getEmoji("star")}**${log.num}** \`(${log.date})\` -> ${log.changes}\n`)
             return this.reply(changeEmbed)
@@ -107,7 +107,7 @@ export default class Changelog extends Command {
         for (let i = 0; i < splits.length; i++) {
             const changeEmbed = embeds.createEmbed()
             changeEmbed
-            .setAuthor({name: "changelog", iconURL: "https://img.favpng.com/2/13/11/computer-icons-wiki-inventory-png-favpng-i4uMvTFMU19rMhp60WF2G2Jsy.jpg"})
+            .setAuthor({name: "changelog", iconURL: "https://kisaragi.moe/assets/embed/changelog.png"})
             .setTitle(`**Changelog** ${discord.getEmoji("tohruThumbsUp2")}`)
             .setDescription(splits[i])
             changeArray.push(changeEmbed)

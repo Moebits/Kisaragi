@@ -52,7 +52,7 @@ export default class FlickrCommand extends Command {
             const username = Functions.combineArgs(args, 2)?.trim()
             if (!username) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor({name: "flickr", iconURL: "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", url: "https://www.flickr.com/"})
+                .setAuthor({name: "flickr", iconURL: "https://kisaragi.moe/assets/embed/flickr.png", url: "https://www.flickr.com/"})
                 .setTitle(`**Flickr Search** ${discord.getEmoji("raphiSmile")}`))
             }
             const id = await flickr.people.findByUsername({username}).then((r: any) => JSON.parse(r.text))
@@ -61,7 +61,7 @@ export default class FlickrCommand extends Command {
             const avatar = `https://farm${info.person.iconfarm}.staticflickr.com/${info.person.iconserver}/buddyicons/${info.person.nsid}_r.jpg`
             const flickrEmbed = embeds.createEmbed()
             flickrEmbed
-            .setAuthor({name: "flickr", iconURL: "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", url: "https://www.flickr.com/"})
+            .setAuthor({name: "flickr", iconURL: "https://kisaragi.moe/assets/embed/flickr.png", url: "https://www.flickr.com/"})
             .setTitle(`**Flickr Search** ${discord.getEmoji("raphiSmile")}`)
             .setURL(info.person.profileurl._content)
             .setThumbnail(avatar)
@@ -96,7 +96,7 @@ export default class FlickrCommand extends Command {
             const url = `https://www.flickr.com/photos/${info.owner.nsid}/${photo.id}/`
             const flickrEmbed = embeds.createEmbed()
             flickrEmbed
-            .setAuthor({name: "flickr", iconURL: "https://cdn.kustomerhostedcontent.com/media/5aecd7338a0607779d1ec9cc/9bbb8cdc9a35c4502fd1bdaf7cea367e.png", url: "https://www.flickr.com/"})
+            .setAuthor({name: "flickr", iconURL: "https://kisaragi.moe/assets/embed/flickr.png", url: "https://www.flickr.com/"})
             .setTitle(`**Flickr Search** ${discord.getEmoji("raphiSmile")}`)
             .setURL(url)
             .setDescription(

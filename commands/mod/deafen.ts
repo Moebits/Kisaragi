@@ -70,7 +70,7 @@ export default class Deafen extends Command {
                 continue
             }
             deafenEmbed
-            .setAuthor({name: "deafen", iconURL: "https://cdn4.iconfinder.com/data/icons/music-audio-4/24/mute_sound_speaker_headphone_headset_music-512.png"})
+            .setAuthor({name: "deafen", iconURL: "https://kisaragi.moe/assets/embed/deafen.png"})
             .setTitle(`**You Were Deafened** ${discord.getEmoji("sataniaDead")}`)
             .setDescription(`${discord.getEmoji("star")}_You were deafened from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -85,7 +85,7 @@ export default class Deafen extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         deafenEmbed
-        .setAuthor({name: "deafen", iconURL: "https://cdn4.iconfinder.com/data/icons/music-audio-4/24/mute_sound_speaker_headphone_headset_music-512.png"})
+        .setAuthor({name: "deafen", iconURL: "https://kisaragi.moe/assets/embed/deafen.png"})
         .setTitle(`**Member Deafened** ${discord.getEmoji("sataniaDead")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully deafened ${members.join(", ")} for reason:_ **${reason}**`)
         this.reply(deafenEmbed)

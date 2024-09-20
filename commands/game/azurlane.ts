@@ -108,7 +108,7 @@ export default class AzurLane extends Command {
         for (let i = 0; i < pics.length; i++) {
             const azurEmbed = embeds.createEmbed()
             azurEmbed
-            .setAuthor({name: "azur lane", iconURL: "https://azurlane.koumakan.jp/akashi-apple-touch-icon.png"})
+            .setAuthor({name: "azur lane", iconURL: "https://kisaragi.moe/assets/embed/azurlane.png"})
             .setTitle(`**Azur Lane Search** ${discord.getEmoji("kisaragiBawls")}`)
             .setURL(`https://azurlane.koumakan.jp/${query}`)
             .setThumbnail(chibis[i])

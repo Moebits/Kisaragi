@@ -70,7 +70,7 @@ export default class VCKick extends Command {
                 continue
             }
             vckickEmbed
-            .setAuthor({name: "voice kick", iconURL: "https://cdn1.iconfinder.com/data/icons/interface-filled-blue/32/Microphone_recorder_sound_voice-512.png"})
+            .setAuthor({name: "voice kick", iconURL: "https://kisaragi.moe/assets/embed/vckick.png"})
             .setTitle(`**You Were Voice Kicked** ${discord.getEmoji("tohruSmug")}`)
             .setDescription(`${discord.getEmoji("star")}_You were voice kicked from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -85,7 +85,7 @@ export default class VCKick extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         vckickEmbed
-        .setAuthor({name: "voice kick", iconURL: "https://cdn1.iconfinder.com/data/icons/interface-filled-blue/32/Microphone_recorder_sound_voice-512.png"})
+        .setAuthor({name: "voice kick", iconURL: "https://kisaragi.moe/assets/embed/vckick.png"})
         .setTitle(`**Member Voice Kicked** ${discord.getEmoji("tohruSmug")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully voice kicked ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(vckickEmbed)

@@ -57,7 +57,7 @@ export default class Holiday extends Command {
                 const image = holidayData.data.match(imageRegex)?.[0].replace(/"/g, "")
                 const holidayEmbed = embeds.createEmbed()
                 holidayEmbed
-                .setAuthor({name: "days of the year", iconURL: "https://media.daysoftheyear.com/20181228141243/logo.jpg"})
+                .setAuthor({name: "days of the year", iconURL: "https://kisaragi.moe/assets/embed/holiday.png"})
                 .setTitle(`**Daily Holiday** ${discord.getEmoji("padoruPadoru")}`)
                 .setURL(args[1])
                 .setThumbnail(image.trim())
@@ -101,7 +101,7 @@ export default class Holiday extends Command {
 
         const holidayEmbed = embeds.createEmbed()
         holidayEmbed
-        .setAuthor({name: "days of the year", iconURL: "https://media.daysoftheyear.com/20181228141243/logo.jpg"})
+        .setAuthor({name: "days of the year", iconURL: "https://kisaragi.moe/assets/embed/holiday.png"})
         .setTitle(`**Daily Holiday** ${discord.getEmoji("padoruPadoru")}`)
         .setURL(url)
         .setThumbnail(image.trim())

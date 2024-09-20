@@ -78,7 +78,7 @@ export default class Pastebin extends Command {
 
         const pastebinEmbed = embeds.createEmbed()
         pastebinEmbed
-        .setAuthor({name: "pastebin", iconURL: "https://upload.wikimedia.org/wikipedia/en/3/35/Pastebin.com_logo.png", url: "https://pastebin.com/"})
+        .setAuthor({name: "pastebin", iconURL: "https://kisaragi.moe/assets/embed/pastebin.png", url: "https://pastebin.com/"})
         .setTitle(`**Pastebin Upload** ${discord.getEmoji("raphi")}`)
         .setURL(link)
         .setDescription(`${discord.getEmoji("star")}Successfully uploaded to pastebin, find your paste [**here**](${link})`)

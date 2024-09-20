@@ -60,7 +60,7 @@ export default class Blacklist extends Command {
         if (!perms.checkBotDev()) return
         const blacklistEmbed = embeds.createEmbed()
         blacklistEmbed
-        .setAuthor({name: "blacklist", iconURL: "https://cdn.discordapp.com/emojis/585923517699325953.png"})
+        .setAuthor({name: "blacklist", iconURL: "https://kisaragi.moe/assets/embed/blacklist.png"})
         .setTitle(`**Blacklist** ${discord.getEmoji("smugFace")}`)
         let setGuild = true
         if (args[1] === "user") {

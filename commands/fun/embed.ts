@@ -71,7 +71,7 @@ export default class Embed extends Command {
         embed.setColor(infoEmbed.data.color!)
 
         infoEmbed
-        .setAuthor({name: "embed creator", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTStAdBUTGTX5KUVbubQNuOaG70mwxTKrEKk4oR0T1zVmcjfXhLYiHCkbvhXZtyi1Cs9EI&usqp=CAU"})
+        .setAuthor({name: "embed creator", iconURL: "https://kisaragi.moe/assets/embed/embed.png"})
         .setTitle(`**Custom Embed** ${discord.getEmoji("raphiSmile")}`)
         .setDescription(
             `_Edit this embed by clicking on the reactions._\n` +

@@ -62,7 +62,7 @@ export default class Playlists extends Command {
             }
             const playlistEmbed = embeds.createEmbed()
             playlistEmbed
-            .setAuthor({name: "playlist", iconURL: "https://cdn3.iconfinder.com/data/icons/music-set-8/64/iconspace_Playlist-512.png"})
+            .setAuthor({name: "playlist", iconURL: "https://kisaragi.moe/assets/embed/playlist.png"})
             .setTitle(`**Playlists** ${discord.getEmoji("karenSugoi")}`)
             .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
             .setDescription(Functions.multiTrim(`

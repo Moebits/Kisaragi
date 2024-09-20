@@ -55,7 +55,7 @@ export default class Wattpad extends Command {
         const wattpadArray: EmbedBuilder[] = []
         const wattpadEmbed = embeds.createEmbed()
         wattpadEmbed
-        .setAuthor({name: "wattpad", iconURL: "https://www.syfy.com/sites/syfy/files/styles/amp_metadata_content_image_min_696px_wide/public/2017/10/wattpad.jpg", url: "https://www.wattpad.com/"})
+        .setAuthor({name: "wattpad", iconURL: "https://kisaragi.moe/assets/embed/wattpad.png", url: "https://www.wattpad.com/"})
         .setTitle(`**Wattpad Story** ${discord.getEmoji("raphiSmile")}`)
         .setURL(story.url)
         .setImage(story.cover)
@@ -102,7 +102,7 @@ export default class Wattpad extends Command {
             for (let j = 0; j < splits.length; j++) {
                 const wattpadEmbed = embeds.createEmbed()
                 wattpadEmbed
-                .setAuthor({name: "wattpad", iconURL: "https://www.syfy.com/sites/syfy/files/styles/amp_metadata_content_image_min_696px_wide/public/2017/10/wattpad.jpg", url: "https://www.wattpad.com/"})
+                .setAuthor({name: "wattpad", iconURL: "https://kisaragi.moe/assets/embed/wattpad.png", url: "https://www.wattpad.com/"})
                 .setTitle(`**Wattpad Story** ${discord.getEmoji("raphiSmile")}`)
                 .setURL(partURLS[i])
                 .setImage(partPhotos[i])

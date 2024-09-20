@@ -56,7 +56,7 @@ export default class TumblrCommand extends Command {
             const blog = args[2]
             if (!blog) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor({name: "tumblr", iconURL: "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", url: "https://www.tumblr.com/"})
+                .setAuthor({name: "tumblr", iconURL: "https://kisaragi.moe/assets/embed/tumblr.png", url: "https://www.tumblr.com/"})
                 .setTitle(`**Tumblr Search** ${discord.getEmoji("chinoSmug")}`), "You must provide a blog name.")
             }
             const data = await (tumblr.blogPosts(blog) as any)
@@ -64,7 +64,7 @@ export default class TumblrCommand extends Command {
             avatar = info.avatar?.[0]?.url
             const tumblrEmbed = embeds.createEmbed()
             tumblrEmbed
-            .setAuthor({name: "tumblr", iconURL: "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", url: "https://www.tumblr.com/"})
+            .setAuthor({name: "tumblr", iconURL: "https://kisaragi.moe/assets/embed/tumblr.png", url: "https://www.tumblr.com/"})
             .setTitle(`**Tumblr Search** ${discord.getEmoji("chinoSmug")}`)
             .setURL(info.url)
             .setImage(info.theme.header_image)
@@ -87,7 +87,7 @@ export default class TumblrCommand extends Command {
         }
         if (!posts?.[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "tumblr", iconURL: "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", url: "https://www.tumblr.com/"})
+            .setAuthor({name: "tumblr", iconURL: "https://kisaragi.moe/assets/embed/tumblr.png", url: "https://www.tumblr.com/"})
             .setTitle(`**Tumblr Search** ${discord.getEmoji("chinoSmug")}`))
         }
         for (let i = 0; i < posts.length; i++) {
@@ -98,7 +98,7 @@ export default class TumblrCommand extends Command {
             const link = post.link_url ? post.link_url : (post.type === "photo" ? post.image_permalink : (post.type === "video" ? post.permalink_url : post.short_url))
             const tumblrEmbed = embeds.createEmbed()
             tumblrEmbed
-            .setAuthor({name: "tumblr", iconURL: "https://cdn2.iconfinder.com/data/icons/social-icon-3/512/social_style_3_tumblr-512.png", url: "https://www.tumblr.com/"})
+            .setAuthor({name: "tumblr", iconURL: "https://kisaragi.moe/assets/embed/tumblr.png", url: "https://www.tumblr.com/"})
             .setTitle(`**Tumblr Search** ${discord.getEmoji("chinoSmug")}`)
             .setImage(image)
             .setThumbnail(avatar)

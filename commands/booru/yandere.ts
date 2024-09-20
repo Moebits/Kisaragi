@@ -52,7 +52,7 @@ export default class Yandere extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const yandere = Booru("yande.re", process.env.KONACHAN_API_KEY as any)
         const yandereEmbed = embeds.createEmbed()
-        .setAuthor({name: "yandere", iconURL: "https://i.imgur.com/5DiQTnW.png"})
+        .setAuthor({name: "yandere", iconURL: "https://kisaragi.moe/assets/embed/yandere.png"})
         .setTitle(`**Yandere Image**`)
 
         let tags: string[] = []
@@ -98,7 +98,7 @@ export default class Yandere extends Command {
                 if (!perms.checkNSFW(true)) continue
             }
             const yandereEmbed = embeds.createEmbed()
-            .setAuthor({name: "yandere", iconURL: "https://i.imgur.com/5DiQTnW.png"})
+            .setAuthor({name: "yandere", iconURL: "https://kisaragi.moe/assets/embed/yandere.png"})
             .setTitle(`**Yandere Image**`)
             .setURL(`https://yande.re/post/show/${img.id}`)
             .setDescription(

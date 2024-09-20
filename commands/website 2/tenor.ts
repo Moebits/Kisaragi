@@ -67,7 +67,7 @@ export default class TenorCommand extends Command {
         for (let i = 0; i < result.length; i++) {
             const tenorEmbed = embeds.createEmbed()
             tenorEmbed
-            .setAuthor({name: "tenor", iconURL: "https://tenor.com/assets/img/tenor-app-icon.png", url: "https://tenor.com/"})
+            .setAuthor({name: "tenor", iconURL: "https://kisaragi.moe/assets/embed/tenor.png", url: "https://tenor.com/"})
             .setTitle(`**Tenor Gif** ${discord.getEmoji("raphi")}`)
             .setURL(result[i].itemurl)
             .setDescription(

@@ -47,7 +47,7 @@ export default class Steam extends Command {
         const data = await axios.get(`https://store.steampowered.com/api/storesearch/?term=${term}&l=english&cc=US`, {headers: this.headers}).then((r) => r.data)
         if (!data.items?.[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "steam", iconURL: "https://toppng.com/uploads/preview/steam-logo-png-steam-logo-black-11563631869uaboooqq1t.png", url: "https://store.steampowered.com/"})
+            .setAuthor({name: "steam", iconURL: "https://kisaragi.moe/assets/embed/steam.png", url: "https://store.steampowered.com/"})
             .setTitle(`**Steam Store Search** ${discord.getEmoji("gabYes")}`))
         }
         const ids = data.items.map((i: any) => i.id)
@@ -58,7 +58,7 @@ export default class Steam extends Command {
             const desc = Functions.checkChar(Functions.decodeEntities(Functions.cleanHTML(details.about_the_game)), 1000, " ")
             const steamEmbed = embeds.createEmbed()
             steamEmbed
-            .setAuthor({name: "steam", iconURL: "https://toppng.com/uploads/preview/steam-logo-png-steam-logo-black-11563631869uaboooqq1t.png", url: "https://store.steampowered.com/"})
+            .setAuthor({name: "steam", iconURL: "https://kisaragi.moe/assets/embed/steam.png", url: "https://store.steampowered.com/"})
             .setTitle(`**Steam Store Search** ${discord.getEmoji("gabYes")}`)
             .setURL(`https://store.steampowered.com/app/${details.steam_appid}/`)
             .setImage(details.header_image)

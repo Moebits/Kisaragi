@@ -89,7 +89,7 @@ export default class TempBan extends Command {
                 continue
             }
             tempBanEmbed
-            .setAuthor({name: "tempban", iconURL: "https://cdn.discordapp.com/emojis/579870079735562261.png"})
+            .setAuthor({name: "tempban", iconURL: "https://kisaragi.moe/assets/embed/tempban.png"})
             .setTitle(`**You Were Temp Banned** ${discord.getEmoji("kannaFU")}`)
             .setDescription(`${discord.getEmoji("star")}_You were temp banned from **${message.guild!.name}** for **${rawTime}**, reason:_ **${reason}**`)
             const dm = await user.createDM()
@@ -139,7 +139,7 @@ export default class TempBan extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         tempBanEmbed
-        .setAuthor({name: "tempban", iconURL: "https://cdn.discordapp.com/emojis/579870079735562261.png"})
+        .setAuthor({name: "tempban", iconURL: "https://kisaragi.moe/assets/embed/tempban.png"})
         .setTitle(`**Member Temp Banned** ${discord.getEmoji("kannaFU")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully temp banned ${members.join(", ")} for the duration **${rawTime}** for reason:_ **${reason}**`)
         return this.reply(tempBanEmbed)

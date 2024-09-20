@@ -72,7 +72,7 @@ export default class Trace extends Command {
             const traceEmbed = embeds.createEmbed()
             traceEmbed
             .setURL(video)
-            .setAuthor({name: "trace.moe", iconURL: "https://trace.moe/favicon128.png", url: "https://trace.moe/"})
+            .setAuthor({name: "trace.moe", iconURL: "https://kisaragi.moe/assets/embed/trace.png", url: "https://trace.moe/"})
             .setTitle(`Anime Scene Search ${discord.getEmoji("vigneXD")}`)
             .setImage(image)
             .setDescription(
@@ -94,7 +94,7 @@ export default class Trace extends Command {
 
         if (!traceArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "trace.moe", iconURL: "https://trace.moe/favicon128.png", url: "https://trace.moe/"})
+            .setAuthor({name: "trace.moe", iconURL: "https://kisaragi.moe/assets/embed/trace.png", url: "https://trace.moe/"})
             .setTitle(`Anime Scene Search ${discord.getEmoji("vigneXD")}`), "If this is a hentai, try searching in a NSFW channel.")
         }
         if (traceArray.length === 1) {

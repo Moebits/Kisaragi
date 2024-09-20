@@ -46,7 +46,7 @@ export default class Itunes extends Command {
 
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "itunes", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", url: "https://fnd.io/"})
+            .setAuthor({name: "itunes", iconURL: "https://kisaragi.moe/assets/embed/itunes.png", url: "https://fnd.io/"})
             .setTitle(`**Itunes Search** ${discord.getEmoji("raphiSmile")}`))
         }
 
@@ -59,7 +59,7 @@ export default class Itunes extends Command {
             const seconds = Math.floor((track.trackTimeMillis % (minutes*60000)) / 1000)
             const itunesEmbed = embeds.createEmbed()
             itunesEmbed
-            .setAuthor({name: "itunes", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", url: "https://fnd.io/"})
+            .setAuthor({name: "itunes", iconURL: "https://kisaragi.moe/assets/embed/itunes.png", url: "https://fnd.io/"})
             .setTitle(`**Itunes Search** ${discord.getEmoji("raphiSmile")}`)
             .setImage(track.artworkUrl100)
             .setURL(track.trackViewUrl)
@@ -78,7 +78,7 @@ export default class Itunes extends Command {
 
         if (!itunesArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "itunes", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO8t3qIR99IBrICWL90wj39v_OOEXEWu3fscyh8HCAGIRj9jZi", url: "https://fnd.io/"})
+            .setAuthor({name: "itunes", iconURL: "https://kisaragi.moe/assets/embed/itunes.png", url: "https://fnd.io/"})
             .setTitle(`**Itunes Search** ${discord.getEmoji("raphiSmile")}`))
         }
 

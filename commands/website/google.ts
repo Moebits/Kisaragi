@@ -48,7 +48,7 @@ export default class Google extends Command {
         let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "google", iconURL: "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", url: "https://www.google.com/"})
+            .setAuthor({name: "google", iconURL: "https://kisaragi.moe/assets/embed/google.png", url: "https://www.google.com/"})
             .setTitle(`**Google Search** ${discord.getEmoji("raphi")}`))
         }
 
@@ -73,7 +73,7 @@ export default class Google extends Command {
         for (let i = 0; i < resultArray.length; i+=10) {
             const googleEmbed = embeds.createEmbed()
             googleEmbed
-            .setAuthor({name: "google", iconURL: "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", url: "https://www.google.com/"})
+            .setAuthor({name: "google", iconURL: "https://kisaragi.moe/assets/embed/google.png", url: "https://www.google.com/"})
             .setTitle(`**Google Search** ${discord.getEmoji("raphi")}`)
             .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
             .setImage(link)

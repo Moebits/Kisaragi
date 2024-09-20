@@ -50,7 +50,7 @@ export default class Roles extends Command {
                 `${discord.getEmoji("star")}_Creation Date:_ ${Functions.formatDate(createdArray[value])}\n`
             }
             userEmbed
-            .setAuthor({name: "discord.js", iconURL: "https://avatars.githubusercontent.com/u/26492485?s=200&v=4"})
+            .setAuthor({name: "discord.js", iconURL: "https://kisaragi.moe/assets/embed/roles.png"})
             .setTitle(`**${message.guild!.name}'s Roles** ${discord.getEmoji("vigneDead")}`)
             .setThumbnail(message.guild!.iconURL({extension: "png"}) as string)
             .setDescription(`${discord.getEmoji("star")}_Role Count:_ **${roleArray.length}**\n` + description)

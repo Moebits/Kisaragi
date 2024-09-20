@@ -79,7 +79,7 @@ export default class Wikipedia extends Command {
             const attachment = new AttachmentBuilder(path.join(__dirname, "../../assets/misc/images/dump/wiki.png"))
             const wikiEmbed = embeds.createEmbed()
             wikiEmbed
-            .setAuthor({name: "wikipedia", iconURL: "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", url: "https://en.wikipedia.org/wiki/Main_Page"})
+            .setAuthor({name: "wikipedia", iconURL: "https://kisaragi.moe/assets/embed/wikipedia.png", url: "https://en.wikipedia.org/wiki/Main_Page"})
             .setTitle(`**Wikipedia Article** ${discord.getEmoji("raphi")}`)
             .setURL(page.raw.fullurl)
             .setImage(`attachment://wiki.png`)
@@ -93,7 +93,7 @@ export default class Wikipedia extends Command {
         } else {
             const wikiEmbed = embeds.createEmbed()
             wikiEmbed
-            .setAuthor({name: "wikipedia", iconURL: "https://s3.amazonaws.com/static.graphemica.com/glyphs/i500s/000/010/228/original/0057-500x500.png", url: "https://en.wikipedia.org/wiki/Main_Page"})
+            .setAuthor({name: "wikipedia", iconURL: "https://kisaragi.moe/assets/embed/wikipedia.png", url: "https://en.wikipedia.org/wiki/Main_Page"})
             .setTitle(`**Wikipedia Article** ${discord.getEmoji("raphi")}`)
             .setURL(page.raw.fullurl)
             .setImage(mainImg)

@@ -70,7 +70,7 @@ export default class Undeafen extends Command {
                 continue
             }
             undeafenEmbed
-            .setAuthor({name: "undeafen", iconURL: "https://d29fhpw069ctt2.cloudfront.net/icon/image/39276/preview.png"})
+            .setAuthor({name: "undeafen", iconURL: "https://kisaragi.moe/assets/embed/undeafen.png"})
             .setTitle(`**You Were Undeafened** ${discord.getEmoji("mexShrug")}`)
             .setDescription(`${discord.getEmoji("star")}_You were undeafened from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -85,7 +85,7 @@ export default class Undeafen extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         undeafenEmbed
-        .setAuthor({name: "undeafen", iconURL: "https://d29fhpw069ctt2.cloudfront.net/icon/image/39276/preview.png"})
+        .setAuthor({name: "undeafen", iconURL: "https://kisaragi.moe/assets/embed/undeafen.png"})
         .setTitle(`**Member Undeafened** ${discord.getEmoji("mexShrug")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully undeafened ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(undeafenEmbed)

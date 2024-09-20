@@ -53,7 +53,7 @@ export default class Konachan extends Command {
         const konachan = Booru("konachan.com", process.env.KONACHAN_API_KEY as any)
         const konachanEmbed = embeds.createEmbed()
         .setTitle(`**Konachan Image**`)
-        .setAuthor({name: "konachan", iconURL: "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE"})
+        .setAuthor({name: "konachan", iconURL: "https://kisaragi.moe/assets/embed/konachan.png"})
 
         let tags: string[] = []
         if (!args[1]) {
@@ -99,7 +99,7 @@ export default class Konachan extends Command {
             }
             const konachanEmbed = embeds.createEmbed()
             .setTitle(`**Konachan Image**`)
-            .setAuthor({name: "konachan", iconURL: "https://lh3.googleusercontent.com/U_veaCEvWC-ebOBbwhUhTJtNdDKyAhKsJXmDFeZ2xV2jaoIPNbRhzK7nGlKpQtusbHE"})
+            .setAuthor({name: "konachan", iconURL: "https://kisaragi.moe/assets/embed/konachan.png"})
             .setURL(`https://konachan.com/post/show/${img.id}`)
             .setDescription(
                 `${discord.getEmoji("star")}_Source:_ ${img.source}\n` +

@@ -91,7 +91,7 @@ export default class TempMute extends Command {
                 continue
             }
             tempMuteEmbed
-            .setAuthor({name: "tempmute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
+            .setAuthor({name: "tempmute", iconURL: "https://kisaragi.moe/assets/embed/tempmute.png"})
             .setTitle(`**You Were Temp Muted** ${discord.getEmoji("sagiriBleh")}`)
             .setDescription(`${discord.getEmoji("star")}_You were temp muted from **${message.guild!.name}** for **${rawTime}**, reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -141,7 +141,7 @@ export default class TempMute extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         tempMuteEmbed
-        .setAuthor({name: "tempmute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
+        .setAuthor({name: "tempmute", iconURL: "https://kisaragi.moe/assets/embed/tempmute.png"})
         .setTitle(`**Member Temp Muted** ${discord.getEmoji("sagiriBleh")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully temp muted ${members.join(", ")} for the duration **${rawTime}** for reason:_ **${reason}**`)
         return this.reply(tempMuteEmbed)

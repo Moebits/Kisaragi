@@ -97,7 +97,7 @@ export default class ReverseImage extends Command {
             result = await Functions.promiseTimeout(10000, this.revSearch(image))
         } catch {
             const revEmbed = embeds.createEmbed()
-            .setAuthor({name: "reverse image search", iconURL: "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", url: "https://images.google.com/"})
+            .setAuthor({name: "reverse image search", iconURL: "https://kisaragi.moe/assets/embed/reverseimage.png", url: "https://images.google.com/"})
             .setTitle(`**Google Reverse Image Search** ${discord.getEmoji("gabSip")}`)
             .setURL(`https://www.google.com/searchbyimage?image_url=${image}`)
             .setThumbnail(image!)
@@ -111,7 +111,7 @@ export default class ReverseImage extends Command {
         for (let i = 0; i < result.length; i++) {
             const revEmbed = embeds.createEmbed()
             revEmbed
-            .setAuthor({name: "reverse image search", iconURL: "https://cdn3.iconfinder.com/data/icons/digital-and-internet-marketing-1/130/22-512.png", url: "https://images.google.com/"})
+            .setAuthor({name: "reverse image search", iconURL: "https://kisaragi.moe/assets/embed/reverseimage.png", url: "https://images.google.com/"})
             .setTitle(`**Google Reverse Image Search** ${discord.getEmoji("gabSip")}`)
             .setURL(`https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url=${image}`)
             .setThumbnail(image!)

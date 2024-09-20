@@ -48,7 +48,7 @@ export default class Oauth2 extends Command {
             await SQLQuery.revokeOuath2(message.author.id)
             const oauth2Embed = embeds.createEmbed()
             oauth2Embed
-            .setAuthor({name: "discord oauth", iconURL: "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png"})
+            .setAuthor({name: "discord oauth", iconURL: "https://kisaragi.moe/assets/embed/oauth2.png"})
             .setTitle(`**Discord Oauth 2.0** ${discord.getEmoji("gabYes")}`)
             .setDescription(`${discord.getEmoji("star")}Revoked your oauth token! This also deletes your twitter oauth token, if it was set.`)
             return this.reply(oauth2Embed)
@@ -63,7 +63,7 @@ export default class Oauth2 extends Command {
         const url = `https://discord.com/api/oauth2/authorize?client_id=${discord.user!.id}&redirect_uri=${encodeURIComponent(redirect)}&state=${state}&response_type=code&scope=guilds.join%20email%20connections%20guilds%20identify%20gdm.join`
         const oauth2Embed = embeds.createEmbed()
         oauth2Embed
-        .setAuthor({name: "discord oauth", iconURL: "https://cdn3.iconfinder.com/data/icons/popular-services-brands-vol-2/512/discord-512.png"})
+        .setAuthor({name: "discord oauth", iconURL: "https://kisaragi.moe/assets/embed/oauth2.png"})
         .setTitle(`**Discord Oauth 2.0** ${discord.getEmoji("gabYes")}`)
         .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) to authenticate additional permissions over your discord account for oauth2 commands (ex. Sending you email, adding you to a guild, creating a group dm).`)
         return this.reply(oauth2Embed)

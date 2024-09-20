@@ -45,7 +45,7 @@ export default class Define extends Command {
         let word = Functions.combineArgs(args, 1)
         if (!word) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
+            .setAuthor({name: "merriam webster", iconURL: "https://kisaragi.moe/assets/embed/define.png"})
             .setTitle(`**Dictionary** ${discord.getEmoji("raphi")}`))
         }
 
@@ -58,7 +58,7 @@ export default class Define extends Command {
             result = await dictionary.lookup(word.trim())
         } catch (error: any) {
             defineEmbed
-            .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
+            .setAuthor({name: "merriam webster", iconURL: "https://kisaragi.moe/assets/embed/define.png"})
             .setTitle(`**Dictionary** ${discord.getEmoji("raphi")}`)
             .setDescription(`No definitions were found. Here are some word suggestions: \n${error.suggestions.join(", ")}`)
             return this.reply(defineEmbed)
@@ -104,7 +104,7 @@ export default class Define extends Command {
             }
         }
         defineEmbed
-        .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
+        .setAuthor({name: "merriam webster", iconURL: "https://kisaragi.moe/assets/embed/define.png"})
         .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`)
         .setURL(`https://www.merriam-webster.com/dictionary/${result[0].word.replace(/ /g, "_")}`)
         .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))

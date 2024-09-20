@@ -70,7 +70,7 @@ export default class VCMute extends Command {
                 continue
             }
             vcmuteEmbed
-            .setAuthor({name: "voice mute", iconURL: "https://www.kindpng.com/picc/m/499-4998592_mute-microphone-comments-mute-mic-icon-png-transparent.png"})
+            .setAuthor({name: "voice mute", iconURL: "https://kisaragi.moe/assets/embed/vcmute.png"})
             .setTitle(`**You Were Voice Muted** ${discord.getEmoji("vigneDead")}`)
             .setDescription(`${discord.getEmoji("star")}_You were voice muted from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -85,7 +85,7 @@ export default class VCMute extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         vcmuteEmbed
-        .setAuthor({name: "voice mute", iconURL: "https://www.kindpng.com/picc/m/499-4998592_mute-microphone-comments-mute-mic-icon-png-transparent.png"})
+        .setAuthor({name: "voice mute", iconURL: "https://kisaragi.moe/assets/embed/vcmute.png"})
         .setTitle(`**Member Voice Muted** ${discord.getEmoji("vigneDead")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully voice muted ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(vcmuteEmbed)

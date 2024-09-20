@@ -67,7 +67,7 @@ export default class Award extends Command {
 
         const awardEmbed = embeds.createEmbed()
         awardEmbed
-        .setAuthor({name: "award", iconURL: "https://www.wakeed.org/wp-content/uploads/2016/07/award-icon-06.png"})
+        .setAuthor({name: "award", iconURL: "https://kisaragi.moe/assets/embed/award.png"})
         .setTitle(`**Point Award** ${discord.getEmoji("karenSugoi")}`)
         .setDescription(
             `${discord.getEmoji("star")}Awarded **${amount}** points to ${users.map((u) => `<@${u}>`).join(", ")}!`

@@ -46,7 +46,7 @@ export default class Jisho extends Command {
         let query = Functions.combineArgs(args, 1).trim()
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "jisho", iconURL: "https://d2.alternativeto.net/dist/icons/denshi-jisho_107085.png?width=200&height=200&mode=crop&upscale=false"})
+            .setAuthor({name: "jisho", iconURL: "https://kisaragi.moe/assets/embed/jisho.png"})
             .setTitle(`**Jisho Lookup** ${discord.getEmoji("kannaBear")}`))
         }
 
@@ -56,7 +56,7 @@ export default class Jisho extends Command {
         const result = await axios.get(`https://jisho.org/api/v1/search/words?keyword=${query}`, {headers}).then((r) => r.data.data)
         if (!result[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "jisho", iconURL: "https://d2.alternativeto.net/dist/icons/denshi-jisho_107085.png?width=200&height=200&mode=crop&upscale=false"})
+            .setAuthor({name: "jisho", iconURL: "https://kisaragi.moe/assets/embed/jisho.png"})
             .setTitle(`**Jisho Lookup** ${discord.getEmoji("kannaBear")}`))
         }
         const jishoArray: EmbedBuilder[] = []
@@ -74,7 +74,7 @@ export default class Jisho extends Command {
             }
             const jishoEmbed = embeds.createEmbed()
             jishoEmbed
-            .setAuthor({name: "jisho", iconURL: "https://d2.alternativeto.net/dist/icons/denshi-jisho_107085.png?width=200&height=200&mode=crop&upscale=false"})
+            .setAuthor({name: "jisho", iconURL: "https://kisaragi.moe/assets/embed/jisho.png"})
             .setTitle(`**Jisho Lookup** ${discord.getEmoji("kannaBear")}`)
             .setURL(`https://jisho.org/search/${query}`)
             .setDescription(

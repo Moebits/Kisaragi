@@ -60,7 +60,7 @@ export default class Unblacklist extends Command {
         if (!perms.checkBotDev()) return
         const blacklistEmbed = embeds.createEmbed()
         blacklistEmbed
-        .setAuthor({name: "unblacklist", iconURL: "https://cdn.discordapp.com/emojis/685492185235325005.png"})
+        .setAuthor({name: "unblacklist", iconURL: "https://kisaragi.moe/assets/embed/unblacklist.png"})
         .setTitle(`**Unblacklist** ${discord.getEmoji("tohruSmug")}`)
         let setGuild = true
         if (args[1] === "user") {

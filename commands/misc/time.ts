@@ -75,7 +75,7 @@ export default class Time extends Command {
 
         const timeEmbed = embeds.createEmbed()
         timeEmbed
-        .setAuthor({name: "time", iconURL: "https://i.imgur.com/5RSmgv7.png"})
+        .setAuthor({name: "time", iconURL: "https://kisaragi.moe/assets/embed/time.png"})
         .setTitle(`**Time** ${discord.getEmoji("yaoi")}`)
         .setDescription(
             `${discord.getEmoji("star")}_City:_ **${cityName}**\n` +

@@ -63,7 +63,7 @@ export default class Bots extends Command {
             const repo = bot.openSource ? `[**Github Repository**](${bot.openSource})\n` : ""
             const invite = bot.botInvite ? `[**Bot Invite**](${bot.botInvite})\n` : ""
             botEmbed
-            .setAuthor({name: "discord bots", iconURL: "https://discord.bots.gg/img/logo_transparent.png", url: "https://discord.bots.gg/"})
+            .setAuthor({name: "discord bots", iconURL: "https://kisaragi.moe/assets/embed/bots.png", url: "https://discord.bots.gg/"})
             .setTitle(`**Discord Bot Search** ${discord.getEmoji("raphi")}`)
             .setURL(`https://discord.bots.gg/bots/${bot.clientId}`)
             .setThumbnail(bot.avatarURL)

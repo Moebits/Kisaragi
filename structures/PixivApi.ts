@@ -343,9 +343,6 @@ export class PixivApi {
             case "stockings":
                 emoji = "gabrielLick"
                 break
-            case "stockings/lewd":
-                emoji = "madokaLewd"
-                break
             default:
                 emoji = "chinoSmug"
         }

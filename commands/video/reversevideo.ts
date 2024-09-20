@@ -84,7 +84,7 @@ export default class ReverseVideo extends Command {
         await video.reverseVideo(src, dest)
         const videoEmbed = embeds.createEmbed()
         videoEmbed
-        .setAuthor({name: "ffmpeg", iconURL: "https://cdn.iconscout.com/icon/free/png-512/ffmpeg-569477.png", url: "https://www.ffmpeg.org/"})
+        .setAuthor({name: "ffmpeg", iconURL: "https://kisaragi.moe/assets/embed/reversevideo.png", url: "https://www.ffmpeg.org/"})
         .setTitle(`**Reverse Video** ${discord.getEmoji("karenSugoi")}`)
         .setDescription(`${discord.getEmoji("star")}Reversed this video! ${discord.getEmoji("chinoSmug")}`)
 

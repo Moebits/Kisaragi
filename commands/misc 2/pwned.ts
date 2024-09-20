@@ -47,7 +47,7 @@ export default class Pwned extends Command {
             for (let i = 0; i < result.length; i++) {
                 const pwnedEmbed = embeds.createEmbed()
                 pwnedEmbed
-                .setAuthor({name: "have i been pwned", iconURL: "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png"})
+                .setAuthor({name: "have i been pwned", iconURL: "https://kisaragi.moe/assets/embed/pwned.png"})
                 .setTitle(`**Pwned Databases** ${discord.getEmoji("sagiriBleh")}`)
                 .setURL("https://haveibeenpwned.com/PwnedWebsites")
                 .setThumbnail(result[i].LogoPath)
@@ -66,12 +66,12 @@ export default class Pwned extends Command {
         const result = await breach(query)
         if (!result?.LogoPath) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "have i been pwned", iconURL: "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png"})
+            .setAuthor({name: "have i been pwned", iconURL: "https://kisaragi.moe/assets/embed/pwned.png"})
             .setTitle(`**Pwned Databases** ${discord.getEmoji("sagiriBleh")}`))
         }
         const pwnedEmbed = embeds.createEmbed()
         pwnedEmbed
-                .setAuthor({name: "have i been pwned", iconURL: "https://pbs.twimg.com/profile_images/414900961371377664/eulz0TdB_400x400.png"})
+                .setAuthor({name: "have i been pwned", iconURL: "https://kisaragi.moe/assets/embed/pwned.png"})
                 .setTitle(`**Pwned Databases** ${discord.getEmoji("sagiriBleh")}`)
                 .setURL("https://haveibeenpwned.com/PwnedWebsites")
                 .setThumbnail(result!.LogoPath)

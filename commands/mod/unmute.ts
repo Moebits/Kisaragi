@@ -75,14 +75,14 @@ export default class Unmute extends Command {
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             muteEmbed
-            .setAuthor({name: "unmute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
+            .setAuthor({name: "unmute", iconURL: "https://kisaragi.moe/assets/embed/unmute.png"})
             .setTitle(`**You Were Unmuted** ${discord.getEmoji("mexShrug")}`)
             .setDescription(`${discord.getEmoji("star")}_You were unmuted in ${message.guild!.name} for reason:_ **${reason}**`)
             await dm.send({embeds: [muteEmbed]}).catch(() => null)
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         muteEmbed
-        .setAuthor({name: "unmute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
+        .setAuthor({name: "unmute", iconURL: "https://kisaragi.moe/assets/embed/unmute.png"})
         .setTitle(`**Member Unmuted** ${discord.getEmoji("mexShrug")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully unmuted ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(muteEmbed)

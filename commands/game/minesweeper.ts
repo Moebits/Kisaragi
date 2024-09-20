@@ -82,7 +82,7 @@ export default class Minesweeper extends Command {
         const embeds = new Embeds(this.discord, this.message)
         const mineEmbed = embeds.createEmbed()
         mineEmbed
-        .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
+        .setAuthor({name: "minesweeper", iconURL: "https://kisaragi.moe/assets/embed/minesweeper.png"})
         .setTitle(`**Minesweeper** ${discord.getEmoji("kannaXD")}`)
         .setDescription(this.replaceEmoji(this.stringifyBoard(board)))
         return mineEmbed
@@ -151,7 +151,7 @@ export default class Minesweeper extends Command {
             }
             if (Number.isNaN(rows) || Number.isNaN(columns)) {
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
+                .setAuthor({name: "minesweeper", iconURL: "https://kisaragi.moe/assets/embed/minesweeper.png"})
                 .setTitle(`**Minesweeper** ${discord.getEmoji("kannaXD")}`), "The row or column count is invalid.")
             }
             const mine = new minesweeper({
@@ -163,7 +163,7 @@ export default class Minesweeper extends Command {
             const game = mine.start() as string
             const mineEmbed = embeds.createEmbed()
             mineEmbed
-            .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
+            .setAuthor({name: "minesweeper", iconURL: "https://kisaragi.moe/assets/embed/minesweeper.png"})
             .setTitle(`**Minesweeper** ${discord.getEmoji("kannaXD")}`)
             .setDescription(this.replaceEmoji(this.replaceEmoji(game)))
             return this.reply(mineEmbed)
@@ -178,7 +178,7 @@ export default class Minesweeper extends Command {
         }
         if (Number.isNaN(rows) || Number.isNaN(columns)) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "minesweeper", iconURL: "https://cdn.imgbin.com/20/16/25/imgbin-minesweeper-computer-icons-bing-maps-video-game-mines-Fqt5GviK7nxmkGFJS0LA8Evpe.jpg"})
+            .setAuthor({name: "minesweeper", iconURL: "https://kisaragi.moe/assets/embed/minesweeper.png"})
             .setTitle(`**Minesweeper** ${discord.getEmoji("kannaXD")}`), "The row or column count is invalid.")
         }
         const mine = new minesweeper({

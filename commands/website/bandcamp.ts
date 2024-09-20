@@ -42,7 +42,7 @@ export default class Bandcamp extends Command {
         const embeds = new Embeds(discord, message)
         const bandcampEmbed = embeds.createEmbed()
         bandcampEmbed
-        .setAuthor({name: "bandcamp", iconURL: "https://s4.bcbits.com/img/favicon/favicon-32x32.png", url: "https://bandcamp.com/"})
+        .setAuthor({name: "bandcamp", iconURL: "https://kisaragi.moe/assets/embed/bandcamp.png", url: "https://bandcamp.com/"})
         .setTitle(`**Bandcamp Search** ${discord.getEmoji("raphi")}`)
         .setImage(album.imageUrl ?? "")
         .setURL(album.url)
@@ -64,7 +64,7 @@ export default class Bandcamp extends Command {
         const embeds = new Embeds(discord, message)
         const bandcampEmbed = embeds.createEmbed()
         bandcampEmbed
-        .setAuthor({name: "bandcamp", iconURL: "https://s4.bcbits.com/img/favicon/favicon-32x32.png", url: "https://bandcamp.com/"})
+        .setAuthor({name: "bandcamp", iconURL: "https://kisaragi.moe/assets/embed/bandcamp.png", url: "https://bandcamp.com/"})
         .setTitle(`**Bandcamp Search** ${discord.getEmoji("raphi")}`)
         .setImage(track.imageUrl ?? "")
         .setURL(track.url)
@@ -85,7 +85,7 @@ export default class Bandcamp extends Command {
         const embeds = new Embeds(discord, message)
         const bandcampEmbed = embeds.createEmbed()
         bandcampEmbed
-        .setAuthor({name: "bandcamp", iconURL: "https://s4.bcbits.com/img/favicon/favicon-32x32.png", url: "https://bandcamp.com/"})
+        .setAuthor({name: "bandcamp", iconURL: "https://kisaragi.moe/assets/embed/bandcamp.png", url: "https://bandcamp.com/"})
         .setTitle(`**Bandcamp Search** ${discord.getEmoji("raphi")}`)
         .setImage(artist.imageUrl ?? "")
         .setURL(artist.url)

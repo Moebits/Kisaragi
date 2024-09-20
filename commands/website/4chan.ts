@@ -91,7 +91,7 @@ export default class $4chan extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const perms = new Permission(discord, message)
         const badChanEmbed = embeds.createEmbed()
-        .setAuthor({name: "4chan", iconURL: "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", url: "https://www.4chan.org/"})
+        .setAuthor({name: "4chan", iconURL: "https://kisaragi.moe/assets/embed/4chan.png", url: "https://www.4chan.org/"})
         .setTitle(`**4chan Search** ${discord.getEmoji("vigneDead")}`)
         if (!perms.checkNSFW()) return
 
@@ -120,7 +120,7 @@ export default class $4chan extends Command {
             for (const i in results) {
                 const chanEmbed = embeds.createEmbed()
                 chanEmbed
-                .setAuthor({name: "4chan", iconURL: "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", url: "https://www.4chan.org/"})
+                .setAuthor({name: "4chan", iconURL: "https://kisaragi.moe/assets/embed/4chan.png", url: "https://www.4chan.org/"})
                 .setTitle(`**4chan Image Search** ${discord.getEmoji("vigneDead")}`)
                 .setURL(url)
                 .setImage(results[i])
@@ -149,7 +149,7 @@ export default class $4chan extends Command {
             const chanArray: EmbedBuilder[] = []
             for (const i in posts) {
                 const chanEmbed = embeds.createEmbed()
-                .setAuthor({name: "4chan", iconURL: "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", url: "https://www.4chan.org/"})
+                .setAuthor({name: "4chan", iconURL: "https://kisaragi.moe/assets/embed/4chan.png", url: "https://www.4chan.org/"})
                 chanEmbed
                 .setTitle(`${posts[0].sub ? posts[0].sub : `**4chan Search**`} ${discord.getEmoji("vigneDead")}`)
                 .setURL(`${url}#p${posts[i].no}`)
@@ -187,7 +187,7 @@ export default class $4chan extends Command {
         const chanArray: EmbedBuilder[] = []
         for (const i in posts) {
             const chanEmbed = embeds.createEmbed()
-            .setAuthor({name: "4chan", iconURL: "https://seeklogo.com/images/1/4chan-logo-620B8734A9-seeklogo.com.png", url: "https://www.4chan.org/"})
+            .setAuthor({name: "4chan", iconURL: "https://kisaragi.moe/assets/embed/4chan.png", url: "https://www.4chan.org/"})
             chanEmbed
             .setTitle(`${posts[0].sub ? posts[0].sub : threads[random].semantic_url} ${discord.getEmoji("vigneDead")}`)
             .setURL(`${url}#p${posts[i].no}`)

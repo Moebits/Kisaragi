@@ -66,7 +66,7 @@ export default class Kancolle extends Command {
         const id = res.data?.items[0]?.id
         if (!id) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "kancolle", iconURL: "https://upload.wikimedia.org/wikipedia/en/0/02/Kantai_Collection_logo.png"})
+            .setAuthor({name: "kancolle", iconURL: "https://kisaragi.moe/assets/embed/kancolle.png"})
             .setTitle(`**Kancolle Search** ${discord.getEmoji("poiHug")}`))
         }
         const res2 = await axios.get(`https://kancolle.fandom.com/api/v1/Articles/AsSimpleJson?id=${id}`, {headers})
@@ -95,7 +95,7 @@ export default class Kancolle extends Command {
         for (let i = 0; i < filtered.length; i++) {
             const kancolleEmbed = embeds.createEmbed()
             kancolleEmbed
-            .setAuthor({name: "kancolle", iconURL: "https://upload.wikimedia.org/wikipedia/en/0/02/Kantai_Collection_logo.png"})
+            .setAuthor({name: "kancolle", iconURL: "https://kisaragi.moe/assets/embed/kancolle.png"})
             .setTitle(`**Kancolle Search** ${discord.getEmoji("poiHug")}`)
             .setURL(`https://kancolle.fandom.com/wiki/${girl}`)
             .setThumbnail(thumb)

@@ -70,7 +70,7 @@ export default class Ban extends Command {
                 continue
             }
             banEmbed
-            .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
+            .setAuthor({name: "ban", iconURL: "https://kisaragi.moe/assets/embed/ban.png"})
             .setTitle(`**You Were Banned** ${discord.getEmoji("kannaFU")}`)
             .setDescription(`${discord.getEmoji("star")}_You were banned from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await user.createDM()
@@ -85,7 +85,7 @@ export default class Ban extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         banEmbed
-        .setAuthor({name: "ban", iconURL: "https://discordemoji.com/assets/emoji/bancat.png"})
+        .setAuthor({name: "ban", iconURL: "https://kisaragi.moe/assets/embed/ban.png"})
         .setTitle(`**Member Banned** ${discord.getEmoji("kannaFU")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully banned ${members.join(", ")} for reason:_ **${reason}**`)
         this.reply(banEmbed)

@@ -70,7 +70,7 @@ export default class Softban extends Command {
                 continue
             }
             softBanEmbed
-            .setAuthor({name: "softban", iconURL: "https://cdn.discordapp.com/emojis/593867503055274006.png"})
+            .setAuthor({name: "softban", iconURL: "https://kisaragi.moe/assets/embed/softban.png"})
             .setTitle(`**You Were Soft Banned** ${discord.getEmoji("sagiriBleh")}`)
             .setDescription(`${discord.getEmoji("star")}_You were soft banned from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await user.createDM()
@@ -87,7 +87,7 @@ export default class Softban extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         softBanEmbed
-        .setAuthor({name: "softban", iconURL: "https://cdn.discordapp.com/emojis/593867503055274006.png"})
+        .setAuthor({name: "softban", iconURL: "https://kisaragi.moe/assets/embed/softban.png"})
         .setTitle(`**Member Soft Banned** ${discord.getEmoji("sagiriBleh")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully soft banned ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(softBanEmbed)

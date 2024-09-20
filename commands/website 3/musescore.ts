@@ -48,7 +48,7 @@ export default class Musescore extends Command {
         const scores = json.store.page.data.scores
         if (!scores[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "musescore", iconURL: "https://s3.amazonaws.com/s.musescore.org/about/images/design_MU3/musescore_sticker+11%403x.png", url: "https://musescore.com/"})
+            .setAuthor({name: "musescore", iconURL: "https://kisaragi.moe/assets/embed/musescore.png", url: "https://musescore.com/"})
             .setTitle(`**Musescore Search** ${discord.getEmoji("raphi")}`))
         }
         const museArray: EmbedBuilder[] = []
@@ -66,7 +66,7 @@ export default class Musescore extends Command {
             const mp3 = `[**MP3**](http://musescore.com/static/musescore/scoredata/gen/${secret}/score.mp3)\n`
             const museEmbed = embeds.createEmbed()
             museEmbed
-            .setAuthor({name: "musescore", iconURL: "https://s3.amazonaws.com/s.musescore.org/about/images/design_MU3/musescore_sticker+11%403x.png", url: "https://musescore.com/"})
+            .setAuthor({name: "musescore", iconURL: "https://kisaragi.moe/assets/embed/musescore.png", url: "https://musescore.com/"})
             .setTitle(`**Musescore Search** ${discord.getEmoji("raphi")}`)
             .setURL(url)
             .setThumbnail(avatar)

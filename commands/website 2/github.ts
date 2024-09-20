@@ -71,7 +71,7 @@ export default class Github extends Command {
             const input = this.user || Functions.combineArgs(args, 2)
             if (!input) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor({name: "github", iconURL: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", url: "https://github.com/"})
+                .setAuthor({name: "github", iconURL: "https://kisaragi.moe/assets/embed/github.png", url: "https://github.com/"})
                 .setTitle(`**Github Search** ${discord.getEmoji("raphi")}`))
             }
             const user = github.getUser(input.trim())
@@ -79,7 +79,7 @@ export default class Github extends Command {
             const result = json.data
             const githubEmbed = embeds.createEmbed()
             githubEmbed
-            .setAuthor({name: "github", iconURL: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", url: "https://github.com/"})
+            .setAuthor({name: "github", iconURL: "https://kisaragi.moe/assets/embed/github.png", url: "https://github.com/"})
             .setTitle(`**Github Search** ${discord.getEmoji("raphi")}`)
             .setURL(result.html_url)
             .setDescription(
@@ -101,13 +101,13 @@ export default class Github extends Command {
         const input = this.repo || Functions.combineArgs(args, 1)
         if (!input) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "github", iconURL: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", url: "https://github.com/"})
+            .setAuthor({name: "github", iconURL: "https://kisaragi.moe/assets/embed/github.png", url: "https://github.com/"})
             .setTitle(`**Github Search** ${discord.getEmoji("raphi")}`))
         }
         const search = github.search({q: input.trim()})
         const json = await search.forRepositories().catch(() => {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "github", iconURL: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", url: "https://github.com/"})
+            .setAuthor({name: "github", iconURL: "https://kisaragi.moe/assets/embed/github.png", url: "https://github.com/"})
             .setTitle(`**Github Search** ${discord.getEmoji("raphi")}`))
         })
         const result = json.data
@@ -118,7 +118,7 @@ export default class Github extends Command {
             const url = regex.exec(source.data)
             const githubEmbed = embeds.createEmbed()
             githubEmbed
-            .setAuthor({name: "github", iconURL: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", url: "https://github.com/"})
+            .setAuthor({name: "github", iconURL: "https://kisaragi.moe/assets/embed/github.png", url: "https://github.com/"})
             .setTitle(`**Github Search** ${discord.getEmoji("raphi")}`)
             .setURL(result[i].html_url)
             .setDescription(

@@ -75,12 +75,12 @@ export default class Genshin extends Command {
         if (!name) name = json?.name
         if (!name) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "genshin impact", iconURL: "https://static.wikia.nocookie.net/gensin-impact/images/8/80/Genshin_Impact.png"})
+            .setAuthor({name: "genshin impact", iconURL: "https://kisaragi.moe/assets/embed/genshin.png"})
             .setTitle(`**Genshin Impact Search** ${discord.getEmoji("kleePout")}`))
         }
         const genshinEmbed = embeds.createEmbed()
         genshinEmbed
-        .setAuthor({name: "genshin impact", iconURL: "https://static.wikia.nocookie.net/gensin-impact/images/8/80/Genshin_Impact.png"})
+        .setAuthor({name: "genshin impact", iconURL: "https://kisaragi.moe/assets/embed/genshin.png"})
         .setTitle(`**Genshin Impact Search** ${discord.getEmoji("kleePout")}`)
         .setURL(`https://genshin-impact.fandom.com/wiki/${name}`)
         .setThumbnail(`https://genshin.jmp.blue/characters/${json.id}/${thumb}`)

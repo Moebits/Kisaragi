@@ -102,7 +102,7 @@ export default class Video2GIF extends Command {
         await video.video2Gif(start, length, src, dest)
         const videoEmbed = embeds.createEmbed()
         videoEmbed
-        .setAuthor({name: "ffmpeg", iconURL: "https://cdn.iconscout.com/icon/free/png-512/ffmpeg-569477.png", url: "https://www.ffmpeg.org/"})
+        .setAuthor({name: "ffmpeg", iconURL: "https://kisaragi.moe/assets/embed/video2gif.png", url: "https://www.ffmpeg.org/"})
         .setTitle(`**Video to GIF** ${discord.getEmoji("karenSugoi")}`)
         .setDescription(`${discord.getEmoji("star")}Converted the video to a gif! ${discord.getEmoji("chinoSmug")}`)
 

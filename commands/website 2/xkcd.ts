@@ -73,7 +73,7 @@ export default class Xkcd extends Command {
         const cleanText = comic.transcript.replace(/\[\[/g, "**").replace(/\]\]/g, "**").replace(/{{/g, "_").replace(/}}/g, "_")
         const checkedText = Functions.checkChar(cleanText, 2000, ",")
         xkcdEmbed
-        .setAuthor({name: "xkcd", iconURL: "https://images-na.ssl-images-amazon.com/images/I/51qKVpRPnDL._SY355_.png", url: "https://xkcd.com/"})
+        .setAuthor({name: "xkcd", iconURL: "https://kisaragi.moe/assets/embed/xkcd.png", url: "https://xkcd.com/"})
         .setURL(`https://xkcd.com/${comic.num}/`)
         .setTitle(`**xkcd Comic** ${discord.getEmoji("kannaSpook")}`)
         .setDescription(

@@ -85,7 +85,7 @@ export default class Record extends Command {
             const link = await images.upload(mp3Dest)
             const recordingEmbed = embeds.createEmbed()
             recordingEmbed
-            .setAuthor({name: "recording", iconURL: "https://previews.123rf.com/images/aayam4d/aayam4d1907/aayam4d190701016/127713669-record-button-icon-audio-video-recording-start-button-vector-art-illustration.jpg"})
+            .setAuthor({name: "recording", iconURL: "https://kisaragi.moe/assets/embed/record.png"})
             .setTitle(`**Voice Recording** ${discord.getEmoji("chinoSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}Recorded your voice! This file is too large for attachments, download it [**here**](${link}).`
@@ -95,7 +95,7 @@ export default class Record extends Command {
             const attachment = new AttachmentBuilder(mp3Dest)
             const recordingEmbed = embeds.createEmbed()
             recordingEmbed
-            .setAuthor({name: "recording", iconURL: "https://previews.123rf.com/images/aayam4d/aayam4d1907/aayam4d190701016/127713669-record-button-icon-audio-video-recording-start-button-vector-art-illustration.jpg"})
+            .setAuthor({name: "recording", iconURL: "https://kisaragi.moe/assets/embed/record.png"})
             .setTitle(`**Voice Recording** ${discord.getEmoji("chinoSmug")}`)
             .setDescription(
                 `${discord.getEmoji("star")}Here is your voice recording!`

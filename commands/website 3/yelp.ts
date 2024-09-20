@@ -63,7 +63,7 @@ export default class Yelp extends Command {
                 reviews += `**${review.user.name}** - ${review.text}\n`
             }
             const yelpEmbed = embeds.createEmbed()
-            .setAuthor({name: "yelp", iconURL: "https://www.freepnglogos.com/uploads/yelp-logo-17.png", url: "https://www.yelp.com/"})
+            .setAuthor({name: "yelp", iconURL: "https://kisaragi.moe/assets/embed/yelp.png", url: "https://www.yelp.com/"})
             .setTitle(`**Yelp Search** ${discord.getEmoji("aquaUp")}`)
             .setThumbnail(business.image_url)
             .setURL(business.url)
@@ -83,7 +83,7 @@ export default class Yelp extends Command {
 
         if (!yelpArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "yelp", iconURL: "https://www.freepnglogos.com/uploads/yelp-logo-17.png", url: "https://www.yelp.com/"})
+            .setAuthor({name: "yelp", iconURL: "https://kisaragi.moe/assets/embed/yelp.png", url: "https://www.yelp.com/"})
             .setTitle(`**Yelp Search** ${discord.getEmoji("aquaUp")}`))
         }
         if (yelpArray.length === 1) {

@@ -52,7 +52,7 @@ export default class Danbooru extends Command {
         const headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"}
         const danbooru = Booru("danbooru", process.env.DANBOORU_API_KEY as any)
         const danbooruEmbed = embeds.createEmbed()
-        .setAuthor({name: "danbooru", iconURL: "https://i.imgur.com/88HP9ik.png"})
+        .setAuthor({name: "danbooru", iconURL: "https://kisaragi.moe/assets/embed/danbooru.png"})
         .setTitle(`**Danbooru Search**`)
 
         let tags: string[] = []
@@ -98,7 +98,7 @@ export default class Danbooru extends Command {
                 if (discord.checkMuted(message)) continue
             }
             const danbooruEmbed = embeds.createEmbed()
-            .setAuthor({name: "danbooru", iconURL: "https://i.imgur.com/88HP9ik.png"})
+            .setAuthor({name: "danbooru", iconURL: "https://kisaragi.moe/assets/embed/danbooru.png"})
             .setTitle(`**Danbooru Search**`)
             .setURL(`https://danbooru.donmai.us/posts/${img.id}`)
             .setDescription(

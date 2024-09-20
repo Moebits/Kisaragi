@@ -164,7 +164,7 @@ export default class Help extends Command {
                     .addFields([{name: `${discord.getEmoji(this.emojiMap[category])} ${Functions.toProperCase(category)} (${counter})`.trim(), value: help}])
                 }
                 dmEmbed
-                .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
+                .setAuthor({name: "help", iconURL: "https://kisaragi.moe/assets/embed/help.png"})
                 .setTitle(`**Help** ${discord.getEmoji("aquaUp")}`)
                 .setDescription(`_Reactions cannot be removed in dm's, so remove them yourself._`)
                 if (!discord.checkMuted(message)) dmEmbed.addFields([{name: `${discord.getEmoji("raphiSmile")} Additional Links`, value: `[Website](${config.website}) | [Invite](${config.invite.replace("CLIENTID", discord.user!.id)}) | [Source](${config.repo})`}])
@@ -194,7 +194,7 @@ export default class Help extends Command {
             const helpEmbed = embeds.createEmbed()
             helpEmbed
             .setTitle(`**${Functions.toProperCase(category)} Commands** ${discord.getEmoji(this.emojiMap[category])}`)
-            .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
+            .setAuthor({name: "help", iconURL: "https://kisaragi.moe/assets/embed/help.png"})
             .setImage(this.imageMap[category])
             .setThumbnail(discord.muted ? "" : this.thumbMap[category])
             .setDescription(

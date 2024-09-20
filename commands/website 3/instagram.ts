@@ -73,7 +73,7 @@ export default class Instagram extends Command {
             const name = args[2]
             if (!name) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
+                .setAuthor({name: "instagram", iconURL: "https://kisaragi.moe/assets/embed/instagram.png", url: "https://www.instagram.com/"})
                 .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`))
             }
             let html = ""
@@ -81,7 +81,7 @@ export default class Instagram extends Command {
                 html = await axios.get(`https://www.instagram.com/${name}`, {headers: this.headers}).then((r) => r.data)
             } catch {
                 return this.invalidQuery(embeds.createEmbed()
-                .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
+                .setAuthor({name: "instagram", iconURL: "https://kisaragi.moe/assets/embed/instagram.png", url: "https://www.instagram.com/"})
                 .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`))
             }
             const json = JSON.parse(html.match(/({"config":)((.|\n)*?)(?=;<\/script>)/g)?.[0]!)
@@ -99,7 +99,7 @@ export default class Instagram extends Command {
                 const image = post.display_url
                 const instagramEmbed = embeds.createEmbed()
                 instagramEmbed
-                .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
+                .setAuthor({name: "instagram", iconURL: "https://kisaragi.moe/assets/embed/instagram.png", url: "https://www.instagram.com/"})
                 .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`)
                 .setThumbnail(user.profile_pic_url_hd)
                 .setImage(image)
@@ -129,7 +129,7 @@ export default class Instagram extends Command {
             html = await axios.get(`https://www.instagram.com/explore/tags/${text}/`, {headers: this.headers}).then((r) => r.data)
         } catch {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
+            .setAuthor({name: "instagram", iconURL: "https://kisaragi.moe/assets/embed/instagram.png", url: "https://www.instagram.com/"})
             .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`))
         }
         const json = JSON.parse(html.match(/({"config":)((.|\n)*?)(?=;<\/script>)/g)?.[0]!)
@@ -146,7 +146,7 @@ export default class Instagram extends Command {
             const image = post.display_url
             const instagramEmbed = embeds.createEmbed()
             instagramEmbed
-            .setAuthor({name: "instagram", iconURL: "https://clipartart.com/images/new-instagram-clipart-15.jpg", url: "https://www.instagram.com/"})
+            .setAuthor({name: "instagram", iconURL: "https://kisaragi.moe/assets/embed/instagram.png", url: "https://www.instagram.com/"})
             .setTitle(`**Instagram Search** ${discord.getEmoji("gabBob")}`)
             .setURL(url)
             .setThumbnail(pfp)

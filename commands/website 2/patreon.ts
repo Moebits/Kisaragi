@@ -43,7 +43,7 @@ export default class Patreon extends Command {
         let query = Functions.combineArgs(args, 1).trim()
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "patreon", iconURL: "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg", url: "https://www.patreon.com/"})
+            .setAuthor({name: "patreon", iconURL: "https://kisaragi.moe/assets/embed/patreon.png", url: "https://www.patreon.com/"})
             .setTitle(`**Patreon Search** ${discord.getEmoji("raphi")}`), "You must provide a creator name.")
         }
         if (query.match(/patreon.com/)) {
@@ -52,7 +52,7 @@ export default class Patreon extends Command {
         const response = await axios.get(`https://www.patreon.com/${query}`, {headers})
         if (!response.data.match(/(?<="related": "https:\/\/www.patreon.com\/api\/campaigns\/)(.*?)(?=")/)) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "patreon", iconURL: "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg", url: "https://www.patreon.com/"})
+            .setAuthor({name: "patreon", iconURL: "https://kisaragi.moe/assets/embed/patreon.png", url: "https://www.patreon.com/"})
             .setTitle(`**Patreon Search** ${discord.getEmoji("raphi")}`))
         }
         const id = response.data.match(/(?<="related": "https:\/\/www.patreon.com\/api\/campaigns\/)(.*?)(?=")/)[0]
@@ -73,7 +73,7 @@ export default class Patreon extends Command {
         const yt = json.data?.included[0]?.attributes?.youtube
         const patreonEmbed = embeds.createEmbed()
         patreonEmbed
-        .setAuthor({name: "patreon", iconURL: "https://cdn.vox-cdn.com/thumbor/FkSiWSfqhyDOYUn05rHCljZPBwY=/0x0:1071x1047/1400x933/filters:focal(376x385:546x555):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/57898065/patreon.1512686514.jpg", url: "https://www.patreon.com/"})
+        .setAuthor({name: "patreon", iconURL: "https://kisaragi.moe/assets/embed/patreon.png", url: "https://www.patreon.com/"})
         .setTitle(`**Patreon Search** ${discord.getEmoji("raphi")}`)
         .setURL(url)
         .setImage(cover)

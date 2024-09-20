@@ -102,7 +102,7 @@ export default class JSONCommand extends Command {
 
         const jsonEmbed = embeds.createEmbed()
         jsonEmbed
-        .setAuthor({name: "json", iconURL: "https://community.cdn.kony.com/sites/default/files/icon-json.png"})
+        .setAuthor({name: "json", iconURL: "https://kisaragi.moe/assets/embed/json.png"})
         .setTitle(`**JSON Data** ${discord.getEmoji("kannaCurious")}`)
         .setURL(link)
         .setDescription(`${discord.getEmoji("star")}Find the JSON data [**here**](${link})`)

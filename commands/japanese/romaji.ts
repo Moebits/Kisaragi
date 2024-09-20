@@ -44,7 +44,7 @@ export default class Romaji extends Command {
         const input = Functions.combineArgs(args, 1)
         if (!input) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "kuroshiro", iconURL: "https://kuroshiro.org/kuroshiro.png"})
+            .setAuthor({name: "kuroshiro", iconURL: "https://kisaragi.moe/assets/embed/romaji.png"})
             .setTitle(`**Romaji Conversion** ${discord.getEmoji("kannaSip")}`))
         }
         const result = await kuroshiro.convert(input, {mode: "spaced", to: "romaji"})

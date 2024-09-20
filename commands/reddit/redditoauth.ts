@@ -47,7 +47,7 @@ export default class RedditOauth extends Command {
             await SQLQuery.revokeRedditOauth(message.author.id)
             const oauth2Embed = embeds.createEmbed()
             oauth2Embed
-            .setAuthor({name: "reddit oauth", iconURL: "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png"})
+            .setAuthor({name: "reddit oauth", iconURL: "https://kisaragi.moe/assets/embed/redditoauth.png"})
             .setTitle(`**Reddit Oauth 2.0** ${discord.getEmoji("mexShrug")}`)
             .setDescription(`${discord.getEmoji("star")}Revoked your reddit token!`)
             return this.reply(oauth2Embed)
@@ -61,7 +61,7 @@ export default class RedditOauth extends Command {
         const url = `https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&response_type=code&state=${state}&redirect_uri=${config.redditRedirect}&duration=permanent&scope=identity,read,save,subscribe,submit,edit,vote,flair`
         const redditOauthEmbed = embeds.createEmbed()
         redditOauthEmbed
-        .setAuthor({name: "reddit oauth", iconURL: "https://cdn0.iconfinder.com/data/icons/most-usable-logos/120/Reddit-512.png"})
+        .setAuthor({name: "reddit oauth", iconURL: "https://kisaragi.moe/assets/embed/redditoauth.png"})
         .setTitle(`**Reddit Oauth 2.0** ${discord.getEmoji("mexShrug")}`)
         .setDescription(`${discord.getEmoji("star")}Authorize Kisaragi Bot [**here**](${url}) in order to upvote, downvote, comment, and save posts and in order to subscribe to subreddits.`)
         return this.reply(redditOauthEmbed)

@@ -42,7 +42,7 @@ export default class Queue extends Command {
         for (let i = 0; i < queue.length; i++) {
             const embed = await audio.updateNowPlaying(i)
             embed
-            .setAuthor({name: "queue", iconURL: "https://clipartmag.com/images/musical-notes-png-11.png"})
+            .setAuthor({name: "queue", iconURL: "https://kisaragi.moe/assets/embed/queue.png"})
             .setTitle(`**Position #${i+1}** ${discord.getEmoji("gabYes")}`)
             queueArray.push(embed)
         }

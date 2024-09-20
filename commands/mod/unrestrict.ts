@@ -75,14 +75,14 @@ export default class Unrestrict extends Command {
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             restrictEmbed
-            .setAuthor({name: "unrestrict", iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png"})
+            .setAuthor({name: "unrestrict", iconURL: "https://kisaragi.moe/assets/embed/unrestrict.png"})
             .setTitle(`**You Were Unrestricted** ${discord.getEmoji("yes")}`)
             .setDescription(`${discord.getEmoji("star")}_You were unrestricted in ${message.guild!.name} for reason:_ **${reason}**`)
             await discord.channelSend(dm, restrictEmbed).catch(() => null)
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         restrictEmbed
-        .setAuthor({name: "restrict", iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png"})
+        .setAuthor({name: "restrict", iconURL: "https://kisaragi.moe/assets/embed/unrestrict.png"})
         .setTitle(`**Member Unrestricted** ${discord.getEmoji("yes")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully unrestricted ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(restrictEmbed)

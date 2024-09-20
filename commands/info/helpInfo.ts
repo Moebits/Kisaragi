@@ -45,7 +45,7 @@ export default class HelpInfo extends Command {
         }
         helpInfoEmbed
         .setTitle(`**Command Help** ${discord.getEmoji("gabYes")}`)
-        .setAuthor({name: "help", iconURL: "https://i.imgur.com/qcSWLSf.png"})
+        .setAuthor({name: "help", iconURL: "https://kisaragi.moe/assets/embed/help.png"})
         .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))
         .setDescription(Functions.multiTrim(`
             ${discord.getEmoji("star")}_Name:_ **${name}**

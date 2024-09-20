@@ -70,7 +70,7 @@ export default class Kick extends Command {
                 continue
             }
             kickEmbed
-            .setAuthor({name: "kick", iconURL: "https://discordemoji.com/assets/emoji/4331_UmaruWave.png"})
+            .setAuthor({name: "kick", iconURL: "https://kisaragi.moe/assets/embed/kick.png"})
             .setTitle(`**You Were Kicked** ${discord.getEmoji("kannaFU")}`)
             .setDescription(`${discord.getEmoji("star")}_You were kicked from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -85,7 +85,7 @@ export default class Kick extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         kickEmbed
-        .setAuthor({name: "kick", iconURL: "https://discordemoji.com/assets/emoji/4331_UmaruWave.png"})
+        .setAuthor({name: "kick", iconURL: "https://kisaragi.moe/assets/embed/kick.png"})
         .setTitle(`**Member Kicked** ${discord.getEmoji("kannaFU")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully kicked ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(kickEmbed)

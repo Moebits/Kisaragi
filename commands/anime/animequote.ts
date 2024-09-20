@@ -66,7 +66,7 @@ export default class AnimeQuote extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
 
         const animeQuoteEmbed = embeds.createEmbed()
-        .setAuthor({name: "animequotes", iconURL: "https://discordemoji.com/assets/emoji/KannaCurious.png"})
+        .setAuthor({name: "animequotes", iconURL: "https://kisaragi.moe/assets/embed/animequote.png"})
         .setTitle(`**Anime Quote**`)
 
         if (!args[1]) {

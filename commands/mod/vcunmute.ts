@@ -70,7 +70,7 @@ export default class VCUnmute extends Command {
                 continue
             }
             vcunmuteEmbed
-            .setAuthor({name: "voice unmute", iconURL: "https://images.assetsdelivery.com/compings_v2/vectorgalaxy/vectorgalaxy1808/vectorgalaxy180807510.jpg"})
+            .setAuthor({name: "voice unmute", iconURL: "https://kisaragi.moe/assets/embed/vcunmute.png"})
             .setTitle(`**You Were Voice Unmuted** ${discord.getEmoji("aquaUp")}`)
             .setDescription(`${discord.getEmoji("star")}_You were voice unmuted from ${message.guild!.name} for reason:_ **${reason}**`)
             const dm = await member.createDM()
@@ -85,7 +85,7 @@ export default class VCUnmute extends Command {
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         vcunmuteEmbed
-        .setAuthor({name: "voice unmute", iconURL: "https://images.assetsdelivery.com/compings_v2/vectorgalaxy/vectorgalaxy1808/vectorgalaxy180807510.jpg"})
+        .setAuthor({name: "voice unmute", iconURL: "https://kisaragi.moe/assets/embed/vcunmute.png"})
         .setTitle(`**Member Voice Unmuted** ${discord.getEmoji("aquaUp")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully voice unmuted ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(vcunmuteEmbed)

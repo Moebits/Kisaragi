@@ -108,7 +108,7 @@ export default class Photoshop extends Command {
         // console.log(this.historyValues)
         const hsvEmbed = embeds.createEmbed()
         hsvEmbed
-        .setAuthor({name: "photoshop", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Adobe_Photoshop_CC_icon.svg/512px-Adobe_Photoshop_CC_icon.svg.png"})
+        .setAuthor({name: "photoshop", iconURL: "https://kisaragi.moe/assets/embed/photoshop.png"})
         .setTitle(`**Photoshop** ${this.discord.getEmoji("chinoSmug")}`)
         .setImage(url)
         .setURL(url)
@@ -200,7 +200,7 @@ export default class Photoshop extends Command {
         this.original = link
         this.originalEmbed = description
         hsvEmbed
-        .setAuthor({name: "photoshop", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Adobe_Photoshop_CC_icon.svg/512px-Adobe_Photoshop_CC_icon.svg.png"})
+        .setAuthor({name: "photoshop", iconURL: "https://kisaragi.moe/assets/embed/photoshop.png"})
         .setTitle(`**Photoshop** ${discord.getEmoji("chinoSmug")}`)
         .setImage(link)
         .setURL(link)

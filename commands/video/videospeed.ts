@@ -95,7 +95,7 @@ export default class VideoSpeed extends Command {
         await video.videoSpeed(factor, src, dest)
         const videoEmbed = embeds.createEmbed()
         videoEmbed
-        .setAuthor({name: "ffmpeg", iconURL: "https://cdn.iconscout.com/icon/free/png-512/ffmpeg-569477.png", url: "https://www.ffmpeg.org/"})
+        .setAuthor({name: "ffmpeg", iconURL: "https://kisaragi.moe/assets/embed/videospeed.png", url: "https://www.ffmpeg.org/"})
         .setTitle(`**Video Speed** ${discord.getEmoji("karenSugoi")}`)
         .setDescription(`${discord.getEmoji("star")}Changed the video speed by a factor of **${factor}x**! ${discord.getEmoji("chinoSmug")}`)
 

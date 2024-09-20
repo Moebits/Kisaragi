@@ -46,7 +46,7 @@ export default class Anime extends Command {
         if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         let query = Functions.combineArgs(args, 1)
         const animeEmbed = embeds.createEmbed()
-        .setAuthor({name: "kitsu", iconURL: "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4"})
+        .setAuthor({name: "kitsu", iconURL: "https://kisaragi.moe/assets/embed/anime.png"})
         .setTitle(`**Anime**`)
 
         if (!query) {
@@ -65,7 +65,7 @@ export default class Anime extends Command {
             return this.invalidQuery(animeEmbed, "You can try searching on the [**Kitsu Website**](https://kitsu.io/anime)")
         }
         animeEmbed
-        .setAuthor({name: "kitsu", iconURL: "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4"})
+        .setAuthor({name: "kitsu", iconURL: "https://kisaragi.moe/assets/embed/anime.png"})
         .setURL(`https://kitsu.io/anime/${data.attributes.slug}`)
         .setTitle(`**${data.attributes.titles.en_jp}**`)
         .setDescription(

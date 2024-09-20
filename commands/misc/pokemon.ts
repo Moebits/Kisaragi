@@ -40,7 +40,7 @@ export default class Pokemon extends Command {
         const stats = result.stats.map((s: any) => `${discord.getEmoji("star")}_${Functions.toProperCase(s.stat.name.replace(/-/g, " "))}:_ \`${s.base_stat}\``)
         const pokemonEmbed = embeds.createEmbed()
         pokemonEmbed
-        .setAuthor({name: "pokemon", iconURL: "https://i.pinimg.com/originals/50/e1/db/50e1db4684e6f697f93590950eb832f6.png", url: "https://pokeapi.co/"})
+        .setAuthor({name: "pokemon", iconURL: "https://kisaragi.moe/assets/embed/pokemon.png", url: "https://pokeapi.co/"})
         .setTitle(`**Pokemon Search** ${discord.getEmoji("vigneXD")}`)
         .setImage(result.sprites[image])
         .setDescription(
@@ -67,7 +67,7 @@ export default class Pokemon extends Command {
 
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "pokemon", iconURL: "https://i.pinimg.com/originals/50/e1/db/50e1db4684e6f697f93590950eb832f6.png", url: "https://pokeapi.co/"})
+            .setAuthor({name: "pokemon", iconURL: "https://kisaragi.moe/assets/embed/pokemon.png", url: "https://pokeapi.co/"})
             .setTitle(`**Pokemon Search** ${discord.getEmoji("vigneXD")}`))
         }
 
@@ -75,7 +75,7 @@ export default class Pokemon extends Command {
 
         if (!result.hasOwnProperty("name")) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "pokemon", iconURL: "https://i.pinimg.com/originals/50/e1/db/50e1db4684e6f697f93590950eb832f6.png", url: "https://pokeapi.co/"})
+            .setAuthor({name: "pokemon", iconURL: "https://kisaragi.moe/assets/embed/pokemon.png", url: "https://pokeapi.co/"})
             .setTitle(`**Pokemon Search** ${discord.getEmoji("vigneXD")}`))
         }
 

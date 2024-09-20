@@ -34,7 +34,7 @@ export default class TOS extends Command {
 
         const termsOfService = embeds.createEmbed()
         termsOfService
-        .setAuthor({name: "tos", iconURL: "https://kisaragi.moe/assets/icons/termsofservice.png"})
+        .setAuthor({name: "tos", iconURL: "https://kisaragi.moe/assets/embed/tos.png"})
         .setURL("https://kisaragi.moe/terms")
         .setTitle(`**Terms of Service** ${discord.getEmoji("kannaPat")}`)
         .setDescription(Functions.multiTrim(`

@@ -46,7 +46,7 @@ export default class Manga extends Command {
         const perms = new Permission(discord, message)
         let query = Functions.combineArgs(args, 1)
         const mangaEmbed = embeds.createEmbed()
-        .setAuthor({name: "kitsu", iconURL: "https://avatars0.githubusercontent.com/u/7648832?s=280&v=4"})
+        .setAuthor({name: "kitsu", iconURL: "https://kisaragi.moe/assets/embed/manga.png"})
         .setTitle(`**Manga** ${discord.getEmoji("gabYes")}`)
 
         if (!query) {

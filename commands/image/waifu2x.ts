@@ -111,7 +111,7 @@ export default class Waifu2x extends Command {
         }
         const waifuEmbed = embeds.createEmbed()
         waifuEmbed
-        .setAuthor({name: "waifu2x", iconURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9hWZ1ptE9IrNWOUqHzcf9OFD7RMMQEXeUwqpE3zCMB8PWD8Caeg"})
+        .setAuthor({name: "waifu2x", iconURL: "https://kisaragi.moe/assets/embed/waifu2x.png"})
         .setTitle(`**Waifu 2x Upscaling** ${discord.getEmoji("gabYes")}`)
         .setImage("attachment://upscaled.png")
         return this.reply(waifuEmbed, attachment)

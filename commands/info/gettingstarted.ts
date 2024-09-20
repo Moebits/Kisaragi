@@ -47,7 +47,7 @@ export default class GettingStarted extends Command {
         const guildOwner = await message.guild.fetchOwner()
         const joinEmbed = embeds.createEmbed()
         joinEmbed
-        .setAuthor({name: "getting started", iconURL: "https://i.kym-cdn.com/photos/images/facebook/001/415/932/f20.png"})
+        .setAuthor({name: "getting started", iconURL: "https://kisaragi.moe/assets/embed/gettingstarted.png"})
         .setTitle(`**Getting Started** ${discord.getEmoji("kisaragiBawls")}`)
         .setThumbnail(discord.user!.displayAvatarURL({extension: "png"}))
         .setDescription(

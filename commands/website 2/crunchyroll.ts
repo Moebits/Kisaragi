@@ -82,7 +82,7 @@ export default class Crunchyroll extends Command {
         const embeds = new Embeds(discord, this.message)
         const crunchyEmbed = embeds.createEmbed()
         crunchyEmbed
-        .setAuthor({name: "crunchyroll", iconURL: "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png", url: "https://www.crunchyroll.com/"})
+        .setAuthor({name: "crunchyroll", iconURL: "https://kisaragi.moe/assets/embed/crunchyroll.png", url: "https://www.crunchyroll.com/"})
         .setTitle(`**Crunchyroll Search** ${discord.getEmoji("himeHappy")}`)
         .setImage(season.images.poster_wide[0][season.images.poster_wide[0].length - 1].source)
         .setThumbnail(season.images.poster_tall[0][season.images.poster_tall[0].length - 1].source)
@@ -114,7 +114,7 @@ export default class Crunchyroll extends Command {
 
         if (!shows?.length) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "crunchyroll", iconURL: "https://www.groovypost.com/wp-content/uploads/2013/06/Crunchyroll-Apple-TV.png", url: "https://www.crunchyroll.com/"})
+            .setAuthor({name: "crunchyroll", iconURL: "https://kisaragi.moe/assets/embed/crunchyroll.png", url: "https://www.crunchyroll.com/"})
             .setTitle(`**Crunchyroll Search** ${discord.getEmoji("himeHappy")}`))
         }
 

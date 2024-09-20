@@ -45,7 +45,7 @@ export default class Feedback extends Command {
         if (!feedback) return message.reply(`What is the feedback that you want to send ${discord.getEmoji("kannaCurious")}`)
         const feedEmbed = embeds.createEmbed()
         feedEmbed
-        .setAuthor({name: "feedback", iconURL: "https://cdn0.iconfinder.com/data/icons/social-messaging-ui-color-and-lines-1/2/12-512.png"})
+        .setAuthor({name: "feedback", iconURL: "https://kisaragi.moe/assets/embed/feedback.png"})
         .setTitle(`**Bot Feedback** ${discord.getEmoji("tohruSmug")}`)
         .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
         .setDescription(

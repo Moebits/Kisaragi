@@ -45,7 +45,7 @@ export default class GoogleImageCommand extends Command {
         let query = Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "google images", iconURL: "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", url: "https://images.google.com/"})
+            .setAuthor({name: "google images", iconURL: "https://kisaragi.moe/assets/embed/images.png", url: "https://images.google.com/"})
             .setTitle(`**Image Search** ${discord.getEmoji("raphi")}`)
             )
         }
@@ -66,7 +66,7 @@ export default class GoogleImageCommand extends Command {
             const imageEmbed = embeds.createEmbed()
             const size = Math.floor(result[i].size/1024)
             imageEmbed
-            .setAuthor({name: "google images", iconURL: "https://cdn4.iconfinder.com/data/icons/new-google-logo-2015/400/new-google-favicon-512.png", url: "https://images.google.com/"})
+            .setAuthor({name: "google images", iconURL: "https://kisaragi.moe/assets/embed/images.png", url: "https://images.google.com/"})
             .setURL(result[i].url)
             .setTitle(`**Image Search** ${discord.getEmoji("raphi")}`)
             .setDescription(

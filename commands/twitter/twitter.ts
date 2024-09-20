@@ -77,14 +77,14 @@ export default class TwitterCommand extends Command {
             const name = this.user || Functions.combineArgs(args, 2)
             if (!name) {
                 return this.noQuery(embeds.createEmbed()
-                .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
+                .setAuthor({name: "twitter", iconURL: "https://kisaragi.moe/assets/embed/twitter.png", url: "https://twitter.com/"})
                 .setTitle(`**Twitter User** ${discord.getEmoji("aquaUp")}`))
             }
             const users = await twitter.get("users/lookup", {screen_name: name})
             const user = users[0]
             const twitterEmbed = embeds.createEmbed()
             twitterEmbed
-            .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
+            .setAuthor({name: "twitter", iconURL: "https://kisaragi.moe/assets/embed/twitter.png", url: "https://twitter.com/"})
             .setTitle(`**${user.name}** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://twitter.com/${user.screen_name}`)
             .setDescription(
@@ -106,7 +106,7 @@ export default class TwitterCommand extends Command {
         const query = this.search || Functions.combineArgs(args, 1)
         if (!query) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
+            .setAuthor({name: "twitter", iconURL: "https://kisaragi.moe/assets/embed/twitter.png", url: "https://twitter.com/"})
             .setTitle(`**Twitter Search** ${discord.getEmoji("aquaUp")}`))
         }
         const tweets = await twitter.get("search/tweets", {q: query})
@@ -118,7 +118,7 @@ export default class TwitterCommand extends Command {
             }
             const twitterEmbed = embeds.createEmbed()
             twitterEmbed
-            .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
+            .setAuthor({name: "twitter", iconURL: "https://kisaragi.moe/assets/embed/twitter.png", url: "https://twitter.com/"})
             .setTitle(`**Twitter Search** ${discord.getEmoji("aquaUp")}`)
             .setURL(`https://twitter.com/${tweets.statuses[i].user.screen_name}/status/${tweets.statuses[i].id_str}`)
             .setDescription(
@@ -135,7 +135,7 @@ export default class TwitterCommand extends Command {
         }
         if (!twitterArray[0]) {
             return this.invalidQuery(embeds.createEmbed()
-            .setAuthor({name: "twitter", iconURL: "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c53e.png", url: "https://twitter.com/"})
+            .setAuthor({name: "twitter", iconURL: "https://kisaragi.moe/assets/embed/twitter.png", url: "https://twitter.com/"})
             .setTitle(`**Twitter Search** ${discord.getEmoji("aquaUp")}`))
         }
         const msg = await embeds.createReactionEmbed(twitterArray, true, true)

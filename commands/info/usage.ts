@@ -76,7 +76,7 @@ export default class Usage extends Command {
             const usageArray: EmbedBuilder[] = []
             for (let i = 0; i < splits.length; i++) {
                 const usageEmbed = embeds.createEmbed()
-                .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
+                .setAuthor({name: "usage", iconURL: "https://kisaragi.moe/assets/embed/usage.png"})
                 .setTitle(`**Command Usage Statistics** ${discord.getEmoji("raphi")}`)
                 .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
                 .setDescription(splits[i])
@@ -131,7 +131,7 @@ export default class Usage extends Command {
             const usageArray: EmbedBuilder[] = []
             for (let i = 0; i < splits.length; i++) {
                 const usageEmbed = embeds.createEmbed()
-                .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
+                .setAuthor({name: "usage", iconURL: "https://kisaragi.moe/assets/embed/usage.png"})
                 .setTitle(titleText)
                 .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
                 .setDescription(splits[i])
@@ -174,7 +174,7 @@ export default class Usage extends Command {
             if (args[2]) {
                 if (!usage[args[2]]) return message.reply(`No usage data for this command ${discord.getEmoji("kannaFacepalm")}`)
                 const usageEmbed = embeds.createEmbed()
-                .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
+                .setAuthor({name: "usage", iconURL: "https://kisaragi.moe/assets/embed/usage.png"})
                 .setTitle(titleText)
                 .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
                 .setDescription(
@@ -191,7 +191,7 @@ export default class Usage extends Command {
             const usageArray: EmbedBuilder[] = []
             for (let i = 0; i < splits.length; i++) {
                 const usageEmbed = embeds.createEmbed()
-                .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
+                .setAuthor({name: "usage", iconURL: "https://kisaragi.moe/assets/embed/usage.png"})
                 .setTitle(titleText)
                 .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
                 .setDescription(splits[i])
@@ -211,7 +211,7 @@ export default class Usage extends Command {
         if (!usage) usage = 0
 
         const usageEmbed = embeds.createEmbed()
-        .setAuthor({name: "usage", iconURL: "https://cdn4.iconfinder.com/data/icons/web-hosting-2-2/32/CPU_Activity-512.png"})
+        .setAuthor({name: "usage", iconURL: "https://kisaragi.moe/assets/embed/usage.png"})
         .setTitle(`**Command Usage Statistics** ${discord.getEmoji("raphi")}`)
         .setThumbnail(message.author.displayAvatarURL({extension: "png"}))
         .setDescription(

@@ -83,7 +83,7 @@ export default class Neko extends Command {
             const image = result[i]
             const nekoEmbed = embeds.createEmbed()
             nekoEmbed
-            .setAuthor({name: "nekos.moe", iconURL: "https://nekos.moe/static/favicon/favicon-32x32.png", url: "https://nekos.moe/"})
+            .setAuthor({name: "nekos.moe", iconURL: "https://kisaragi.moe/assets/embed/neko.png", url: "https://nekos.moe/"})
             .setTitle(`Neko Image ${discord.getEmoji("tohruSmug")}`)
             .setURL(`https://nekos.moe/post/${image.id}`)
             .setImage(`https://nekos.moe/image/${image.id}`)

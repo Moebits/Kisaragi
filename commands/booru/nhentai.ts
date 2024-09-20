@@ -57,7 +57,7 @@ export default class $nHentai extends Command {
         for (let i = 0; i < doujin.pages.length; i++) {
             const nhentaiEmbed = this.embeds.createEmbed()
             nhentaiEmbed
-            .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
+            .setAuthor({name: "nhentai", iconURL: "https://kisaragi.moe/assets/embed/nhentai.png"})
             .setTitle(`**${doujin.titles.english}**`)
             .setURL(doujin.url)
             .setDescription(
@@ -119,7 +119,7 @@ export default class $nHentai extends Command {
                 const result = await nhentai.search(tag)
                 if (!result.doujins[0]) {
                     const nHentaiEmbed = this.embeds.createEmbed()
-                    .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
+                    .setAuthor({name: "nhentai", iconURL: "https://kisaragi.moe/assets/embed/nhentai.png"})
                     .setTitle(`**nHentai Search**`)
                     return this.invalidQuery(nHentaiEmbed, "Try searching on the [**nhentai Website**](https://nhentai.net/).")
                 }
@@ -131,7 +131,7 @@ export default class $nHentai extends Command {
                     doujin = result.doujins[index]
                     if (counter >= result.doujins.length) {
                         return this.invalidQuery(this.embeds.createEmbed()
-                        .setAuthor({name: "nhentai", iconURL: "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"})
+                        .setAuthor({name: "nhentai", iconURL: "https://kisaragi.moe/assets/embed/nhentai.png"})
                         .setTitle(`**nHentai Search**`))
                     }
                     counter++

@@ -50,7 +50,7 @@ export default class Users extends Command {
                 `${discord.getEmoji("star")}_Join Date:_ ${Functions.formatDate(joinArray[value])}\n`
             }
             userEmbed
-            .setAuthor({name: "discord.js", iconURL: "https://avatars.githubusercontent.com/u/26492485?s=200&v=4"})
+            .setAuthor({name: "discord.js", iconURL: "https://kisaragi.moe/assets/embed/users.png"})
             .setTitle(`**${message.guild!.name}'s Members** ${discord.getEmoji("vigneDead")}`)
             .setThumbnail(message.guild!.iconURL({extension: "png"}) as string)
             .setDescription(`${discord.getEmoji("star")}_Member Count:_ **${message.guild!.memberCount}**\n` + description)

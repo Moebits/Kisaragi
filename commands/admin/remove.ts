@@ -74,7 +74,7 @@ export default class Remove extends Command {
                 await channel.delete(reason)
                 const removeEmbed = embeds.createEmbed()
                 removeEmbed
-                .setAuthor({name: "remove", iconURL: "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png"})
+                .setAuthor({name: "remove", iconURL: "https://kisaragi.moe/assets/embed/remove.png"})
                 .setTitle(`**Channel Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
                 .setDescription(`The channel **#${channelName}** was deleted for reason: **${reason}**`)
                 return this.reply(removeEmbed)
@@ -99,7 +99,7 @@ export default class Remove extends Command {
                 await role.delete(reason)
                 const removeEmbed = embeds.createEmbed()
                 removeEmbed
-                .setAuthor({name: "remove", iconURL: "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png"})
+                .setAuthor({name: "remove", iconURL: "https://kisaragi.moe/assets/embed/remove.png"})
                 .setTitle(`**Role Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
                 .setDescription(`The role **${roleName}** was deleted for reason: **${reason}**`)
                 return this.reply(removeEmbed)
@@ -123,7 +123,7 @@ export default class Remove extends Command {
                 await emoji.delete(reason)
                 const removeEmbed = embeds.createEmbed()
                 removeEmbed
-                .setAuthor({name: "remove", iconURL: "https://discordemoji.com/assets/emoji/1644_MonikaThinking.png"})
+                .setAuthor({name: "remove", iconURL: "https://kisaragi.moe/assets/embed/remove.png"})
                 .setTitle(`**Emoji Deletion** ${discord.getEmoji("tohruThumbsUp")}`)
                 .setDescription(`The emoji **${emojiName}** was deleted for reason: **${reason}**`)
                 return this.reply(removeEmbed)

@@ -45,7 +45,7 @@ export default class Thesaurus extends Command {
         let word = Functions.combineArgs(args, 1)
         if (!word) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
+            .setAuthor({name: "merriam webster", iconURL: "https://kisaragi.moe/assets/embed/thesaurus.png"})
             .setTitle(`**Word Lookup** ${discord.getEmoji("raphi")}`))
         }
 
@@ -58,7 +58,7 @@ export default class Thesaurus extends Command {
             result = await thesaurus.lookup(word.trim())
         } catch (error: any) {
             thesaurusEmbed
-            .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
+            .setAuthor({name: "merriam webster", iconURL: "https://kisaragi.moe/assets/embed/thesaurus.png"})
             .setTitle(`**Thesaurus** ${discord.getEmoji("raphi")}`)
             .setDescription(`No synonyms were found. Here are some word suggestions: \n${error.suggestions.join(", ")}`)
             return this.reply(thesaurusEmbed)
@@ -96,7 +96,7 @@ export default class Thesaurus extends Command {
         }
 
         thesaurusEmbed
-        .setAuthor({name: "merriam webster", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Merriam-Webster_logo.svg/1200px-Merriam-Webster_logo.svg.png"})
+        .setAuthor({name: "merriam webster", iconURL: "https://kisaragi.moe/assets/embed/thesaurus.png"})
         .setTitle(`**Thesaurus** ${discord.getEmoji("raphi")}`)
         .setURL(`https://www.merriam-webster.com/thesaurus/${result[0].word.replace(/ /g, "_")}`)
         .setThumbnail(message.author!.displayAvatarURL({extension: "png"}))

@@ -6,7 +6,6 @@ import {Embeds} from "./../../structures/Embeds"
 import {Functions} from "./../../structures/Functions"
 import {Images} from "./../../structures/Images"
 import {Kisaragi} from "./../../structures/Kisaragi"
-import kawaii from "../../assets/json/kawaii.json"
 
 export default class Chibi extends Command {
     constructor(discord: Kisaragi, message: Message) {
@@ -37,10 +36,9 @@ export default class Chibi extends Command {
         const embeds = new Embeds(discord, message)
         const images = new Images(discord, message)
         const perms = new Permission(discord, message)
-        if (discord.checkMuted(message)) if (!perms.checkNSFW()) return
         const imageArray: EmbedBuilder[] = []
 
-        const links = Functions.shuffleArray(kawaii.chibi).slice(0, 20)
+        const links = await images.fetch("chibi", 20)
         for (let i = 0; i < links.length; i++) {
             await Functions.timeout(100)
             const imageEmbed = embeds.createEmbed()

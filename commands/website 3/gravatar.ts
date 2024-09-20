@@ -47,7 +47,7 @@ export default class Gravatar extends Command {
         if (message instanceof Message && message.channel instanceof TextChannel) await message.channel.bulkDelete(2)
         const hash = md5(email.trim().toLowerCase())
         const gravatarEmbed = embeds.createEmbed()
-        .setAuthor({name: "gravatar", iconURL: "https://cdn.wpbeginner.com/wp-content/uploads/2012/08/gravatarlogo.jpg", url: "https://en.gravatar.com/"})
+        .setAuthor({name: "gravatar", iconURL: "https://kisaragi.moe/assets/embed/gravatar.png", url: "https://en.gravatar.com/"})
         .setTitle(`**Gravatar Profile Picture** ${discord.getEmoji("kannaSpook")}`)
         .setImage(`https://www.gravatar.com/avatar/${hash}?size=500`)
         await this.reply("Here is your gravatar profile picture")

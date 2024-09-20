@@ -80,14 +80,14 @@ export default class Restrict extends Command {
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             restrictEmbed
-            .setAuthor({name: "restrict", iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png"})
+            .setAuthor({name: "restrict", iconURL: "https://kisaragi.moe/assets/embed/restrict.png"})
             .setTitle(`**You Were Restricted** ${discord.getEmoji("no")}`)
             .setDescription(`${discord.getEmoji("star")}_You were restricted in ${message.guild!.name} for reason:_ **${reason}**`)
             await discord.channelSend(dm, restrictEmbed)
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         restrictEmbed
-        .setAuthor({name: "restrict", iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/mozilla/36/no-entry-sign_1f6ab.png"})
+        .setAuthor({name: "restrict", iconURL: "https://kisaragi.moe/assets/embed/restrict.png"})
         .setTitle(`**Member Restricted** ${discord.getEmoji("no")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully restricted ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(restrictEmbed)

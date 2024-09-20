@@ -59,7 +59,7 @@ export default class YoutubeCommand extends Command {
         const keywords = channel.brandingSettings.channel.keywords
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed
-        .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
+        .setAuthor({name: "youtube", iconURL: "https://kisaragi.moe/assets/embed/youtube.png", url: "https://www.youtube.com/"})
         .setTitle(`**${channel.snippet.title}** ${discord.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/channel/${channel.id}`)
         .setDescription(
@@ -88,7 +88,7 @@ export default class YoutubeCommand extends Command {
         }
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed
-        .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
+        .setAuthor({name: "youtube", iconURL: "https://kisaragi.moe/assets/embed/youtube.png", url: "https://www.youtube.com/"})
         .setTitle(`**${playlist.snippet.title}** ${discord.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/playlist?list=${playlist.id}`)
         .setDescription(
@@ -115,7 +115,7 @@ export default class YoutubeCommand extends Command {
         const ytChannel = await youtube.channels.get(video.snippet.channelId)
         const youtubeEmbed = embeds.createEmbed()
         youtubeEmbed
-        .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
+        .setAuthor({name: "youtube", iconURL: "https://kisaragi.moe/assets/embed/youtube.png", url: "https://www.youtube.com/"})
         .setTitle(`**${video.snippet.title}** ${discord.getEmoji("kannaWave")}`)
         .setURL(`https://www.youtube.com/watch?=${video.id}`)
         .setDescription(
@@ -140,7 +140,7 @@ export default class YoutubeCommand extends Command {
         const youtube = new yt(process.env.GOOGLE_API_KEY!)
         if (!args[1]) {
             return this.noQuery(embeds.createEmbed()
-            .setAuthor({name: "youtube", iconURL: "https://cdn4.iconfinder.com/data/icons/social-media-2210/24/Youtube-512.png", url: "https://www.youtube.com/"})
+            .setAuthor({name: "youtube", iconURL: "https://kisaragi.moe/assets/embed/youtube.png", url: "https://www.youtube.com/"})
             .setTitle(`**Youtube Search** ${discord.getEmoji("kannaWave")}`))
         }
 

@@ -80,14 +80,14 @@ export default class Mute extends Command {
             members.push(`<@${member.id}>`)
             const dm = await member.createDM()
             muteEmbed
-            .setAuthor({name: "mute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
+            .setAuthor({name: "mute", iconURL: "https://kisaragi.moe/assets/embed/mute.png"})
             .setTitle(`**You Were Muted** ${discord.getEmoji("sagiriBleh")}`)
             .setDescription(`${discord.getEmoji("star")}_You were muted in ${message.guild!.name} for reason:_ **${reason}**`)
             await discord.channelSend(dm, muteEmbed).catch(() => null)
         }
         if (!members[0]) return this.reply(`Invalid users ${discord.getEmoji("kannaFacepalm")}`)
         muteEmbed
-        .setAuthor({name: "mute", iconURL: "https://images.emojiterra.com/mozilla/512px/1f507.png"})
+        .setAuthor({name: "mute", iconURL: "https://kisaragi.moe/assets/embed/mute.png"})
         .setTitle(`**Member Muted** ${discord.getEmoji("sagiriBleh")}`)
         .setDescription(`${discord.getEmoji("star")}_Successfully muted ${members.join(", ")} for reason:_ **${reason}**`)
         return this.reply(muteEmbed)
