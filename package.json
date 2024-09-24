@@ -59,7 +59,7 @@
     "discord.js-minesweeper": "^1.1.0",
     "dotenv": "^16.4.5",
     "emoji-regex": "^10.3.0",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "figlet": "^1.7.0",
     "flickr-sdk": "^3.9.0",
     "fluent-ffmpeg": "^2.1.3",
