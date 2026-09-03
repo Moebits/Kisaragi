@@ -164,7 +164,7 @@ export class Images {
             return attachment
         }
 
-        function wrapText(context: any, txt: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+        function wrapText(context: Canvas.SKRSContext2D, txt: string, x: number, y: number, maxWidth: number, lineHeight: number) {
             const cars = txt.split("\n")
             for (let i = 0; i < cars.length; i++) {
                 let line = ""

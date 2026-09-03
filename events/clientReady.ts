@@ -10,7 +10,7 @@ import {ActivityType} from "discord.js"
 import {Kisaragi} from "../structures/Kisaragi"
 import {SQLQuery} from "../structures/SQLQuery"
 
-export default class Ready {
+export default class ClientReady {
     constructor(private readonly discord: Kisaragi) {}
 
     public run = async () => {

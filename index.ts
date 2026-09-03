@@ -20,7 +20,6 @@ const discord = new Kisaragi({
     intents: [
         GatewayIntentBits.Guilds, 
         GatewayIntentBits.GuildMembers, 
-        GatewayIntentBits.GuildPresences,
         GatewayIntentBits.GuildModeration,
         GatewayIntentBits.GuildVoiceStates,
         GatewayIntentBits.GuildMessages,
