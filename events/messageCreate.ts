@@ -55,7 +55,7 @@ export default class MessageCreate {
 
       if (!this.discord.checkMuted(message)) {
         if (message.guild) {
-          const globalChat = await sql.fetchColumn("guilds", "global chat")
+          const globalChat = await sql.fetchColumn("special channels", "global chat")
           if (globalChat && !message.content.startsWith(prefix) && !message.author.bot) {
             const globalChannel = message.guild.channels.cache.find((c) => c.id === globalChat)
             if (message.channel.id === globalChannel?.id) {
@@ -67,7 +67,7 @@ export default class MessageCreate {
               const cleaned = message.content.replace(/@/g, `@\u200b`)
               const translated = await Functions.googleTranslate(cleaned)
               if (Functions.badWords(translated, true)) return this.discord.reply(message, `You can't post messages containing profane or dirty words. ${this.discord.getEmoji("sagiriBleh")}`)
-              let globalChannels = await SQLQuery.selectColumn("guilds", "global chat")
+              let globalChannels = await SQLQuery.selectColumn("special channels", "global chat")
               globalChannels = globalChannels.filter(Boolean)
               for (let i = 0; i < globalChannels.length; i++) {
                 if (globalChannels[i] === message.channel.id) continue
@@ -104,7 +104,7 @@ export default class MessageCreate {
           if (!pointCool.get(message.guild.id)?.has(message.author.id)) {
             points.calcScore()
             pointCool.get(message.guild.id)?.add(message.author.id)
-            const pointTimeout = await sql.fetchColumn("guilds", "point timeout")
+            const pointTimeout = await sql.fetchColumn("points", "point timeout")
             setTimeout(() => {
               pointCool.get(message.guild?.id ?? "")?.delete(message.author.id)
             }, pointTimeout ? Number(pointTimeout) : 60000)
@@ -119,7 +119,7 @@ export default class MessageCreate {
             pointCool.set(message.guild.id, new Set())
           }
         }
-        const responseToggle = await sql.fetchColumn("guilds", "response")
+        const responseToggle = await sql.fetchColumn("detect", "response")
         if (responseToggle === "on") {
           if (responses.text[message.content.trim().toLowerCase()]) {
             const response = message.content.trim().toLowerCase()
@@ -167,7 +167,7 @@ export default class MessageCreate {
           }
         }
         if (!message.content.trim().startsWith(prefix) && message.content.match(/https?:\/\//)) {
-          const linkToggle = await sql.fetchColumn("guilds", "links")
+          const linkToggle = await sql.fetchColumn("detect", "links")
           if (linkToggle === "on") await links.postLink()
           return
         }
@@ -190,7 +190,7 @@ export default class MessageCreate {
         if (message.channel.type === ChannelType.DM) return this.discord.send(message, `<@${message.author.id}>, sorry but you can only use this command in guilds. ${this.discord.getEmoji("kannaFacepalm")}`)
       }
 
-      const disabledCategories = await sql.fetchColumn("guilds", "disabled categories")
+      const disabledCategories = await sql.fetchColumn("detect", "disabled categories")
       if (disabledCategories?.includes(command.category) && cmd !== "help") {
         return this.discord.reply(message, `Sorry, commands in the category **${command.category}** were disabled on this server. ${this.discord.getEmoji("mexShrug")}`)
       }

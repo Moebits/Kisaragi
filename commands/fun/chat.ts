@@ -42,12 +42,12 @@ export default class Chat extends Command {
 
         if (discord.checkMuted(message)) return this.reply(`Cannot enable on this server`)
 
-        const channel = await sql.fetchColumn("guilds", "global chat")
+        const channel = await sql.fetchColumn("special channels", "global chat")
         if (!channel) {
-            await sql.updateColumn("guilds", "global chat", message.channel.id)
+            await sql.updateColumn("special channels", "global chat", message.channel.id)
             return this.reply(`You are now connected to the global chat! ${discord.getEmoji("tohruSmug")}`)
         } else {
-            await sql.updateColumn("guilds", "global chat", null)
+            await sql.updateColumn("special channels", "global chat", null)
             return this.reply(`Disconnected from the global chat! ${discord.getEmoji("mexShrug")}`)
         }
     }

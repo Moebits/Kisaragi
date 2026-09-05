@@ -48,8 +48,6 @@ export default class SQL extends Command {
         const message = this.message
         const perms = new Permission(discord, message)
         const embeds = new Embeds(discord, message)
-        return
-        /* - Disable this command
         if (!perms.checkBotDev()) return
         const query = {text: Functions.combineArgs(args, 1), rowMode: "array"}
         const sqlEmbed = embeds.createEmbed()
@@ -67,6 +65,5 @@ export default class SQL extends Command {
         "\n" +
         `\`\`\`${Functions.checkChar(JSON.stringify(result), 1500, ",")}\`\`\``)
         this.reply(sqlEmbed)
-        */
     }
 }

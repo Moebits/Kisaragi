@@ -71,9 +71,9 @@ export default class Starboard extends Command {
             return
         }
 
-        const starboard = await sql.fetchColumn("guilds", "starboard")
-        const starThreshold = await sql.fetchColumn("guilds", "star threshold")
-        const starEmoji = await sql.fetchColumn("guilds", "star emoji")
+        const starboard = await sql.fetchColumn("special channels", "starboard")
+        const starThreshold = await sql.fetchColumn("special channels", "star threshold")
+        const starEmoji = await sql.fetchColumn("special channels", "star emoji")
 
         const pinboardEmbed = embeds.createEmbed()
         pinboardEmbed
@@ -111,9 +111,9 @@ export default class Starboard extends Command {
                 return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "starboard", null)
-                await sql.updateColumn("guilds", "star threshold", 3)
-                await sql.updateColumn("guilds", "star emoji", "⭐")
+                await sql.updateColumn("special channels", "starboard", null)
+                await sql.updateColumn("special channels", "star threshold", 3)
+                await sql.updateColumn("special channels", "star emoji", "⭐")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Starboard settings were reset!`)
                 return discord.send(msg, responseEmbed)
@@ -142,18 +142,18 @@ export default class Starboard extends Command {
             if (setStar) {
                 const channelTest = msg.guild?.channels.cache.get(newStar)
                 if (!channelTest) return msg.reply(`Invalid starboard channel!`)
-                await sql.updateColumn("guilds", "starboard", newStar)
+                await sql.updateColumn("special channels", "starboard", newStar)
                 description += `${discord.getEmoji("star")}Starboard channel set to <#${newStar}>!\n`
             }
 
             if (setThreshold) {
                 if (Number(newThreshold) < 1) return message.reply(`The star threshold must be at least 1 ${discord.getEmoji("sagiriBleh")}`)
-                await sql.updateColumn("guilds", "star threshold", Number(newThreshold))
+                await sql.updateColumn("special channels", "star threshold", Number(newThreshold))
                 description += `${discord.getEmoji("star")}Star threshold set to **${newThreshold}**!\n`
             }
 
             if (setEmoji) {
-                await sql.updateColumn("guilds", "star emoji", newEmoji)
+                await sql.updateColumn("special channels", "star emoji", newEmoji)
                 description += `${discord.getEmoji("star")}Star emoji set to ${newEmoji}!\n`
             }
 

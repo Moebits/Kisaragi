@@ -89,7 +89,7 @@ export default class InteractionCreate {
             if (targetCommand.options.cachedGuildOnly) {
                 if (this.discord.isUncachedInteraction(interaction)) return this.discord.reply(interaction, `<@${interaction.user.id}>, sorry but you can only use this command in servers the bot is in. ${this.discord.getEmoji("kannaFacepalm")}`)
             }
-            const disabledCategories = await sql.fetchColumn("guilds", "disabled categories")
+            const disabledCategories = await sql.fetchColumn("detect", "disabled categories")
             if (disabledCategories?.includes(command.category) && targetCommand.name !== "help") {
                 return this.discord.reply(interaction, `Sorry, commands in the category **${command.category}** were disabled on this server. ${this.discord.getEmoji("mexShrug")}`)
             }

@@ -66,18 +66,18 @@ export class CommandFunctions {
     // Auto Command
     public autoCommand = async () => {
         const sql = new SQLQuery(this.message)
-        const commands = await sql.fetchColumn("guilds", "auto commands")
+        const commands = await sql.fetchColumn("auto", "auto commands")
         if (!commands) return
-        const channels = await sql.fetchColumn("guilds", "auto channels")
-        const frequencies = await sql.fetchColumn("guilds", "auto frequencies")
-        const toggles = await sql.fetchColumn("guilds", "auto toggles")
+        const channels = await sql.fetchColumn("auto", "auto channels")
+        const frequencies = await sql.fetchColumn("auto", "auto frequencies")
+        const toggles = await sql.fetchColumn("auto", "auto toggles")
         for (let i = 0; i < commands.length; i++) {
             if (!toggles?.[i] || toggles[i] === "inactive") continue
             const guildChannel = (this.message.guild?.channels.cache.find((c) => c.id === channels[i])) as TextChannel
             if (!guildChannel) continue
             const cmd = commands[i].split(" ")
             const timeout = Number(frequencies[i]) * 3600000
-            let rawTimesLeft = await sql.fetchColumn("guilds", "timeouts") || []
+            let rawTimesLeft = await sql.fetchColumn("auto", "auto timeouts") || []
             let timeLeft = rawTimesLeft[i] ? Math.max(Number(rawTimesLeft[i]), 0) : timeout
             const guildMsg = await guildChannel.messages.fetch({limit: 1}).then((m) => m.first())
 
@@ -87,20 +87,20 @@ export class CommandFunctions {
             if (autoTimeouts.has(key)) clearTimeout(autoTimeouts.get(key))
 
             const update = async () => {
-                const toggles = await sql.fetchColumn("guilds", "auto toggles")
+                const toggles = await sql.fetchColumn("auto", "auto toggles")
                 if (!toggles?.[i] || toggles[i] === "inactive") {
                     clearTimeout(updateTimeouts.get(key))
                     return updateTimeouts.delete(key)
                 }
                 timeLeft = Math.max(timeLeft - 60000, 0)
                 rawTimesLeft[i] = timeLeft
-                await sql.updateColumn("guilds", "auto timeouts", rawTimesLeft)
+                await sql.updateColumn("auto", "auto timeouts", rawTimesLeft)
                 const timeoutId = setTimeout(update, 60000)
                 updateTimeouts.set(key, timeoutId)
             }
 
             const autoRun = async () => {
-                const toggles = await sql.fetchColumn("guilds", "auto toggles")
+                const toggles = await sql.fetchColumn("auto", "auto toggles")
                 if (!toggles?.[i] || toggles[i] === "inactive") {
                     clearTimeout(autoTimeouts.get(key))
                     return autoTimeouts.delete(key)

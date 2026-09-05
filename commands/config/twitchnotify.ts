@@ -105,7 +105,7 @@ export default class TwitchNotify extends Command {
             return
         }
 
-        const channels = await sql.fetchColumn("guilds", "twitch channels")
+        const channels = await sql.fetchColumn("special channels", "twitch channels")
         const twitch = await this.getTwitch(channels)
         const step = 3.0
         const increment = Math.ceil((twitch ? twitch.length : 1) / step)
@@ -160,7 +160,7 @@ export default class TwitchNotify extends Command {
         }
 
         async function twitchPrompt(msg: Message) {
-            let channels = await sql.fetchColumn("guilds", "twitch channels")
+            let channels = await sql.fetchColumn("special channels", "twitch channels")
             if (!channels) channels = []
             const twitch = channels[0] ? await self.getTwitch(channels) : []
             const responseEmbed = embeds.createEmbed()
@@ -172,7 +172,7 @@ export default class TwitchNotify extends Command {
                 return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "twitch channels", null)
+                await sql.updateColumn("special channels", "twitch channels", null)
                 await self.getTwitch(channels, true)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Twitch notify settings were wiped!`)
@@ -187,7 +187,7 @@ export default class TwitchNotify extends Command {
                     const index = channels.findIndex((c: string) => c === channel)
                     channels[index] = ""
                     channels = channels.filter(Boolean)
-                    await sql.updateColumn("guilds", "twitch channels", channels)
+                    await sql.updateColumn("special channels", "twitch channels", channels)
                     await self.getTwitch([channel], true)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
@@ -325,7 +325,7 @@ export default class TwitchNotify extends Command {
                 return message.reply(`Setting both the twitch channel and text channel is required.`)
             }
             if (!description) return message.reply(`No edits were made ${discord.getEmoji("kannaFacepalm")}`)
-            await sql.updateColumn("guilds", "twitch channels", channels)
+            await sql.updateColumn("special channels", "twitch channels", channels)
             responseEmbed.setDescription(description)
             return discord.send(msg, responseEmbed)
         }

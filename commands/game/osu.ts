@@ -76,7 +76,7 @@ export default class OsuCommand extends Command {
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
         const osuEmbed = embeds.createEmbed()
-        const dbName = await sql.fetchColumn("misc", "osu name", "user id", message.author.id)
+        const dbName = await sql.fetchColumn("users", "osu name", "user id", message.author.id)
 
         if (args[1]?.match(/osu.ppy.sh/)) {
             if (args[1].includes("osu.ppy.sh/users")) {
@@ -94,10 +94,10 @@ export default class OsuCommand extends Command {
                     .setTitle(`**Osu Profile** ${discord.getEmoji("kannaSip")}`))
             }
             try {
-                await SQLQuery.insertInto("misc", "user id", message.author.id)
-                await SQLQuery.updateColumn("misc", "username", message.author.username, "user id", message.author.id)
+                await SQLQuery.insertInto("users", "user id", message.author.id)
+                await SQLQuery.updateColumn("users", "username", message.author.username, "user id", message.author.id)
             } finally {
-                await sql.updateColumn("misc", "osu name", playerName, "user id", message.author.id)
+                await sql.updateColumn("users", "osu name", playerName, "user id", message.author.id)
                 this.reply(`Successfully linked your account to **${playerName}**! ${discord.getEmoji("tohruThumbsUp")}`)
             }
             return

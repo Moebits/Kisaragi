@@ -119,10 +119,10 @@ export default class Usage extends Command {
                     description += `${name} \`(${Object.keys(usage)[i]})\`: **${Object.values(usage)[i] ?? 0}** uses\n`
                 }
             } else if (args[1] === "user") {
-                const users = await SQLQuery.selectColumn("misc", "user id")
+                const users = await SQLQuery.selectColumn("users", "user id")
                 const rawUsage: string[] = []
                 for (let i = 0; i < users.length; i++) {
-                    const raw = await sql.fetchColumn("misc", "usage", "user id", users[i])
+                    const raw = await sql.fetchColumn("users", "usage", "user id", users[i])
                     rawUsage.push(raw)
                 }
                 if (!rawUsage) return message.reply(`No usage data available ${discord.getEmoji("kannaFacepalm")}`)
@@ -169,7 +169,7 @@ export default class Usage extends Command {
             let usage: any
             let titleText = ""
             if (user) {
-                usage = await sql.fetchColumn("misc", "usage", "user id", user.id)
+                usage = await sql.fetchColumn("users", "usage", "user id", user.id)
                 titleText = `**User Usage Statistics** ${discord.getEmoji("raphi")}`
             }
             if (guild) {

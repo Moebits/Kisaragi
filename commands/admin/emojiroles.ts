@@ -74,7 +74,7 @@ export default class EmojiRoles extends Command {
             message.content = input.trim()
             return linkPrompt(message)
         }
-        const emojiRoles = await sql.fetchColumn("guilds", "emoji roles")
+        const emojiRoles = await sql.fetchColumn("special roles", "emoji roles")
         const step = 3.0
         const increment = Math.ceil((emojiRoles ? emojiRoles.length : 1) / step)
         const emojiArray: EmbedBuilder[] = []
@@ -123,7 +123,7 @@ export default class EmojiRoles extends Command {
         }
 
         async function linkPrompt(msg: Message) {
-            let emojiRoles = await sql.fetchColumn("guilds", "emoji roles")
+            let emojiRoles = await sql.fetchColumn("special roles", "emoji roles")
             let [setEmoji, setRole, setType] = [] as boolean[]
             if (!emojiRoles) emojiRoles = []
             const responseEmbed = embeds.createEmbed()
@@ -139,7 +139,7 @@ export default class EmojiRoles extends Command {
                     const e = msg.guild?.emojis.cache.find((e) => e.id === emojiID)
                     await e?.edit({roles: msg.guild?.roles.cache})
                 }
-                await sql.updateColumn("guilds", "emoji roles", null)
+                await sql.updateColumn("special roles", "emoji roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 return discord.send(msg, responseEmbed)
@@ -153,7 +153,7 @@ export default class EmojiRoles extends Command {
                         await e?.edit({roles: msg.guild?.roles.cache})
                         emojiRoles[num - 1] = ""
                         emojiRoles = emojiRoles.filter(Boolean)
-                        await sql.updateColumn("guilds", "emoji roles", emojiRoles)
+                        await sql.updateColumn("special roles", "emoji roles", emojiRoles)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                         return discord.send(msg, responseEmbed)
@@ -213,7 +213,7 @@ export default class EmojiRoles extends Command {
                         editDesc += `${discord.getEmoji("star")}These settings were **applied**!\n`
                     }
                     if (!editDesc) return discord.send(msg, responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`))
-                    await sql.updateColumn("guilds", "emoji roles", emojiRoles)
+                    await sql.updateColumn("special roles", "emoji roles", emojiRoles)
                     return discord.send(msg, responseEmbed.setDescription(editDesc))
                 } else {
                     return discord.send(msg, responseEmbed.setDescription(`No edits specified! ${discord.getEmoji("kannaFacepalm")}`))
@@ -275,7 +275,7 @@ export default class EmojiRoles extends Command {
 
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt. ${discord.getEmoji("kannaFacepalm")}`
             emojiRoles.push(obj)
-            await sql.updateColumn("guilds", "emoji roles", emojiRoles)
+            await sql.updateColumn("special roles", "emoji roles", emojiRoles)
             responseEmbed
             .setDescription(description)
             return discord.send(msg, responseEmbed)

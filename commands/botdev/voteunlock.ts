@@ -52,7 +52,7 @@ export default class VoteUnlock extends Command {
         const id = args[1]
         if (!id) return this.reply("No user id provided...")
         const now = new Date().toISOString()
-        await sql.updateColumn("misc", "last voted", now, "user id", id)
+        await sql.updateColumn("users", "last voted", now, "user id", id)
 
         const user = discord.users.cache.get(id)
         const voteEmbed = embeds.createEmbed()

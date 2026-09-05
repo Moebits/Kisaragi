@@ -28,7 +28,7 @@ export default class GuildMemberAdd {
         }
 
         let defaultChannel = firstMsg?.channel as TextChannel
-        const defChannel = await sql.fetchColumn("guilds", "default channel")
+        const defChannel = await sql.fetchColumn("blocks", "default channel")
         if (defChannel) {
             defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === String(defChannel)) as TextChannel
         }
@@ -40,15 +40,15 @@ export default class GuildMemberAdd {
         const embeds = new Embeds(this.discord, defMsg)
 
         const welcomeMessages = async () => {
-            const welcomeToggle = await sql.fetchColumn("guilds", "welcome toggle")
+            const welcomeToggle = await sql.fetchColumn("welcome leaves", "welcome toggle")
             if (!(welcomeToggle === "on")) return
 
-            const welcomeMsg = await sql.fetchColumn("guilds", "welcome message")
-            const welcomeChannel = await sql.fetchColumn("guilds", "welcome channel")
-            const welcomeImages = await sql.fetchColumn("guilds", "welcome bg images")
-            const welcomeText = await sql.fetchColumn("guilds", "welcome bg text")
-            const welcomeColor = await sql.fetchColumn("guilds", "welcome bg color")
-            const welcomeBGToggle = await sql.fetchColumn("guilds", "welcome bg toggle")
+            const welcomeMsg = await sql.fetchColumn("welcome leaves", "welcome message")
+            const welcomeChannel = await sql.fetchColumn("welcome leaves", "welcome channel")
+            const welcomeImages = await sql.fetchColumn("welcome leaves", "welcome bg images")
+            const welcomeText = await sql.fetchColumn("welcome leaves", "welcome bg text")
+            const welcomeColor = await sql.fetchColumn("welcome leaves", "welcome bg color")
+            const welcomeBGToggle = await sql.fetchColumn("welcome leaves", "welcome bg toggle")
             const channel = member.guild.channels.cache.find((c) => c.id.toString() === String(welcomeChannel)) as TextChannel
 
             const attachment = await image.createCanvas(member, welcomeImages, welcomeText, welcomeColor, false, false, welcomeBGToggle) as AttachmentBuilder
@@ -62,7 +62,7 @@ export default class GuildMemberAdd {
         welcomeMessages()
 
         const avatarBan = async (discord: Kisaragi) => {
-            const banToggle = await sql.fetchColumn("guilds", "pfp ban toggle")
+            const banToggle = await sql.fetchColumn("blocks", "pfp ban toggle")
             const banEmbed = embeds.createEmbed()
             if (!(banToggle === "on")) return
 
@@ -88,7 +88,7 @@ export default class GuildMemberAdd {
         avatarBan(this.discord)
 
         const logJoin = async (member: GuildMember) => {
-            const userLog = await sql.fetchColumn("guilds", "user log")
+            const userLog = await sql.fetchColumn("logs", "user log")
             if (userLog) {
                 const joinChannel = member.guild?.channels.cache.get(userLog)! as TextChannel
                 const joinEmbed = embeds.createEmbed()

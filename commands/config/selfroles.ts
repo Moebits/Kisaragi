@@ -68,7 +68,7 @@ export default class Selfroles extends Command {
 
         // If not admin, only shows the role list.
         if (!await perms.checkAdmin(true) || args[1] === "list") {
-            const selfroles = await sql.fetchColumn("guilds", "self roles")
+            const selfroles = await sql.fetchColumn("special roles", "self roles")
             const step = 7.0
             const increment = Math.ceil((selfroles ? selfroles.length : 1) / step)
             const selfArray: EmbedBuilder[] = []
@@ -109,7 +109,7 @@ export default class Selfroles extends Command {
             return
         }
 
-        const selfroles = await sql.fetchColumn("guilds", "self roles")
+        const selfroles = await sql.fetchColumn("special roles", "self roles")
         const step = 7.0
         let increment = Math.ceil((selfroles ? selfroles.length : 1) / step)
         if (increment === 0) increment = 1
@@ -154,7 +154,7 @@ export default class Selfroles extends Command {
         async function selfPrompt(msg: Message) {
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Self Roles** ${discord.getEmoji("karenSugoi")}`)
-            let selfroles = await sql.fetchColumn("guilds", "self roles")
+            let selfroles = await sql.fetchColumn("special roles", "self roles")
             if (!selfroles) selfroles = []
             if (msg.content.toLowerCase() === "cancel") {
                 responseEmbed
@@ -163,7 +163,7 @@ export default class Selfroles extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "self roles", null)
+                await sql.updateColumn("special roles", "self roles", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}Self role settings were wiped!`)
                 discord.send(msg, responseEmbed)
@@ -175,7 +175,7 @@ export default class Selfroles extends Command {
                 if (selfroles ? selfroles[num - 1] : false) {
                     selfroles[num - 1] = ""
                     selfroles = selfroles.filter(Boolean)
-                    await sql.updateColumn("guilds", "self roles", selfroles)
+                    await sql.updateColumn("special roles", "self roles", selfroles)
                     responseEmbed
                     .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                     discord.send(msg, responseEmbed)
@@ -200,7 +200,7 @@ export default class Selfroles extends Command {
             }
 
             if (!description) return msg.reply(`No additions were made, canceled ${discord.getEmoji("kannaFacepalm")}`)
-            await sql.updateColumn("guilds", "self roles", selfroles)
+            await sql.updateColumn("special roles", "self roles", selfroles)
 
             responseEmbed
             .setDescription(description)

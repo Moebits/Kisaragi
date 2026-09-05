@@ -77,7 +77,7 @@ export default class Link extends Command {
             await linkPrompt(message)
             return
         }
-        const linked = await sql.fetchColumn("guilds", "linked")
+        const linked = await sql.fetchColumn("special channels", "linked")
         const step = 3.0
         const increment = Math.ceil((linked ? linked.length : 1) / step)
         const linkArray: EmbedBuilder[] = []
@@ -129,7 +129,7 @@ export default class Link extends Command {
         }
 
         async function linkPrompt(msg: Message) {
-            let linked = await sql.fetchColumn("guilds", "linked")
+            let linked = await sql.fetchColumn("special channels", "linked")
             let [setText, setVoice] = [] as boolean[]
             if (!linked) linked = []
             const responseEmbed = embeds.createEmbed()
@@ -140,7 +140,7 @@ export default class Link extends Command {
                 return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "linked", null)
+                await sql.updateColumn("special channels", "linked", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 return discord.send(msg, responseEmbed)
@@ -151,7 +151,7 @@ export default class Link extends Command {
                     if (linked[num - 1]) {
                         linked[num - 1] = ""
                         linked = linked.filter(Boolean)
-                        await sql.updateColumn("guilds", "linked", linked)
+                        await sql.updateColumn("special channels", "linked", linked)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                         return discord.send(msg, responseEmbed)
@@ -165,15 +165,15 @@ export default class Link extends Command {
             if (msg.content.toLowerCase().startsWith("toggle")) {
                 const newMsg = Number(msg.content.replace(/toggle/g, "").trim())
                 const num = newMsg - 1
-                const testLink = await sql.fetchColumn("guilds", "linked")
+                const testLink = await sql.fetchColumn("special channels", "linked")
                 if (newMsg && testLink?.[num]) {
                         if (testLink[num].state === "off") {
                             testLink[num].state = "on"
-                            await sql.updateColumn("guilds", "linked", testLink)
+                            await sql.updateColumn("special channels", "linked", testLink)
                             return discord.send(msg, responseEmbed.setDescription(`State of setting **${newMsg}** is now **on**!`))
                         } else {
                             testLink[num].state = "off"
-                            await sql.updateColumn("guilds", "linked", testLink)
+                            await sql.updateColumn("special channels", "linked", testLink)
                             return discord.send(msg, responseEmbed.setDescription(`State of setting **${newMsg}** is now **off**!`))
                         }
                 } else {
@@ -217,7 +217,7 @@ export default class Link extends Command {
                         linked[num].state = "off"
                         editDesc += `${discord.getEmoji("star")}Status set to **off**!\n`
                     }
-                    await sql.updateColumn("guilds", "linked", linked)
+                    await sql.updateColumn("special channels", "linked", linked)
                     return discord.send(msg, responseEmbed.setDescription(editDesc))
                 } else {
                     return discord.send(msg, responseEmbed.setDescription("No edits specified!"))
@@ -264,7 +264,7 @@ export default class Link extends Command {
 
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`
             linked.push(obj)
-            await sql.updateColumn("guilds", "linked", linked)
+            await sql.updateColumn("special channels", "linked", linked)
             responseEmbed
             .setDescription(description)
             return discord.send(msg, responseEmbed)

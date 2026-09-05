@@ -24,7 +24,7 @@ export default class MessageDeleteBulk {
         if (Kisaragi.ignoreDelete.has(message.id)) return
 
         const logDeleted = async (messages: (Message | PartialMessage)[]) => {
-            const messageLog = await sql.fetchColumn("guilds", "message log")
+            const messageLog = await sql.fetchColumn("logs", "message log")
             if (messageLog) {
                 const logs = await message.guild?.fetchAuditLogs({type: AuditLogEvent.MessageBulkDelete, limit: 1}).then((l) => l.entries.first())
                 let executor = ""

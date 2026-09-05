@@ -61,7 +61,7 @@ export default class Disable extends Command {
             await disablePrompt(message)
             return
         }
-        const categories = await sql.fetchColumn("guilds", "disabled categories")
+        const categories = await sql.fetchColumn("detect", "disabled categories")
 
         const disableEmbed = embeds.createEmbed()
         disableEmbed
@@ -83,7 +83,7 @@ export default class Disable extends Command {
         this.reply(disableEmbed)
 
         async function disablePrompt(msg: Message) {
-            let categories = await sql.fetchColumn("guilds", "disabled categories")
+            let categories = await sql.fetchColumn("detect", "disabled categories")
             if (!categories) categories = []
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Disabled Categories** ${discord.getEmoji("aquaWut")}`)
@@ -93,7 +93,7 @@ export default class Disable extends Command {
                 return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "disabled categories", null)
+                await sql.updateColumn("detect", "disabled categories", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 return discord.send(msg, responseEmbed)
@@ -150,7 +150,7 @@ export default class Disable extends Command {
             for (let i = 0; i < enabledArr.length; i++) {
                 Functions.arrayRemove(categories, enabledArr[i])
             }
-            await sql.updateColumn("guilds", "disabled categories", categories)
+            await sql.updateColumn("detect", "disabled categories", categories)
             responseEmbed
             .setDescription(description)
             return discord.send(msg, responseEmbed)

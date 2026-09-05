@@ -66,7 +66,7 @@ export default class TempMute extends Command {
         const sql = new SQLQuery(message)
         if (!await perms.checkMod()) return
         const tempMuteEmbed = embeds.createEmbed()
-        const mute = await sql.fetchColumn("guilds", "mute role")
+        const mute = await sql.fetchColumn("special roles", "mute role")
         if (!mute) return this.reply("You need to set a mute role first!")
         const reasonArray: string[] = []
         const timeArray: string[] = []

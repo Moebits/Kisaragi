@@ -107,7 +107,7 @@ export default class Warn extends Command {
                             this.send(guildEmbed)
                             break
                         case "mute":
-                            const mute = await sql.fetchColumn("guilds", "mute role")
+                            const mute = await sql.fetchColumn("warns", "mute role")
                             if (!mute) {
                                 message.reply(`Failed to mute <@${userID}>. You do not have a mute role set!`)
                                 return false
@@ -138,11 +138,11 @@ export default class Warn extends Command {
         const perms = new Permission(discord, message)
         const sql = new SQLQuery(message)
         if (!await perms.checkMod()) return
-        const warnThreshold = await sql.fetchColumn("guilds", "warn threshold")
-        const warnPenalty = await sql.fetchColumn("guilds", "warn penalty")
-        const warnOne = await sql.fetchColumn("guilds", "warn one")
-        const warnTwo = await sql.fetchColumn("guilds", "warn two")
-        let warnLog = await sql.fetchColumn("guilds", "warn log") as any
+        const warnThreshold = await sql.fetchColumn("warns", "warn threshold")
+        const warnPenalty = await sql.fetchColumn("warns", "warn penalty")
+        const warnOne = await sql.fetchColumn("special roles", "warn one")
+        const warnTwo = await sql.fetchColumn("special roles", "warn two")
+        let warnLog = await sql.fetchColumn("logs", "warn log") as any
         if (!warnLog) warnLog = []
 
         let warnOneRole, warnTwoRole
@@ -160,7 +160,7 @@ export default class Warn extends Command {
         }
 
         const reason = reasonArray.join("") ? reasonArray.join(" ") : "None provided!"
-        const modLog = await sql.fetchColumn("guilds", "mod log")
+        const modLog = await sql.fetchColumn("logs", "mod log")
 
         for (let i = 0; i < userArray.length; i++) {
             const hash = Functions.randomString(16)
@@ -181,7 +181,7 @@ export default class Warn extends Command {
             await this.checkWarns(warnLog, userArray[i], warnThreshold, warnPenalty, warnOneRole, warnTwoRole)
         }
 
-        await sql.updateColumn("guilds", "warn log", warnLog)
+        await sql.updateColumn("logs", "warn log", warnLog)
 
         let users = ""
         for (let i = 0; i < userArray.length; i++) {

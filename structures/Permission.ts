@@ -23,7 +23,7 @@ export class Permission {
     public checkMod = async (noMsg?: boolean) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
         if (this.message.author.id === this.discord.user!.id) return true
-        const mod = await this.sql.fetchColumn("guilds", "mod role")
+        const mod = await this.sql.fetchColumn("special roles", "mod role")
         if (!mod) {
             if (noMsg) return false
             this.discord.reply(this.message, "In order to use moderator commands, you must first " +
@@ -32,7 +32,7 @@ export class Permission {
         } else {
             const modRole = this.message.member!.roles.cache.find((r: Role) => r.id === String(mod))
             if (!modRole) {
-                const admin = await this.sql.fetchColumn("guilds", "admin role")
+                const admin = await this.sql.fetchColumn("special roles", "admin role")
                 const adminRole = this.message.member!.roles.cache.find((r: Role) => r.id === String(admin))
                 if (adminRole) return true
                 if (noMsg) return false
@@ -49,7 +49,7 @@ export class Permission {
     public checkAdmin = async (noMsg?: boolean) => {
         if (this.message.author.id === process.env.OWNER_ID) return true
         if (this.message.author.id === this.discord.user?.id) return true
-        const admin = await this.sql.fetchColumn("guilds", "admin role")
+        const admin = await this.sql.fetchColumn("special roles", "admin role")
         if (!admin) {
             if (noMsg) return false
             this.discord.reply(this.message, "In order to use administrator commands, you must first " +
@@ -95,14 +95,14 @@ export class Permission {
     public checkAudioPermission = async (user: User, requesterID: string) => {
         if (user.id === process.env.OWNER_ID) return true
         if (user.id === requesterID) return true
-        const mod = await this.sql.fetchColumn("guilds", "mod role")
+        const mod = await this.sql.fetchColumn("special roles", "mod role")
         if (!mod) {
             return false
         } else {
             const member = await this.message.guild?.members.fetch(requesterID)
             const modRole = member?.roles.cache.find((r: Role) => r.id === String(mod))
             if (!modRole) {
-                const admin = await this.sql.fetchColumn("guilds", "admin role")
+                const admin = await this.sql.fetchColumn("special roles", "admin role")
                 const adminRole = member?.roles.cache.find((r: Role) => r.id === String(admin))
                 if (adminRole) return true
                 return false
@@ -156,7 +156,7 @@ export class Permission {
     public checkVoteLocked = async (noMsg?: boolean) => {
         const premium = this.checkPremium(true)
         // if (premium) return true
-        const result = await SQLQuery.fetchColumn("misc", "last voted", "user id", this.message.author.id)
+        const result = await SQLQuery.fetchColumn("users", "last voted", "user id", this.message.author.id)
         let voted = false
         if (result) {
             const timestamp = new Date(result).getTime()
@@ -169,11 +169,11 @@ export class Permission {
             voted = Boolean(response.voted)
             if (voted) {
                 try {
-                    await SQLQuery.insertInto("misc", "user id", this.message.author.id)
-                    await SQLQuery.updateColumn("misc", "username", this.message.author.username, "user id", this.message.author.id)
+                    await SQLQuery.insertInto("users", "user id", this.message.author.id)
+                    await SQLQuery.updateColumn("users", "username", this.message.author.username, "user id", this.message.author.id)
                 } finally {
                     const now = new Date().toISOString()
-                    await SQLQuery.updateColumn("misc", "last voted", now, "user id", this.message.author.id)
+                    await SQLQuery.updateColumn("users", "last voted", now, "user id", this.message.author.id)
                 }
             }
         }
@@ -240,7 +240,7 @@ export class Permission {
 
     /** Continue temporary mute */
     public continueTempMutes = async () => {
-        const mute = await this.sql.fetchColumn("guilds", "mute role")
+        const mute = await this.sql.fetchColumn("special roles", "mute role")
         if (!mute) return
         let tempArr = await SQLQuery.redisGet(`${this.message.guild?.id}_tempmute`)
         tempArr = JSON.parse(tempArr)

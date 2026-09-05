@@ -73,12 +73,12 @@ export default class Block extends Command {
             await blockPrompt(message)
             return
         }
-        const words = await sql.fetchColumn("guilds", "blocked words")
-        let match = await sql.fetchColumn("guilds", "block match")
-        let toggle = await sql.fetchColumn("guilds", "block toggle")
-        let asterisk = await sql.fetchColumn("guilds", "asterisk")
-        let invite = await sql.fetchColumn("guilds", "invite")
-        let promo = await sql.fetchColumn("guilds", "self promo")
+        const words = await sql.fetchColumn("blocks", "blocked words")
+        let match = await sql.fetchColumn("blocks", "block match")
+        let toggle = await sql.fetchColumn("blocks", "block toggle")
+        let asterisk = await sql.fetchColumn("blocks", "asterisk")
+        let invite = await sql.fetchColumn("blocks", "invite")
+        let promo = await sql.fetchColumn("blocks", "self promo")
         if (!toggle) toggle = "off"
         if (!match) match = "partial"
         if (!asterisk) asterisk = "off"
@@ -130,7 +130,7 @@ export default class Block extends Command {
         this.reply(blockEmbed)
 
         async function blockPrompt(msg: Message) {
-            let words = await sql.fetchColumn("guilds", "blocked words")
+            let words = await sql.fetchColumn("blocks", "blocked words")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Blocked Words** ${discord.getEmoji("gabuChrist")}`)
             let [setOn, setOff, setExact, setPartial, setWord, setAsterisk, setInvite, setPromo] = [] as boolean[]
@@ -140,12 +140,12 @@ export default class Block extends Command {
                 return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "blocked words", null)
-                await sql.updateColumn("guilds", "block toggle", "off")
-                await sql.updateColumn("guilds", "block match", "partial")
-                await sql.updateColumn("guilds", "asterisk", "off")
-                await sql.updateColumn("guilds", "invite", "off")
-                await sql.updateColumn("guilds", "self promo", null)
+                await sql.updateColumn("blocks", "blocked words", null)
+                await sql.updateColumn("blocks", "block toggle", "off")
+                await sql.updateColumn("blocks", "block match", "partial")
+                await sql.updateColumn("blocks", "asterisk", "off")
+                await sql.updateColumn("blocks", "invite", "off")
+                await sql.updateColumn("blocks", "self promo", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All blocked words were deleted!`)
                 return discord.send(msg, responseEmbed)
@@ -156,7 +156,7 @@ export default class Block extends Command {
                     if (words) {
                         words[num - 1] = ""
                         words = words.filter(Boolean)
-                        await sql.updateColumn("guilds", "blocked words", words)
+                        await sql.updateColumn("blocks", "blocked words", words)
                         responseEmbed
                         .setDescription(`${discord.getEmoji("star")}Setting ${num} was deleted!`)
                         return discord.send(msg, responseEmbed)
@@ -210,45 +210,45 @@ export default class Block extends Command {
 
             if (setWord) {
                 setOn = true
-                await sql.updateColumn("guilds", "blocked words", wordArray)
+                await sql.updateColumn("blocks", "blocked words", wordArray)
                 description += `${discord.getEmoji("star")}Added **${wordArray.join(", ")}**!\n`
             }
             if (setExact) {
-                await sql.updateColumn("guilds", "block match", "exact")
+                await sql.updateColumn("blocks", "block match", "exact")
                 description += `${discord.getEmoji("star")}Matching algorithm set to **exact**!\n`
             }
             if (setPartial) {
-                await sql.updateColumn("guilds", "block match", "partial")
+                await sql.updateColumn("blocks", "block match", "partial")
                 description += `${discord.getEmoji("star")}Matching algorithm set to **partial**!\n`
             }
             if (setOn) {
-                await sql.updateColumn("guilds", "block toggle", "on")
+                await sql.updateColumn("blocks", "block toggle", "on")
                 description += `${discord.getEmoji("star")}Filtering is **enabled**!\n`
             }
             if (setOff) {
-                await sql.updateColumn("guilds", "block toggle", "off")
+                await sql.updateColumn("blocks", "block toggle", "off")
                 description += `${discord.getEmoji("star")}Filtering is **disabled**!\n`
             }
             if (setAsterisk) {
                 if (asterisk === "off") {
-                    await sql.updateColumn("guilds", "asterisk", "on")
+                    await sql.updateColumn("blocks", "asterisk", "on")
                     description += `${discord.getEmoji("star")}Asterisk filtering is **on**!\n`
                 } else {
-                    await sql.updateColumn("guilds", "asterisk", "off")
+                    await sql.updateColumn("blocks", "asterisk", "off")
                     description += `${discord.getEmoji("star")}Asterisk filtering is **off**!\n`
                 }
             }
             if (setInvite) {
                 if (invite === "off") {
-                    await sql.updateColumn("guilds", "invite", "on")
+                    await sql.updateColumn("blocks", "invite", "on")
                     description += `${discord.getEmoji("star")}Invite filtering is **on**!\n`
                 } else {
-                    await sql.updateColumn("guilds", "invite", "off")
+                    await sql.updateColumn("blocks", "invite", "off")
                     description += `${discord.getEmoji("star")}Invite filtering is **off**!\n`
                 }
             }
             if (setPromo) {
-                await sql.updateColumn("guilds", "self promo", newPromo)
+                await sql.updateColumn("blocks", "self promo", newPromo)
                 description += `${discord.getEmoji("star")}Self promo channel set to <#${newPromo}>!\n`
             }
             if (!description) description = `${discord.getEmoji("star")}Invalid arguments provided, canceled the prompt.`

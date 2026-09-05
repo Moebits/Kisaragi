@@ -70,11 +70,11 @@ export default class CaptchaCmd extends Command {
             await captchaPrompt(message)
             return
         }
-        const vToggle = await sql.fetchColumn("guilds", "verify toggle")
-        const vRole = await sql.fetchColumn("guilds", "verify role")
-        const cType = await sql.fetchColumn("guilds", "captcha type")
-        const color = await sql.fetchColumn("guilds", "captcha color")
-        const difficulty = await sql.fetchColumn("guilds", "difficulty")
+        const vToggle = await sql.fetchColumn("captcha", "verify toggle")
+        const vRole = await sql.fetchColumn("captcha", "verify role")
+        const cType = await sql.fetchColumn("captcha", "captcha type")
+        const color = await sql.fetchColumn("captcha", "captcha color")
+        const difficulty = await sql.fetchColumn("captcha", "difficulty")
         const captchaEmbed = embeds.createEmbed()
         const {captcha, text, files} = await captchaClass.createCaptcha(String(cType), String(color), String(difficulty))
         captchaEmbed
@@ -109,7 +109,7 @@ export default class CaptchaCmd extends Command {
         this.reply(captchaEmbed, files)
 
         async function captchaPrompt(msg: Message) {
-            const vRole = await sql.fetchColumn("guilds", "verify role")
+            const vRole = await sql.fetchColumn("captcha", "verify role")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Captcha Verification** ${discord.getEmoji("kannaAngry")}`)
             let [setOn, setOff, setRole, setText, setMath, setColor, setEasy, setMedium, setHard, setExtreme] = [] as boolean[]
@@ -119,11 +119,11 @@ export default class CaptchaCmd extends Command {
                 return discord.send(msg, responseEmbed)
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "verify toggle", "off")
-                await sql.updateColumn("guilds", "verify role", null)
-                await sql.updateColumn("guilds", "captcha type", "text")
-                await sql.updateColumn("guilds", "captcha color", "#ffffff")
-                await sql.updateColumn("guilds", "difficulty", "medium")
+                await sql.updateColumn("captcha", "verify toggle", "off")
+                await sql.updateColumn("captcha", "verify role", null)
+                await sql.updateColumn("captcha", "captcha type", "text")
+                await sql.updateColumn("captcha", "captcha color", "#ffffff")
+                await sql.updateColumn("captcha", "difficulty", "medium")
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 return discord.send(msg, responseEmbed)
@@ -167,32 +167,32 @@ export default class CaptchaCmd extends Command {
                 const diff = setExtreme ? "extreme" : (
                     setHard ? "hard" : (
                     setMedium ? "medium" : "easy"))
-                await sql.updateColumn("guilds", "difficulty", diff)
+                await sql.updateColumn("captcha", "difficulty", diff)
                 description += `${discord.getEmoji("star")}Captcha difficulty set to **${diff}**!\n`
             }
 
             if (setOn) {
-                await sql.updateColumn("guilds", "verify toggle", "on")
+                await sql.updateColumn("captcha", "verify toggle", "on")
                 description += `${discord.getEmoji("star")}Captcha verification is **on**!\n`
             }
             if (setOff) {
-                await sql.updateColumn("guilds", "verify toggle", "off")
+                await sql.updateColumn("captcha", "verify toggle", "off")
                 description += `${discord.getEmoji("star")}Captcha verification is **off**!\n`
             }
             if (setText) {
-                await sql.updateColumn("guilds", "captcha type", "text")
+                await sql.updateColumn("captcha", "captcha type", "text")
                 description += `${discord.getEmoji("star")}Captcha type set to **text**!\n`
             }
             if (setMath) {
-                await sql.updateColumn("guilds", "captcha type", "math")
+                await sql.updateColumn("captcha", "captcha type", "math")
                 description += `${discord.getEmoji("star")}Captcha type set to **math**!\n`
             }
             if (setRole) {
-                await sql.updateColumn("guilds", "verify role", String(newRole!))
+                await sql.updateColumn("captcha", "verify role", String(newRole!))
                 description += `${discord.getEmoji("star")}Verify role set to <@&${String(newRole!)}>!\n`
             }
             if (setColor) {
-                await sql.updateColumn("guilds", "captcha color", String(newColor!))
+                await sql.updateColumn("captcha", "captcha color", String(newColor!))
                 description += `${discord.getEmoji("star")}Background color set to ${String(newColor!)}\n`
             }
 

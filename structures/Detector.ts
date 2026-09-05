@@ -17,7 +17,7 @@ export class Detector {
 
     public detectIgnore = async () => {
         const sql = new SQLQuery(this.message)
-        const ignored = await sql.fetchColumn("guilds", "ignored")
+        const ignored = await sql.fetchColumn("detect", "ignored")
         if (!ignored) return false
         for (let i = 0; i < ignored.length; i++) {
             if (this.message.channel.id === ignored[i]) {
@@ -29,7 +29,7 @@ export class Detector {
 
     public detectAnime = async () => {
         const sql = new SQLQuery(this.message)
-        const anime = await sql.fetchColumn("guilds", "anime") as unknown as string
+        const anime = await sql.fetchColumn("detect", "anime") as unknown as string
         if (await this.detectIgnore()) return
         if (!anime || anime === "off") return
         if (this.message.author.id === this.discord.user!.id) return
@@ -49,12 +49,12 @@ export class Detector {
     public swapRoles = async (member?: GuildMember, counter?: boolean) => {
         if (this.message.author.bot) return
         const sql = new SQLQuery(this.message)
-        const pfp = await sql.fetchColumn("guilds", "pfp") as unknown as string
+        const pfp = await sql.fetchColumn("detect", "pfp") as unknown as string
         if (!pfp || pfp === "off") return
         if (!member) member = this.message.member!
         if (!member || member.user.bot || !member.displayAvatarURL()) return
-        const weeb = await sql.fetchColumn("guilds", "weeb") as unknown as string
-        const normie = await sql.fetchColumn("guilds", "normie") as unknown as string
+        const weeb = await sql.fetchColumn("detect", "weeb") as unknown as string
+        const normie = await sql.fetchColumn("detect", "normie") as unknown as string
         const weebRole = this.message.guild!.roles.cache.find((r: Role) => r.id === weeb)
         const normieRole = this.message.guild!.roles.cache.find((r: Role) => r.id === normie)
         const result = await animedetect(member.displayAvatarURL({extension: "png"}))
@@ -117,7 +117,7 @@ export class Detector {
         if (!this.message.attachments.size) return
         const sql = new SQLQuery(this.message)
         const embeds = new Embeds(this.discord, this.message)
-        const channels = await sql.fetchColumn("guilds", "sources")
+        const channels = await sql.fetchColumn("special channels", "sources")
         if (!channels?.includes(this.message.channel.id)) return
         const images = this.message.attachments.map((a) => a.url)
         const sagiri = Sagiri(process.env.SAUCENAO_API_KEY!)

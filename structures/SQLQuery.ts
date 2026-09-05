@@ -306,7 +306,7 @@ export class SQLQuery {
   public static orderTables = async (): Promise<void> => {
         const query: QueryConfig = {
           text: `SELECT members FROM "guilds" ORDER BY
-          CASE WHEN "guild id" = '578604087763795970' THEN 0 ELSE 1 END, members ASC`
+          CASE WHEN "guild id" = '1283983430391955476' THEN 0 ELSE 1 END, members ASC`
         }
         await SQLQuery.run(query, true)
   }
@@ -361,7 +361,7 @@ export class SQLQuery {
 
   /** Deletes user data on account deletion */
   public static deleteUser = async (id: string) => {
-    await SQLQuery.deleteRow("misc", "user id", id).catch(() => null)
+    await SQLQuery.deleteRow("users", "user id", id).catch(() => null)
     await SQLQuery.deleteRow("oauth2", "user id", id).catch(() => null)
   }
 
@@ -540,12 +540,12 @@ export class SQLQuery {
       guildUsage.total = Functions.sumObjectValues(guildUsage, "total")
       await this.updateColumn("guilds", "usage", guildUsage)
     }
-    let userUsage = await this.fetchColumn("misc", "usage", "user id", this.message.author.id)
-    await SQLQuery.updateColumn("misc", "username", this.message.author.tag, "user id", this.message.author.id)
+    let userUsage = await this.fetchColumn("users", "usage", "user id", this.message.author.id)
+    await SQLQuery.updateColumn("users", "username", this.message.author.tag, "user id", this.message.author.id)
     if (!userUsage) {
       try {
-        await SQLQuery.insertInto("misc", "user id", this.message.author.id)
-        await SQLQuery.updateColumn("misc", "username", this.message.author.username, "user id", this.message.author.id)
+        await SQLQuery.insertInto("users", "user id", this.message.author.id)
+        await SQLQuery.updateColumn("users", "username", this.message.author.username, "user id", this.message.author.id)
       } catch {
         // Do nothing
       }
@@ -559,7 +559,7 @@ export class SQLQuery {
       userUsage[command] = 1
     }
     userUsage.total = Functions.sumObjectValues(userUsage, "total")
-    await this.updateColumn("misc", "usage", userUsage, "user id", this.message.author.id)
+    await this.updateColumn("users", "usage", userUsage, "user id", this.message.author.id)
   }
 
   /** Retrieve all command info */

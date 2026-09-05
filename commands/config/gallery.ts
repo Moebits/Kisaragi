@@ -69,7 +69,7 @@ export default class Gallery extends Command {
             return
         }
 
-        const gallery = await sql.fetchColumn("guilds", "gallery")
+        const gallery = await sql.fetchColumn("special channels", "gallery")
         const step = 5.0
         const increment = Math.ceil((gallery ? gallery.length : 1) / step)
         const galleryArray: EmbedBuilder[] = []
@@ -111,7 +111,7 @@ export default class Gallery extends Command {
         }
 
         async function galleryPrompt(msg: Message) {
-            let gallery = await sql.fetchColumn("guilds", "gallery")
+            let gallery = await sql.fetchColumn("special channels", "gallery")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Gallery Channels** ${discord.getEmoji("raphiOMG")}`)
             if (!gallery) gallery = []
@@ -122,7 +122,7 @@ export default class Gallery extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "gallery", null)
+                await sql.updateColumn("special channels", "gallery", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
                 discord.send(msg, responseEmbed)
@@ -134,7 +134,7 @@ export default class Gallery extends Command {
                 if (newMsg) {
                     gallery[num] = ""
                     gallery = gallery.filter(Boolean)
-                    await sql.updateColumn("guilds", "gallery", gallery)
+                    await sql.updateColumn("special channels", "gallery", gallery)
                     return discord.send(msg, responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
                     return discord.send(msg, responseEmbed.setDescription("Setting not found!"))
@@ -150,7 +150,7 @@ export default class Gallery extends Command {
                 gallery.push(newChan[i])
                 description += `${discord.getEmoji("star")}Added <#${newChan[i]}>!\n`
             }
-            await sql.updateColumn("guilds", "gallery", gallery)
+            await sql.updateColumn("special channels", "gallery", gallery)
             responseEmbed
             .setDescription(description)
             return discord.send(msg, responseEmbed)

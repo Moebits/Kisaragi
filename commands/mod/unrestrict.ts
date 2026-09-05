@@ -57,7 +57,7 @@ export default class Unrestrict extends Command {
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
         const restrictEmbed = embeds.createEmbed()
-        const restrict = await sql.fetchColumn("guilds", "restricted role")
+        const restrict = await sql.fetchColumn("special roles", "restricted role")
         if (!restrict) return this.reply("You need to set a restricted role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []

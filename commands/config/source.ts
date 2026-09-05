@@ -69,7 +69,7 @@ export default class Source extends Command {
             return
         }
 
-        const sources = await sql.fetchColumn("guilds", "sources")
+        const sources = await sql.fetchColumn("special channels", "sources")
         const step = 5.0
         const increment = Math.ceil((sources ? sources.length : 1) / step)
         const sourceArray: EmbedBuilder[] = []
@@ -111,7 +111,7 @@ export default class Source extends Command {
         }
 
         async function sourcePrompt(msg: Message) {
-            let sources = await sql.fetchColumn("guilds", "sources")
+            let sources = await sql.fetchColumn("special channels", "sources")
             const responseEmbed = embeds.createEmbed()
             responseEmbed.setTitle(`**Source Channels** ${discord.getEmoji("tohruThumbsUp2")}`)
             if (!sources) sources = []
@@ -122,7 +122,7 @@ export default class Source extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "sources", null)
+                await sql.updateColumn("special channels", "sources", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were **reset**!`)
                 discord.send(msg, responseEmbed)
@@ -134,7 +134,7 @@ export default class Source extends Command {
                 if (newMsg) {
                     sources[num] = ""
                     sources = sources.filter(Boolean)
-                    await sql.updateColumn("guilds", "sources", sources)
+                    await sql.updateColumn("special channels", "sources", sources)
                     return discord.send(msg, responseEmbed.setDescription(`Setting **${newMsg}** was deleted!`))
                 } else {
                     return discord.send(msg, responseEmbed.setDescription("Setting not found!"))
@@ -150,7 +150,7 @@ export default class Source extends Command {
                 sources.push(newChan[i])
                 description += `${discord.getEmoji("star")}Added <#${newChan[i]}>!\n`
             }
-            await sql.updateColumn("guilds", "sources", sources)
+            await sql.updateColumn("special channels", "sources", sources)
             responseEmbed
             .setDescription(description)
             return discord.send(msg, responseEmbed)

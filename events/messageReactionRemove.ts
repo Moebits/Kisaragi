@@ -18,7 +18,7 @@ export default class MessageReactionRemove {
             if (reaction.message.partial) reaction.message = await reaction.message.fetch()
             const sql = new SQLQuery(reaction.message as Message)
             const embeds = new Embeds(this.discord, reaction.message as Message)
-            const reactionroles = await sql.fetchColumn("guilds", "reaction roles")
+            const reactionroles = await sql.fetchColumn("special roles", "reaction roles")
             if (!reactionroles?.[0]) return
             for (let i = 0; i < reactionroles.length; i++) {
                 const reactionrole = JSON.parse(reactionroles[i])

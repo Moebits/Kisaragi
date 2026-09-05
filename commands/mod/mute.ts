@@ -58,7 +58,7 @@ export default class Mute extends Command {
         const perms = new Permission(discord, message)
         if (!await perms.checkMod()) return
         const muteEmbed = embeds.createEmbed()
-        const mute = await sql.fetchColumn("guilds", "mute role")
+        const mute = await sql.fetchColumn("special roles", "mute role")
         if (!mute) return this.reply("You need to set a mute role first!")
         const reasonArray: string[] = []
         const userArray: string[] = []

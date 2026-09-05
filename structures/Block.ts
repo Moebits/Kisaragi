@@ -18,12 +18,12 @@ export class Block {
         const message = this.message
         const sql = new SQLQuery(message)
         if (message.author!.bot) return
-        let words = await sql.fetchColumn("guilds", "blocked words")
+        let words = await sql.fetchColumn("blocks", "blocked words")
         if (words === null || !words?.[0]) return
         words = words as unknown as string[]
-        const asterisk = await sql.fetchColumn("guilds", "asterisk").then((a: string[]) => String(a) === "on" ? true : false)
+        const asterisk = await sql.fetchColumn("blocks", "asterisk").then((a: string[]) => String(a) === "on" ? true : false)
         words.forEach((w: string) => w.replace(/0/gi, "o").replace(/1/gi, "l").replace(/!/gi, "l"))
-        const match = await sql.fetchColumn("guilds", "block match")
+        const match = await sql.fetchColumn("blocks", "block match")
         if (String(match) === "exact") {
             if (words.some((w: string) => w.includes(message.content) || (asterisk ? message.content.match(/\*/g) : false))) {
                 if (!message.guild?.members.me?.permissions.has("ManageMessages")) return this.discord.send(this.message, "I need the **Manage Messages** permission in order to delete the message with the blocked word.")
@@ -46,12 +46,12 @@ export class Block {
     public blockInvite = async () => {
         const message = this.message
         const sql = new SQLQuery(message)
-        const toggle = await sql.fetchColumn("guilds", "invite")
+        const toggle = await sql.fetchColumn("blocks", "invite")
         if (!toggle || toggle === "off") return
         const regex = /(?<=(discord.gg|discord(app)?.com\/invite)\/)[a-z0-9]+/gi
         const match = message.content.match(regex)
         if (match?.[0]) {
-            const promo = await sql.fetchColumn("guilds", "self promo")
+            const promo = await sql.fetchColumn("blocks", "self promo")
             if (promo) {
                 const channel = this.message.guild?.channels.cache.get(promo)
                 if (this.message.channel.id === channel?.id) return
@@ -82,7 +82,7 @@ export class Block {
         const perms = new Permission(this.discord, msg)
         if (msg.content.includes("@everyone") || msg.content.includes("@here")) {
           if (msg.member?.permissions.has("MentionEveryone") || await perms.checkMod(true)) return
-          const toggle = await sql.fetchColumn("guilds", "everyone ban toggle")
+          const toggle = await sql.fetchColumn("blocks", "everyone ban toggle")
           if (toggle === "on") {
             try {
               await msg.member?.ban({reason: "Mentioning everyone", deleteMessageSeconds: 7 * 24 * 60 * 60})
@@ -109,7 +109,7 @@ export class Block {
         const message = this.message
         const sql = new SQLQuery(message)
         if (message.attachments.size) return
-        const gallery = await sql.fetchColumn("guilds", "gallery")
+        const gallery = await sql.fetchColumn("special channels", "gallery")
         if (!gallery) return
         if (gallery.includes(message.channel.id)) {
             try {

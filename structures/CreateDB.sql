@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS "commands" (
     "usage" int
 );
 
-CREATE TABLE IF NOT EXISTS "misc" (
+CREATE TABLE IF NOT EXISTS "users" (
     "user id" bigint PRIMARY KEY,
     "username" text,
     "osu name" text,
@@ -84,58 +84,127 @@ CREATE TABLE IF NOT EXISTS "guilds" (
     "owner" text,
     "owner id" bigint,
     "usage" text,
-    "prefix" text,
-    "mod log" text,
-    "message log" text,
-    "user log" text,
-    "member log" text,
-    "pinboard" text,
-    "nsfw pinboard" text,
-    "yt channels" text[],
-    "twitch channels" text[],
-    "global chat" text,
-    "linked" text[],
-    "gallery" text[],
-    "starboard" text,
-    "star threshold" int,
-    "star emoji" text,
-    "mute role" text,
-    "restricted role" text,
-    "warn one" text,
-    "warn two" text,
-    "mod role" text,
-    "admin role" text,
-    "self roles" text[],
-    "reaction roles" text[],
-    "emoji roles" text[],
-    "warn log" text[],
-    "warn penalty" text,
-    "warn threshold" int,
-    "cases" text[],
+    "prefix" text
+);
+
+CREATE TABLE IF NOT EXISTS "auto" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
+    "auto commands" text[],
+    "auto channels" text[],
+    "auto frequencies" int[],
+    "auto timeouts" int[],
+    "auto toggles" text[]
+);
+
+CREATE TABLE IF NOT EXISTS "birthdays" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
+    "birthdays" text[],
+    "birthday channel" text,
+    "birthday message" text,
+    "birthday toggle" text
+);
+
+CREATE TABLE IF NOT EXISTS "blocks" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
     "blocked words" text[],
-    "disabled categories" text[],
-    "pfp ban toggle" text,
-    "ascii name toggle" text,
-    "default channel" text,
     "block match" text,
     "block toggle" text,
-    "link ban" text,
     "asterisk" text,
     "invite" text,
     "self promo" text,
+    "pfp ban toggle" text,
     "everyone ban toggle" text,
+    "ascii name toggle" text,
+    "default channel" text,
+    "link ban" text
+);
+
+CREATE TABLE IF NOT EXISTS "captcha" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
     "verify toggle" text,
     "verify role" text,
     "captcha type" text,
     "captcha color" text,
-    "difficulty" text,
-    "links" text,
-    "anime" text,
+    "difficulty" text
+);
+
+CREATE TABLE IF NOT EXISTS "config" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
+    "embed colors" text[],
+    "permissions" text
+);
+
+CREATE TABLE IF NOT EXISTS "detect" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
     "pfp" text,
     "weeb" text,
     "normie" text,
-    "ignored" text[],
+    "links" text,
+    "anime" text,
     "response" text,
+    "ignored" text[],
+    "disabled categories" text[]
+);
+
+CREATE TABLE IF NOT EXISTS "logs" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
+    "mod log" text,
+    "warn log" text[],
+    "message log" text,
+    "user log" text,
+    "member log" text,
+    "guild log" text
+);
+
+CREATE TABLE IF NOT EXISTS "points" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
+    "scores" text[],
+    "point range" text[],
+    "point threshold" int,
+    "level message" text,
+    "point timeout" int,
+    "point toggle" text,
+    "level roles" text[],
+    "level channels" text[]
+);
+
+CREATE TABLE IF NOT EXISTS "special roles" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
+    "admin role" text,
+    "mod role" text,
+    "mute role" text,
+    "restricted role" text,
+    "warn one" text,
+    "warn two" text,
+    "self roles" text[],
+    "reaction roles" text[],
+    "emoji roles" text[]
+);
+
+CREATE TABLE IF NOT EXISTS "special channels" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
+    "linked" text[],
+    "gallery" text[],
+    "sources" text[],
+    "pinboard" text,
+    "nsfw pinboard" text,
+    "starboard" text,
+    "star threshold" int,
+    "star emoji" text,
+    "global chat" text,
+    "yt channels" text[],
+    "twitch channels" text[]
+);
+
+CREATE TABLE IF NOT EXISTS "warns" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
+    "warn penalty" text,
+    "warn threshold" int,
+    "cases" text[]
+);
+
+CREATE TABLE IF NOT EXISTS "welcome leaves" (
+    "guild id" bigint PRIMARY KEY REFERENCES "guilds" ("guild id") ON UPDATE CASCADE ON DELETE CASCADE,
     "welcome channel" text,
     "welcome message" text,
     "welcome toggle" text,
@@ -149,26 +218,5 @@ CREATE TABLE IF NOT EXISTS "guilds" (
     "leave bg text" text,
     "leave bg color" text,
     "leave bg images" text[],
-    "leave bg toggle" text,
-    "permissions" text,
-    "embed colors" text[],
-    "point range" text[],
-    "point threshold" int,
-    "level message" text,
-    "point timeout" int,
-    "point toggle" text,
-    "scores" text[],
-    "level roles" text[],
-    "level channels" text[],
-    "auto commands" text[],
-    "auto channels" text[],
-    "auto frequencies" int[],
-    "auto timeouts" int[],
-    "auto toggles" text[],
-    "birthdays" text[],
-    "birthday channel" text,
-    "birthday message" text,
-    "birthday toggle" text,
-    "guild log" text,
-    "sources" text[]
+    "leave bg toggle" text
 );

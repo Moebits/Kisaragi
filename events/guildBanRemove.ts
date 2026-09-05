@@ -21,7 +21,7 @@ export default class GuildBanRemove {
         const embeds = new Embeds(discord, message)
 
         const logUnban = async (guild: Guild) => {
-            const modLog = await sql.fetchColumn("guilds", "mod log")
+            const modLog = await sql.fetchColumn("logs", "mod log")
             if (modLog) {
                 const modChannel = guild?.channels.cache.get(modLog)! as TextChannel
                 const log = await guild.fetchAuditLogs({type: AuditLogEvent.MemberBanRemove, limit: 1}).then((l) => l.entries.first())

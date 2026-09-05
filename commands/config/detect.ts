@@ -62,12 +62,12 @@ export default class Detect extends Command {
         const loading = message.channel.lastMessage
         if (message instanceof Message) Functions.deferDelete(loading, 0)
         const input = Functions.combineArgs(args, 1)
-        const links = await sql.fetchColumn("guilds", "links")
-        const anime = await sql.fetchColumn("guilds", "anime")
-        const pfp = await sql.fetchColumn("guilds", "pfp")
-        const weeb = await sql.fetchColumn("guilds", "weeb")
-        const normie = await sql.fetchColumn("guilds", "normie")
-        const response = await sql.fetchColumn("guilds", "response")
+        const links = await sql.fetchColumn("detect", "links")
+        const anime = await sql.fetchColumn("detect", "anime")
+        const pfp = await sql.fetchColumn("detect", "pfp")
+        const weeb = await sql.fetchColumn("detect", "weeb")
+        const normie = await sql.fetchColumn("detect", "normie")
+        const response = await sql.fetchColumn("detect", "response")
         if (input.trim()) {
             message.content = input.trim()
             await detectPrompt(message)
@@ -119,12 +119,12 @@ export default class Detect extends Command {
                 return
             }
             if (msg.content.toLowerCase() === "reset") {
-                await sql.updateColumn("guilds", "links", "off")
-                await sql.updateColumn("guilds", "anime", "off")
-                await sql.updateColumn("guilds", "pfp", "off")
-                await sql.updateColumn("guilds", "response", "off")
-                await sql.updateColumn("guilds", "weeb", null)
-                await sql.updateColumn("guilds", "normie", null)
+                await sql.updateColumn("detect", "links", "off")
+                await sql.updateColumn("detect", "anime", "off")
+                await sql.updateColumn("detect", "pfp", "off")
+                await sql.updateColumn("detect", "response", "off")
+                await sql.updateColumn("detect", "weeb", null)
+                await sql.updateColumn("detect", "normie", null)
                 responseEmbed
                 .setDescription(`${discord.getEmoji("star")}All settings were reset!`)
                 discord.send(msg, responseEmbed)
@@ -145,30 +145,30 @@ export default class Detect extends Command {
 
             if (setLink) {
                 if (!links || links === "off") {
-                    await sql.updateColumn("guilds", "links", "on")
+                    await sql.updateColumn("detect", "links", "on")
                     description += `${discord.getEmoji("star")}Link detection is **on**!\n`
                 } else {
-                    await sql.updateColumn("guilds", "links", "off")
+                    await sql.updateColumn("detect", "links", "off")
                     description += `${discord.getEmoji("star")}Link detection is **off**!\n`
                 }
             }
 
             if (setAnime) {
                 if (!anime || anime === "off") {
-                    await sql.updateColumn("guilds", "anime", "on")
+                    await sql.updateColumn("detect", "anime", "on")
                     description += `${discord.getEmoji("star")}Anime detection is **on**!\n`
                 } else {
-                    await sql.updateColumn("guilds", "anime", "off")
+                    await sql.updateColumn("detect", "anime", "off")
                     description += `${discord.getEmoji("star")}Anime detection is **off**!\n`
                 }
             }
 
             if (setResponse) {
                 if (!response || response === "off") {
-                    await sql.updateColumn("guilds", "response", "on")
+                    await sql.updateColumn("detect", "response", "on")
                     description += `${discord.getEmoji("star")}Auto responses are **on**!\n`
                 } else {
-                    await sql.updateColumn("guilds", "response", "off")
+                    await sql.updateColumn("detect", "response", "off")
                     description += `${discord.getEmoji("star")}Auto responses are **off**!\n`
                 }
             }
@@ -188,21 +188,21 @@ export default class Detect extends Command {
                             return
                         }
                     }
-                    await sql.updateColumn("guilds", "pfp", "on")
+                    await sql.updateColumn("detect", "pfp", "on")
                     description += `${discord.getEmoji("star")}Pfp detection is **on**!\n`
                 } else {
-                    await sql.updateColumn("guilds", "pfp", "off")
+                    await sql.updateColumn("detect", "pfp", "off")
                     description += `${discord.getEmoji("star")}Pfp detection is **off**!\n`
                 }
             }
 
             if (setWeeb) {
-                await sql.updateColumn("guilds", "weeb", String(weebRole))
+                await sql.updateColumn("detect", "weeb", String(weebRole))
                 description += `${discord.getEmoji("star")}Weeb role set to **<@&${String(weebRole)}>**!\n`
             }
 
             if (setNormie) {
-                await sql.updateColumn("guilds", "normie", String(normieRole))
+                await sql.updateColumn("detect", "normie", String(normieRole))
                 description += `${discord.getEmoji("star")}Normie role set to **<@&${String(normieRole)}>**!\n`
             }
 

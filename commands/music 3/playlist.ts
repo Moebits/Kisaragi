@@ -44,12 +44,12 @@ export default class Playlists extends Command {
         const sql = new SQLQuery(message)
         const perms = new Permission(discord, message)
         let playlists = [{name: null, songs: [], length: 0}]
-        const exists = await sql.fetchColumn("misc", "playlists", "user id", message.author.id)
+        const exists = await sql.fetchColumn("users", "playlists", "user id", message.author.id)
         if (!exists) {
             try {
-                await SQLQuery.insertInto("misc", "user id", message.author.id)
+                await SQLQuery.insertInto("users", "user id", message.author.id)
             } finally {
-                await sql.updateColumn("misc", "playlists", playlists, "user id", message.author.id)
+                await sql.updateColumn("users", "playlists", playlists, "user id", message.author.id)
             }
         } else {
             playlists = exists

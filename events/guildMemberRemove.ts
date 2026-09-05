@@ -25,7 +25,7 @@ export default class GuildMemberRemove {
         }
 
         let defaultChannel = firstMsg?.channel as TextChannel
-        const defChannel = await sql.fetchColumn("guilds", "default channel")
+        const defChannel = await sql.fetchColumn("blocks", "default channel")
         if (defChannel) {
             defaultChannel = this.discord.channels.cache.find((c) => c.id.toString() === String(defChannel)) as TextChannel
         }
@@ -37,15 +37,15 @@ export default class GuildMemberRemove {
 
         const leaveMessages = async () => {
             if (member.partial) member = await member.fetch()
-            const leaveToggle = await sql.fetchColumn("guilds", "leave toggle")
+            const leaveToggle = await sql.fetchColumn("welcome leaves", "leave toggle")
             if (!(leaveToggle === "on")) return
 
-            const leaveMsg = await sql.fetchColumn("guilds", "leave message")
-            const leaveChannel = await sql.fetchColumn("guilds", "leave channel")
-            const leaveImages = await sql.fetchColumn("guilds", "leave bg images")
-            const leaveText = await sql.fetchColumn("guilds", "leave bg text")
-            const leaveColor = await sql.fetchColumn("guilds", "leave bg color")
-            const leaveBGToggle = await sql.fetchColumn("guilds", "leave bg toggle")
+            const leaveMsg = await sql.fetchColumn("welcome leaves", "leave message")
+            const leaveChannel = await sql.fetchColumn("welcome leaves", "leave channel")
+            const leaveImages = await sql.fetchColumn("welcome leaves", "leave bg images")
+            const leaveText = await sql.fetchColumn("welcome leaves", "leave bg text")
+            const leaveColor = await sql.fetchColumn("welcome leaves", "leave bg color")
+            const leaveBGToggle = await sql.fetchColumn("welcome leaves", "leave bg toggle")
             const channel = member.guild.channels.cache.find((c) => c.id.toString() === String(leaveChannel)) as TextChannel
 
             const attachment = await image.createCanvas(member, leaveImages, leaveText, leaveColor, false, false, leaveBGToggle) as AttachmentBuilder
@@ -59,7 +59,7 @@ export default class GuildMemberRemove {
         leaveMessages()
 
         const logKick = async (member: GuildMember | PartialGuildMember) => {
-            const modLog = await sql.fetchColumn("guilds", "mod log")
+            const modLog = await sql.fetchColumn("logs", "mod log")
             if (modLog) {
                 await Functions.timeout(1000)
                 const calc = Date.now() - 10000
@@ -77,7 +77,7 @@ export default class GuildMemberRemove {
         logKick(member)
 
         const logLeave = async (member: GuildMember | PartialGuildMember) => {
-            const userLog = await sql.fetchColumn("guilds", "user log")
+            const userLog = await sql.fetchColumn("logs", "user log")
             if (userLog) {
                 const leaveChannel = member.guild?.channels.cache.get(userLog)! as TextChannel
                 const leaveEmbed = embeds.createEmbed()
